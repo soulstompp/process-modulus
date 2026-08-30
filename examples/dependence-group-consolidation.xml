@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⭐⭐⭐ AN OBSERVED DEPENDENCE BETWEEN TWO FILINGS, FILED BY SOMEBODY WHO IS THE FILER
+  OF NEITHER: the document type S-4 asked for, and the reason it is a document.
+
+  `pm:Coupling` already carries a dependence between two layers INSIDE one stack, and
+  refutation.xml files one. ⛔ BUT A FILING IS ATTESTABLE BY THE PARTY THAT FILES IT. A
+  coupling inside the subsidiary's document naming the parent's layer would be a claim the
+  subsidiary CANNOT ATTEST TO, because it cannot see the parent's stack, and the
+  keyrefs could not follow it, so it would validate by not being checked.
+
+  ⭐ So the group consolidator files it. They have read both filings; neither filer has.
+
+  Read three things closely:
+
+    * ⭐⭐ THE TWO ENDS ARE UNDER DIFFERENT REGIMES, AND THAT IS THE ORDINARY CASE, NOT
+      AN EDGE ONE. A Portuguese subsidiary under NCRF-PE and a US parent under US-GAAP
+      measure a remainder differently. Both regimes are declared once at the top and each
+      end names which one it reported under, so the reason two numbers disagree is
+      queryable rather than buried in the prose.
+
+    * ⭐ THE CHARTS DIFFER TOO, AND THE US END AUTHORS ITS OWN. There is no United States
+      chart of accounts; the parent is the authority for its own account list. The
+      subsidiary posts to Portugal's SNC.
+
+    * ⛔ `observed` CARRIES THE WHOLE EVIDENCE, and it must, because BOTH ENDS ARE
+      ELSEWHERE. A reader who doubts refutation.xml's own coupling can read the rest of
+      that filing. A reader who doubts this one has only this sentence.
+
+  ⚠️ Illustrative. The two `notation` URIs stand for the two filings in this directory a
+  reader can open (refutation.xml and enterprise-contract.xml), so the ends can be
+  checked by hand, which is exactly where no validator can help.
+-->
+<asrt:dependence xmlns:asrt="https://example.invalid/assertion/1.0"
+                 xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>group-consolidation</asrt:witness>
+  <asrt:observedAt>2026-08-30</asrt:observedAt>
+
+  <!-- ⚠️ The observer, and the standing of the observation. `reviewed-not-audited` is
+       what separates this from a statutory auditor's version of the same sentence, and
+       standing is a BorrowedTerm because neither this schema nor any witness owns that
+       set. -->
+  <asrt:provenance>
+    <pm:party>Acme Group</pm:party>
+    <pm:enteredBy>group-controller</pm:enteredBy>
+    <pm:approvedBy>group-cfo</pm:approvedBy>
+    <pm:standing>
+      <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
+      <pm:value>reviewed-not-audited</pm:value>
+    </pm:standing>
+  </asrt:provenance>
+
+  <!-- The two frameworks the two ends report under, declared once each. -->
+  <asrt:regime>
+    <pm:id>pt-sub</pm:id>
+    <pm:jurisdiction>PT</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:ies:anexo-asnc</pm:taxonomy>
+        <pm:value>NC-ME</pm:value>
+      </pm:term>
+    </pm:framework>
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
+        <pm:value>SNC</pm:value>
+      </pm:term>
+    </pm:chart>
+  </asrt:regime>
+
+  <asrt:regime>
+    <pm:id>us-parent</pm:id>
+    <pm:jurisdiction>US</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>http://fasb.org/us-gaap</pm:taxonomy>
+        <pm:value>us-gaap</pm:value>
+      </pm:term>
+    </pm:framework>
+    <!-- ⭐ No US chart of accounts exists, so the parent is its own authority. -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
+        <pm:value>acme-2026</pm:value>
+      </pm:term>
+    </pm:chart>
+  </asrt:regime>
+
+  <!-- ⚠️ Why this observer could see both filings at all. Optional, and a dependence
+       without it is weaker, and a receiver is entitled to say so. -->
+  <asrt:citation>
+    <asrt:instrument>
+      <pm:taxonomy>urn:example:assurance:group-engagement</pm:taxonomy>
+      <pm:value>group-consolidation-scope</pm:value>
+    </asrt:instrument>
+    <asrt:clause>§2.1</asrt:clause>
+    <asrt:version>2026</asrt:version>
+  </asrt:citation>
+
+  <asrt:entry>
+    <asrt:from>
+      <asrt:party>Acme Platform Lda</asrt:party>
+      <asrt:registration>
+        <pm:taxonomy>urn:example:pt:nif</pm:taxonomy>
+        <pm:value>500000000</pm:value>
+      </asrt:registration>
+      <asrt:filing>
+        <pm:notation>urn:example:filing:acme-platform:2026-Q2</pm:notation>
+        <pm:id>compute</pm:id>
+      </asrt:filing>
+      <asrt:version>2026-Q2</asrt:version>
+      <asrt:regime>pt-sub</asrt:regime>
+    </asrt:from>
+
+    <asrt:to>
+      <asrt:party>Acme Inc</asrt:party>
+      <asrt:registration>
+        <pm:taxonomy>urn:example:lei</pm:taxonomy>
+        <pm:value>0000000000ACME00001</pm:value>
+      </asrt:registration>
+      <asrt:filing>
+        <pm:notation>urn:example:filing:acme-inc:2026-Q2</pm:notation>
+        <pm:id>labour</pm:id>
+      </asrt:filing>
+      <asrt:version>2026-Q2</asrt:version>
+      <asrt:regime>us-parent</asrt:regime>
+    </asrt:to>
+
+    <asrt:observed>The subsidiary raised its reserved compute block from 8 to 16 GPU in
+                   2026-Q2 and files a fall in on-call interrupt hours in the same
+                   quarter. The parent, which runs the shared on-call rota, files a
+                   labour remainder held by `people` that fell in the same quarter with
+                   no change to its own headcount, rota or release cadence. Neither
+                   filing can see the other, and neither records the transfer: the
+                   subsidiary's capacity decision relieved a remainder that lands in the
+                   parent's books. ⚠️ One quarter, two filings, and not controlled:
+                   the parent also closed an enterprise contract in the same window,
+                   which would move labour on its own. It is filed as the observation
+                   rather than as a conclusion, which is what this document is for.</asrt:observed>
+
+    <!-- ⭐ The direction is known and the magnitude is not, which is `Remainder/sign`'s
+         case one level up. The range is wide on purpose: the two ends measure under
+         different frameworks, and a unit is not a conversion licence. -->
+    <asrt:strength>
+      <pm:claim>
+        <pm:low>0.1</pm:low>
+        <pm:mostLikely>0.3</pm:mostLikely>
+        <pm:high>0.6</pm:high>
+        <pm:unit>share of the fall in the parent's labour remainder</pm:unit>
+        <pm:narrowsWhen>the enterprise contract's own draw is separated out, which needs
+                        a quarter in which only one of the two changes</pm:narrowsWhen>
+        <pm:provenance>
+          <pm:party>Acme Group</pm:party>
+          <pm:standing>
+            <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
+            <pm:value>reviewed-not-audited</pm:value>
+          </pm:standing>
+        </pm:provenance>
+        <pm:asOf>2026-08-30</pm:asOf>
+      </pm:claim>
+    </asrt:strength>
+  </asrt:entry>
+</asrt:dependence>
