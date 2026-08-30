@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⭐ A RUN PROMOTED TO EVIDENCE: what a report cites when it argues from a trial.
+  ⛔ NOT a runner's working ledger, which is local, append-only, grows forever and is
+  a claim about ONE MACHINE.
+
+  Read the verdicts in this order, because the interesting one is not the failure:
+
+    notable    ⭐⭐ NOT CLAIMED, AND THE WITNESS ANSWERED ANYWAY. Never a failure, and
+               usually the most valuable line here: the witness admitted something we
+               assumed it must refuse. Either the model is stronger than we thought
+               or a guard is not guarding, and both are findings.
+    diverged   claimed, differs, and NOT declared, the one to fix. Three legitimate
+               responses: fix the witness, fix the case, or declare the exception.
+    unclaimed  quiet and correct.
+
+  ⚠️ Illustrative.
+-->
+<asrt:run xmlns:asrt="https://example.invalid/assertion/1.0"
+          xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>snc-port</asrt:witness>
+  <asrt:ranAt>2026-08-30</asrt:ranAt>
+  <asrt:corpusVersion>facility@2026-08-29</asrt:corpusVersion>
+
+  <asrt:result>
+    <asrt:key>labor.absorbed-evening</asrt:key>
+    <asrt:verdict>agreed</asrt:verdict>
+    <asrt:answer>
+      <asrt:refuses>
+        <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
+        <pm:value>not-a-financial-fact</pm:value>
+      </asrt:refuses>
+    </asrt:answer>
+  </asrt:result>
+
+  <!-- ⭐⭐ THE LINE WORTH READING. The witness did not claim this question and
+       answered it anyway, so a guard we believed was there is not. -->
+  <asrt:result>
+    <asrt:key>capability.backlog</asrt:key>
+    <asrt:verdict>notable</asrt:verdict>
+    <asrt:answer>
+      <asrt:holds>
+        <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
+        <pm:value>3410</pm:value>
+      </asrt:holds>
+    </asrt:answer>
+    <asrt:evidence>Coverage marks this case incomplete and expects cannotAsk, but the
+                   witness placed the backlog at a work-in-progress position. Either
+                   an unshipped capability really is inventory under this framework,
+                   which would be a finding about the model, not the witness, or the
+                   position lookup is falling through to a default. Traced to the
+                   chart loader on 2026-08-30; not yet resolved.</asrt:evidence>
+  </asrt:result>
+
+  <asrt:result>
+    <asrt:key>compute.reserved-block-idle</asrt:key>
+    <asrt:verdict>diverged</asrt:verdict>
+    <asrt:answer>
+      <asrt:refuses>
+        <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
+        <pm:value>no-position-exists</pm:value>
+      </asrt:refuses>
+    </asrt:answer>
+    <asrt:evidence>The coverage file claims this case complete and answers with a
+                   chart position, and the run refused it instead. Undeclared, so it
+                   is not an exception: the claim and the behaviour disagree.</asrt:evidence>
+  </asrt:result>
+
+  <asrt:result>
+    <asrt:key>offering.enterprise-obligation</asrt:key>
+    <asrt:verdict>agreed</asrt:verdict>
+  </asrt:result>
+
+</asrt:run>

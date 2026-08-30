@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One witness's claim about a corpus of questions. Illustrative keys and codes.
+
+  ⭐ Note the chart in `holds`: THE UNITED STATES HAS NO NATIONAL CHART OF ACCOUNTS,
+  so the taxonomy here is the ENTITY'S OWN chart. Spain (PGC) and Sweden (BAS) do
+  have national ones, and Portugal has the SNC chart. See coverage-pt-ncrf-pe.xml
+  for the same questions answered against one. That difference is precisely why a
+  position code cannot travel without the chart that codes it.
+
+  ⚠️ Taxonomy URIs other than the FASB one are placeholders.
+-->
+<asrt:coverage xmlns:asrt="https://example.invalid/assertion/1.0"
+               xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>gaap-us</asrt:witness>
+
+  <asrt:regime>
+    <pm:id>us-gaap</pm:id>
+    <pm:jurisdiction>US</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>http://fasb.org/us-gaap</pm:taxonomy>
+        <pm:value>us-gaap</pm:value>
+      </pm:term>
+    </pm:framework>
+    <!-- ⭐ The chart every `holds` below cites: declared, not merely used. -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
+        <pm:value>acme-2026</pm:value>
+      </pm:term>
+    </pm:chart>
+  </asrt:regime>
+
+  <!-- The fourth buffer, put to a standards model. It refuses, and the refusal is
+       the deliverable rather than a failure. -->
+  <asrt:entry>
+    <asrt:key>labor.absorbed-evening</asrt:key>
+    <asrt:complete>true</asrt:complete>
+    <asrt:answer>
+      <asrt:refuses>
+        <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
+        <pm:value>not-a-financial-fact</pm:value>
+      </asrt:refuses>
+    </asrt:answer>
+  </asrt:entry>
+
+  <!-- Idle reserved capacity IS transacted, so it has a position. -->
+  <asrt:entry>
+    <asrt:key>compute.reserved-block-idle</asrt:key>
+    <asrt:complete>true</asrt:complete>
+    <asrt:answer>
+      <asrt:holds>
+        <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
+        <pm:value>6250</pm:value>
+      </asrt:holds>
+    </asrt:answer>
+  </asrt:entry>
+
+  <!-- An obligation created at signature, cited. -->
+  <asrt:entry>
+    <asrt:key>offering.enterprise-obligation</asrt:key>
+    <asrt:complete>true</asrt:complete>
+    <asrt:answer>
+      <asrt:refuses>
+        <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
+        <pm:value>needs-a-condition</pm:value>
+      </asrt:refuses>
+    </asrt:answer>
+    <asrt:citation>
+      <asrt:instrument>
+        <pm:taxonomy>http://fasb.org/us-gaap</pm:taxonomy>
+        <pm:value>ASC 606</pm:value>
+      </asrt:instrument>
+      <asrt:clause>606-10-25</asrt:clause>
+      <asrt:version>2026</asrt:version>
+    </asrt:citation>
+  </asrt:entry>
+
+  <!-- ⛔ NOT a failure. A standards model has no opinion about how many launches a
+       quarter holds, and saying so is the correct answer. -->
+  <asrt:entry>
+    <asrt:key>capability.backlog</asrt:key>
+    <asrt:complete>false</asrt:complete>
+    <asrt:answer>
+      <asrt:cannotAsk/>
+    </asrt:answer>
+  </asrt:entry>
+
+  <!-- ⭐ A DECLARED divergence: this witness answers differently on purpose, and the
+       reason travels with it. Without `exception` this would read as a defect
+       somebody stopped chasing. -->
+  <asrt:entry>
+    <asrt:key>labor.contractor-overtime</asrt:key>
+    <asrt:complete>true</asrt:complete>
+    <asrt:answer>
+      <asrt:holds>
+        <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
+        <pm:value>6110</pm:value>
+      </asrt:holds>
+    </asrt:answer>
+    <asrt:exception>The corpus expects a refusal because absorbed work has no
+                    counterparty. A CONTRACTOR invoices, so the same physical excess
+                    is a transacted position here, which is the corpus's own point
+                    about the fourth buffer being a property of the relationship,
+                    read back at it.</asrt:exception>
+  </asrt:entry>
+
+</asrt:coverage>
