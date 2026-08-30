@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WHAT A REFUTATION LOOKS LIKE IN THIS FORMAT. Illustrative figures.
+
+  The model makes claims that could be wrong, and this document files two of the
+  counter-examples rather than arguing them:
+
+    1. A LAYER WITH NO QUANTUM AND NO PREMIUM. `object-storage` is bought
+       continuously at the same unit price as any commitment, so its remainder is
+       `none`: somebody looked, and there is nothing left over. If a stack were
+       full of these, the model would have no subject.
+
+    2. A COUPLING. The stack is ASSUMED to be a set of independent quantizations
+       and that assumption has never been tested. A filed coupling says two
+       layers' remainders moved together, which is the model's own falsifier,
+       and it is required to carry what was observed.
+
+  A document with no couplings is not evidence of independence. It is a document
+  where nobody looked. This one looked.
+
+  Note that it carries no operations at all: a stack is a complete document.
+-->
+<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <!-- ⭐⭐ TWO REGIMES, ONE ENTITY, AND THAT IS CORRECT RATHER THAN A DUPLICATE.
+       The same Portuguese microentity is `NC-ME` to IES and `M` to SAF-T. The two
+       published four-value lists do not line up: NCRF and NCRF-PE both collapse
+       into S, and O has no AnexoASNC counterpart, so neither code can be derived
+       from the other and neither declaration says what the pair says.
+       ⚠️ The taxonomy URIs are placeholders; a real document names the real ones. -->
+  <pm:regime>
+    <pm:id>ies-anexo-asnc</pm:id>
+    <pm:jurisdiction>PT</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:ies:anexo-asnc</pm:taxonomy>
+        <pm:value>NC-ME</pm:value>
+      </pm:term>
+    </pm:framework>
+    <!-- ⭐⭐ THE SAME CHART AS saft-referencial BELOW. A chart is national; the -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
+        <pm:value>SNC</pm:value>
+      </pm:term>
+    </pm:chart>
+  </pm:regime>
+
+  <pm:regime>
+    <pm:id>saft-referencial</pm:id>
+    <pm:jurisdiction>PT</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:saft:referencial</pm:taxonomy>
+        <pm:value>M</pm:value>
+      </pm:term>
+    </pm:framework>
+    <!-- ⭐⭐ ...authority that CODES THE FRAMEWORK is a separate axis from it. -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
+        <pm:value>SNC</pm:value>
+      </pm:term>
+    </pm:chart>
+    <pm:note>The same entity and the same framework as ies-anexo-asnc, coded by a
+             different authority. The SAF-T list is coarser, so this code cannot be
+             mapped back to a single AnexoASNC value.</pm:note>
+  </pm:regime>
+
+  <pm:stack>
+
+    <!-- ============================================================
+         1. THE COUNTER-EXAMPLE: a supply with no quantum.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>object-storage</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>41</pm:low>
+          <pm:mostLikely>47</pm:mostLikely>
+          <pm:high>52</pm:high>
+          <pm:unit>TB</pm:unit>
+          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:supply>
+        <pm:label>object storage, billed per byte-month</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>nothing is committed in advance; there is no rating to exceed</pm:note>
+            </pm:absent>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:continuous>
+                <pm:premium>
+                  <pm:absent>
+                    <pm:reason>none</pm:reason>
+                    <pm:note>the per-byte-month price equals the price under every
+                             commitment tier offered, so nothing is paid to buy this
+                             continuously. Checked against the published rate card
+                             2026-08-30.</pm:note>
+                    <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+                    <pm:asOf>2026-08-30</pm:asOf>
+                  </pm:absent>
+                </pm:premium>
+              </pm:continuous>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>47</pm:low>
+              <pm:mostLikely>47</pm:mostLikely>
+              <pm:high>47</pm:high>
+              <pm:unit>TB</pm:unit>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a metered physical quantity has no accounting measurement basis</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:absent>
+          <pm:reason>none</pm:reason>
+          <pm:note>a supply with no quantum divides exactly. Filed as a
+                   counter-example to the claim that every layer carries a
+                   remainder, not as a gap in this document.</pm:note>
+          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:absent>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         2. and 3. the two layers the coupling below is about.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>compute</pm:name>
+      <pm:demand>
+        <pm:claim>
+          <pm:low>11.0</pm:low>
+          <pm:mostLikely>13.2</pm:mostLikely>
+          <pm:high>16.4</pm:high>
+          <pm:unit>GPU</pm:unit>
+        </pm:claim>
+      </pm:demand>
+      <pm:supply>
+        <pm:label>reserved inference capacity</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>16</pm:low><pm:mostLikely>16</pm:mostLikely><pm:high>16</pm:high>
+              <pm:unit>GPU</pm:unit>
+            </pm:claim>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>8</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>8</pm:high>
+                    <pm:unit>GPU</pm:unit>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>contractual</pm:origin>
+              </pm:lumpy>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>13.2</pm:low><pm:mostLikely>13.2</pm:mostLikely><pm:high>13.2</pm:high>
+              <pm:unit>GPU</pm:unit>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign>clearance</pm:sign>
+          <pm:absorber>
+            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+            <pm:value>capacity</pm:value>
+          </pm:absorber>
+          <pm:holder><pm:holder><pm:kind>booked</pm:kind></pm:holder></pm:holder>
+          <pm:quantity>
+            <pm:claim>
+              <pm:low>0.0</pm:low><pm:mostLikely>2.8</pm:mostLikely><pm:high>5.0</pm:high>
+              <pm:unit>GPU</pm:unit>
+            </pm:claim>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <pm:layer>
+      <pm:name>labour</pm:name>
+      <pm:demand>
+        <pm:claim>
+          <pm:low>4.2</pm:low><pm:mostLikely>4.6</pm:mostLikely><pm:high>5.5</pm:high>
+          <pm:unit>people</pm:unit>
+        </pm:claim>
+      </pm:demand>
+      <pm:supply>
+        <pm:label>the platform team</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>4</pm:low><pm:mostLikely>4</pm:mostLikely><pm:high>4</pm:high>
+              <pm:unit>people</pm:unit>
+            </pm:claim>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+                    <pm:unit>people</pm:unit>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:admitsInterference><pm:value>true</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>on-call interrupt hours are recorded; absorbed hours are not</pm:note>
+            </pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign>interference</pm:sign>
+          <pm:absorber>
+            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+            <pm:value>capacity</pm:value>
+          </pm:absorber>
+          <pm:holder><pm:holder><pm:kind>people</pm:kind></pm:holder></pm:holder>
+          <pm:quantity>
+            <pm:claim>
+              <pm:low>0.2</pm:low><pm:mostLikely>0.6</pm:mostLikely><pm:high>1.5</pm:high>
+              <pm:unit>people</pm:unit>
+              <pm:narrowsWhen>absorbed hours are recorded against a practical-capacity denominator that is allowed to go negative</pm:narrowsWhen>
+            </pm:claim>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         THE FALSIFIER, FILED.
+         ============================================================ -->
+    <pm:coupling>
+      <pm:from>compute</pm:from>
+      <pm:to>labour</pm:to>
+      <pm:observed>Raising the reservation from 8 to 16 GPU in 2026-Q2 was followed
+                   by a 31 per cent fall in recorded on-call interrupt hours in the
+                   same quarter, with no change to headcount, on-call rota or
+                   release cadence. The compute remainder rose and the labour
+                   remainder fell together, which is what the stack is assumed not
+                   to do. One quarter, one company, and not controlled, but it is
+                   the observation, and it belongs in the document rather than in a
+                   conversation about the document.</pm:observed>
+      <pm:strength>
+        <pm:claim>
+          <pm:low>0.15</pm:low>
+          <pm:mostLikely>0.31</pm:mostLikely>
+          <pm:high>0.45</pm:high>
+          <pm:unit>share of the labour remainder removed</pm:unit>
+          <pm:narrowsWhen>the reservation is varied deliberately across two more quarters</pm:narrowsWhen>
+          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:strength>
+    </pm:coupling>
+
+  </pm:stack>
+
+</pm:processModulus>

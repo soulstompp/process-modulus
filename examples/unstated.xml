@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WHAT A SENDER MAY DECLINE, AND HOW. Illustrative figures.
+
+  Every other example here states what it knows. This one exercises the opposite
+  half of the bargain: the schema requires elements precisely BECAUSE a typed
+  absence is a legitimate answer, and a required element with no way to decline
+  it forces a sender to invent a fact.
+
+  Each declination below was unwritable before, and each was filed by a real
+  adopter as a workaround that asserted something they did not believe:
+
+    1. A FRAMEWORK NOBODY HAS NAMED YET. `r1` reports under something; which one
+       is unassigned. Before, the only moves were to invent a value or omit the
+       regime, and omitting is byte-identical to reporting under none.
+
+    2. REPORTING UNDER NO FRAMEWORK, DELIBERATELY. `r2` is the other half of that
+       pair: somebody looked, and there is no framework. It also AUTHORS ITS OWN
+       CHART: with no publishing authority to borrow from, the entity is the
+       authority for its own account list, and naming itself satisfies BorrowedTerm
+       honestly rather than evading it. ⭐ That is the move the whole US filing
+       population needs, since there is no United States chart of accounts.
+
+    3. A CHART THAT FOLLOWS AN UNNAMED FRAMEWORK. `r1` declines its chart too, and
+       for a reason `none` would get wrong: the tier picks the framework and the
+       framework picks the chart, so there WILL be one, and nobody has said which.
+
+    4. AN AXIS THAT DOES NOT APPLY. A margin ratio is not bought in whole units
+       and not bought continuously; there is no per-unit difference between the
+       two, so there is no premium to pay for leaving the type. It is not a
+       supply. Before, the only way to file it was to assert `continuous` and
+       deny it inside the premium, where no query would meet the denial.
+
+    5. A FACT NOT YET ESTABLISHED. Whether a resource can be driven past its
+       rating is often the one thing a new sender has not determined.
+
+  ⭐ Note what is NOT declined: `remainder` is `none`, which is a claim. This
+  document says somebody looked at every one of these.
+-->
+<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <!-- 1. reports under something, not yet named -->
+  <pm:regime>
+    <pm:id>r1</pm:id>
+    <pm:jurisdiction>PT</pm:jurisdiction>
+    <pm:framework>
+      <pm:absent>
+        <pm:reason>unmeasured</pm:reason>
+        <pm:note>the entity's size tier is unassigned, so the framework it selects is not yet known</pm:note>
+        <pm:provenance><pm:party>registrar</pm:party></pm:provenance>
+      </pm:absent>
+    </pm:framework>
+    <!-- ⭐ AND THE CHART FOLLOWS THE FRAMEWORK. The tier picks the framework and the
+         framework picks the chart, so a tier nobody has assigned leaves both unnamed.
+         ⛔ NOT `none`: there will be a chart; nobody has said which. -->
+    <pm:chart>
+      <pm:absent>
+        <pm:reason>unmeasured</pm:reason>
+        <pm:note>the chart follows from the tier, which is unassigned</pm:note>
+      </pm:absent>
+    </pm:chart>
+  </pm:regime>
+
+  <!-- 2. somebody looked; reports under none. And authors its own chart. -->
+  <pm:regime>
+    <pm:id>r2</pm:id>
+    <pm:framework>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>an internal management view, answerable to no external framework</pm:note>
+      </pm:absent>
+    </pm:framework>
+    <!-- ⭐⭐ A SELF-AUTHORED CHART NAMES THE ENTITY AS ITS OWN AUTHORITY. `value` is
+         the chart's EDITION, never a position; the position is the answer's half. -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:entity-own-chart:2026</pm:taxonomy>
+        <pm:value>internal-management-2026</pm:value>
+      </pm:term>
+    </pm:chart>
+  </pm:regime>
+
+  <pm:stack>
+    <pm:layer>
+      <pm:name>margin-ratio</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>18</pm:low>
+          <pm:mostLikely>22</pm:mostLikely>
+          <pm:high>25</pm:high>
+          <pm:unit>percent</pm:unit>
+          <pm:narrowsWhen>the quarter closes and actual cost lands</pm:narrowsWhen>
+          <!-- what BOUNDS the range, which is a different question from what would narrow it -->
+          <pm:boundOrigin>policy</pm:boundOrigin>
+          <pm:provenance>
+            <pm:party>finance</pm:party>
+            <pm:enteredBy>analyst-04</pm:enteredBy>
+            <pm:approvedBy>controller-01</pm:approvedBy>
+            <pm:standing>
+              <pm:taxonomy>urn:example:assertion-standing:2026</pm:taxonomy>
+              <pm:value>reviewed-not-verified</pm:value>
+            </pm:standing>
+          </pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:supply>
+        <pm:label>a ratio, which is not a supply</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:amount>
+
+          <!-- 3. the axis does not apply -->
+          <pm:divisibility>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio is bought in neither units nor continuously; there is no premium for leaving the type</pm:note>
+            </pm:absent>
+          </pm:divisibility>
+
+          <!-- 4. not yet established, and saying so beats guessing -->
+          <pm:admitsInterference>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>nobody has determined whether this can be driven past its rating</pm:note>
+            </pm:absent>
+          </pm:admitsInterference>
+        </pm:nameplate>
+
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <!-- somebody looked: a subject with no quantum has no remainder -->
+      <pm:remainder>
+        <pm:absent>
+          <pm:reason>none</pm:reason>
+          <pm:note>no quantum, so nothing is left over</pm:note>
+        </pm:absent>
+      </pm:remainder>
+    </pm:layer>
+  </pm:stack>
+</pm:processModulus>

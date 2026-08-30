@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Three layers and two operations. Illustrative figures, not anybody's numbers.
+
+  What it is here to show:
+    * the labour layer's remainder filed as `unmeasured` and held by `people`,
+      the fourth-buffer argument, written down rather than argued
+    * a contractual quantum (an 8-GPU reserved block) beside an intrinsic one
+      (one launch, one person)
+    * an INDUCTION: a commitment made by one party that becomes a draw on a
+      different layer, with the decider named
+    * a measurement basis filed `notApplicable` because the quantity is physical
+-->
+<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <!-- What this document reports under.
+       ⭐ Note what the authority IS here: FASB publishes an XBRL taxonomy of CONCEPTS
+       and no enumeration of framework codes, so the taxonomy URI identifies the
+       STANDARD and the value is the framework's name. Contrast refutation.xml, where
+       Portugal publishes two actual code lists and they disagree. -->
+  <pm:regime>
+    <pm:id>us-gaap</pm:id>
+    <pm:jurisdiction>US</pm:jurisdiction>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>http://fasb.org/us-gaap</pm:taxonomy>
+        <pm:value>us-gaap</pm:value>
+      </pm:term>
+    </pm:framework>
+    <!-- ⭐ THERE IS NO US CHART OF ACCOUNTS, so the entity is its own authority. -->
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
+        <pm:value>acme-2026</pm:value>
+      </pm:term>
+    </pm:chart>
+  </pm:regime>
+
+  <pm:stack>
+
+    <!-- ============================================================
+         LABOUR: the layer with no instrument.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>labour</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>4.5</pm:low>
+          <pm:mostLikely>5.2</pm:mostLikely>
+          <pm:high>6.0</pm:high>
+          <pm:unit>people</pm:unit>
+          <pm:narrowsWhen>support interrupts are time-recorded instead of estimated</pm:narrowsWhen>
+          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:supply>
+        <pm:label>the platform team</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>4</pm:low>
+              <pm:mostLikely>4</pm:mostLikely>
+              <pm:high>4</pm:high>
+              <pm:unit>people</pm:unit>
+            </pm:claim>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>1</pm:low>
+                    <pm:mostLikely>1</pm:mostLikely>
+                    <pm:high>1</pm:high>
+                    <pm:unit>people</pm:unit>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+            </pm:divisibility>
+          </pm:divisibility>
+          <!-- a person can run above their rating; this is the layer where that is true -->
+          <pm:admitsInterference><pm:value>true</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>no instrument records hours absorbed above the establishment</pm:note>
+              <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+              <pm:asOf>2026-08-30</pm:asOf>
+            </pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign>interference</pm:sign>
+          <pm:absorber>
+            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+            <pm:value>capacity</pm:value>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>people</pm:kind>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>the absorption has no counterparty and therefore no transaction</pm:note>
+            </pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         COMPUTE: a contractual quantum, and the remainder is booked.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>compute</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>3.1</pm:low>
+          <pm:mostLikely>4.4</pm:mostLikely>
+          <pm:high>6.0</pm:high>
+          <pm:unit>GPU</pm:unit>
+          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:supply>
+        <pm:label>reserved inference capacity</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>8</pm:low>
+              <pm:mostLikely>8</pm:mostLikely>
+              <pm:high>8</pm:high>
+              <pm:unit>GPU</pm:unit>
+            </pm:claim>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>8</pm:low>
+                    <pm:mostLikely>8</pm:mostLikely>
+                    <pm:high>8</pm:high>
+                    <pm:unit>GPU</pm:unit>
+                  </pm:claim>
+                </pm:size>
+                <!-- the seller sets this, and the seller can change it -->
+                <pm:origin>contractual</pm:origin>
+              </pm:lumpy>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>4.4</pm:low>
+              <pm:mostLikely>4.4</pm:mostLikely>
+              <pm:high>4.4</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+              <pm:asOf>2026-08-30</pm:asOf>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a metered physical quantity has no accounting measurement basis</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign>clearance</pm:sign>
+          <pm:absorber>
+            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+            <pm:value>capacity</pm:value>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>booked</pm:kind>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:claim>
+              <pm:low>2.0</pm:low>
+              <pm:mostLikely>3.6</pm:mostLikely>
+              <pm:high>4.9</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:narrowsWhen>the draw is sampled per minute rather than per hour</pm:narrowsWhen>
+            </pm:claim>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         CAPABILITY: an intrinsic quantum of one, and the customer waits.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>capability</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>5</pm:low>
+          <pm:mostLikely>6</pm:mostLikely>
+          <pm:high>8</pm:high>
+          <pm:unit>launches per quarter</pm:unit>
+          <pm:provenance><pm:party>product</pm:party></pm:provenance>
+          <pm:asOf>2026-08-30</pm:asOf>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:supply>
+        <pm:label>shippable capability</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>3</pm:low>
+              <pm:mostLikely>3</pm:mostLikely>
+              <pm:high>3</pm:high>
+              <pm:unit>launches per quarter</pm:unit>
+            </pm:claim>
+          </pm:amount>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>1</pm:low>
+                    <pm:mostLikely>1</pm:mostLikely>
+                    <pm:high>1</pm:high>
+                    <pm:unit>launches</pm:unit>
+                  </pm:claim>
+                </pm:size>
+                <!-- you cannot ship two thirds of an integration, at any price -->
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>3</pm:low>
+              <pm:mostLikely>3</pm:mostLikely>
+              <pm:high>3</pm:high>
+              <pm:unit>launches per quarter</pm:unit>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a count of launches has no accounting measurement basis</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <!-- demand exceeds the nameplate and the draw sits exactly on it:
+               the supply did not deform, so the excess was not absorbed here -->
+          <pm:sign>interference</pm:sign>
+          <pm:absorber>
+            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+            <pm:value>inventory</pm:value>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:claim>
+              <pm:low>2</pm:low>
+              <pm:mostLikely>3</pm:mostLikely>
+              <pm:high>5</pm:high>
+              <pm:unit>launches per quarter</pm:unit>
+            </pm:claim>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- no couplings filed: that is the model's ASSUMPTION, not a finding.
+         Nobody has looked. See the Coupling type. -->
+
+  </pm:stack>
+
+  <!-- ============================================================
+       THE OPERATIONS. No ordering is expressed or implied.
+       ============================================================ -->
+  <pm:operation>
+    <pm:label>Close an enterprise contract</pm:label>
+    <pm:foreignId>
+      <pm:notation>https://www.omg.org/spec/BPMN/20100524/MODEL</pm:notation>
+      <pm:id>Task_CloseEnterprise</pm:id>
+    </pm:foreignId>
+
+    <pm:draw>
+      <pm:layer>labour</pm:layer>
+      <pm:quantity>
+        <pm:absent>
+          <pm:reason>unmeasured</pm:reason>
+          <pm:note>pre-sales solutioning is not time-recorded against the contract</pm:note>
+        </pm:absent>
+      </pm:quantity>
+    </pm:draw>
+
+    <!-- the edge the model exists to make visible: one party decides,
+         a different layer bears it, and no account records the transfer -->
+    <pm:induces>
+      <pm:layer>capability</pm:layer>
+      <pm:commitment>
+        <pm:claim>
+          <pm:low>1</pm:low>
+          <pm:mostLikely>1</pm:mostLikely>
+          <pm:high>2</pm:high>
+          <pm:unit>launches</pm:unit>
+          <pm:narrowsWhen>the signed obligations are decomposed before signature rather than after</pm:narrowsWhen>
+        </pm:claim>
+      </pm:commitment>
+      <pm:decidedBy>the revenue officer who signs the offering</pm:decidedBy>
+    </pm:induces>
+  </pm:operation>
+
+  <pm:operation>
+    <pm:label>Serve an inference request</pm:label>
+    <pm:draw>
+      <pm:layer>compute</pm:layer>
+      <pm:quantity>
+        <pm:claim>
+          <pm:low>0.5</pm:low>
+          <pm:mostLikely>1.2</pm:mostLikely>
+          <pm:high>3.0</pm:high>
+          <pm:unit>GPU</pm:unit>
+        </pm:claim>
+      </pm:quantity>
+    </pm:draw>
+  </pm:operation>
+
+</pm:processModulus>
