@@ -1,0 +1,11 @@
+# Build output
+/target
+
+# Agent / assistant working notes — local only, never pushed.
+docs/plans/
+AGENTS.md
+CLAUDE.md
+.claude/
+.cursor/
+.aider*
+.github/copilot-instructions.md
