@@ -1,0 +1,32 @@
+[package]
+# Name settled 2026-08-30; checked available on crates.io the same day.
+name         = "process-modulus"
+version      = "0.0.1"
+edition      = "2021"
+rust-version = "1.75"
+
+description  = "A schema for expressing a business process flow truthfully and evaluatably."
+authors      = ["Kenny Flegal"]
+license      = "MIT OR Apache-2.0"
+repository   = "https://github.com/soulstompp/process-modulus"
+readme       = "README.md"
+
+# Working notes and build output are not part of the published package.
+exclude = [
+    "AGENTS.md",
+    "docs/plans/",
+    "CLAUDE.md",
+    ".claude/",
+    ".cursor/",
+    ".github/copilot-instructions.md",
+    "/target",
+]
+
+[dependencies]
+# The generated types' runtime half.
+xsd-parser-types = { version = "0.2.1", features = ["quick-xml"] }
+quick-xml = "0.38"
+
+[build-dependencies]
+xsd-parser = "1.5"
+anyhow = "1"
