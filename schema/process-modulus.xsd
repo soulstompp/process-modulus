@@ -1,0 +1,1253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A general model of business process flow.
+
+  Copyright (c) 2026 Kenny Flegal. Licensed under MIT OR Apache-2.0.
+
+  ⚠️ PROVISIONAL NAMESPACE URI. It must be a URI the author controls before
+  publication; it is an identifier, not a URL that has to resolve.
+
+  ⛔ SCOPE. This is a SEMANTIC MODEL, not a storage design. There are no tables,
+  keys, indexes or versioning constructs here on purpose: the database falls out
+  of normalising this, and that is the implementer's job, not the schema's.
+
+  ⛔ AND IT IS NOT A PROCESS NOTATION. There is no sequence flow, no gateway, no
+  event and no token here. BPMN 2.0 is an OMG standard with published schemas and
+  models all of that; restating it inside this namespace would fork it. What this
+  model contributes is what an operation DRAWS and what it COMMITS ELSEWHERE. See Operation.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:pm="https://example.invalid/process-flow/1.0"
+           targetNamespace="https://example.invalid/process-flow/1.0"
+           elementFormDefault="qualified"
+           version="0.1.0">
+
+  <!-- ==================================================================
+       REMAINDER: the object this model contributes.
+
+       ⛔ NOT the buffer. The buffer set is Hopp and Spearman's, closed at three
+       in Factory Physics, and this model CONCEDES it rather than extending it,
+       so `absorber` below is a BORROWED term naming their taxonomy, exactly like
+       a borrowed measurement basis.
+
+       ⭐ What is contributed is the REMAINDER ITSELF: quantized supply meets
+       continuous demand, the difference is conserved, and it lands on somebody.
+       Management chooses which absorber holds it and whether it is visible; never
+       whether it exists.
+       ================================================================== -->
+  <xs:complexType name="Remainder">
+    <xs:annotation><xs:documentation>
+      ⭐ THE NAME IS DELIBERATE AND THE ARITHMETIC SENSE IS APT, NOT A COLLISION:
+      a remainder is what is left after dividing into WHOLE UNITS, which is the
+      quantized-supply story exactly. Capacity that can only be bought in whole
+      units (a person, a reserved block) cannot meet a continuous demand exactly,
+      and the difference is this object.
+
+      `absorber` is BORROWED. The expected taxonomy is Factory Physics' closed set
+      (inventory · capacity · time). This schema does not restate those three,
+      because a closed set restated in a foreign namespace is a fork.
+
+      `holder` is CONTRIBUTED: who bears it. See Holder.
+
+      ⚠️ ABSORPTION AND BEARING ARE SEPARATE AXES AND MERGING THEM IS THE COMMONEST
+      ERROR HERE. "What soaked it up" and "who ended up carrying it" are different
+      questions with different answers, and a model that answers only one of them
+      renders a borne cost and an absorbed one identically.
+
+      ⭐⭐ THIS IS ALSO WHERE THE FOURTH-BUFFER ARGUMENT LIVES, AND IT IS ON THE
+      HOLDER AXIS RATHER THAN THE ABSORBER AXIS. People are not a fourth buffer
+      added to a closed set of three; they are a FIFTH HOLDER of the same three.
+      Confusing the two reads as an attack on Factory Physics, which this is not.
+
+      `sign` is normally DERIVED (nameplate minus demand) and is carried anyway
+      because the DIRECTION is frequently known when the MAGNITUDE is not. "We ran
+      hot in August" is a filable fact with no number in it, and a model that can
+      only record it as a quantity records it as nothing.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="sign"     type="pm:Fit"/>
+      <xs:element name="absorber" type="pm:BorrowedTerm"/>
+      <xs:element name="holder"   type="pm:StatedHolder"/>
+      <xs:element name="quantity" type="pm:StatedClaim"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       FIT: the sign of a remainder. ISO 286 vocabulary, borrowed for a reason.
+       ================================================================== -->
+  <xs:simpleType name="Fit">
+    <xs:annotation><xs:documentation>
+      From ISO 286 (limits and fits), and the borrowing is not decoration.
+
+      ⛔ THE FIT COMPARES THE DEMAND TO THE NAMEPLATE, NOT THE DRAW TO THE
+      NAMEPLATE, WHICH IS THE EASY MISREADING AND GIVES THE WRONG ANSWER EVERY TIME
+      A SUPPLY IS SATURATED.
+
+        clearance     the nameplate exceeds the demand: slack, idle, undrawn.
+        interference  the demand exceeds the nameplate.
+
+      ⭐ WHAT AN INTERFERENCE FIT DOES IS THE WHOLE REASON FOR THE WORD: it is not
+      a failure, the assembly still works, AND IT WORKS BY DEFORMING THE MATERIAL.
+      The deformation is permanent, it is the mechanism by which the fit functions,
+      and inspecting the output will not reveal it.
+
+      ⭐⭐ AND THAT MAPS EXACTLY, WHICH IS WHY THE WORD IS BORROWED RATHER THAN
+      COINED. Demand is the shaft, the nameplate is the hole, and THE DRAW IS
+      WHETHER IT ASSEMBLED:
+
+        interference, draw > nameplate    it assembled by deforming. Somebody
+                                          absorbed the excess: `people`, or
+                                          `booked` where a penalty rate applied.
+        interference, draw = nameplate    it did not assemble. The excess demand was
+                                          turned away: `customer` or `unrealised`.
+
+      ⭐ SO THE DRAW IS NOT A THIRD REMAINDER; IT IS THE EVIDENCE FOR WHO HELD THE
+      ONE REMAINDER. The magnitude is |nameplate - demand| either way, which is the
+      conservation claim: management selects the holder, never the existence.
+
+      ⚠️ Which supplies may sit on the interference side at all is a property of the
+      supply. See Nameplate/admitsInterference. A supply with
+      `admitsInterference = false` and an interference fit CANNOT have absorbed it,
+      so its holder must be `customer` or `unrealised`, and a document saying
+      otherwise is internally inconsistent. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="clearance"/>
+      <xs:enumeration value="interference"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ==================================================================
+       HOLDER: who BEARS a remainder. Incidence, not absorption.
+       ================================================================== -->
+  <xs:simpleType name="HolderKind">
+    <xs:annotation><xs:documentation>
+      One variant is transacted inside the entity and four are not; that asymmetry
+      is the central claim. A standard is entitled to disagree with any of the four,
+      and each has its own reason:
+
+        booked        not declined: a transacted position inside the entity
+        counterparty  the burden sits in another entity's books under an AGREEMENT,
+                      and THE CONSIDERATION NEED NOT HAVE BEEN CASH
+        customer      no transaction occurred: degradation borne by a customer
+                      creates no obligation of ours
+        people        absorbed work is not a transaction and obliges the entity
+                      to nobody
+        unrealised    demand never served is not an event
+
+      ⭐ A TYPE IS A CLAIM ABOUT WHAT CAN BE SAID, NOT A CLAIM THAT ANYTHING HAS
+      BEEN MEASURED. Five variants assert that a bearer is one of five things. They
+      assert nothing about how much lands on each.
+
+      ⭐⭐ WHY `people` IS THE ONE WITHOUT AN INSTRUMENT, STATED AS A MECHANISM
+      RATHER THAN AN ASSERTION: an excess becomes visible when there is a
+      COUNTERPARTY WHO CAN INVOICE IT. A customer running over an allowance can be
+      billed. A bank charges a penalty rate on an overdraft. A person cannot invoice
+      you for the same thing, so the identical physical excess leaves no
+      transaction. ⚠️ That also predicts where the argument STOPS: hire a
+      contractor and the same absorbed work becomes `counterparty`: priced,
+      invoiced, visible. The invisibility is a property of the RELATIONSHIP, not of
+      the work.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="booked"/>
+      <xs:enumeration value="counterparty"/>
+      <xs:enumeration value="customer"/>
+      <xs:enumeration value="people"/>
+      <xs:enumeration value="unrealised"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Holder">
+    <xs:annotation><xs:documentation>
+      ⛔ NORMALISED ON EXTRACTION. The implementation this was drawn from carried
+      Holder as a bare enum, because its consumer never read the payload. But
+      `counterparty` asserts a fact about ANOTHER entity's books, which is a cached
+      value nothing refreshes, so the party and the date it was true of belong
+      WITH it. A flattening that was safe in one consumer must not be published as
+      the model's shape.
+
+      party/asOf are permitted only where kind = counterparty. Expressed here as
+      optional; an implementation should refuse the combination.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="kind"  type="pm:HolderKind"/>
+      <xs:element name="party" type="xs:string" minOccurs="0"/>
+      <xs:element name="asOf"  type="xs:date"   minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       ABSENCE: a blank that says WHICH KIND OF BLANK IT IS.
+
+       ⛔ THE POINT OF THE WHOLE SCHEMA, AND WHAT SEPARATES IT FROM AN ERP FORM.
+       An ERP takes a number or nothing, so a receiver cannot tell "we do not
+       measure this" from "this is genuinely zero" from "you are asking the wrong
+       entity". Those are three different truths and only one of them is a gap.
+
+       ⭐ AND IT MAKES REQUIRING AN ELEMENT CHEAP. A required element is expensive
+       only when the sender must INVENT a value to satisfy it. Once a typed absence
+       is a legitimate answer, a sender can always answer honestly, so the element
+       stays required, and SILENCE BECOMES IMPOSSIBLE. That is what lets an absence
+       survive transmission through a chain of organisations instead of decaying
+       into a missing tag somebody downstream fills in with a guess.
+       ================================================================== -->
+  <xs:simpleType name="AbsenceReason">
+    <xs:annotation><xs:documentation>
+      none          The answer IS nothing, and that is a claim rather than a gap.
+                    Somebody looked and the quantity is zero, or the thing does not
+                    happen. A receiver may rely on this.
+
+      unmeasured    No instrument exists for this, here. The honest gap, and the
+                    only one of the four that filling would resolve. It asserts
+                    nothing about whether the quantity is large or small.
+
+      notApplicable The subject is outside this question's population, so asking is
+                    MALFORMED rather than unanswered. A receiver that treats this
+                    as a gap will report a deficiency that does not exist.
+
+      derived       This is an OUTPUT, computed from other elements. Sending a value
+                    here would short-circuit the derivation and could disagree with
+                    its own inputs. The receiver computes it.
+
+      ⚠️ `unmeasured` and `none` are the pair most often merged, and merging them is
+      expensive: one says nobody looked, the other says somebody looked and found
+      nothing. A model that renders them identically cannot tell an absence of
+      evidence from evidence of absence.
+
+      ⭐⭐ AND THE PAIR IS LOAD-BEARING IN THIS MODEL SPECIFICALLY. The central
+      argument is that one buffer is consumed without a transaction and therefore
+      has no instrument. `unmeasured` on a labour draw IS that argument, filed. If a
+      sender can only leave the field blank, the claim and an oversight look
+      identical, and the model's own subject becomes unrecordable.
+
+      ⭐⭐⭐ FOUR, AND DELIBERATELY NOT SIX. ASKED AND ANSWERED, SO THAT THE NEXT
+      ADOPTER DOES NOT HAVE TO ASK IT AGAIN. An adopting corpus filed seven absence
+      values, of which two had no home here. Both were examined and both were
+      declined, for DIFFERENT reasons:
+
+        `declined`    somebody was asked and refused. The REASON is still
+                      `unmeasured` (no instrument reached the value), and what is
+                      missing is WHY nobody measured, which is provenance rather
+                      than a fifth reason. It is a fact about a RELATIONSHIP.
+
+        `unverified`  ⛔ NOT AN ABSENCE AT ALL. A value filed but unverified HAS a
+                      value. Admitting it here would let a present figure claim to
+                      be absent, which is strictly worse than the gap it closes.
+                      It is a fact about the STANDING of an assertion, and standing
+                      belongs on the assertion. See `Assertion/standing`.
+
+      ⚠️ Two independent models arrived at exactly these four classes with
+      near-identical glosses, which is evidence and is why the bar for a fifth is
+      high. ⭐ Frequency is NOT part of that bar: an adopting corpus exercised both
+      orphans and used `none` in zero of 47 registers, and neither figure changes
+      the reasoning above.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="none"/>
+      <xs:enumeration value="unmeasured"/>
+      <xs:enumeration value="notApplicable"/>
+      <xs:enumeration value="derived"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Provenance">
+    <xs:annotation><xs:documentation>
+      WHO stands behind a value, and WHAT STANDING that assertion has.
+
+      ⛔ THIS REPLACED A BARE `asserter` STRING, AND THE FLATTENING IT FIXES IS
+      REAL. Two independent adopting corpora file provenance as THREE columns:
+      the entity, the person who ENTERED the figure, and the person who APPROVED
+      it. All three landing in one free-text field is lossy in the way that costs
+      most: a signer whose name is spelled two ways in two places becomes
+      undetectable rather than joinable, because there is no identity to join on.
+
+      ⭐ THE SCHEMA ALREADY FIXED THIS EXACT FLATTENING ONE TYPE OVER. `Holder` is
+      { kind, party?, asOf? } rather than a string, on the reasoning that WHO is a
+      separate fact from WHAT KIND. This is the same shape, and it did not get the
+      same treatment until an adopter showed the cost.
+
+      ⭐⭐ `standing` IS WHERE `unverified` BELONGS, and it is why that value is not
+      an AbsenceReason. A figure that is filed but unverified HAS a value; what is
+      missing is the standing of the assertion, not the quantity. Entered,
+      reviewed, approved, verified against a source are points on that axis.
+
+      ⚠️ `standing` IS A BorrowedTerm RATHER THAN AN ENUMERATION, deliberately and
+      on the expectation that it varies by framework. This model does not own the
+      set, and restating one it does not own is the mistake `BorrowedTerm` exists
+      to prevent.
+
+      `note` is prose BESIDE the structured fields, never instead of them, the
+      same rule `Absence` states about its own note.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="party"      type="xs:token"       minOccurs="0"/>
+      <xs:element name="enteredBy"  type="xs:token"       minOccurs="0"/>
+      <xs:element name="approvedBy" type="xs:token"       minOccurs="0"/>
+      <xs:element name="standing"   type="pm:BorrowedTerm" minOccurs="0"/>
+      <xs:element name="note"       type="xs:string"      minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Absence">
+    <xs:annotation><xs:documentation>
+      `asserter` / `asOf` matter here for the same reason they matter on a Claim:
+      in a chain, WHO says a thing is unmeasured is itself information. One party
+      not measuring something is not evidence that the party upstream does not.
+
+      ⭐⭐⭐ A REASON NO QUERY CAN REACH IS NOT A TYPED ABSENCE. `reason` is the
+      element that carries the meaning; `note` is prose beside it and never
+      instead of it. An adopting corpus was measured against exactly this
+      definition (does a blank column have a SIBLING a query can join on) and
+      scored 0 of 540 blanks, because every explanation lived in free text.
+
+      ⛔ ITS BEST SPECIMEN IS THE CLEAREST CASE: one register files a legal form
+      empty on purpose, with an excellent paragraph beside it saying why. NOTHING
+      CAN JOIN ON THAT PARAGRAPH. An adopter who puts the reason in a note has met
+      this schema's letter and lost its entire benefit, which is why the rule is
+      stated here rather than assumed.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="reason"   type="pm:AbsenceReason"/>
+      <xs:element name="note"     type="xs:string" minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"     type="xs:date"   minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       STATED: a value, or a typed reason there is none. Never silence.
+
+       ⚠️ XSD 1.0 has no generics, so there is one wrapper per stated type.
+       The verbosity is the cost of the guarantee.
+
+       ⭐ A WRAPPER EXISTS ONLY WHERE A SENDER MAY LEGITIMATELY NOT HAVE THE VALUE,
+       and DECLINING to add one is the assertion that this value is always knowable
+       by whoever is sending. Seven exist. Not wrapped, deliberately: Fit (the
+       direction is known whenever the remainder is), Nameplate and Jagged (their
+       own leaf quantities are stated, so wrapping the container as well would give
+       one fact two homes).
+
+       ⛔ AND FOR BorrowedTerm THE RULE IS NOT "OPTIONAL VERSUS REQUIRED". THIS BLOCK
+       SAID THAT, AND THE SCHEMA CONTRADICTS IT: `Remainder/absorber` and
+       `Citation/instrument` are both REQUIRED and both unwrapped. The rule that
+       actually predicts every site:
+
+         wrapped     where the `none` / `unmeasured` distinction is load-bearing AT
+                     THAT POSITION and no enclosing typed absence already carries it.
+                     `Regime/framework` and `Regime/chart` are the two. A Regime
+                     cannot be declined with a reason, only omitted, and it is
+                     unbounded, so wrapping the whole type would produce A LIST OF
+                     MAYBE-REGIMES, which says less than the list it replaced.
+
+         unwrapped   where an enclosing Stated* already says it: `absorber` under
+                     StatedRemainder, `borrowed` under StatedBasis, `holds` beside
+                     `cannotAsk`, OR where the term is an ADDITION to a fact rather
+                     than the FRAME the fact is read under, so its silence says only
+                     "not cited": `Citation/instrument`, `Provenance/standing`.
+
+       ⚠️ Divisibility WAS on this list, on the reasoning that a sender describing a
+       supply knows whether they buy it in whole units. That was wrong about a
+       subject which is not a supply at all, and StatedDivisibility replaced it.
+       ================================================================== -->
+  <xs:complexType name="StatedClaim">
+    <xs:choice>
+      <xs:element name="claim"  type="pm:Claim"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedHolder">
+    <xs:choice>
+      <xs:element name="holder" type="pm:Holder"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedBasis">
+    <xs:choice>
+      <xs:element name="basis"  type="pm:MeasurementBasis"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedRemainder">
+    <xs:annotation><xs:documentation>
+      ⭐⭐ THE WRAPPER THAT LETS THE MODEL BE CONTRADICTED, AND IT IS WHY EVERY LAYER
+      IS REQUIRED TO CARRY ONE.
+
+      The model claims every layer has a remainder. Requiring the element forces a
+      sender who disagrees to say so EXPLICITLY. `absent reason="none"` reads
+      "somebody looked at this layer and there is no remainder", which is a filed
+      counter-example rather than an empty field.
+
+      ⛔ Without the wrapper, a required Remainder would force the sender to invent
+      an absorber and a holder for a difference they say does not exist, and an
+      invented value is exactly what typed absence exists to prevent.
+
+      `unmeasured` is the honest and commonest answer on a labour layer.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="remainder" type="pm:Remainder"/>
+      <xs:element name="absent"    type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedBorrowedTerm">
+    <xs:annotation><xs:documentation>
+      ⛔ FOR THE TWO PLACES A BORROWED TERM IS THE FRAME A DOCUMENT IS READ UNDER AND
+      A SENDER MAY LEGITIMATELY NOT HAVE IT YET: `Regime/framework` and
+      `Regime/chart`. ⚠️ NOT because they are required: `Remainder/absorber` and
+      `Citation/instrument` are required and unwrapped too. It is because nothing
+      above them can decline, and because their silence would DISABLE A CHECK rather
+      than merely leave something uncited. See the STATED block for the rule.
+
+      ⭐⭐ WITHOUT THIS, `none` AND `unmeasured` SHARE ONE ENCODING AT THE ROOT OF
+      INTERPRETATION. A sender whose tier is unassigned, whose legal form is filed
+      empty on purpose, or whose coding authority has not answered had two moves:
+      invent a framework value, which files a fact nobody established, or omit the
+      regime entirely, which is byte-identical to reporting under no framework.
+
+      ⭐ With the wrapper the two separate cleanly, and `regime` being unbounded is
+      what completes it:
+
+        regime omitted                          nobody said
+        framework absent reason="unmeasured"    reports under something, unnamed
+        framework absent reason="none"          somebody looked; reports under none
+
+      ⭐ `Regime/chart` takes the same four-way shape for the same reason, and its own
+      annotation carries the case that forced it: a chart in daily use with no
+      publishing authority to borrow from.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="term"   type="pm:BorrowedTerm"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedDivisibility">
+    <xs:annotation><xs:documentation>
+      ⛔ SOME SUBJECTS HAVE NO DIVISIBILITY AT ALL, BECAUSE THEY ARE NOT SUPPLIES.
+      A margin ratio is neither bought in whole units nor bought continuously:
+      there is no per-unit difference between the two, so there is no premium to
+      pay for leaving the type. The axis does not apply.
+
+      ⛔⛔ WITHOUT THE WRAPPER THE ONLY WAY TO FILE THAT IS TO ASSERT `continuous`
+      AND DENY IT ONE LEVEL DOWN, in the premium's own typed absence. The document
+      then asserts something it does not believe, and the denial sits where no
+      query will meet it, while `notApplicable`'s annotation names the cost:
+      "a receiver that treats this as a gap will report a deficiency that does not
+      exist."
+
+      ⚠️ NOT a third branch of the choice. `notApplicable` is not a kind of
+      divisibility; it is the absence of one, and absence already has a type.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="divisibility" type="pm:Divisibility"/>
+      <xs:element name="absent"       type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedBoolean">
+    <xs:annotation><xs:documentation>
+      ⭐ REQUIRING AN ELEMENT IS CHEAP ONLY BECAUSE TYPED ABSENCE IS A LEGITIMATE
+      ANSWER. A bare `xs:boolean` is the one shape that breaks the bargain: it
+      admits true and false and has no third reading, so a sender who has not
+      established the fact must guess, and a guess is indistinguishable from a
+      measurement.
+
+      Used by `Nameplate/admitsInterference`, where whether a resource can be
+      driven past its rating is often the single fact a new sender has not yet
+      established.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="value"  type="xs:boolean"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       CLAIM: how EVERY quantity in this model is expressed.
+
+       ⛔ THERE IS NO BARE NUMBER TYPE, AND THAT IS THE POINT. A quantity crossing
+       an organisational boundary is something somebody ASSERTS. Stripping it to a
+       scalar discards the two things a receiver needs in order to evaluate it
+       truthfully: how precise the assertion is, and what would change it.
+       ================================================================== -->
+  <xs:complexType name="Claim">
+    <xs:annotation><xs:documentation>
+      A THREE-POINT ESTIMATE with its provenance.
+
+      `mostLikely` is the MODE, the value an estimator can honestly state, and
+      NEVER the median: on a skewed range they are different numbers, and a field
+      that collects both is a slot with no domain.
+
+      ⛔ THE BOUNDS MUST SATISFY `low` ≤ `mostLikely` ≤ `high`. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+      A claim filed as 99 / 50 / 1 validates today and is nonsense.
+
+      ⭐ A POINT VALUE IS THE DEGENERATE CASE: low = mostLikely = high, meaning
+      "known exactly". It is precision stated honestly rather than a misuse of the
+      type, and it is why one type covers both cases and no separate scalar exists.
+
+      ⭐⭐ AND IT IS WHY A CONTINUOUS DEMAND NEEDS NO SECOND TYPE. "Between a fifth
+      and a half of a person, most likely a third" is a demand that genuinely has no
+      single value, and this is the type that says so. A model whose demand is a
+      scalar has already rounded away the thing it exists to measure.
+
+      ⛔ THE EXPECTED VALUE IS DERIVED AND MUST NOT BE CARRIED.
+        triangular  E = (low + mostLikely + high) / 3
+        PERT        E = (low + 4*mostLikely + high) / 6,  sigma ~ (high - low) / 6
+      A stored E short-circuits the derivation and can disagree with its own inputs.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      `unit` CARRIES CURRENCY TOO: "EUR", "months", "share of annual salary" are
+      all units here, and that is not a shortcut: the corpus this was drawn from
+      files USD beside months and shares in one column, and has done so throughout.
+      ⚠️ A unit is NOT a conversion licence. Currencies are never converted, and
+      two claims in different units do not combine.
+
+      `narrowsWhen` is what would tighten the bounds or move the mode. It is the
+      difference between a claim and a number pair. Optional in the schema because
+      a required element is expensive in a chain of parties, but a claim without
+      it is weaker, and a receiver is entitled to say so.
+
+      `asserter` / `asOf`: WHO says this and WHEN it was true. In a chain of
+      organisations these are not bookkeeping: one party's claim about another
+      party's capacity is a different fact from that party's own claim about it.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="low"         type="xs:decimal"/>
+      <xs:element name="mostLikely"  type="xs:decimal"/>
+      <xs:element name="high"        type="xs:decimal"/>
+      <xs:element name="unit"        type="xs:token"/>
+      <xs:element name="narrowsWhen" type="xs:string" minOccurs="0"/>
+      <xs:element name="boundOrigin" type="pm:ConstraintOrigin" minOccurs="0"/>
+      <xs:element name="provenance"  type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"        type="xs:date"   minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       MEASUREMENT BASIS: HOW an amount was valued.
+
+       ⛔ THIS SCHEMA DEFINES EXACTLY ONE BASIS. Every other basis belongs to the
+       regime that defines it, and a document says which regime it took one from.
+       ================================================================== -->
+  <xs:simpleType name="ContributedBasis">
+    <xs:annotation><xs:documentation>
+      The only measurement basis this model contributes, and the reason the type
+      exists at all.
+
+        nameplate   a DECLARED quantity. A rate card, or an 8-GPU reserved block,
+                    is declared rather than measured. No accounting standard has
+                    such a basis, so without it a declaration must masquerade as a
+                    measurement, and then asking for its measurement basis looks
+                    like a gap instead of a category error.
+
+      ⚠️ A nameplate that sits in the Nameplate POSITION needs no basis element at
+      all; the position says it. This value is for the case that actually causes
+      trouble: a figure filed as a MEASURED draw that was in fact read off a rate
+      card. That is a jagged face wearing a declared number, and naming it is the
+      only way a receiver can tell.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="nameplate"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="MeasurementBasis">
+    <xs:annotation><xs:documentation>
+      A basis is EITHER one this model contributes OR one borrowed from a regime,
+      and the two are different kinds of statement rather than one shape with an
+      optional discriminator, so this is a choice, not an optional attribute.
+
+      ⛔ THE FIRST DRAFT GOT THIS WRONG AND THE ERROR IS WORTH RECORDING. It had a
+      single element with an optional `taxonomy` and a `value` typed `xs:token`,
+      and documented in prose that omitting the taxonomy meant the value had to be
+      one this schema defines. Nothing enforced it: `xs:token` accepts anything, so
+      ContributedBasis was defined and never referenced, a constraint that lived
+      only in an annotation, which is a rule with no gate behind it.
+
+      `contributed`   defined HERE, and this schema is answerable for it.
+      `borrowed`      defined by the named taxonomy. This schema asserts NOTHING
+                      about the value and does not restate the regime's list.
+                      Restating it would fork somebody else's normative set.
+
+      Examples of `taxonomy`: an IFRS or US-GAAP taxonomy URI, a SAF-T referencial,
+      an IES AnexoASNC referencial.
+
+      ⚠️ Why the taxonomy is REQUIRED on a borrowed basis: two published four-value
+      declarations that do not line up. SAF-T's referencial (S · M · N · O) and
+      IES's AnexoASNC (NIC · NCRF · NCRF-PE · NC-ME): NCRF and NCRF-PE both
+      collapse into S, and O has no IES counterpart. A borrowed value without its
+      taxonomy is genuinely AMBIGUOUS, not merely unattributed.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="contributed" type="pm:ContributedBasis"/>
+      <xs:element name="borrowed"    type="pm:BorrowedTerm"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="BorrowedTerm">
+    <xs:annotation><xs:documentation>
+      A term defined elsewhere, carrying the taxonomy that defines it. Both parts
+      are required: the value is meaningless without the authority it came from.
+
+      ⭐ Used for every value this model declines to own: a measurement basis from
+      an accounting framework, a buffer from the operations-science literature.
+      Restating another body's normative list inside this namespace would fork it,
+      and a fork drifts with nothing here able to notice.
+
+      ⛔⛔ THE LIMITATION, STATED RATHER THAN DISCOVERED: A SCHEMA CANNOT VALIDATE A
+      TERM WHOSE AUTHORITY IS PROSE. Most accounting vocabulary is exactly that.
+      `historicalCost`, `fairValue` and `netRealisable` are defined in STANDARDS
+      TEXT (ASC 820, IFRS 13) and not as enumerated values in any published
+      schema. An XBRL taxonomy publishes CONCEPTS, not an enum of measurement
+      bases. So there is frequently nothing to xs:import and nothing to union
+      against, and no amount of schema design changes that.
+
+      ⭐⭐ WHAT THIS TYPE DOES INSTEAD, AND IT IS THE ACHIEVABLE THING: it forces the
+      sender to NAME THE AUTHORITY. A validator here cannot tell you whether
+      `fairValue` is a real IFRS basis, but it can guarantee that the document says
+      which body the sender got it from, which makes the claim checkable by a human
+      reader, or by a downstream regime-specific validator that DOES know the list.
+
+      ⭐⭐⭐ AND THE SLOT IS THE POINT: A TAXONOMY NO QUERY CAN REACH IS NOT A CARRIED
+      AUTHORITY. An adopting corpus was found to have recorded a borrowed set's
+      authority COMPLETELY AND CORRECTLY: the statutory instrument and its annexes,
+      the issuing authority, three artifacts each with a sha256, which of them is the
+      law, the page ranges, and an explicit citation rule, in a prose file BESIDE the
+      data. NOTHING CAN JOIN ON IT.
+
+      ⛔ A source note beside a table is to this type exactly what a long free-text
+      note is to `Absence`: excellent, correct, and unjoinable. The rule is the same
+      one stated there, arriving at the authority instead of at the reason.
+
+      ⭐ THAT MAKES THIS TYPE'S CASE STRONGER RATHER THAN WEAKER, and it is worth
+      saying to an adopter who feels accused: the authority was known all along and
+      there was nowhere to put it. A missing slot is the cheapest kind of adoption gap
+      to close. See conformance/adoption.md for what the gap looks like from inside a
+      corpus that already has one.
+
+      ⭐ `taxonomy` is xs:anyURI precisely so one mechanism covers both cases: a
+      SCHEMA NAMESPACE where the regime publishes one, and a STANDARD'S IDENTIFIER
+      where the authority is a document. Neither is privileged.
+
+      ⚠️ WHERE A REGIME DOES PUBLISH AN ENUMERATION (SAF-T's referencial and IES's
+      AnexoASNC both look like schema enumerations rather than prose), a conformance
+      profile may xs:import it and xs:union against it, tightening validation for
+      documents claiming that profile. THAT IS AN ADDITION AND NOT A REDESIGN, and
+      it should follow real adopters rather than precede them. See conformance/.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="taxonomy" type="xs:anyURI"/>
+      <xs:element name="value"    type="xs:token"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ForeignId">
+    <xs:annotation><xs:documentation>
+      A reference to ONE ELEMENT IN ONE OTHER DOCUMENT (a BPMN task, an ERP
+      operation, a workflow node) so that a draw filed here can be lined up with
+      the process notation the sender already runs.
+
+      ⛔ DELIBERATELY NOT BorrowedTerm, DESPITE THE IDENTICAL SHAPE. A taxonomy
+      defines a VOCABULARY shared by many documents, and its values are members of
+      a published set. A notation plus an id names a POSITION IN ONE FILE that no
+      authority publishes. Merging them would send a receiver looking for `task_17`
+      in a normative list, and finding nothing there would look like a defect in the
+      list. Two facts of different kinds, one shape: the shape is not the fact.
+
+      `notation` examples: the BPMN 2.0 namespace URI, or any URI identifying the
+      document or system the id belongs to.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="notation" type="xs:anyURI"/>
+      <xs:element name="id"       type="xs:token"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       QUANTUM: the indivisible unit a supply comes in.
+
+       ⭐⭐ THE STRUCTURE THE MODEL IS NAMED AFTER. In `a mod n`, `a` is continuous
+       demand and `n` is the modulus, the whole unit you must divide by. The
+       remainder is what that division leaves, so this type is the CAUSE and
+       Remainder is the EFFECT.
+       ================================================================== -->
+  <xs:simpleType name="ConstraintOrigin">
+    <xs:annotation><xs:documentation>
+      ⛔⛔ WHY THIS AXIS EXISTS AT ALL, AND IT IS THE ANSWER TO A QUESTION THAT WAS
+      BEING ARGUED AS ONE THING: "is the quantum a property of the supply, or of how
+      you buy it?" BOTH KINDS EXIST, THEY BEHAVE DIFFERENTLY, AND MERGING THEM
+      DESTROYS A FALSIFIER.
+
+      ⭐ THE TEST IS WHO YOU HAVE TO TALK TO IN ORDER TO CHANGE IT:
+
+        intrinsic    nobody can. One person is one person; a launch is indivisible
+                     and you cannot ship two-thirds of an integration. Changing it
+                     means a different kind of supply, not a different deal.
+
+        contractual  the counterparty can. A minimum reserved block, a minimum
+                     commitment, the size of a funding round. It is somebody else's
+                     terms, and terms move.
+
+        policy       WE can, unilaterally. A price ladder's rungs, a hiring unit, a
+                     release train. No permission required from anyone.
+
+      ⭐⭐ AND THE SPLIT IS WHAT KEEPS ONE OF THE MODEL'S OWN FALSIFIERS HONEST. The
+      falsifier is "show a platform layer whose supply is genuinely continuous". A
+      CONTRACTUAL quantum going continuous refutes nothing: cloud services are sold
+      in ever finer increments and the market simply moved. Only an INTRINSIC
+      quantum going continuous would be a real problem for the model. Without this
+      field the two are the same observation and the falsifier is unusable.
+
+      ⚠️ It also ranks the interventions, and not in the flattering order. A policy
+      quantum is a RULE, which systems theory puts high on the leverage list; a
+      contractual one is a negotiation; an intrinsic one is not a lever at all. The
+      quantum most organisations spend their effort on is the one they cannot move.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="intrinsic"/>
+      <xs:enumeration value="contractual"/>
+      <xs:enumeration value="policy"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="LumpyQuantum">
+    <xs:annotation><xs:documentation>
+      A supply that only comes in whole units. `size` is the size of ONE unit, in
+      the unit of the layer's demand, so that a demand and a quantum can be divided.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⭐ `size` is a Claim rather than a number because a quantum is often itself a
+      range ("one to three months' notice", "a hire is four to nine weeks"), and
+      because a point value is the degenerate Claim, nothing is lost when it is
+      exact. `absent reason="unmeasured"` is the honest filing for a supply known to
+      be lumpy whose unit nobody has measured.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="size"   type="pm:StatedClaim"/>
+      <xs:element name="origin" type="pm:ConstraintOrigin"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Continuity">
+    <xs:annotation><xs:documentation>
+      ⛔ A SUPPLY WITH NO QUANTUM HAS NO REMAINDER, AND SAYING SO IS A LEGITIMATE
+      USE OF THIS SCHEMA RATHER THAN AN ADMISSION. The layer is simply outside the
+      model's subject.
+
+      ⭐⭐ AND THE EXIT IS NORMALLY PRICED, WHICH IS WHAT `premium` RECORDS: the
+      difference per unit between buying continuously and buying in lumps. Managed
+      endpoints that bill strictly linearly cost more per unit than reserved
+      capacity in blocks, and the gap is what you pay to leave the type.
+
+      ⛔⛔ THIS IS ALSO WHERE THE MODEL CAN BE BEATEN, AND THE FIELD IS HERE SO THAT
+      BEATING IT IS A FILING RATHER THAN AN ARGUMENT:
+
+        premium above 0   the priced exit. Consistent with the model.
+        premium none      filed as zero by somebody who looked: a continuous supply
+                          that costs no more than the lumpy one.
+        premium below 0   the continuous option is CHEAPER. That is a real problem for
+                          the model, and it should be filed exactly this way rather
+                          than discussed.
+
+      ⚠️ `none` and `unmeasured` are not interchangeable here. One is a
+      counter-example; the other is a gap.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="premium" type="pm:StatedClaim"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Divisibility">
+    <xs:annotation><xs:documentation>
+      Lumpy or continuous: a choice, because they are different kinds of supply
+      rather than one shape with a size that might be zero. A continuous supply does
+      not have a quantum of zero; it has no quantum, and the difference is the
+      whole model.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="lumpy"      type="pm:LumpyQuantum"/>
+      <xs:element name="continuous" type="pm:Continuity"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       FACILITY: one supply, with BOTH faces at once.
+
+       ⛔ RESTRUCTURED WHEN THE FLOW HALF LANDED. The first draft had a `face`
+       discriminator and one `amount`, so a document carried two elements for one
+       supply with nothing linking them, while the annotation next to it said the
+       two faces are a PRODUCT, NOT A CHOICE. The structure now says what the prose
+       said, and the `Face` enum is gone: a discriminator naming which of two
+       positions you are in is redundant once there are two positions.
+       ================================================================== -->
+  <xs:complexType name="Nameplate">
+    <xs:annotation><xs:documentation>
+      THE DECLARED FACE: what was committed, rated, reserved or bought. Somebody
+      CHOSE it.
+
+      ⛔ IT HAS NO MEASUREMENT BASIS ELEMENT, AND THAT IS DELIBERATE. A declared
+      capacity is not a measurement, so asking for its basis is a CATEGORY ERROR
+      rather than a gap, and the position already says the number is declared.
+      (The `nameplate` basis value still exists, for a declared number filed in the
+      MEASURED face, which is the case that actually misleads.)
+
+      `admitsInterference` is the one fact about a supply that no arithmetic can
+      recover: whether the draw is ALLOWED to exceed the rating. A GPU cannot run at
+      110 per cent; a disk cannot hold more than it holds; a month has at most 31
+      days. A PERSON CAN, and in most stacks labour is the only supply that can.
+
+      ⭐⭐ That single boolean is the missing half of an existing costing method.
+      Time-Driven ABC reports unused capacity as a separate figure, a good idea for
+      exactly this model's reason, but implements ONE SIGN, because its unit of
+      analysis is a machine-hour and a machine cannot run hot. Change the unit to a
+      person and the account becomes signed. The negative branch has no home in any
+      standard cost system, and this flag is where a document says the branch is
+      inhabited.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="amount"             type="pm:StatedClaim"/>
+      <xs:element name="divisibility"       type="pm:StatedDivisibility"/>
+      <xs:element name="admitsInterference" type="pm:StatedBoolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Jagged">
+    <xs:annotation><xs:documentation>
+      THE OPERATIONAL FACE: what actually happened. Nobody chose it.
+
+      `draw` is what the supply actually served, which is NOT what was demanded and
+      NOT what was committed. Demand that was refused never became a draw at all, so
+      a model that keeps only the draw has silently discarded every customer it
+      turned away.
+
+      ⭐ Its job in this model is narrow and it is not to size the remainder: the
+      draw is what says WHO HELD IT. Sitting exactly on the nameplate under excess
+      demand means the excess was refused; sitting above it means somebody absorbed
+      the excess. See Fit.
+
+      `measurementBasis` belongs HERE and not on the nameplate, because this face is
+      the one that claims to be a measurement. ⚠️ Filing `contributed = nameplate`
+      here is the honest way to admit that a "measured" figure was read off a rate
+      card.
+
+      ⚠️ NO PERIOD ELEMENT, AND THAT IS A POSITION RATHER THAN AN OVERSIGHT: time is
+      an axis on a SIMULATION of this model, not a field on its types. A draw over
+      an interval is expressed by making the interval part of the unit ("hours per
+      month"), and `asOf` on the Claim says when the assertion was true. A document
+      set that needs real intervals should say so, and it would be a schema change
+      argued on evidence rather than assumed here.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="draw"             type="pm:StatedClaim"/>
+      <xs:element name="measurementBasis" type="pm:StatedBasis"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Facility">
+    <xs:annotation><xs:documentation>
+      One supply, both faces. A facility has a nameplate and a jagged face AT ONCE,
+      a product and not a choice, and either face's leaf quantities may be typed
+      absences, so a facility nobody has measured is still expressible without
+      silence.
+
+      ⛔ THE REMAINDER IS NOT HERE ANY MORE, AND THE MOVE IS A FINDING. It used to
+      hang off the facility, which asserts that a remainder is a property of the
+      SUPPLY. It is not: you cannot compute one without the demand, and the demand
+      belongs to the layer where supply and demand meet. See Layer.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="label"     type="xs:string"/>
+      <xs:element name="nameplate" type="pm:Nameplate"/>
+      <xs:element name="jagged"    type="pm:Jagged"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       THE LAYER STACK: where a continuous demand meets a quantized supply.
+       ================================================================== -->
+  <xs:complexType name="Layer">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ WHAT MAKES SOMETHING A LAYER, STATED AS A TEST RATHER THAN A LIST:
+
+      > A LAYER IS A PLACE WHERE A REMAINDER CAN BE HELD INDEPENDENTLY OF EVERY
+      > OTHER LAYER.
+
+      ⭐ The definition and the model's fourth falsifier are the SAME SENTENCE: if
+      two candidate layers' remainders always move together, they were never two
+      layers. That is what makes this a test you can fail rather than a taxonomy you
+      have to accept, and it is why this schema DOES NOT ENUMERATE THE LAYERS.
+      Compute, storage, labour, capability, capital and price are what one stack
+      looked like when it was written down, not a closed set.
+
+      THE THREE QUANTITIES, AND KEEPING THEM APART IS THE ENTIRE POINT:
+
+        demand              what was ASKED. Continuous, and usually a genuine range.
+        supply.nameplate    what was COMMITTED. Quantized: it comes in whole units.
+        supply.jagged.draw  what was actually SERVED.
+
+      ⛔ AN ERP KEEPS ONE OF THESE AND MOST DASHBOARDS KEEP TWO, and the third is
+      never the spare one. The remainder is nameplate minus demand; THE DRAW IS WHAT
+      SAYS WHO HELD IT. Saturated supply and absorbed excess look identical in any
+      system that stores the served figure and the committed one and never asks what
+      was asked. See Fit.
+
+      `remainder` is REQUIRED, as a StatedRemainder, so that "there is none here"
+      is a filed claim rather than an empty field. That requirement is the model
+      asserting itself in a form somebody can contradict.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="name"      type="xs:token"/>
+      <xs:element name="demand"    type="pm:StatedClaim"/>
+      <xs:element name="supply"    type="pm:Facility"/>
+      <xs:element name="remainder" type="pm:StatedRemainder"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Coupling">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ AN OBSERVED DEPENDENCE BETWEEN TWO LAYERS' REMAINDERS, WHICH IS TO SAY,
+      THIS ELEMENT EXISTS SO THAT THE MODEL CAN BE REFUTED IN ITS OWN FORMAT.
+
+      The stack is assumed to be a set of INDEPENDENT quantizations, and that
+      assumption has never been tested. If relieving one layer's constraint
+      measurably reduces another layer's remainder, the layers move together, the
+      single-constraint schools of thought have far more purchase here than this
+      model allows, and the multi-layer framing is the weaker description.
+
+      ⭐ ZERO COUPLINGS IS THE MODEL'S ASSUMPTION, NOT A PROVEN PROPERTY. A document
+      with no couplings is not evidence of independence; it is a document where
+      nobody looked.
+
+      ⭐⭐ AND IT IS WHY THE STACK CARRIES NO ORDER. "Stack" is the inherited word,
+      but nothing here claims layer A sits above layer B, because an ordering
+      relation between layers WOULD BE a coupling, and would belong in this element
+      with its evidence rather than in the sequence of the document. Document order
+      carries no meaning.
+
+      `observed` is REQUIRED. A coupling filed without saying what was observed is
+      an opinion, and the one element in this schema whose purpose is to carry a
+      refutation is the last place to accept one.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="from"     type="xs:token"/>
+      <xs:element name="to"       type="xs:token"/>
+      <xs:element name="observed" type="xs:string"/>
+      <xs:element name="strength" type="pm:StatedClaim" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Stack">
+    <xs:annotation><xs:documentation>
+      The layers of one system, and any couplings somebody has observed between
+      them. ⚠️ Document order is not significant. See Coupling.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="layer"    type="pm:Layer"    maxOccurs="unbounded"/>
+      <xs:element name="coupling" type="pm:Coupling" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       THE FLOW: what an operation takes, and what it commits somewhere else.
+       ================================================================== -->
+  <xs:complexType name="Draw">
+    <xs:annotation><xs:documentation>
+      WHAT AN OPERATION TAKES FROM A LAYER, NOW.
+
+      ⭐⭐ THIS IS THE ELEMENT THE WHOLE TYPED-ABSENCE APPARATUS WAS BUILT FOR. The
+      absorbed evening, the interruption, the fix that never became a ticket: a draw
+      on the labour layer with `quantity` filed as `absent reason="unmeasured"`. It
+      is a real draw, it is attributed to a real operation, and it has no number,
+      and every one of those three facts survives transmission.
+
+      ⛔ A shortfall with no operation in it produces no signal at all. That is what a
+      operation is FOR here: not sequencing, but making a draw ATTRIBUTABLE. An
+      unattributed remainder is a number in a report that nobody can act on.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="layer"    type="xs:token"/>
+      <xs:element name="quantity" type="pm:StatedClaim"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Induction">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ A COMMITMENT MADE HERE THAT BECOMES A DRAW SOMEWHERE ELSE: the edge the
+      model did not have, and the reason the flow half is not just a list of draws:
+
+      > A NAMEPLATE DECISION IN ONE LAYER BECOMES A JAGGED DRAW IN ANOTHER.
+
+      Selling an offering commits labour that was not previously committed. Standing
+      up a service commits operations. Launching a campaign commits build. In every
+      case one party decides and a DIFFERENT layer bears it, and NOTHING IN THE
+      ACCOUNTS RECORDS THE TRANSFER.
+
+      ⛔ DELIBERATELY NOT THE SAME TYPE AS Draw, DESPITE THE NEARLY IDENTICAL SHAPE.
+      A draw is consumption that has happened against a supply; an induction is a
+      commitment that CREATES a future draw on a different supply. Folding them into
+      one type with a discriminator would put two kinds of fact in one slot, which is
+      the error this schema is otherwise built to avoid.
+
+      `decidedBy` names WHO made the commitment. It is optional because a sender may
+      genuinely not know, but an induction without it records that the transfer
+      happened and not who made it, which is the weaker half of the finding, and a
+      receiver is entitled to say so.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="layer"      type="xs:token"/>
+      <xs:element name="commitment" type="pm:StatedClaim"/>
+      <xs:element name="decidedBy"  type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Operation">
+    <xs:annotation><xs:documentation>
+      THE UNIT AT WHICH A DRAW IS ATTRIBUTABLE.
+
+      ⭐⭐ THE NAME WAS `Step` UNTIL 2026-08-30 AND THE CHANGE IS NOT COSMETIC. A
+      STEP IS BY DEFINITION ONE OF A SERIES: the word carries the ordering this
+      type explicitly does not have, so it promised a predecessor and a successor
+      that are not here and never will be. AN OPERATION IS THE CLASSICAL UNIT OF
+      WORK AT A WORK CENTRE: it consumes a resource for a duration, and the ROUTING
+      is what puts operations in order. That is precisely this model's split (the
+      draws here, the ordering in the process notation), and the manufacturing
+      literature drew it first, which makes the borrowing consistent with `absorber`
+      and with Fit rather than a fourth vocabulary.
+
+      ⚠️ It was also the wrong side of a boundary. `step` is the incumbent word in
+      the platform this model was extracted from, where it names a unit of
+      INTERACTION (a record of what a system did), and this type describes the
+      world rather than anybody's record of it.
+
+      ⛔ NOT A UNIT OF SEQUENCE. There is no predecessor, no successor, no gateway
+      and no condition here, and their absence is a scoping decision rather than an
+      omission: BPMN 2.0 models all of that, is an OMG standard with published
+      schemas, and restating it inside this namespace would fork it. `foreignId`
+      exists so that an operation here can name the same operation THERE.
+
+      ⭐ AN OPERATION CONSUMES AND IT COMMITS, AND THE TWO ARE NOT SYMMETRIC. What it
+      consumes is a `draw` against a layer's supply. What it produces is not an
+      output quantity; it is a commitment INDUCED on another layer. A model with a
+      symmetric input/output pair would render both as flow and lose the asymmetry
+      that makes the cross-layer transfer visible.
+
+      ⚠️ At least one draw or induction is REQUIRED. An operation that neither takes
+      anything nor commits anything is invisible to this model, and filing one is
+      almost always a sign that the process notation was transcribed instead of the
+      draws being asked for.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="label"     type="xs:string"/>
+      <xs:element name="foreignId" type="pm:ForeignId" minOccurs="0"/>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="draw"    type="pm:Draw"/>
+        <xs:element name="induces" type="pm:Induction"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       REGIME: what the document reports under, declared once at the top.
+       ================================================================== -->
+  <xs:complexType name="Regime">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ A REGIME IS THREE AXES AND THE COMMONEST MISTAKE IS TO WRITE THEM AS ONE
+      LIST. "us-gaap · us-accrual · pt" looks like three values of one thing and is
+      not: the first is a FRAMEWORK, the second a BASIS OF ACCOUNTING, the third a
+      JURISDICTION. A list mixing them cannot answer any of the three questions.
+
+        jurisdiction  WHERE. Absent for a framework that is not a country's. IFRS
+                      has no jurisdiction, and forcing one invents a fact.
+        framework     WHAT the entity reports under, AS CODED BY A NAMED AUTHORITY,
+                      which is why it is a BorrowedTerm and not a token.
+        the taxonomy  WHO CODES IT, carried inside that term.
+        inside it
+
+      ⭐⭐ THE THIRD AXIS IS THE ONE THAT SURPRISES PEOPLE, AND PORTUGAL IS THE PROOF.
+      THE SAME ENTITY UNDER THE SAME FRAMEWORK HAS DIFFERENT CODES IN DIFFERENT
+      AUTHORITIES' TAXONOMIES, and the two published four-value lists do not line up:
+
+        SAF-T PT referencial   S · M · N · O
+        IES AnexoASNC          NIC · NCRF · NCRF-PE · NC-ME
+
+      NCRF and NCRF-PE BOTH collapse into S, and O has no AnexoASNC counterpart. So
+      `S` does not identify a framework and `NCRF-PE` is not a SAF-T value. A code
+      without its authority is genuinely ambiguous rather than merely unattributed,
+      which is the whole reason BorrowedTerm requires the taxonomy.
+
+      ⭐⭐⭐ AND THEREFORE: DECLARING TWO REGIMES FOR ONE ENTITY IS CORRECT, NOT A
+      DUPLICATE. A Portuguese microentity is `NC-ME` to IES and `M` to SAF-T, and a
+      document that files both has said something true that neither says alone. ⛔ A
+      receiver must not de-duplicate them, and a validator must not pick one.
+
+      ⚠️ "Portugal" is therefore AT LEAST four frameworks in two codings, not one
+      regime, and the same shape recurs wherever a jurisdiction has size tiers.
+
+      ⭐⭐⭐ AND IT RECURS EVERYWHERE, WHICH IS WHY `jurisdiction` IS A FIELD AND NOT THE
+      KEY. Every jurisdiction met so far tiers its frameworks by entity size:
+
+        Portugal   NCRF · NCRF-PE · NC-ME, beside NIC for adopted IFRS
+        Spain      PGC, PGC for SMEs, and a microentity variant beneath it
+        Sweden     the K-regelverket: K1 · K2 · K3 · K4, K4 being IFRS
+
+      ⭐ SO THE TIER IS A FACT ABOUT THE ENTITY, AND IT PICKS THE FRAMEWORK. A country
+      code cannot: two companies in one country file under different frameworks, and
+      a receiver told only "PT" knows nothing about which rules produced the numbers.
+      **A jurisdiction is never a regime.**
+
+      ⭐⭐ THE CHART IS NATIONAL TOO, AND THAT IS THE SHARPER HALF. Spain's PGC and
+      Sweden's BAS are national charts of accounts; a position code means nothing
+      across a border, and `1200` is a different account in each. Any answer naming a
+      position must carry the chart that codes it. ⚠️ AND THE AUTHORITY IS NOT ALWAYS
+      THE STATE: Sweden's BAS is maintained by an association rather than legislated,
+      which is precisely why `taxonomy` is an `anyURI` and not an enumeration of
+      governments.
+
+      ⭐ NO REGIME AT ALL IS LEGITIMATE AND COMMON. This is a model of business
+      process, not of accounting; a stack of supplies borrowing only operations-
+      science terms reports under no financial framework, and saying so by silence
+      here is correct because the element is a DECLARATION, not a measurement.
+
+      `id` is a document-local handle. It exists so a conformance profile can name
+      which regime it narrows, and so two declarations cannot silently be the same.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="id"           type="xs:token"/>
+      <!-- ⛔ A BARE TOKEN ON PURPOSE, AND NOTHING MAY KEY ON IT. `PT`, `PRT` and
+           `620` are three authorities' codings of one country and all three
+           validate here; this element cannot say which was used, and that is
+           accepted rather than overlooked. It is NOT a BorrowedTerm because a
+           jurisdiction is never a regime and nothing in this model is allowed to
+           depend on it. `framework` carries the authority, and it is required.
+           ⚠️ A receiver joining on this field is using it for the one purpose it
+           was deliberately made too weak to serve. -->
+      <xs:element name="jurisdiction" type="xs:token" minOccurs="0"/>
+      <xs:element name="framework"    type="pm:StatedBorrowedTerm"/>
+      <!-- ⛔⛔ A CHART OF ACCOUNTS IS NOT A REPORTING TAXONOMY, AND CONFUSING THEM
+           IS THE MISTAKE THIS ELEMENT EXISTS TO CATCH. A chart is the list of ACCOUNTS an
+           entity posts to (Spain's PGC, Sweden's BAS, Portugal's SNC código de contas),
+           and `1200` is a different account in each. A reporting taxonomy is the list of
+           CONCEPTS a filing is tagged with; `http://fasb.org/us-gaap` is one, and it
+           belongs to `framework` above. An adopter who files a reporting taxonomy here has
+           declared a chart that nobody posts to.
+
+           ⭐ WHAT GOES IN EACH HALF, BECAUSE THE PAIR IS WHAT MAKES THE JOIN WORK.
+           `taxonomy` is THE CHART ITSELF, the same URI an `Answer/holds` must carry,
+           which is what lets a profile line the two up. `value` is the chart's own
+           identifier or edition (`PGC`, `BAS`, `SNC-2016`, the entity's chart name),
+           which keeps two editions of one chart distinguishable. The same split
+           `framework` uses. ⛔ NOT A POSITION: the position is the answer's half.
+
+           ⭐⭐⭐ A SELF-AUTHORED CHART NAMES THE ENTITY AS ITS OWN TAXONOMY, AND THAT
+           CLOSES AN ENTIRE FILING POPULATION. THERE IS NO UNITED STATES CHART OF ACCOUNTS.
+           What is published there is a reporting taxonomy; every filer's chart is their
+           own and unpublished, so the whole US population has a chart, IN DAILY USE, with
+           no publishing authority to borrow from. The filer IS the authority for their own
+           chart, and naming themselves satisfies BorrowedTerm honestly rather than evading
+           it. ⛔ THE TWO MOVES THIS REPLACES WERE BOTH FALSE: omitting the chart said the
+           entity had none, and inventing a taxonomy URI filed an authority that does not
+           exist.
+
+           ⚠️ SO `unmeasured` IS NOT THE US ANSWER AND MUST NOT BECOME ITS DUMPING GROUND.
+           THE US CHART IS UNPUBLISHED, NOT UNKNOWN, and it is filed as a term. `unmeasured`
+           is for a sender who is NOT THE ENTITY (a witness answering about somebody else's
+           books) or for a tier not yet assigned where the tier picks the chart, as Spain's
+           PGC for SMEs abridges the full PGC.
+
+           ⭐ AND THE CHART IS A SEPARATE AXIS FROM THE FRAMEWORK. Two regimes declaring one
+           framework under two authorities' codings share ONE chart: a Portuguese
+           microentity is `NC-ME` to IES and `M` to SAF-T, and posts to the SNC chart under
+           both.
+
+           ⭐⭐ REQUIRED, MIRRORING `framework`, FOR `StatedRemainder`'s REASON. This type
+           asserts a universal: any answer naming a position must carry the chart that
+           codes it, and requiring the element forces a regime that has none to SAY SO
+           rather than leave a blank a profile cannot tell from an unasked question. A
+           non-accounting witness answers `notApplicable` and is right to; `none` is for
+           somebody who looked and found there is no chart. The cost is one element per
+           regime, and `regime` is ITSELF optional, so it is paid only by a sender who has
+           already chosen to declare one.
+
+           ⛔ REJECTED: OPTIONAL AND WRAPPED, which looks like the cheaper half and is the
+           incoherent middle. It admits `chart` omitted AND `chart absent reason="none"`:
+           two encodings of one fact with no rule saying which to send. That is the mirror
+           of the defect `framework`'s wrapper was added to repair. S-1 was two facts
+           sharing one encoding; this would be one fact split across two.
+
+           ⛔ REJECTED: ANNOTATION ALONE, left optional and unwrapped. The self-authored
+           clause closes the US population but cannot close a sender who is not the entity,
+           and it leaves the check this element exists for silent: a receiver cannot tell
+           "this regime has no chart" from "nobody said", so an answer holding an unexpected
+           chart yields no finding, and no report that it could not ask, either. See
+           conformance/README.md. -->
+      <xs:element name="chart"        type="pm:StatedBorrowedTerm"/>
+      <xs:element name="note"         type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       Document root.
+
+       ⭐ A DOCUMENT IS A STACK AND, OPTIONALLY, THE OPERATIONS THAT DRAW ON IT. A supply
+       with no demand against it is an asset register, which is somebody else's
+       schema; requiring the layer means every supply in a document has been asked
+       the question "what draws on this?".
+
+       ⭐⭐ THE LAYER REFERENCES ARE VALIDATED. xs:key / xs:keyref are XSD 1.0 and
+       work in every stock validator, so a draw naming a layer that does not exist
+       is a schema error rather than a convention. A rule with no gate behind it is
+       not a rule.
+       ================================================================== -->
+  <xs:element name="processModulus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="regime" type="pm:Regime" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="stack" type="pm:Stack"/>
+        <xs:element name="operation" type="pm:Operation" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:key name="regimeId">
+      <xs:selector xpath="pm:regime"/>
+      <xs:field    xpath="pm:id"/>
+    </xs:key>
+
+    <xs:key name="layerName">
+      <xs:selector xpath="pm:stack/pm:layer"/>
+      <xs:field    xpath="pm:name"/>
+    </xs:key>
+
+    <xs:keyref name="drawLayer" refer="pm:layerName">
+      <xs:selector xpath="pm:operation/pm:draw"/>
+      <xs:field    xpath="pm:layer"/>
+    </xs:keyref>
+
+    <xs:keyref name="inducesLayer" refer="pm:layerName">
+      <xs:selector xpath="pm:operation/pm:induces"/>
+      <xs:field    xpath="pm:layer"/>
+    </xs:keyref>
+
+    <xs:keyref name="couplingFrom" refer="pm:layerName">
+      <xs:selector xpath="pm:stack/pm:coupling"/>
+      <xs:field    xpath="pm:from"/>
+    </xs:keyref>
+
+    <xs:keyref name="couplingTo" refer="pm:layerName">
+      <xs:selector xpath="pm:stack/pm:coupling"/>
+      <xs:field    xpath="pm:to"/>
+    </xs:keyref>
+  </xs:element>
+
+</xs:schema>
