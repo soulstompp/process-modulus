@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  What a witness claims about a corpus of questions.
+
+  Copyright (c) 2026 Kenny Flegal. Licensed under MIT OR Apache-2.0.
+
+  ⚠️ PROVISIONAL NAMESPACE URI, same as the base schema.
+
+  ⛔⛔ SCOPE, AND IT IS NARROWER THAN IT LOOKS. Three objects exist in an assertion
+  system: the QUESTION, the CLAIM about it, and the RUN that happened. This schema
+  carries the first two and DELIBERATELY NOT THE THIRD.
+
+  ⭐⭐ AND A FOURTH ARRIVED WITH `dependence`, WHICH IS THE CLAIM ROW POINTED OUTWARD: a
+  claim about TWO OTHER PARTIES' FILINGS, made by somebody who filed neither. It is here
+  and not in the base schema for the reason that decides everything in this file: a
+  filing is attestable by the party that files it, so an observation spanning two filings
+  belongs to the third party who read both. See Dependence.
+
+    the question   stays in each corpus. Datetime formats, facility cases and plan
+                   claims are different subjects; a shared corpus would be a shared
+                   subject. Only its PROVENANCE is unified here, as Citation.
+    the claim      ⭐ IS THIS SCHEMA'S REASON TO EXIST. It crosses organisations: an
+                   accountant's answers to a corpus ARE a coverage file, and they
+                   should not have to run anybody's code to send one.
+    the run        ⭐ HERE, BUT ONLY IN ITS PROMOTED FORM, AND THE DISTINCTION IS
+                   LOAD-BEARING. A runner's working ledger is a local, append-only
+                   file answering "when did this go red?", machine-local, growing
+                   forever, and NEVER a shareable artifact or a gate predicate. This
+                   schema does not describe it. What it describes is a run PROMOTED
+                   TO EVIDENCE: the extract a report cites, dated, frozen and sent.
+                   ⛔ Emitting the working ledger in this format would be a category
+                   error: it would look citable and would not be.
+
+  ⛔ AND NO RUNNER IS DESCRIBED. Unification here is BY CONFORMANCE, NOT BY
+  DEPENDENCY: a shared vocabulary plus a test per runner that it conforms, never a
+  library everything imports. Two models that share a code path cannot corroborate
+  each other, so the whole point is that a witness imports nothing from here.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:asrt="https://example.invalid/assertion/1.0"
+           xmlns:pm="https://example.invalid/process-flow/1.0"
+           targetNamespace="https://example.invalid/assertion/1.0"
+           elementFormDefault="qualified"
+           version="0.1.0">
+
+  <xs:import namespace="https://example.invalid/process-flow/1.0"
+             schemaLocation="process-modulus.xsd"/>
+
+  <!-- ==================================================================
+       ANSWER: what one witness says about one question.
+       ================================================================== -->
+  <xs:complexType name="Answer">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ BOTH ANSWERS THAT CARRY A VALUE CARRY A **BORROWED** ONE, AND THAT IS THE
+      WHOLE CORRECTION THIS SCHEMA MAKES. A refusal code and a chart position are
+      both drawn from a list SOMEBODY ELSE PUBLISHES, and a witness under a different
+      regime draws from a different list.
+
+        holds      Recognised, and WHERE: a position in a chart of accounts. The
+                   chart is the taxonomy. A US chart and a Portuguese one do not
+                   share a single code, so `1200` alone names nothing.
+        refuses    ⭐ THE DELIVERABLE. A TYPED refusal, drawn from the coding pack
+                   the accountants hold. That pack is the authority, not this
+                   schema, and not any witness's implementation of it.
+        cannotAsk  ⛔ NEITHER A FAILURE NOR A REFUSAL. The witness has no opinion on
+                   this kind of question. A standards model asked about staffing
+                   policy answers this and is right to.
+
+      ⚠️ WHAT THIS REPLACES, AND WHY IT WAS A FORK WAITING TO HAPPEN. The
+      implementation this came from held the six refusal codes as a compiled array of
+      bare strings, with a comment saying the authority was the accountants' pack.
+      **A comment naming an authority beside a hard-coded copy of its list is a fork
+      that has not drifted yet.** Add a second regime and there are two bad options:
+      widen the array and lose which word belongs to whom, or fork it.
+
+      ⭐⭐ AND THE SHARED-VOCABULARY PROPERTY SURVIVES THE CHANGE, WHICH IS THE POINT.
+      Two answers are comparable row for row when they cite the SAME taxonomy, and
+      now two answers under DIFFERENT taxonomies are legible as different rather than
+      silently incomparable. That is strictly more than the array could say.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="holds"     type="pm:BorrowedTerm"/>
+      <xs:element name="refuses"   type="pm:BorrowedTerm"/>
+      <xs:element name="cannotAsk" type="asrt:Nothing"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Nothing">
+    <xs:annotation><xs:documentation>
+      An answer with no payload. It exists because XSD 1.0 has no empty-branch choice,
+      and because `cannotAsk` genuinely carries nothing: inventing a field for it
+      would invite somebody to fill one in.
+    </xs:documentation></xs:annotation>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       VERDICT: how an answer stood against the corpus. CONTRIBUTED, and
+       regime-neutral: it is about the corpus and the witness, not about
+       any accounting framework.
+       ================================================================== -->
+  <xs:simpleType name="Verdict">
+    <xs:annotation><xs:documentation>
+      agreed     Claimed, and the answer matches the corpus (or its declared
+                 exception).
+
+      diverged   Claimed, and the answer differs with no exception. ⛔ THERE ARE
+                 EXACTLY THREE LEGITIMATE RESPONSES: fix the witness, fix the case,
+                 or declare the exception. Editing the expected answer to match what
+                 the witness happens to do is none of them: it turns the corpus into
+                 a snapshot of current behaviour and the trial measures nothing.
+
+      notable    ⭐⭐ NOT CLAIMED, AND THE WITNESS ANSWERED ANYWAY. Never a failure,
+                 and usually the most valuable line in a report: a witness admitted
+                 something we assumed it must refuse, so either the model is stronger
+                 than we thought or a guard is not guarding.
+
+      unclaimed  Not claimed, and the witness said cannotAsk. Quiet, and correct.
+
+      ⚠️ Verdict is NOT the absence vocabulary. `pm:AbsenceReason` says why a DOCUMENT
+      has no value; this says how an ANSWERER stood against a question. They rhyme
+      and they are different axes; merging them is the error this project keeps
+      catching one level down.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="agreed"/>
+      <xs:enumeration value="diverged"/>
+      <xs:enumeration value="notable"/>
+      <xs:enumeration value="unclaimed"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ==================================================================
+       CITATION: a question's or an answer's authority, named.
+       ================================================================== -->
+  <xs:complexType name="Citation">
+    <xs:annotation><xs:documentation>
+      WHICH CLAUSE, IN WHICH VERSION, DECIDED THIS.
+
+      `instrument` is the standard or pack, as a BorrowedTerm so the naming authority
+      is explicit. `clause` is the part of it: "606-10-25-1", "§4.2". `version` is
+      the edition READ, because a standard is not a fixed object and a citation
+      without a year is a citation to whatever is current.
+
+      ⛔ THIS IS THE FIELD MOST LIKELY TO BE LEFT EMPTY AND MOST EXPENSIVE WHEN IT IS.
+      A corpus whose questions cite nothing cannot be checked against the instrument
+      it claims to test; it can only be checked against itself. Optional here because
+      a required element that senders cannot fill produces invented values, but a
+      claim with no citation is weaker, and a receiver is entitled to say so.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="instrument" type="pm:BorrowedTerm"/>
+      <xs:element name="clause"     type="xs:token"  minOccurs="0"/>
+      <xs:element name="version"    type="xs:token"  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       COVERAGE: the claim. One witness, one corpus, question by question.
+       ================================================================== -->
+  <xs:complexType name="CoverageEntry">
+    <xs:annotation><xs:documentation>
+      `key` names a question in the corpus this coverage answers. ⚠️ Keys are the
+      corpus's, and this schema cannot validate them; a runner must, and refusing a
+      claim about a question the corpus does not hold is what stops a coverage file
+      drifting into fiction.
+
+      `complete` is whether the witness claims to answer the question FULLY. ⭐ It is
+      what makes `notable` reachable: without a claim there is nothing for an answer
+      to exceed, and a trial that cannot produce `notable` is only checking that a
+      program agrees with itself.
+
+      ⭐⭐ `answer` IS OPTIONAL, AND WHICH WAY IT IS FILLED SAYS WHAT KIND OF WITNESS
+      THIS IS:
+
+        absent   the witness is a PROGRAM. Run it; this file only says what it
+                 claims, and the answer comes from the run.
+        present  ⭐ THE WITNESS IS THE FILE. An accountant answering the corpus on
+                 paper, or a regime nobody has written code for yet, states the
+                 answer here and needs no runner at all. This is how a jurisdiction
+                 arrives before an implementation of it does.
+
+      `exception` is the reason this witness's answer differs from the corpus ON
+      PURPOSE, and it is only meaningful beside an `answer`. ⛔ XSD 1.0 cannot express
+      "only with", so a runner must refuse the combination. AND AN UNEXPLAINED
+      DIVERGENCE IS NOT CONFORMANT: a difference with no reason is indistinguishable
+      from a bug somebody stopped chasing.
+
+      ⚠️ A regime that genuinely disagrees with the corpus is THE FINDING. A regime
+      that quietly rewrites the corpus to agree with itself is a fork.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="key"       type="xs:token"/>
+      <xs:element name="complete"  type="xs:boolean"/>
+      <xs:element name="answer"    type="asrt:Answer"   minOccurs="0"/>
+      <xs:element name="exception" type="xs:string"   minOccurs="0"/>
+      <xs:element name="citation"  type="asrt:Citation" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Coverage">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ A WITNESS IS NOT REQUIRED TO BE A PROGRAM. When an accountant answers the
+      corpus on paper, their answers ARE a coverage file, and that is the reason this
+      is a document format rather than a Rust trait. A second regime should be able to
+      answer without running, compiling or depending on anything of ours.
+
+      `regime` is `pm:Regime`, reused rather than re-stated: a witness reports under a
+      framework exactly the way a document does, and the same three-axis trap applies
+      (jurisdiction · framework · the authority coding it). ⭐ TWO REGIMES ARE
+      LEGITIMATE HERE FOR THE SAME REASON THEY ARE THERE: one witness may answer
+      under a framework coded by two authorities that do not line up.
+
+      ⚠️ `regime` is optional, and its absence is a real state rather than an
+      oversight: a witness that is not an accounting model (a register census, a
+      spreadsheet-formula checker) reports under no framework and should not be made
+      to invent one.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="witness" type="xs:token"/>
+      <xs:element name="regime"  type="pm:Regime"      minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="entry"   type="asrt:CoverageEntry" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ==================================================================
+       RUN: a trial, promoted to evidence.
+       ================================================================== -->
+  <xs:complexType name="Result">
+    <xs:annotation><xs:documentation>
+      One question, one witness, one verdict, and where it matters, what the
+      witness actually said.
+
+      ⭐ `answer` is here as well as on a coverage entry because they are different
+      facts: there, it is what the witness CLAIMS; here, it is what the run OBSERVED.
+      A promoted run whose answers were copied from the claim would be evidence of
+      nothing, and keeping both is what makes `diverged` checkable after the fact.
+
+      `evidence` is the human-readable trace, the line a reader follows to satisfy
+      themselves the verdict is real. ⛔ A `diverged` with no evidence is an assertion
+      about the past that nobody can check, which is the state a promoted record
+      exists to prevent.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="key"      type="xs:token"/>
+      <xs:element name="verdict"  type="asrt:Verdict"/>
+      <xs:element name="answer"   type="asrt:Answer" minOccurs="0"/>
+      <xs:element name="evidence" type="xs:string"   minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Run">
+    <xs:annotation><xs:documentation>
+      ⛔⛔ THIS IS THE PROMOTED RECORD, NOT THE LEDGER. A runner accumulates results
+      locally, forever, on one machine; that file is a working record and a claim
+      made from it is a claim about one machine. THIS is what you get when a report
+      argues from a run: an extract, dated, that travels with the argument.
+
+      ⭐ `ranAt` is REQUIRED, and it is the difference between the two. A working
+      ledger's dates are per-line and internal; a promoted record is a statement
+      about a moment, and a promotion with no date cannot be compared to the next
+      one, which is the entire reason to promote it.
+
+      ⚠️ `corpusVersion` names WHICH corpus was answered. A verdict is meaningless
+      against an unnamed corpus: the questions change, and "it went green" without
+      saying what it was asked is not a result.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="witness"       type="xs:token"/>
+      <xs:element name="ranAt"         type="xs:date"/>
+      <xs:element name="corpusVersion" type="xs:token"    minOccurs="0"/>
+      <xs:element name="result"        type="asrt:Result" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="run" type="asrt:Run">
+    <xs:annotation><xs:documentation>
+      ⭐ A run promoted to evidence. ⛔ NOT a runner's working ledger. See the type.
+    </xs:documentation></xs:annotation>
+    <xs:key name="resultKey">
+      <xs:selector xpath="asrt:result"/>
+      <xs:field    xpath="asrt:key"/>
+    </xs:key>
+  </xs:element>
+
+  <xs:element name="coverage" type="asrt:Coverage">
+    <xs:annotation><xs:documentation>
+      One witness's claim about one corpus. ⛔ A coverage file with no entries is an
+      error rather than a witness that claims nothing: a corpus of nothing runs no
+      trials and reports success, which is how a green suite comes to mean nothing.
+    </xs:documentation></xs:annotation>
+    <xs:key name="entryKey">
+      <xs:selector xpath="asrt:entry"/>
+      <xs:field    xpath="asrt:key"/>
+    </xs:key>
+    <xs:key name="regimeId">
+      <xs:selector xpath="asrt:regime"/>
+      <xs:field    xpath="pm:id"/>
+    </xs:key>
+  </xs:element>
+
+  <!-- ==================================================================
+       DEPENDENCE: an observed dependence between TWO FILINGS, filed by
+       somebody who is the filer of neither.
+       ================================================================== -->
+  <xs:complexType name="FiledLayer">
+    <xs:annotation><xs:documentation>
+      ONE END: WHOSE FILING, WHICH FILING, WHICH EDITION OF IT, AND WHERE IN IT.
+
+      ⭐⭐ FOUR FACTS, AND THAT IS WHY THIS IS A TYPE RATHER THAN A STRING. "Acme Sub's
+      labour layer in the 2026-Q2 stack" is a party, a document, an edition and a
+      position inside it. One token carrying all four is joinable on none of them, and a
+      receiver holding fifty of these cannot ask "everything touching Acme Sub" without
+      matching text.
+
+      `filing` is `pm:ForeignId`, used exactly as its own annotation describes it: "a
+      notation plus an id names a POSITION IN ONE FILE that no authority publishes". The
+      notation is the URI of the OTHER FILING; the id is the layer name inside it. ⭐ It
+      is that type's second use and its first as a reference TARGET rather than a field,
+      and it needed no widening: a layer name is precisely a position no authority
+      publishes, which is why `pm:ForeignId` and not `pm:BorrowedTerm`.
+
+      ⛔⛔ NOTHING HERE VALIDATES THAT THE FILING EXISTS, THAT THE URI RESOLVES, OR THAT
+      THE LAYER IS IN IT. ⛔ NOT REACHABLE BY A VALIDATOR. An XSD identity constraint is
+      scoped to one document, and a keyref that appeared to reach across one would be the
+      exact defect this document type exists to avoid: a reference that looks constrained
+      and is not. An implementer that can fetch the other filing still owes the check; one
+      that cannot owes the reader the knowledge that it did not happen.
+
+      `party` is REQUIRED. ⭐ Without it two ends could be two filings of ONE entity and a
+      reader could not tell, which silently loses the fact this whole document type exists
+      for: THE TWO ENDS CANNOT SEE EACH OTHER.
+
+      `registration` is that party in a register that publishes one (an LEI, a national
+      tax number, an EUID) as a `pm:BorrowedTerm`, so the register is NAMED and two
+      spellings of one name become joinable rather than undetectable. It is S-3's argument
+      about signers, applied to entities. ⚠️ Optional, and deliberately unwrapped: the term
+      is an ADDITION to the identity rather than the FRAME it is read under, so its silence
+      says only "not cited". ⛔ Required would be wrong at exactly the end of the chain this
+      model cares about (the small supplier with no register entry), and would produce
+      invented identifiers.
+
+      `version` is THE EDITION OF THE FILING THAT WAS READ, and it is `Citation/version`'s
+      argument applied to a filing rather than a standard: a stack is not a fixed object,
+      and a reference with no edition is a reference to whatever is current. ⚠️ It sits
+      BESIDE `filing` rather than inside it because `pm:ForeignId` is shared with the base
+      schema, and a document type does not get to widen a shared type for its own
+      convenience.
+
+      `regime` is a DOCUMENT-LOCAL HANDLE naming which of THIS statement's declared regimes
+      that filing reported under. ⭐ It is the one reference in this type a validator can
+      check, and it IS checked. See the keyrefs on the element. ⚠️ It is not a copy of the
+      other filing's declaration presented as that entity's own fact: the observer RESTATES
+      it, dated by `observedAt`, which is `Holder`'s answer to a cached value nothing
+      refreshes.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="party"        type="xs:token"/>
+      <xs:element name="registration" type="pm:BorrowedTerm" minOccurs="0"/>
+      <xs:element name="filing"       type="pm:ForeignId"/>
+      <xs:element name="version"      type="xs:token" minOccurs="0"/>
+      <xs:element name="regime"       type="xs:token" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DependenceEntry">
+    <xs:annotation><xs:documentation>
+      ONE PAIR, AND WHAT WAS SEEN.
+
+      `observed` is REQUIRED, and the sentence is `pm:Coupling`'s carried over word for
+      word on purpose: A COUPLING FILED WITHOUT SAYING WHAT WAS OBSERVED IS AN OPINION, and
+      the one element whose purpose is to carry a refutation is the last place to accept
+      one. ⛔⛔ IT IS LESS NEGOTIABLE HERE, NOT MORE. There, a reader who doubts the
+      observation can read the rest of the filing it sits in. Here BOTH ENDS ARE ELSEWHERE,
+      so this element is the entire evidence a receiver holds.
+
+      ⛔ AND IT IS NOT ABSENT-ABLE. A typed absence on `observed` would be an opinion
+      wearing a type, strictly worse than an untyped one, because it would look conformant.
+
+      `strength` is `pm:StatedClaim` and OPTIONAL, identical to `pm:Coupling/strength`, for
+      the reason `Remainder/sign` gives: THE DIRECTION IS FREQUENTLY KNOWN WHEN THE MAGNITUDE
+      IS NOT. "The subsidiary ran hot whenever the parent cut its block" is a filable
+      observation with no number in it. ⚠️ Requiring it here was considered and DECLINED: the
+      two elements carry the SAME FACT, and holding the cross-filing one to a stricter
+      standard would say the asymmetry between them is about MEASUREMENT when it is about
+      ATTESTATION. If `pm:Coupling/strength` is ever promoted to required, this moves with it.
+
+      ⭐ `from` AND `to` ARE DIRECTED, AND THE DIRECTION IS A CLAIM. "Relieving the supplier's
+      quantum reduced the customer's remainder" is a different statement from its reverse, and
+      an observer who files the wrong one has filed a wrong thing rather than a vague one.
+      ⚠️ An observer who has comovement and NOT direction has a weaker observation and should
+      say so in `observed` rather than picking an order quietly. If that turns out to be the
+      common case, two unordered ends plus a typed direction is the change to argue, on
+      evidence, and not here.
+
+      ⛔ `from` AND `to` MUST NOT BE THE SAME FILING AND THE SAME LAYER. A layer is not
+      coupled to itself. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and
+      cannot compare across elements. An implementer still owes this check; the schema cannot
+      take it from them.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="from"     type="asrt:FiledLayer"/>
+      <xs:element name="to"       type="asrt:FiledLayer"/>
+      <xs:element name="observed" type="xs:string"/>
+      <xs:element name="strength" type="pm:StatedClaim" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Dependence">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ AN OBSERVED DEPENDENCE BETWEEN TWO LAYERS THAT ARE FILED SEPARATELY, AND WHAT
+      MAKES IT A DOCUMENT RATHER THAN AN ELEMENT IS ATTESTATION, NOT SHAPE.
+
+      `pm:Coupling` is the same phenomenon inside one filing, and it exists so the model can
+      be refuted in its own format. But the dependence that matters most is frequently
+      between TWO ENTITIES THAT FILE SEPARATELY AND CANNOT SEE EACH OTHER: a parent and a
+      subsidiary, a supplier and a customer, two borrowers of one lender.
+
+      ⛔⛔ AND THE OBVIOUS REPAIR IS THE WRONG ONE, RECORDED HERE SO IT IS NOT RE-PROPOSED.
+      Widening `pm:Coupling/from` and `/to` to accept a `pm:ForeignId` was considered and
+      REJECTED. A FILING IS ATTESTABLE BY THE PARTY THAT FILES IT, and a coupling inside
+      entity A's document naming entity B's layer is a claim A CANNOT ATTEST TO, because A
+      cannot see B's stack. ⛔ WORSE: `couplingFrom` and `couplingTo` could not follow it, SO
+      IT WOULD VALIDATE BY NOT BEING CHECKED: a reference that looks constrained and is not,
+      while the two keyrefs went on reporting success about the half they could still reach.
+      ⚠️ The two workarounds available before this element are worse again: fabricating one
+      `Stack` spanning both entities asserts a shared system that does not exist and that
+      neither filer could attest to, and a stub layer files a layer nobody has.
+
+      ⭐⭐ SO THE THIRD PARTY FILES IT, AND THIS SCHEMA ALREADY HAS THAT GENRE. `Coverage` and
+      `Run` are claims ABOUT things rather than elements INSIDE them, and each carries a
+      `witness`. A group consolidator, a statutory auditor, a lender reading two borrowers:
+      each has read both filings, NEITHER FILER HAS, and the observation is theirs to stand
+      behind. ⭐ The world already files it this way: a consolidation is a separate
+      statement, not a footnote in the subsidiary's accounts.
+
+      ⭐⭐ BOTH ENDS ARE FOREIGN, ALWAYS, AND THAT IS NOT A LIMITATION. IT IS WHAT MAKES THE
+      DESIGN WORK. This document is inside neither filing, so an auditor's own client's stack
+      is as external to THIS statement as the counterparty's. There is never one local end
+      beside one foreign one, and therefore never a keyref that must reach across a boundary
+      and cannot. Every reference here is either wholly local and checked (the regime handles)
+      or wholly foreign and honestly unchecked (the filings).
+
+      ⚠️ A WITNESS WHO IS THE FILER OF BOTH ENDS IS IN THE WRONG DOCUMENT. Their own
+      observation belongs in `pm:Coupling`, inside the filing they attest to. ⛔ NOT REACHABLE
+      BY A VALIDATOR: nothing here knows who filed what. ⭐ But `from` and `to` MAY name the
+      same filing: an auditor who sees a coupling between two layers of one client's stack has
+      an observation the client did not file and cannot be made to file. The distinguishing
+      fact is WHO OBSERVED, not where the ends are.
+
+      `witness` is REQUIRED, exactly as on `Coverage` and `Run`, and for a sharper reason than
+      either: THIS IS TESTIMONY ABOUT PARTIES WHO DID NOT CONSENT TO IT, and anonymous
+      testimony about somebody else's books is not a filing.
+
+      ⭐ `observedAt` is REQUIRED, and it is `Run/ranAt`'s argument rather than `Coverage`'s. A
+      coverage claim is a standing position; THIS IS A STATEMENT ABOUT A MOMENT. Both filings
+      change, so an observation that does not say when it was made cannot be checked against
+      the filings as they were, nor compared with the next one, which is the entire reason to
+      file it. ⚠️ One date and not an interval, for `Jagged`'s stated reason: time is an axis
+      on a simulation of this model, not a field on its types.
+
+      `provenance` is where a firm's own chain goes: who entered, who approved, and above all
+      `standing`, which is the axis separating a statutory auditor's observation from a
+      controller's hunch, and which is a BorrowedTerm so neither this schema nor any witness
+      owns that set. ⚠️ Optional, because `witness` already forbids silence and every field
+      inside `Provenance` is itself optional, so requiring the container would buy an empty
+      tag. ⚠️ `witness` AND `provenance/party` ARE NOT ONE FACT WITH TWO HOMES: the first is
+      the observer as named across this file's documents, the second is the entity standing
+      behind it, and they differ whenever the observer is a team or a tool inside a firm, the
+      same split `Holder` draws between kind and party.
+
+      `regime` is `pm:Regime`, unbounded and optional, exactly as on `Coverage`, and it is the
+      frameworks THIS OBSERVER computed remainders under. ⭐⭐ IT IS ALSO WHAT MAKES TWO ENDS
+      UNDER DIFFERENT FRAMEWORKS LEGIBLE, WHICH IS THE CONSOLIDATOR'S ORDINARY CASE: a
+      Portuguese subsidiary under NCRF-PE and a US parent under US-GAAP measure a remainder
+      differently, and a document that cannot say so has hidden the reason the two numbers
+      disagree. Each end names WHICH declared regime its filing reported under. ⛔ THE
+      ALTERNATIVE, declaring both and explaining which is which inside `observed`, IS THE
+      ERROR `Absence` ALREADY NAMES: a reason no query can reach is not a typed absence, and a
+      regime attribution no query can reach is not an attribution.
+
+      `citation` names the instrument under which this observer could see BOTH filings: a
+      group-audit standard, a consolidation standard, an engagement. ⚠️ It is the nearest
+      thing to an answer to "why should a reader believe you saw both?", which is the question
+      this document type raises and no other element answers. Optional for `Citation`'s own
+      stated reason: a required element senders cannot fill produces invented values. A
+      dependence with no citation is weaker, and a receiver is entitled to say so.
+
+      ⚠️ ONE STATEMENT, ONE MOMENT, MANY OBSERVATIONS. A consolidator reading a group files
+      one document with an entry per pair, the way a run files a result per question.
+      Observations made on different days are different statements, for the same reason a
+      promotion is dated.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="witness"    type="xs:token"/>
+      <xs:element name="observedAt" type="xs:date"/>
+      <xs:element name="provenance" type="pm:Provenance"        minOccurs="0"/>
+      <xs:element name="regime"     type="pm:Regime"            minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="citation"   type="asrt:Citation"        minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="entry"      type="asrt:DependenceEntry"               maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="dependence" type="asrt:Dependence">
+    <xs:annotation><xs:documentation>
+      ⭐ ONE OBSERVER'S STATEMENT THAT TWO SEPARATELY FILED STACKS MOVE TOGETHER.
+
+      ⛔ NOT `pm:Coupling`, AND NOT `pm:Coupling` WIDENED. See the type. A coupling belongs
+      inside the filing whose filer can attest to both ends; this exists for the case where
+      NOBODY WHO CAN FILE IT CAN ATTEST TO IT.
+
+      ⛔ A dependence document with no entries is an error rather than an observer who
+      observed nothing. An empty statement about two filings reports success at having
+      looked, which is how a document that means nothing comes to be cited.
+
+      ⭐ THE ONLY REFERENCES CHECKED HERE ARE THE ONES THAT CAN BE. The regime handles are
+      document-local and a stock XSD 1.0 validator resolves them. ⛔ THE FILINGS ARE NOT AND
+      CANNOT BE: that is the whole reason this is a separate document, and pretending
+      otherwise with a keyref would reintroduce the defect it was created to avoid.
+    </xs:documentation></xs:annotation>
+
+    <!-- ⚠️ NOT `regimeId`: identity-constraint names share one symbol space per target
+         namespace, and `asrt:coverage` already declares one. -->
+    <xs:key name="dependenceRegimeId">
+      <xs:selector xpath="asrt:regime"/>
+      <xs:field    xpath="pm:id"/>
+    </xs:key>
+
+    <xs:keyref name="fromRegime" refer="asrt:dependenceRegimeId">
+      <xs:selector xpath="asrt:entry/asrt:from"/>
+      <xs:field    xpath="asrt:regime"/>
+    </xs:keyref>
+
+    <xs:keyref name="toRegime" refer="asrt:dependenceRegimeId">
+      <xs:selector xpath="asrt:entry/asrt:to"/>
+      <xs:field    xpath="asrt:regime"/>
+    </xs:keyref>
+
+    <!-- One directed pair, one entry. Two observations about one pair by one witness on one
+         date belong in one entry whose `observed` says both things; otherwise `strength`
+         has no domain. A→B and B→A are different sequences and both stay legal: a mutual
+         dependence is a legitimate filing. -->
+    <xs:key name="dependencePair">
+      <xs:selector xpath="asrt:entry"/>
+      <xs:field    xpath="asrt:from/asrt:filing/pm:notation"/>
+      <xs:field    xpath="asrt:from/asrt:filing/pm:id"/>
+      <xs:field    xpath="asrt:to/asrt:filing/pm:notation"/>
+      <xs:field    xpath="asrt:to/asrt:filing/pm:id"/>
+    </xs:key>
+  </xs:element>
+
+</xs:schema>
