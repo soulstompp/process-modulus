@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md.
+
+  ⭐⭐⭐ THE DOCUMENT A FIRST-TIME ADOPTER ACTUALLY HAS, and the two states every other document
+  in this repository skips because every other one was written to be cited by another.
+
+    notation  absent unmeasured   nobody has assigned this filing a URN yet
+    scope     absent unmeasured   the question of how much of the system it holds was never put
+
+  ⚠️ NEITHER IS A DEFECT AND BOTH WOULD HAVE BEEN A BLANK BEFORE 0.3.0. Somebody sat down,
+  wrote one layer of their process, and stopped. They have not published it, so nothing can
+  compose it — and that is the honest consequence rather than a gap: a composition asserting a
+  relationship to a filing nobody can identify is asserting a relationship to nothing.
+
+  ⭐ AND THE SCOPE ABSENCE IS THE ONE WORTH READING TWICE. `unbounded` says the filer thought
+  about what lies outside these layers and did not look. `absent reason="unmeasured"` says the
+  question was never put at all. A first draft is the second, and rendering them identically is
+  what made `pm:Stack` read as though it enumerated a system.
+-->
+<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <pm:notation>
+    <pm:absent>
+      <pm:reason>unmeasured</pm:reason>
+      <pm:note>stipulated: a working document. It will be published under an identifier and
+               nobody has assigned one, so nothing can compose it yet</pm:note>
+    </pm:absent>
+  </pm:notation>
+
+  <pm:stack>
+    <pm:scope>
+      <pm:absent>
+        <pm:reason>unmeasured</pm:reason>
+        <pm:note>stipulated: one layer was written down and nobody has asked what else of this
+                 system would be a layer. Not `unbounded` — that would say the filer looked
+                 outside and stopped, and this filer never put the question</pm:note>
+      </pm:absent>
+    </pm:scope>
+
+    <pm:layer>
+      <pm:name>press</pm:name>
+      <pm:demand>
+        <pm:claim>
+          <pm:low>110</pm:low><pm:mostLikely>140</pm:mostLikely><pm:high>190</pm:high>
+          <pm:unit>reams per shift</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+      </pm:timeSlack>
+      <pm:supply>
+        <pm:label>the guillotine</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>150</pm:low><pm:mostLikely>150</pm:mostLikely><pm:high>150</pm:high>
+              <pm:unit>reams per shift</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent><pm:reason>derived</pm:reason>
+                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>5</pm:low><pm:mostLikely>5</pm:mostLikely><pm:high>5</pm:high>
+                    <pm:unit>reams per shift</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason>
+                        <pm:note>the origin below states it</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+              <pm:window>
+                <pm:absent><pm:reason>none</pm:reason>
+                  <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <pm:couplings>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>stipulated: a one-layer stack has no pair to couple</pm:note>
+      </pm:absent>
+    </pm:couplings>
+  </pm:stack>
+</pm:processModulus>

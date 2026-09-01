@@ -37,7 +37,7 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 const BUILD_RS: &str = include_str!("../build.rs");
 
 /// Every instance, and the prefix whose namespace it must match.
-const INSTANCES: [(&str, &str, &str); 11] = [
+const INSTANCES: [(&str, &str, &str); 16] = [
     (
         "assets/corpus/enterprise-contract.xml",
         "pm",
@@ -96,6 +96,34 @@ const INSTANCES: [(&str, &str, &str); 11] = [
         "assets/corpus/merge-holding-composition.xml",
         "asrt",
         include_str!("../assets/corpus/merge-holding-composition.xml"),
+    ),
+    // ⭐ The stipulations. They are not filings and must never be cited as evidence about a
+    // business — but they are XML in this repository under these prefixes, and the gate below
+    // is about bindings rather than about standing.
+    (
+        "assets/fixtures/every-absence.xml",
+        "pm",
+        include_str!("../assets/fixtures/every-absence.xml"),
+    ),
+    (
+        "assets/fixtures/every-draft.xml",
+        "pm",
+        include_str!("../assets/fixtures/every-draft.xml"),
+    ),
+    (
+        "assets/fixtures/every-claimed.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-claimed.xml"),
+    ),
+    (
+        "assets/fixtures/every-elimination.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-elimination.xml"),
+    ),
+    (
+        "assets/fixtures/every-local-part.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-local-part.xml"),
     ),
 ];
 
@@ -216,7 +244,7 @@ fn no_example_is_exempt_from_the_namespace_gate() {
     // ⚠️ Sweeping the parent would be wrong: `assets/sql/` holds no XML and a future sibling
     // might hold XML that is deliberately invalid. Each directory is opted in by name.
     let mut on_disk: Vec<String> = Vec::new();
-    for sub in ["corpus"] {
+    for sub in ["corpus", "fixtures"] {
         let dir = format!("{}/assets/{sub}", env!("CARGO_MANIFEST_DIR"));
         on_disk.extend(
             fs::read_dir(&dir)
@@ -232,7 +260,7 @@ fn no_example_is_exempt_from_the_namespace_gate() {
 
     assert_eq!(
         on_disk, listed,
-        "every document in assets/corpus/ must be in INSTANCES, or it is \
+        "every document in assets/corpus/ and assets/fixtures/ must be in INSTANCES, or it is \
          not checked at all"
     );
 }

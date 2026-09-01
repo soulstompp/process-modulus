@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md.
+
+  ⭐⭐⭐ THE CONSTRUCTION A THIRD PARTY ACTUALLY PERFORMS, END TO END. Bring their layer in.
+  Make my layer beside it. Make a THIRD layer out of BOTH. And separate all three afterwards.
+
+    as-filed        one part, FOREIGN   the bakery's oven line, carried through unchanged
+    as-contracted   no part, ORIGINATED the same line, read a second way
+    both-views      two parts, LOCAL    made out of the two above
+
+  ⛔⛔ THE THIRD FUSION IS THE ONE THAT COULD NOT BE WRITTEN BEFORE, and only one thing had to
+  change to allow it: a filing can now say WHICH FILING IT IS. A part whose notation matches
+  this document's own is a local part. There is no second kind of part and no new element on
+  `asrt:Part` — the distinction is a string comparison against the filing's own name.
+
+  ⭐⭐⭐ AND THE ALTERNATION IS AN ORDINARY FUSION WITH AN ELIMINATION, NOT A NEW RELATION.
+  Two views of ONE quantity summed is that quantity COUNTED TWICE, which is exactly what
+  `Elimination` removes. `EliminationAgainst/demand` is literally "what was ASKED, counted
+  twice".
+
+    Σ parts demand      [3600, 4000, 4800]       Σ parts nameplate  [4320, 4320, 4320]
+    eliminate           [1800, 2000, 2400]       eliminate          [2160, 2160, 2160]
+    composed            [1800, 2000, 2400] ✓     composed           [2160, 2160, 2160] ✓
+
+  ⛔ THE ELIMINATED COPY IS THE WHOLE INTERVAL, NOT A POINT, and getting that wrong is the
+  first mistake this fixture caught — in the hand that wrote it. `Elimination` subtracts
+  COMPONENT-WISE and does not reverse bounds, because it removes "a COMPONENT OF THE VERY
+  FIGURE IT IS REMOVED FROM". For two views of one quantity that argument is not merely
+  applicable, it is exact: the removed copy IS the figure, so it moves with it at every bound.
+
+  ⚠️ AND THE SUM RULE STAYS EXACT THROUGH IT. A checker owes the same arithmetic here as for
+  any other fusion; nothing is suspended and nothing is special-cased. That is the test of
+  whether the composition answer was the right one — if it needed the rule relaxed, it was not.
+
+  ⭐ WHY THE TWO VIEWS ARE NOT THE SAME DOCUMENT. Identical magnitudes throughout, and the
+  HOLDERS differ: `as-filed` puts the shortfall on `people`, which no instrument reaches;
+  `as-contracted` puts it on `counterparty`, which invoices. Same number, one invisible and one
+  recoverable. Nobody is wrong and nothing was corrected — the second reading is what makes the
+  quantity legible, which is this model's own thesis pointed at a filing instead of a business.
+-->
+<asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
+                  xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>audit-firm</asrt:witness>
+  <asrt:observedAt>2026-09-01</asrt:observedAt>
+  <asrt:provenance>
+    <pm:party>audit-firm</pm:party>
+    <!-- ⭐ REQUIRED NOW, AND THIS DOCUMENT IS WHY. What `both-views` MEANS depends entirely on
+         who filed it: a parent asserting a group's system, or a third party holding two
+         readings of somebody else's. The layers are identical; the standing is the only field
+         that says which you are reading. -->
+    <pm:standing>
+      <pm:term>
+        <pm:taxonomy>urn:example:engagement:standing</pm:taxonomy>
+        <pm:value>external-reviewer</pm:value>
+      </pm:term>
+    </pm:standing>
+    <pm:note>stipulated standing; this document is a fixture and attests to nothing</pm:note>
+  </asrt:provenance>
+
+  <asrt:regime>
+    <pm:id>stipulated</pm:id>
+    <pm:framework>
+      <pm:absent><pm:reason>notApplicable</pm:reason>
+        <pm:note>a fixture reports under no framework</pm:note></pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent><pm:reason>notApplicable</pm:reason>
+        <pm:note>no positions are coded here</pm:note></pm:absent>
+    </pm:chart>
+  </asrt:regime>
+
+  <pm:processModulus>
+    <!-- ⭐⭐ THE SELF-IDENTIFIER, AND THE WHOLE REASON THIS FIXTURE VALIDATES. The two parts of
+         `both-views` cite exactly this URN, which is how they are known to be local. -->
+    <pm:notation>
+      <pm:uri>urn:example:fixture:audit-firm:every-local-part</pm:uri>
+    </pm:notation>
+
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>stipulated: one line of the bakery's system, held three ways. The bakery
+                    runs more than this and this document does not carry it</pm:basis>
+        </pm:scope>
+      </pm:scope>
+      <pm:layer>
+        <pm:name>as-filed</pm:name>
+        <pm:demand>
+          <pm:claim>
+            <pm:low>1800</pm:low><pm:mostLikely>2000</pm:mostLikely><pm:high>2400</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the oven line, as the bakery filed it</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>2160</pm:low><pm:mostLikely>2160</pm:mostLikely><pm:high>2160</pm:high>
+                <pm:unit>muffins per day</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent><pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent><pm:reason>derived</pm:reason>
+                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                </pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
+                      <pm:unit>muffins per day</pm:unit>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason>
+                          <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason>
+                          <pm:note>the origin below states it</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason>
+                    <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason>
+                <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>customer</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>as-contracted</pm:name>
+        <pm:demand>
+          <pm:claim>
+            <pm:low>1800</pm:low><pm:mostLikely>2000</pm:mostLikely><pm:high>2400</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the same oven line, read as contracted capacity</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>2160</pm:low><pm:mostLikely>2160</pm:mostLikely><pm:high>2160</pm:high>
+                <pm:unit>muffins per day</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent><pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent><pm:reason>derived</pm:reason>
+                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                </pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
+                      <pm:unit>muffins per day</pm:unit>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason>
+                          <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason>
+                          <pm:note>the origin below states it</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason>
+                    <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason>
+                <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>customer</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>both-views</pm:name>
+        <pm:demand>
+          <pm:claim>
+            <pm:low>1800</pm:low><pm:mostLikely>2000</pm:mostLikely><pm:high>2400</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the oven line, both readings held together</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>2160</pm:low><pm:mostLikely>2160</pm:mostLikely><pm:high>2160</pm:high>
+                <pm:unit>muffins per day</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent><pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent><pm:reason>derived</pm:reason>
+                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                </pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
+                      <pm:unit>muffins per day</pm:unit>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason>
+                          <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason>
+                          <pm:note>the origin below states it</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason>
+                    <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason>
+                <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>customer</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:couplings>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>stipulated: these three layers are readings of ONE line rather than a set
+                   of independent quantizations, so there is no pair to couple. ⛔ It is also
+                   why they must never be summed</pm:note>
+        </pm:absent>
+      </pm:couplings>
+    </pm:stack>
+  </pm:processModulus>
+
+  <!-- 1. THEIRS. One part, foreign, carried through unchanged. -->
+  <asrt:fusion>
+    <asrt:name>as-filed</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>bakery</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:bakery:every-absence</pm:notation>
+          <pm:id>oven</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-01</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>The bakery's own oven line, carried through with nothing altered, so that
+                    the reading below has an unmodified thing to be a reading OF. A one-part
+                    fusion is not degenerate: it says this reviewer read that layer and
+                    carried it.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <!-- 2. MINE. No fusion at all: an ORIGINATED layer, which the schema has always allowed.
+       ⚠️ It is NOT a correction and NOT a proposal. It is real in this document's context,
+       asserted by this witness, and a marker saying otherwise would be a document arguing
+       with its own signature. -->
+
+  <!-- 3. BOTH. Two LOCAL parts, and the elimination that says they are one quantity. -->
+  <asrt:fusion>
+    <asrt:name>both-views</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>audit-firm</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:audit-firm:every-local-part</pm:notation>
+          <pm:id>as-filed</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-01</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>audit-firm</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:audit-firm:every-local-part</pm:notation>
+          <pm:id>as-contracted</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-01</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>FUNGIBLE IN THE STRONGEST POSSIBLE SENSE: they are the same line. A unit
+                    of supply in one IS a unit of supply in the other, so the fungibility test
+                    is satisfied trivially — and that is precisely why the arithmetic must
+                    remove one whole copy rather than adding them.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:claim>
+            <pm:low>1800</pm:low><pm:mostLikely>2000</pm:mostLikely><pm:high>2400</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>notApplicable</pm:reason>
+                <pm:note>this is one view removed whole; there is no range to tighten</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>derived</pm:reason>
+                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </asrt:quantity>
+        <asrt:against>demand</asrt:against>
+        <asrt:observed>The two parts are one demand read twice, not two demands. Removing one whole copy is what makes the fused figure the quantity rather than double it.</asrt:observed>
+      </asrt:elimination>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:claim>
+            <pm:low>2160</pm:low><pm:mostLikely>2160</pm:mostLikely><pm:high>2160</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>notApplicable</pm:reason>
+                <pm:note>this is one view removed whole; there is no range to tighten</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>derived</pm:reason>
+                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </asrt:quantity>
+        <asrt:against>nameplate</asrt:against>
+        <asrt:observed>The same line has one rating. Both parts state it and the fused layer must not carry it twice.</asrt:observed>
+      </asrt:elimination>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+</asrt:composition>

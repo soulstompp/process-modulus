@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔⛔⛔ A STIPULATION, NOT A FILING. Nothing here was observed. This document exists so that
+  the states `assets/corpus/` does not reach are known to validate and to be handled, and it
+  must never be cited as evidence about anything.
+
+  ⭐ IT LIGHTS THE FIVE DARK STATES THE COVERAGE MATRIX FOUND, and the sharpest is the FIRST:
+
+    couplings  absent none        somebody looked and the layers ARE independent
+    window     absent none        a supply that runs continuously against a rate unit
+    sign       absent unmeasured  nobody compared demand against the nameplate
+    sign       absent derived     both are stated, so the fit is computable
+    boundOrigin absent notApplicable  the claim is not a bound on a committed quantity
+
+  ⚠️ `sign` is the one worth reading twice. `StatedFit`'s annotation spends four paragraphs
+  defending the wrapper's existence and the CORPUS FILES TWENTY-ONE VALUES AND NOT ONE
+  ABSENCE, so every argument in it was untested until this file.
+-->
+<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
+       before S-28 was repaired no document could say it. -->
+  <pm:notation>
+    <pm:uri>urn:example:fixture:bakery:every-absence</pm:uri>
+  </pm:notation>
+
+  <pm:stack>
+    <pm:scope>
+      <pm:scope>
+        <pm:extent>complete</pm:extent>
+        <pm:basis>stipulated: this fixture IS its system, and there is nothing outside it to bring into scope. ⭐ The only place `complete` is honest, because the system is invented</pm:basis>
+      </pm:scope>
+    </pm:scope>
+
+    <!-- ============================================================
+         A continuously running line. Two layers, so there is a pair
+         to couple, and somebody relieved one and watched the other.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>oven</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>1800</pm:low>
+          <pm:mostLikely>2000</pm:mostLikely>
+          <pm:high>2400</pm:high>
+          <pm:unit>muffins per day</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing would tighten this range, because the width is
+                       the day-to-day movement of the trade rather than anything unmeasured</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note>
+            </pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:absent>
+          <pm:reason>derived</pm:reason>
+          <pm:note>stipulated: the line runs continuously and the window says so, so the
+                   spare IS spread evenly across the denominator and the clearance
+                   converts. This is the ONLY combination that licenses a derived time
+                   slack, and it is here to prove the rule has a passing side</pm:note>
+        </pm:absent>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the oven line</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>2160</pm:low>
+              <pm:mostLikely>2160</pm:mostLikely>
+              <pm:high>2160</pm:high>
+              <pm:unit>muffins per day</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent><pm:reason>derived</pm:reason>
+                  <pm:note>amountOrigin below states who could hold a different number</pm:note></pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
+                    <pm:unit>muffins per day</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason>
+                        <pm:note>the origin below states who sets the tray size</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+              <!-- ⭐⭐ THE STATE `assets/corpus/` CANNOT REACH. Its units are almost all
+                   stocks, and of the three with a denominator two have an unmeasured duty
+                   cycle and one is the shared line. A supply that genuinely runs continuously
+                   against a RATE unit is the `none` case, and it is here. -->
+              <pm:window>
+                <pm:absent>
+                  <pm:reason>none</pm:reason>
+                  <pm:note>stipulated: the line runs every hour of every day, so the duty
+                           fraction is one and there is no live part to be a part OF</pm:note>
+                </pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: the oven can be pushed and nobody has measured how far</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: a muffin baked today is not a muffin for next week</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: the count is not kept</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <!-- ⭐⭐ `derived`, WHICH THE CORPUS NEVER FILES. Demand and nameplate are both
+               stated, so the fit is computable and sending a value here could disagree with
+               its own inputs. `StatedFit`'s annotation makes exactly this argument and had
+               nothing exercising it. -->
+          <pm:sign>
+            <pm:absent>
+              <pm:reason>derived</pm:reason>
+              <pm:note>demand and nameplate are both stated, so the receiver computes the fit
+                       rather than reading a value that could contradict them</pm:note>
+            </pm:absent>
+          </pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason>
+                  <pm:note>stipulated: nobody counts the customers who left</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         A layer with no nameplate at all, which is where `sign`
+         is `notApplicable` and `unmeasured` both become filable.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>counter</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>0.4</pm:low>
+          <pm:mostLikely>0.5</pm:mostLikely>
+          <pm:high>0.6</pm:high>
+          <pm:unit>share of customers served within two minutes</pm:unit>
+          <pm:narrowsWhen>
+            <pm:narrowing>
+              <pm:condition>the queue timer is read off the till rather than estimated</pm:condition>
+              <pm:kind>instrument</pm:kind>
+            </pm:narrowing>
+          </pm:narrowsWhen>
+          <!-- ⭐ `notApplicable`, WHICH THE CORPUS NEVER FILES ANYWHERE. A share of
+               customers is not a committed quantity: there is no author to ask about the
+               edge of it, so the question is malformed rather than unanswered. -->
+          <pm:boundOrigin>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio is not a quantity anybody commits, so asking who could have
+                       committed a different edge of it is malformed rather than unanswered</pm:note>
+            </pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:absent><pm:reason>notApplicable</pm:reason>
+          <pm:note>a ratio does not wait</pm:note></pm:absent>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the counter</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>nothing is committed in advance; there is no rating to exceed</pm:note></pm:absent>
+          </pm:amount>
+          <pm:amountOrigin>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no committed amount here to have an origin</pm:note></pm:absent>
+          </pm:amountOrigin>
+          <!-- ⭐ `StatedDivisibility` as `none`, which the corpus also never files: this
+               subject IS a supply and it divides neither way, because a ratio has no unit
+               to come in whole ones of. -->
+          <pm:divisibility>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio is neither bought in whole units nor bought continuously; the
+                       axis does not apply</pm:note>
+            </pm:absent>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no rating to run above</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio is not stockpiled</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <!-- ⭐ `notApplicable`: there is no nameplate to compare against, so asking which
+               way the two ranges sit is MALFORMED rather than unanswered. `StatedFit` names
+               exactly this case — "notApplicable on a layer with no nameplate to compare
+               against" — and nothing in the corpus exercised it. -->
+          <pm:sign>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>nothing is committed here, so there is no rating for the demand to sit
+                       above or below and the comparison has no second operand</pm:note>
+            </pm:absent>
+          </pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>time</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason>
+                  <pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>with no nameplate there is nothing to difference against</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+
+    <!-- ============================================================
+         A SECOND OVEN, in the same unit, so that every-elimination.xml
+         has two fungible parts to fuse. Nothing else here needs it.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>oven-b</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>900</pm:low>
+          <pm:mostLikely>1000</pm:mostLikely>
+          <pm:high>1200</pm:high>
+          <pm:unit>muffins per day</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated</pm:note></pm:absent>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the second oven line</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>1080</pm:low><pm:mostLikely>1080</pm:mostLikely><pm:high>1080</pm:high>
+              <pm:unit>muffins per day</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent><pm:reason>derived</pm:reason>
+                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
+                    <pm:unit>muffins per day</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason>
+                        <pm:note>the origin below states it</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+              <pm:window>
+                <pm:absent><pm:reason>none</pm:reason>
+                  <pm:note>stipulated: this line also runs continuously</pm:note></pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: a muffin baked today is not one for next week</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason>
+                  <pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         DELIVERY. One layer whose RATING nobody has measured, which is
+         the only honest home for `sign absent unmeasured`: with the
+         nameplate absent the fit cannot be derived, and nobody compared.
+         ⚠️ Where both figures ARE stated the honest filing is `derived`,
+         not `unmeasured` — a receiver can compute it, so claiming nobody
+         knows would be false. That is why this needs its own layer.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>delivery</pm:name>
+
+      <pm:demand>
+        <pm:claim>
+          <pm:low>40</pm:low><pm:mostLikely>55</pm:mostLikely><pm:high>80</pm:high>
+          <pm:unit>drops per day</pm:unit>
+          <pm:narrowsWhen>
+            <pm:narrowing>
+              <pm:condition>the van tracker is read rather than the driver's own log</pm:condition>
+              <pm:kind>instrument</pm:kind>
+            </pm:narrowing>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated: a drop deferred to tomorrow is still a drop, and how long a
+                   customer waits before cancelling is not measured</pm:note></pm:absent>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the van round</pm:label>
+        <pm:nameplate>
+          <!-- ⭐ THE RATING NOBODY HAS MEASURED. A van round has a capacity and nobody has
+               established it, which is different from there being none. -->
+          <pm:amount>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has established how many drops a round holds</pm:note></pm:absent>
+          </pm:amount>
+          <pm:amountOrigin>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>with no committed amount, who could commit a different one is
+                       untested rather than malformed: somebody could go and ask</pm:note></pm:absent>
+          </pm:amountOrigin>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:continuous>
+                <pm:premium>
+                  <pm:absent><pm:reason>unmeasured</pm:reason>
+                    <pm:note>stipulated: nobody has priced the round against a whole-van
+                             commitment</pm:note></pm:absent>
+                </pm:premium>
+              </pm:continuous>
+              <pm:window>
+                <pm:absent><pm:reason>unmeasured</pm:reason>
+                  <pm:note>stipulated: `drops per day` has a period and nobody has said what
+                           part of it the round is live for</pm:note></pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: an unused drop slot does not keep</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <pm:remainder>
+        <pm:remainder>
+          <!-- ⭐⭐ `unmeasured`, AND IT IS NOT INTERCHANGEABLE WITH `notApplicable` NEXT DOOR.
+               The counter has no rating to compare against and never will; this round HAS one
+               and nobody has measured it. One is a category error, the other is a gap an
+               instrument would close. -->
+          <pm:sign>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>the round has a capacity and nobody has established it, so which way
+                       these two ranges sit is unknown rather than unaskable</pm:note>
+            </pm:absent>
+          </pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>time</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>with no nameplate there is nothing to difference against</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         TWO DOUGH MIXERS, a second fungible pair in their own unit.
+         `partIdentity` is an `xs:key`, so no filed layer may be
+         consolidated twice — which is why every-elimination.xml needs
+         four parts rather than reusing two.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>mixer</pm:name>
+      <pm:demand>
+        <pm:claim>
+          <pm:low>1400</pm:low><pm:mostLikely>1600</pm:mostLikely><pm:high>1900</pm:high>
+          <pm:unit>doughs per day</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+      </pm:timeSlack>
+      <pm:supply>
+        <pm:label>the first dough mixer</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>1500</pm:low><pm:mostLikely>1500</pm:mostLikely><pm:high>1500</pm:high>
+              <pm:unit>doughs per day</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent><pm:reason>derived</pm:reason>
+                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>25</pm:low><pm:mostLikely>25</pm:mostLikely><pm:high>25</pm:high>
+                    <pm:unit>doughs per day</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason>
+                        <pm:note>the origin below states it</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+              <pm:window>
+                <pm:absent><pm:reason>none</pm:reason>
+                  <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+    <pm:layer>
+      <pm:name>mixer-b</pm:name>
+      <pm:demand>
+        <pm:claim>
+          <pm:low>900</pm:low><pm:mostLikely>1000</pm:mostLikely><pm:high>1200</pm:high>
+          <pm:unit>doughs per day</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+          </pm:boundOrigin>
+        </pm:claim>
+      </pm:demand>
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+      </pm:timeSlack>
+      <pm:supply>
+        <pm:label>the second dough mixer</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>1050</pm:low><pm:mostLikely>1050</pm:mostLikely><pm:high>1050</pm:high>
+              <pm:unit>doughs per day</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent><pm:reason>derived</pm:reason>
+                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+          <pm:divisibility>
+            <pm:divisibility>
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>25</pm:low><pm:mostLikely>25</pm:mostLikely><pm:high>25</pm:high>
+                    <pm:unit>doughs per day</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason>
+                        <pm:note>the origin below states it</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>intrinsic</pm:origin>
+              </pm:lumpy>
+              <pm:window>
+                <pm:absent><pm:reason>none</pm:reason>
+                  <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>none</pm:reason>
+              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>transition</pm:fit></pm:sign>
+          <pm:absorber>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
+          </pm:absorber>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <pm:quantity>
+            <pm:absent><pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ⭐⭐⭐ THE ONE THE CORPUS CANNOT FILE, AND THE REASON THIS DIRECTORY EXISTS.
+         `none` here is a HEAVY claim: somebody relieved one layer's constraint and watched
+         the other, and the other did not move. Not one of the seven filings in
+         `assets/corpus/` has done that, which is a fact about the state of the evidence and
+         is reported as one. Stipulating it here proves the branch works and asserts nothing
+         about any business.
+         ⚠️ `Absence/note` says HOW it was established, because `none` without that is a
+         bolder silence than the blank it replaced. -->
+    <pm:couplings>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>stipulated: the oven was taken from one tray size to two over four weeks
+                 while the counter rota was held fixed, and the counter's service share did
+                 not move outside its filed range. Relief applied to one layer did not reach
+                 the other, which is what independence means and what the corpus has never
+                 actually tested</pm:note>
+      </pm:absent>
+    </pm:couplings>
+
+  </pm:stack>
+</pm:processModulus>
