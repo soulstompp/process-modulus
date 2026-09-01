@@ -207,7 +207,7 @@ trabalho.
 
 **É a consolidação inteira, escrita uma vez.** `FΦx − e` — tomar os membros, pô-los numa unidade,
 somá-los ao longo da incidência de participações, subtrair o que foi contado duas vezes. → **e é
-verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), oito camadas, ao
+verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), onze camadas, ao
 dígito.**
 
 ### O plano de contas é uma base, e dois planos são duas bases
@@ -382,7 +382,7 @@ n.amount_high - l.demand_low  AS r_high
 ```
 
 Depois recalcula o ajustamento a partir desses extremos e compara com o que o documento declarou.
-**Vinte e uma camadas, vinte e uma concordâncias.** É o critério da própria ISO 286 — um ajustamento
+**Trinta e duas camadas, trinta e duas concordâncias.** É o critério da própria ISO 286 — um ajustamento
 compara dois *intervalos*, e não dois pontos — e o XSD não o consegue enunciar de forma nenhuma.
 → **verificado independentemente na [§1](#1-o-ajustamento-recalculado-a-partir-dos-intervalos)**
 
@@ -403,7 +403,7 @@ resto.** → **verificado na [§4](#4-φ-correlacionado-consigo-próprio)**
 
 ### E a regra da fusão confere
 
-`x_composta = F Φ x_partes − e`, ao longo de oito camadas compostas, exata nos três extremos.
+`x_composta = F Φ x_partes − e`, ao longo de onze camadas compostas, exata nos três extremos.
 
 Estava errada da primeira vez que correu, porque me esqueci do `e`. As eliminações são o termo que
 se deixa cair, e numa camada isso são 90 GPU-hora de procura contadas nas declarações de dois
@@ -486,39 +486,41 @@ uma fusão que absorva um acoplamento entre as suas próprias partes tem de o di
 ```
 
 Também reportado aqui: a cobertura do `narrowsWhen`. A anotação diz *«uma afirmação sem ele é mais
-fraca, e quem recebe tem direito a dizê-lo»* — portanto quem recebe di-lo com um número. **18 de 23
-procuras com intervalo (78%) recusam-se a dizer o que as estreitaria.** Julgar se uma dada frase
+fraca, e quem recebe tem direito a dizê-lo»* — portanto quem recebe di-lo com um número. **20 de 26
+procuras com intervalo (77%) recusam-se a dizer o que as estreitaria.** Julgar se uma dada frase
 estreitaria *de facto* o intervalo é prosa. Contar que afirmações se recusam a oferecer uma não é.
 
 **3. Cobertura**, e esta importa mais do que a primeira:
 
 ```
-uma afirmação com intervalo não declara narrowsWhen como notApplicable   23   ok
-o sinal concorda com a comparação de intervalos                          21   ok
-um quantum é expresso na unidade da capacidade nominal que divide        20   ok
-a capacidade nominal é múltiplo inteiro do quantum                       20   ok
-as parcelas declaradas somam a grandeza                                  18   ok
-uma janela é notApplicable só onde a unidade não tem denominador         14   ok
-uma referência de parte resolve para uma declaração que está aqui        12   ok
-um ajustamento de folga exclui customer e unrealised                      8   ok
-nenhuma camada-folha é alcançável por dois caminhos                       7   ok
-uma fusão que absorva um acoplamento entre as suas partes tem de o dizer  5   ok
-um acoplamento atenua-se numa fusão, limitado pela quota da parte         4   ok
-uma margem é expressa na unidade das parcelas que limita                  4   ok
-uma fusão só chama malformada à dupla contagem quando tem uma parte       3   ok
-uma janela é transportada através de uma fusão e nunca somada             3   ok
-um zero medido é declarado como ausência, e não como afirmação de zero    2   fina
-uma parcela não excede a margem do amortecedor que a absorveu             2   fina
-uma oferta que não pode correr acima nomeia quem ficou por servir         2   fina
-a exposição não excede a margem mais as parcelas por servir               2   fina
-uma margem de tempo derivada precisa de uma janela que o permita          0   VÁCUA
-um valor pontual declara narrowsWhen como notApplicable, por não ter      0   VÁCUA
+uma afirmação com intervalo não declara narrowsWhen como notApplicable           37   ok
+o sinal concorda com a comparação de intervalos                                  33   ok
+um quantum é expresso na unidade da capacidade nominal que divide                32   ok
+a capacidade nominal é múltiplo inteiro do quantum                               32   ok
+as parcelas declaradas somam a grandeza                                          20   ok
+uma referência de parte resolve para uma declaração que está aqui                19   ok
+uma janela é notApplicable só onde a unidade não tem denominador                 16   ok
+nenhuma camada-folha é alcançável por dois caminhos                              10   ok
+um ajustamento de folga exclui customer e unrealised                              9   ok
+uma margem é expressa na unidade das parcelas que limita                          6   ok
+uma fusão que absorva um acoplamento entre as suas partes tem de o dizer          5   ok
+um acoplamento atenua-se numa fusão, limitado pela quota da parte                 4   ok
+uma fusão só chama malformada à dupla contagem quando tem uma parte               4   ok
+um zero medido é declarado como ausência, e não como afirmação de zero            3   ok
+uma parcela não excede a margem do amortecedor que a absorveu                     3   ok
+uma oferta que não pode correr acima nomeia quem ficou por servir                 3   ok
+uma janela é transportada através de uma fusão e nunca somada                     3   ok
+a exposição não excede a margem mais as parcelas por servir                       3   ok
+uma parte local nomeia uma camada da sua própria pilha                            2   fina
+as partes locais não ciclam                                                       2   fina
+uma margem de tempo derivada precisa de uma janela que o permita                  1   fina
+um valor pontual declara narrowsWhen como notApplicable, por não ter intervalo    0   VÁCUA
 ```
 
-**As duas últimas linhas são a maquinaria a funcionar**, e não um defeito dela. Cada uma apanha um
-erro real — um valor pontual não tem intervalo para estreitar, portanto um `narrowsWhen` num deles é
-uma cópia ou uma afirmação declarada com a largura errada — e este conjunto não contém nenhum,
-portanto não provam nada aqui e dizem-no. Uma regra reportada como `ok` quando não examinou nada é o
+**A última linha é a maquinaria a funcionar**, e não um defeito dela. Apanha um erro real — um
+valor pontual não tem intervalo para estreitar, portanto um `narrowsWhen` num deles é uma cópia ou
+uma afirmação declarada com a largura errada — e este conjunto não contém nenhum, portanto não prova
+nada aqui e di-lo. Uma regra reportada como `ok` quando não examinou nada é o
 zero perigoso; uma regra reportada como VÁCUA é uma regra em que se pode confiar quanto ao resto da
 tabela.
 
@@ -530,8 +532,8 @@ defeito vivo à primeira execução, uma camada composta que tinha deixado cair 
 funcionamento da sua parte, onde a queda era idêntica byte a byte a uma linha que corre sete dias
 por semana. → **[§6](#6-o-zero-que-afinal-eram-dois)**
 
-Outras quatro são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
-uma margem numérica.
+Outras três são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
+uma margem numérica, e a composição local é exercitada por um único documento de estipulação.
 
 ### Acoplamentos, e as três formas em que aparecem
 
@@ -604,7 +606,7 @@ como aritmética vetorial, uma linha por extremo. Depois classifica cada camada 
 286 e compara com o `sign` declarado.
 
 ```
-1. ajustamentos recalculados a partir dos intervalos: 21 camadas, 0 discordâncias
+1. ajustamentos recalculados a partir dos intervalos: 32 camadas, 0 discordâncias
 ```
 
 Também afirma `n >= 20` antes de afirmar seja o que for sobre as respostas, para que a verificação
@@ -614,7 +616,7 @@ os extremos](#r--n--d-inverte-os-extremos).*
 ### 2. `DᵀN`, o bom zero
 
 ```
-2. D-transposta N: 1 operação consome e induz, 0 com ambos declarados
+2. D-transposta N: 2 operações consomem e induzem, 0 com ambos declarados
    «Fechar um contrato empresarial» consome de `labour` e compromete `capability`,
       e O CONSUMO ESTÁ POR MEDIR, portanto o produto é vazio.
 ```
@@ -632,7 +634,7 @@ diagonal. Depois a fusão são três produtos matriciais a sério, um por extrem
 comparado com a procura que a camada composta declarou.
 
 ```
-3. F.Phi.x - e contra a procura composta declarada: 8 camadas, todas concordam
+3. F.Phi.x - e contra a procura composta declarada: 11 camadas, todas concordam; 1 suspensa
 ```
 
 ⭐⭐ **É aqui que «um produto matricial é uma junção com um `GROUP BY`» é verificado.** O
@@ -664,8 +666,8 @@ A única secção onde a forma matricial **perde**, guardada para o fim porque �
 volta de vitória.
 
 ```
-5. C densificada para 7x7: 3 declarações enunciam um acoplamento, 0 afirmam independência, 4 não dizem nada
-   Em `values` as 49 entradas são todas 0.0 e indistinguíveis.
+5. C densificada para 8x8: 3 declarações enunciam um acoplamento, 0 afirmam independência, 5 não dizem nada
+   Em `values` as 64 entradas são todas 0.0 e indistinguíveis.
 ```
 
 Uma declaração onde ninguém foi ver e uma declaração onde alguém foi ver e não encontrou nada
@@ -710,7 +712,7 @@ corretos.** Nada num booleano, ou numa lista vazia, aponta para o que ele não c
 
 ⛔⛔ **Leia-se a linha que não está lá.** Nenhuma pilha deste conjunto afirma independência. A
 afirmação central do modelo — a de que uma camada é um sítio onde um resto é suportado
-*independentemente do de todas as outras* — nunca foi testada em sete declarações, e foi uma vez
+*independentemente do de todas as outras* — nunca foi testada em oito declarações, e foi uma vez
 contradita. Isso é um facto sobre a PROVA e não sobre um documento qualquer, e só é um facto porque
 a lista vazia deixou de ser uma resposta.
 

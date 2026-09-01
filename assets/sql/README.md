@@ -201,7 +201,7 @@ your work already.
 
 **That is the entire consolidation, written once.** `FΦx − e` — take the members, put them in one
 unit, add them along the ownership incidence, subtract what was counted twice. → **and it is
-checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), eight layers, to the
+checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), eleven layers, to the
 digit.**
 
 ### The chart of accounts is a basis, and two charts are two bases
@@ -369,7 +369,7 @@ n.amount_high - l.demand_low  AS r_high
 ```
 
 Then it recomputes the fit from those bounds and compares against what the document filed.
-**Twenty-one layers, twenty-one agreements.** That is ISO 286's own criterion — a fit compares
+**Thirty-two layers, thirty-two agreements.** That is ISO 286's own criterion — a fit compares
 two *ranges*, not two points — and XSD cannot state it in any form.
 → **checked independently in [§1](#1-the-fit-recomputed-from-the-ranges)**
 
@@ -469,40 +469,42 @@ a fusion absorbing a coupling between its own parts must say so
 
 Also reported here: `narrowsWhen` coverage. The annotation says *"a claim without it is
 weaker, and a receiver is entitled to say so"* — so the receiver says it with a number.
-**18 of 23 ranged demands (78%) decline to say what would tighten them.** Judging whether a
+**20 of 26 ranged demands (77%) decline to say what would tighten them.** Judging whether a
 given sentence would *actually* narrow the range is prose. Counting which claims decline to
 offer one is not.
 
 **3. Coverage**, and this one matters more than the first:
 
 ```
-a ranged claim does not file narrowsWhen as notApplicable            23   ok
-sign agrees with the range comparison                                21   ok
-a quantum is expressed in the unit of the nameplate it divides       20   ok
-the nameplate is a whole multiple of the quantum                     20   ok
-stated shares sum to the magnitude                                   18   ok
-a window is notApplicable only where the unit has no denominator     14   ok
-a part reference resolves to a filing that is here                   12   ok
-a clearance fit rules out customer and unrealised                     8   ok
-no leaf layer is reachable through two paths                          7   ok
-a fusion absorbing a coupling between its own parts must say so       5   ok
-a coupling attenuates through a fusion, bounded by the part's share   4   ok
-a slack is expressed in the unit of the shares it bounds              4   ok
-a fusion calls double counting malformed only when it has one part    3   ok
-a window is carried through a fusion and never summed                 3   ok
-a measured zero is filed as an absence, not a claim of zero           2   thin
-a share does not exceed the slack of the buffer that absorbed it      2   thin
-a supply that cannot run hot names who went unserved                  2   thin
-exposure does not exceed slack plus unserved shares                   2   thin
-a derived time slack needs a window that permits the derivation       0   VACUOUS
-a point value files narrowsWhen as notApplicable, having no range     0   VACUOUS
+a ranged claim does not file narrowsWhen as notApplicable             37   ok
+sign agrees with the range comparison                                 33   ok
+a quantum is expressed in the unit of the nameplate it divides        32   ok
+the nameplate is a whole multiple of the quantum                      32   ok
+stated shares sum to the magnitude                                    20   ok
+a part reference resolves to a filing that is here                    19   ok
+a window is notApplicable only where the unit has no denominator      16   ok
+no leaf layer is reachable through two paths                          10   ok
+a clearance fit rules out customer and unrealised                      9   ok
+a slack is expressed in the unit of the shares it bounds               6   ok
+a fusion absorbing a coupling between its own parts must say so        5   ok
+a coupling attenuates through a fusion, bounded by the part's share    4   ok
+a fusion calls double counting malformed only when it has one part     4   ok
+a measured zero is filed as an absence, not as a claim of zero         3   ok
+a share does not exceed the slack of the buffer that absorbed it       3   ok
+a supply that cannot run hot names who went unserved                   3   ok
+a window is carried through a fusion and never summed                  3   ok
+exposure does not exceed slack plus unserved shares                    3   ok
+a local part names a layer in its own stack                            2   thin
+local parts do not cycle                                               2   thin
+a derived time slack needs a window that permits the derivation        1   thin
+a point value files narrowsWhen as notApplicable, having no range      0   VACUOUS
 ```
 
-**The last two lines are the machinery working**, not a defect in it. Each catches a real
-mistake — a point value has no range to tighten, so `narrowsWhen` on one is a paste or a claim
-filed at the wrong width — and this corpus contains none, so they prove nothing here and say so.
-A rule reported as `ok` when it examined nothing is the dangerous zero; a rule reported as
-VACUOUS is a rule you can trust the rest of the table about.
+**The last line is the machinery working**, not a defect in it. It catches a real mistake — a
+point value has no range to tighten, so `narrowsWhen` on one is a paste or a claim filed at the
+wrong width — and this corpus contains none, so it proves nothing here and says so. A rule
+reported as `ok` when it examined nothing is the dangerous zero; a rule reported as VACUOUS is a
+rule you can trust the rest of the table about.
 
 ⭐⭐ **Four of these rows are new and none of them is a new idea.** Each was already written down
 in the schemas' prose and was UNCHECKABLE, because in each case the state it turns on was a blank
@@ -511,8 +513,8 @@ by. *A window is carried through a fusion and never summed* is the sharpest: it 
 defect on its first run, a composed layer that had dropped its part's duty cycle where the drop
 was byte-identical to a line that runs seven days a week. → **[§6](#6-the-zero-that-turned-out-to-be-two)**
 
-Four more are thin for the same reason the Rust tests are: almost nothing in the corpus files a
-numeric slack.
+Three more are thin for the same reason the Rust tests are: almost nothing in the corpus files a
+numeric slack, and local composition is exercised by one fixture.
 
 ### Couplings, and the three shapes they come in
 
@@ -583,7 +585,7 @@ as vector arithmetic, one line per bound. Then classifies each layer by ISO 286'
 compares to the filed `sign`.
 
 ```
-1. fits recomputed from the ranges: 21 layers, 0 disagreements
+1. fits recomputed from the ranges: 32 layers, 0 disagreements
 ```
 
 It also asserts `n >= 20` before it asserts anything about the answers, so the check cannot
@@ -593,7 +595,7 @@ bounds](#r--n--d-reverses-its-bounds).*
 ### 2. `DᵀN`, the good zero
 
 ```
-2. D-transpose N: 1 operation both draws and induces, 0 with both stated
+2. D-transpose N: 2 operations both draw and induce, 0 with both stated
    'Close an enterprise contract' draws on `labour` and commits `capability`,
       and THE DRAW IS UNMEASURED, so the product is empty.
 ```
@@ -610,7 +612,7 @@ diagonal. Then the fusion is three real matrix products, one per bound, and each
 compared against the demand the composed layer filed.
 
 ```
-3. F.Phi.x - e against the filed composed demand: 8 layers, all agree
+3. F.Phi.x - e against the filed composed demand: 11 layers, all agree; 1 suspended
 ```
 
 ⭐⭐ **This is where "a matrix product is a join with a `GROUP BY`" gets checked.**
@@ -640,8 +642,8 @@ The one section where the matrix form **loses**, kept at the end because it is m
 a victory lap.
 
 ```
-5. C densified to 7x7: 3 filings state a coupling, 0 assert independence, 4 say nothing
-   In `values` all 49 entries are 0.0 and indistinguishable.
+5. C densified to 8x8: 3 filings state a coupling, 0 assert independence, 5 say nothing
+   In `values` all 64 entries are 0.0 and indistinguishable.
 ```
 
 A filing where nobody looked and a filing where somebody looked and found nothing become the same
@@ -686,7 +688,7 @@ boolean, or in an empty list, points at what it cannot say.
 
 ⛔⛔ **Read the row that is not there.** No stack in this corpus asserts independence. The
 model's central claim — that a layer is a place where a remainder is held *independently of every
-other layer's* — has never been tested in seven filings, and has once been contradicted. That is
+other layer's* — has never been tested in eight filings, and has once been contradicted. That is
 a fact about the EVIDENCE rather than about any one document, and it is a fact only because the
 empty list stopped being an answer.
 
