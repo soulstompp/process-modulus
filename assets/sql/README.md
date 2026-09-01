@@ -16,17 +16,17 @@ Look at what those rules actually say. *The shares sum to the magnitude. The sig
 the range comparison. No leaf is reachable by two paths.* Those are joins and sums and
 comparisons — impossible in a grammar, ordinary in a query language.
 
-⛔ **What this is not.** It is not a recommended database schema. Nothing here is normalised
+**What this is not.** It is not a recommended database schema. Nothing here is normalised
 for writing, indexed for a workload, or shaped for an application. Copy the ideas, not the
 layout.
 
-⭐ **Three ways in, and they are the same subject at three depths.** Take whichever one is
+**Three ways in, and they are the same subject at three depths.** Take whichever one is
 already your daily tool — you can read any of them first and the other two refer to it.
 
 | you work in | start at | it will get you |
 |---|---|---|
 | SQL, data modelling | [from the relational side](#from-the-relational-side) | why an empty table is not a zero |
-| **consolidation, audit, reporting** | ⭐ [from the financial side](#from-the-financial-side) | the consolidation you already do, written as one expression — and the one place your instinct is wrong |
+| **consolidation, audit, reporting** | [from the financial side](#from-the-financial-side) | the consolidation you already do, written as one expression — and the one place your instinct is wrong |
 | matrices, optimisation | [from the linear-algebra side](#from-the-linear-algebra-side) | what a range does that a number does not |
 
 ## Running it
@@ -81,7 +81,7 @@ along an ownership structure IS `Fx`; the incidence is which member rolls into w
 **[from the financial side](#from-the-financial-side)**, which is the shallow end of the same
 water and the place to start if the notation is not your daily tool.
 
-⭐ The direction that matters more here is the other one. Once you know a matrix is a table you
+The direction that matters more here is the other one. Once you know a matrix is a table you
 can ask it questions matrix notation cannot write down — *which of these entries did somebody
 actually measure?* — and that turns out to be what this model is about.
 
@@ -101,16 +101,16 @@ zero. Telling them apart is the entire subject, on both sides.
 | **the same zero, twice** | one fact with two spellings | `absent reason="none"` vs a claim of `[0,0,0]` |
 | **the boundary zero** | a comparison landing exactly on the line | `n_low = d_high` — a chosen convention |
 | **the zero that should NOT be zero** | a table whose emptiness would mean nobody looked | the referrals below |
-| ⭐ **the zero that is now two zeros** | a blank that carried "checked and found nothing" and "nobody checked" at once | `coupling_search`, `elimination_search` — [§6](#6-the-zero-that-turned-out-to-be-two) |
+| **the zero that is now two zeros** | a blank that carried "checked and found nothing" and "nobody checked" at once | `coupling_search`, `elimination_search` — [§6](#6-the-zero-that-turned-out-to-be-two) |
 
-⭐ **The good zero is the one to understand first**, because it is the one people delete. `DᵀN`
+**The good zero is the one to understand first**, because it is the one people delete. `DᵀN`
 comes out empty in this corpus. Not because the query is wrong — because the only operation
 that both draws and induces has a draw **nobody measured**. The matrix that would show
 cross-layer structure is blank *precisely because* the interesting quantity has no instrument,
 which is the thing this whole model was built to say. Delete that result as uninteresting and
 you have deleted the finding.
 
-⛔ **The dangerous zero is the one that gets published.** A rule with nothing to check returns
+**The dangerous zero is the one that gets published.** A rule with nothing to check returns
 no violations, which looks identical to a rule that checked everything and found nothing wrong.
 This repository already has a name for it: *"a bound with nothing to bound passes loudest."*
 That is why `rules.sql` ends with a count of what each rule actually examined, and why the
@@ -134,7 +134,7 @@ Relational algebra is six operations. You use all of them already; here is where
 That last row is the useful one. `rules.sql` never asks *"did this pass?"* It asks for the rows
 that **fail**, which is a difference, and an empty answer means every row was in the other set.
 
-⭐ **And there is a seventh nobody teaches, which fits this model exactly.** Relational
+**And there is a seventh nobody teaches, which fits this model exactly.** Relational
 **division** (÷) answers *"which X relate to ALL of the Y?"* — which layers have all three
 buffers measured, which compositions use every part of a member. Matrix notation has nothing
 that says "all of", and this model asks it constantly.
@@ -157,7 +157,7 @@ L×3 matrix the note calls `S`. Same for `holder` (L×5), `draw` and `induction`
 its conversion factor at once. Meanwhile `nameplate` is wide: an amount and a quantum and a
 window are facts about one supply, not entries of anything.
 
-⛔ **Every tall table is sparse, and sparse means something here.** An entry that is zero is a
+**Every tall table is sparse, and sparse means something here.** An entry that is zero is a
 row that is not there. So `C = 0` — the model's central assumption, that layers are independent
 — is not a grid of zeros. It is *an empty table.* And an empty table cannot tell you whether
 somebody looked and found nothing, or nobody looked.
@@ -225,11 +225,11 @@ beside the value, so **the comparison either joins or it does not.** No NULL, no
 `6250 ≠ 6226` comparison of unrelated strings. ↑ *that is [relational division and the join
 condition](#from-the-relational-side) doing accounting work: comparability IS the `ON` clause.*
 
-⚠️ Portugal has a national chart under SNC. The United States has none, so its witness cites the
+Portugal has a national chart under SNC. The United States has none, so its witness cites the
 entity's own. **A model that stored a position as a bare code would have compared them and
 reported agreement.**
 
-⛔ **This one is not proved by a query in this directory, and saying so is the honest thing.**
+**This one is not proved by a query in this directory, and saying so is the honest thing.**
 The coverage documents are not ingested — they carry no quantities, so they are not matrices and
 there is nothing here for a join to do. The proof is
 [`tests/coverage_parse.rs`](../../tests/coverage_parse.rs), in
@@ -244,11 +244,11 @@ say where rather than borrowing the authority of the section it sits in.
 that does not say *which of the three quantities* it removes is an adjustment applied to whichever
 number the reader happened to be holding.
 
-⭐ The three are `demand`, `nameplate`, `draw` — what was asked, what was committed, what was
+The three are `demand`, `nameplate`, `draw` — what was asked, what was committed, what was
 served. A consolidation standard eliminates **balances**; these are not balances, which is why
 this model contributes the distinction rather than borrowing one.
 
-⚠️ **`nameplate` eliminates far more rarely than it looks**, and the asymmetry is the interesting
+**`nameplate` eliminates far more rarely than it looks**, and the asymmetry is the interesting
 part: two members' people are two sets of people, so labour nameplate almost never eliminates. A
 reservation one member holds and **resells** to another does. If your consolidation is netting
 capacity as freely as it nets revenue, one of those two is wrong.
@@ -273,7 +273,7 @@ eliminations absent notApplicable one part         -> nothing to count twice
 pass on a reconciliation nobody performed is the same failure as reporting a pass on a rule that
 examined no rows. → **[§6](#6-the-zero-that-turned-out-to-be-two)**
 
-### ⛔ Where an accountant's instinct is wrong, and it is worth ten minutes
+### Where an accountant's instinct is wrong, and it is worth ten minutes
 
 Everything above is arithmetic you already trust. This is the one place the ordinary habit breaks,
 and it breaks quietly.
@@ -287,13 +287,13 @@ best case    11 − 8   =   3 spare
 worst case    9 − 15  =  -6 short      <- NOT 11 − 15
 ```
 
-⛔ Do it componentwise and the low bound pairs the good week's capacity with the good week's
+Do it componentwise and the low bound pairs the good week's capacity with the good week's
 demand, which is a scenario that describes **one week twice** and understates the downside by the
 full width of both ranges. It is the same error as translating a range at the best-case rate and
 the worst-case volume together. → **the full argument, and where it bites again in a
 consolidation, is [`r = n − d` reverses its bounds](#r--n--d-reverses-its-bounds).**
 
-⚠️ **And the same trap has a translation form.** One FX or unit factor multiplies *both* the
+**And the same trap has a translation form.** One FX or unit factor multiplies *both* the
 capacity and the demand of the part it converts, so the two converted figures are **correlated**,
 and differencing them counts the factor's spread twice. This is not hypothetical: the corpus has a
 consolidation where re-deriving a remainder from converted figures gives `[1092, 2857, 4198.8]`
@@ -308,12 +308,12 @@ An evening a salaried engineer absorbs has no counterparty and therefore no tran
 nothing to recognise, no measurement basis to apply, no position to code — and asked where it
 sits, US GAAP and NCRF-PE **both return `not-a-financial-fact` from the same coding pack.**
 
-⭐ That is the correct answer and this model does not dispute it. What it says is that *the
+That is the correct answer and this model does not dispute it. What it says is that *the
 quantity still exists and somebody still bore it*, so it needs a home that is not the ledger. The
 whole apparatus above — the buffers, the holders, the typed absences — is the shape of that home,
 and the accounting refusal is the evidence it is needed rather than an argument against it.
 
-⚠️ **The one thing that would refute this section**: a framework that DOES code it. If your
+**The one thing that would refute this section**: a framework that DOES code it. If your
 regime has a position for absorbed capacity with no counterparty, that is the most valuable thing
 you can send back, and [`assets/corpus/coverage-us-gaap.xml`](../corpus/coverage-us-gaap.xml)
 shows the shape a reply takes — including `exception`, which is how a witness disagrees with the
@@ -323,7 +323,7 @@ corpus **on purpose** rather than looking like a bug somebody stopped chasing.
 
 ## From the linear-algebra side
 
-⚠️ **[The financial section](#from-the-financial-side) is the same subject with the notation taken
+**[The financial section](#from-the-financial-side) is the same subject with the notation taken
 off**, and it is not a simplification: `FΦx − e` there and `FΦx − e` here are one expression. What
 this section adds is the part a consolidation does not have to think about, because a ledger holds
 numbers and this model holds **ranges** — and a range subtracts, converts and composes by rules
@@ -365,7 +365,7 @@ n.amount_low  - l.demand_high AS r_low,
 n.amount_high - l.demand_low  AS r_high
 ```
 
-⭐ Then it recomputes the fit from those bounds and compares against what the document filed.
+Then it recomputes the fit from those bounds and compares against what the document filed.
 **Twenty-one layers, twenty-one agreements.** That is ISO 286's own criterion — a fit compares
 two *ranges*, not two points — and XSD cannot state it in any form.
 → **checked independently in [§1](#1-the-fit-recomputed-from-the-ranges)**
@@ -389,7 +389,7 @@ remainder.** → **checked in [§4](#4-φ-correlated-with-itself)**
 
 `x_composed = F Φ x_parts − e`, over eight composed layers, exact on all three bounds.
 
-⚠️ It was wrong the first time it ran, because I forgot `e`. The eliminations are the term you
+It was wrong the first time it ran, because I forgot `e`. The eliminations are the term you
 drop, and on one layer that is 90 GPU-hours of demand counted in two members' filings at once.
 Nothing warns you — the totals come out plausible and wrong.
 → **as a real matrix product in [§3](#3-fφx--e-as-an-actual-matrix-product)**
@@ -415,7 +415,7 @@ it has."* So the value travels with the authority that defines it, and deciding 
 means the same buffer as `capacity` is a step a **reader** takes on purpose — `buffer_term` holds
 that judgement in the open.
 
-⭐ It happened twice more. A `boolean NOT NULL` for lumpy-or-continuous met a document that files
+It happened twice more. A `boolean NOT NULL` for lumpy-or-continuous met a document that files
 divisibility as a typed absence: three states, two-valued column. **Every time a column here had
 fewer states than the fact it held, the corpus found it on the first run.**
 
@@ -427,10 +427,10 @@ and exposure rules keyed on the absence alone, so a filer choosing the other spe
 **silently skipped by both** — and a rule that skips is indistinguishable from one that passes.
 
 Both spellings are accepted now, and a twelfth check reports the ambiguity itself, because a
-receiver comparing two filings cannot treat the two forms as one field. ⚠️ Reported, not
+receiver comparing two filings cannot treat the two forms as one field. Reported, not
 legislated: the schema does not state it as a rule and whether it should is a live question.
 
-### ⛔ Nothing in the corpus says which document a part reference points at
+### Nothing in the corpus says which document a part reference points at
 
 A composition names its parts by a notation and an id — `urn:example:filing:us-member:2026-08-31`
 / `compute`. **No document declares its own notation.** `Composition` carries witness, observedAt,
@@ -442,7 +442,7 @@ So a part reference cannot be resolved from the corpus at all, and the conforman
 not provide. `ingest.sql` fills `filing_identity` from **filenames**, which is a guess, written
 down as one.
 
-⭐ Writing a foreign key found it. A key needs something to point at, and there was nothing there.
+Writing a foreign key found it. A key needs something to point at, and there was nothing there.
 
 ---
 
@@ -452,7 +452,7 @@ down as one.
 
 **1. Violations.** Rows that fail a rule. Empty is the good outcome.
 
-**2. Referrals.** ⚠️ **Not violations, and not passes.** Things a query can *find* and only a
+**2. Referrals.** **Not violations, and not passes.** Things a query can *find* and only a
 person can *settle*. A coupling whose two ends fuse into one layer one level up is absorbed by
 that fusion, and the fusion owes a sentence saying so — detecting the structure is mechanical,
 judging whether the sentence exists and means it is not. **A clean run has rows here and that is
@@ -464,7 +464,7 @@ a fusion absorbing a coupling between its own parts must say so
   merge-group-composition  labour -> on-call          into merge-holding-composition/staff
 ```
 
-⭐ Also reported here: `narrowsWhen` coverage. The annotation says *"a claim without it is
+Also reported here: `narrowsWhen` coverage. The annotation says *"a claim without it is
 weaker, and a receiver is entitled to say so"* — so the receiver says it with a number.
 **18 of 23 ranged demands (78%) decline to say what would tighten them.** Judging whether a
 given sentence would *actually* narrow the range is prose. Counting which claims decline to
@@ -487,15 +487,15 @@ a coupling attenuates through a fusion, bounded by the part's share   4   ok
 a slack is expressed in the unit of the shares it bounds              4   ok
 a fusion calls double counting malformed only when it has one part    3   ok
 a window is carried through a fusion and never summed                 3   ok
-a measured zero is filed as an absence, not a claim of zero           2   ⚠️  thin
-a share does not exceed the slack of the buffer that absorbed it      2   ⚠️  thin
-a supply that cannot run hot names who went unserved                  2   ⚠️  thin
-exposure does not exceed slack plus unserved shares                   2   ⚠️  thin
-a derived time slack needs a window that permits the derivation       0   ⛔ VACUOUS
-a point value files narrowsWhen as notApplicable, having no range     0   ⛔ VACUOUS
+a measured zero is filed as an absence, not a claim of zero           2   thin
+a share does not exceed the slack of the buffer that absorbed it      2   thin
+a supply that cannot run hot names who went unserved                  2   thin
+exposure does not exceed slack plus unserved shares                   2   thin
+a derived time slack needs a window that permits the derivation       0   VACUOUS
+a point value files narrowsWhen as notApplicable, having no range     0   VACUOUS
 ```
 
-⛔ **The last two lines are the machinery working**, not a defect in it. Each catches a real
+**The last two lines are the machinery working**, not a defect in it. Each catches a real
 mistake — a point value has no range to tighten, so `narrowsWhen` on one is a paste or a claim
 filed at the wrong width — and this corpus contains none, so they prove nothing here and say so.
 A rule reported as `ok` when it examined nothing is the dangerous zero; a rule reported as
@@ -520,7 +520,7 @@ and each shape is checkable differently:
 | shape | corpus | what can be checked |
 |---|---|---|
 | a plain sized coupling in a flat filing | `refutation compute→labour` | that it carries its observation at all |
-| **propagating through a fusion** | `group labour→shift-line` becomes `holding staff→shift-line` | ⭐ **that it ATTENUATED** |
+| **propagating through a fusion** | `group labour→shift-line` becomes `holding staff→shift-line` | **that it ATTENUATED** |
 | **absorbed by a fusion above** | `group compute-us→compute-pt`, `group labour→on-call` | which ones — then a person |
 
 ⭐⭐ The middle one is the good check, because the ceiling comes from two *other* documents. If
@@ -551,7 +551,7 @@ observation, that a `narrowsWhen` names something that would actually narrow the
 note saying *"the portion that ages out is `unrealised`"* agrees with the holder list beside it.
 Those are prose against data.
 
-⭐ What it can do is the whole cross-element and cross-document half of the model, which is the
+What it can do is the whole cross-element and cross-document half of the model, which is the
 half XSD 1.0 gave up on. That half turns out to be most of it.
 
 ---
@@ -567,10 +567,10 @@ product is a matrix product, then asserts the two agree. This repository's own s
 sharing a code path is worth nothing — so the SQL does its sums as `GROUP BY` and the Rust does
 them as `gemm`, and agreement means the claim was checked rather than stated.
 
-⚠️ The two share the ingest, and that is fine: the ingest is not what is being proved. The
+The two share the ingest, and that is fine: the ingest is not what is being proved. The
 arithmetic on top of it is.
 
-⛔ **There is no silent skip.** No `DATABASE_URL` means the example fails to run. A proof that
+**There is no silent skip.** No `DATABASE_URL` means the example fails to run. A proof that
 passes without executing is the dangerous zero.
 
 ### 1. The fit, recomputed from the ranges
@@ -583,7 +583,7 @@ compares to the filed `sign`.
 1. fits recomputed from the ranges: 21 layers, 0 disagreements
 ```
 
-⭐ It also asserts `n >= 20` before it asserts anything about the answers, so the check cannot
+It also asserts `n >= 20` before it asserts anything about the answers, so the check cannot
 pass by examining nothing. ↑ *the claim this settles is [`r = n − d` reverses its
 bounds](#r--n--d-reverses-its-bounds).*
 
@@ -591,11 +591,11 @@ bounds](#r--n--d-reverses-its-bounds).*
 
 ```
 2. D-transpose N: 1 operation both draws and induces, 0 with both stated
-   ⛔ 'Close an enterprise contract' draws on `labour` and commits `capability`,
+   'Close an enterprise contract' draws on `labour` and commits `capability`,
       and THE DRAW IS UNMEASURED, so the product is empty.
 ```
 
-The product is not computed because it cannot be. ⭐ **The section reports why rather than
+The product is not computed because it cannot be. **The section reports why rather than
 printing an empty matrix**, because the reason is the finding: the one cross-layer entry this
 corpus could have had is missing for exactly the reason the model exists.
 ↑ *settles [`DᵀN` composes, but its quantities do not](#dᵀn-composes-but-its-quantities-do-not).*
@@ -620,10 +620,10 @@ expression** — [from the financial side](#from-the-financial-side).*
 
 ```
 4. Phi: filed [1414, 2857, 4085.6] vs re-derived [1092, 2857, 4198.8]
-   ⭐ Equal at the mode, apart at both bounds, by 322.0 and 113.2.
+   Equal at the mode, apart at both bounds, by 322.0 and 113.2.
 ```
 
-⛔ **The assertion here used to be `> 1.0`, and that was wrong** — a threshold cannot tell a
+**The assertion here used to be `> 1.0`, and that was wrong** — a threshold cannot tell a
 small real disagreement from *no* disagreement. No disagreement would mean `Φ` has no spread,
 which would make the whole section vacuous while still printing green. It is now two assertions:
 first that some factor actually spreads, then that the bounds differ at all.
@@ -638,7 +638,7 @@ a victory lap.
 
 ```
 5. C densified to 7x7: 3 filings state a coupling, 0 assert independence, 4 say nothing
-   ⛔ In `values` all 49 entries are 0.0 and indistinguishable.
+   In `values` all 49 entries are 0.0 and indistinguishable.
 ```
 
 A filing where nobody looked and a filing where somebody looked and found nothing become the same
@@ -651,7 +651,7 @@ distinguishes *stated* from *blank.* It cannot distinguish TESTED-AND-ZERO from 
 and those are opposite verdicts on the model itself. The mask is `0 | 1 | 2` now, and the
 count printed beside it is the one number in this file most worth reading.
 
-⭐ That is why the tables are sparse rather than dense, and it is the bad zero in one screen.
+That is why the tables are sparse rather than dense, and it is the bad zero in one screen.
 ↑ *settles [why the tables are shaped as they are](#why-the-tables-are-shaped-as-they-are) and
 [§6](#6-the-zero-that-turned-out-to-be-two).*
 
@@ -673,11 +673,11 @@ boolean, or in an empty list, points at what it cannot say.
 ```
 ⛔⛔⛔ HAS ANYBODY TESTED THE MODEL?
 +----------------------------------------------+--------+
-|         the_independence_assumption           | stacks |
+| the_independence_assumption           | stacks |
 +----------------------------------------------+--------+
-| somebody looked and the layers MOVE TOGETHER |      3 |
-| NOBODY LOOKED                                |      3 |
-| one layer; no pair to couple                 |      1 |
+| somebody looked and the layers MOVE TOGETHER | 3 |
+| NOBODY LOOKED                                | 3 |
+| one layer; no pair to couple                 | 1 |
 +----------------------------------------------+--------+
 ```
 
@@ -687,19 +687,19 @@ other layer's* — has never been tested in seven filings, and has once been con
 a fact about the EVIDENCE rather than about any one document, and it is a fact only because the
 empty list stopped being an answer.
 
-⭐ **The same shape one document up, and here the answer changes the arithmetic.** A fusion that
+**The same shape one document up, and here the answer changes the arithmetic.** A fusion that
 files `eliminations` as `none` or `notApplicable` owes an EXACT sum — the composed figure equals
 `Σ` converted parts, full stop. One that files `unmeasured` owes nothing and the check is
 suspended. An empty list quietly bought the first reading for every composer who had earned the
 second, which is the sum rule `Elimination` exists to make exact, silently back to a warning.
 
-⭐ **And requiring `boundOrigin` produced a result nobody was looking for.**
+**And requiring `boundOrigin` produced a result nobody was looking for.**
 
 ```
-| stated in a sibling element (amountOrigin, quantum origin)  |     48 |
-| NOTHING sets it -- the range is where the measurements fell |     68 |
-| nobody has asked                                            |      3 |
-| somebody owns it: contractual / intrinsic / policy          |      5 |
+| stated in a sibling element (amountOrigin, quantum origin)  | 48 |
+| NOTHING sets it -- the range is where the measurements fell | 68 |
+| nobody has asked                                            | 3 |
+| somebody owns it: contractual / intrinsic / policy          | 5 |
 ```
 
 Roughly a third of the corpus answers `derived`, meaning **the model already states the author of

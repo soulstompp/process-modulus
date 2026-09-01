@@ -179,7 +179,7 @@ XSD 1.0 has no `xs:assert` and cannot compare across elements. Forty-four rules 
 are stated in the schemas' own prose and gated by nothing. Forty-one of them carry the marker
 `NOT REACHABLE BY A VALIDATOR` at the annotation that states it, so a reader can tell a
 binding rule from an unenforced one. The three rows marked below with an asterisk are stated in prose
-without that marker, which is a gap in the marking rather than in the reasoning. ⚠️ The counts
+without that marker, which is a gap in the marking rather than in the reasoning. The counts
 in this paragraph drifted from the table for at least two passes; they are now the table.
 
 ⭐⭐⭐ **THREE ROWS ARE NEW AND NONE OF THEM IS A NEW IDEA.** Each was already stated in the
@@ -197,7 +197,7 @@ no validator can see in principle: *no leaf layer is reachable through two paths
 recursive walk across documents, and the second path runs through a filing the first does not
 contain.
 
-⚠️ **It does not discharge the rules; it discharges them FOR THIS CORPUS.** An adopter runs the
+**It does not discharge the rules; it discharges them FOR THIS CORPUS.** An adopter runs the
 same file against their own filings, which is the point of shipping it. And the query reports how
 many rows each rule examined, because four of the sixteen currently see only two layers apiece —
 almost nothing in the corpus files a numeric slack, and a bound with nothing to bound passes
@@ -216,7 +216,7 @@ range**"* — a comparison of two ranges, spelled out in prose because a two-mem
 no name for its answer. That prose WAS ISO 286's own criterion, already load-bearing here. With
 `transition` filed the qualifier is redundant, so the row above got shorter rather than longer.
 
-⭐ **Two rows left this table by being subsumed rather than dropped.** *`absorber = inventory`
+**Two rows left this table by being subsumed rather than dropped.** *`absorber = inventory`
 requires `admitsInventory = true`* and its `time` twin were availability gates on a boolean;
 the slack rule below is strictly stronger, because a buffer whose slack is a measured zero
 fails it for any positive share, and a buffer with a sized slack is now bounded as well as
@@ -290,7 +290,7 @@ negative half — `party`/`asOf` belong to `counterparty` and to nothing else �
 place, with no marker and no row here, and the positive half was missing entirely: **a
 counterparty holder must name its party**, because a burden asserted to sit in another
 entity's books with nobody named is a guess wearing the one holder kind that promises an
-instrument. ⚠️ The rule is easiest to break in a consolidation, where a `booked` share really
+instrument. The rule is easiest to break in a consolidation, where a `booked` share really
 is booked in some member's books and naming which one looks exactly like what `party` is for.
 It is not: on a counterparty holder `party` names whose OTHER books carry the burden. Two
 relations, one field. `tests/corpus_parse.rs` now checks both halves for every holder in
@@ -309,7 +309,7 @@ the one it was asked.
 The `composition` row is a guarantee that weakens with depth, which makes it the one most
 worth stating. `partIdentity` is an `xs:key` and it is COMPLETE while every part is a leaf;
 at two levels it is not, because a holding naming both `group#labour` and `member#labour`
-has two distinct notation/id pairs and the member's layer is consolidated twice. ⚠️ The
+has two distinct notation/id pairs and the member's layer is consolidated twice. The
 transitive check requires fetching the chain, and the fetch is not uniform: a layer sits one
 element deeper inside a composition than inside a plain filing, and `notation` says which is
 which nowhere, so a resolver reads the root element.
@@ -338,7 +338,7 @@ arithmetic over values the document already carries, so an implementer discharge
 computing rather than by reading:
 
 ```
-m       = nameplate / q  -  floor(demand / q)
+m       = nameplate / q  - floor(demand / q)
 residue = demand mod q
 r       = m*q - residue           and, always,  r ≡ -demand  (mod q)
 ```
@@ -351,14 +351,14 @@ r = (n/q − ⌊d/q⌋)·q − (d − ⌊d/q⌋·q) = n − d
 ```
 
 So `r` is exact for **any** demand and **any** nameplate, interval or not — `⌊⌋` appears twice
-with opposite signs and never has to resolve. ⚠️ But `demand mod q` is a **sawtooth**, so
+with opposite signs and never has to resolve. But `demand mod q` is a **sawtooth**, so
 evaluated at a demand range's three points it need not be ordered at all: `(4.5, 5.2, 6.7)` at
 `q = 1` gives residues `(0.5, 0.2, 0.7)`, which violates `low ≤ mostLikely ≤ high` — the first
 rule in the table above — while the demand that produced it is perfectly well formed. **Ten of
 the twenty lumpy layers in `assets/corpus/` are in that state today**, including `refutation.xml`'s
 `compute` at `(3.0, 5.2, 0.4)`.
 
-⭐ **The schema is already safe and the reasoning for it was simply never written down.**
+**The schema is already safe and the reasoning for it was simply never written down.**
 `Remainder` carries `quantity`, `sign`, `absorber` and `holder` — the total, and never the two
 components. **Read this block as an implementer's derivation of `r`, never as a filing
 instruction for `m·q` and `residue`,** which are not `Claim`s in the general case.
@@ -376,7 +376,7 @@ The consolidation rule joins that family and is discharged the same way, in
 `tests/composition.rs`, by `the_fused_demand_reconciles_with_its_parts_less_the_eliminations`. It
 too was proved able to fail first: moving the composed labour demand by one tenth reports
 `the composed demand is (10.4, 11.6, 13.0) and its parts less their eliminations are
-(10.4, 11.5, 13.0)`. ⚠️ TWO THINGS MAKE IT HARDER THAN THE OTHERS AND BOTH BELONG TO
+(10.4, 11.5, 13.0)`. TWO THINGS MAKE IT HARDER THAN THE OTHERS AND BOTH BELONG TO
 WHOEVER RUNS IT. The parts are in OTHER DOCUMENTS, so the check needs a catalogue mapping
 each `filing/notation` to something fetchable, and that catalogue is the receiver's, never
 the sender's. And the comparison CANNOT BE EXACT: `Claim` holds `f64`, `10.0 - 10.4` is
@@ -387,7 +387,7 @@ and left to the profile rather than fixed in the model.
 ⛔ AND AN UNSIZED ELIMINATION MAKES THE SUM UNCOMPUTABLE RATHER THAN SATISFIED. A checker
 that read an `unmeasured` elimination as zero would find the layer reconciling exactly and
 report success about a figure it has been told is overstated. `unchecked` is a third state
-and folding it into `checked and passed` is the failure this whole file is about. ⚠️ An
+and folding it into `checked and passed` is the failure this whole file is about. An
 absence reason of `none` is the opposite case and DOES mean zero: the composer looked and
 there was nothing to remove.
 
