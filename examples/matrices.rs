@@ -75,22 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 1. r = n - d, and the fit read off the ranges.
     // ------------------------------------------------------------------
-    let rows = sqlx::query_as!(
-        Layer,
-        r#"SELECT l.filing        AS "filing!",
-                  l.layer         AS "layer!",
-                  l.demand_low::float8   AS "d_low!",
-                  l.demand_mode::float8  AS "d_mode!",
-                  l.demand_high::float8  AS "d_high!",
-                  n.amount_low::float8   AS "n_low!",
-                  n.amount_mode::float8  AS "n_mode!",
-                  n.amount_high::float8  AS "n_high!",
-                  l.sign::text           AS "sign!"
-           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)
-           WHERE l.demand_low IS NOT NULL AND n.amount_low IS NOT NULL
-             AND l.sign IS NOT NULL
-           ORDER BY l.filing, l.layer"#
-    )
+    let rows = sqlx::query_file_as!(Layer, "assets/sql/queries/1-fit-from-ranges.sql")
     .fetch_all(&pool)
     .await?;
 
@@ -137,13 +122,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 2. D-transpose N: computed, empty, and the reason is the thesis.
     // ------------------------------------------------------------------
-    let ops = sqlx::query!(
-        r#"SELECT d.operation AS "operation!", d.layer AS "drawn!",
-                  d.mode::float8 AS d_val,
-                  n.layer AS "commits!", n.mode::float8 AS n_val
-           FROM pm.draw d
-           JOIN pm.induction n ON n.filing = d.filing AND n.operation = d.operation"#
-    )
+    let ops = sqlx::query_file!("assets/sql/queries/2-draws-and-inductions.sql")
     .fetch_all(&pool)
     .await?;
 
@@ -167,20 +146,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 3. x_composed = F Phi x_parts - e, as an actual matrix product.
     // ------------------------------------------------------------------
-    let parts = sqlx::query!(
-        r#"SELECT p.composition AS "composition!", p.composed_layer AS "composed!",
-                  coalesce(p.factor_low, 1)::float8  AS "f_low!",
-                  coalesce(p.factor_mode, 1)::float8 AS "f_mode!",
-                  coalesce(p.factor_high, 1)::float8 AS "f_high!",
-                  l.demand_low::float8  AS "d_low!",
-                  l.demand_mode::float8 AS "d_mode!",
-                  l.demand_high::float8 AS "d_high!"
-           FROM pm.part p
-           JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-           JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
-           WHERE l.demand_low IS NOT NULL
-           ORDER BY p.composition, p.composed_layer, p.part_layer"#
-    )
+    let parts = sqlx::query_file!("assets/sql/queries/3a-fusion-parts.sql")
     .fetch_all(&pool)
     .await?;
 
@@ -216,30 +182,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &f * (diag(|p| p.f_high) * vect(|p| p.d_high)),
     ];
 
-    let expected = sqlx::query!(
-        r#"SELECT l.filing AS "filing!", l.layer AS "layer!",
-                  l.demand_low::float8  AS "d_low!",
-                  l.demand_mode::float8 AS "d_mode!",
-                  l.demand_high::float8 AS "d_high!",
-                  coalesce(e.low, 0)::float8  AS "e_low!",
-                  coalesce(e.mode, 0)::float8 AS "e_mode!",
-                  coalesce(e.high, 0)::float8 AS "e_high!"
-           FROM pm.layer l
-           LEFT JOIN pm.elimination e
-                  ON e.composition = l.filing AND e.composed_layer = l.layer
-                 AND e.quantity = 'demand'
-           -- ⛔⛔⛔ AND THE FUSIONS THAT OWE NO EQUALITY ARE EXCLUDED, WHICH THIS EXAMPLE
-           -- DID NOT DO UNTIL A FIXTURE FILED ONE. A composer who states they never looked
-           -- for double counting has not claimed their figure equals the sum of its parts,
-           -- and asserting it anyway is the exact defect `StatedEliminations` was added to
-           -- prevent — arriving in the CHECKER instead of the document.
-           -- ⭐ `none` and `notApplicable` still owe the sum exactly. Only `unmeasured`
-           -- suspends it, and before the wrapper existed all three were an empty list.
-           LEFT JOIN pm.elimination_search es
-                  ON es.composition = l.filing AND es.composed_layer = l.layer
-           WHERE l.demand_low IS NOT NULL
-             AND (es.absent IS DISTINCT FROM 'unmeasured'::pm.absence_reason)"#
-    )
+    let expected = sqlx::query_file!("assets/sql/queries/3b-composed-demand.sql")
     .fetch_all(&pool)
     .await?;
 
@@ -290,21 +233,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 5. What densifying costs. The interesting failure, kept for the end.
     // ------------------------------------------------------------------
-    let couplings = sqlx::query!(
-        r#"SELECT f.name AS "filing!", count(c.*) AS "n!",
-                  cs.absent::text AS why
-           FROM pm.filing f
-           LEFT JOIN pm.coupling c ON c.filing = f.name
-           LEFT JOIN pm.coupling_search cs ON cs.filing = f.name
-           -- ⛔⛔ CORPUS ONLY, AND THIS SECTION IS A REPORT RATHER THAN A RULE, WHICH IS THE
-           -- WHOLE REASON THE DISTINCTION EXISTS. "No filing asserts independence" is a fact
-           -- about THE EVIDENCE; a stipulation that asserts it makes the finding a lie.
-           -- assets/fixtures/every-absence.xml files exactly that, on purpose, to prove the
-           -- branch works — and it must not be counted here. Rules run on fixtures; reports
-           -- about the world do not. See assets/fixtures/README.md.
-           WHERE f.evidence = 'corpus'
-           GROUP BY f.name, cs.absent ORDER BY f.name"#
-    )
+    let couplings = sqlx::query_file!("assets/sql/queries/5-coupling-presence.sql")
     .fetch_all(&pool)
     .await?;
 
@@ -352,19 +281,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 4. Phi is correlated with itself, and the corpus shows it.
     // ------------------------------------------------------------------
-    let c = sqlx::query!(
-        r#"SELECT l.qty_low::float8    AS "q_low!",
-                  l.qty_mode::float8   AS "q_mode!",
-                  l.qty_high::float8   AS "q_high!",
-                  l.demand_low::float8 AS "d_low!",
-                  l.demand_mode::float8 AS "d_mode!",
-                  l.demand_high::float8 AS "d_high!",
-                  n.amount_low::float8  AS "n_low!",
-                  n.amount_mode::float8 AS "n_mode!",
-                  n.amount_high::float8 AS "n_high!"
-           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)
-           WHERE l.filing = 'merge-holding-composition' AND l.layer = 'compute'"#
-    )
+    let c = sqlx::query_file!("assets/sql/queries/4-converted-remainder.sql")
     .fetch_one(&pool)
     .await?;
 

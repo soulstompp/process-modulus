@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT l.filing        AS \"filing!\",\n                  l.layer         AS \"layer!\",\n                  l.demand_low::float8   AS \"d_low!\",\n                  l.demand_mode::float8  AS \"d_mode!\",\n                  l.demand_high::float8  AS \"d_high!\",\n                  n.amount_low::float8   AS \"n_low!\",\n                  n.amount_mode::float8  AS \"n_mode!\",\n                  n.amount_high::float8  AS \"n_high!\",\n                  l.sign::text           AS \"sign!\"\n           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)\n           WHERE l.demand_low IS NOT NULL AND n.amount_low IS NOT NULL\n             AND l.sign IS NOT NULL\n           ORDER BY l.filing, l.layer",
+  "query": "-- §1  The remainder and its fit, read off the ranges rather than off a point.\n--\n-- Every layer that states both a demand range and a nameplate range, with the sign the\n-- document filed. The example recomputes `r = n - d` with the bounds CROSSED — the low of\n-- a difference pairs n's low against d's HIGH — classifies each layer by ISO 286's\n-- criterion, and asserts the answer matches this `sign` column.\n--\n-- Run it alone and the interesting column is `sign!`: one layer in the whole corpus is a\n-- `transition`, which is the case a two-member enumeration could not name.\nSELECT l.filing              AS \"filing!\",\n       l.layer               AS \"layer!\",\n       l.demand_low::float8  AS \"d_low!\",\n       l.demand_mode::float8 AS \"d_mode!\",\n       l.demand_high::float8 AS \"d_high!\",\n       n.amount_low::float8  AS \"n_low!\",\n       n.amount_mode::float8 AS \"n_mode!\",\n       n.amount_high::float8 AS \"n_high!\",\n       l.sign::text          AS \"sign!\"\nFROM pm.layer l\nJOIN pm.nameplate n USING (filing, layer)\nWHERE l.demand_low IS NOT NULL\n  AND n.amount_low IS NOT NULL\n  AND l.sign IS NOT NULL\nORDER BY l.filing, l.layer\n",
   "describe": {
     "columns": [
       {
@@ -83,5 +83,5 @@
       null
     ]
   },
-  "hash": "be02ff36137d0e92a6ce4280c05d4d6d7365fa8c90c9be860145b80af63fd59e"
+  "hash": "739ff4aacedac15907d8f4f715353da5faf243c5a7201a71cefb17b823eff04d"
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT d.operation AS \"operation!\", d.layer AS \"drawn!\",\n                  d.mode::float8 AS d_val,\n                  n.layer AS \"commits!\", n.mode::float8 AS n_val\n           FROM pm.draw d\n           JOIN pm.induction n ON n.filing = d.filing AND n.operation = d.operation",
+  "query": "-- §2  The operations that both draw and induce — the entries `D-transpose N` would have.\n--\n-- An operation consumes from one layer and commits on another, so an operation appearing\n-- in both tables is a cross-layer edge. This is the incidence half of `DᵀN`.\n--\n-- ⭐ THE RESULT IS THE FINDING. In this corpus exactly one operation qualifies and its\n-- draw is UNMEASURED, so the product cannot be computed at all. The matrix that would show\n-- cross-layer structure is empty precisely because the interesting quantity has no\n-- instrument, which is what the model exists to say. `d_val` NULL is that.\nSELECT d.operation      AS \"operation!\",\n       d.layer          AS \"drawn!\",\n       d.mode::float8   AS d_val,\n       n.layer          AS \"commits!\",\n       n.mode::float8   AS n_val\nFROM pm.draw d\nJOIN pm.induction n\n  ON n.filing = d.filing\n AND n.operation = d.operation\n",
   "describe": {
     "columns": [
       {
@@ -60,5 +60,5 @@
       null
     ]
   },
-  "hash": "203fc126fc175de2090a8a383668720df664232b75b0270fe247a12ce7503acc"
+  "hash": "b3c95f1801bb091bca91b780ac9706c96cfd5d3b60ba0055a8c0ee1d195287ef"
 }

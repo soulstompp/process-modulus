@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT p.composition AS \"composition!\", p.composed_layer AS \"composed!\",\n                  coalesce(p.factor_low, 1)::float8  AS \"f_low!\",\n                  coalesce(p.factor_mode, 1)::float8 AS \"f_mode!\",\n                  coalesce(p.factor_high, 1)::float8 AS \"f_high!\",\n                  l.demand_low::float8  AS \"d_low!\",\n                  l.demand_mode::float8 AS \"d_mode!\",\n                  l.demand_high::float8 AS \"d_high!\"\n           FROM pm.part p\n           JOIN pm.filing_identity fi ON fi.notation = p.part_filing\n           JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer\n           WHERE l.demand_low IS NOT NULL\n           ORDER BY p.composition, p.composed_layer, p.part_layer",
+  "query": "-- §3  The parts going into each composed layer, with their conversion factors.\n--\n-- This is `F` and `Φ` in one result set: each row is an incidence entry (this part composes\n-- into that layer) carrying the factor that puts it in the composed layer's unit. A part\n-- with no factor converts by one, which is what the `coalesce` says.\n--\n-- ⛔ ABSENT MEANS ONE, EXACTLY, AND NEVER \"UNKNOWN\" — see `asrt:Part`. A conversion nobody\n-- measured is a typed absence inside the claim, which is a different document from a part\n-- with no factor at all, and `coalesce` here is reading the second.\nSELECT p.composition                   AS \"composition!\",\n       p.composed_layer                AS \"composed!\",\n       coalesce(p.factor_low, 1)::float8  AS \"f_low!\",\n       coalesce(p.factor_mode, 1)::float8 AS \"f_mode!\",\n       coalesce(p.factor_high, 1)::float8 AS \"f_high!\",\n       l.demand_low::float8            AS \"d_low!\",\n       l.demand_mode::float8           AS \"d_mode!\",\n       l.demand_high::float8           AS \"d_high!\"\nFROM pm.part p\nJOIN pm.filing_identity fi ON fi.notation = p.part_filing\nJOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer\nWHERE l.demand_low IS NOT NULL\nORDER BY p.composition, p.composed_layer, p.part_layer\n",
   "describe": {
     "columns": [
       {
@@ -76,5 +76,5 @@
       null
     ]
   },
-  "hash": "05bc1dfb21be97401e6d9ef4963f3b0a6a6babb7a929ee8ab0a11b829cf9b9f2"
+  "hash": "62e91ece28702daa113420cfa7641c8cc7cd4aa51d04a95c807677a19b35e4e8"
 }

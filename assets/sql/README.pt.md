@@ -11,6 +11,7 @@ schema.ddl            o modelo como relações
 ingest.sql            o Postgres a ler assets/corpus/*.xml sozinho, sem ajuda nenhuma
 matrices.sql          as matrizes, extraídas com junções
 rules.sql             as regras a que o XSD 1.0 não chega, como uma só consulta
+queries/              as seis consultas do exemplo, um ficheiro cada, executáveis no psql
 ../../examples/matrices.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
 

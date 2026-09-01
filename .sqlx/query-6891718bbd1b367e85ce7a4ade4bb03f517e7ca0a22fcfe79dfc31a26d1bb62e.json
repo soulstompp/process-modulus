@@ -1,0 +1,80 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  What each composed layer actually filed, and the elimination to subtract from it.\n--\n-- The right-hand side of `x_composed = F Φ x_parts − e`. The example compares this against\n-- the matrix product built from 3a-fusion-parts.sql.\n--\n-- ⛔⛔⛔ THE FUSIONS THAT OWE NO EQUALITY ARE EXCLUDED, AND THAT LAST PREDICATE IS THE\n-- WHOLE OF IT. A composer who states they never looked for double counting has not claimed\n-- their figure equals the sum of its parts, and asserting it anyway is the exact defect\n-- `StatedEliminations` was added to prevent — arriving in the CHECKER instead of in the\n-- document.\n-- ⭐ `none` and `notApplicable` still owe the sum exactly. Only `unmeasured` suspends it,\n-- and before the wrapper existed all three were an empty list.\nSELECT l.filing                     AS \"filing!\",\n       l.layer                      AS \"layer!\",\n       l.demand_low::float8         AS \"d_low!\",\n       l.demand_mode::float8        AS \"d_mode!\",\n       l.demand_high::float8        AS \"d_high!\",\n       coalesce(e.low, 0)::float8   AS \"e_low!\",\n       coalesce(e.mode, 0)::float8  AS \"e_mode!\",\n       coalesce(e.high, 0)::float8  AS \"e_high!\"\nFROM pm.layer l\nLEFT JOIN pm.elimination e\n       ON e.composition = l.filing\n      AND e.composed_layer = l.layer\n      AND e.quantity = 'demand'\nLEFT JOIN pm.elimination_search es\n       ON es.composition = l.filing\n      AND es.composed_layer = l.layer\nWHERE l.demand_low IS NOT NULL\n  AND (es.absent IS DISTINCT FROM 'unmeasured'::pm.absence_reason)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.layer",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.layer",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "e_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "e_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "e_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "6891718bbd1b367e85ce7a4ade4bb03f517e7ca0a22fcfe79dfc31a26d1bb62e"
+}

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT l.qty_low::float8    AS \"q_low!\",\n                  l.qty_mode::float8   AS \"q_mode!\",\n                  l.qty_high::float8   AS \"q_high!\",\n                  l.demand_low::float8 AS \"d_low!\",\n                  l.demand_mode::float8 AS \"d_mode!\",\n                  l.demand_high::float8 AS \"d_high!\",\n                  n.amount_low::float8  AS \"n_low!\",\n                  n.amount_mode::float8 AS \"n_mode!\",\n                  n.amount_high::float8 AS \"n_high!\"\n           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)\n           WHERE l.filing = 'merge-holding-composition' AND l.layer = 'compute'",
+  "query": "-- §4  The one layer where a conversion factor is correlated with itself.\n--\n-- `merge-holding-composition/compute` converts a US part metered per reserved card into\n-- GPU-hour. One factor multiplies BOTH the nameplate and the demand, so the two converted\n-- intervals move together.\n--\n-- ⛔ The example takes the filed remainder (`qty_*`) against the remainder RE-DERIVED from\n-- the converted nameplate and demand with the bounds crossed. They agree at the mode and\n-- nowhere else, because the mode is the one point where the factor is a single number with\n-- no spread to double. Both figures are arithmetically correct; only the filed one is the\n-- remainder.\nSELECT l.qty_low::float8      AS \"q_low!\",\n       l.qty_mode::float8     AS \"q_mode!\",\n       l.qty_high::float8     AS \"q_high!\",\n       l.demand_low::float8   AS \"d_low!\",\n       l.demand_mode::float8  AS \"d_mode!\",\n       l.demand_high::float8  AS \"d_high!\",\n       n.amount_low::float8   AS \"n_low!\",\n       n.amount_mode::float8  AS \"n_mode!\",\n       n.amount_high::float8  AS \"n_high!\"\nFROM pm.layer l\nJOIN pm.nameplate n USING (filing, layer)\nWHERE l.filing = 'merge-holding-composition'\n  AND l.layer = 'compute'\n",
   "describe": {
     "columns": [
       {
@@ -73,5 +73,5 @@
       null
     ]
   },
-  "hash": "72319aae46fb54d41c8736cccfa623984139d3351800c8ba191591f7fa00228a"
+  "hash": "10674f7485a461ee1677ba312efe1d09c25e14e0dfb6c9fae246b12b9be9648b"
 }

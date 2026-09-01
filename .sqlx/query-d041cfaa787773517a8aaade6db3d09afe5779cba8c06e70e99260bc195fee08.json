@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §5  What each filing says about couplings — and whether it says anything at all.\n--\n-- One row per corpus filing: how many couplings it states, and what its coupling SEARCH\n-- reported if it states none. Those are two different facts and an empty table carries only\n-- the first.\n--\n-- ⛔⛔ CORPUS ONLY, AND THIS IS A REPORT RATHER THAN A RULE, WHICH IS THE WHOLE REASON THE\n-- DISTINCTION EXISTS. \"No filing asserts independence\" is a fact about THE EVIDENCE; a\n-- stipulation that asserts it makes the finding a lie. `assets/fixtures/every-absence.xml`\n-- files exactly that, on purpose, to prove the branch works — and it must not be counted\n-- here. Rules run on fixtures; reports about the world do not.\n-- See `assets/fixtures/README.md`.\nSELECT f.name           AS \"filing!\",\n       count(c.*)       AS \"n!\",\n       cs.absent::text  AS why\nFROM pm.filing f\nLEFT JOIN pm.coupling c ON c.filing = f.name\nLEFT JOIN pm.coupling_search cs ON cs.filing = f.name\nWHERE f.evidence = 'corpus'\nGROUP BY f.name, cs.absent\nORDER BY f.name\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "n!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "d041cfaa787773517a8aaade6db3d09afe5779cba8c06e70e99260bc195fee08"
+}

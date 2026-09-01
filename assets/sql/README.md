@@ -9,6 +9,7 @@ schema.ddl            the model as relations
 ingest.sql            Postgres reading assets/corpus/*.xml itself, with no help
 matrices.sql          the matrices, pulled out with joins
 rules.sql             the rules XSD 1.0 cannot reach, as one query
+queries/              the example's six queries, one file each, runnable in psql
 ../../examples/matrices.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
 
