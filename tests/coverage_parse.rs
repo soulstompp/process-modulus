@@ -14,7 +14,7 @@ use process_modulus::pm::StatedBorrowedTermType;
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
 fn read(name: &str) -> String {
-    let path = format!("{}/examples/{name}", env!("CARGO_MANIFEST_DIR"));
+    let path = format!("{}/assets/corpus/{name}", env!("CARGO_MANIFEST_DIR"));
     fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"))
 }
 

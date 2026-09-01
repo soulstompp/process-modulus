@@ -51,7 +51,7 @@ boundary, which is the only place any of this matters.
 - **Cross-filing observations have a home.** A dependence between two entities that file
   separately belongs to whoever read both filings, and it is a document rather than a
   footnote in either one.
-- **Refutable in its own format.** `examples/refutation.xml` is a valid document that files
+- **Refutable in its own format.** `assets/corpus/refutation.xml` is a valid document that files
   two counter-examples to the model.
 - **A generated Rust crate.** Every type and every doc comment comes from the schemas, so
   `cargo doc` shows the schema's own annotations.
@@ -122,7 +122,7 @@ any number of operations that draw on them.
 ```
 
 A layer is a demand, a supply and the remainder between them. Here is the labour layer from
-[`examples/enterprise-contract.xml`](examples/enterprise-contract.xml), which is the case
+[`assets/corpus/enterprise-contract.xml`](assets/corpus/enterprise-contract.xml), which is the case
 the whole model exists for. The demand is between 4.5 and 6 people. The supply is four
 people, and a person is not divisible.
 
@@ -241,7 +241,7 @@ that statement. That is the whole model in one layer.
 ## Quick start
 
 ```bash
-cargo test          # parses examples/ with the generated types and checks their claims
+cargo test          # parses assets/corpus/ with the generated types and checks their claims
 cargo doc --open    # the schemas' annotations, as rustdoc
 ```
 
@@ -249,11 +249,11 @@ Validating a document needs none of that, which is the point of shipping a schem
 than a library:
 
 ```bash
-xmllint --noout --schema schema/process-modulus.xsd examples/enterprise-contract.xml
-xmllint --noout --schema schema/assertion.xsd       examples/coverage-us-gaap.xml
+xmllint --noout --schema schema/process-modulus.xsd assets/corpus/enterprise-contract.xml
+xmllint --noout --schema schema/assertion.xsd       assets/corpus/coverage-us-gaap.xml
 ```
 
-`examples/` holds seven documents: an enterprise contract, two coverage files answering the
+`assets/corpus/` holds seven documents: an enterprise contract, two coverage files answering the
 same questions under different regimes, a run record, a refutation, one that exercises
 everything a sender may decline, and one cross-document dependence.
 
@@ -371,8 +371,8 @@ which is deliberately shared across regimes. A chart position is national, so a 
 cites the entity's own chart. Stored as bare codes, two positions from two countries would
 compare as equal or unequal without either result meaning anything.
 
-[`examples/coverage-us-gaap.xml`](examples/coverage-us-gaap.xml) and
-[`examples/coverage-pt-ncrf-pe.xml`](examples/coverage-pt-ncrf-pe.xml) answer the same
+[`assets/corpus/coverage-us-gaap.xml`](assets/corpus/coverage-us-gaap.xml) and
+[`assets/corpus/coverage-pt-ncrf-pe.xml`](assets/corpus/coverage-pt-ncrf-pe.xml) answer the same
 questions under two regimes, and `tests/coverage_parse.rs` asserts that comparability holds
 where the authorities match and breaks where they do not.
 
@@ -399,13 +399,13 @@ beside one foreign one, so there is never a reference that must reach across a b
 cannot. The world already files it this way, since a consolidation is a separate statement
 rather than a footnote in the subsidiary's accounts.
 
-[`examples/dependence-group-consolidation.xml`](examples/dependence-group-consolidation.xml)
+[`assets/corpus/dependence-group-consolidation.xml`](assets/corpus/dependence-group-consolidation.xml)
 files one across two regimes, and `tests/dependence_parse.rs` asserts the property it
 exists for, which is that neither end is the witness's own filing.
 
 ## It can be refuted, and the refutation is a filing
 
-[`examples/refutation.xml`](examples/refutation.xml) is a valid document filing two
+[`assets/corpus/refutation.xml`](assets/corpus/refutation.xml) is a valid document filing two
 counter-examples: a supply with no quantum whose continuous price carries no premium, and a
 coupling between two layers' remainders with the observation that produced it. Both
 validate, so disagreement with the model can be filed rather than only discussed.

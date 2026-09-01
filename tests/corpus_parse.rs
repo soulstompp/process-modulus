@@ -1,4 +1,4 @@
-//! Reads every document in `examples/` with the generated types.
+//! Reads every document in `assets/corpus/` with the generated types.
 //!
 //! These are not tests of the schema. The schema is checked by a validator, and a
 //! validator is the thing other parties will run. They test the CRATE: that the
@@ -22,7 +22,7 @@ use process_modulus::pm::{
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
 fn load(name: &str) -> ProcessModulusElementType {
-    let path = format!("{}/examples/{name}", env!("CARGO_MANIFEST_DIR"));
+    let path = format!("{}/assets/corpus/{name}", env!("CARGO_MANIFEST_DIR"));
     let xml = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"));
     let mut reader = SliceReader::new(&xml);
     ProcessModulusElementType::deserialize(&mut reader).unwrap_or_else(|e| panic!("{path}: {e}"))

@@ -20,7 +20,7 @@ use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 const DEP: &str = "dependence-group-consolidation.xml";
 
 fn dependence(name: &str) -> DependenceType {
-    let path = format!("{}/examples/{name}", env!("CARGO_MANIFEST_DIR"));
+    let path = format!("{}/assets/corpus/{name}", env!("CARGO_MANIFEST_DIR"));
     let xml = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"));
     let mut reader = SliceReader::new(&xml);
     DependenceType::deserialize(&mut reader).unwrap_or_else(|e| panic!("{path}: {e}"))

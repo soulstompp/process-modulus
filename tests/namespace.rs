@@ -33,39 +33,39 @@ const BUILD_RS: &str = include_str!("../build.rs");
 /// Every instance, and the prefix whose namespace it must match.
 const INSTANCES: [(&str, &str, &str); 7] = [
     (
-        "examples/enterprise-contract.xml",
+        "assets/corpus/enterprise-contract.xml",
         "pm",
-        include_str!("../examples/enterprise-contract.xml"),
+        include_str!("../assets/corpus/enterprise-contract.xml"),
     ),
     (
-        "examples/refutation.xml",
+        "assets/corpus/refutation.xml",
         "pm",
-        include_str!("../examples/refutation.xml"),
+        include_str!("../assets/corpus/refutation.xml"),
     ),
     (
-        "examples/unstated.xml",
+        "assets/corpus/unstated.xml",
         "pm",
-        include_str!("../examples/unstated.xml"),
+        include_str!("../assets/corpus/unstated.xml"),
     ),
     (
-        "examples/coverage-us-gaap.xml",
+        "assets/corpus/coverage-us-gaap.xml",
         "asrt",
-        include_str!("../examples/coverage-us-gaap.xml"),
+        include_str!("../assets/corpus/coverage-us-gaap.xml"),
     ),
     (
-        "examples/coverage-pt-ncrf-pe.xml",
+        "assets/corpus/coverage-pt-ncrf-pe.xml",
         "asrt",
-        include_str!("../examples/coverage-pt-ncrf-pe.xml"),
+        include_str!("../assets/corpus/coverage-pt-ncrf-pe.xml"),
     ),
     (
-        "examples/dependence-group-consolidation.xml",
+        "assets/corpus/dependence-group-consolidation.xml",
         "asrt",
-        include_str!("../examples/dependence-group-consolidation.xml"),
+        include_str!("../assets/corpus/dependence-group-consolidation.xml"),
     ),
     (
-        "examples/run-2026-08-30.xml",
+        "assets/corpus/run-2026-08-30.xml",
         "asrt",
-        include_str!("../examples/run-2026-08-30.xml"),
+        include_str!("../assets/corpus/run-2026-08-30.xml"),
     ),
 ];
 
@@ -146,16 +146,16 @@ fn provisional_uris_are_still_flagged_as_provisional() {
 }
 
 /// ⛔ THE GATE ABOVE IS A HAND-WRITTEN LIST, SO IT CAN SILENTLY STOP COVERING THINGS.
-/// It did: `unstated.xml` was added to `examples/` and not to `INSTANCES`, which left
+/// It did: `unstated.xml` was added to `assets/corpus/` and not to `INSTANCES`, which left
 /// the one document exercising `Regime/chart` as the one document exempt from the
 /// namespace check. A list that quietly omits a file is worse than no list, because it
 /// reads as coverage.
 #[test]
 fn no_example_is_exempt_from_the_namespace_gate() {
-    let dir = format!("{}/examples", env!("CARGO_MANIFEST_DIR"));
+    let dir = format!("{}/assets/corpus", env!("CARGO_MANIFEST_DIR"));
     let mut on_disk: Vec<String> = fs::read_dir(&dir)
         .unwrap_or_else(|e| panic!("{dir}: {e}"))
-        .map(|e| format!("examples/{}", e.unwrap().file_name().to_string_lossy()))
+        .map(|e| format!("assets/corpus/{}", e.unwrap().file_name().to_string_lossy()))
         .filter(|n| n.ends_with(".xml"))
         .collect();
     on_disk.sort();
@@ -165,6 +165,6 @@ fn no_example_is_exempt_from_the_namespace_gate() {
 
     assert_eq!(
         on_disk, listed,
-        "every document in examples/ must be in INSTANCES, or it is not checked at all"
+        "every document in assets/corpus/ must be in INSTANCES, or it is not checked at all"
     );
 }
