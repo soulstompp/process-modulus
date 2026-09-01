@@ -19,6 +19,8 @@ TRUNCATE source, elimination, elimination_search, part, coupling, coupling_searc
 
 \set d `cat assets/corpus/enterprise-contract.xml`
 INSERT INTO source VALUES ('enterprise-contract', XMLPARSE(DOCUMENT :'d'));
+\set d `cat assets/corpus/contrato-empresarial.xml`
+INSERT INTO source VALUES ('contrato-empresarial', XMLPARSE(DOCUMENT :'d'));
 \set d `cat assets/corpus/refutation.xml`
 INSERT INTO source VALUES ('refutation', XMLPARSE(DOCUMENT :'d'));
 \set d `cat assets/corpus/unstated.xml`
