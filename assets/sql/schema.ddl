@@ -3,7 +3,7 @@
 -- ⛔ THIS IS BUILT FOR PROOF AND IT IS NOT A RECOMMENDED DATABASE SCHEMA. Nothing here
 --    is normalised for writing, indexed for a workload, or shaped for an application.
 --    It exists so that the claims the XSD cannot check can be checked, and so that the
---    matrices in docs/plans/NOTE-linear-algebra-reviewers.md can be pulled out and
+--    matrices in docs/linear-algebra.md can be pulled out and
 --    multiplied. Copy the ideas, not the layout.
 --
 -- Run it with:  psql -f sql/schema.ddl

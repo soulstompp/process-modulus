@@ -1,4 +1,4 @@
--- The matrices from docs/plans/NOTE-linear-algebra-reviewers.md, pulled out with SQL.
+-- The matrices from docs/linear-algebra.md, pulled out with SQL.
 --
 --   psql -f assets/sql/schema.ddl -f assets/sql/ingest.sql -f assets/sql/matrices.sql
 --
