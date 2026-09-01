@@ -25,7 +25,19 @@ const MANIFEST: &str = include_str!("../Cargo.toml");
 /// ⛔ Adding a name here is the whole decision. It is meant to be a deliberate,
 /// reviewed edit rather than a formality, because every entry is a route by
 /// which someone else's types could arrive.
-const PERMITTED: &[&str] = &["xsd-parser-types", "quick-xml", "xsd-parser", "anyhow"];
+const PERMITTED: &[&str] = &[
+    // the crate proper
+    "xsd-parser-types",
+    "quick-xml",
+    "xsd-parser",
+    "anyhow",
+    // ⭐ dev only, for examples/matrices.rs. None reaches a consumer, and none is the
+    // model this crate exists to corroborate: they are a database driver, its runtime,
+    // and a linear algebra library. Added deliberately, which is what this list is for.
+    "sqlx",
+    "tokio",
+    "nalgebra",
+];
 
 /// Every `key = value` line inside a `[…dependencies]` table.
 fn dependency_lines() -> Vec<&'static str> {
@@ -103,11 +115,7 @@ fn no_source_file_imports_an_unlisted_crate() {
             let Some(path) = l.strip_prefix("use ") else {
                 continue;
             };
-            let root = path
-                .split([':', ';', ' ', '{'])
-                .next()
-                .unwrap_or("")
-                .trim();
+            let root = path.split([':', ';', ' ', '{']).next().unwrap_or("").trim();
             let permitted = matches!(root, "std" | "core" | "alloc" | "crate" | "self" | "super")
                 || PERMITTED.iter().any(|p| p.replace('-', "_") == root);
             assert!(

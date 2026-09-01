@@ -1,0 +1,87 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT l.filing        AS \"filing!\",\n                  l.layer         AS \"layer!\",\n                  l.demand_low::float8   AS \"d_low!\",\n                  l.demand_mode::float8  AS \"d_mode!\",\n                  l.demand_high::float8  AS \"d_high!\",\n                  n.amount_low::float8   AS \"n_low!\",\n                  n.amount_mode::float8  AS \"n_mode!\",\n                  n.amount_high::float8  AS \"n_high!\",\n                  l.sign::text           AS \"sign!\"\n           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)\n           WHERE l.demand_low IS NOT NULL AND n.amount_low IS NOT NULL\n             AND l.sign IS NOT NULL\n           ORDER BY l.filing, l.layer",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.layer",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.layer",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "n_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "n_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "n_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "sign!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "be02ff36137d0e92a6ce4280c05d4d6d7365fa8c90c9be860145b80af63fd59e"
+}

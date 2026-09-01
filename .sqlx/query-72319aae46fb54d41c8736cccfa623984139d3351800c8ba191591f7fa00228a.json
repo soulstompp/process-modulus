@@ -1,0 +1,77 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT l.qty_low::float8    AS \"q_low!\",\n                  l.qty_mode::float8   AS \"q_mode!\",\n                  l.qty_high::float8   AS \"q_high!\",\n                  l.demand_low::float8 AS \"d_low!\",\n                  l.demand_mode::float8 AS \"d_mode!\",\n                  l.demand_high::float8 AS \"d_high!\",\n                  n.amount_low::float8  AS \"n_low!\",\n                  n.amount_mode::float8 AS \"n_mode!\",\n                  n.amount_high::float8 AS \"n_high!\"\n           FROM pm.layer l JOIN pm.nameplate n USING (filing, layer)\n           WHERE l.filing = 'merge-holding-composition' AND l.layer = 'compute'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "q_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "q_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "q_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "n_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "n_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "n_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "72319aae46fb54d41c8736cccfa623984139d3351800c8ba191591f7fa00228a"
+}

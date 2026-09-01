@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT f.name AS \"filing!\", count(c.*) AS \"n!\",\n                  cs.absent::text AS why\n           FROM pm.filing f\n           LEFT JOIN pm.coupling c ON c.filing = f.name\n           LEFT JOIN pm.coupling_search cs ON cs.filing = f.name\n           -- ⛔⛔ CORPUS ONLY, AND THIS SECTION IS A REPORT RATHER THAN A RULE, WHICH IS THE\n           -- WHOLE REASON THE DISTINCTION EXISTS. \"No filing asserts independence\" is a fact\n           -- about THE EVIDENCE; a stipulation that asserts it makes the finding a lie.\n           -- assets/fixtures/every-absence.xml files exactly that, on purpose, to prove the\n           -- branch works — and it must not be counted here. Rules run on fixtures; reports\n           -- about the world do not. See assets/fixtures/README.md.\n           WHERE f.evidence = 'corpus'\n           GROUP BY f.name, cs.absent ORDER BY f.name",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "n!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "8ea02bdea117c594c57fcf013691c240044c6175f06a8bad6fe8590af42d4a05"
+}

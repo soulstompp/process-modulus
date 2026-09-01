@@ -30,3 +30,21 @@ quick-xml = "0.38"
 [build-dependencies]
 xsd-parser = "1.5"
 anyhow = "1"
+
+# ⛔ DEV ONLY, AND THE DISTINCTION IS LOAD-BEARING. These do not propagate: `cargo add
+# process-modulus` still pulls `xsd-parser-types` and `quick-xml` and nothing else, so
+# "a schema, not a library" survives. They exist for `examples/matrices.rs`, which checks
+# the SQL in `assets/sql/` against an independent computation.
+#
+# ⚠️ Each name here is also a deliberate edit to PERMITTED in tests/independence.rs,
+# which allowlists every dependency table. That test's doc says adding a name is the
+# whole decision, and it means it.
+[dev-dependencies]
+# ⭐ `query_as!` verifies at COMPILE TIME that a query returns what the struct claims.
+# That is the same species of guarantee as tests/namespace.rs and the version lock:
+# a drift between assets/sql/schema.ddl and the code becomes a build failure rather
+# than a runtime surprise in an example nobody runs. The `.sqlx` cache is committed,
+# so building needs no database; `cargo sqlx prepare` regenerates it.
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "postgres", "macros"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+nalgebra = "0.34"

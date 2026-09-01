@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT d.operation AS \"operation!\", d.layer AS \"drawn!\",\n                  d.mode::float8 AS d_val,\n                  n.layer AS \"commits!\", n.mode::float8 AS n_val\n           FROM pm.draw d\n           JOIN pm.induction n ON n.filing = d.filing AND n.operation = d.operation",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "operation!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "operation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "drawn!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "commits!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.induction",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "n_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      false,
+      null
+    ]
+  },
+  "hash": "203fc126fc175de2090a8a383668720df664232b75b0270fe247a12ce7503acc"
+}

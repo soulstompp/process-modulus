@@ -1,0 +1,14 @@
+# ⭐ The committed `.sqlx/` cache is what makes `Cargo.toml`'s promise true: "the `.sqlx`
+# cache is committed, so building needs no database". Without this, `sqlx`'s `query_as!`
+# macros prefer a `DATABASE_URL` found in the environment over the cache, so anyone with
+# one set for an unrelated project fails to build `examples/matrices.rs` against tables
+# that exist only in `assets/sql/schema.ddl`. That is not a hypothetical — it is how this
+# file came to exist.
+#
+# ⛔ NOT `force = true`, and the reason is the one thing to know before changing it.
+# `cargo sqlx prepare` regenerates the cache by running cargo with `SQLX_OFFLINE=false` in
+# the environment it spawns. Cargo's `[env]` yields to a variable already set, so the plain
+# form applies everywhere it should and steps aside for exactly the command that must reach
+# a real database. Forcing it would make the cache unregenerable.
+[env]
+SQLX_OFFLINE = "true"
