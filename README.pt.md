@@ -416,7 +416,8 @@ psql -d process_modulus_proof -f assets/sql/schema.ddl \
 ```
 
 O Postgres lê o próprio conjunto de documentos — sem Rust, sem extensões, sem superutilizador.
-Ver [`assets/sql/README.md`](assets/sql/README.md).
+Ver [`assets/sql/README.pt.md`](assets/sql/README.pt.md), que é o documento onde as regras
+são demonstradas.
 
 O `assets/corpus/` tem doze documentos: um contrato empresarial e a sua tradução portuguesa, uma
 refutação, um que exercita tudo o que um declarante pode recusar, duas declarações de membros do

@@ -1,5 +1,7 @@
 # The same model, twice: as tables and as matrices
 
+> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+
 Five files and one claim.
 
 ```
