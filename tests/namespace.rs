@@ -358,3 +358,47 @@ fn the_crate_version_tracks_the_schema_version() {
         crate_mm.0, crate_mm.1, pm.0, pm.1
     );
 }
+
+/// ⛔⛔ EVERY CORPUS DOCUMENT IS INGESTED BY `assets/sql/ingest.sql`, OR THE SQL PROOF EXEMPTS IT.
+///
+/// `ingest.sql` names its files one `\set` at a time, which is the right shape — a glob would
+/// load whatever happened to be in the directory — but it means adding a document to the corpus
+/// and forgetting this file leaves that document checked by the validator and the Rust tests and
+/// examined by none of the forty-four rules the SQL discharges.
+///
+/// ⭐ IT HAS ALREADY HAPPENED ONCE. `contrato-empresarial.xml` was added, gated by
+/// `no_example_is_exempt_from_the_namespace_gate` above, swept by `corpus_parse.rs`, and silently
+/// absent from every coverage count in `assets/sql/README.md`. This is that gate one directory
+/// over, and it needs no database.
+#[test]
+fn every_corpus_document_is_ingested_by_the_sql() {
+    let root = env!("CARGO_MANIFEST_DIR");
+    let ingest = fs::read_to_string(format!("{root}/assets/sql/ingest.sql"))
+        .expect("assets/sql/ingest.sql");
+
+    let dir = format!("{root}/assets/corpus");
+    let mut on_disk: Vec<String> = fs::read_dir(&dir)
+        .unwrap_or_else(|e| panic!("{dir}: {e}"))
+        .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+        .filter(|n| n.ends_with(".xml"))
+        .collect();
+    on_disk.sort();
+
+    // ⭐ ONLY DOCUMENTS WITH A STACK ARE IN SCOPE, and the reason is in the SQL README:
+    // "the coverage documents are not ingested — they carry no quantities, so they are not
+    // matrices and there is nothing here for a join to do." A coverage file, a run record and
+    // a dependence statement have no layer, so there is nothing for a rule to examine.
+    let missing: Vec<&String> = on_disk
+        .iter()
+        .filter(|n| {
+            let body = fs::read_to_string(format!("{dir}/{n}")).expect("corpus document");
+            body.contains("<pm:stack") && !ingest.contains(&format!("assets/corpus/{n}"))
+        })
+        .collect();
+
+    assert!(
+        missing.is_empty(),
+        "these corpus documents are not read by assets/sql/ingest.sql, so every rule in \
+         rules.sql silently skips them: {missing:?}"
+    );
+}
