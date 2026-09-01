@@ -63,8 +63,8 @@
         <pm:value>SNC</pm:value>
       </pm:term>
     </pm:chart>
-    <pm:note>The coarser coding: S covers both NCRF and NCRF-PE, so this code cannot
-             be mapped back to a single AnexoASNC value.</pm:note>
+    <pm:note>A codificação mais grosseira: o S cobre tanto NCRF como NCRF-PE, portanto
+             este código não pode ser reconvertido num único valor do AnexoASNC.</pm:note>
   </asrt:regime>
 
   <!-- ⭐ AGREES WITH THE US WITNESS, IN THE SAME WORDS, FROM THE SAME PACK. Two

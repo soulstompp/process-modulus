@@ -61,7 +61,7 @@
     <pm:scope>
       <pm:scope>
         <pm:extent>unbounded</pm:extent>
-        <pm:basis>o que este membro reporta; what this member files under the group instruction, and nobody has asked what lies outside it</pm:basis>
+        <pm:basis>o que este membro reporta ao abrigo da instrução do grupo, e ninguém perguntou o que fica fora disso</pm:basis>
       </pm:scope>
     </pm:scope>
 
@@ -86,11 +86,11 @@
           <pm:boundOrigin>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
             </pm:absent>
           </pm:boundOrigin>
           <pm:provenance><pm:party>pt-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-31</pm:asOf>
         </pm:claim>
@@ -98,7 +98,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
-          <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says WHERE such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
+          <pm:note>o trabalho em fila sobrevive de facto à espera, e quanto tempo até se perder em silêncio nunca foi medido. O trabalho que se perde pertence a `unrealised` e não a `people` — o que diz ONDE tal trabalho seria declarado, e não que parte deste resto lá esteja: as parcelas abaixo já o esgotam</pm:note>
         </pm:absent>
       </pm:timeSlack>
 
@@ -114,13 +114,13 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>derived</pm:reason>
-                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
             </pm:claim>
@@ -138,13 +138,13 @@
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>there is no range here to tighten</pm:note>
+                        <pm:note>não há aqui intervalo para estreitar</pm:note>
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
                       <pm:absent>
                         <pm:reason>derived</pm:reason>
-                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
                       </pm:absent>
                     </pm:boundOrigin>
                   </pm:claim>
@@ -154,7 +154,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>`pessoas` is a stock with no period</pm:note>
+                  <pm:note>`pessoas` é uma existência sem período</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -162,7 +162,7 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+              <pm:note>uma pessoa pode trabalhar acima da sua capacidade nominal e na maioria das pilhas é a única oferta que o consegue. ATÉ QUE PONTO ACIMA, e durante quanto tempo, ninguém aqui mediu — que é todo o assunto deste modelo e a razão de isto não ser um valor booleano</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <!-- ⛔ STILL FALSE, AND THE HOURS BANK DOES NOT CHANGE IT. Banking an
@@ -172,7 +172,7 @@
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+              <pm:note>a capacidade não usada hoje está PERDIDA. As horas não usadas da semana passada não podem ser armazenadas para servir esta semana, e é por isso que `absorber = inventory` nesta camada é lisamente falso</pm:note>
             </pm:absent>
           </pm:inventorySlack>
         </pm:nameplate>
@@ -182,7 +182,7 @@
               <pm:reason>unmeasured</pm:reason>
               <pm:note>as horas absorvidas acima do quadro não são integralmente registadas</pm:note>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:absent>
@@ -232,11 +232,11 @@
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -255,17 +255,17 @@
                   <pm:narrowsWhen>
                     <pm:absent>
                       <pm:reason>unmeasured</pm:reason>
-                      <pm:note>nobody has said what would tighten this range</pm:note>
+                      <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
                     </pm:absent>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -276,7 +276,7 @@
           <pm:quantity>
             <pm:absent>
               <pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+              <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
             </pm:absent>
           </pm:quantity>
         </pm:remainder>
@@ -298,17 +298,17 @@
           <pm:narrowsWhen>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>nobody has said what would tighten this range</pm:note>
+              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
             </pm:absent>
           </pm:narrowsWhen>
           <pm:boundOrigin>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
             </pm:absent>
           </pm:boundOrigin>
           <pm:provenance><pm:party>pt-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-31</pm:asOf>
         </pm:claim>
@@ -316,7 +316,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>none</pm:reason>
-          <pm:note>an inference request that waits until tomorrow was not served. At this layer’s granularity the demand does not survive being held at all</pm:note>
+          <pm:note>um pedido de inferência que espera até amanhã não foi servido. À granularidade desta camada a procura não sobrevive de todo a ser retida</pm:note>
         </pm:absent>
       </pm:timeSlack>
 
@@ -332,13 +332,13 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>derived</pm:reason>
-                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
             </pm:claim>
@@ -356,13 +356,13 @@
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>there is no range here to tighten</pm:note>
+                        <pm:note>não há aqui intervalo para estreitar</pm:note>
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
                       <pm:absent>
                         <pm:reason>derived</pm:reason>
-                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
                       </pm:absent>
                     </pm:boundOrigin>
                   </pm:claim>
@@ -372,7 +372,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>`GPU-hour` carries its hour in the numerator; it is a quantity of resource-time rather than a rate, so it has no period</pm:note>
+                  <pm:note>`GPU-hour` traz a hora no numerador; é uma quantidade de tempo-recurso e não uma taxa, portanto não tem período</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -380,13 +380,13 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>a reserved card cannot be run above its rating at any price</pm:note>
+              <pm:note>uma placa reservada não pode ser levada acima da sua capacidade nominal a preço nenhum</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>a reserved card-hour not drawn is gone; there is nothing to build ahead</pm:note>
+              <pm:note>uma hora-placa reservada e não consumida está perdida; não há nada para adiantar</pm:note>
             </pm:absent>
           </pm:inventorySlack>
         </pm:nameplate>
@@ -400,17 +400,17 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>none</pm:reason>
-                  <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                  <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -445,13 +445,13 @@
                   <pm:narrowsWhen>
                     <pm:absent>
                       <pm:reason>unmeasured</pm:reason>
-                      <pm:note>nobody has said what would tighten this range</pm:note>
+                      <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
                     </pm:absent>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                 </pm:claim>
@@ -462,7 +462,7 @@
           <pm:quantity>
             <pm:absent>
               <pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+              <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
             </pm:absent>
           </pm:quantity>
         </pm:remainder>
@@ -485,17 +485,17 @@
           <pm:narrowsWhen>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>nobody has said what would tighten this range</pm:note>
+              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
             </pm:absent>
           </pm:narrowsWhen>
           <pm:boundOrigin>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
             </pm:absent>
           </pm:boundOrigin>
           <pm:provenance><pm:party>pt-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-31</pm:asOf>
         </pm:claim>
@@ -503,7 +503,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
-          <pm:note>a shift deferred is a shift run later; how far it can slip before the order is lost is unmeasured</pm:note>
+          <pm:note>um turno adiado é um turno corrido mais tarde; quanto pode escorregar antes de a encomenda se perder está por medir</pm:note>
         </pm:absent>
       </pm:timeSlack>
 
@@ -519,13 +519,13 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>derived</pm:reason>
-                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
             </pm:claim>
@@ -543,13 +543,13 @@
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>there is no range here to tighten</pm:note>
+                        <pm:note>não há aqui intervalo para estreitar</pm:note>
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
                       <pm:absent>
                         <pm:reason>derived</pm:reason>
-                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
                       </pm:absent>
                     </pm:boundOrigin>
                   </pm:claim>
@@ -559,7 +559,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>unmeasured</pm:reason>
-                  <pm:note>`turnos por semana` has a period and nobody has said which days of it the packing line runs</pm:note>
+                  <pm:note>`turnos por semana` tem período e ninguém disse em que dias dele corre a linha de embalamento</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -567,13 +567,13 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>the line can be run above its rated shifts; nobody has measured how far before it breaks</pm:note>
+              <pm:note>a linha pode ser levada acima dos turnos nominais; ninguém mediu até onde antes de partir</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>output can be run ahead into stock; nobody has counted how much the floor holds</pm:note>
+              <pm:note>a produção pode ser adiantada para existências; ninguém contou quanto a fábrica consegue reter</pm:note>
             </pm:absent>
           </pm:inventorySlack>
         </pm:nameplate>
@@ -587,17 +587,17 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>none</pm:reason>
-                  <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                  <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -645,11 +645,11 @@
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -674,11 +674,11 @@
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -689,7 +689,7 @@
           <pm:quantity>
             <pm:absent>
               <pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+              <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
             </pm:absent>
           </pm:quantity>
         </pm:remainder>
@@ -717,17 +717,17 @@
           <pm:narrowsWhen>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>nobody has said what would tighten this range</pm:note>
+              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
             </pm:absent>
           </pm:narrowsWhen>
           <pm:boundOrigin>
             <pm:absent>
               <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
             </pm:absent>
           </pm:boundOrigin>
           <pm:provenance><pm:party>pt-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-31</pm:asOf>
         </pm:claim>
@@ -735,7 +735,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
-          <pm:note>a shift deferred is a shift run later; how far it can slip before the order is lost is unmeasured</pm:note>
+          <pm:note>um turno adiado é um turno corrido mais tarde; quanto pode escorregar antes de a encomenda se perder está por medir</pm:note>
         </pm:absent>
       </pm:timeSlack>
 
@@ -751,13 +751,13 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>derived</pm:reason>
-                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
             </pm:claim>
@@ -775,13 +775,13 @@
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>there is no range here to tighten</pm:note>
+                        <pm:note>não há aqui intervalo para estreitar</pm:note>
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
                       <pm:absent>
                         <pm:reason>derived</pm:reason>
-                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
                       </pm:absent>
                     </pm:boundOrigin>
                   </pm:claim>
@@ -803,13 +803,13 @@
                       <pm:narrowsWhen>
                         <pm:absent>
                           <pm:reason>notApplicable</pm:reason>
-                          <pm:note>there is no range here to tighten</pm:note>
+                          <pm:note>não há aqui intervalo para estreitar</pm:note>
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
                         <pm:absent>
                           <pm:reason>derived</pm:reason>
-                          <pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note>
+                          <pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note>
                         </pm:absent>
                       </pm:boundOrigin>
                     </pm:claim>
@@ -822,13 +822,13 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>the line can be run above its rated shifts; nobody has measured how far before it breaks</pm:note>
+              <pm:note>a linha pode ser levada acima dos turnos nominais; ninguém mediu até onde antes de partir</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>output can be run ahead into stock; nobody has counted how much the floor holds</pm:note>
+              <pm:note>a produção pode ser adiantada para existências; ninguém contou quanto a fábrica consegue reter</pm:note>
             </pm:absent>
           </pm:inventorySlack>
         </pm:nameplate>
@@ -844,17 +844,17 @@
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>there is no range here to tighten</pm:note>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>none</pm:reason>
-                  <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                  <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -892,13 +892,13 @@
                   <pm:narrowsWhen>
                     <pm:absent>
                       <pm:reason>unmeasured</pm:reason>
-                      <pm:note>nobody has said what would tighten this range</pm:note>
+                      <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
                     </pm:absent>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
                     <pm:absent>
                       <pm:reason>none</pm:reason>
-                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      <pm:note>nada fixa este limite. É quanto do resto se observou este detentor a assumir</pm:note>
                     </pm:absent>
                   </pm:boundOrigin>
                 </pm:claim>
@@ -919,7 +919,7 @@
     <pm:couplings>
       <pm:absent>
         <pm:reason>unmeasured</pm:reason>
-        <pm:note>ninguem testou; nobody at this level has tried relieving one layer and watching the others</pm:note>
+        <pm:note>ninguém testou: a este nível ninguém tentou aliviar uma camada e observar as outras</pm:note>
       </pm:absent>
     </pm:couplings>
   </pm:stack>

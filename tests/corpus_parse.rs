@@ -72,6 +72,7 @@ fn assert_layer_references_resolve(doc: &ProcessModulusElementType, what: &str) 
 fn corpus() -> Vec<(&'static str, ProcessModulusElementType)> {
     let filings = [
         "enterprise-contract.xml",
+        "contrato-empresarial.xml",
         "refutation.xml",
         "unstated.xml",
         "merge-us-member.xml",

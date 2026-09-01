@@ -1,5 +1,7 @@
 # Conformance profiles
 
+> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+
 **There is nothing here yet, and that is deliberate.** A profile should follow a real
 adopter rather than precede one. This file explains what a profile is, what it may and may
 not do, and which of the model's rules a validator cannot reach on its own.

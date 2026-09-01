@@ -1,5 +1,7 @@
 # process-modulus
 
+> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+
 `process-modulus` is an XML Schema for describing how a business actually meets demand:
 what it has committed, what that commitment can be divided into, what the division leaves
 over, and who ends up carrying it. You write instance documents against the schema,
@@ -409,7 +411,8 @@ psql -d process_modulus_proof -f assets/sql/schema.ddl \
 Postgres reads the corpus itself — no Rust, no extensions, no superuser. See
 [`assets/sql/README.md`](assets/sql/README.md).
 
-`assets/corpus/` holds eleven documents: an enterprise contract, a refutation, one that
+`assets/corpus/` holds twelve documents: an enterprise contract and its European Portuguese
+counterpart, a refutation, one that
 exercises everything a sender may decline, two member filings and the two nested compositions
 that consolidate them, two coverage files answering the same questions under different regimes,
 a run record, and one cross-document dependence.
@@ -666,6 +669,10 @@ The crate's major and minor track the schema's `xs:schema/@version`, and
 `tests/namespace.rs` fails the build if they drift apart. ⚠️ What is **not** settled is the
 namespace URIs, which are still `https://example.invalid/…`. No conformance profile exists yet,
 by choice.
+
+Further reading: [`docs/linear-algebra.md`](docs/linear-algebra.md) reconstructs the model
+for a reader who wants the matrices, and is also in European Portuguese at
+[`docs/linear-algebra.pt.md`](docs/linear-algebra.pt.md).
 
 ## Licence
 
