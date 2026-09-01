@@ -175,23 +175,99 @@ level, which is `cannotAsk`, and reusing the existing word is better than mintin
 
 ## What a validator cannot reach, and an implementer therefore still owes
 
-XSD 1.0 has no `xs:assert` and cannot compare across elements. Eight rules in this model are
-stated in the schemas' own prose and gated by nothing. Six of them carry the marker
+XSD 1.0 has no `xs:assert` and cannot compare across elements. Forty-four rules in this model
+are stated in the schemas' own prose and gated by nothing. Forty-one of them carry the marker
 `NOT REACHABLE BY A VALIDATOR` at the annotation that states it, so a reader can tell a
-binding rule from an unenforced one. The two `dependence` rows marked below with an asterisk
-are stated in prose without that marker, which is a gap in the marking rather than in the
-reasoning.
+binding rule from an unenforced one. The three rows marked below with an asterisk are stated in prose
+without that marker, which is a gap in the marking rather than in the reasoning. ⚠️ The counts
+in this paragraph drifted from the table for at least two passes; they are now the table.
+
+⭐⭐⭐ **THREE ROWS ARE NEW AND NONE OF THEM IS A NEW IDEA.** Each was already stated in the
+schemas' prose and was UNCHECKABLE, because in each case the state it turns on was encoded as a
+blank — an empty list, a missing element, an omitted enumeration — and a blank carries no reason
+to group by. Making five two-valued encodings say which of their three or four states they mean
+did not add rules; it made rules that were already written down reachable. ⛔ The window
+carry-through rule found a live defect on its first run: a composed layer had silently dropped
+its part's duty cycle, and the drop was byte-identical to a line that runs seven days a week.
+
+⭐⭐ **SIXTEEN OF THE FORTY-FOUR ARE NO LONGER ONLY OWED — THEY RUN.**
+[`assets/sql/rules.sql`](../assets/sql/rules.sql) expresses them as one query over the corpus
+loaded into Postgres, and an empty result means every one of them held. That includes the rule
+no validator can see in principle: *no leaf layer is reachable through two paths* needs a
+recursive walk across documents, and the second path runs through a filing the first does not
+contain.
+
+⚠️ **It does not discharge the rules; it discharges them FOR THIS CORPUS.** An adopter runs the
+same file against their own filings, which is the point of shipping it. And the query reports how
+many rows each rule examined, because four of the sixteen currently see only two layers apiece —
+almost nothing in the corpus files a numeric slack, and a bound with nothing to bound passes
+loudest. ⛔ Two report `VACUOUS` outright and are left saying so rather than quietly counted as
+passing.
+
+⛔ What SQL still cannot reach is prose against data: whether a coupling's `observed` describes a
+real observation, whether a `narrowsWhen` names something that would actually narrow the range,
+whether a note claiming a portion is `unrealised` agrees with the holder list beside it. Those
+remain owed by a person.
+
+⛔ **Two rows in this table used to disagree about what `clearance` means, and the third `Fit`
+member is what settled it.** One row read *"under an interference fit"* — the `sign` value, a
+comparison at `mostLikely`. Four rows down, another read *"clearance **across the whole demand
+range**"* — a comparison of two ranges, spelled out in prose because a two-member enumeration had
+no name for its answer. That prose WAS ISO 286's own criterion, already load-bearing here. With
+`transition` filed the qualifier is redundant, so the row above got shorter rather than longer.
+
+⭐ **Two rows left this table by being subsumed rather than dropped.** *`absorber = inventory`
+requires `admitsInventory = true`* and its `time` twin were availability gates on a boolean;
+the slack rule below is strictly stronger, because a buffer whose slack is a measured zero
+fails it for any positive share, and a buffer with a sized slack is now bounded as well as
+permitted.
 
 | the rule | where |
 |---|---|
 | a `Claim`'s bounds satisfy `low` <= `mostLikely` <= `high` | `Claim` |
 | the expected value is derived and must not be carried | `Claim` |
-| a quantum's `size` is expressed in the demand unit of its layer | `LumpyQuantum` |
-| a supply with `admitsInterference = false` and an interference fit must hold it as `customer` or `unrealised` | `Fit` |
+| a quantum's `size` is expressed in the unit of the nameplate it divides | `LumpyQuantum` |
+| a supply whose `capacitySlack` is a measured zero, under an interference fit, must hold it as `customer` or `unrealised`, across every holder | `Fit` |
+| the same supply under a TRANSITION fit names at least one `customer` or `unrealised` holder, presence rather than universality, because part of the range is legitimately clearance | `Fit` |
+| `max(0, demand.high - nameplate.low)` does not exceed `capacitySlack.high` plus the unserved shares' highs, evaluated at that one corner | `Nameplate` |
+| the `nameplate` is a whole multiple of the quantum, for a lumpy supply | `Remainder` |
+| `quantity` is `derived` wherever demand, nameplate and the quantum are all stated | `Remainder` |
+| a `clearance` fit rules out `customer` and `unrealised`, the value now meaning across the whole range | `Remainder` |
+| `sign` agrees with the RANGE comparison — `clearance` where `nameplate.low` >= `demand.high`, `interference` where `nameplate.high` <= `demand.low`, `transition` where they overlap | `Fit` |
+| the stated `share`s sum to `\|nameplate - demand\|`, wherever every share is stated | `Holder` |
+| a holder `kind` appears at most once per remainder | `Holder` |
 | a `dependence` end's filing exists, and the layer named is in it | `FiledLayer` (`assertion.xsd`) |
 | a `dependence` end's `version` names the edition actually read \* | `FiledLayer` (`assertion.xsd`) |
 | a `dependence` entry's two ends are not the same filing *and* the same layer | `DependenceEntry` (`assertion.xsd`) |
 | a `dependence` witness is not the filer of both ends, since if they are, the observation belongs in `pm:Coupling` \* | `Dependence` (`assertion.xsd`) |
+| a composed layer's claim equals `Σ parts - Σ eliminations`, per quantity | `Fusion` (`assertion.xsd`) |
+| an elimination subtracts component-wise and does NOT reverse bounds | `Elimination` (`assertion.xsd`) |
+| a fusion's parts are fungible, so their remainders may offset | `Fusion` (`assertion.xsd`) |
+| `party` and `asOf` appear only on a `counterparty` holder | `Holder` |
+| a `counterparty` holder names its `party`, and should carry `asOf` | `Holder` |
+| a coupling propagates through a fusion and ATTENUATES, bounded by the part's share of the layer it was fused into | `Coupling` |
+| a fusion that absorbs a coupling between its own parts says so, and never cites it as evidence | `Coupling` |
+| no leaf layer is reachable through two paths, once compositions nest | `composition` (`assertion.xsd`) |
+| a holder's share does not exceed the slack of the buffer its `absorber` names, on the interference side, with `unrealised` exempt | `Nameplate`, `Layer` |
+| a fused layer's slack is bounded by the SUM of its parts', and one unsized part makes that bound unsized | `Nameplate`, `Layer` |
+| a part's `factor` converts into the composed layer's unit, and is absent exactly when they already agree | `Part` (`assertion.xsd`) |
+| a `factor` is strictly positive, so the interval product is component-wise | `Part` (`assertion.xsd`) |
+| an elimination is stated in the composed unit, AFTER conversion | `Part` (`assertion.xsd`) |
+| a converted part's remainder is converted directly and never re-derived from its converted nameplate and demand | `Part` (`assertion.xsd`) |
+| a `composition` and a `dependence` filed by one consolidator about one consolidation agree about witness, date and regime | `Dependence` (`assertion.xsd`) |
+| a slack is expressed in the unit of the shares it bounds | `Nameplate`, `Layer` |
+| a slack measured as a duration is converted before filing, by `quantity = duration x rate` | `Nameplate`, `Layer` |
+| a unit's denominator covers at least one whole duty cycle of the supply it measures | `Claim` |
+| `timeSlack` is `derived` only where the layer runs continuously | `Layer` |
+| a claim filing `boundOrigin` as `derived` sits beside a sibling element that states the author — `Nameplate/amountOrigin` or `LumpyQuantum/origin` — so the pointer resolves | `Claim` |
+| a `window` is the ON-duration, one per period of the nameplate's unit, and never the gap | `Divisibility` |
+| a `window` requires the nameplate's unit to name a period, since it is the live part of that denominator | `Divisibility` |
+| a `window` is CARRIED through a fusion and never summed: it is a property of the machine, not a quantity | `Divisibility` |
+| a layer filing a `window`, OR filing its absence as `unmeasured`, must not file `timeSlack` as `derived`, because in neither case is the spare known to be spread evenly across the period | `Divisibility`, `Layer` |
+| a `window` filed as `notApplicable` sits on a unit with no denominator, since a unit that names a period can be answered | `Divisibility` |
+| a fusion filing `eliminations` as `none` or `notApplicable` owes an EXACT sum: the composed figure equals `Σ` converted parts. Filing it as `unmeasured` suspends the check rather than passing it | `Fusion` (`assertion.xsd`) |
+| a fusion filing `eliminations` as `notApplicable` has exactly one part, since between a set of one nothing can be counted twice | `Fusion` (`assertion.xsd`) |
+| a layer restated by a second filing that claims to carry it through unchanged agrees with the first, `absorber` included \* | `composition` (`assertion.xsd`) |
 
 The four `dependence` rows are not a weakness of that design. They are the reason it is a
 separate document. An XSD identity constraint is scoped to one document, so a keyref that
@@ -199,6 +275,50 @@ appeared to reach across a filing boundary would validate by not being checked, 
 reference that looks constrained and is not. An implementer that can fetch the other filing
 owes the first two checks. One that cannot owes the reader the knowledge that it did not
 happen, which is the difference between an unresolvable reference and an unchecked one.
+
+The three `composition` rows split three ways, and collapsing them would lose the reason each
+is unenforced. The first is ordinary cross-filing arithmetic: an implementer that can fetch the
+member filings owes it, and `tests/composition.rs` discharges it for the three documents in this
+repository. The second is reachable in principle and simply beyond XSD 1.0, and it is the one
+most likely to be got wrong quietly, because subtracting with the wrong bound convention still
+yields a well-formed interval. The third **is not owed by anybody and never will be**: whether
+two members' people can cover for each other is a judgement, not a computation, and a checker
+that tried to settle it would be asserting something no document contains.
+
+The two `Holder` rows are one rule that was only half written down. The schema stated the
+negative half — `party`/`asOf` belong to `counterparty` and to nothing else — in exactly one
+place, with no marker and no row here, and the positive half was missing entirely: **a
+counterparty holder must name its party**, because a burden asserted to sit in another
+entity's books with nobody named is a guess wearing the one holder kind that promises an
+instrument. ⚠️ The rule is easiest to break in a consolidation, where a `booked` share really
+is booked in some member's books and naming which one looks exactly like what `party` is for.
+It is not: on a counterparty holder `party` names whose OTHER books carry the burden. Two
+relations, one field. `tests/corpus_parse.rs` now checks both halves for every holder in
+every filing in `assets/corpus/`, compositions unwrapped — which is where the violation that
+prompted the rows was found.
+
+The two `Coupling` rows are what happens when a coupling meets a fusion one level up, and
+they exist because `asrt:composition` nests. ⛔ Neither says a coupling is evidence for a
+fusion, and that is deliberate: **coupling and fungibility are independent axes**, and the
+documents in this repository populate both off-diagonal cells. Two delivery teams in two
+countries are one layer and not coupled at all. A delivery team and an out-of-hours rota are
+tightly coupled and are two layers, because an engineer on the rota delivers no features. A
+fusion citing a coupling as its justification would be answering a different question from
+the one it was asked.
+
+The `composition` row is a guarantee that weakens with depth, which makes it the one most
+worth stating. `partIdentity` is an `xs:key` and it is COMPLETE while every part is a leaf;
+at two levels it is not, because a holding naming both `group#labour` and `member#labour`
+has two distinct notation/id pairs and the member's layer is consolidated twice. ⚠️ The
+transitive check requires fetching the chain, and the fetch is not uniform: a layer sits one
+element deeper inside a composition than inside a plain filing, and `notation` says which is
+which nowhere, so a resolver reads the root element.
+
+⛔ A FOURTH LIMIT IS DELIBERATELY ABSENT FROM THE TABLE, because listing it would imply
+somebody owes it. The units of a fusion's parts are NOT checked and must not be: the parts
+legitimately spell one unit two ways — `people` and `pessoas` — and asserting that they name
+one unit IS WHAT A FUSION SAYS. A checker demanding string equality would reject the case the
+type exists for. That is a limit of the world, not a debt of the implementer.
 
 A fifth rule became checkable when `Regime/chart` landed: an answer whose `holds` names a
 taxonomy other than the declared `chart` is a finding. It could not be stated before,
@@ -210,6 +330,66 @@ discharging the rule, since the crate can only answer for documents it can read 
 profile still owes it for every document it has never seen. It applies to `holds` only and
 never to `refuses`, because a refusal code comes from a coding pack that is deliberately
 shared across regimes.
+
+### The decomposition rules are arithmetic, which makes them a different kind
+
+The rules that arrived with `Remainder`'s decomposition are not prose conventions. They are
+arithmetic over values the document already carries, so an implementer discharges them by
+computing rather than by reading:
+
+```
+m       = nameplate / q  -  floor(demand / q)
+residue = demand mod q
+r       = m*q - residue           and, always,  r ≡ -demand  (mod q)
+```
+
+⛔⛔ **THE TOTAL IS AN IDENTITY AND THE SPLIT IS NOT, AND THIS BLOCK USED TO IMPLY OTHERWISE.**
+Substituting `k = nameplate/q` shows the floors cancel outright:
+
+```
+r = (n/q − ⌊d/q⌋)·q − (d − ⌊d/q⌋·q) = n − d
+```
+
+So `r` is exact for **any** demand and **any** nameplate, interval or not — `⌊⌋` appears twice
+with opposite signs and never has to resolve. ⚠️ But `demand mod q` is a **sawtooth**, so
+evaluated at a demand range's three points it need not be ordered at all: `(4.5, 5.2, 6.7)` at
+`q = 1` gives residues `(0.5, 0.2, 0.7)`, which violates `low ≤ mostLikely ≤ high` — the first
+rule in the table above — while the demand that produced it is perfectly well formed. **Ten of
+the twenty lumpy layers in `assets/corpus/` are in that state today**, including `refutation.xml`'s
+`compute` at `(3.0, 5.2, 0.4)`.
+
+⭐ **The schema is already safe and the reasoning for it was simply never written down.**
+`Remainder` carries `quantity`, `sign`, `absorber` and `holder` — the total, and never the two
+components. **Read this block as an implementer's derivation of `r`, never as a filing
+instruction for `m·q` and `residue`,** which are not `Claim`s in the general case.
+`the_decomposition_is_an_identity_and_its_two_halves_are_not_claims` in
+[`tests/corpus_parse.rs`](../tests/corpus_parse.rs) discharges both halves.
+
+`tests/corpus_parse.rs` discharges the share-sum rule for the documents here, in
+`an_unserved_excess_splits_across_two_holders_that_sum_to_the_magnitude`, and it was proved
+able to fail before its pass was believed: perturbing one share by a single launch gives
+`left: (3.0, 3.0, 5.0)` against `right: (2.0, 3.0, 5.0)`. That is not the same as
+discharging the rule, for the reason the chart rule is not discharged either — this crate
+answers only for documents it can read.
+
+The consolidation rule joins that family and is discharged the same way, in
+`tests/composition.rs`, by `the_fused_demand_reconciles_with_its_parts_less_the_eliminations`. It
+too was proved able to fail first: moving the composed labour demand by one tenth reports
+`the composed demand is (10.4, 11.6, 13.0) and its parts less their eliminations are
+(10.4, 11.5, 13.0)`. ⚠️ TWO THINGS MAKE IT HARDER THAN THE OTHERS AND BOTH BELONG TO
+WHOEVER RUNS IT. The parts are in OTHER DOCUMENTS, so the check needs a catalogue mapping
+each `filing/notation` to something fetchable, and that catalogue is the receiver's, never
+the sender's. And the comparison CANNOT BE EXACT: `Claim` holds `f64`, `10.0 - 10.4` is
+`-0.40000000000000036`, and 7,168 of the 39,601 one-decimal pairs below 20 fail an exact
+`==` against their own sum. A tolerance is a policy number, which is why it is stated here
+and left to the profile rather than fixed in the model.
+
+⛔ AND AN UNSIZED ELIMINATION MAKES THE SUM UNCOMPUTABLE RATHER THAN SATISFIED. A checker
+that read an `unmeasured` elimination as zero would find the layer reconciling exactly and
+report success about a figure it has been told is overstated. `unchecked` is a third state
+and folding it into `checked and passed` is the failure this whole file is about. ⚠️ An
+absence reason of `none` is the opposite case and DOES mean zero: the composer looked and
+there was nothing to remove.
 
 ### The decision about Schematron, written down rather than left silent
 
