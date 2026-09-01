@@ -50,7 +50,7 @@
        ANSWER: what one witness says about one question.
        ================================================================== -->
   <xs:complexType name="Answer">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⛔⛔⛔ BOTH ANSWERS THAT CARRY A VALUE CARRY A **BORROWED** ONE, AND THAT IS THE
       WHOLE CORRECTION THIS SCHEMA MAKES. A refusal code and a chart position are
       both drawn from a list SOMEBODY ELSE PUBLISHES, and a witness under a different
@@ -77,6 +77,37 @@
       Two answers are comparable row for row when they cite the SAME taxonomy, and
       now two answers under DIFFERENT taxonomies are legible as different rather than
       silently incomparable. That is strictly more than the array could say.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⛔⛔⛔ AMBAS AS RESPOSTAS QUE TRANSPORTAM UM VALOR TRANSPORTAM UM VALOR **EMPRESTADO**, E É ESSA A
+      CORREÇÃO INTEIRA QUE ESTE ESQUEMA FAZ. Um código de recusa e uma posição num plano de contas são
+      ambos retirados de uma lista QUE OUTRA PESSOA PUBLICA, e uma testemunha sob outro regime retira de
+      outra lista.
+
+        holds      Reconhecido, e ONDE: uma posição num plano de contas. O plano é a taxonomia. Um
+                   plano norte-americano e um português não partilham um único código, portanto `1200`
+                   sozinho não nomeia nada.
+        refuses    ⭐ O ENTREGÁVEL. Uma recusa TIPIFICADA, retirada do conjunto de códigos que os
+                   contabilistas detêm. Esse conjunto é a autoridade, e não este esquema, nem a
+                   implementação que qualquer testemunha faça dele.
+        cannotAsk  ⛔ NEM UMA FALHA NEM UMA RECUSA. A testemunha não tem opinião sobre esta espécie de
+                   pergunta. Um modelo de normas a quem se pergunte sobre política de pessoal responde
+                   isto e faz bem.
+
+      ⚠️ O QUE ISTO SUBSTITUI, E PORQUE ERA UMA BIFURCAÇÃO À ESPERA DE ACONTECER. A implementação de
+      onde isto veio guardava os seis códigos de recusa como um vetor compilado de cadeias de texto
+      simples, com um comentário a dizer que a autoridade era o conjunto dos contabilistas. **Um
+      comentário a nomear uma autoridade ao lado de uma cópia fixa da sua lista é uma bifurcação que
+      ainda não se afastou.** Acrescente-se um segundo regime e há duas más opções: alargar o vetor e
+      perder que palavra pertence a quem, ou bifurcá-lo.
+
+      ⭐⭐ E A PROPRIEDADE DO VOCABULÁRIO PARTILHADO SOBREVIVE À MUDANÇA, QUE É O ESSENCIAL. Duas
+      respostas são comparáveis linha a linha quando citam a MESMA taxonomia, e agora duas respostas sob
+      taxonomias DIFERENTES são legíveis como diferentes em vez de silenciosamente incomparáveis. Isso é
+      estritamente mais do que o vetor conseguia dizer.
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="holds"     type="pm:BorrowedTerm"/>
@@ -86,10 +117,18 @@
   </xs:complexType>
 
   <xs:complexType name="Nothing">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       An answer with no payload. It exists because XSD 1.0 has no empty-branch choice,
       and because `cannotAsk` genuinely carries nothing: inventing a field for it
       would invite somebody to fill one in.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      Uma resposta sem conteúdo. Existe porque o XSD 1.0 não tem ramo vazio numa escolha, e porque o
+      `cannotAsk` genuinamente não transporta nada: inventar-lhe um campo convidaria alguém a
+      preenchê-lo.
     </xs:documentation></xs:annotation>
   </xs:complexType>
 
@@ -97,7 +136,7 @@
        CLAIMED: how much of a question a witness says it answers.
        ================================================================== -->
   <xs:simpleType name="Claimed">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       HOW MUCH OF THE QUESTION THIS WITNESS CLAIMS TO ANSWER.
 
       ⛔⛔⛔ THIS WAS AN `xs:boolean` NAMED `complete`, THE ONLY ONE IN EITHER SCHEMA,
@@ -132,6 +171,42 @@
       says why a DOCUMENT has no value. This says how much of a QUESTION an ANSWERER
       takes on. `none` appears in both vocabularies meaning "somebody looked and the
       answer is nothing", which is the shared root and not a shared type.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      QUANTO DA PERGUNTA ESTA TESTEMUNHA AFIRMA RESPONDER.
+
+      ⛔⛔⛔ ISTO ERA UM `xs:boolean` CHAMADO `complete`, O ÚNICO EM QUALQUER DOS ESQUEMAS, E ERA O
+      ÚLTIMO SOBREVIVENTE DE UM PADRÃO QUE ESTE PROJETO JÁ APANHOU CINCO VEZES: UMA CODIFICAÇÃO DE DOIS
+      VALORES SOBREVIVE À REVISÃO PORQUE OS SEUS DOIS VALORES ESTÃO CORRETOS. `true` estava certo,
+      `false` estava certo, e o terceiro valor em falta era o que importava — nada num campo booleano
+      aponta para o que ele não consegue dizer.
+
+        full     a testemunha responde à pergunta e não sobra nada. O antigo `true`, sem alteração
+        partial  ⭐⭐ O VALOR QUE NÃO TINHA CODIFICAÇÃO. A testemunha responde a parte da pergunta e
+                 deixa parte em aberto. Um normativo que codifique a metade transacionada de um custo
+                 absorvido e não tenha posição para o resto está neste estado, e é o estado MAIS
+                 INTERESSANTE em que uma testemunha pode estar, porque a lacuna é exatamente aquilo que
+                 um conjunto de perguntas sobre quantidades absorvidas anda a perguntar
+        none     a testemunha não responde a parte nenhuma, de propósito. Um modelo de normas sem
+                 opinião sobre política de pessoal
+
+      ⭐ O `false` TRANSPORTAVA `partial` E `none` AO MESMO TEMPO, e os dois produzem leituras opostas do
+      mesmo ficheiro: `none` diz que a pergunta está fora do assunto desta testemunha, `partial` diz que
+      está dentro e meio coberta. Um relatório que os funda não distingue uma testemunha que recusa de
+      uma testemunha que fica aquém.
+
+      ⭐⭐ E AFIA O `Verdict/notable` SEM ACRESCENTAR MEMBRO NENHUM. `notable` já quer dizer que a
+      testemunha respondeu além do que afirmou; com três valores a afirmação fica GRADUADA, portanto uma
+      testemunha `partial` que responda por inteiro é notável exatamente no mesmo sentido em que uma
+      testemunha `none` que responda de todo o é. Uma definição, mais duas maneiras de lá chegar.
+
+      ⚠️ NÃO É UM AbsenceReason, E A LINHA É A MESMA QUE O `Verdict` TRAÇA. A `pm:Absence` diz porque é
+      que um DOCUMENTO não tem valor. Isto diz quanto de uma PERGUNTA quem RESPONDE assume. `none`
+      aparece nos dois vocabulários a querer dizer «alguém foi ver e a resposta é nada», que é a raiz
+      partilhada e não um tipo partilhado.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="full"/>
@@ -146,7 +221,7 @@
        any accounting framework.
        ================================================================== -->
   <xs:simpleType name="Verdict">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       agreed     Claimed, and the answer matches the corpus (or its declared
                  exception).
 
@@ -174,6 +249,36 @@
       has no value; this says how an ANSWERER stood against a question. They rhyme
       and they are different axes; merging them is the error this project keeps
       catching one level down.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      agreed     Assumido, e a resposta corresponde ao conjunto de perguntas (ou à sua exceção
+                   declarada).
+
+        diverged   Assumido, e a resposta difere sem exceção. ⛔ HÁ EXATAMENTE TRÊS RESPOSTAS
+                   LEGÍTIMAS: corrigir a testemunha, corrigir o caso, ou declarar a exceção. Editar a
+                   resposta esperada para coincidir com o que a testemunha calha de fazer não é nenhuma
+                   delas: transforma o conjunto de perguntas num instantâneo do comportamento atual e o
+                   ensaio deixa de medir o que quer que seja.
+
+        notable    ⭐⭐ RESPONDEU ALÉM DO QUE FOI ASSUMIDO. Nunca é uma falha, e é normalmente a linha
+                   mais valiosa de um relatório: uma testemunha admitiu algo que supúnhamos que tivesse
+                   de recusar, portanto ou o modelo é mais forte do que pensávamos ou uma guarda não
+                   está a guardar.
+                   ⭐ A DEFINIÇÃO DIZIA ANTES «não assumido, e a testemunha respondeu à mesma», QUE ERA
+                   O MESMO VEREDICTO DESCRITO ATRAVÉS DE UM BOOLEANO. Assim que o `claimed` tem três
+                   valores a afirmação fica graduada e este membro cobre duas formas sem mudar de
+                   significado: `none` a responder de todo, e `partial` a responder à pergunta inteira.
+
+        unclaimed  o `claimed` é `none` e a testemunha disse `cannotAsk`. Discreto, e correto.
+                   ⚠️ `partial` com `cannotAsk` NÃO é isto: a testemunha assumiu parte da pergunta e
+                   depois não entregou nada, o que é `diverged`.
+
+      ⚠️ O Verdict NÃO é o vocabulário da ausência. O `pm:AbsenceReason` diz porque é que um DOCUMENTO
+      não tem valor; isto diz como quem RESPONDE se posicionou perante uma pergunta. Rimam e são eixos
+      diferentes; fundi-los é o erro que este projeto não para de apanhar um nível abaixo.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="agreed"/>
@@ -187,7 +292,7 @@
        CITATION: a question's or an answer's authority, named.
        ================================================================== -->
   <xs:complexType name="Citation">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       WHICH CLAUSE, IN WHICH VERSION, DECIDED THIS.
 
       `instrument` is the standard or pack, as a BorrowedTerm so the naming authority
@@ -200,6 +305,22 @@
       it claims to test; it can only be checked against itself. Optional here because
       a required element that senders cannot fill produces invented values, but a
       claim with no citation is weaker, and a receiver is entitled to say so.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      QUE CLÁUSULA, EM QUE VERSÃO, DECIDIU ISTO.
+
+      O `instrument` é a norma ou o conjunto, como BorrowedTerm para que a autoridade que o nomeia seja
+      explícita. A `clause` é a parte dele: «606-10-25-1», «§4.2». A `version` é a edição LIDA, porque
+      uma norma não é um objeto fixo e uma citação sem ano é uma citação ao que estiver em vigor.
+
+      ⛔ ESTE É O CAMPO COM MAIS PROBABILIDADE DE FICAR VAZIO E O MAIS CARO QUANDO FICA. Um conjunto de
+      perguntas que não cite nada não pode ser verificado contra o instrumento que diz testar; só pode
+      ser verificado contra si próprio. É opcional aqui porque um elemento obrigatório que quem declara
+      não consegue preencher produz valores inventados, mas uma afirmação sem citação é mais fraca, e
+      quem recebe tem direito a dizê-lo.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="instrument" type="pm:BorrowedTerm"/>
@@ -212,7 +333,7 @@
        COVERAGE: the claim. One witness, one corpus, question by question.
        ================================================================== -->
   <xs:complexType name="CoverageEntry">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       `key` names a question in the corpus this coverage answers. ⚠️ Keys are the
       corpus's, and this schema cannot validate them; a runner must, and refusing a
       claim about a question the corpus does not hold is what stops a coverage file
@@ -242,6 +363,36 @@
 
       ⚠️ A regime that genuinely disagrees with the corpus is THE FINDING. A regime
       that quietly rewrites the corpus to agree with itself is a fork.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      A `key` nomeia uma pergunta no conjunto a que esta cobertura responde. ⚠️ As chaves são do
+      conjunto, e este esquema não as consegue validar; um executor tem de o fazer, e recusar uma
+      afirmação sobre uma pergunta que o conjunto não contém é o que impede um ficheiro de cobertura de
+      derivar para a ficção.
+
+      O `claimed` é QUANTO da pergunta a testemunha diz responder. ⭐ É o que torna o `notable`
+      alcançável: sem uma afirmação não há nada que uma resposta possa exceder, e um ensaio que não
+      consiga produzir `notable` está apenas a verificar que um programa concorda consigo próprio. ⛔ Era
+      um `xs:boolean` chamado `complete` e o terceiro valor que não conseguia conter é `partial`.
+
+      ⭐⭐ O `answer` É OPCIONAL, E A MANEIRA COMO É PREENCHIDO DIZ QUE ESPÉCIE DE TESTEMUNHA ESTA É:
+
+        ausente   a testemunha é um PROGRAMA. Corra-se; este ficheiro só diz o que ela afirma, e a
+                  resposta vem da execução.
+        presente  ⭐ A TESTEMUNHA É O FICHEIRO. Um contabilista que responda ao conjunto em papel, ou um
+                  regime para o qual ninguém escreveu ainda código, declara aqui a resposta e não precisa
+                  de executor nenhum. É assim que uma jurisdição chega antes de uma implementação dela.
+
+      A `exception` é a razão pela qual a resposta desta testemunha difere do conjunto DE PROPÓSITO, e
+      só tem significado ao lado de um `answer`. ⛔ O XSD 1.0 não consegue exprimir «só com», portanto um
+      executor tem de recusar a combinação. E UMA DIVERGÊNCIA NÃO EXPLICADA NÃO É CONFORME: uma diferença
+      sem razão é indistinguível de um erro que alguém deixou de perseguir.
+
+      ⚠️ Um regime que genuinamente discorde do conjunto é O RESULTADO. Um regime que reescreva o
+      conjunto em silêncio para concordar consigo próprio é uma bifurcação.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="key"       type="xs:token"/>
@@ -253,7 +404,7 @@
   </xs:complexType>
 
   <xs:complexType name="Coverage">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐⭐⭐ A WITNESS IS NOT REQUIRED TO BE A PROGRAM. When an accountant answers the
       corpus on paper, their answers ARE a coverage file, and that is the reason this
       is a document format rather than a Rust trait. A second regime should be able to
@@ -269,6 +420,25 @@
       oversight: a witness that is not an accounting model (a register census, a
       spreadsheet-formula checker) reports under no framework and should not be made
       to invent one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐⭐⭐ UMA TESTEMUNHA NÃO TEM DE SER UM PROGRAMA. Quando um contabilista responde ao conjunto de
+      perguntas em papel, as suas respostas SÃO um ficheiro de cobertura, e essa é a razão de isto ser um
+      formato de documento e não um trait de Rust. Um segundo regime deve conseguir responder sem
+      executar, compilar ou depender do que quer que seja nosso.
+
+      O `regime` é um `pm:Regime`, reutilizado em vez de reescrito: uma testemunha reporta ao abrigo de
+      um normativo exatamente como um documento o faz, e aplica-se a mesma armadilha dos três eixos
+      (jurisdição · normativo · a autoridade que o codifica). ⭐ DOIS REGIMES SÃO LEGÍTIMOS AQUI PELA
+      MESMA RAZÃO QUE O SÃO LÁ: uma testemunha pode responder ao abrigo de um normativo codificado por
+      duas autoridades que não coincidem.
+
+      ⚠️ O `regime` é opcional, e a sua ausência é um estado real e não um descuido: uma testemunha que
+      não seja um modelo contabilístico (um censo de registos, um verificador de fórmulas de folha de
+      cálculo) não reporta ao abrigo de normativo nenhum e não deve ser obrigada a inventar um.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness" type="xs:token"/>
@@ -281,7 +451,7 @@
        RUN: a trial, promoted to evidence.
        ================================================================== -->
   <xs:complexType name="Result">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       One question, one witness, one verdict, and where it matters, what the
       witness actually said.
 
@@ -294,6 +464,21 @@
       themselves the verdict is real. ⛔ A `diverged` with no evidence is an assertion
       about the past that nobody can check, which is the state a promoted record
       exists to prevent.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      Uma pergunta, uma testemunha, um veredicto, e onde importa, o que a testemunha disse de facto.
+
+      ⭐ O `answer` está aqui além de estar numa entrada de cobertura porque são factos diferentes: lá é
+      o que a testemunha AFIRMA; aqui é o que a execução OBSERVOU. Uma execução promovida cujas respostas
+      tivessem sido copiadas da afirmação seria prova de nada, e manter ambos é o que torna o `diverged`
+      verificável depois do facto.
+
+      A `evidence` é o rasto legível por uma pessoa, a linha que um leitor segue para se convencer de
+      que o veredicto é real. ⛔ Um `diverged` sem prova é uma afirmação sobre o passado que ninguém
+      consegue verificar, que é precisamente o estado que um registo promovido existe para impedir.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="key"      type="xs:token"/>
@@ -304,7 +489,7 @@
   </xs:complexType>
 
   <xs:complexType name="Run">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⛔⛔ THIS IS THE PROMOTED RECORD, NOT THE LEDGER. A runner accumulates results
       locally, forever, on one machine; that file is a working record and a claim
       made from it is a claim about one machine. THIS is what you get when a report
@@ -318,6 +503,23 @@
       ⚠️ `corpusVersion` names WHICH corpus was answered. A verdict is meaningless
       against an unnamed corpus: the questions change, and "it went green" without
       saying what it was asked is not a result.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⛔⛔ ISTO É O REGISTO PROMOVIDO, E NÃO O LIVRO DE BORDO. Um executor acumula resultados localmente,
+      para sempre, numa máquina; esse ficheiro é um registo de trabalho e uma afirmação feita a partir
+      dele é uma afirmação sobre uma máquina. ISTO é o que se obtém quando um relatório argumenta a
+      partir de uma execução: um extrato, datado, que viaja com o argumento.
+
+      ⭐ O `ranAt` é OBRIGATÓRIO, e é a diferença entre os dois. As datas de um livro de bordo são por
+      linha e internas; um registo promovido é uma afirmação sobre um momento, e uma promoção sem data
+      não pode ser comparada com a seguinte, que é toda a razão para a promover.
+
+      ⚠️ O `corpusVersion` nomeia QUAL conjunto de perguntas foi respondido. Um veredicto não significa
+      nada contra um conjunto não nomeado: as perguntas mudam, e «ficou verde» sem dizer o que foi
+      perguntado não é um resultado.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness"       type="xs:token"/>
@@ -328,8 +530,14 @@
   </xs:complexType>
 
   <xs:element name="run" type="asrt:Run">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐ A run promoted to evidence. ⛔ NOT a runner's working ledger. See the type.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐ Uma execução promovida a prova. ⛔ NÃO é o livro de bordo de um executor. Ver o tipo.
     </xs:documentation></xs:annotation>
     <xs:key name="resultKey">
       <xs:selector xpath="asrt:result"/>
@@ -338,10 +546,18 @@
   </xs:element>
 
   <xs:element name="coverage" type="asrt:Coverage">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       One witness's claim about one corpus. ⛔ A coverage file with no entries is an
       error rather than a witness that claims nothing: a corpus of nothing runs no
       trials and reports success, which is how a green suite comes to mean nothing.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      A afirmação de uma testemunha sobre um conjunto de perguntas. ⛔ Um ficheiro de cobertura sem
+      entradas é um erro e não uma testemunha que não afirma nada: um conjunto de nada corre ensaios
+      nenhuns e reporta sucesso, que é como uma bateria de testes verde vem a não significar nada.
     </xs:documentation></xs:annotation>
     <xs:key name="entryKey">
       <xs:selector xpath="asrt:entry"/>
@@ -358,7 +574,7 @@
        somebody who is the filer of neither.
        ================================================================== -->
   <xs:complexType name="FiledLayer">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ONE END: WHOSE FILING, WHICH FILING, WHICH EDITION OF IT, AND WHERE IN IT.
 
       ⭐⭐ FOUR FACTS, AND THAT IS WHY THIS IS A TYPE RATHER THAN A STRING. "Acme Sub's
@@ -430,6 +646,78 @@
       other filing's declaration presented as that entity's own fact: the observer RESTATES
       it, dated by `observedAt`, which is `Holder`'s answer to a cached value nothing
       refreshes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      UMA PONTA: DE QUEM É A DECLARAÇÃO, QUE DECLARAÇÃO, QUE EDIÇÃO DELA, E ONDE LÁ DENTRO.
+
+      ⭐⭐ QUATRO FACTOS, E É POR ISSO QUE ISTO É UM TIPO E NÃO UMA CADEIA DE TEXTO. «A camada de mão de
+      obra da Acme Sub na pilha do 2.º trimestre de 2026» é um interveniente, um documento, uma edição e
+      uma posição lá dentro. Um só token a transportar os quatro não é joinável por nenhum deles, e quem
+      receba cinquenta destes não consegue perguntar «tudo o que toca a Acme Sub» sem comparar texto.
+
+      O `filing` é um `pm:ForeignId`, usado exatamente como a sua própria anotação o descreve: «uma
+      notação mais um id nomeiam uma POSIÇÃO NUM FICHEIRO que autoridade nenhuma publica». A notação é o
+      URI da OUTRA DECLARAÇÃO; o id é o nome da camada lá dentro. ⭐ É o segundo uso desse tipo e o
+      primeiro como ALVO de referência em vez de campo, e não precisou de alargamento nenhum: o nome de
+      uma camada é precisamente uma posição que autoridade nenhuma publica, que é a razão de ser
+      `pm:ForeignId` e não `pm:BorrowedTerm`.
+
+      ⛔⛔ NADA AQUI VALIDA QUE A DECLARAÇÃO EXISTE, QUE O URI RESOLVE, OU QUE A CAMADA ESTÁ LÁ. ⛔ NÃO
+      ALCANÇÁVEL POR UM VALIDADOR. Uma restrição de identidade do XSD está delimitada a um documento, e
+      uma keyref que parecesse atravessar essa fronteira seria exatamente o defeito que este tipo de
+      documento existe para evitar: uma referência que parece restringida e não é. Quem consiga ir
+      buscar a outra declaração continua a dever a verificação; quem não consiga deve ao leitor o
+      conhecimento de que ela não aconteceu.
+
+      A `party` é OBRIGATÓRIA. ⭐ Sem ela duas pontas podiam ser duas declarações de UMA entidade e um
+      leitor não o conseguiria distinguir, o que perde em silêncio o facto para que este tipo de
+      documento existe: AS DUAS PONTAS NÃO SE CONSEGUEM VER UMA À OUTRA.
+
+      A `registration` é esse interveniente num registo que publique um (um LEI, um número de
+      identificação fiscal, um EUID) como `pm:BorrowedTerm`, para que o registo seja NOMEADO e duas
+      grafias de um nome se tornem joináveis em vez de indetetáveis. ⚠️ Opcional, e deliberadamente sem
+      invólucro: o termo é uma ADIÇÃO à identidade e não o QUADRO sob o qual ela é lida, portanto o seu
+      silêncio diz apenas «não citado». ⛔ Obrigatória seria errado exatamente na ponta da cadeia com que
+      este modelo se importa (o pequeno fornecedor sem registo), e produziria identificadores
+      inventados.
+
+      ⭐⭐⭐ E UMA NOTAÇÃO PODE SER A DESTE PRÓPRIO DOCUMENTO, QUE É TODA A COMPOSIÇÃO LOCAL. O
+      `pm:processModulus/notation` permite a uma declaração dizer que declaração é, portanto uma parte
+      cuja notação coincida com a da declaração embutida é uma parte LOCAL: nomeia uma camada que quem
+      compõe construiu, neste documento. ⛔ Não há uma segunda espécie de parte nem elemento novo — a
+      distinção é uma comparação de texto contra o nome da própria declaração.
+
+      ⭐⭐ O QUE ISSO COMPRA É A CONSTRUÇÃO QUE UM TERCEIRO EXECUTA DE FACTO: trazer a camada deles,
+      fazer a sua própria camada ao lado, e depois fazer uma TERCEIRA camada das duas — e separar as
+      três a seguir. Todos os passos menos o último já eram possíveis; o último precisava apenas de uma
+      declaração que se conseguisse nomear.
+
+      ⚠️ E A ALTERNÂNCIA QUE ISSO PERMITE É UMA FUSÃO ORDINÁRIA, E NÃO UMA RELAÇÃO NOVA. Duas vistas de
+      uma quantidade somadas são essa quantidade CONTADA DUAS VEZES, que é exatamente o que a
+      `Elimination` remove. A figura fundida é a soma menos uma eliminação igual a uma das vistas, a
+      regra da soma continua exata, e nada de novo foi preciso.
+
+      ⛔⛔ DUAS REGRAS CHEGAM COM ISSO E NENHUMA É ALCANÇÁVEL POR UM VALIDADOR. O `id` de uma parte local
+      tem de nomear uma camada da pilha deste próprio documento — o XSD 1.0 não consegue tornar uma
+      keyref condicional ao valor de outro campo. E AS PARTES LOCAIS NÃO PODEM CICLAR: a camada A
+      composta a partir de B enquanto B é composta a partir de A é um documento sem aritmética nenhuma
+      lá dentro. O `assets/sql/rules.sql` já percorre a descida com uma guarda de profundidade e é onde
+      ambas são verificadas.
+
+      A `version` é A EDIÇÃO DA DECLARAÇÃO QUE FOI LIDA, e é o argumento do `Citation/version` aplicado
+      a uma declaração em vez de a uma norma: uma pilha não é um objeto fixo, e uma referência sem edição
+      é uma referência ao que estiver em vigor. ⚠️ Fica AO LADO do `filing` e não lá dentro porque o
+      `pm:ForeignId` é partilhado com o esquema base, e um tipo de documento não pode alargar um tipo
+      partilhado para sua conveniência.
+
+      O `regime` é um IDENTIFICADOR LOCAL AO DOCUMENTO que nomeia qual dos regimes declarados NESTA
+      declaração aquela declaração reportou. ⭐ É a única referência deste tipo que um validador consegue
+      verificar, e É verificada. ⚠️ Não é uma cópia da declaração da outra parte apresentada como facto
+      próprio dela: quem observa REAFIRMA-A, datada pelo `observedAt`, que é a resposta do `Holder` a um
+      valor em cache que nada refresca.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="party"        type="xs:token"/>
@@ -441,7 +729,7 @@
   </xs:complexType>
 
   <xs:complexType name="DependenceEntry">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ONE PAIR, AND WHAT WAS SEEN.
 
       `observed` is REQUIRED, and the sentence is `pm:Coupling`'s carried over word for
@@ -474,6 +762,38 @@
       coupled to itself. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and
       cannot compare across elements. An implementer still owes this check; the schema cannot
       take it from them.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      UM PAR, E O QUE FOI VISTO.
+
+      O `observed` é OBRIGATÓRIO, e a frase é a do `pm:Coupling` transposta palavra por palavra de
+      propósito: UM ACOPLAMENTO DECLARADO SEM DIZER O QUE FOI OBSERVADO É UMA OPINIÃO, e o único
+      elemento cuja finalidade é transportar uma refutação é o último sítio onde aceitar uma. ⛔⛔ É
+      MENOS NEGOCIÁVEL AQUI, E NÃO MAIS. Lá, um leitor que duvide da observação pode ler o resto da
+      declaração em que ela está. Aqui AMBAS AS PONTAS ESTÃO NOUTRO SÍTIO, portanto este elemento é a
+      totalidade da prova que quem recebe tem.
+
+      ⛔ E NÃO PODE SER AUSENTE. Uma ausência tipificada no `observed` seria uma opinião vestida de tipo,
+      estritamente pior do que uma não tipificada, porque pareceria conforme.
+
+      A `strength` é um `pm:StatedClaim` e é OPCIONAL, idêntica à do `pm:Coupling/strength`, pela razão
+      que o `Remainder/sign` dá: A DIREÇÃO É FREQUENTEMENTE CONHECIDA QUANDO A GRANDEZA NÃO É. «A
+      subsidiária correu acima do previsto sempre que a casa-mãe cortou o seu bloco» é uma observação
+      declarável sem número nenhum. ⚠️ Exigi-la aqui foi considerado e RECUSADO: os dois elementos
+      transportam o MESMO FACTO, e sujeitar o que atravessa declarações a um padrão mais estrito diria
+      que a assimetria entre eles é sobre MEDIÇÃO quando é sobre ATESTAÇÃO.
+
+      ⭐ O `from` E O `to` SÃO ORIENTADOS, E A DIREÇÃO É UMA AFIRMAÇÃO. «Aliviar o quantum do fornecedor
+      reduziu o resto do cliente» é uma afirmação diferente da inversa, e quem observe e declare a errada
+      declarou uma coisa errada e não uma coisa vaga. ⚠️ Quem tenha comovimento e NÃO direção tem uma
+      observação mais fraca e deve dizê-lo no `observed` em vez de escolher uma ordem em silêncio.
+
+      ⛔ O `from` E O `to` NÃO PODEM SER A MESMA DECLARAÇÃO E A MESMA CAMADA. Uma camada não está
+      acoplada a si própria. ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR. O XSD 1.0 não tem `xs:assert` e não
+      consegue comparar entre elementos.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="from"     type="asrt:FiledLayer"/>
@@ -484,7 +804,7 @@
   </xs:complexType>
 
   <xs:complexType name="Dependence">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⛔⛔⛔ AN OBSERVED DEPENDENCE BETWEEN TWO LAYERS THAT ARE FILED SEPARATELY, AND WHAT
       MAKES IT A DOCUMENT RATHER THAN AN ELEMENT IS ATTESTATION, NOT SHAPE.
 
@@ -567,6 +887,83 @@
       one document with an entry per pair, the way a run files a result per question.
       Observations made on different days are different statements, for the same reason a
       promotion is dated.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⛔⛔⛔ UMA DEPENDÊNCIA OBSERVADA ENTRE DUAS CAMADAS DECLARADAS EM SEPARADO, E O QUE FAZ DELA UM
+      DOCUMENTO E NÃO UM ELEMENTO É A ATESTAÇÃO, E NÃO A FORMA.
+
+      O `pm:Coupling` é o mesmo fenómeno dentro de uma declaração, e existe para que o modelo possa ser
+      refutado no seu próprio formato. Mas a dependência que mais importa é frequentemente entre DUAS
+      ENTIDADES QUE DECLARAM EM SEPARADO E NÃO SE CONSEGUEM VER: uma casa-mãe e uma subsidiária, um
+      fornecedor e um cliente, dois mutuários do mesmo financiador.
+
+      ⛔⛔ E A REPARAÇÃO ÓBVIA É A ERRADA, REGISTADA AQUI PARA NÃO SER REPROPOSTA. Alargar o
+      `pm:Coupling/from` e o `/to` para aceitarem um `pm:ForeignId` foi considerado e RECUSADO. UMA
+      DECLARAÇÃO É ATESTÁVEL PELO INTERVENIENTE QUE A DECLARA, e um acoplamento dentro do documento da
+      entidade A que nomeie uma camada da entidade B é uma afirmação que A NÃO PODE ATESTAR, porque A
+      não vê a pilha de B. ⛔ PIOR: o `couplingFrom` e o `couplingTo` não a conseguiriam acompanhar,
+      PORTANTO ELA VALIDARIA POR NÃO SER VERIFICADA: uma referência que parece restringida e não é,
+      enquanto as duas keyrefs continuavam a reportar sucesso sobre a metade a que ainda chegavam.
+      ⚠️ As duas soluções disponíveis antes deste elemento são piores ainda: fabricar uma `Stack` que
+      abranja as duas entidades afirma um sistema partilhado que não existe e que nenhum dos declarantes
+      poderia atestar, e uma camada de substituição declara uma camada que ninguém tem.
+
+      ⭐⭐ PORTANTO O TERCEIRO DECLARA-A, E ESTE ESQUEMA JÁ TEM ESSE GÉNERO. A `Coverage` e o `Run` são
+      afirmações SOBRE coisas e não elementos DENTRO delas, e cada uma transporta uma `witness`. Um
+      consolidador de grupo, um revisor oficial de contas, um financiador a ler dois mutuários: cada um
+      leu ambas as declarações, NENHUM DOS DECLARANTES LEU, e a observação é deles para sustentar. ⭐ O
+      mundo já declara assim: uma consolidação é uma demonstração separada, e não uma nota de rodapé nas
+      contas da subsidiária.
+
+      ⭐⭐ AMBAS AS PONTAS SÃO EXTERNAS, SEMPRE, E ISSO NÃO É UMA LIMITAÇÃO. É O QUE FAZ O DESENHO
+      FUNCIONAR. Este documento não está dentro de nenhuma das declarações, portanto a pilha do próprio
+      cliente de um auditor é tão externa a ESTA demonstração como a da contraparte. Nunca há uma ponta
+      local ao lado de uma externa, e portanto nunca há uma keyref que tenha de atravessar uma fronteira
+      e não consiga.
+
+      ⚠️ UMA TESTEMUNHA QUE SEJA A DECLARANTE DE AMBAS AS PONTAS ESTÁ NO DOCUMENTO ERRADO. A sua própria
+      observação pertence ao `pm:Coupling`, dentro da declaração que atesta. ⛔ NÃO ALCANÇÁVEL POR UM
+      VALIDADOR: nada aqui sabe quem declarou o quê. ⭐ Mas o `from` e o `to` PODEM nomear a mesma
+      declaração: um auditor que veja um acoplamento entre duas camadas da pilha de um cliente tem uma
+      observação que o cliente não declarou e não pode ser obrigado a declarar. O facto distintivo é QUEM
+      OBSERVOU, e não onde as pontas estão.
+
+      A `witness` é OBRIGATÓRIA, exatamente como na `Coverage` e no `Run`, e por uma razão mais afiada
+      do que qualquer uma delas: ISTO É TESTEMUNHO SOBRE INTERVENIENTES QUE NÃO CONSENTIRAM NELE, e
+      testemunho anónimo sobre as contas de outrem não é uma declaração.
+
+      ⭐ O `observedAt` é OBRIGATÓRIO, e é o argumento do `Run/ranAt` e não o da `Coverage`. Uma
+      afirmação de cobertura é uma posição permanente; ISTO É UMA AFIRMAÇÃO SOBRE UM MOMENTO. Ambas as
+      declarações mudam, portanto uma observação que não diga quando foi feita não pode ser verificada
+      contra as declarações tal como estavam, nem comparada com a seguinte, que é toda a razão para a
+      declarar.
+
+      A `provenance` é onde entra a cadeia interna de uma firma: quem introduziu, quem aprovou, e acima
+      de tudo a `standing`, que é o eixo que separa a observação de um revisor oficial de contas do
+      palpite de um controlador, e que é um BorrowedTerm para que nem este esquema nem testemunha
+      nenhuma possua esse conjunto. ⚠️ A `witness` e a `provenance/party` NÃO SÃO UM FACTO COM DUAS
+      CASAS: a primeira é quem observa tal como nomeado ao longo dos documentos deste ficheiro, a segunda
+      é a entidade que responde por ele, e diferem sempre que quem observa é uma equipa ou uma ferramenta
+      dentro de uma firma.
+
+      O `regime` é um `pm:Regime`, sem limite superior e opcional, exatamente como na `Coverage`, e são
+      os normativos ao abrigo dos quais ESTE OBSERVADOR calculou restos. ⭐⭐ É TAMBÉM O QUE TORNA DUAS
+      PONTAS SOB NORMATIVOS DIFERENTES LEGÍVEIS, QUE É O CASO CORRENTE DO CONSOLIDADOR: uma subsidiária
+      portuguesa sob NCRF-PE e uma casa-mãe norte-americana sob US-GAAP medem um resto de maneira
+      diferente, e um documento que não o consiga dizer escondeu a razão de os dois números divergirem.
+
+      A `citation` nomeia o instrumento ao abrigo do qual este observador pôde ver AMBAS as declarações:
+      uma norma de auditoria de grupos, uma norma de consolidação, um contrato de prestação de serviços.
+      ⚠️ É a coisa mais próxima de uma resposta a «porque é que um leitor há de acreditar que viu as
+      duas?», que é a pergunta que este tipo de documento levanta e que mais nenhum elemento responde.
+
+      ⚠️ UMA DEMONSTRAÇÃO, UM MOMENTO, MUITAS OBSERVAÇÕES. Um consolidador que leia um grupo declara um
+      documento com uma entrada por par, tal como uma execução declara um resultado por pergunta.
+      Observações feitas em dias diferentes são demonstrações diferentes, pela mesma razão que uma
+      promoção é datada.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness"    type="xs:token"/>
@@ -579,7 +976,7 @@
   </xs:complexType>
 
   <xs:element name="dependence" type="asrt:Dependence">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐ ONE OBSERVER'S STATEMENT THAT TWO SEPARATELY FILED STACKS MOVE TOGETHER.
 
       ⛔ NOT `pm:Coupling`, AND NOT `pm:Coupling` WIDENED. See the type. A coupling belongs
@@ -594,6 +991,25 @@
       document-local and a stock XSD 1.0 validator resolves them. ⛔ THE FILINGS ARE NOT AND
       CANNOT BE: that is the whole reason this is a separate document, and pretending
       otherwise with a keyref would reintroduce the defect it was created to avoid.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐ A DEMONSTRAÇÃO DE UM OBSERVADOR DE QUE DUAS PILHAS DECLARADAS EM SEPARADO SE MOVEM EM CONJUNTO.
+
+      ⛔ NÃO É O `pm:Coupling`, E NÃO É O `pm:Coupling` ALARGADO. Ver o tipo. Um acoplamento pertence
+      dentro da declaração cujo declarante consegue atestar ambas as pontas; isto existe para o caso em
+      que NINGUÉM QUE O POSSA DECLARAR O CONSEGUE ATESTAR.
+
+      ⛔ Um documento de dependência sem entradas é um erro e não um observador que não observou nada.
+      Uma demonstração vazia sobre duas declarações reporta sucesso em ter olhado, que é como um
+      documento que não significa nada vem a ser citado.
+
+      ⭐ AS ÚNICAS REFERÊNCIAS AQUI VERIFICADAS SÃO AS QUE O PODEM SER. Os identificadores de regime são
+      locais ao documento e um validador de XSD 1.0 corrente resolve-os. ⛔ AS DECLARAÇÕES NÃO SÃO NEM
+      PODEM SER: é essa toda a razão de isto ser um documento separado, e fingir o contrário com uma
+      keyref reintroduziria o defeito que ele foi criado para evitar.
     </xs:documentation></xs:annotation>
 
     <!-- ⚠️ NOT `regimeId`: identity-constraint names share one symbol space per target
@@ -631,7 +1047,7 @@
        with standing to assemble it.
        ================================================================== -->
   <xs:simpleType name="EliminationAgainst">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       WHICH OF THE THREE QUANTITIES AN ELIMINATION IS REMOVED FROM.
 
       ⭐⭐ THE SET IS NOT A JUDGEMENT CALL: it is `pm:Layer`'s own three quantities, and
@@ -655,6 +1071,32 @@
       ⭐ CONTRIBUTED, and closed, because this model owns the distinction. It is not a
       chart of accounts and no accounting framework publishes it: a consolidation standard
       eliminates BALANCES, and these are not balances.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      QUAL DAS TRÊS QUANTIDADES É AQUELA DE QUE UMA ELIMINAÇÃO É RETIRADA.
+
+      ⭐⭐ O CONJUNTO NÃO É UMA QUESTÃO DE JUÍZO: são as três quantidades da própria `pm:Layer`, e essa
+      anotação já diz porque é que mantê-las separadas é o essencial. Uma eliminação que não diga qual
+      delas atinge é um ajustamento aplicado ao número que o leitor tiver por acaso na mão.
+
+        demand      o que foi PEDIDO, contado duas vezes. ⭐ O CASO CORRENTE, e o que surpreende: quando
+                    um membro encomenda trabalho a outro, AMBOS o declaram como procura própria,
+                    honestamente, e a procura do grupo é a soma MENOS a encomenda.
+        nameplate   o que foi COMPROMETIDO, contado duas vezes. ⚠️ MAIS RARO DO QUE PARECE, e a
+                    assimetria é a parte interessante: as pessoas de dois membros são dois conjuntos de
+                    pessoas, portanto a capacidade nominal de mão de obra quase nunca se elimina. Uma
+                    reserva que um membro detenha e revenda a outro elimina-se.
+        draw        o que foi efetivamente SERVIDO, contado duas vezes. Está presente porque o modelo
+                    diz que estas são três quantidades e não duas; uma implementação que elimine a
+                    procura e se esqueça do consumo reclamou em silêncio uma utilização que não
+                    observou.
+
+      ⭐ CONTRIBUÍDO, e fechado, porque este modelo possui a distinção. Não é um plano de contas e
+      normativo contabilístico nenhum o publica: uma norma de consolidação elimina SALDOS, e estes não
+      são saldos.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="demand"/>
@@ -664,7 +1106,7 @@
   </xs:simpleType>
 
   <xs:complexType name="Elimination">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐⭐⭐ WHAT THE COMPOSER REMOVED, AND WHY THE FUSED FIGURE IS THEREFORE NOT THE SUM
       OF ITS PARTS. Without this element a composition can only be one of two useless
       things: a restatement forced to equal the sum, which no real consolidation is, or a
@@ -711,6 +1153,52 @@
       constrained to this fusion's own parts: a group eliminating against a member that files
       nothing, or against a layer folded into a different composed layer, is ordinary, and a
       keyref that forced the subset would make the honest case unfileable.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐⭐⭐ O QUE QUEM COMPÔS RETIROU, E PORQUE É QUE A FIGURA FUNDIDA NÃO É, POR ISSO, A SOMA DAS SUAS
+      PARTES. Sem este elemento uma composição só pode ser uma de duas coisas inúteis: uma reafirmação
+      obrigada a igualar a soma, que nenhuma consolidação real é, ou uma figura que difere da soma por
+      razões que ninguém registou.
+
+      ⛔⛔ E É POR ISSO QUE A REGRA DA SOMA NÃO PODIA SER ESCRITA ANTES DE ESTE TIPO EXISTIR. Um
+      verificador que compare a figura fundida com a soma das partes não tem maneira de distinguir uma
+      eliminação de um erro, portanto o mais forte que conseguia reportar era um aviso. Com as eliminações
+      declaradas a regra torna-se exata, e qualquer diferença que sobre é um resultado e não um encolher
+      de ombros.
+
+      A `quantity` é um `pm:StatedClaim` E NÃO UMA `pm:Claim` SIMPLES, que é a decisão deste tipo que mais
+      vale a pena guardar. ⭐ «Há aqui procura intragrupo e não a conseguimos dimensionar» É O ESTADO
+      HONESTO DA MAIORIA DAS CONSOLIDAÇÕES, e um número obrigatório seria respondido escrevendo zero. Uma
+      eliminação `unmeasured` diz que quem compôs foi ver, encontrou dupla contagem, e não a conseguiu
+      medir — e quem receba isso sabe que a figura fundida está sobreavaliada por um montante
+      desconhecido, que é estritamente mais do que silêncio.
+      ⚠️ `none` AQUI É MAIS ESTREITO DO QUE ERA. O que `none` quer dizer NESTE elemento é que um par
+      nomeado tem uma relação de dupla contagem que dimensiona a zero neste período. ⛔ Declarar uma contra
+      um par arbitrário para querer dizer «não encontrámos nada» inventa uma relação.
+
+      ⭐⭐ AS ELIMINAÇÕES SUBTRAEM COMPONENTE A COMPONENTE E NÃO INVERTEM EXTREMOS, QUE É O OPOSTO DO
+      `pm:Remainder`, E A DIFERENÇA NÃO É UMA INCOERÊNCIA. Um resto subtrai a procura da capacidade
+      nominal, duas quantidades INDEPENDENTES, portanto o pior caso da diferença emparelha o mínimo de uma
+      com o máximo da outra e os extremos invertem-se. Uma eliminação subtrai uma COMPONENTE DA PRÓPRIA
+      FIGURA DE QUE É RETIRADA: no cenário em que a procura total é baixa, a parte intragrupo dela também
+      é baixa. Inverter extremos aqui alargaria um intervalo ao emparelhar um cenário consigo próprio.
+      ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR, e é a verificação com maior probabilidade de ser mal feita em
+      silêncio, porque a resposta errada continua a ser um intervalo bem formado.
+
+      O `against` é OBRIGATÓRIO.
+
+      O `observed` é OBRIGATÓRIO, pela razão do `pm:Coupling/observed` e por uma mais afiada: este é o
+      único elemento do modelo que torna uma figura declarada mais pequena, e uma redução não explicada é
+      a forma que todos os escândalos contabilísticos têm em comum.
+
+      O `between` nomeia as camadas declaradas entre as quais corre a dupla contagem, para que a
+      atribuição seja CONSULTÁVEL em vez de narrada. ⚠️ Opcional e sem limite superior, e deliberadamente
+      NÃO restringido às partes desta própria fusão: um grupo a eliminar contra um membro que não declara
+      nada, ou contra uma camada dobrada noutra camada composta, é corrente, e uma keyref que forçasse o
+      subconjunto tornaria o caso honesto indeclarável.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="quantity" type="pm:StatedClaim"/>
@@ -721,7 +1209,7 @@
   </xs:complexType>
 
   <xs:complexType name="Part">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ONE FILED LAYER GOING INTO A FUSION, AND THE FACTOR THAT PUTS IT IN THE COMPOSED
       LAYER'S UNIT.
 
@@ -774,6 +1262,58 @@
       converting through one month have one real uncertainty filed twice, and a composer who
       lets them disagree has published a document whose arithmetic nobody downstream can make
       consistent. That consistency is the composer's, and nothing here takes it from them.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      UMA CAMADA DECLARADA A ENTRAR NUMA FUSÃO, E O FATOR QUE A PÕE NA UNIDADE DA CAMADA COMPOSTA.
+
+      ⛔⛔ O CASO PARA QUE ISTO EXISTE É A MEDIÇÃO, NÃO A TRADUÇÃO. A `Fusion` argumenta corretamente que
+      as unidades das suas partes NÃO devem ser comparadas como texto, porque `people` e `pessoas` são uma
+      unidade escrita duas vezes. Esse argumento não alcança um grupo cujos membros MEÇAM O MESMO RECURSO
+      DE MANEIRAS DIFERENTES — um a faturar por cartão reservado e outro por hora-cartão, um à tonelada e
+      outro por camião. `4,4 GPU + 545 GPU-hora` não é uma soma, e quem componha e multiplique em silêncio
+      por 720 executou exatamente a consolidação não auditada que a `Elimination` foi acrescentada para
+      travar. ⭐ A instância mais provável não é nada exótica: é uma JANELA TEMPORAL, um membro a declarar
+      à semana dentro de um grupo que declara ao mês.
+
+      ⭐ O `factor` FICA AO LADO DO `FiledLayer` E NUNCA LÁ DENTRO, pela razão já registada no
+      `FiledLayer/version`: esse tipo é partilhado com o `dependence`, e um tipo de documento não pode
+      alargar um tipo partilhado para sua conveniência. Uma ponta de dependência não tem unidade composta
+      para que converter.
+
+      ⛔ AUSENTE QUER DIZER UM, EXATAMENTE, E NUNCA «DESCONHECIDO». A esmagadora maioria das partes não
+      precisa de conversão nenhuma e não deve ser obrigada a declarar um 1 cerimonial. Uma conversão que
+      ninguém mediu é `absent reason="unmeasured"` DENTRO do `StatedClaim`, que é um documento diferente de
+      uma parte sem elemento `factor` nenhum, e essa diferença é toda a razão de o `Stated*` existir.
+
+      ⭐ O `factor` É UMA AFIRMAÇÃO E NÃO UM NÚMERO PORQUE UMA CONVERSÃO É ELA PRÓPRIA INCERTA. «Um camião
+      são 22 toneladas» e «um mês são 720 horas» são afirmações de três pontos como tudo o resto aqui; as
+      horas de um mês são `[672, 720, 744]` e fingir o contrário declara uma precisão que ninguém tem.
+
+      ⛔ O PRODUTO É COMPONENTE A COMPONENTE, E SÓ É SEGURO PORQUE UM FATOR É ESTRITAMENTE POSITIVO.
+      `baixo·baixo`, `moda·moda`, `alto·alto`. A multiplicação intervalar em geral tem de considerar os
+      quatro produtos dos cantos, porque um fator que atravesse o zero reordena os extremos — uma
+      conversão nunca o faz, portanto o caso geral não é devido aqui e não pode ser suposto disponível
+      noutro sítio. ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR.
+
+      ⛔⛔ O RESTO DE UMA PARTE CONVERTIDA É CONVERTIDO DIRETAMENTE E NUNCA REDERIVADO A PARTIR DA SUA
+      CAPACIDADE NOMINAL E DA SUA PROCURA CONVERTIDAS, E OS DOIS DIVERGEM GENUINAMENTE. Um fator multiplica
+      TANTO a capacidade nominal COMO a procura da mesma parte, portanto esses dois intervalos convertidos
+      ficam correlacionados; subtraí-los com a inversão de extremos que as quantidades INDEPENDENTES
+      exigem conta duas vezes a dispersão do próprio fator. No conjunto de documentos isto lê-se
+      `[1092.0, 2857.0, 4198.8]` rederivado contra `[1414.0, 2857.0, 4085.6]` convertido, e coincidem
+      apenas na moda. ⭐ É a mesma questão de componentes correlacionadas que a `Elimination` teve de
+      responder, a chegar a um segundo sítio com a mesma resposta. ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR.
+
+      ⚠️ UMA ELIMINAÇÃO É DECLARADA DEPOIS DA CONVERSÃO, na unidade da camada composta. As partes chegam
+      naquilo que os seus declarantes usaram; a soma de que são retiradas não.
+
+      ⚠️ E O MODELO NÃO SABE QUE OS FATORES DE DUAS PARTES SÃO O MESMO FATOR. Dois membros a converter
+      através de um mês têm uma incerteza real declarada duas vezes, e quem componha e os deixe divergir
+      publicou um documento cuja aritmética ninguém a jusante consegue tornar coerente. Essa coerência é de
+      quem compõe, e nada aqui lha tira.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="layer"  type="asrt:FiledLayer"/>
@@ -782,7 +1322,7 @@
   </xs:complexType>
 
   <xs:complexType name="StatedEliminations">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⛔⛔⛔ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? An unbounded `elimination` could
       not answer it, and `Elimination`'s own annotation shows the model trying to answer
       it one level too low: "`none` remains meaningful and is NOT the same as filing no
@@ -819,6 +1359,43 @@
       ⛔ A composer who means "no double counting anywhere" and files a zero elimination
       against an arbitrary pair has invented a relation, which is the error typed absence
       exists to prevent, committed with a typed absence.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⛔⛔⛔ QUEM COMPÔS FOI PROCURAR DUPLA CONTAGEM? Um `elimination` sem limite superior não conseguia
+      responder, e a própria anotação da `Elimination` mostra o modelo a tentar responder um nível abaixo
+      de mais: «`none` continua significativo e NÃO é o mesmo que não declarar eliminação nenhuma: o
+      primeiro diz que alguém foi ver, o segundo não diz nada.»
+
+      ⭐ ESSA FRASE ESTÁ CERTA QUANTO À DISTINÇÃO E ESTAVA A PÔ-LA NO SÍTIO ERRADO. «Alguém foi ver e não
+      encontrou nenhuma» é um facto sobre a PROCURA, e uma procura não tem `against` nem `between` —
+      portanto declará-la como Elimination obrigava quem compõe a nomear uma quantidade e um par de
+      camadas para uma relação que está a afirmar não existir. Pertence à lista, e está aqui agora.
+
+        elimination+                alguém foi ver e encontrou estas
+        absent reason="none"        ⭐ ALGUÉM FOI VER E AS PARTES NÃO SE DUPLICAM. A figura fundida É a
+                                    soma, afirmado em vez de assumido
+        absent reason="unmeasured"  ninguém verificou. A figura fundida pode estar sobreavaliada por um
+                                    montante desconhecido e quem compõe di-lo
+        absent reason="notApplicable"  uma fusão de uma só parte. Entre um conjunto de um nada pode ser
+                                    contado duas vezes
+
+      ⭐⭐ E ISTO SALVA A REGRA DA SOMA DA SUA PRÓPRIA BRECHA. A `Elimination` argumenta que eliminações
+      declaradas tornam a regra EXATA em vez de um aviso. Isso vale para uma fusão que declare uma; para
+      uma fusão que não declare nenhuma o verificador estava de volta a um aviso e não o sabia, porque uma
+      lista vazia e uma lista verificada e limpa são os mesmos bytes. Sob `none` a regra é exata outra
+      vez: `Σ partes` tem de igualar a figura composta, ponto final. Sob `unmeasured` está explicitamente
+      SUSPENSA, que é o que o caso da eliminação não dimensionada já faz um nível abaixo.
+
+      ⚠️ O QUE SOBREVIVE DO `none` INTERIOR, E É MAIS ESTREITO DO QUE ERA. Uma `elimination` cuja
+      `quantity` seja `absent reason="none"` diz agora algo específico: ESTE PAR NOMEADO de camadas tem uma
+      relação de dupla contagem e ela dimensiona a zero neste período. Isso é uma declaração real — um
+      acordo de comissão que existiu todo o ano e não foi exercido — e não é o mesmo que a procura não ter
+      encontrado nada. ⛔ Quem componha e queira dizer «não há dupla contagem em lado nenhum» e declare uma
+      eliminação a zero contra um par arbitrário inventou uma relação, que é o erro que a ausência
+      tipificada existe para impedir, cometido com uma ausência tipificada.
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="elimination" type="asrt:Elimination" maxOccurs="unbounded"/>
@@ -827,7 +1404,7 @@
   </xs:complexType>
 
   <xs:complexType name="Fusion">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐⭐⭐ ONE COMPOSED LAYER, AND WHICH FILED LAYERS WENT INTO IT.
 
       ⛔⛔ NOT A COUPLING, AND THE DISTINCTION IS THE REASON THIS TYPE EXISTS RATHER THAN A
@@ -886,6 +1463,66 @@
       CONFLATED UNTIL `Part/factor` SEPARATED THEM. `people` and `pessoas` are one unit spelled
       twice and a fusion asserts exactly that. `GPU` and `GPU-hour` are NOT, and a composer who
       adds them has performed the unaudited arithmetic `Elimination` exists to stop. See `Part`.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐⭐⭐ UMA CAMADA COMPOSTA, E QUE CAMADAS DECLARADAS ENTRARAM NELA.
+
+      ⛔⛔ NÃO É UM ACOPLAMENTO, E A DISTINÇÃO É A RAZÃO DE ESTE TIPO EXISTIR EM VEZ DE UM SEGUNDO VERBO
+      NO `pm:Coupling`. Um acoplamento é ENTRE PARES: duas camadas continuam duas, e o resto de uma
+      move-se com o da outra. Uma fusão é PARTE PARA TODO: as partes somam-se e a camada composta é aquilo
+      de que são partes. ⭐ O sinal é que camadas fundidas não precisam de estar acopladas de todo — uma
+      equipa de entrega norte-americana e uma portuguesa servem clientes diferentes em países diferentes e
+      o resto de nenhuma se move quando a outra contrata, e no entanto são uma camada do grupo. O mesmo
+      TIPO, e não a mesma INSTÂNCIA.
+
+      ⭐⭐ E A PRÓPRIA DEFINIÇÃO DE CAMADA DO MODELO DECIDE QUANDO FUNDIR, SEM NADA ACRESCENTADO. A
+      `pm:Layer` diz que uma camada é um sítio onde um resto pode ser suportado INDEPENDENTEMENTE de todas
+      as outras camadas. Portanto:
+
+      > FUNDIR SÓ O QUE É FUNGÍVEL.
+
+      Se uma unidade de oferta de uma parte pode servir a procura de outra, então as partes não suportam
+      os seus restos independentemente e são uma camada. Se não pode, SÃO DUAS CAMADAS, pertencem à pilha
+      como duas, e um `pm:Coupling` entre elas é onde vai parar qualquer interação observada. ⛔ Fundir o
+      que não é fungível é exatamente o erro contra o qual o quarto falsificador da `pm:Layer` avisa,
+      corrido ao contrário, e produz um resto de grupo mais pequeno do que a realidade ao deixar o excesso
+      de um membro cobrir a falta de outro através de uma fronteira que nada consegue atravessar.
+
+      ⚠️ O JUÍZO DE FUNGIBILIDADE NÃO É ALCANÇÁVEL POR UM VALIDADOR E NUNCA SERÁ. É de quem compõe, é o
+      que o `observed` transporta, e é a afirmação com que um leitor tem direito a discordar. É esse o
+      essencial: fica escrito onde se pode discordar dele, em vez de implícito numa aritmética que alguém
+      executou uma vez.
+
+      ⭐ UMA PARTE É UMA FUSÃO LEGÍTIMA E NÃO UMA DEGENERADA. Diz que quem compõe leu aquela camada
+      declarada, decidiu que não se funde com nada, e a transportou — frequentemente sob outro nome.
+      ⛔⛔ É PRECISAMENTE ISSO QUE IMPEDE QUE A COLISÃO DE NOMES SE TORNE UMA JUNÇÃO SILENCIOSA: dois
+      membros podem ambos declarar uma camada chamada `compute` que não são a mesma camada, e nada em
+      qualquer das declarações o diz. Quem compõe di-lo, declarando duas fusões de uma parte com dois
+      nomes, e o `observed` é OBRIGATÓRIO para que tenham de dizer PORQUÊ. Uma heurística a juntar pelo
+      token tê-las-ia fundido e reportado sucesso.
+
+      ⭐ UMA CAMADA DA PILHA COMPOSTA SEM FUSÃO NENHUMA É O TERCEIRO ESTADO: uma que quem compõe
+      ORIGINOU. Uma escala de serviço ao nível do grupo, uma função partilhada, uma entrada de eliminação
+      que é uma camada por direito próprio. Nada aqui obriga todas as camadas compostas a terem vindo de
+      algum lado, porque uma casa-mãe também é uma entidade.
+
+      ⛔ A FIGURA FUNDIDA NÃO É VERIFICADA CONTRA AS PARTES. `Σ partes − Σ eliminações` contra a própria
+      afirmação da camada composta, por quantidade, é aritmética sobre documentos que não são este. ⭐ O
+      `eliminations` é OBRIGATÓRIO para que um leitor saiba QUE ARITMÉTICA é devida: sob `absent
+      reason="none"` a figura composta tem de igualar `Σ partes` exatamente, sob `unmeasured` não é devida
+      igualdade nenhuma, e uma lista vazia queria dizer qualquer das duas. ⛔ NÃO ALCANÇÁVEL POR UM
+      VALIDADOR. ⚠️ Nem as UNIDADES são verificadas, e esse limite é estrutural e não preguiçoso: as
+      partes escrevem legitimamente uma unidade de duas maneiras (`people`, `pessoas`) e afirmar que são
+      uma unidade É O QUE A FUSÃO DIZ. Um verificador que exigisse igualdade de texto rejeitaria o caso
+      para que este tipo foi construído.
+
+      ⛔⛔ ESSE ARGUMENTO COBRE RENOMEAR E NÃO COBRE CONVERTER, E OS DOIS FORAM CONFUNDIDOS ATÉ O
+      `Part/factor` OS SEPARAR. `people` e `pessoas` são uma unidade escrita duas vezes e uma fusão afirma
+      exatamente isso. `GPU` e `GPU-hora` NÃO SÃO, e quem componha e os some executou a aritmética não
+      auditada que a `Elimination` existe para travar.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="name"        type="xs:token"/>
@@ -896,7 +1533,7 @@
   </xs:complexType>
 
   <xs:complexType name="Composition">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐⭐⭐ A FILING ASSEMBLED OUT OF OTHER FILINGS, PLUS THE MAPPING SAYING WHAT CAME FROM
       WHERE. It is `Dependence`'s genre — a third party who read filings they did not make —
       carried one step further: this observer does not merely comment on the filings, THEY
@@ -963,6 +1600,75 @@
       across its members, a researcher across a sector. That document has a different witness
       test and would be a different root. It is not this one, and this one must not be filed
       in its place.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐⭐⭐ UMA DECLARAÇÃO MONTADA A PARTIR DE OUTRAS DECLARAÇÕES, MAIS O MAPEAMENTO QUE DIZ O QUE VEIO
+      DE ONDE. É o género do `Dependence` — um terceiro que leu declarações que não fez — levado um passo
+      mais longe: este observador não comenta apenas as declarações, ELE DECLARA.
+
+      ⛔⛔ E TEM DE RESPONDER A UMA OBJEÇÃO QUE ESTE ESQUEMA JÁ ESCREVEU CONTRA SI PRÓPRIO. O `Dependence`
+      rejeita uma solução por estas palavras: «fabricar uma `Stack` que abranja as duas entidades afirma
+      um sistema partilhado que não existe e que NENHUM DOS DECLARANTES PODERIA ATESTAR.» Cada palavra
+      disso mantém-se. ⭐ A saída é a cláusula de que depende: nenhum dos DECLARANTES. Uma casa-mãe a
+      afirmar que os seus membros são um sistema não está a fabricar um sistema partilhado, está a
+      exercer a legitimidade que faz dela uma casa-mãe, e a mesma anotação di-lo dois parágrafos adiante —
+      «uma consolidação é uma demonstração separada, e não uma nota de rodapé nas contas da subsidiária».
+
+      ⛔ PORTANTO A CONDIÇÃO É ESTREITA, E UMA COMPOSIÇÃO DECLARADA SEM ELA É UMA FABRICAÇÃO: a pilha
+      composta tem de ser A AFIRMAÇÃO DE QUEM COMPÕE, ASSINADA, e nunca a reconstrução de um sistema que
+      se afirme que os membros já partilham. A `witness` e o `provenance/standing` são o que separa as
+      duas coisas.
+
+      ⛔⛔⛔ E ESSE PARÁGRAFO ESTEVE AQUI DURANTE TRÊS REVISÕES ENQUANTO A `provenance` ERA
+      `minOccurs="0"`. O esquema nomeou a condição que separa uma declaração de uma fabricação e depois
+      permitiu declarações sem ela — que é a forma do `Coupling` pela terceira vez, e o argumento da
+      `Absence` virado contra o cabeçalho deste próprio esquema. É OBRIGATÓRIA agora, e o
+      `Provenance/standing` é um `StatedBorrowedTerm` obrigatório por baixo dela, portanto quem componha
+      sem legitimidade para a declarar di-lo em vez de ficar em silêncio sobre o único campo que torna o
+      documento legítimo.
+
+      ⭐ PORQUE É QUE IMPORTA MAIS AQUI DO QUE EM QUALQUER OUTRO SÍTIO: o que uma camada desta pilha
+      SIGNIFICA depende de quem a declarou. A composição de uma casa-mãe afirma o sistema de um grupo; a
+      de um auditor afirma o que um auditor sustenta. A mesma camada nos dois documentos não é a mesma
+      afirmação, e a legitimidade é a única coisa que diz qual se está a ler. São os mesmos campos pela
+      mesma razão que na `Coverage`, no `Run` e no `Dependence`.
+
+      ⭐⭐ EMBUTE UM `pm:processModulus` INTEIRO, E NÃO UMA `pm:stack` SIMPLES, E ISSO COMPRA DUAS COISAS
+      QUE NÃO SÃO ÓBVIAS NEM GRATUITAS. A declaração composta é EXTRAÍVEL BYTE A BYTE e legível por
+      qualquer coisa que leia o esquema base sem conhecimento nenhum deste. E as suas próprias restrições
+      de identidade — `layerName`, `couplingFrom`, `couplingTo`, `drawLayer`, `inducesLayer` — validam
+      todas dentro da sua subárvore, portanto a pilha do grupo é verificada exatamente como uma declaração
+      autónoma o é, incluindo os seus acoplamentos.
+
+      ⭐⭐ E O `pm:Coupling` É ALCANÇÁVEL AQUI E EM MAIS LADO NENHUM DE UMA CONSOLIDAÇÃO. As suas pontas
+      são keyrefs para uma pilha, portanto uma composição que transportasse apenas um mapeamento não
+      conseguiria exprimir um. Uma casa-mãe que observe que duas das suas camadas compostas se movem em
+      conjunto fez uma observação que NENHUM DOS MEMBROS PODERIA FAZER e que ambos têm direito a ver.
+
+      DUAS DECLARAÇÕES DE REGIME, DOIS FACTOS DIFERENTES, e fundi-las perde a razão de os números
+      divergirem:
+
+        asrt:regime   ao abrigo do que OS MEMBROS reportaram, REAFIRMADO por este observador e datado
+                      pelo `observedAt`. Cada `part` nomeia qual. Idêntico em papel ao do `Dependence`,
+                      pela razão idêntica.
+        pm:regime     dentro da declaração embutida: ao abrigo do que A PRÓPRIA CONSOLIDAÇÃO reporta, que
+                      frequentemente não é o normativo de nenhum dos membros.
+
+      ⭐ RECORRE, SEM NADA ACRESCENTADO. Uma composição contém uma declaração, e o `FiledLayer` aponta
+      para declarações, portanto um segmento compõe membros e um grupo compõe segmentos. ⛔ A alternativa
+      — um documento só de mapeamento sem figuras nenhumas — não recorre de forma útil, porque o nível
+      seguinte teria de rederivar tudo a partir das folhas de cada vez e não teria edição nenhuma que
+      fixar.
+
+      ⚠️ ONDE UM DOCUMENTO SÓ DE MAPEAMENTO CONTINUARIA A SER O CERTO, registado para não ser confundido
+      com um descuido: uma TABELA DE CORRESPONDÊNCIA, publicada por quem tenha legitimidade para observar
+      que duas camadas são a mesma e NENHUMA legitimidade para declarar as figuras de grupo de quem quer
+      que seja — uma associação setorial entre os seus membros, um investigador ao longo de um setor. Esse
+      documento tem outro teste de testemunha e seria outra raiz. Não é esta, e esta não pode ser
+      declarada no seu lugar.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness"    type="xs:token"/>
@@ -976,7 +1682,7 @@
   </xs:complexType>
 
   <xs:element name="composition" type="asrt:Composition">
-    <xs:annotation><xs:documentation>
+    <xs:annotation><xs:documentation xml:lang="en">
       ⭐ ONE PARENT'S FILING, ASSEMBLED FROM ITS MEMBERS' FILINGS, SAYING WHICH LAYERS IT
       TREATED AS ONE AND WHAT IT REMOVED TO DO SO.
 
@@ -1020,6 +1726,52 @@
       ⛔ THE FILINGS THEMSELVES ARE STILL NOT VALIDATED. Same as `dependence`, same reason,
       and pretending otherwise with a keyref would reintroduce the defect both documents
       exist to avoid.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      
+      **Português.**
+
+      ⭐ A DECLARAÇÃO DE UMA CASA-MÃE, MONTADA A PARTIR DAS DECLARAÇÕES DOS SEUS MEMBROS, A DIZER QUE
+      CAMADAS TRATOU COMO UMA E O QUE RETIROU PARA O FAZER.
+
+      ⛔ Uma composição sem fusões é um erro e não alguém que compôs nada, pela razão da `coverage`: um
+      documento que afirme uma pilha de grupo sem nomear nada de que foi construído é uma declaração sem
+      fonte que parece ter fonte.
+
+      ⭐⭐ VERIFICA-SE AQUI MAIS DO QUE EM QUALQUER OUTRO DOCUMENTO ENTRE DECLARAÇÕES, E A RAZÃO É QUE
+      UMA DAS PONTAS É LOCAL. O `dependence` tem duas pontas externas e só consegue verificar os seus
+      identificadores de regime. Uma fusão tem uma ponta externa e uma LOCAL — a camada composta está
+      neste próprio documento — portanto o `fusionName` é uma keyref real para a pilha embutida. Uma
+      fusão que nomeie uma camada que quem compõe não declarou é um erro de esquema.
+
+      ⭐⭐⭐ E O `partIdentity` É UMA REGRA DE CONSOLIDAÇÃO QUE UM VALIDADOR CONSEGUE MESMO IMPOR, o que
+      é raro o suficiente aqui para valer a pena nomear: UMA CAMADA DECLARADA NÃO PODE SER PARTE DE DUAS
+      CAMADAS COMPOSTAS DESTE DOCUMENTO. Consolidar a mesma camada de um membro em dois sítios conta-a
+      duas vezes, e ao contrário de quase tudo o resto numa fusão, ambas as pontas dessa verificação
+      estão dentro de um documento. ⚠️ É chaveada na notação da declaração e no nome da camada lá dentro,
+      que é o par de posição do `FiledLayer` — NÃO na `party`, já que uma entidade pode legitimamente
+      contribuir com muitas camadas.
+
+      ⛔⛔ ESSAS QUATRO PALAVRAS — «DESTE DOCUMENTO» — SÃO TODA A QUALIFICAÇÃO, E AS COMPOSIÇÕES
+      ENCAIXAM, PORTANTO ELAS MORDEM. Uma composição é ela própria uma declaração, portanto um segmento
+      compõe membros e um grupo compõe segmentos, sem nada acrescentado. A um nível todas as partes são
+      folhas e esta chave está portanto completa. A DOIS NÍVEIS NÃO ESTÁ: uma holding que nomeie tanto
+      `group#labour` como `member#labour` tem dois pares notação/id distintos, a camada do membro é
+      consolidada duas vezes — uma diretamente e outra através do grupo — e NADA AQUI O APANHA. ⭐ A
+      regra transitiva é que NENHUMA CAMADA-FOLHA É ALCANÇÁVEL POR DOIS CAMINHOS, e é devida por quem
+      consiga ir buscar a cadeia, exatamente como a regra de que uma declaração citada existe de todo.
+      ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR, e a razão não é melindre: o segundo caminho atravessa um
+      documento que este não contém.
+
+      ⚠️ UMA RUGA PARA QUEM VÁ BUSCAR OS DOCUMENTOS, já que o encaixe a torna real. Uma camada fica em
+      `/pm:processModulus/pm:stack/pm:layer` numa declaração corrente e em
+      `/asrt:composition/pm:processModulus/pm:stack/pm:layer` numa composição. A `notation` é opaca e
+      não diz em lado nenhum qual é qual, portanto quem resolve lê o elemento raiz para descobrir. ⭐ É
+      esse o preço de embutir a declaração inteira em vez de embeber uma pilha simples, e compra a
+      extratibilidade e as keyrefs internas descritas no tipo.
+
+      ⛔ AS PRÓPRIAS DECLARAÇÕES CONTINUAM POR VALIDAR. Igual ao `dependence`, pela mesma razão, e fingir
+      o contrário com uma keyref reintroduziria o defeito que ambos os documentos existem para evitar.
     </xs:documentation></xs:annotation>
 
     <!-- ⚠️ Identity-constraint names share one symbol space per target namespace; `coverage`
