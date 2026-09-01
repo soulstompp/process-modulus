@@ -72,7 +72,7 @@
        produce, and it is only legible because both cite the pack. -->
   <asrt:entry>
     <asrt:key>labor.absorbed-evening</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:refuses>
         <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
@@ -85,7 +85,7 @@
        position"; the positions are from different charts and nothing maps them. -->
   <asrt:entry>
     <asrt:key>compute.reserved-block-idle</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:holds>
         <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
@@ -98,7 +98,7 @@
        TO PRODUCE. The reason is declared, so it is a position rather than a bug. -->
   <asrt:entry>
     <asrt:key>offering.enterprise-obligation</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:refuses>
         <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
@@ -121,7 +121,7 @@
 
   <asrt:entry>
     <asrt:key>capability.backlog</asrt:key>
-    <asrt:complete>false</asrt:complete>
+    <asrt:claimed>none</asrt:claimed>
     <asrt:answer>
       <asrt:cannotAsk/>
     </asrt:answer>

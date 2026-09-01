@@ -9,7 +9,7 @@
 use std::collections::HashSet;
 use std::fs;
 
-use process_modulus::asrt::{AnswerType, CoverageType, RunType, VerdictType};
+use process_modulus::asrt::{AnswerType, ClaimedType, CoverageType, RunType, VerdictType};
 use process_modulus::pm::StatedBorrowedTermType;
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
@@ -212,4 +212,67 @@ fn every_position_is_held_in_a_chart_its_own_document_declares() {
             );
         }
     }
+}
+
+/// ⭐⭐⭐ HOW MUCH OF THE QUESTION DOES THIS WITNESS SAY IT ANSWERS? `CoverageEntry/complete`
+/// was an `xs:boolean` — the only one in either schema — and it was the last survivor of the
+/// pattern this project has caught five times: A TWO-VALUED ENCODING SURVIVES REVIEW BECAUSE
+/// BOTH OF ITS VALUES ARE CORRECT. `true` was right, `false` was right, and nothing in a
+/// boolean field points at what it cannot say.
+///
+/// ⛔ `false` WAS CARRYING TWO OPPOSITE READINGS. `none` says the question is outside this
+/// witness's subject; `partial` says it is inside and half covered. A report that merges them
+/// cannot tell a witness that declines from a witness that falls short — and a corpus about
+/// quantities nobody records is asking precisely about the half that is not covered.
+///
+/// ⭐⭐ AND IT IS WHAT MAKES `notable` REACHABLE. `Verdict/notable` is "answered beyond what
+/// was claimed", so a graded claim gives it two more ways to fire, not one.
+#[test]
+fn a_witness_says_how_much_of_each_question_it_answers() {
+    let mut seen = Vec::new();
+
+    for name in [US, PT] {
+        for e in &coverage(name).entry {
+            // ⛔ A WITNESS THAT TAKES ON NO PART OF A QUESTION HAS ONE HONEST ANSWER, and it
+            // is not a refusal: a refusal is a coded position under a framework, which is a
+            // full answer. `cannotAsk` is the witness saying the question is not its subject.
+            if e.claimed == ClaimedType::None {
+                assert!(
+                    matches!(e.answer, Some(AnswerType::CannotAsk(_)) | None),
+                    "{name} `{}`: claims none of the question and then answers it. That is \
+                     `notable` for a runner to report, not something to file as a claim",
+                    e.key
+                );
+            }
+            // A witness that claims the whole question owes the whole answer.
+            if e.claimed == ClaimedType::Full {
+                assert!(
+                    e.answer.is_some() || e.citation.is_empty(),
+                    "{name} `{}`: claims the question fully and states nothing",
+                    e.key
+                );
+            }
+            seen.push(e.claimed.clone());
+        }
+    }
+
+    assert!(
+        seen.contains(&ClaimedType::Full) && seen.contains(&ClaimedType::None),
+        "both witnesses answer some questions and decline others; a corpus where every entry \
+         claims the same amount tests nothing about the distinction"
+    );
+
+    // ⚠️⚠️ AND THE THIRD VALUE IS UNEXERCISED, WHICH IS RECORDED RATHER THAN PAPERED OVER.
+    // No entry in this corpus is a genuine `partial`: both witnesses either code a position,
+    // return a typed refusal — which IS a complete answer under a framework — or say the
+    // question is not theirs. A witness that codes the transacted half of an absorbed cost
+    // and has no position for the rest would be the case, and nobody has filed one. Inventing
+    // an entry to light this branch would make the corpus agree with the schema by
+    // construction, which is the failure `Verdict/diverged` names.
+    assert!(
+        !seen.contains(&ClaimedType::Partial),
+        "a witness now files `partial`. That is the interesting state and it should be checked \
+         here rather than merely permitted: does its answer cover only part of the question, \
+         and does the runner report `notable` when it covers more?"
+    );
 }

@@ -15,12 +15,23 @@
        layers' remainders moved together, which is the model's own falsifier,
        and it is required to carry what was observed.
 
+    3. A TRANSITION FIT, which is the only one in these examples. `compute` demands
+       [11.0, 13.2, 16.4] against a nameplate of 16, so it is short at the top of
+       its range and spare at the bottom. The remainder magnitude cannot say both,
+       and the fit now does.
+
   A document with no couplings is not evidence of independence. It is a document
   where nobody looked. This one looked.
 
   Note that it carries no operations at all: a stack is a complete document.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
+       before S-28 was repaired no document could say it. -->
+  <pm:notation>
+    <pm:uri>urn:example:filing:acme-platform:2026-Q2-refutation</pm:uri>
+  </pm:notation>
 
   <!-- ⭐⭐ TWO REGIMES, ONE ENTITY, AND THAT IS CORRECT RATHER THAN A DUPLICATE.
        The same Portuguese microentity is `NC-ME` to IES and `M` to SAF-T. The two
@@ -68,6 +79,12 @@
   </pm:regime>
 
   <pm:stack>
+    <pm:scope>
+      <pm:scope>
+        <pm:extent>unbounded</pm:extent>
+        <pm:basis>the three layers the coupling observation runs between. What else exists was not the question this filing put</pm:basis>
+      </pm:scope>
+    </pm:scope>
 
     <!-- ============================================================
          1. THE COUNTER-EXAMPLE: a supply with no quantum.
@@ -81,10 +98,30 @@
           <pm:mostLikely>47</pm:mostLikely>
           <pm:high>52</pm:high>
           <pm:unit>TB</pm:unit>
-          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>nobody has said what would tighten this range</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+            </pm:absent>
+          </pm:boundOrigin>
+          <pm:provenance><pm:party>platform</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+          </pm:provenance>
           <pm:asOf>2026-08-30</pm:asOf>
         </pm:claim>
       </pm:demand>
+      <pm:timeSlack>
+        <pm:absent>
+          <pm:reason>none</pm:reason>
+          <pm:note>a write that waits is a failed write; nothing here survives being held</pm:note>
+        </pm:absent>
+      </pm:timeSlack>
 
       <pm:supply>
         <pm:label>object storage, billed per byte-month</pm:label>
@@ -95,6 +132,15 @@
               <pm:note>nothing is committed in advance; there is no rating to exceed</pm:note>
             </pm:absent>
           </pm:amount>
+          <!-- no amount was committed, so asking who could have committed a different
+               one is malformed rather than unanswered. The same reason the amount
+               itself is notApplicable. -->
+          <pm:amountOrigin>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>there is no committed amount here to have an origin</pm:note>
+            </pm:absent>
+          </pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
               <pm:continuous>
@@ -105,14 +151,35 @@
                              commitment tier offered, so nothing is paid to buy this
                              continuously. Checked against the published rate card
                              2026-08-30.</pm:note>
-                    <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+                    <pm:provenance><pm:party>platform</pm:party>
+                      <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    </pm:provenance>
                     <pm:asOf>2026-08-30</pm:asOf>
                   </pm:absent>
                 </pm:premium>
               </pm:continuous>
+              <pm:window>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>nothing is committed in advance, so there is no rating whose period a window could be part of. The same reason the amount itself is notApplicable</pm:note>
+                </pm:absent>
+              </pm:window>
             </pm:divisibility>
           </pm:divisibility>
-          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+          <pm:capacitySlack>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>a disk cannot hold more than it holds</pm:note>
+            </pm:absent>
+          </pm:capacitySlack>
+          <!-- storage IS the inventory buffer, which is the one layer here
+               where that is straightforwardly true -->
+          <pm:inventorySlack>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>stored bytes keep; how many could be staged ahead has not been counted</pm:note>
+            </pm:absent>
+          </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
           <pm:draw>
@@ -121,6 +188,18 @@
               <pm:mostLikely>47</pm:mostLikely>
               <pm:high>47</pm:high>
               <pm:unit>TB</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>none</pm:reason>
+                  <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
             </pm:claim>
           </pm:draw>
           <pm:measurementBasis>
@@ -138,7 +217,9 @@
           <pm:note>a supply with no quantum divides exactly. Filed as a
                    counter-example to the claim that every layer carries a
                    remainder, not as a gap in this document.</pm:note>
-          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
+          <pm:provenance><pm:party>platform</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+          </pm:provenance>
           <pm:asOf>2026-08-30</pm:asOf>
         </pm:absent>
       </pm:remainder>
@@ -155,8 +236,26 @@
           <pm:mostLikely>13.2</pm:mostLikely>
           <pm:high>16.4</pm:high>
           <pm:unit>GPU</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>nobody has said what would tighten this range</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+            </pm:absent>
+          </pm:boundOrigin>
         </pm:claim>
       </pm:demand>
+      <pm:timeSlack>
+        <pm:absent>
+          <pm:reason>none</pm:reason>
+          <pm:note>an inference request that waits until tomorrow was not served. At this layer’s granularity the demand does not survive being held at all</pm:note>
+        </pm:absent>
+      </pm:timeSlack>
       <pm:supply>
         <pm:label>reserved inference capacity</pm:label>
         <pm:nameplate>
@@ -164,8 +263,23 @@
             <pm:claim>
               <pm:low>16</pm:low><pm:mostLikely>16</pm:mostLikely><pm:high>16</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>derived</pm:reason>
+                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
+          <!-- raising this from 8 to 16 is the intervention the coupling below was
+               observed across, which makes it a decision by definition -->
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
               <pm:lumpy>
@@ -173,19 +287,60 @@
                   <pm:claim>
                     <pm:low>8</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>8</pm:high>
                     <pm:unit>GPU</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>derived</pm:reason>
+                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
                 <pm:origin>contractual</pm:origin>
               </pm:lumpy>
+              <pm:window>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>`GPU` is a stock with no period</pm:note>
+                </pm:absent>
+              </pm:window>
             </pm:divisibility>
           </pm:divisibility>
-          <pm:admitsInterference><pm:value>false</pm:value></pm:admitsInterference>
+          <pm:capacitySlack>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>a reserved card cannot be run above its rating at any price</pm:note>
+            </pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>a reserved card-hour not drawn is gone; there is nothing to build ahead</pm:note>
+            </pm:absent>
+          </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
           <pm:draw>
             <pm:claim>
               <pm:low>13.2</pm:low><pm:mostLikely>13.2</pm:mostLikely><pm:high>13.2</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>none</pm:reason>
+                  <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
             </pm:claim>
           </pm:draw>
           <pm:measurementBasis>
@@ -195,16 +350,91 @@
       </pm:supply>
       <pm:remainder>
         <pm:remainder>
-          <pm:sign>clearance</pm:sign>
+          <!-- ⭐ THE ONLY `transition` FIT IN THESE EXAMPLES, AND IT IS WHY THE VALUE
+               EXISTS. Demand [11.0, 13.2, 16.4] against a nameplate of 16 OVERLAPS it:
+               5.0 GPU spare at the bottom of the range, 0.4 GPU short at the top, and
+               both are true of one layer. This filed `clearance` while `Fit` had two
+               members, which was the best available reading and still hid the second
+               half.
+               ⛔ THE MAGNITUDE CANNOT CARRY THAT SECOND HALF, which is the thing to
+               take away. `|16 - d|` is [0.0, 2.8, 5.0] — the CLEARANCE side, because
+               it is the larger one — and the 0.4 of interference sits inside that
+               interval indistinguishable from 0.4 of clearance. The exposure comes
+               from the demand and the nameplate instead: max(0, 16.4 - 16) = 0.4 GPU. -->
+          <pm:sign><pm:fit>transition</pm:fit></pm:sign>
           <pm:absorber>
-            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
-            <pm:value>capacity</pm:value>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
           </pm:absorber>
-          <pm:holder><pm:holder><pm:kind>booked</pm:kind></pm:holder></pm:holder>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>booked</pm:kind>
+              <pm:share>
+                <pm:claim>
+                  <pm:low>0.0</pm:low><pm:mostLikely>2.8</pm:mostLikely><pm:high>5.0</pm:high>
+                  <pm:unit>GPU</pm:unit>
+                  <pm:narrowsWhen>
+                    <pm:absent>
+                      <pm:reason>unmeasured</pm:reason>
+                      <pm:note>nobody has said what would tighten this range</pm:note>
+                    </pm:absent>
+                  </pm:narrowsWhen>
+                  <pm:boundOrigin>
+                    <pm:absent>
+                      <pm:reason>none</pm:reason>
+                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                    </pm:absent>
+                  </pm:boundOrigin>
+                </pm:claim>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <!-- ⭐⭐ AND THE SECOND HOLDER IS FORCED BY THIS SUPPLY'S OWN CAPACITY SLACK.
+               It is `none` — "a reserved card cannot be run above its rating at any
+               price" — so the 0.4 CANNOT have been absorbed. There is no overtime for
+               silicon. Work that could not be absorbed and could not be served went
+               UNSERVED, and unserved demand is `customer` or `unrealised`. `customer`
+               here because the request was MADE and somebody was on the other end of
+               it; `unrealised` would mean it never became anybody's experience at all.
+               ⭐ This layer is the case where "refused" would in fact be accurate — a
+               reserved card errors the call — but the pair of holders also covers the
+               caller who simply waited and left, so the neutral word is what the model
+               uses. See Fit.
+               ⚠️ THE SHARE IS `unmeasured` AND THAT IS THE HONEST FILING, NOT A DODGE.
+               Nobody counts inference requests that never got served. Per Holder, one unmeasured
+               share SUSPENDS the sum rule rather than breaking it — which is right,
+               and doubly right here, because under a transition fit the two sides are
+               anti-correlated and summing them would report a week that never happened.
+               What is known without counting anything is the ceiling: 0.4 GPU. -->
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>customer</pm:kind>
+              <pm:share>
+                <pm:absent>
+                  <pm:reason>unmeasured</pm:reason>
+                  <pm:note>a request that went unserved at the top of the demand range leaves no record: it is a failed call, not a transaction. The exposure is derivable and the count is not — at most 0.4 GPU, being max(0, 16.4 - 16)</pm:note>
+                </pm:absent>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
           <pm:quantity>
             <pm:claim>
               <pm:low>0.0</pm:low><pm:mostLikely>2.8</pm:mostLikely><pm:high>5.0</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>unmeasured</pm:reason>
+                  <pm:note>nobody has said what would tighten this range</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>derived</pm:reason>
+                  <pm:note>the bounds follow from this layer's demand and nameplate, whose own origins are stated there</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
             </pm:claim>
           </pm:quantity>
         </pm:remainder>
@@ -217,8 +447,26 @@
         <pm:claim>
           <pm:low>4.2</pm:low><pm:mostLikely>4.6</pm:mostLikely><pm:high>5.5</pm:high>
           <pm:unit>people</pm:unit>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>nobody has said what would tighten this range</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+            </pm:absent>
+          </pm:boundOrigin>
         </pm:claim>
       </pm:demand>
+      <pm:timeSlack>
+        <pm:absent>
+          <pm:reason>unmeasured</pm:reason>
+          <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says WHERE such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
+        </pm:absent>
+      </pm:timeSlack>
       <pm:supply>
         <pm:label>the platform team</pm:label>
         <pm:nameplate>
@@ -226,8 +474,21 @@
             <pm:claim>
               <pm:low>4</pm:low><pm:mostLikely>4</pm:mostLikely><pm:high>4</pm:high>
               <pm:unit>people</pm:unit>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>derived</pm:reason>
+                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
+          <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
               <pm:lumpy>
@@ -235,13 +496,42 @@
                   <pm:claim>
                     <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
                     <pm:unit>people</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                        <pm:note>there is no range here to tighten</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>derived</pm:reason>
+                        <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
+              <pm:window>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>`people` is a stock with no period</pm:note>
+                </pm:absent>
+              </pm:window>
             </pm:divisibility>
           </pm:divisibility>
-          <pm:admitsInterference><pm:value>true</pm:value></pm:admitsInterference>
+          <pm:capacitySlack>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+            </pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+            </pm:absent>
+          </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
           <pm:draw>
@@ -257,18 +547,44 @@
       </pm:supply>
       <pm:remainder>
         <pm:remainder>
-          <pm:sign>interference</pm:sign>
+          <pm:sign><pm:fit>interference</pm:fit></pm:sign>
           <pm:absorber>
-            <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
-            <pm:value>capacity</pm:value>
+            <pm:term>
+              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+              <pm:value>capacity</pm:value>
+            </pm:term>
           </pm:absorber>
-          <pm:holder><pm:holder><pm:kind>people</pm:kind></pm:holder></pm:holder>
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>people</pm:kind>
+              <pm:share>
+                <pm:claim>
+                  <pm:low>0.2</pm:low><pm:mostLikely>0.6</pm:mostLikely><pm:high>1.5</pm:high>
+                  <pm:unit>people</pm:unit>
+                  <pm:narrowsWhen>
+                    <pm:narrowing>
+                      <pm:condition>absorbed hours are recorded against a practical-capacity denominator that is allowed to go negative</pm:condition>
+                      <pm:kind>instrument</pm:kind>
+                    </pm:narrowing>
+                  </pm:narrowsWhen>
+                  <pm:boundOrigin>
+                    <pm:absent>
+                      <pm:reason>none</pm:reason>
+                      <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                    </pm:absent>
+                  </pm:boundOrigin>
+                </pm:claim>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+          <!-- derived: |4 - [4.2, 4.6, 5.5]| = [0.2, 0.6, 1.5] people, and unlike the
+               compute layer above this one does not straddle: the whole demand range
+               sits over the nameplate, so the fit is interference throughout. -->
           <pm:quantity>
-            <pm:claim>
-              <pm:low>0.2</pm:low><pm:mostLikely>0.6</pm:mostLikely><pm:high>1.5</pm:high>
-              <pm:unit>people</pm:unit>
-              <pm:narrowsWhen>absorbed hours are recorded against a practical-capacity denominator that is allowed to go negative</pm:narrowsWhen>
-            </pm:claim>
+            <pm:absent>
+              <pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+            </pm:absent>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -277,29 +593,44 @@
     <!-- ============================================================
          THE FALSIFIER, FILED.
          ============================================================ -->
-    <pm:coupling>
-      <pm:from>compute</pm:from>
-      <pm:to>labour</pm:to>
-      <pm:observed>Raising the reservation from 8 to 16 GPU in 2026-Q2 was followed
-                   by a 31 per cent fall in recorded on-call interrupt hours in the
-                   same quarter, with no change to headcount, on-call rota or
-                   release cadence. The compute remainder rose and the labour
-                   remainder fell together, which is what the stack is assumed not
-                   to do. One quarter, one company, and not controlled, but it is
-                   the observation, and it belongs in the document rather than in a
-                   conversation about the document.</pm:observed>
-      <pm:strength>
-        <pm:claim>
-          <pm:low>0.15</pm:low>
-          <pm:mostLikely>0.31</pm:mostLikely>
-          <pm:high>0.45</pm:high>
-          <pm:unit>share of the labour remainder removed</pm:unit>
-          <pm:narrowsWhen>the reservation is varied deliberately across two more quarters</pm:narrowsWhen>
-          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:claim>
-      </pm:strength>
-    </pm:coupling>
+    <pm:couplings>
+      <pm:coupling>
+        <pm:from>compute</pm:from>
+        <pm:to>labour</pm:to>
+        <pm:observed>Raising the reservation from 8 to 16 GPU in 2026-Q2 was followed
+                     by a 31 per cent fall in recorded on-call interrupt hours in the
+                     same quarter, with no change to headcount, on-call rota or
+                     release cadence. The compute remainder rose and the labour
+                     remainder fell together, which is what the stack is assumed not
+                     to do. One quarter, one company, and not controlled, but it is
+                     the observation, and it belongs in the document rather than in a
+                     conversation about the document.</pm:observed>
+        <pm:strength>
+          <pm:claim>
+            <pm:low>0.15</pm:low>
+            <pm:mostLikely>0.31</pm:mostLikely>
+            <pm:high>0.45</pm:high>
+            <pm:unit>share of the labour remainder removed</pm:unit>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>the reservation is varied deliberately across two more quarters</pm:condition>
+                <pm:kind>experiment</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has asked what would set the edge of a coupling's strength</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>platform</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:strength>
+      </pm:coupling>
+    </pm:couplings>
 
   </pm:stack>
 

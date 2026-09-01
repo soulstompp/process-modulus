@@ -7,7 +7,7 @@
 //! as a `pm:Coupling` substitute, which is the only way it can be misused.
 //!
 //! ⚠️ `an_end_names_a_regime_the_statement_declared` deliberately re-implements the
-//! schema's `xs:keyref` in Rust, for `examples_parse.rs`'s stated reason: the two checks
+//! schema's `xs:keyref` in Rust, for `corpus_parse.rs`'s stated reason: the two checks
 //! answer to different authorities, and a document reaching this crate through some other
 //! path (an API, a database, a hand-built value) was never validated at all.
 
@@ -38,7 +38,10 @@ fn the_statement_parses_and_is_dated_and_attributed() {
         "an observation that does not say when it was made cannot be checked against \
          the filings as they were, nor compared with the next one"
     );
-    assert!(!d.entry.is_empty(), "a statement with no entries observed nothing");
+    assert!(
+        !d.entry.is_empty(),
+        "a statement with no entries observed nothing"
+    );
 }
 
 /// ⛔ THE DISCIPLINE `pm:Coupling` SETS, AND IT IS LESS NEGOTIABLE HERE. There, a reader
@@ -73,7 +76,10 @@ fn an_end_names_a_regime_the_statement_declared() {
             }
         }
     }
-    assert!(named > 0, "the example exists partly to exercise the regime handles");
+    assert!(
+        named > 0,
+        "the example exists partly to exercise the regime handles"
+    );
 }
 
 /// ⭐⭐⭐ THE PROPERTY, AND THE REASON THIS IS A DOCUMENT RATHER THAN AN ELEMENT.
@@ -87,11 +93,10 @@ fn an_end_names_a_regime_the_statement_declared() {
 #[test]
 fn the_two_ends_are_parties_the_witness_is_not() {
     let d = dependence(DEP);
-    let observer = d
-        .provenance
-        .as_ref()
-        .and_then(|p| p.party.clone())
-        .unwrap_or_default();
+    // ⭐ `provenance` is REQUIRED now. `Composition` says in its own words that a filing
+    // without `provenance/standing` is a FABRICATION, and both were optional for three
+    // revisions — the schema naming a condition and then permitting documents that fail it.
+    let observer = d.provenance.party.clone().unwrap_or_default();
 
     for e in &d.entry {
         assert_ne!(

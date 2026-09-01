@@ -41,7 +41,7 @@
            xmlns:pm="https://example.invalid/process-flow/1.0"
            targetNamespace="https://example.invalid/assertion/1.0"
            elementFormDefault="qualified"
-           version="0.1.0">
+           version="0.3.0">
 
   <xs:import namespace="https://example.invalid/process-flow/1.0"
              schemaLocation="process-modulus.xsd"/>
@@ -94,6 +94,53 @@
   </xs:complexType>
 
   <!-- ==================================================================
+       CLAIMED: how much of a question a witness says it answers.
+       ================================================================== -->
+  <xs:simpleType name="Claimed">
+    <xs:annotation><xs:documentation>
+      HOW MUCH OF THE QUESTION THIS WITNESS CLAIMS TO ANSWER.
+
+      ⛔⛔⛔ THIS WAS AN `xs:boolean` NAMED `complete`, THE ONLY ONE IN EITHER SCHEMA,
+      AND IT WAS THE LAST SURVIVOR OF A PATTERN THIS PROJECT HAS NOW CAUGHT FIVE TIMES:
+      A TWO-VALUED ENCODING SURVIVES REVIEW BECAUSE BOTH OF ITS VALUES ARE CORRECT.
+      `true` was right, `false` was right, and the missing third value was the one that
+      mattered — nothing in a boolean field points at what it cannot say.
+
+        full     the witness answers the question and nothing is left over. The old
+                 `true`, unchanged
+        partial  ⭐⭐ THE VALUE THAT HAD NO ENCODING. The witness answers part of the
+                 question and leaves part of it open. A framework that codes the
+                 transacted half of an absorbed cost and has no position for the rest
+                 is in this state, and it is the MOST INTERESTING state a witness can
+                 be in, because the gap is exactly what a corpus about absorbed
+                 quantities is asking about
+        none     the witness answers no part of it, on purpose. A standards model with
+                 no opinion about staffing policy
+
+      ⭐ `false` WAS CARRYING `partial` AND `none` AT ONCE, and the two produce opposite
+      readings of the same file: `none` says the question is outside this witness's
+      subject, `partial` says it is inside and half-covered. A report that merges them
+      cannot tell a witness that declines from a witness that falls short.
+
+      ⭐⭐ AND IT SHARPENS `Verdict/notable` WITHOUT ADDING A MEMBER. `notable` already
+      means the witness answered beyond what it claimed; with three values the claim is
+      GRADED, so a `partial` witness that answers fully is notable in exactly the same
+      sense a `none` witness that answers at all is. One definition, two more ways to
+      reach it. See Verdict.
+
+      ⚠️ NOT AN AbsenceReason, AND THE LINE IS THE SAME ONE `Verdict` DRAWS. `pm:Absence`
+      says why a DOCUMENT has no value. This says how much of a QUESTION an ANSWERER
+      takes on. `none` appears in both vocabularies meaning "somebody looked and the
+      answer is nothing", which is the shared root and not a shared type.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="full"/>
+      <xs:enumeration value="partial"/>
+      <xs:enumeration value="none"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ==================================================================
        VERDICT: how an answer stood against the corpus. CONTRIBUTED, and
        regime-neutral: it is about the corpus and the witness, not about
        any accounting framework.
@@ -109,12 +156,19 @@
                  the witness happens to do is none of them: it turns the corpus into
                  a snapshot of current behaviour and the trial measures nothing.
 
-      notable    ⭐⭐ NOT CLAIMED, AND THE WITNESS ANSWERED ANYWAY. Never a failure,
-                 and usually the most valuable line in a report: a witness admitted
-                 something we assumed it must refuse, so either the model is stronger
-                 than we thought or a guard is not guarding.
+      notable    ⭐⭐ ANSWERED BEYOND WHAT WAS CLAIMED. Never a failure, and usually the
+                 most valuable line in a report: a witness admitted something we assumed
+                 it must refuse, so either the model is stronger than we thought or a
+                 guard is not guarding.
+                 ⭐ THE DEFINITION USED TO READ "not claimed, and the witness answered
+                 anyway", WHICH WAS THE SAME VERDICT DESCRIBED THROUGH A BOOLEAN. Once
+                 `claimed` has three values the claim is graded and this member covers
+                 two shapes without changing meaning: `none` answering at all, and
+                 `partial` answering the whole question. See Claimed.
 
-      unclaimed  Not claimed, and the witness said cannotAsk. Quiet, and correct.
+      unclaimed  `claimed` is `none` and the witness said cannotAsk. Quiet, and correct.
+                 ⚠️ `partial` with cannotAsk is NOT this: the witness took on part of
+                 the question and then delivered nothing, which is `diverged`.
 
       ⚠️ Verdict is NOT the absence vocabulary. `pm:AbsenceReason` says why a DOCUMENT
       has no value; this says how an ANSWERER stood against a question. They rhyme
@@ -164,10 +218,11 @@
       claim about a question the corpus does not hold is what stops a coverage file
       drifting into fiction.
 
-      `complete` is whether the witness claims to answer the question FULLY. ⭐ It is
-      what makes `notable` reachable: without a claim there is nothing for an answer
-      to exceed, and a trial that cannot produce `notable` is only checking that a
-      program agrees with itself.
+      `claimed` is HOW MUCH of the question the witness says it answers. ⭐ It is what
+      makes `notable` reachable: without a claim there is nothing for an answer to
+      exceed, and a trial that cannot produce `notable` is only checking that a program
+      agrees with itself. ⛔ It was an `xs:boolean` named `complete` and the third value
+      it could not hold is `partial`; see Claimed.
 
       ⭐⭐ `answer` IS OPTIONAL, AND WHICH WAY IT IS FILLED SAYS WHAT KIND OF WITNESS
       THIS IS:
@@ -190,7 +245,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="key"       type="xs:token"/>
-      <xs:element name="complete"  type="xs:boolean"/>
+      <xs:element name="claimed"   type="asrt:Claimed"/>
       <xs:element name="answer"    type="asrt:Answer"   minOccurs="0"/>
       <xs:element name="exception" type="xs:string"   minOccurs="0"/>
       <xs:element name="citation"  type="asrt:Citation" minOccurs="0" maxOccurs="unbounded"/>
@@ -338,6 +393,29 @@
       says only "not cited". ⛔ Required would be wrong at exactly the end of the chain this
       model cares about (the small supplier with no register entry), and would produce
       invented identifiers.
+
+      ⭐⭐⭐ AND A NOTATION MAY BE THIS DOCUMENT'S OWN, WHICH IS THE WHOLE OF LOCAL
+      COMPOSITION. `pm:processModulus/notation` lets a filing say which filing it is, so a part
+      whose notation matches the embedded filing's own is a LOCAL part: it names a layer this
+      composer built, in this document. ⛔ There is no second kind of part and no new element —
+      the distinction is a string comparison against the filing's own name.
+
+      ⭐⭐ WHAT IT BUYS IS THE CONSTRUCTION A THIRD PARTY ACTUALLY PERFORMS: bring their layer
+      in, make your own layer beside it, then make a THIRD layer out of both — and separate all
+      three afterwards. Every step but the last was already possible; the last needed only a
+      filing that could name itself.
+
+      ⚠️ AND THE ALTERNATION IT ENABLES IS AN ORDINARY FUSION, NOT A NEW RELATION. Two views of
+      one quantity summed is that quantity COUNTED TWICE, which is exactly what `Elimination`
+      removes — see `EliminationAgainst/demand`. The fused figure is the sum less an
+      elimination equal to one view, the sum rule stays exact, and nothing new was needed.
+
+      ⛔⛔ TWO RULES ARRIVE WITH IT AND NEITHER IS REACHABLE BY A VALIDATOR. A local part's `id`
+      must name a layer in this document's own stack — XSD 1.0 cannot make a keyref conditional
+      on another field's value, so `composedLayerName` cannot be pointed at it. And LOCAL PARTS
+      MUST NOT CYCLE: layer A composed from B while B is composed from A is a document with no
+      arithmetic in it at all. `assets/sql/rules.sql` already walks the descent with a depth
+      guard and is where both are checked.
 
       `version` is THE EDITION OF THE FILING THAT WAS READ, and it is `Citation/version`'s
       argument applied to a filing rather than a standard: a stack is not a fixed object,
@@ -493,7 +571,7 @@
     <xs:sequence>
       <xs:element name="witness"    type="xs:token"/>
       <xs:element name="observedAt" type="xs:date"/>
-      <xs:element name="provenance" type="pm:Provenance"        minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance"/>
       <xs:element name="regime"     type="pm:Regime"            minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="citation"   type="asrt:Citation"        minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="entry"      type="asrt:DependenceEntry"               maxOccurs="unbounded"/>
@@ -545,6 +623,446 @@
       <xs:field    xpath="asrt:from/asrt:filing/pm:id"/>
       <xs:field    xpath="asrt:to/asrt:filing/pm:notation"/>
       <xs:field    xpath="asrt:to/asrt:filing/pm:id"/>
+    </xs:key>
+  </xs:element>
+
+  <!-- ==================================================================
+       COMPOSITION: one filing assembled OUT OF other filings, by the party
+       with standing to assemble it.
+       ================================================================== -->
+  <xs:simpleType name="EliminationAgainst">
+    <xs:annotation><xs:documentation>
+      WHICH OF THE THREE QUANTITIES AN ELIMINATION IS REMOVED FROM.
+
+      ⭐⭐ THE SET IS NOT A JUDGEMENT CALL: it is `pm:Layer`'s own three quantities, and
+      that annotation already says why keeping them apart is the entire point. An
+      elimination that does not say which one it hits is an adjustment applied to
+      whichever number the reader happened to be holding.
+
+        demand      what was ASKED, counted twice. ⭐ THE ORDINARY CASE, and the one that
+                    surprises people: when one member commissions work from another, BOTH
+                    file it as their own demand, honestly, and the group's demand is the
+                    sum MINUS the commission.
+        nameplate   what was COMMITTED, counted twice. ⚠️ RARER THAN IT LOOKS, and the
+                    asymmetry is the interesting part: two members' people are two sets of
+                    people, so labour nameplate almost never eliminates. A reservation one
+                    member holds and resells to another does.
+        draw        what was actually SERVED, counted twice. Present because the model
+                    says these are three quantities and not two; an implementation that
+                    eliminates demand and forgets the draw has silently claimed a
+                    utilisation it did not observe.
+
+      ⭐ CONTRIBUTED, and closed, because this model owns the distinction. It is not a
+      chart of accounts and no accounting framework publishes it: a consolidation standard
+      eliminates BALANCES, and these are not balances.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="demand"/>
+      <xs:enumeration value="nameplate"/>
+      <xs:enumeration value="draw"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Elimination">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ WHAT THE COMPOSER REMOVED, AND WHY THE FUSED FIGURE IS THEREFORE NOT THE SUM
+      OF ITS PARTS. Without this element a composition can only be one of two useless
+      things: a restatement forced to equal the sum, which no real consolidation is, or a
+      figure that differs from the sum for reasons nobody recorded.
+
+      ⛔⛔ AND THAT IS WHY THE SUM RULE COULD NOT BE WRITTEN BEFORE THIS TYPE EXISTED.
+      A checker comparing the fused figure against the sum of the parts has no way to tell
+      an elimination from an error, so the strongest thing it could report was a warning.
+      With eliminations filed the rule becomes exact, and any leftover difference is a
+      finding rather than a shrug.
+
+      `quantity` is a `pm:StatedClaim` AND NOT A BARE `pm:Claim`, which is the decision in
+      this type most worth keeping. ⭐ "There is intra-group demand here and we cannot size
+      it" IS THE HONEST STATE OF MOST CONSOLIDATIONS, and a required number would be
+      answered by writing zero. An `unmeasured` elimination says the composer looked, found
+      double counting, and could not measure it — and a receiver reading that knows the
+      fused figure is overstated by an unknown amount, which is strictly more than silence.
+      ⚠️ `none` HERE IS NARROWER THAN IT WAS, AND THE PARAGRAPH THAT USED TO STAND IN THIS
+      SPOT HAS MOVED UP A LEVEL. It said "`none` is NOT the same as filing no elimination at
+      all: the first says somebody looked, the second says nothing" — correct, and about the
+      SEARCH rather than about any one elimination, which is why it is now `StatedEliminations`
+      and why `Fusion/eliminations` is required. What `none` means on THIS element is that a
+      named pair has a double-counting relation which sizes to zero this period. ⛔ Filing one
+      against an arbitrary pair to mean "we found nothing" invents a relation.
+
+      ⭐⭐ ELIMINATIONS SUBTRACT COMPONENT-WISE AND DO NOT REVERSE BOUNDS, WHICH IS THE
+      OPPOSITE OF `pm:Remainder`, AND THE DIFFERENCE IS NOT AN INCONSISTENCY. A remainder
+      subtracts demand from nameplate, two INDEPENDENT quantities, so the worst case of the
+      difference pairs one's low against the other's high and the bounds reverse. An
+      elimination subtracts a COMPONENT OF THE VERY FIGURE IT IS REMOVED FROM: in the
+      scenario where total demand is low, the intra-group part of it is low too. Reversing
+      bounds here would widen an interval by pairing a scenario against itself.
+      ⛔ NOT REACHABLE BY A VALIDATOR, and it is the check most likely to be got wrong
+      quietly, because the wrong answer is still a well-formed interval.
+
+      `against` is REQUIRED. See EliminationAgainst.
+
+      `observed` is REQUIRED, for `pm:Coupling/observed`'s reason and a sharper one: this
+      is the only element in the model that makes a filed number smaller, and an unexplained
+      reduction is the shape every accounting scandal has in common.
+
+      `between` names the filed layers the double counting runs between, so the attribution
+      is QUERYABLE rather than narrated. ⚠️ Optional and unbounded, and deliberately NOT
+      constrained to this fusion's own parts: a group eliminating against a member that files
+      nothing, or against a layer folded into a different composed layer, is ordinary, and a
+      keyref that forced the subset would make the honest case unfileable.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="quantity" type="pm:StatedClaim"/>
+      <xs:element name="against"  type="asrt:EliminationAgainst"/>
+      <xs:element name="observed" type="xs:string"/>
+      <xs:element name="between"  type="asrt:FiledLayer" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Part">
+    <xs:annotation><xs:documentation>
+      ONE FILED LAYER GOING INTO A FUSION, AND THE FACTOR THAT PUTS IT IN THE COMPOSED
+      LAYER'S UNIT.
+
+      ⛔⛔ THE CASE THIS EXISTS FOR IS METERING, NOT TRANSLATION. `Fusion` argues correctly
+      that the units of its parts must NOT be compared as strings, because `people` and
+      `pessoas` are one unit spelled twice. That argument does not reach a group whose members
+      METER THE SAME RESOURCE DIFFERENTLY — one billing per reserved card and another per
+      card-hour, one per tonne and another per truckload. `4.4 GPU + 545 GPU-hour` is not a
+      sum, and a composer who silently multiplies by 720 has done exactly the unaudited
+      consolidation arithmetic `Elimination` was added to stop. ⭐ The likeliest instance is
+      not exotic at all: it is a TIME WINDOW, a member filing weekly into a group that files
+      monthly.
+
+      ⭐ `factor` SITS BESIDE `FiledLayer` AND NEVER INSIDE IT, for the reason already
+      recorded at `FiledLayer/version`: that type is shared with `dependence`, and a document
+      type does not get to widen a shared type for its own convenience. A dependence end has
+      no composed unit to convert into.
+
+      ⛔ ABSENT MEANS ONE, EXACTLY, AND NEVER "UNKNOWN". The overwhelming majority of parts
+      need no conversion and must not be made to file a ceremonial 1. A conversion nobody has
+      measured is `absent reason="unmeasured"` INSIDE the `StatedClaim`, which is a different
+      document from a part with no `factor` element at all, and that difference is the whole
+      reason `Stated*` exists.
+
+      ⭐ `factor` IS A CLAIM RATHER THAN A NUMBER BECAUSE A CONVERSION IS ITSELF UNCERTAIN.
+      "One truckload is 22 tonnes" and "a month is 720 hours" are three-point claims like
+      everything else here; hours in a month is `[672, 720, 744]` and pretending otherwise
+      files a precision nobody has.
+
+      ⛔ THE PRODUCT IS COMPONENT-WISE, AND IT IS SAFE ONLY BECAUSE A FACTOR IS STRICTLY
+      POSITIVE. `low·low`, `mostLikely·mostLikely`, `high·high`. Interval multiplication in
+      general must consider four corner products, because a factor spanning zero reorders the
+      bounds — a conversion never does, so the general case is not owed here and must not be
+      assumed available elsewhere. ⛔ NOT REACHABLE BY A VALIDATOR.
+
+      ⛔⛔ A CONVERTED PART'S REMAINDER IS CONVERTED DIRECTLY AND NEVER RE-DERIVED FROM ITS
+      CONVERTED NAMEPLATE AND DEMAND, AND THE TWO GENUINELY DISAGREE. One factor multiplies
+      BOTH the nameplate and the demand of the same part, so those two converted intervals are
+      correlated; subtracting them with the bound reversal that INDEPENDENT quantities require
+      counts the factor's own spread twice. In the corpus this reads
+      `[1092.0, 2857.0, 4198.8]` re-derived against `[1414.0, 2857.0, 4085.6]` converted, and
+      they agree only at `mostLikely`. ⭐ It is the same correlated-components question
+      `Elimination` had to answer, arriving in a second place with the same answer.
+      ⛔ NOT REACHABLE BY A VALIDATOR.
+
+      ⚠️ AN ELIMINATION IS STATED AFTER CONVERSION, in the composed layer's unit. Parts arrive
+      in whatever their filers used; the sum they are removed from does not.
+
+      ⚠️ AND THE MODEL DOES NOT KNOW THAT TWO PARTS' FACTORS ARE THE SAME FACTOR. Two members
+      converting through one month have one real uncertainty filed twice, and a composer who
+      lets them disagree has published a document whose arithmetic nobody downstream can make
+      consistent. That consistency is the composer's, and nothing here takes it from them.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="layer"  type="asrt:FiledLayer"/>
+      <xs:element name="factor" type="pm:StatedClaim" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedEliminations">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? An unbounded `elimination` could
+      not answer it, and `Elimination`'s own annotation shows the model trying to answer
+      it one level too low: "`none` remains meaningful and is NOT the same as filing no
+      elimination at all: the first says somebody looked, the second says nothing."
+
+      ⭐ THAT SENTENCE IS RIGHT ABOUT THE DISTINCTION AND WAS PUTTING IT IN THE WRONG
+      PLACE. "Somebody looked and found none" is a fact about the SEARCH, and a search
+      has no `against` and no `between` — so filing it as an Elimination forced a
+      composer to name a quantity and a pair of layers for a relation they are asserting
+      does not exist. It belongs on the list, and it is here now.
+
+        elimination+                somebody looked and found these
+        absent reason="none"        ⭐ SOMEBODY LOOKED AND THE PARTS DO NOT DOUBLE COUNT.
+                                    The fused figure IS the sum, asserted rather than
+                                    assumed
+        absent reason="unmeasured"  nobody checked. The fused figure may be overstated
+                                    by an unknown amount and the composer says so
+        absent reason="notApplicable"  a one-part fusion. Nothing can be counted twice
+                                    between a set of one
+
+      ⭐⭐ AND IT RESCUES THE SUM RULE FROM ITS OWN LOOPHOLE. `Elimination` argues that
+      filed eliminations make the rule EXACT rather than a warning. That holds for a
+      fusion that files one; for a fusion that files none the checker was back to a
+      warning and did not know it, because an empty list and a checked-clean list are
+      the same bytes. Under `none` the rule is exact again: `Σ parts` must equal the
+      composed figure, full stop. Under `unmeasured` it is explicitly SUSPENDED, which
+      is what the unsized-elimination case already does one level down.
+
+      ⚠️ WHAT SURVIVES OF THE INNER `none`, AND IT IS NARROWER THAN IT WAS. An
+      `elimination` whose `quantity` is `absent reason="none"` now says something
+      specific: THIS NAMED PAIR of layers has a double-counting relation and it sizes to
+      zero this period. That is a real filing — a commission arrangement that existed all
+      year and was not exercised — and it is not the same as the search finding nothing.
+      ⛔ A composer who means "no double counting anywhere" and files a zero elimination
+      against an arbitrary pair has invented a relation, which is the error typed absence
+      exists to prevent, committed with a typed absence.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="elimination" type="asrt:Elimination" maxOccurs="unbounded"/>
+      <xs:element name="absent"      type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Fusion">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ ONE COMPOSED LAYER, AND WHICH FILED LAYERS WENT INTO IT.
+
+      ⛔⛔ NOT A COUPLING, AND THE DISTINCTION IS THE REASON THIS TYPE EXISTS RATHER THAN A
+      SECOND VERB ON `pm:Coupling`. A coupling is PEER TO PEER: two layers stay two, and one
+      layer's remainder moves with the other's. A fusion is PART TO WHOLE: the parts are
+      added and the composed layer is what they are parts of. ⭐ The tell is that fused
+      layers need not be coupled at all — a US delivery team and a Portuguese one serve
+      different customers in different countries and neither one's remainder moves when the
+      other hires, yet they are one layer of the group. Same KIND, not same INSTANCE.
+
+      ⭐⭐ AND THE MODEL'S OWN DEFINITION OF A LAYER DECIDES WHEN TO FUSE, WITH NOTHING
+      ADDED. `pm:Layer` says a layer is a place where a remainder can be held INDEPENDENTLY
+      of every other layer. So:
+
+      > FUSE ONLY WHAT IS FUNGIBLE.
+
+      If a unit of supply in one part can serve demand in another, the parts do not hold
+      their remainders independently and they are one layer. If it cannot, THEY ARE TWO
+      LAYERS, they belong in the stack as two, and a `pm:Coupling` between them is where any
+      observed interaction goes. ⛔ Fusing what is not fungible is exactly the error
+      `pm:Layer`'s fourth falsifier warns about, run backwards, and it produces a group
+      remainder smaller than reality by letting one member's excess cover another's
+      shortfall across a boundary nothing can cross.
+
+      ⚠️ THE FUNGIBILITY JUDGEMENT IS NOT REACHABLE BY A VALIDATOR AND NEVER WILL BE. It is
+      the composer's, it is what `observed` carries, and it is the claim a reader is entitled
+      to disagree with. That is the point: it is now written down where it can be disagreed
+      with, instead of being implicit in an arithmetic somebody performed once.
+
+      ⭐ ONE PART IS A LEGITIMATE FUSION AND NOT A DEGENERATE ONE. It says the composer read
+      that filed layer, decided it fuses with nothing, and carried it through — frequently
+      under a different name. ⛔⛔ THAT IS PRECISELY WHAT STOPS THE NAME COLLISION FROM
+      BECOMING A SILENT MERGE: two members can both file a layer called `compute` that are
+      not the same layer, and nothing in either filing says so. The composer says so, by
+      filing two one-part fusions under two names, and `observed` is REQUIRED so they have to
+      say WHY. A heuristic joining on the token would have merged them and reported success.
+
+      ⭐ A LAYER IN THE COMPOSED STACK WITH NO FUSION AT ALL IS THE THIRD STATE: one the
+      composer ORIGINATED. A group-level rota, a shared function, an elimination entry that
+      is a layer in its own right. Nothing here forces every composed layer to have come from
+      somewhere, because a parent is an entity too.
+
+      ⛔ THE FUSED FIGURE IS NOT CHECKED AGAINST THE PARTS. `Σ parts - Σ eliminations`
+      against the composed layer's own claim, per quantity, is arithmetic over documents that
+      are not this one. ⭐ `eliminations` IS REQUIRED so that a reader knows WHICH ARITHMETIC
+      is owed: under `absent reason="none"` the composed figure must equal `Σ parts` exactly,
+      under `unmeasured` no equality is owed at all, and an empty list used to mean either.
+      See StatedEliminations. ⛔ NOT REACHABLE BY A VALIDATOR: an implementer that can fetch the
+      parts owes the check, and one that cannot owes the reader the knowledge that it did not
+      happen, exactly as for `FiledLayer`. ⚠️ Nor are the UNITS checked, and that limit is
+      structural rather than lazy: the parts legitimately spell one unit two ways (`people`,
+      `pessoas`) and asserting they are one unit IS WHAT THE FUSION SAYS. A checker demanding
+      string equality would reject the case this type was built for.
+
+      ⛔⛔ THAT ARGUMENT COVERS RENAMING AND DOES NOT COVER CONVERTING, AND THE TWO WERE
+      CONFLATED UNTIL `Part/factor` SEPARATED THEM. `people` and `pessoas` are one unit spelled
+      twice and a fusion asserts exactly that. `GPU` and `GPU-hour` are NOT, and a composer who
+      adds them has performed the unaudited arithmetic `Elimination` exists to stop. See `Part`.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="name"        type="xs:token"/>
+      <xs:element name="part"        type="asrt:Part"        maxOccurs="unbounded"/>
+      <xs:element name="observed"     type="xs:string"/>
+      <xs:element name="eliminations" type="asrt:StatedEliminations"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Composition">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ A FILING ASSEMBLED OUT OF OTHER FILINGS, PLUS THE MAPPING SAYING WHAT CAME FROM
+      WHERE. It is `Dependence`'s genre — a third party who read filings they did not make —
+      carried one step further: this observer does not merely comment on the filings, THEY
+      FILE.
+
+      ⛔⛔ AND IT HAS TO ANSWER AN OBJECTION THIS SCHEMA ALREADY WROTE DOWN AGAINST ITSELF.
+      `Dependence` rejects one workaround in these words: "fabricating one `Stack` spanning
+      both entities asserts a shared system that does not exist and that NEITHER FILER COULD
+      ATTEST TO." Every word of that stands. ⭐ The escape is the clause it turns on: neither
+      FILER. A parent asserting that its members are one system is not fabricating a shared
+      system, it is exercising the standing that makes it a parent, and the same annotation
+      says so two paragraphs later — "a consolidation is a separate statement, not a footnote
+      in the subsidiary's accounts."
+
+      ⛔ SO THE CONDITION IS SHARP, AND A COMPOSITION FILED WITHOUT IT IS A FABRICATION: the
+      composed stack must be THE COMPOSER'S OWN CLAIM, signed, and never a reconstruction of
+      a system the members are asserted to already share. `witness` and `provenance/standing`
+      are what separate the two.
+
+      ⛔⛔⛔ AND THAT PARAGRAPH STOOD HERE FOR THREE REVISIONS WHILE `provenance` WAS
+      `minOccurs="0"`. The schema named the condition that separates a filing from a
+      fabrication and then permitted filings without it — which is `Coupling`'s shape a third
+      time, and `Absence`'s argument turned on this schema's own header. It is REQUIRED now,
+      and `Provenance/standing` is a required `StatedBorrowedTerm` beneath it, so a composer
+      with no standing to declare says so rather than being silent about the one field that
+      makes the document legitimate.
+
+      ⭐ WHY IT MATTERS MORE HERE THAN ANYWHERE ELSE: what a layer in this stack MEANS depends
+      on who filed it. A parent's composition asserts a group's system; an auditor's asserts
+      what an auditor holds. The same layer in the two documents is not the same claim, and
+      the standing is the only thing that says which you are reading. They are the same fields
+      for the same reason as on `Coverage`, `Run` and `Dependence`.
+
+      ⭐⭐ IT EMBEDS A WHOLE `pm:processModulus`, NOT A BARE `pm:stack`, AND THAT BUYS TWO
+      THINGS NEITHER OBVIOUS NOR FREE. The composed filing is EXTRACTABLE BYTE FOR BYTE and
+      readable by anything that reads the base schema with no knowledge of this one. And its
+      own identity constraints — `layerName`, `couplingFrom`, `couplingTo`, `drawLayer`,
+      `inducesLayer` — all validate inside its subtree, so the group's stack is checked
+      exactly as a standalone filing is, including its couplings.
+
+      ⭐⭐ AND `pm:Coupling` IS REACHABLE HERE AND NOWHERE ELSE IN A CONSOLIDATION. Its ends
+      are keyrefs into one stack, so a composition that carried only a mapping could not
+      express one. A parent observing that two of its composed layers move together has made
+      an observation NEITHER MEMBER COULD MAKE and both are entitled to see.
+
+      TWO REGIME DECLARATIONS, TWO DIFFERENT FACTS, and collapsing them loses the reason the
+      numbers disagree:
+
+        asrt:regime   what the MEMBERS reported under, RESTATED by this observer and dated
+                      by `observedAt`. Each `part` names which. Identical in role to
+                      `Dependence`'s, for the identical reason.
+        pm:regime     inside the embedded filing: what THE CONSOLIDATION ITSELF reports
+                      under, which is frequently neither member's framework.
+
+      ⭐ IT RECURSES, WITH NOTHING ADDED. A composition contains a filing, and `FiledLayer`
+      points at filings, so a segment composes members and a group composes segments. ⛔ The
+      alternative — a mapping-only document carrying no figures — cannot recurse usefully,
+      because the next level up would have to re-derive from the leaves every time and would
+      have no edition to pin.
+
+      ⚠️ WHERE A MAPPING-ONLY DOCUMENT WOULD STILL BE RIGHT, recorded so it is not mistaken
+      for an oversight: a CROSSWALK, published by somebody with standing to observe that two
+      layers are the same and NO standing to state anybody's group figures — a trade body
+      across its members, a researcher across a sector. That document has a different witness
+      test and would be a different root. It is not this one, and this one must not be filed
+      in its place.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="witness"    type="xs:token"/>
+      <xs:element name="observedAt" type="xs:date"/>
+      <xs:element name="provenance" type="pm:Provenance"/>
+      <xs:element name="regime"     type="pm:Regime"     minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="citation"   type="asrt:Citation" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="pm:processModulus"/>
+      <xs:element name="fusion"     type="asrt:Fusion"   maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="composition" type="asrt:Composition">
+    <xs:annotation><xs:documentation>
+      ⭐ ONE PARENT'S FILING, ASSEMBLED FROM ITS MEMBERS' FILINGS, SAYING WHICH LAYERS IT
+      TREATED AS ONE AND WHAT IT REMOVED TO DO SO.
+
+      ⛔ A composition with no fusions is an error rather than a composer who composed
+      nothing, for `coverage`'s reason: a document asserting a group stack while naming
+      nothing it was built from is an unsourced filing that looks sourced.
+
+      ⭐⭐ MORE IS CHECKED HERE THAN IN ANY OTHER CROSS-FILING DOCUMENT, AND THE REASON IS
+      THAT ONE END IS LOCAL. `dependence` has two foreign ends and can check only its regime
+      handles. A fusion has a foreign end and a LOCAL one — the composed layer is in this very
+      document — so `fusionName` is a real keyref into the embedded stack. A fusion naming a
+      layer the composer did not file is a schema error.
+
+      ⭐⭐⭐ AND `partIdentity` IS A CONSOLIDATION RULE A VALIDATOR CAN ACTUALLY ENFORCE,
+      which is rare enough here to be worth naming: ONE FILED LAYER CANNOT BE PART OF TWO
+      COMPOSED LAYERS OF THIS DOCUMENT. Consolidating the same member layer into two places
+      double counts it, and unlike almost everything else about a merge, both ends of that
+      check are inside one document. ⚠️ It is keyed on the filing's notation and the layer
+      name within it, which is `FiledLayer`'s position pair — NOT on `party`, since one
+      entity may legitimately contribute many layers.
+
+      ⛔⛔ THOSE FOUR WORDS — "OF THIS DOCUMENT" — ARE THE WHOLE QUALIFICATION, AND
+      COMPOSITIONS NEST, SO THEY BITE. A composition is itself a filing, so a segment
+      composes members and a group composes segments, with nothing added. At one level every
+      part is a leaf and this key is therefore complete. AT TWO LEVELS IT IS NOT: a holding
+      naming both `group#labour` and `member#labour` has two distinct notation/id pairs, the
+      member's layer is consolidated twice — once directly and once through the group — and
+      NOTHING HERE CATCHES IT. ⭐ The transitive rule is that NO LEAF LAYER IS REACHABLE
+      THROUGH TWO PATHS, and it is owed by whoever can fetch the chain, exactly like the
+      rule that a cited filing exists at all.
+      ⛔ NOT REACHABLE BY A VALIDATOR, and the reason is not squeamishness: the second path
+      runs through a document this one does not contain.
+
+      ⚠️ ONE WRINKLE FOR A FETCHER, since nesting makes it real. A layer sits at
+      `/pm:processModulus/pm:stack/pm:layer` in an ordinary filing and at
+      `/asrt:composition/pm:processModulus/pm:stack/pm:layer` in a composition. `notation` is
+      opaque and says which is which nowhere, so a resolver reads the root element to find
+      out. ⭐ That is the price of embedding the filing whole rather than inlining a bare
+      stack, and it buys the extractability and the inner keyrefs described on the type.
+
+      ⛔ THE FILINGS THEMSELVES ARE STILL NOT VALIDATED. Same as `dependence`, same reason,
+      and pretending otherwise with a keyref would reintroduce the defect both documents
+      exist to avoid.
+    </xs:documentation></xs:annotation>
+
+    <!-- ⚠️ Identity-constraint names share one symbol space per target namespace; `coverage`
+         and `dependence` have already spent `regimeId` and `dependenceRegimeId`. -->
+    <xs:key name="compositionRegimeId">
+      <xs:selector xpath="asrt:regime"/>
+      <xs:field    xpath="pm:id"/>
+    </xs:key>
+
+    <xs:keyref name="partRegime" refer="asrt:compositionRegimeId">
+      <xs:selector xpath="asrt:fusion/asrt:part/asrt:layer"/>
+      <xs:field    xpath="asrt:regime"/>
+    </xs:keyref>
+
+    <xs:keyref name="eliminationBetweenRegime" refer="asrt:compositionRegimeId">
+      <xs:selector xpath="asrt:fusion/asrt:eliminations/asrt:elimination/asrt:between"/>
+      <xs:field    xpath="asrt:regime"/>
+    </xs:keyref>
+
+    <!-- ⭐ The one reference in a cross-filing document that is genuinely local: the
+         composed layer is in this file, so a fusion cannot name a layer nobody filed. -->
+    <xs:key name="composedLayerName">
+      <xs:selector xpath="pm:processModulus/pm:stack/pm:layer"/>
+      <xs:field    xpath="pm:name"/>
+    </xs:key>
+
+    <xs:keyref name="fusionName" refer="asrt:composedLayerName">
+      <xs:selector xpath="asrt:fusion"/>
+      <xs:field    xpath="asrt:name"/>
+    </xs:keyref>
+
+    <!-- One composed layer, one fusion. Two fusions into one layer would be one fusion
+         whose parts were split across two elements, and `elimination` would have no domain. -->
+    <xs:key name="fusionTarget">
+      <xs:selector xpath="asrt:fusion"/>
+      <xs:field    xpath="asrt:name"/>
+    </xs:key>
+
+    <!-- ⭐⭐ No filed layer is consolidated twice. See the annotation. -->
+    <xs:key name="partIdentity">
+      <xs:selector xpath="asrt:fusion/asrt:part/asrt:layer"/>
+      <xs:field    xpath="asrt:filing/pm:notation"/>
+      <xs:field    xpath="asrt:filing/pm:id"/>
     </xs:key>
   </xs:element>
 

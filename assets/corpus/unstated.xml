@@ -39,6 +39,12 @@
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
+  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
+       before S-28 was repaired no document could say it. -->
+  <pm:notation>
+    <pm:uri>urn:example:filing:acme-platform:2026-08-30-margin</pm:uri>
+  </pm:notation>
+
   <!-- 1. reports under something, not yet named -->
   <pm:regime>
     <pm:id>r1</pm:id>
@@ -47,7 +53,9 @@
       <pm:absent>
         <pm:reason>unmeasured</pm:reason>
         <pm:note>the entity's size tier is unassigned, so the framework it selects is not yet known</pm:note>
-        <pm:provenance><pm:party>registrar</pm:party></pm:provenance>
+        <pm:provenance><pm:party>registrar</pm:party>
+          <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+        </pm:provenance>
       </pm:absent>
     </pm:framework>
     <!-- ⭐ AND THE CHART FOLLOWS THE FRAMEWORK. The tier picks the framework and the
@@ -81,6 +89,12 @@
   </pm:regime>
 
   <pm:stack>
+    <pm:scope>
+      <pm:scope>
+        <pm:extent>scoped</pm:extent>
+        <pm:basis>one layer, on purpose: this filing exists to show a subject that is not a supply, and the entity plainly has others</pm:basis>
+      </pm:scope>
+    </pm:scope>
     <pm:layer>
       <pm:name>margin-ratio</pm:name>
 
@@ -90,21 +104,39 @@
           <pm:mostLikely>22</pm:mostLikely>
           <pm:high>25</pm:high>
           <pm:unit>percent</pm:unit>
-          <pm:narrowsWhen>the quarter closes and actual cost lands</pm:narrowsWhen>
+          <pm:narrowsWhen>
+            <pm:narrowing>
+              <pm:condition>the quarter closes and actual cost lands</pm:condition>
+              <pm:kind>instrument</pm:kind>
+            </pm:narrowing>
+          </pm:narrowsWhen>
           <!-- what BOUNDS the range, which is a different question from what would narrow it -->
-          <pm:boundOrigin>policy</pm:boundOrigin>
+          <pm:boundOrigin>
+            <pm:origin>policy</pm:origin>
+          </pm:boundOrigin>
           <pm:provenance>
             <pm:party>finance</pm:party>
             <pm:enteredBy>analyst-04</pm:enteredBy>
             <pm:approvedBy>controller-01</pm:approvedBy>
             <pm:standing>
-              <pm:taxonomy>urn:example:assertion-standing:2026</pm:taxonomy>
-              <pm:value>reviewed-not-verified</pm:value>
+              <pm:term>
+                <pm:taxonomy>urn:example:assertion-standing:2026</pm:taxonomy>
+                <pm:value>reviewed-not-verified</pm:value>
+              </pm:term>
             </pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-30</pm:asOf>
         </pm:claim>
       </pm:demand>
+
+      <!-- 3. malformed for the same reason: a ratio has no demand that queues, so
+              asking whether it would wait is not a question with an answer -->
+      <pm:timeSlack>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>a ratio is not served to anybody, so nobody waits for it</pm:note>
+        </pm:absent>
+      </pm:timeSlack>
 
       <pm:supply>
         <pm:label>a ratio, which is not a supply</pm:label>
@@ -113,7 +145,16 @@
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:amount>
 
-          <!-- 3. the axis does not apply -->
+          <!-- 4. the question is malformed rather than unanswered: there is no
+                  committed amount here, so there is nobody to ask about changing it -->
+          <pm:amountOrigin>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio commits no amount, so no authority sets how much of it is held</pm:note>
+            </pm:absent>
+          </pm:amountOrigin>
+
+          <!-- 5. the axis does not apply -->
           <pm:divisibility>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -121,13 +162,22 @@
             </pm:absent>
           </pm:divisibility>
 
-          <!-- 4. not yet established, and saying so beats guessing -->
-          <pm:admitsInterference>
+          <!-- 6. not yet established, and saying so beats guessing -->
+          <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
               <pm:note>nobody has determined whether this can be driven past its rating</pm:note>
             </pm:absent>
-          </pm:admitsInterference>
+          </pm:capacitySlack>
+
+          <!-- 7. and the third buffer's condition, declined for the same reason as
+                  the others: there is no output here to hold ahead of anything -->
+          <pm:inventorySlack>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>a ratio produces nothing that could be built in advance</pm:note>
+            </pm:absent>
+          </pm:inventorySlack>
         </pm:nameplate>
 
         <pm:jagged>
@@ -148,5 +198,11 @@
         </pm:absent>
       </pm:remainder>
     </pm:layer>
+    <pm:couplings>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-layer stack. There is no pair to couple, so the question has no population here</pm:note>
+      </pm:absent>
+    </pm:couplings>
   </pm:stack>
 </pm:processModulus>

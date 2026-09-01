@@ -309,7 +309,7 @@ dependencies = [
 
 [[package]]
 name = "process-modulus"
-version = "0.0.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "quick-xml",

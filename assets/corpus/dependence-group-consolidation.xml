@@ -46,8 +46,10 @@
     <pm:enteredBy>group-controller</pm:enteredBy>
     <pm:approvedBy>group-cfo</pm:approvedBy>
     <pm:standing>
-      <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
-      <pm:value>reviewed-not-audited</pm:value>
+      <pm:term>
+        <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
+        <pm:value>reviewed-not-audited</pm:value>
+      </pm:term>
     </pm:standing>
   </asrt:provenance>
 
@@ -148,13 +150,25 @@
         <pm:mostLikely>0.3</pm:mostLikely>
         <pm:high>0.6</pm:high>
         <pm:unit>share of the fall in the parent's labour remainder</pm:unit>
-        <pm:narrowsWhen>the enterprise contract's own draw is separated out, which needs
-                        a quarter in which only one of the two changes</pm:narrowsWhen>
+        <pm:narrowsWhen>
+          <pm:narrowing>
+            <pm:condition>the enterprise contract's own draw is separated out, which needs a quarter in which only one of the two changes</pm:condition>
+            <pm:kind>instrument</pm:kind>
+          </pm:narrowing>
+        </pm:narrowsWhen>
+        <pm:boundOrigin>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+            <pm:note>nobody has asked what would set the edge of a dependence's strength</pm:note>
+          </pm:absent>
+        </pm:boundOrigin>
         <pm:provenance>
           <pm:party>Acme Group</pm:party>
           <pm:standing>
-            <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
-            <pm:value>reviewed-not-audited</pm:value>
+            <pm:term>
+              <pm:taxonomy>urn:example:assurance:standing</pm:taxonomy>
+              <pm:value>reviewed-not-audited</pm:value>
+            </pm:term>
           </pm:standing>
         </pm:provenance>
         <pm:asOf>2026-08-30</pm:asOf>

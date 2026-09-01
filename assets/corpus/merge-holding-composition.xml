@@ -1,0 +1,1261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  THE SECOND LEVEL. Read after merge-group-composition.xml, which is the filing THIS one
+  is composed from — and which is itself composed from two member filings. Illustrative
+  figures.
+
+  ⭐⭐⭐ COMPOSITIONS NEST, WITH NOTHING ADDED TO THE SCHEMA. A composition contains a
+  filing, and `FiledLayer` points at filings, so a group composes members and a holding
+  composes the group. Every part below names a layer inside another COMPOSITION's embedded
+  stack rather than inside a member's, and no element here is different for it.
+
+  ⭐ WHAT ONLY THE SECOND LEVEL CAN SHOW:
+
+    staff              A FUSION THAT OVERRULES ITS OWN PART. The group filed a COUPLING
+                       between `labour` and `on-call` and kept them as two layers, and it
+                       was right to under its own rostering. This holding runs ONE ROSTER
+                       across both, so at this level they are one layer. ⛔ The fusion
+                       therefore DESTROYS a filed observation, and says so rather than
+                       quietly dropping it.
+
+    staff/timeSlack    ⭐⭐ UNMEASURED, AND THE PARTS DISAGREE. `labour` survives a queue
+                       for an unmeasured while; `on-call` does not survive at all. A fused
+                       slack is bounded by the SUM of its parts', and one unsized part makes
+                       that sum unsized — it is not the minimum, and "strictest wins" was a
+                       rule the old boolean made look principled. ⚠️ The disagreement is
+                       still the strongest argument against this fusion, left visible.
+
+    staff              TWO ELIMINATIONS, BOTH `none`. Nothing double counts between a
+                       delivery team and a rota staffed separately, and saying so is not
+                       the same as filing nothing.
+
+    the coupling       ⭐⭐⭐ INHERITED AND ATTENUATED. The group observed `labour` moving
+                       with `shift-line` at [0.10, 0.22, 0.35]. Here `labour` is 10 of
+                       `staff`'s 12, so relief applied to `staff` may land on the rota
+                       instead, and the same dependence CANNOT be as strong. Re-filing it
+                       at the group's own number would have been unexamined.
+
+  ⛔⛔ AND ONE THING THIS DOCUMENT COULD DO WRONG THAT NOTHING WOULD CATCH. `partIdentity`
+  stops one filed layer being consolidated into two composed layers OF ONE DOCUMENT. If a
+  part below named `us-member#labour` directly, that layer would be consolidated twice —
+  once here, once inside the group — and the two notation/id pairs differ, so the key sees
+  nothing. The transitive rule is that NO LEAF IS REACHABLE THROUGH TWO PATHS, and it is
+  owed by whoever can fetch the chain. `tests/merge.rs` fetches it.
+-->
+<asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
+                  xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>holding-company</asrt:witness>
+  <asrt:observedAt>2026-08-31</asrt:observedAt>
+  <asrt:provenance>
+    <pm:party>holding-company</pm:party>
+    <pm:standing>
+      <pm:term>
+        <pm:taxonomy>urn:example:company-law:relationships</pm:taxonomy>
+        <pm:value>parent-undertaking</pm:value>
+      </pm:term>
+    </pm:standing>
+    <pm:note>controls the group; the second-level consolidation is this party's to file</pm:note>
+  </asrt:provenance>
+
+  <!-- ⭐ AT THE SECOND LEVEL A PART CITES THE CONSOLIDATION'S REGIME, NOT THE MEMBERS'.
+       The filing this document reads reported under `ifrs-consolidated`, which is neither
+       member's framework, and restating the members' regimes here would be restating facts
+       about filings this document does not read. -->
+  <asrt:regime>
+    <pm:id>group</pm:id>
+    <pm:framework>
+      <pm:term>
+        <pm:taxonomy>urn:example:ifrs:standards</pm:taxonomy>
+        <pm:value>IFRS-2026</pm:value>
+      </pm:term>
+    </pm:framework>
+    <pm:chart>
+      <pm:term>
+        <pm:taxonomy>urn:example:group:consolidated:chart-of-accounts</pm:taxonomy>
+        <pm:value>group-2026</pm:value>
+      </pm:term>
+    </pm:chart>
+  </asrt:regime>
+
+  <asrt:citation>
+    <asrt:instrument>
+      <pm:taxonomy>urn:example:ifrs:standards</pm:taxonomy>
+      <pm:value>IFRS-10</pm:value>
+    </asrt:instrument>
+    <asrt:clause>B86</asrt:clause>
+    <asrt:version>2026</asrt:version>
+  </asrt:citation>
+
+  <!-- ==================================================================================
+       THE HOLDING'S OWN FILING. Identical in kind to the group's, and to a member's.
+       ================================================================================== -->
+  <pm:processModulus>
+
+    <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
+         before S-28 was repaired no document could say it. -->
+    <pm:notation>
+      <pm:uri>urn:example:filing:holding-company:2026-08-31</pm:uri>
+    </pm:notation>
+
+    <pm:regime>
+      <pm:id>holding-consolidated</pm:id>
+      <pm:framework>
+        <pm:term>
+          <pm:taxonomy>urn:example:ifrs:standards</pm:taxonomy>
+          <pm:value>IFRS-2026</pm:value>
+        </pm:term>
+      </pm:framework>
+      <pm:chart>
+        <pm:term>
+          <pm:taxonomy>urn:example:holding:consolidated:chart-of-accounts</pm:taxonomy>
+          <pm:value>holding-2026</pm:value>
+        </pm:term>
+      </pm:chart>
+      <pm:note>the same framework the group reports under, on the holding's own chart</pm:note>
+    </pm:regime>
+
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>what the holding company consolidates at the second level. The group filing below holds layers this level does not carry forward</pm:basis>
+        </pm:scope>
+      </pm:scope>
+
+      <!-- ============================================================
+           STAFF. The group's `labour` fused with the group's `on-call`.
+           ⛔ AND THE GROUP FILED A COUPLING BETWEEN THEM. See the fusion.
+           ============================================================ -->
+      <pm:layer>
+        <pm:name>staff</pm:name>
+
+        <!-- [10.4, 11.5, 13.0] + [2.3, 2.8, 3.4], nothing eliminated. -->
+        <pm:demand>
+          <pm:claim>
+            <pm:low>12.7</pm:low>
+            <pm:mostLikely>14.3</pm:mostLikely>
+            <pm:high>16.4</pm:high>
+            <pm:unit>people</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:demand>
+
+        <!-- ⛔⛔⛔ THE PARTS DISAGREE, AND A SLACK MAKES THAT HARDER RATHER THAN EASIER.
+             `labour` survives a queue for an unmeasured while; `on-call` does not survive
+             being held at all. Under the old boolean the answer looked principled — take
+             the STRICTEST, so false wins — and that rule was an artefact of the type. A
+             slack is a quantity, so the fused figure is bounded ABOVE by the sum of its
+             parts' (you cannot get more give than the parts have) and bounded below by
+             nothing useful. One part unsized makes the sum unsized, exactly as an unsized
+             elimination makes a reconciliation uncomputable rather than satisfied.
+
+             ⭐ TAKING THE MINIMUM WOULD HAVE UNDERSTATED IT AND WOULD HAVE BEEN WRONG.
+             Most of this demand is delivery work that does sit in a queue; only the
+             escalations perish on contact. Filing `none` here would say the whole fused
+             layer perishes, which is false about the larger part of it.
+
+             ⚠️ THIS REMAINS THE BEST ARGUMENT AGAINST THIS FUSION and it is left where a
+             reader will find it. Two parts that differ on a slack are two parts that
+             behave differently under the same relief. -->
+        <pm:timeSlack>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+            <pm:note>the parts disagree — delivery work survives a queue, escalations do not — and nobody has measured the fused figure. It is bounded above by the sum of the parts' slacks, which is itself unsized</pm:note>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:absent>
+        </pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>one roster across delivery and the out-of-hours rota</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>12</pm:low>
+                <pm:mostLikely>12</pm:mostLikely>
+                <pm:high>12</pm:high>
+                <pm:unit>people</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent>
+                    <pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note>
+                  </pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>derived</pm:reason>
+                    <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>1</pm:low>
+                      <pm:mostLikely>1</pm:mostLikely>
+                      <pm:high>1</pm:high>
+                      <pm:unit>people</pm:unit>
+                      <pm:narrowsWhen>
+                        <pm:absent>
+                          <pm:reason>notApplicable</pm:reason>
+                          <pm:note>there is no range here to tighten</pm:note>
+                        </pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent>
+                          <pm:reason>derived</pm:reason>
+                          <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        </pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent>
+                    <pm:reason>notApplicable</pm:reason>
+                    <pm:note>`people` is a stock with no period</pm:note>
+                  </pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+              </pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+              </pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <!-- ⭐ THE WEAKEST INSTRUMENT PROPAGATES TWO LEVELS. Both members file this
+                 draw unmeasured, so the group could not state one, so neither can this. -->
+            <pm:draw>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>unmeasured at both levels below; a blank does not become a number by rising</pm:note>
+                <pm:provenance><pm:party>holding-company</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>there is no valuation here to have a basis</pm:note>
+              </pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>interference</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <!-- The one instrument in the whole chain, and it is still one jurisdiction's
+                 hours bank, two consolidations up. No `party`: see the group filing. -->
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.3</pm:low>
+                    <pm:mostLikely>0.7</pm:mostLikely>
+                    <pm:high>1.4</pm:high>
+                    <pm:unit>people</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>unmeasured</pm:reason>
+                        <pm:note>nobody has said what would tighten this range</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>none</pm:reason>
+                        <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <!-- [0.1, 0.8, 1.6] from `labour` plus [0.3, 0.8, 1.4] from `on-call`. -->
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>people</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.4</pm:low>
+                    <pm:mostLikely>1.6</pm:mostLikely>
+                    <pm:high>3.0</pm:high>
+                    <pm:unit>people</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>unmeasured</pm:reason>
+                        <pm:note>nobody has said what would tighten this range</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>none</pm:reason>
+                        <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <!-- derived: |12 - [12.7, 14.3, 16.4]| = [0.7, 2.3, 4.4] people, and the two
+                 shares sum to exactly that. ⭐ At the mode the holding accounts for 0.7 of
+                 2.3 people across two countries, two consolidations and one instrument. -->
+            <pm:quantity>
+              <pm:absent>
+                <pm:reason>derived</pm:reason>
+                <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+              </pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <!-- ============================================================
+           SHIFT-LINE. Carried through from the group unchanged, so that
+           the coupling below has an unfused end to attach to.
+           ============================================================ -->
+      <pm:layer>
+        <pm:name>shift-line</pm:name>
+
+        <pm:demand>
+          <pm:claim>
+            <pm:low>11.0</pm:low>
+            <pm:mostLikely>12.7</pm:mostLikely>
+            <pm:high>14.4</pm:high>
+            <pm:unit>shifts per week</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>group-parent</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:demand>
+        <!-- ⭐⭐⭐ ABSORBER `time`, AND IT WAS MISFILED AS `capacity` UNTIL THE SLACK MADE
+             THE DIFFERENCE VISIBLE. The line is oversubscribed: work queues for a slot and
+             some of the callers leave. That is the time buffer doing the absorbing, not
+             spare capacity — there is no spare, nameplate and draw are both 10.
+
+             ⛔⛔ AN EARLIER DRAFT SAID "most of it eventually runs", AND THAT SENTENCE PUT
+             THE WORK ON THE WRONG SIDE OF THE LINE. The remainder is `nameplate - demand`.
+             Work that runs late still RUNS — it is inside the nameplate's throughput and is
+             not part of the remainder at all. `HolderKind` settles it: `customer` is "no
+             transaction occurred", so what this share holds is demand that queued, bore the
+             wait, and left without ever being served.
+             ⚠️ WHICH MEANS THIS DOCUMENT CANNOT DISTINGUISH THAT SHARE FROM `unrealised`,
+             and neither can any reader of it. Both are demand that went unserved; the
+             difference is whether a customer experienced the wait first, and that is a fact
+             about a period this filing does not cover. Said here rather than left for
+             somebody to discover in the arithmetic. -->
+
+        <!-- ⭐ AND IT IS NO LONGER THE CORPUS'S ONLY `time` ABSORBER. The group filing this
+             one carries through said `capacity` for a pass while this one said `time` — one
+             layer, two documents, two buffers, and no test compared them. Both now say
+             `time`.
+             ⭐ A JOB WAITS ABOUT TWO AND A HALF SHIFTS BEFORE THE CALLER GOES ELSEWHERE,
+             measured off the scheduling queue across the same six quarters as the
+             coupling below. That figure bounds what the queue can be said to have taken:
+             the `customer` share of 1.7 fits inside it, and the 1.0 that did not fit is
+             filed as `unrealised`.
+             ⚠️ WHICH IS AN IMPLICATION WORTH NOTICING RATHER THAN A RULE. `unrealised`
+             is what overflowed every buffer, so a sized slack starts to EXPLAIN the
+             unrealised share instead of merely recording it.
+
+             ⭐⭐⭐ AND HERE IS THE ONE PLACE IN THIS CORPUS THE DURATION-TO-QUANTITY
+             BRIDGE IS SHOWN RATHER THAN DONE SILENTLY, which `Nameplate/inventorySlack`
+             complains about next door: "the multiplication is owed and it is invisible
+             once done". What was MEASURED above is a WAIT. What this field takes is a
+             quantity in the layer's unit. The conversion here is the identity, and the
+             reason is worth having:
+
+               patience          2.5 shifts of wait = 0.25 week   (line runs 10/week)
+               queue depth       10 x 0.25          = 2.5 shifts
+               excess arriving   12.7 - 10          = 2.7 shifts per week
+               departures        customer 1.7 + unrealised 1.0 = 2.7   ** exactly **
+
+             A wait measured in units of SERVICE TIME already is the work sitting ahead
+             of you, because the wait is the time to clear it. So 2.5 shifts of waiting
+             and 2.5 shifts of queue are one number, and the multiplication is by one.
+
+             ⛔ THIS LAYER ALSO REFUTES A CLAIM MADE AGAINST IT AND THE REFUTATION IS
+             WORTH KEEPING. A findings pass argued that demand of [11.0, 12.7, 14.4]
+             against a 10-shift line is incoherent because at rho > 1 a queue grows
+             without bound. That holds for a queue with INFINITE PATIENCE. This one has
+             a patience, filed and `contractual`, so callers leave — and a reneging
+             queue is STABLE at any rho. The backlog grows until the wait reaches 2.5
+             shifts and then demand departs at the rate the excess arrives, which is
+             the 2.7 above. Nothing here is failing. The line is short, the queue sits
+             at its patience, and the shortfall leaves as departures, which is what the
+             two holders below record. -->
+        <pm:timeSlack>
+          <pm:claim>
+            <pm:low>1.0</pm:low>
+            <pm:mostLikely>2.5</pm:mostLikely>
+            <pm:high>4.0</pm:high>
+            <pm:unit>shifts per week</pm:unit>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>queue departures are dated rather than inferred from the booking log</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <!-- ⭐⭐ `contractual`, AND IT IS THE MORE INTERESTING OF THE TWO ORIGINS IN
+                 THIS CORPUS. Callers do not leave when the work stops being useful to
+                 them; they leave when the booking terms let them, and those terms are a
+                 negotiation. So this figure is a LEVER, unlike `capability`'s shelf life
+                 next door, which is `intrinsic` and is not one.
+                 ⚠️ WHICH MEANS THE SAME NUMBER FILED TWICE WOULD MEAN OPPOSITE THINGS,
+                 and nothing but this element distinguishes them: a physical patience is a
+                 fact about the world, a contracted one is a term somebody agreed to and
+                 could agree differently. -->
+            <pm:boundOrigin>
+              <pm:origin>contractual</pm:origin>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>the shared shift line, which there is one of</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>10</pm:low>
+                <pm:mostLikely>10</pm:mostLikely>
+                <pm:high>10</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent>
+                    <pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note>
+                  </pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>derived</pm:reason>
+                    <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>1</pm:low>
+                      <pm:mostLikely>1</pm:mostLikely>
+                      <pm:high>1</pm:high>
+                      <pm:unit>shifts per week</pm:unit>
+                      <pm:narrowsWhen>
+                        <pm:absent>
+                          <pm:reason>notApplicable</pm:reason>
+                          <pm:note>there is no range here to tighten</pm:note>
+                        </pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent>
+                          <pm:reason>derived</pm:reason>
+                          <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
+                        </pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <!-- ⭐⭐⭐ CARRIED THROUGH, AND IT WAS DROPPED UNTIL `window` BECAME REQUIRED.
+                   `pm:Divisibility/window` says a window "IS CARRIED THROUGH A FUSION AND NEVER
+                   SUMMED", because two members naming one machine file one calendar between
+                   them. The group files five days; this level fuses that one layer, one part,
+                   unchanged — and filed nothing, which under the old optional element was
+                   byte-identical to a line that runs seven days. -->
+                <pm:window>
+                  <pm:quantum>
+                    <pm:size>
+                      <pm:claim>
+                        <pm:low>5</pm:low>
+                        <pm:mostLikely>5</pm:mostLikely>
+                        <pm:high>5</pm:high>
+                        <pm:unit>days</pm:unit>
+                        <pm:narrowsWhen>
+                          <pm:absent>
+                            <pm:reason>notApplicable</pm:reason>
+                            <pm:note>there is no range here to tighten</pm:note>
+                          </pm:absent>
+                        </pm:narrowsWhen>
+                        <pm:boundOrigin>
+                          <pm:absent>
+                            <pm:reason>derived</pm:reason>
+                            <pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note>
+                          </pm:absent>
+                        </pm:boundOrigin>
+                      </pm:claim>
+                    </pm:size>
+                    <pm:origin>policy</pm:origin>
+                  </pm:quantum>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>the line can be run above its rated shifts; nobody has measured how far before it breaks</pm:note>
+              </pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>output can be run ahead into stock; nobody has counted how much the floor holds</pm:note>
+              </pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>10</pm:low>
+                <pm:mostLikely>10</pm:mostLikely>
+                <pm:high>10</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent>
+                    <pm:reason>notApplicable</pm:reason>
+                    <pm:note>there is no range here to tighten</pm:note>
+                  </pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>none</pm:reason>
+                    <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+                <pm:provenance><pm:party>group-parent</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>a scheduled physical quantity has no accounting measurement basis</pm:note>
+              </pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>interference</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>time</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>customer</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.6</pm:low>
+                    <pm:mostLikely>1.7</pm:mostLikely>
+                    <pm:high>2.9</pm:high>
+                    <pm:unit>shifts per week</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>unmeasured</pm:reason>
+                        <pm:note>nobody has said what would tighten this range</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>none</pm:reason>
+                        <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>unrealised</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.4</pm:low>
+                    <pm:mostLikely>1.0</pm:mostLikely>
+                    <pm:high>1.5</pm:high>
+                    <pm:unit>shifts per week</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>unmeasured</pm:reason>
+                        <pm:note>nobody has said what would tighten this range</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>none</pm:reason>
+                        <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent>
+                <pm:reason>derived</pm:reason>
+                <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+              </pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <!-- ==========================================================================
+           ⭐⭐⭐ THE FUSION THAT CONVERTS, AND IT IS THE CASE THE GROUP COULD NOT DO.
+           `compute-us` is metered per reserved card and `compute-pt` by the month.
+           `4.4 GPU + 545 GPU-hour` IS NOT A SUM, so the group filed two one-part
+           fusions under two names — correct, and as far as it could go without a
+           factor. The holding meters everything in GPU-hour and carries the factor
+           that says so, where a reader can disagree with it.
+           ========================================================================== -->
+      <pm:layer>
+        <pm:name>compute</pm:name>
+
+        <!-- [3.1, 4.4, 6.0] GPU x [672, 720, 744] = [2083.2, 3168.0, 4464.0], plus
+             pt's [430, 545, 690] = [2513.2, 3713.0, 5154.0], less the cross-charge
+             [40, 90, 150] taken component-wise = [2473.2, 3623.0, 5004.0]. -->
+        <pm:demand>
+          <pm:claim>
+            <pm:low>2473.2</pm:low>
+            <pm:mostLikely>3623.0</pm:mostLikely>
+            <pm:high>5004.0</pm:high>
+            <pm:unit>GPU-hour</pm:unit>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:demand>
+        <!-- both parts say false and an inference request that waits was not served -->
+        <pm:timeSlack>
+          <pm:absent>
+            <pm:reason>none</pm:reason>
+            <pm:note>an inference request that waits until tomorrow was not served. At this layer’s granularity the demand does not survive being held at all</pm:note>
+          </pm:absent>
+        </pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>reserved inference capacity, metered in card-hours across both members</pm:label>
+          <pm:nameplate>
+            <!-- ⭐⭐ CONVERTING A POINT NAMEPLATE PRODUCES A RANGE ONE, AND THIS IS THE
+                 FIRST IN THE CORPUS. 8 GPU is exact; 8 GPU FOR A MONTH is not, because
+                 a month is [672, 720, 744] hours. 8 x that = [5376, 5760, 5952], plus
+                 pt's flat 720. The uncertainty is real and it belongs to the metering,
+                 not to the cards. -->
+            <pm:amount>
+              <pm:claim>
+                <pm:low>6096.0</pm:low>
+                <pm:mostLikely>6480.0</pm:mostLikely>
+                <pm:high>6672.0</pm:high>
+                <pm:unit>GPU-hour</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent>
+                    <pm:reason>unmeasured</pm:reason>
+                    <pm:note>nobody has said what would tighten this range</pm:note>
+                  </pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>derived</pm:reason>
+                    <pm:note>this figure was converted by `asrt:Part/factor`, whose own bounds are the calendar's; the author of this edge is the author of that one and is stated there</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+                <pm:provenance><pm:party>holding-company</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <!-- ⛔⛔ TWO LUMPY SUPPLIES WHOSE QUANTA DO NOT ALIGN HAVE NO COMPOSED
+                 QUANTUM, AND THE SCHEMA HAS NO WAY TO SAY THAT. The US block is 8 GPU
+                 = [5376, 5760, 5952] GPU-hour and the Portuguese one is a flat 720
+                 GPU-hour. Neither divides the other, and the composed supply does not
+                 come in whole units of anything. `unmeasured` is the honest filing and
+                 it is not quite the truth: nobody failed to measure this, it has no
+                 answer. Filing a lump here would invent one.
+                 ⭐ AND THE RULES INTERLOCK WITH NO HELP: with the quantum absent, the
+                 remainder is no longer `derived` and must be STATED, which is what
+                 forces the composer to publish the figure below rather than leave a
+                 receiver to compute the wrong one. -->
+            <pm:divisibility>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>an 8 GPU block and a 720 GPU-hour block share no whole unit; the composed supply has no quantum and this schema cannot say so</pm:note>
+                <pm:provenance><pm:party>holding-company</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>a reserved card cannot be run above its rating at any price</pm:note>
+              </pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>a reserved card-hour not drawn is gone; there is nothing to build ahead</pm:note>
+              </pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <!-- [4.4, 4.4, 4.4] x [672, 720, 744] = [2956.8, 3168.0, 3273.6], plus 545.
+                 ⭐ A POINT DRAW CONVERTS INTO A RANGE FOR THE SAME REASON THE NAMEPLATE
+                 DOES: the cards drawn are exact, the hours they were drawn for are not. -->
+            <pm:draw>
+              <pm:claim>
+                <pm:low>3501.8</pm:low>
+                <pm:mostLikely>3713.0</pm:mostLikely>
+                <pm:high>3818.6</pm:high>
+                <pm:unit>GPU-hour</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:absent>
+                    <pm:reason>unmeasured</pm:reason>
+                    <pm:note>nobody has said what would tighten this range</pm:note>
+                  </pm:absent>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>derived</pm:reason>
+                    <pm:note>this figure was converted by `asrt:Part/factor`, whose own bounds are the calendar's; the author of this edge is the author of that one and is stated there</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+                <pm:provenance><pm:party>holding-company</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>metered card-hours have no accounting measurement basis</pm:note>
+              </pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>1414.0</pm:low>
+                    <pm:mostLikely>2857.0</pm:mostLikely>
+                    <pm:high>4085.6</pm:high>
+                    <pm:unit>GPU-hour</pm:unit>
+                    <pm:narrowsWhen>
+                      <pm:absent>
+                        <pm:reason>unmeasured</pm:reason>
+                        <pm:note>nobody has said what would tighten this range</pm:note>
+                      </pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent>
+                        <pm:reason>none</pm:reason>
+                        <pm:note>nothing sets this bound. It is how much of the remainder this holder was observed to take</pm:note>
+                      </pm:absent>
+                    </pm:boundOrigin>
+                    <pm:provenance><pm:party>holding-company</pm:party>
+                      <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                    </pm:provenance>
+                    <pm:asOf>2026-08-31</pm:asOf>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <!-- ⛔⛔⛔ STATED, AND IT DOES NOT EQUAL WHAT A RECEIVER WOULD DERIVE FROM
+                 THE NAMEPLATE AND DEMAND ABOVE. THAT IS NOT AN ERROR IN EITHER FIGURE.
+
+                 One factor multiplies BOTH the US nameplate and the US demand, so the
+                 two converted intervals are CORRELATED. Subtracting them with the bound
+                 reversal that independent quantities require pairs a 28-day nameplate
+                 against a 31-day demand — a month that did not happen — and counts the
+                 factor's spread twice:
+
+                   re-derived from the converted inputs   [1092.0, 2857.0, 4198.8]
+                   each part's remainder converted        [1414.0, 2857.0, 4085.6]
+
+                 They agree at `mostLikely` and nowhere else, because that is the one
+                 point where both readings use the same month. The second is the claim.
+
+                 Part-wise: (8 - [3.1, 4.4, 6.0]) = [2.0, 3.6, 4.9] GPU x [672,720,744]
+                 = [1344.0, 2592.0, 3645.6], plus pt's [30, 175, 290] = [1374.0, 2767.0,
+                 3935.6], plus the [40, 90, 150] of demand the cross-charge removed,
+                 which is spare capacity that was counted as consumed twice.
+
+                 ⭐ It is the same correlated-components question `Elimination` answered,
+                 arriving in a second place with the same answer. -->
+            <pm:quantity>
+              <pm:claim>
+                <pm:low>1414.0</pm:low>
+                <pm:mostLikely>2857.0</pm:mostLikely>
+                <pm:high>4085.6</pm:high>
+                <pm:unit>GPU-hour</pm:unit>
+                <pm:narrowsWhen>
+                  <pm:narrowing>
+                    <pm:condition>the two members meter one month on one calendar</pm:condition>
+                    <pm:kind>instrument</pm:kind>
+                  </pm:narrowing>
+                </pm:narrowsWhen>
+                <pm:boundOrigin>
+                  <pm:absent>
+                    <pm:reason>derived</pm:reason>
+                    <pm:note>the bounds follow from this layer's demand and nameplate, whose own origins are stated there</pm:note>
+                  </pm:absent>
+                </pm:boundOrigin>
+                <pm:provenance><pm:party>holding-company</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+                </pm:provenance>
+                <pm:asOf>2026-08-31</pm:asOf>
+              </pm:claim>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <!-- ==========================================================================
+           ⭐⭐⭐ THE INHERITED COUPLING, WEAKER THAN THE ONE IT CAME FROM.
+           ========================================================================== -->
+      <pm:couplings>
+        <pm:coupling>
+          <pm:from>staff</pm:from>
+          <pm:to>shift-line</pm:to>
+          <pm:observed>
+            the group filed this dependence between `labour` and `shift-line` at
+            [0.10, 0.22, 0.35]. It survives the fusion of `labour` into `staff` and it CANNOT
+            survive at full strength: `labour` is 10 of `staff`'s 12, so relief applied to
+            `staff` lands on the rota roughly one time in six and moves the line not at all
+            when it does. The bound is five sixths of the group's figure; re-observed here
+            over the same six quarters against the fused roster, it comes in below that.
+            ⚠️ A coupling copied up unchanged would have been a number nobody re-took.
+          </pm:observed>
+          <pm:strength>
+            <pm:claim>
+              <pm:low>0.06</pm:low>
+              <pm:mostLikely>0.15</pm:mostLikely>
+              <pm:high>0.26</pm:high>
+              <pm:unit>share of the shift-line remainder removed</pm:unit>
+              <pm:narrowsWhen>
+                <pm:narrowing>
+                  <pm:condition>the fused roster is varied deliberately across two more quarters</pm:condition>
+                  <pm:kind>experiment</pm:kind>
+                </pm:narrowing>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>unmeasured</pm:reason>
+                  <pm:note>nobody has asked what would set the edge of a coupling's strength</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
+              <pm:provenance><pm:party>holding-company</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+              </pm:provenance>
+              <pm:asOf>2026-08-31</pm:asOf>
+            </pm:claim>
+          </pm:strength>
+        </pm:coupling>
+      </pm:couplings>
+
+    </pm:stack>
+  </pm:processModulus>
+
+  <!-- ==================================================================================
+       THE MAPPING. Every part names a layer inside ANOTHER COMPOSITION's embedded stack.
+       ⚠️ A resolver reads the root element to know whether a `notation` resolves to a
+       plain filing or to a composition, because the layer sits one level deeper in the
+       second. `notation` is opaque and says so nowhere.
+       ================================================================================== -->
+
+  <asrt:fusion>
+    <asrt:name>staff</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+          <pm:id>labour</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-08-31</asrt:version>
+        <asrt:regime>group</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+          <pm:id>on-call</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-08-31</asrt:version>
+        <asrt:regime>group</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+
+    <!-- ⛔⛔ THIS FUSION DESTROYS A FILED OBSERVATION AND OWES A REASON. It is the one
+         case where a composer contradicts a filing it is built from, in the open. -->
+    <asrt:observed>
+      the group filed a COUPLING between these two layers and kept them apart, and under its
+      own rostering it was right: an extra engineer on the rota delivered no features,
+      because the two rosters were separate and a name on one could not appear on the other.
+      This holding runs ONE ROSTER. A name moves between delivery and the rota inside a
+      fortnight, and has forty-one times this year. At this level they are fungible and
+      therefore one layer, and the group's coupling has no upper counterpart — it is
+      absorbed, not refuted. ⚠️ The honest argument against this fusion is in the layer
+      above: the parts disagree on `timeSlack`, so the fused figure is unsized, which means
+      some of this demand survives a queue and some of it perishes on contact. A reader who thinks that
+      makes them two layers is disagreeing with the roster, not with the arithmetic.
+    </asrt:observed>
+
+    <asrt:eliminations>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:absent>
+            <pm:reason>none</pm:reason>
+            <pm:note>delivery work and out-of-hours escalations are different asks; no ticket is both</pm:note>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:absent>
+        </asrt:quantity>
+        <asrt:against>demand</asrt:against>
+        <asrt:observed>
+          the two queues were reconciled ticket by ticket across the year. An escalation that
+          becomes delivery work is closed on one and opened on the other, never counted twice.
+        </asrt:observed>
+      </asrt:elimination>
+
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:absent>
+            <pm:reason>none</pm:reason>
+            <pm:note>the rota was staffed from the parent's own establishment, not seconded from the members</pm:note>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:absent>
+        </asrt:quantity>
+        <asrt:against>nameplate</asrt:against>
+        <asrt:observed>
+          payroll checked across all three establishments; the two rota posts are the parent's
+          own and appear on no member's headcount. ⚠️ Had the rota been seconded from delivery
+          this would be 2, and the fused nameplate 10 rather than 12.
+        </asrt:observed>
+      </asrt:elimination>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>shift-line</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+          <pm:id>shift-line</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-08-31</asrt:version>
+        <asrt:regime>group</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>
+      carried through unfused. ⭐ It is already a fusion one level down — the US member's
+      `shift-line` and the Portuguese member's `linha-partilhada`, one machine — and this
+      document neither repeats that work nor needs to. A part is a filed layer whatever
+      produced it.
+    </asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one, so the question has no population here</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <!-- ==================================================================================
+       ⭐⭐⭐ THE FUSION THAT CONVERTS. Everything above it in this file joins layers that
+       already agreed on a unit; this one does not, and `Part/factor` is why it can.
+       ================================================================================== -->
+
+  <asrt:fusion>
+    <asrt:name>compute</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+          <pm:id>compute-us</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-08-31</asrt:version>
+        <asrt:regime>group</asrt:regime>
+      </asrt:layer>
+      <!-- ⭐⭐ A CONVERSION IS ITSELF A CLAIM AND IS FILED AS ONE. A month is not 720
+           hours; it is [672, 720, 744] and which one you got depends on which month.
+           Filing a bare 720 here would assert a precision the calendar does not have,
+           and the composed nameplate would inherit a false exactness.
+           ⚠️ THE SAME MONTH CONVERTS THE US PART'S NAMEPLATE, DEMAND AND DRAW, so those
+           three converted intervals are correlated with each other. That is why the
+           remainder above is stated rather than left to be re-derived. -->
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>672</pm:low>
+          <pm:mostLikely>720</pm:mostLikely>
+          <pm:high>744</pm:high>
+          <pm:unit>GPU-hour per GPU</pm:unit>
+          <pm:narrowsWhen>
+            <pm:narrowing>
+              <pm:condition>the members bill on a fixed 30-day cycle instead of a calendar month</pm:condition>
+              <pm:kind>intervention</pm:kind>
+            </pm:narrowing>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:origin>intrinsic</pm:origin>
+          </pm:boundOrigin>
+          <pm:provenance><pm:party>holding-company</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+          </pm:provenance>
+          <pm:asOf>2026-08-31</pm:asOf>
+        </pm:claim>
+      </asrt:factor>
+    </asrt:part>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+          <pm:id>compute-pt</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-08-31</asrt:version>
+        <asrt:regime>group</asrt:regime>
+      </asrt:layer>
+      <!-- ⛔ NO `factor`, AND THAT IS NOT THE SAME DOCUMENT AS A factor OF 1. This part is
+           already metered in the composed unit, so there is nothing to convert. A
+           ceremonial 1 here would say a conversion was performed and came to unity, which
+           is a different and weaker claim than saying none was needed. -->
+    </asrt:part>
+
+    <asrt:observed>
+      the group could not join these two and was right not to: `compute-us` is billed per
+      reserved card and `compute-pt` by the month, and `4.4 GPU + 545 GPU-hour` is not a
+      sum. It filed two one-part fusions under two names, which is exactly what that shape
+      is for, and stopped there because it had no way to say how one becomes the other.
+
+      This holding meters both in card-hours for its own capacity planning, and a card
+      reserved in Texas and an hour bought in Lisbon serve the same inference queue: work
+      moves between them within a day, so they hold no remainder independently and they are
+      one layer.
+
+      ⛔⛔ AND THIS FUSION ABSORBS A FILED COUPLING, WHICH IT OWES A REASON FOR. The group
+      observed that US inference above the reserved eight cards is routed to the Lisbon
+      reservation, so the Portuguese layer's clearance falls when the US layer's demand
+      peaks, and filed it as a `pm:Coupling` between two layers it could not join. That
+      observation is not evidence for this fusion — coupling and fungibility are independent
+      axes, and the group filed the same coupling shape between `labour` and `shift-line`,
+      which are emphatically not one layer. What makes these two one layer is the metering.
+      ⭐ The coupling does not survive as a coupling and it does not vanish either: THE
+      ROUTED HOURS ARE THE ELIMINATION BELOW. A peer-to-peer observation between two layers
+      became a double-count inside one, which is what absorbing a coupling means when the
+      thing it described was traffic rather than sympathy.
+
+      ⚠️ WHAT A READER SHOULD DISAGREE WITH IS THE FACTOR, NOT THE FUSION. A
+      reserved card is available every hour of the month and a purchased hour is not, so
+      whether eight cards really deliver [5376, 5760, 5952] usable card-hours is a claim
+      about utilisation that this filing does not separate out. It is stated where it can
+      be argued with rather than performed silently in a spreadsheet, which is the whole
+      reason this element exists.
+    </asrt:observed>
+
+    <asrt:eliminations>
+      <!-- ⭐⭐ STATED IN THE COMPOSED UNIT, AFTER CONVERSION. An elimination in GPU would be
+           unaddable to a sum in GPU-hour, and there is no second factor here to rescue it:
+           a factor converts a PART, and an elimination is not a part. -->
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:claim>
+            <pm:low>40</pm:low>
+            <pm:mostLikely>90</pm:mostLikely>
+            <pm:high>150</pm:high>
+            <pm:unit>GPU-hour</pm:unit>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>the burst cross-charge is metered rather than estimated from the invoice</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. It is the size of the double counting the composer found</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </asrt:quantity>
+        <asrt:against>demand</asrt:against>
+        <asrt:observed>
+          the Portuguese member bursts onto the US member's reserved cards at quarter end and
+          is cross-charged for it. Both filings are right about their own demand and the group
+          would count those hours twice: once as US cards drawn, once as Portuguese hours
+          bought. The invoices give the size.
+        </asrt:observed>
+        <asrt:between>
+          <asrt:party>group-parent</asrt:party>
+          <asrt:filing>
+            <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+            <pm:id>compute-us</pm:id>
+          </asrt:filing>
+          <asrt:version>2026-08-31</asrt:version>
+          <asrt:regime>group</asrt:regime>
+        </asrt:between>
+        <asrt:between>
+          <asrt:party>group-parent</asrt:party>
+          <asrt:filing>
+            <pm:notation>urn:example:filing:group-parent:2026-08-31</pm:notation>
+            <pm:id>compute-pt</pm:id>
+          </asrt:filing>
+          <asrt:version>2026-08-31</asrt:version>
+          <asrt:regime>group</asrt:regime>
+        </asrt:between>
+      </asrt:elimination>
+
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:absent>
+            <pm:reason>none</pm:reason>
+            <pm:note>the two members reserve from different providers on separate contracts; no card is on both nameplates</pm:note>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:absent>
+        </asrt:quantity>
+        <asrt:against>nameplate</asrt:against>
+        <asrt:observed>
+          both reservation contracts were read end to end. They name different providers in
+          different regions and there is no shared hardware to remove.
+        </asrt:observed>
+      </asrt:elimination>
+
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:absent>
+            <pm:reason>none</pm:reason>
+            <pm:note>the burst hours are drawn on US cards and metered once, on the US side</pm:note>
+            <pm:provenance><pm:party>holding-company</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:absent>
+        </asrt:quantity>
+        <asrt:against>draw</asrt:against>
+        <asrt:observed>
+          ⭐ THE DEMAND WAS DOUBLE-COUNTED AND THE DRAW WAS NOT, WHICH IS THE WHOLE REASON
+          `against` EXISTS. The Portuguese member asked for the burst hours and the US cards
+          served them; two asks, one service. Removing the same figure from the draw would
+          have deleted work that actually happened.
+        </asrt:observed>
+      </asrt:elimination>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+</asrt:composition>

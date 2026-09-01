@@ -37,7 +37,7 @@
        the deliverable rather than a failure. -->
   <asrt:entry>
     <asrt:key>labor.absorbed-evening</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:refuses>
         <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
@@ -49,7 +49,7 @@
   <!-- Idle reserved capacity IS transacted, so it has a position. -->
   <asrt:entry>
     <asrt:key>compute.reserved-block-idle</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:holds>
         <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
@@ -61,7 +61,7 @@
   <!-- An obligation created at signature, cited. -->
   <asrt:entry>
     <asrt:key>offering.enterprise-obligation</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:refuses>
         <pm:taxonomy>urn:example:coding-pack:refusals</pm:taxonomy>
@@ -82,7 +82,7 @@
        quarter holds, and saying so is the correct answer. -->
   <asrt:entry>
     <asrt:key>capability.backlog</asrt:key>
-    <asrt:complete>false</asrt:complete>
+    <asrt:claimed>none</asrt:claimed>
     <asrt:answer>
       <asrt:cannotAsk/>
     </asrt:answer>
@@ -93,7 +93,7 @@
        somebody stopped chasing. -->
   <asrt:entry>
     <asrt:key>labor.contractor-overtime</asrt:key>
-    <asrt:complete>true</asrt:complete>
+    <asrt:claimed>full</asrt:claimed>
     <asrt:answer>
       <asrt:holds>
         <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>

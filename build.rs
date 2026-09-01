@@ -70,6 +70,11 @@ fn main() -> Result<(), Error> {
                 NamespaceIdent::namespace(ASSERTION_NS),
                 "dependence",
             ),
+            (
+                IdentType::Element,
+                NamespaceIdent::namespace(ASSERTION_NS),
+                "composition",
+            ),
         ]);
 
     write(out_dir.join("schema.rs"), generate(config)?.to_string())?;

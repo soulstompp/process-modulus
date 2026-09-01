@@ -20,7 +20,7 @@
            xmlns:pm="https://example.invalid/process-flow/1.0"
            targetNamespace="https://example.invalid/process-flow/1.0"
            elementFormDefault="qualified"
-           version="0.1.0">
+           version="0.3.0">
 
   <!-- ==================================================================
        REMAINDER: the object this model contributes.
@@ -47,6 +47,24 @@
       (inventory · capacity · time). This schema does not restate those three,
       because a closed set restated in a foreign namespace is a fork.
 
+      ⭐ IT IS WRAPPED, BECAUSE A REMAINDER MAY GENUINELY HAVE BEEN ABSORBED BY
+      NOTHING. A shop at capacity that turns people away with no waiting list has a
+      real remainder — demand exceeded the nameplate — held as `unrealised`, and
+      nothing queued, stretched or waited. `absent reason="none"` is the honest
+      filing, and it is Factory Physics' own logic rather than an argument against
+      it: variability that is not buffered by one of the three is variability whose
+      demand went unserved.
+
+      ⚠️ IT STAYS AT THE REMAINDER, ONE PER LAYER, AND THE PLACEMENT IS LOAD-BEARING.
+      Moving it beside each `share` was considered and rejected. A rollup across
+      several filings — three entities of one group, or two companies in a merger —
+      asks which buffers a business leans on, and per-holder that question must be
+      weighted by shares. ⛔ The share on a labour layer is `unmeasured` BY DESIGN
+      AND PERMANENTLY, so the weighted form is incomputable at exactly the layer this
+      model exists for, while the layer-level form answers cleanly. See also
+      Nameplate/capacitySlack: how much a supply CAN take and what actually absorbed
+      are a pair, read at the same altitude, exactly as `nameplate` and `jagged` are.
+
       `holder` is CONTRIBUTED: who bears it. See Holder.
 
       ⚠️ ABSORPTION AND BEARING ARE SEPARATE AXES AND MERGING THEM IS THE COMMONEST
@@ -63,11 +81,100 @@
       because the DIRECTION is frequently known when the MAGNITUDE is not. "We ran
       hot in August" is a filable fact with no number in it, and a model that can
       only record it as a quantity records it as nothing.
+
+      ⭐⭐⭐ THE REMAINDER DECOMPOSES, AND THE TWO PARTS ARE DIFFERENT KINDS OF FACT.
+      Writing `q` for the quantum, `k = nameplate / q` for the number of units held,
+      and `m = k - floor(demand / q)`:
+
+        r  =  m·q  -  (demand mod q)
+
+        m·q             WHOLE QUANTA, AND A DECISION. Hold one more unit and it
+                        moves. Who is allowed to make that decision is exactly
+                        `Nameplate/amountOrigin`.
+        (demand mod q)  THE RESIDUE, AND NOT A DECISION. No choice of k removes it.
+                        The closest any procurement reaches is
+                        `min(demand mod q, q - (demand mod q))`, the distance from
+                        demand to the nearest whole multiple.
+
+      ⛔⛔ SO THE CONSERVATION CLAIM IS ABOUT THE SECOND TERM ONLY. "Management
+      chooses which absorber holds it and who bears it, never whether it exists" is
+      TRUE OF THE RESIDUE AND FALSE OF THE WHOLE REMAINDER, because the whole
+      remainder contains a decision. Asserting it of the total overclaims, and it is
+      the kind of overclaim a reader holding the arithmetic finds in one line.
+
+      ⭐⭐ THE MODULUS IS PRESENT ON BOTH BRANCHES, WHICH IS WHY THE NAME DESCRIBES
+      THE WHOLE MODEL AND NOT HALF OF IT. Because the nameplate is a whole multiple,
+      `r ≡ -demand (mod q)` ALWAYS. Rounding up leaves `(-demand) mod q` in [0, q);
+      rounding down leaves `-(demand mod q)` in (-q, 0]. The two are additive
+      inverses in the quotient and they sum to q, so clearance and interference are
+      ONE DIVISION READ FROM OPPOSITE SIDES. ⭐ The sign is then the direction of the
+      input still outstanding: a positive remainder is capacity already put in and
+      not consumed, a negative one is capacity still owed.
+
+      ⛔ THE NAMEPLATE MUST BE A WHOLE MULTIPLE OF THE QUANTUM for a lumpy supply.
+      It is what makes the congruence above hold, and a nameplate off the lattice has
+      no integer part to decompose. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no
+      `xs:assert` and cannot compare across elements. An implementer still owes this
+      check; the schema cannot take it from them.
+
+      ⛔ `quantity` IS THE TOTAL, AND IT IS `derived` WHEREVER DEMAND, NAMEPLATE AND
+      THE QUANTUM ARE ALL STATED. It is computable there, and a carried copy can
+      disagree with its own inputs, which is the rule already applied to a Claim's
+      expected value. ⚠️ It stays a StatedClaim rather than being deleted because a
+      witness may know the total while filing no demand range at all — "we were about
+      two people short" — which is the same case that keeps `sign`.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⛔ `quantity` IS EVALUATED ACROSS THE WHOLE DEMAND RANGE, WHILE `sign` IS
+      EVALUATED AT `mostLikely`. Two conventions, and the difference is stated in
+      full at Fit, which is where a reader meets the sign. ⚠️ The consequence worth
+      carrying here: where `nameplate - demand` crosses zero the magnitude's LOW
+      BOUND IS ZERO, because the difference passes through nothing on its way across.
+      That zero is a fact about the top of the demand range and never a clamp.
+
+      ⭐ CLEARANCE ACROSS THE WHOLE DEMAND RANGE RULES OUT TWO OF THE FIVE HOLDERS.
+      With the nameplate above demand there is no unmet demand, so `customer` and
+      `unrealised` cannot hold it: nobody waited and nothing went unserved. This
+      constrains the branch the `capacitySlack` rule in Fit does not reach.
+
+      ⛔⛔ `people` IS NOT RULED OUT, AND AN EARLIER DRAFT OF THIS RULE EXCLUDED IT
+      WRONGLY. That draft assumed the only way a person bears a remainder is by
+      absorbing excess work. UNDER-USE IS BORNE TOO: a team held persistently above
+      its demand stagnates, stops learning and leaves, and no instrument records
+      that either. It is the same structure as the interference case — a real cost,
+      borne by people, with no transaction anywhere — and it is arguably the better
+      demonstration of this model's own axis, because overwork is a story the world
+      already tells and under-use is not.
+
+      ⚠️ It is also the same absorber. Idle capacity IS the capacity buffer, so
+      `booked` and `people` can hold one clearance remainder between them with
+      `capacity` absorbing it either way. That is what two independent axes look
+      like: the buffer does not determine the bearer.
+
+      ⭐ THE TEST IS `sign` ITSELF NOW, AND IT USED TO NEED SPELLING OUT. While `Fit`
+      had two members the sign was read at `mostLikely` while the magnitude was read
+      across the range, so a layer whose demand range spanned its own nameplate filed
+      `clearance` at the mode with part of its range still above the nameplate — and a
+      rule keyed to `sign` would have rejected those documents wrongly. This one
+      therefore said "across the whole demand range" in prose. That prose WAS ISO 286's
+      criterion, and with `transition` filed the value carries it: `clearance` now means
+      the whole range clears, and the spanning case has its own member.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⭐ `holder` IS UNBOUNDED because one remainder routinely lands on several
+      parties at once. See Holder/share. ⚠️ A mixed list is meaningful rather than
+      malformed: a stated `people` beside an `absent` entry reads "people bore some
+      of it, and the rest was borne by somebody this sender cannot name", which is a
+      better document than either half alone.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="sign"     type="pm:Fit"/>
-      <xs:element name="absorber" type="pm:BorrowedTerm"/>
-      <xs:element name="holder"   type="pm:StatedHolder"/>
+      <xs:element name="sign"     type="pm:StatedFit"/>
+      <xs:element name="absorber" type="pm:StatedBorrowedTerm"/>
+      <xs:element name="holder"   type="pm:StatedHolder" maxOccurs="unbounded"/>
       <xs:element name="quantity" type="pm:StatedClaim"/>
     </xs:sequence>
   </xs:complexType>
@@ -84,7 +191,20 @@
       A SUPPLY IS SATURATED.
 
         clearance     the nameplate exceeds the demand: slack, idle, undrawn.
+        transition    the two ranges OVERLAP: some of the range each way.
         interference  the demand exceeds the nameplate.
+
+      ⛔⛔ AND THE COMPARISON IS BETWEEN TWO RANGES, NOT TWO POINTS. This is ISO's
+      own criterion, where a fit class is decided by how the hole's tolerance zone
+      and the shaft's lie against each other, and it decides all three:
+
+        clearance     nameplate.low  ≥ demand.high    the WHOLE range clears
+        transition    the ranges overlap               partly each way
+        interference  nameplate.high ≤ demand.low      the WHOLE range interferes
+
+      ⭐ Total and exhaustive: three cases, mutually exclusive, covering every pair
+      of ranges. `mostLikely` decides nothing here, which is the point of the next
+      paragraph.
 
       ⭐ WHAT AN INTERFERENCE FIT DOES IS THE WHOLE REASON FOR THE WORD: it is not
       a failure, the assembly still works, AND IT WORKS BY DEFORMING THE MATERIAL.
@@ -98,23 +218,127 @@
         interference, draw > nameplate    it assembled by deforming. Somebody
                                           absorbed the excess: `people`, or
                                           `booked` where a penalty rate applied.
-        interference, draw = nameplate    it did not assemble. The excess demand was
-                                          turned away: `customer` or `unrealised`.
+        interference, draw = nameplate    it did not assemble. The excess demand went
+                                          UNSERVED: `customer` or `unrealised`.
+
+      ⭐⭐ "UNSERVED" AND NOT "REFUSED" OR "TURNED AWAY", AND THE WORD IS LOAD-BEARING
+      BECAUSE BOTH OF THE OTHER TWO NAME AN ACTOR. A reserved card that errors a request
+      did refuse it. A caller who waits past their patience and goes elsewhere was
+      refused by nobody — they left, and Layer/timeSlack already says so in as many
+      words: THE HOLDER DOES NOT GET TO REFUSE, the demand DECAYED. Both land in the
+      same two holders, so the word covering them must not decide which happened.
+      ⭐ AND THE AXIS BETWEEN THOSE TWO HOLDERS IS WHETHER ANYBODY EXPERIENCED IT:
+      `customer` is demand that was there and got degraded — the caller who waited and
+      left — while `unrealised` never became anybody's experience at all.
 
       ⭐ SO THE DRAW IS NOT A THIRD REMAINDER; IT IS THE EVIDENCE FOR WHO HELD THE
       ONE REMAINDER. The magnitude is |nameplate - demand| either way, which is the
       conservation claim: management selects the holder, never the existence.
 
-      ⚠️ Which supplies may sit on the interference side at all is a property of the
-      supply. See Nameplate/admitsInterference. A supply with
-      `admitsInterference = false` and an interference fit CANNOT have absorbed it,
-      so its holder must be `customer` or `unrealised`, and a document saying
-      otherwise is internally inconsistent. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      ⭐⭐ ONE CONVENTION, AND IT TOOK THE THIRD MEMBER TO GET THERE. The sign and
+      the magnitude are BOTH evaluated across the whole range. That reads as
+      unremarkable and was not always true: while this was a two-member enumeration
+      it took ONE value and therefore had to be read at ONE point, `mostLikely`,
+      while the magnitude was computed over the range. Two conventions in one type,
+      and the case that exposed them is the ordinary condition of a business AT
+      capacity — a demand range that spans its own nameplate:
+
+        demand [11.0, 13.2, 16.4], nameplate 16
+        n - d      = [-0.4, 2.8, 5.0]      the ranges OVERLAP
+        sign       = transition            0.4 short at the top, 5.0 spare at the
+                                           bottom, and both are true of one layer
+        |n - d|    = [0.0, 2.8, 5.0]       across the range
+
+      ⭐ THE `0.0` IS ARITHMETIC, NOT A CLAMP. Where the difference crosses zero it
+      genuinely passes through nothing, so the magnitude's minimum IS zero. What used
+      to need defending is now said by the sign: a reader who sees `transition` knows
+      to expect it.
+
+      ⛔⛔ AND UNDER `transition` THE MAGNITUDE IS LOSSY, WHICH IS THE ONE THING A
+      READER OF THIS ELEMENT MUST TAKE AWAY. `|n - d|` is sign-blind. That is
+      harmless under the other two members, where the sign says which side the whole
+      thing is on, but under `transition` there are TWO quantities and the absolute
+      value keeps only the LARGER, with the smaller invisible inside it:
+
+        clearance side    16 - 11.0 = 5.0     sets the high bound
+        interference side 16.4 - 16 = 0.4     lies INSIDE [0.0, 5.0], indistinguishable
+                                              from 0.4 of clearance
+
+      Push the demand to [11.0, 13.2, 30] and it flips: the high bound becomes
+      interference and the clearance side is the hidden one. Whichever side is larger
+      sets the bound and erases the other.
+
+      ⭐⭐ SO THE INTERFERENCE EXPOSURE IS DERIVED FROM `demand` AND `nameplate`
+      DIRECTLY, AND NEVER FROM `quantity` OR THE SHARES:
+
+        exposure = max(0, demand.high - nameplate.low)      = 0.4 here
+
+      See Nameplate/capacitySlack, where that figure earns its keep.
+
+      ⚠️ THE TWO SIDES ARE ANTI-CORRELATED AND MUST NOT BE ADDED. Clearance falls as
+      demand rises and interference rises, so a component-wise sum pairs the slack
+      week's spare with the busy week's unserved demand and reports a total that occurs in no
+      week. It is the same class of error the composition rules already name, where
+      one conversion factor multiplies both the nameplate and the demand and
+      differencing them counts its spread twice — except here the shared driver is
+      the demand itself and the pairing is exactly backwards. ⭐ THE CURE IS TO
+      EVALUATE AT ONE CORNER: at a single demand there is one clearance value and one
+      interference value, and nothing is summed across states. This is why `quantity`
+      is one Claim and not two.
+
+      ⭐⭐ WHY `transition` IS ADMITTED WHERE `indeterminate` IS REFUSED, since the
+      obvious objection is that both are computable by the receiver. An
+      `indeterminate` member states what the FILER DOES NOT KNOW, which is a
+      conclusion the receiver reaches better on their own — the same objection that
+      keeps a Claim's expected value out of the model. `transition` states what THE
+      WORLD DOES: sometimes short, sometimes spare. ⚠️ And the derivability objection
+      could never have carried the argument on its own, because `clearance` is
+      equally computable, which is exactly why StatedFit lets `sign` say `derived`.
+      The reason `sign` is carried at all is stated there: the DIRECTION is often
+      known when the MAGNITUDE is not. "We ran hot in August" is a filable fact with
+      no number in it, and so is "some weeks we are short and some weeks we are
+      fine".
+
+      ⛔ `sign` AGREES WITH THE RANGE COMPARISON ABOVE, not with `nameplate - demand`
+      at any single point.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
       compare across elements. An implementer still owes this check; the schema
       cannot take it from them.
+
+      ⚠️ Which supplies may sit on the interference side at all is a property of the
+      supply. See Nameplate/capacitySlack. A supply whose `capacitySlack` is
+      `absent reason="none"` — somebody looked, and there is no room above the rating
+      — CANNOT have absorbed an interference fit, so EVERY ONE of its holders must be
+      `customer` or `unrealised`, and a document saying otherwise is internally
+      inconsistent. ⭐ A STATED SLACK BOUNDS RATHER THAN FORBIDS: holders may then sit
+      on the interference side up to it and no further. ⚠️ The rule is over the whole list
+      since `holder` became unbounded: one conforming entry does not excuse a second
+      that claims the excess was absorbed by a supply that cannot absorb. ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⭐⭐ UNDER `transition` THAT RULE BECOMES A PRESENCE RULE RATHER THAN A
+      UNIVERSAL ONE, AND THE WEAKENING IS CORRECT RATHER THAN A CONCESSION. Part of
+      the range is genuinely clearance, so a `booked` share is legitimate there: a
+      reserved block paid for and not fully drawn is exactly that. What cannot happen
+      is for the interference side to have been absorbed by a supply with no room
+      above its rating. So:
+
+        capacitySlack `absent reason="none"`, `sign` = transition, exposure > 0
+          ==> AT LEAST ONE holder of kind `customer` or `unrealised`, the two that
+              bear demand nobody served
+
+      Some of the range is above the nameplate, none of it can have been absorbed, so
+      that demand went unserved and the unserved share must appear on the list. ⚠️ WHAT CANNOT BE
+      CHECKED IS ITS SIZE, and the reason is the lossiness above: the interference
+      portion of a share is not a filed field, and the magnitude the shares sum to has
+      swallowed it. The exposure bounds it — see Nameplate/capacitySlack — but that
+      figure comes from `demand` and `nameplate`, not from anything on this remainder.
+      ⛔ NOT REACHABLE BY A VALIDATOR, for the same reason as its interference twin.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="clearance"/>
+      <xs:enumeration value="transition"/>
       <xs:enumeration value="interference"/>
     </xs:restriction>
   </xs:simpleType>
@@ -169,11 +393,65 @@
       WITH it. A flattening that was safe in one consumer must not be published as
       the model's shape.
 
-      party/asOf are permitted only where kind = counterparty. Expressed here as
-      optional; an implementation should refuse the combination.
+      ⛔ party/asOf are permitted only where kind = counterparty. Expressed here as
+      optional; an implementation should refuse the combination. ⚠️ IN A CONSOLIDATION
+      THAT RULE BITES SOMEWHERE UNOBVIOUS, and it is worth stating because the mistake is
+      natural: a `booked` share in a group filing is booked in SOME MEMBER'S books, and
+      naming which one looks like exactly what `party` is for. It is not. On a
+      `counterparty` holder `party` names WHOSE OTHER BOOKS the burden sits in; on a
+      `booked` holder it would name WHICH OF OUR OWN UNITS records it. Two relations, one
+      field. ⭐ The second is already carried, and carried better, by the composition that
+      names which filed layer the share came from.
+
+      ⭐⭐ AND THE RULE HAS A SECOND HALF THAT MATTERS MORE THAN THE FIRST: A
+      `counterparty` HOLDER MUST NAME ITS `party`. A burden asserted to sit in another
+      entity's books, with no entity named, is not a counterparty claim — it is a guess
+      wearing the one holder kind that promises an instrument. ⚠️ And it SHOULD carry
+      `asOf`, by this type's own argument above: the value is a cached fact about somebody
+      else's books and nothing here refreshes it, so a party with no date is a stale
+      reading presented as a current one.
+
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 cannot make one element's presence depend
+      on a sibling's value. An implementer still owes both halves.
+
+      ⚠️ THE REPAIR THAT WOULD REACH IT WAS CONSIDERED AND REJECTED, recorded so it is not
+      re-proposed. Splitting `StatedHolder` into a three-way choice — `holder` carrying the
+      other four kinds with no `party` element at all, `counterparty` carrying a REQUIRED
+      party and asOf, and `absent` — makes both halves structurally unbreakable and checked
+      by any stock validator. ⛔ It also leaves four variants in an enum and the fifth in
+      the structure, which destroys HolderKind's central claim that these are FIVE VARIANTS
+      OF ONE THING whose asymmetry is the finding. A rule enforced at the cost of the set it
+      is a rule about is a bad trade.
+
+      ⭐⭐⭐ `share` IS WHAT THIS HOLDER BEARS, AND IT EXISTS BECAUSE ONE REMAINDER
+      ROUTINELY LANDS ON MORE THAN ONE PARTY. A team that absorbs some of an excess
+      and turns the rest away has split it between `people` and `unrealised`, and a
+      single holder forced the sender to pick the larger one and discard the other.
+      That discarded half is frequently the interesting one.
+
+      ⭐⭐ A QUANTITY, NEVER A FRACTION, AND THE REASON IS THE MODEL'S OWN SUBJECT.
+      A set of fractions must sum to one, so a single UNMEASURED member invalidates
+      the whole set and the sender is pushed back to inventing a number. Quantities
+      degrade honestly: `people` may bear an unmeasured share beside a `customer`
+      share that somebody counted, and both survive transmission. A fraction would
+      also drop the unit, and this model has no dimensionless number type anywhere.
+
+      ⛔ THE SHARES SUM TO THE REMAINDER MAGNITUDE, `|nameplate - demand|`, WHEREVER
+      EVERY SHARE IS STATED. One unmeasured share suspends the check rather than
+      breaking it, which is the correct behaviour: the sum is unknown, not wrong.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⚠️ A KIND APPEARS AT MOST ONCE PER REMAINDER. Two `people` entries with two
+      shares is not a finer split, it is one share written twice.
+      ⛔ NOT REACHABLE BY A VALIDATOR. An identity constraint cannot be scoped to a
+      single remainder in XSD 1.0, because constraints attach to element declarations
+      and this element is local to a reused type.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="kind"  type="pm:HolderKind"/>
+      <xs:element name="share" type="pm:StatedClaim"/>
       <xs:element name="party" type="xs:string" minOccurs="0"/>
       <xs:element name="asOf"  type="xs:date"   minOccurs="0"/>
     </xs:sequence>
@@ -279,6 +557,20 @@
       set, and restating one it does not own is the mistake `BorrowedTerm` exists
       to prevent.
 
+      ⛔⛔ AND IT IS REQUIRED-AND-WRAPPED RATHER THAN OPTIONAL, WHICH IS A CHANGE
+      `asrt:Composition` FORCED. That type says in its own words that a composition
+      filed without `provenance/standing` IS A FABRICATION — and both were optional
+      for three revisions, so the schema named the condition and then permitted
+      documents that fail it. ⭐ The deeper reason is that WHAT A LAYER MEANS DEPENDS
+      ON WHO FILED IT: a parent's composition asserts a group's system, an auditor's
+      asserts what an auditor holds, and the same layer in the two is not the same
+      claim. Standing is the only field that says which you are reading, so its
+      silence is the most expensive silence in the model.
+
+      ⭐ `absent reason="unmeasured"` is the honest answer for a sender whose framework
+      publishes no standing vocabulary, and `notApplicable` for an assertion nobody
+      is standing behind in any formal sense. Both say more than a blank.
+
       `note` is prose BESIDE the structured fields, never instead of them, the
       same rule `Absence` states about its own note.
     </xs:documentation></xs:annotation>
@@ -286,7 +578,7 @@
       <xs:element name="party"      type="xs:token"       minOccurs="0"/>
       <xs:element name="enteredBy"  type="xs:token"       minOccurs="0"/>
       <xs:element name="approvedBy" type="xs:token"       minOccurs="0"/>
-      <xs:element name="standing"   type="pm:BorrowedTerm" minOccurs="0"/>
+      <xs:element name="standing"   type="pm:StatedBorrowedTerm"/>
       <xs:element name="note"       type="xs:string"      minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -325,10 +617,30 @@
 
        ⭐ A WRAPPER EXISTS ONLY WHERE A SENDER MAY LEGITIMATELY NOT HAVE THE VALUE,
        and DECLINING to add one is the assertion that this value is always knowable
-       by whoever is sending. Seven exist. Not wrapped, deliberately: Fit (the
-       direction is known whenever the remainder is), Nameplate and Jagged (their
-       own leaf quantities are stated, so wrapping the container as well would give
-       one fact two homes).
+       by whoever is sending. Eleven exist. Not wrapped, deliberately: Nameplate and
+       Jagged (their own leaf quantities are stated, so wrapping the container as
+       well would give one fact two homes).
+       ⚠️ Fit WAS on that list — "the direction is known whenever the remainder is" —
+       and StatedFit replaced it. Two of the three exceptions this block once named
+       have now fallen, both because the reasoning was about a SENDER WHO HAS THE
+       FACT rather than about the range of senders. That is worth a reader's
+       suspicion of the one remaining.
+
+       ⛔⛔⛔ AND A REPEATING ELEMENT NEEDS A WRAPPER MORE THAN A SINGLE ONE DOES, WHICH
+       THIS BLOCK MISSED FOR TWO REVISIONS. `minOccurs="0" maxOccurs="unbounded"` looks
+       like it has already solved absence, because a sender who has nothing simply
+       writes nothing — and that is precisely the failure. AN EMPTY LIST IS A BLANK
+       FIELD WEARING A PLURAL. It cannot distinguish
+
+         somebody looked and there are none      `none`
+         nobody looked                           `unmeasured`
+         this document is the wrong place to ask `notApplicable`
+
+       and for the two lists in this model that carry FALSIFIERS — `Stack/coupling`
+       and `asrt:Fusion/elimination` — the first two readings are opposite verdicts on
+       the model itself. `StatedCouplings` and `asrt:StatedEliminations` are the repair:
+       one branch is the list with at least one member, the other is an Absence, and the
+       empty document is no longer writable.
 
        ⛔ AND FOR BorrowedTerm THE RULE IS NOT "OPTIONAL VERSUS REQUIRED". THIS BLOCK
        SAID THAT, AND THE SCHEMA CONTRADICTS IT: `Remainder/absorber` and
@@ -450,20 +762,269 @@
     </xs:choice>
   </xs:complexType>
 
-  <xs:complexType name="StatedBoolean">
+  <xs:complexType name="StatedConstraintOrigin">
     <xs:annotation><xs:documentation>
-      ⭐ REQUIRING AN ELEMENT IS CHEAP ONLY BECAUSE TYPED ABSENCE IS A LEGITIMATE
-      ANSWER. A bare `xs:boolean` is the one shape that breaks the bargain: it
-      admits true and false and has no third reading, so a sender who has not
-      established the fact must guess, and a guess is indistinguishable from a
-      measurement.
+      For `Nameplate/amountOrigin`, and WRAPPED WHERE `LumpyQuantum/origin` IS NOT.
+      The difference is not an oversight and it is worth stating, because the two
+      elements carry the same enumeration.
 
-      Used by `Nameplate/admitsInterference`, where whether a resource can be
-      driven past its rating is often the single fact a new sender has not yet
-      established.
+      ⭐ A QUANTUM'S ORIGIN IS A FACT ABOUT THE SUPPLY. A sender who filed `lumpy`
+      has already established the block size, and knowing the size means knowing
+      whose terms set it. There is no honest state where the size is known and its
+      author is not.
+
+      ⭐⭐ AN AMOUNT'S ORIGIN IS A COUNTERFACTUAL: could we have held a different
+      number of them? That is a question about a decision nobody may have tested,
+      and a new sender frequently has not. Forcing a value there would make an
+      untested assumption indistinguishable from an established one, which is the
+      bargain typed absence exists to protect.
+
+      ⭐⭐⭐ AND `Claim/boundOrigin` IS THE SAME COUNTERFACTUAL ABOUT A DIFFERENT
+      QUANTITY, WHICH IS WHY IT NOW TAKES THIS TYPE AND USED TO TAKE A BARE OPTIONAL
+      ENUMERATION. `amountOrigin` asks who could hold a different number of units;
+      `boundOrigin` asks who could move the edge of a range. One question, two
+      quantities — and for two revisions one of them was required-and-wrapped while
+      the other was optional-and-silent, three lines apart in the same sequence.
+
+      ⛔ THE COST OF THE SILENT VERSION IS NAMED IN `Nameplate/capacitySlack`, which
+      complains that the three buffer slacks "say how much room a buffer has and
+      NOTHING about whether anybody can move it", observes that the slot already
+      exists, and then reports it filed ONCE IN THE WHOLE CORPUS. An optional field
+      that nobody fills is not a weak signal; it is an absent one, and it is absent
+      for the ordinary reason optional fields are.
+
+      ⭐ AND THE FOUR REASONS ALL LAND ON A BOUND, WHICH IS WHY REQUIRING IT COSTS A
+      SENDER NOTHING HONEST:
+
+        origin intrinsic/contractual/policy  somebody can move this, and here is who
+        absent reason="unmeasured"           nobody has asked who sets this bound
+        absent reason="none"                 ⛔ NOTHING SETS IT. The bound is where the
+                                             measurements fell, not where a rule put
+                                             them, and there is no lever to look for
+        absent reason="notApplicable"        the quantity has no author to ask about:
+                                             an observed count, a derived residual
+        absent reason="derived"              it follows from a bound stated elsewhere
+
+      ⭐⭐ `none` IS THE MEMBER THAT DID NOT EXIST BEFORE AND IT IS THE COMMON CASE.
+      A demand interval read off twelve months of history has bounds nobody chose; an
+      SLA has bounds somebody negotiated. Both were the same blank.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="value"  type="xs:boolean"/>
+      <xs:element name="origin" type="pm:ConstraintOrigin"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedNotation">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ A FILING SAYING WHICH FILING IT IS, WHICH NOTHING IN THIS MODEL COULD DO UNTIL NOW.
+      Recorded as S-28 and found by writing a foreign key: a key needs something to point at,
+      and there was nothing there.
+
+      ⭐ THE VALUE IS THE WHOLE URN A PART CITES, not a naming system plus an identifier.
+      `asrt:Part` addresses a layer as `{notation, id}` where the NOTATION is the other
+      filing's URN and the ID is the layer name inside it. So the thing a filing must be able
+      to say about itself is exactly that notation, spelled identically, or the two never meet.
+
+      ⭐⭐ AND IT IS WHAT MAKES A LOCAL PART POSSIBLE, WHICH IS THE POINT. A part is LOCAL when
+      the notation it cites is this document's own — nothing else changes, no second kind of
+      part, no new element on `asrt:Part`. A composer can then build a layer out of layers
+      they built, in one document, and separate them again afterwards.
+
+      ⚠️ WRAPPED RATHER THAN REQUIRED-AND-BARE, because a filing genuinely may not have one:
+
+        uri                         this document is that URN, and a part may cite it
+        absent reason="none"        a working document, published under no identifier at all
+        absent reason="unmeasured"  it will have one and nobody has assigned it yet
+        absent reason="notApplicable"  ⛔ RARE AND SUSPICIOUS. A document nobody may reference
+                                    cannot be composed into anything, which is a strong claim
+
+      ⛔ A FILING WITH NO NOTATION CANNOT BE A PART OF ANYTHING, and that is the honest
+      consequence rather than a gap: a composition asserting a relationship to a filing nobody
+      can identify is asserting a relationship to nothing. `assets/sql/ingest.sql` populates
+      `filing_identity` from FILENAMES today and says in the file that this is the reader
+      guessing; a filed notation is what stops it guessing.
+      ⛔ NOT REACHABLE BY A VALIDATOR ACROSS DOCUMENTS. XSD 1.0 cannot follow a reference into
+      another file. Inside ONE composition it is reachable, and it is checked.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="uri"    type="xs:anyURI"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="ScopeExtent">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ HOW MUCH OF THE SYSTEM THIS STACK HOLDS. There is ONE system; a filing holds the
+      layers of it that mattered to whoever filed. **A FILING IS NEVER THE SYSTEM**, and until
+      this element existed `pm:Stack` read as though it enumerated one.
+
+        complete   somebody looked and the system HAS no other layers. ⭐ A heavy claim, and
+                   the rare one: it asserts a boundary rather than a selection
+        scoped     somebody looked, the system HAS others, and these are the ones this
+                   document needs. The ordinary state of every third-party filing
+        unbounded  nobody looked outside these. They are the ones needed and what else exists
+                   was never asked
+
+      ⭐⭐ THE THIRD MEMBER IS THE ONE A TWO-VALUED ENCODING WOULD CRUSH, and it is the same
+      distinction `Stack/couplings` turns on one element away: `scoped` says somebody
+      established what lies outside and excluded it; `unbounded` says nobody looked. A model
+      that renders them identically cannot tell a bounded selection from an unexamined one.
+
+      ⛔⛔ AND THIS IS WHAT MAKES A SECOND DOCUMENT'S EXTRA LAYER ORDINARY RATHER THAN AN
+      ACCUSATION. An auditor composing a client's filing and adding a layer is filing a second
+      PROJECTION of one system, not alleging the client omitted something. Without a declared
+      scope every added layer reads as a finding against the filer, and the model would be
+      picking a fight on the composer's behalf every time somebody looked at a process from a
+      second angle.
+
+      ⚠️ `complete` IS FALSIFIABLE AND SHOULD BE TREATED AS SUCH. Any later filing that holds a
+      layer of the same system contradicts it, which is the property that makes it worth
+      having and the reason it is not the default.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="complete"/>
+      <xs:enumeration value="scoped"/>
+      <xs:enumeration value="unbounded"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Scope">
+    <xs:annotation><xs:documentation>
+      WHAT DECIDED WHICH LAYERS ARE HERE, and how much of the system that leaves out.
+
+      ⭐ SHAPED AFTER `Narrowing`, and for the same reason: a typed member beside required
+      prose. The `extent` is what a query groups by; `basis` is what a reader needs in order to
+      disagree. Neither is sufficient alone — an extent with no basis is an assertion with no
+      argument, and a basis with no extent cannot be counted across a corpus.
+
+      `basis` is REQUIRED. ⛔ "These are the layers an audit of the revenue cycle needs" and
+      "these are the ones the client happened to file" are different documents, and the
+      difference is invisible in the layer list.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="extent" type="pm:ScopeExtent"/>
+      <xs:element name="basis"  type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedScope">
+    <xs:annotation><xs:documentation>
+      ⚠️ THE FOURTH STATE, AND IT IS NOT `unbounded`. `unbounded` says the filer considered what
+      lies outside and did not look; `absent reason="unmeasured"` says the question of extent
+      was never put at all. The first is a filing decision, the second is a gap — the same
+      distinction `Absence` draws everywhere else, arriving one level up.
+
+      ⛔ `none` HAS NO MEANING HERE. A stack has at least one layer, so "there is no scope" is
+      not a state a document can be in. See tests/state_coverage.rs, which refuses it.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="scope"  type="pm:Scope"/>
+      <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedLumpyQuantum">
+    <xs:annotation><xs:documentation>
+      ⛔ FOR `Divisibility/window`, AND ITS FOUR STATES ARE ALREADY WRITTEN DOWN IN THAT
+      ELEMENT'S OWN ANNOTATION — WHICH COULD NOT FILE THREE OF THEM. It says a window is
+      MALFORMED on a unit with no denominator ("`12 people` has no period, so '5 days' has
+      nothing to be five days of"), and it says a supply that is always on "does not need
+      saying so". Those are `notApplicable` and `none`, described in prose, encoded
+      identically as an omitted element, and indistinguishable from nobody having asked.
+
+        quantum                     the supply is live for this much of each period
+        absent reason="none"        somebody looked; the supply is always on. Duty
+                                    fraction 1, and a `derived` timeSlack stays legal
+        absent reason="unmeasured"  the unit HAS a period and nobody has measured the
+                                    live part of it. ⛔ The one state that disables
+                                    the timeSlack rule below
+        absent reason="notApplicable"  the unit has no denominator, so there is no cycle
+                                    to be live in part of. A stock, not a rate
+
+      ⭐⭐ AND THE DISTINCTION BUYS BACK A RULE THE ELEMENT ITSELF ASKS FOR. Its last
+      paragraph says "where a `window` is filed, `Layer/timeSlack` must not be `absent
+      reason='derived'`", because a clearance spread evenly across the denominator is
+      exactly what a window denies. `unmeasured` is the case that rule could not reach:
+      nobody knows whether the spare is spread evenly, so a DERIVED time slack is an
+      assumption rather than a computation. With `none` filed it is a computation again.
+
+      ⚠️ NOT `derived`. A duty cycle is a fact about the supply's calendar and nothing
+      else in the model implies one; admitting the reason here would invite a receiver
+      to compute a window out of a slack, which is the inference the element forbids
+      running in the other direction.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="quantum" type="pm:LumpyQuantum"/>
+      <xs:element name="absent"  type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedCouplings">
+    <xs:annotation><xs:documentation>
+      ⛔⛔⛔ THE WRAPPER THE MODEL'S OWN FALSIFIER NEEDED, AND THE SCHEMA HAD ALREADY
+      DIAGNOSED ITS ABSENCE WITHOUT BEING ABLE TO FILE THE CURE. `Coupling` says, in its
+      own words: "ZERO COUPLINGS IS THE MODEL'S ASSUMPTION, NOT A PROVEN PROPERTY. A
+      document with no couplings is not evidence of independence; it is a document where
+      nobody looked." `Absence` says, in its own words: "one says nobody looked, the
+      other says somebody looked and found nothing." Two annotations, one gap, and an
+      element that could only write the ambiguous thing.
+
+        coupling+                   somebody looked and found these
+        absent reason="none"        ⭐⭐ SOMEBODY LOOKED AND THE LAYERS MOVE
+                                    INDEPENDENTLY. This is the model's central claim,
+                                    ASSERTED, and it was unfileable
+        absent reason="unmeasured"  nobody has tested it. The honest state of most
+                                    first filings, and what an empty list used to mean
+                                    whether the filer intended it or not
+        absent reason="notApplicable"  a one-layer stack. There is no pair to couple
+
+      ⭐⭐⭐ THE ASYMMETRY IS WHY THIS MATTERS MORE THAN THE OTHER WRAPPERS. Everywhere
+      else typed absence protects a RECEIVER from reading a gap as a zero. Here it
+      protects the MODEL FROM ITSELF: a corpus of documents that all file `unmeasured`
+      is a corpus in which the independence assumption has never been tested, and that
+      is a fact about the evidence rather than about any one filing. It is now countable.
+
+      ⚠️ AND `none` IS A HEAVY CLAIM RATHER THAN THE EASY DEFAULT. It says somebody
+      relieved a layer's constraint and watched the others. A filer who has not done that
+      owes `unmeasured`, and a corpus where `none` is common without a word in
+      `Absence/note` about how it was established has swapped one silence for a bolder one.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="coupling" type="pm:Coupling" maxOccurs="unbounded"/>
+      <xs:element name="absent"   type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedFit">
+    <xs:annotation><xs:documentation>
+      ⛔⛔ THE CASE THIS WRAPPER WAS ORIGINALLY BUILT FOR TURNED OUT TO BE A FIT, AND
+      THE CORRECTION IS RECORDED RATHER THAN QUIETLY SWEPT. A demand of [3, 4, 5]
+      people against a nameplate of 4 was read here as an ABSENCE of fit, because the
+      two-member enumeration was evaluated at `mostLikely` and that point sat at
+      exactly zero. It is a `transition` fit: overlapping ranges at the nominal size,
+      which is the textbook case rather than a boundary curiosity. `absent
+      reason="none"` was doing the missing member's job, and it is not doing it any
+      more. ⚠️ No document in `assets/corpus/` ever filed an absent `sign`, so the case
+      being corrected here was argued and never exercised.
+
+      ⭐ WHAT THE WRAPPER IS ACTUALLY FOR, both halves surviving intact. It lets
+      `sign` say `derived`: where demand and nameplate are both stated the fit is
+      computable, which is the same condition under which `quantity` is derived. One
+      argument, applied to both elements instead of one.
+
+      ⚠️ And the original defence of carrying `sign` at all still stands, which is why
+      this is a wrapper rather than a deletion: the DIRECTION is frequently known when
+      the MAGNITUDE is not. "We ran hot in August" is a filable fact with no number in
+      it, and so is "some weeks we are short and some weeks we are fine" — which is
+      `transition`, and is probably the more common of the two.
+
+      ⭐ `absent` still has work: `unmeasured` where nobody compared the two, and
+      `notApplicable` on a layer with no nameplate to compare against. What it no
+      longer means is "the ranges overlap".
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="fit"    type="pm:Fit"/>
       <xs:element name="absent" type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
@@ -476,6 +1037,97 @@
        scalar discards the two things a receiver needs in order to evaluate it
        truthfully: how precise the assertion is, and what would change it.
        ================================================================== -->
+  <!-- ==================================================================
+       NARROWING: what would tighten a range, and WHICH KIND OF ACT that is.
+       ================================================================== -->
+  <xs:simpleType name="NarrowingKind">
+    <xs:annotation><xs:documentation>
+      ⭐⭐⭐ WHAT KIND OF ACT WOULD TIGHTEN THIS RANGE, AND IT IS NOT DECORATION: the
+      answer says WHAT THE WIDTH IS MADE OF.
+
+        instrument    measure it better. The width is IGNORANCE — the range was
+                      always this wide and a better instrument reveals it.
+                      "support interrupts are time-recorded instead of estimated"
+
+        intervention  change the process. The width is VARIATION — the number really
+                      does move, and only changing the world makes it move less.
+                      "the members bill on a fixed 30-day cycle instead of a
+                      calendar month", against a month of [672, 720, 744] hours.
+                      No instrument measures that away.
+
+        experiment    perturb it deliberately and see. THE FILER DOES NOT KNOW WHICH
+                      OF THE OTHER TWO IT IS, and says so by naming what would tell
+                      them. "the reservation is varied deliberately across two more
+                      quarters"
+
+      ⛔ THIS IS THE DISTINCTION THE MODEL WAS MISSING AND IT WAS HIDING IN PROSE. A
+      `Claim`'s range reads as epistemic throughout — "most likely", "the value an
+      estimator can honestly state" — but a range that is genuine variation does not
+      narrow when you measure harder. The corpus already contained both kinds, told
+      apart only by reading the sentence, which is exactly the place no rule reaches.
+
+      ⭐ AND `experiment` IS WHY THIS IS NOT A TWO-VALUED FLAG. "Ignorance or
+      variation?" is a question a filer frequently cannot answer, and forcing the
+      choice would collect a guess. Naming the experiment that would settle it is a
+      third honest answer, and it is the same move `Absence` makes everywhere else.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="instrument"/>
+      <xs:enumeration value="intervention"/>
+      <xs:enumeration value="experiment"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Narrowing">
+    <xs:annotation><xs:documentation>
+      The condition, and what kind of act it is. `condition` is prose and stays prose:
+      no vocabulary could cover "the quarter closes and actual cost lands" and the
+      attempt would fork somebody's accounting calendar. `kind` is the part a rule can
+      reach.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="condition" type="xs:string"/>
+      <xs:element name="kind"      type="pm:NarrowingKind"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedNarrowing">
+    <xs:annotation><xs:documentation>
+      ⛔⛔ REQUIRED ON EVERY CLAIM, AND THAT REVERSES AN EARLIER DECISION IN THIS FILE.
+      `narrowsWhen` was an optional bare string, and the reason given was cost: "a
+      required element is expensive in a chain of parties". That reasoning was written
+      when the field was prose only. It did not know the BLANK was carrying a fact.
+
+      ⭐ THE THREE ABSENCES ARE THREE DIFFERENT CLAIMS and the old blank meant all of
+      them at once:
+
+        absent reason="none"           somebody looked and NOTHING would tighten this.
+                                       ⭐⭐ WHICH IS THE VARIATION CLAIM, STATED. The
+                                       width is not ignorance, so no instrument, no
+                                       intervention and no experiment reduces it.
+        absent reason="unmeasured"     nobody has said what would tighten it. The
+                                       honest default, and what the old blank usually
+                                       meant.
+        absent reason="notApplicable"  there is no range. low = mostLikely = high, so
+                                       there is nothing to tighten.
+
+      ⛔ OPTIONAL-WITH-A-WRAPPER WAS REJECTED, on this schema's own precedent. See
+      Regime/chart: admitting BOTH an omitted element AND `absent reason="none"` is
+      "two encodings of one fact with no rule saying which to send", and it leaves a
+      receiver unable to tell "nothing would narrow this" from "nobody said" — which is
+      precisely the distinction this element now exists to carry.
+
+      ⚠️ THE COST IS REAL AND IT IS PAID BY EVERY SENDER. 124 claims in `assets/corpus/`
+      each gained one, of which 59 are `notApplicable` because they are point values.
+      That is the trade: a mechanical burden on every filing, in exchange for a fact
+      that was otherwise unstatable.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="narrowing" type="pm:Narrowing"/>
+      <xs:element name="absent"    type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
   <xs:complexType name="Claim">
     <xs:annotation><xs:documentation>
       A THREE-POINT ESTIMATE with its provenance.
@@ -512,10 +1164,20 @@
       ⚠️ A unit is NOT a conversion licence. Currencies are never converted, and
       two claims in different units do not combine.
 
-      `narrowsWhen` is what would tighten the bounds or move the mode. It is the
-      difference between a claim and a number pair. Optional in the schema because
-      a required element is expensive in a chain of parties, but a claim without
-      it is weaker, and a receiver is entitled to say so.
+      `narrowsWhen` is what would tighten the bounds or move the mode, and it is the
+      difference between a claim and a number pair. ⛔ IT USED TO BE AN OPTIONAL BARE
+      STRING and it is now a required `StatedNarrowing`, because the blank was carrying
+      a fact nothing else could state: a range that NOTHING would tighten is variation
+      rather than ignorance, and an omitted element could not say so. See
+      StatedNarrowing for the reversal and what it costs.
+
+      `boundOrigin` is WHO COULD MOVE THE EDGE, and it is a required
+      `StatedConstraintOrigin` for `narrowsWhen`'s reason one field over: as an
+      optional bare enumeration it was filed once in 124 claims, and its blank could
+      not separate "nobody has asked" from "nothing sets this bound — the range is
+      where the measurements fell". ⭐ The two elements are one pair. `narrowsWhen`
+      says what would make the range SMALLER; `boundOrigin` says who owns the edge it
+      would move. A range with neither is a number pair with error bars.
 
       `asserter` / `asOf`: WHO says this and WHEN it was true. In a chain of
       organisations these are not bookkeeping: one party's claim about another
@@ -526,8 +1188,8 @@
       <xs:element name="mostLikely"  type="xs:decimal"/>
       <xs:element name="high"        type="xs:decimal"/>
       <xs:element name="unit"        type="xs:token"/>
-      <xs:element name="narrowsWhen" type="xs:string" minOccurs="0"/>
-      <xs:element name="boundOrigin" type="pm:ConstraintOrigin" minOccurs="0"/>
+      <xs:element name="narrowsWhen" type="pm:StatedNarrowing"/>
+      <xs:element name="boundOrigin" type="pm:StatedConstraintOrigin"/>
       <xs:element name="provenance"  type="pm:Provenance" minOccurs="0"/>
       <xs:element name="asOf"        type="xs:date"   minOccurs="0"/>
     </xs:sequence>
@@ -723,10 +1385,27 @@
   <xs:complexType name="LumpyQuantum">
     <xs:annotation><xs:documentation>
       A supply that only comes in whole units. `size` is the size of ONE unit, in
-      the unit of the layer's demand, so that a demand and a quantum can be divided.
+      the unit of the NAMEPLATE THIS DIVIDES, so that a demand and a quantum can be
+      divided.
       ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
       compare across elements. An implementer still owes this check; the schema
       cannot take it from them.
+
+      ⚠️ THE RULE USED TO SAY "THE UNIT OF THE LAYER'S DEMAND" AND ONE FILING READ IT
+      THE OTHER WAY, so it is worth saying which reading is meant and why. Where the
+      nameplate is a RATE — `3 launches per quarter`, `10 shifts per week` — it is
+      tempting to file the quantum as the bare thing, `launches`, on the reasoning
+      that a lump is a lump. ⛔ THAT IS WRONG, AND THE ARGUMENT IS ARITHMETICAL
+      RATHER THAN STYLISTIC. The whole purpose of a quantum is that `nameplate / q`
+      and `demand / q` are COUNTS. `(launches per quarter) / launches` is not a
+      count, it is a frequency, and the decomposition it feeds is meaningless. ⭐ The
+      lump on a rate is a lump OF THE RATE: not "one launch" but ONE LAUNCH SLOT PER
+      QUARTER, which is the thing you cannot hold two thirds of.
+
+      ⚠️ AND THE RULE KEYS OFF THE NAMEPLATE RATHER THAN THE DEMAND, though in a
+      well-formed layer these agree. `size` is nested inside `nameplate/divisibility`
+      because it describes how THE SUPPLY comes; a demand is not divided into lumps
+      by anybody.
 
       ⭐ `size` is a Claim rather than a number because a quantum is often itself a
       range ("one to three months' notice", "a hire is four to nine weeks"), and
@@ -775,11 +1454,125 @@
       rather than one shape with a size that might be zero. A continuous supply does
       not have a quantum of zero; it has no quantum, and the difference is the
       whole model.
+
+      ⭐⭐⭐ AND THE CHOICE ANSWERS "DIVIDES BY HOW MUCH", WHICH THIS TYPE NEVER HAD TO
+      SAY UNTIL THERE WAS A SECOND AXIS. Read the two as functions of the amount asked
+      for and the third one draws itself:
+
+        continuous     a line          any amount is available
+        lumpy          a STAIRCASE     q*floor(x/q); the step width is the quantum
+        `window`       a SQUARE WAVE   the same staircase, on the TIME axis
+
+      ⭐ A staircase is a square wave in amount; a duty cycle is a staircase in time.
+      Same function, different axis — which is why the third belongs with these two and
+      why it is NOT a third member of the choice.
+
+      ⛔⛔ IT IS A SECOND AXIS AND A CHOICE WOULD FORCE A FALSE PICK. Eight-GPU nodes
+      available only between 02:00 and 05:00 are lumpy in amount AND intermittent in
+      time, and that is an ordinary supply rather than an exotic one. So `window` is a
+      SEQUENCE member beside the choice rather than a third branch of it.
+
+      ⚠️ IT WAS OPTIONAL AND IS NOW A REQUIRED `StatedLumpyQuantum`, which is a breaking
+      change made on purpose. Optional bought backward compatibility for documents
+      written before the element existed; what it cost was the difference between a
+      supply that runs continuously and a supply nobody asked about — and, worse, a
+      third state this very annotation describes two paragraphs down as MALFORMED. See
+      StatedLumpyQuantum.
+
+      ⭐⭐ THE MACHINERY IS ALREADY HERE AND SO IS THE OTHER HALF OF THE STATEMENT.
+      A time lump is a `LumpyQuantum` — a size with a unit, and an origin saying who
+      sets it. The CYCLE comes from `Claim`'s rule that a unit's denominator must cover
+      at least one whole duty cycle, so
+
+        nameplate  2160 muffins per day  +  window size  3 hours
+
+      is complete: the denominator gives the period, the window gives the part of it the
+      supply exists in. The denominator rule and this element are one fact from two sides.
+
+      ⚠️ AND WHAT THIS DELIBERATELY DOES NOT REACH. `Divisibility` sits on `Nameplate`,
+      so `window` is a fact about SUPPLY. The mirror — demand with a lifetime, an SLA
+      that says how long a queued order stays an order — is a fact about DEMAND, and
+      `Layer/timeSlack` already records where that has to go: "if demand ever gains
+      structure this is the first thing that should move into it." Half the axis, filed
+      as half rather than pretended whole.
     </xs:documentation></xs:annotation>
-    <xs:choice>
-      <xs:element name="lumpy"      type="pm:LumpyQuantum"/>
-      <xs:element name="continuous" type="pm:Continuity"/>
-    </xs:choice>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="lumpy"      type="pm:LumpyQuantum"/>
+        <xs:element name="continuous" type="pm:Continuity"/>
+      </xs:choice>
+      <xs:element name="window" type="pm:StatedLumpyQuantum">
+        <xs:annotation><xs:documentation>
+          THE SUPPLY EXISTS ONLY IN WINDOWS OF THIS SIZE, one per period of the
+          nameplate's unit. A line running 02:00-05:00 files `3 hours` against a
+          nameplate quoted per day; a machine stopped two hours a day files `22 hours`.
+
+          ⭐⭐⭐ THIS ELEMENT IS A NOTE ON THE UNIT'S DENOMINATOR, AND THE TWO ARE ONE
+          FACT. The denominator supplies the PERIOD; the window supplies the LIVE PART
+          of it; the ratio is the duty fraction:
+
+            nameplate  2160 muffins per day     the denominator: one day
+            window     3 hours                  the live part of it
+                                                3h / 1 day  =  the duty fraction
+
+          ⭐ WHICH IS WHY THE DENOMINATOR RULE AT `Claim` IS ITS PRECONDITION rather than
+          a separate convention. "The denominator must cover at least one whole duty
+          cycle" exists so that the window has a well-defined thing to be a fraction OF.
+          Quote the same line `720 muffins per hour` and the window is longer than its own
+          period, which is not a tight filing but an incoherent one.
+
+          ⛔⛔ SO A WINDOW IS MALFORMED ON A UNIT WITH NO DENOMINATOR, AND THAT IS
+          `notApplicable` RATHER THAN AN OMISSION. `12 people` has no period, so "5 days"
+          has nothing to be five days of; `GPU-hour` carries its hour in the NUMERATOR and
+          is a quantity of resource-time rather than a rate. Both are stocks, and a stock
+          has no cycle to be live in part of. ⭐ `notApplicable`'s own gloss is the reason
+          this is not pedantry: "a receiver that treats this as a gap will report a
+          deficiency that does not exist", and a receiver auditing duty cycles across a
+          corpus of headcount layers would report twenty of them.
+          ⭐ THAT IS ALSO WHY A FILED QUANTUM IS RARE RATHER THAN THE ELEMENT BEING
+          UNDER-USED. Of the units in this corpus only `shifts per week`, `turnos por
+          semana` and `launches per quarter` have a denominator at all, and only the
+          shared line has a real duty cycle inside one.
+          ⛔ THIS PARAGRAPH USED TO END "a supply that is always on does not need saying
+          so", AND THAT WAS THE DEFECT. It is exactly what needs saying: `absent
+          reason="none"` is the always-on filing, and everything above about stocks
+          having no cycle is `notApplicable`. Rare in its VALUE, universal in its
+          ELEMENT.
+          ⛔ NOT REACHABLE BY A VALIDATOR. A unit is an `xs:token`, so nothing can tell a
+          rate from a stock, or check a duration against a period written in free text.
+
+          ⛔ SIZE IS THE ON-DURATION, NOT THE GAP. Both readings are natural and they
+          are complements, so a filing that means one and is read as the other is out by
+          the whole cycle. The on-duration is the one that multiplies: nameplate rate
+          times window over period is what the supply actually delivers.
+          ⛔ A WINDOW IS CARRIED THROUGH A FUSION AND NEVER SUMMED. Two members naming
+          one machine file one calendar between them; summing gives ten days a week. It
+          is a property rather than a quantity, which is why `EliminationAgainst` has
+          three members and no fourth — there is nothing to eliminate.
+          ⛔ NEITHER IS REACHABLE BY A VALIDATOR. XSD 1.0 cannot compare a size against
+          the period in another element's unit, and cannot see across two documents at
+          all. An implementer still owes both.
+
+          ⭐ `origin` IS NOT DECORATION HERE AND IT SEPARATES TWO THINGS THAT LOOK
+          IDENTICAL IN THE NUMBER. A maintenance stop is `intrinsic` — the machine needs
+          it and no one may decide otherwise. A shift pattern is `policy` — somebody
+          chose 02:00 and somebody could add a second shift. Both cut the daily figure
+          the same way; only one is a lever.
+
+          ⚠️ A WINDOW IS WHY A DURATION CANNOT BE DERIVED FROM A CLEARANCE. `q / clearance`
+          assumes the spare is spread evenly across the denominator, and this element is
+          the statement that it is not. Where a quantum is filed, `Layer/timeSlack` must
+          not be `absent reason="derived"`.
+          ⭐ AND THE WRAPPER EXTENDS THE RULE TO THE CASE IT COULD NOT REACH. Under
+          `absent reason="unmeasured"` nobody knows whether the spare is spread evenly, so
+          a derived time slack is an ASSUMPTION wearing a computation's clothes and the
+          same prohibition applies. Only `none` and `notApplicable` license the derivation.
+          Two of the four states permit it, and before the wrapper all four looked alike.
+          ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot compare
+          across elements. An implementer still owes this check.
+        </xs:documentation></xs:annotation>
+      </xs:element>
+    </xs:sequence>
   </xs:complexType>
 
   <!-- ==================================================================
@@ -803,23 +1596,218 @@
       (The `nameplate` basis value still exists, for a declared number filed in the
       MEASURED face, which is the case that actually misleads.)
 
-      `admitsInterference` is the one fact about a supply that no arithmetic can
-      recover: whether the draw is ALLOWED to exceed the rating. A GPU cannot run at
-      110 per cent; a disk cannot hold more than it holds; a month has at most 31
-      days. A PERSON CAN, and in most stacks labour is the only supply that can.
+      `capacitySlack` is the one fact about a supply that no arithmetic can recover:
+      how far the draw may exceed the rating. A GPU cannot run at 110 per cent; a disk
+      cannot hold more than it holds; a month has at most 31 days — all of them file
+      `absent reason="none"`. A PERSON CAN, and in most stacks labour is the only
+      supply that can.
 
-      ⭐⭐ That single boolean is the missing half of an existing costing method.
+      ⭐⭐ That one figure is the missing half of an existing costing method.
       Time-Driven ABC reports unused capacity as a separate figure, a good idea for
       exactly this model's reason, but implements ONE SIGN, because its unit of
       analysis is a machine-hour and a machine cannot run hot. Change the unit to a
       person and the account becomes signed. The negative branch has no home in any
       standard cost system, and this flag is where a document says the branch is
       inhabited.
+
+      ⭐⭐⭐ `amountOrigin` IS WHO YOU HAVE TO TALK TO IN ORDER TO HOLD A DIFFERENT
+      NUMBER OF UNITS, AND IT IS NOT THE QUESTION `LumpyQuantum/origin` ANSWERS.
+      That one asks who sets the size of ONE unit. This one asks who sets HOW MANY of
+      them you hold. A vendor fixes the block at eight GPU, which is a CONTRACTUAL
+      size; your budget fixes you at one block, which is a POLICY amount. Two
+      constraints, two different authors, and an enumeration answering only the first
+      leaves the second unrecorded.
+
+      ⛔ IT IS WHAT MAKES THE REMAINDER'S DECOMPOSITION FALSIFIABLE. A remainder
+      separates into whole quanta plus a residue, and the whole-quanta part is a
+      DECISION while the residue is not (see Remainder). Without this element,
+      "management chose to run three launches short" and "management could not have
+      run anything else" are the same document, and the model's own conservation claim
+      cannot be tested against either.
+
+      ⚠️ AND IT SURFACES A MISSING COUPLING. `intrinsic` filed on a layer whose count
+      is actually bounded by ANOTHER LAYER is not an intrinsic constraint at all. It
+      is a dependence, and it belongs in `Coupling` with the observation that produced
+      it. A sender reaching for `intrinsic` here should rule that out first.
+
+      ⚠️ DIRECTION IS DELIBERATELY NOT SPLIT. Who can let you hold MORE and who can
+      let you hold LESS can genuinely differ, since a commitment may be raisable at
+      will and lowerable only by agreement. It is one element until an example needs
+      two, and that example should be filed rather than anticipated.
+
+      ⭐⭐⭐ `capacitySlack` AND `inventorySlack` ARE TWO OF THREE, AND TREATING THE
+      FIRST AS A ONE-OFF WAS AN ERROR THIS SCHEMA MADE FOR SEVERAL DRAFTS. Each of
+      Factory Physics' three buffers has a SLACK — how much of a remainder it can
+      take before it is exhausted — and for several drafts only one of them was
+      written down at all:
+
+        capacity    the supply runs above its rating   Nameplate/capacitySlack
+        inventory   the output is held ahead           Nameplate/inventorySlack
+        time        the demand survives being held     Layer/timeSlack
+
+      ⭐⭐ EACH IS NAMED FOR THE BUFFER IT GATES, WHICH IS WHY THE RULE FITS ON ONE
+      LINE. `absorber` names a buffer; the slack of that same buffer bounds what may
+      be attributed to it. Two of these were previously called `admitsInterference`
+      and `admitsDelay`, which gated `capacity` and `time` under different words, so
+      every statement of the rule needed a three-row lookup table first.
+
+      ⛔⛔⛔ AND THEY WERE BOOLEANS, WHICH IS WORSE THAN IMPRECISE — IT IS UNCHECKABLE.
+      A boolean says a buffer is available; it cannot say AVAILABLE, BARELY. Take a
+      conveyor at a hundred slots an hour carrying ninety-five muffins: five slots an
+      hour are free, so a late muffin waits about twelve minutes for one and no
+      longer. The belt admits delay — truthfully — and a sender with an hour of
+      lateness could attribute the whole of it to the time buffer and file `true`
+      without lying about anything. ⛔ SO THE BOOLEAN CAUGHT A CONTRADICTION AND NEVER
+      AN ATTRIBUTION: it caught "you said inventory absorbed it and also said this
+      cannot be stored", and never "you said inventory absorbed six months of output
+      through a two-day shelf life." The comfortable exits stayed free, one level
+      down, which is the exact defect adding the conditions was meant to close.
+
+      ⭐ THE MODEL HAD ALREADY MADE THIS ARGUMENT ONE TYPE OVER. `LumpyQuantum/size`
+      is a Claim rather than a number "because a point value is the degenerate Claim,
+      nothing is lost when it is exact." A slack is the same case, and the old
+      `StatedBoolean` — a type that existed for these three fields and nothing else
+      in either schema, while `StatedClaim` carried every other quantity — was that
+      discipline abandoned at precisely the three facts that decide whether this
+      model's own thesis survives.
+
+      ⭐⭐ TYPED ABSENCE THEN SUPPLIES A THIRD STATE THE BOOLEAN COULD NOT, and it is
+      the state most senders are actually in:
+
+        a claim                     available up to this much, in the layer's unit
+        absent reason="none"        somebody looked and it is zero — the old `false`
+        absent reason="unmeasured"  available, and nobody has sized it
+        absent reason="derived"     computable here, e.g. from the clearance
+
+      The old `true` was doing the second and third jobs at once and could not tell
+      a reader which it meant.
+
+      ⛔ A HOLDER'S SHARE MUST NOT EXCEED THE SLACK OF THE BUFFER ITS `absorber`
+      NAMES. An unmeasured slack SUSPENDS that check rather than passing it, exactly
+      as an unmeasured share suspends the share sum.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
+
+      ⛔ AND DO NOT INVENT A SLACK TO FILL THE FIELD. A fabricated number wears more
+      authority than the boolean ever did, and `unmeasured` is a complete answer.
+
+      ⛔⛔ A SIZED SLACK SHOULD SAY WHO SET IT, AND ALL THREE ARE THE ONLY CONSTRAINTS
+      IN THIS MODEL THAT DO NOT. `Nameplate/amountOrigin` says who can hold a different
+      number of units; `LumpyQuantum/origin` says who sets the size of one; a slack says
+      how much room a buffer has and NOTHING about whether anybody can move it. The slot
+      already exists — `Claim/boundOrigin` — and across the whole corpus it is filed once.
+
+        intrinsic     a shelf life, a material limit. Not a lever at all
+        contractual   an SLA that gives queued demand a lifetime; a reserved block.
+                      A negotiation
+        policy        a queue depth or an overtime ceiling somebody here chose.
+                      Ours to change unilaterally
+
+      ⭐ THE SLA CASE IS WHY THIS IS NOT BOOKKEEPING. Two layers can file the same
+      `timeSlack` and mean opposite things: one is how long the work physically keeps,
+      the other is how long a contract says the customer waits. The first is a fact
+      about the world and the second is a term somebody negotiated, and a reader
+      deciding where to push cannot tell them apart from the number.
+      ⛔ NOT REACHABLE BY A VALIDATOR. `boundOrigin` is optional on every Claim, and
+      XSD 1.0 cannot require it here and not elsewhere.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="amount"             type="pm:StatedClaim"/>
-      <xs:element name="divisibility"       type="pm:StatedDivisibility"/>
-      <xs:element name="admitsInterference" type="pm:StatedBoolean"/>
+      <xs:element name="amount"         type="pm:StatedClaim"/>
+      <xs:element name="amountOrigin"   type="pm:StatedConstraintOrigin"/>
+      <xs:element name="divisibility"   type="pm:StatedDivisibility"/>
+      <xs:element name="capacitySlack"  type="pm:StatedClaim">
+        <xs:annotation><xs:documentation>
+          HOW FAR THE SUPPLY CAN RUN ABOVE ITS RATING, in the layer's unit.
+
+          ⚠️ NOT SPARE CAPACITY, AND THE IDIOM POINTS THE WRONG WAY. "Capacity slack"
+          in ordinary speech means the UNUSED part of a rating, which in this model is
+          the clearance and is already carried by `Remainder`. This is the opposite
+          end: the room ABOVE the nameplate, which is what the capacity buffer draws
+          on when it absorbs a remainder. A layer can have plenty of the first and
+          none of the second.
+
+          ⭐ PERISHABILITY DOES NOT APPLY HERE, WHICH IS WHY THIS ONE IS DIFFERENT.
+          Holding spare is always available and merely costs money, so only the
+          negative direction ever needed a figure. Three buffers, three slacks, and
+          this one measures half an axis. Said rather than pretended away.
+
+          ⛔ RUNNING ABOVE A RATING IS INTRINSICALLY A RATE CONCEPT, AND ON A LAYER
+          WHOSE UNIT IS A STOCK THAT IS A TRAP. You cannot exceed a stock: twelve people
+          is twelve people, and there is no thirteenth to draw on. What you exceed is a
+          RATE — twelve people at fifty hours instead of forty. `enterprise-contract`'s
+          filer felt this and wrote it into the note: "HOW FAR ABOVE, AND FOR HOW LONG,
+          nobody here has measured." Two dimensions named, one field to hold them.
+          ⭐ SO THE MEASUREMENT IS A DURATION AND THE FILING IS A QUANTITY, exactly as
+          at `Layer/timeSlack`, and the bridge is the same: `quantity = duration x rate`.
+          Cross it, and say in the note that you did.
+
+          ⭐⭐⭐ THIS FIELD HAS A SECOND JOB, AND IT IS THE ONLY PLACE THE MODEL
+          MEASURES SOMETHING WITH NO INSTRUMENT BEHIND IT. Everywhere else a slack
+          BOUNDS shares that were already filed. Here it closes an equation over
+          quantities a filer had to supply anyway. Start from the exposure defined at
+          Fit, which comes from `demand` and `nameplate` and needs nothing else:
+
+            exposure = max(0, demand.high - nameplate.low)
+
+          That is how far demand can run past the supply at the worst corner. None of
+          it can be absorbed beyond this slack, so whatever is left went unserved, and
+          unserved demand is `customer` or `unrealised`:
+
+            exposure  ≤  capacitySlack.high + SUM(customer, unrealised share highs)
+
+          ⭐ IN WORDS: what your own numbers say could have gone wrong is at most what
+          you can absorb plus what you admit went unserved. Four filed quantities,
+          no instrument, and the SHORTFALL IS THE INTERESTING NUMBER — the part of a
+          remainder that happened and that nothing recorded, which is the whole of
+          this model's subject stated as arithmetic instead of as an argument.
+
+          ⚠️ EVALUATED AT ONE CORNER, for the reason given at Fit: the clearance and
+          interference sides are anti-correlated, so anything summed across the demand
+          range reports a state that occurs in no week. Everything above is the high
+          corner and nothing else.
+
+          ⚠️ AND IT SAYS SOMETHING NEW ONLY UNDER `transition`. Under `interference`
+          the exposure IS the remainder magnitude's high bound, so the inequality
+          degenerates into the sum rule already stated at Holder. Under `clearance` the
+          exposure is zero and there is nothing to say. It is a transition-fit
+          instrument, recovering exactly what the magnitude loses in the one case where
+          the magnitude is lossy.
+
+          ⛔ IT IS ALSO UNEXERCISED, AND SAYING SO IS THE POINT. Not one layer in
+          `assets/corpus/` files a NUMERIC `capacitySlack`; every one is `none` or
+          `unmeasured`, which makes this check silent on nineteen of twenty-one layers.
+          A rule with nothing to bound passes loudest, and the cure is a filer
+          measuring how far a supply can run hot — not a figure invented to give the
+          rule something to chew on.
+          ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+          compare across elements. An implementer still owes this check; the schema
+          cannot take it from them.
+        </xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="inventorySlack" type="pm:StatedClaim">
+        <xs:annotation><xs:documentation>
+          HOW MUCH OUTPUT CAN BE HELD AHEAD, in the layer's unit. Supply
+          perishability, and the exact mirror of `Layer/timeSlack`.
+
+          ⭐ THE SHARPEST CASE IS LABOUR AND IT IS WHY THIS IS NOT DECORATIVE.
+          Capacity not used today is GONE: last week's unused hours cannot be
+          stockpiled to serve this week's demand. `absorber = inventory` on a labour
+          layer is therefore flatly false, obvious to any reader, and was entirely
+          unreachable by any check until this element existed. The filing is
+          `absent reason="none"` — somebody looked, and the answer is zero.
+
+          ⚠️ AND THE SAME DIMENSION TRAP AS THE OTHER TWO. What a stockpile is naturally
+          measured in is a DURATION — how long the shelf life is, how many weeks of cover
+          the floor holds — and what this field takes is a QUANTITY in the layer's unit,
+          because it is compared against holder shares. `enterprise-contract`'s
+          `capability` shows the conversion done correctly and silently: "finished and
+          unshipped for up to about TWO QUARTERS' worth of launches" is a duration, and at
+          roughly three launches a quarter it was filed as `[2, 4, 6] launches per
+          quarter`. ⭐ THE MULTIPLICATION IS OWED AND IT IS INVISIBLE ONCE DONE, so the
+          note is the only place a reader can see whether it happened.
+        </xs:documentation></xs:annotation>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
@@ -828,13 +1816,13 @@
       THE OPERATIONAL FACE: what actually happened. Nobody chose it.
 
       `draw` is what the supply actually served, which is NOT what was demanded and
-      NOT what was committed. Demand that was refused never became a draw at all, so
-      a model that keeps only the draw has silently discarded every customer it
-      turned away.
+      NOT what was committed. Demand that went unserved never became a draw at all, so
+      a model that keeps only the draw has silently discarded every customer it never
+      served.
 
       ⭐ Its job in this model is narrow and it is not to size the remainder: the
       draw is what says WHO HELD IT. Sitting exactly on the nameplate under excess
-      demand means the excess was refused; sitting above it means somebody absorbed
+      demand means the excess went unserved; sitting above it means somebody absorbed
       the excess. See Fit.
 
       `measurementBasis` belongs HERE and not on the nameplate, because this face is
@@ -906,12 +1894,91 @@
       `remainder` is REQUIRED, as a StatedRemainder, so that "there is none here"
       is a filed claim rather than an empty field. That requirement is the model
       asserting itself in a form somebody can contradict.
+
+      ⭐⭐ `timeSlack` IS THE THIRD BUFFER'S SLACK: HOW MUCH DEMAND SURVIVES BEING
+      HELD. It completes the set begun at Nameplate/capacitySlack and
+      Nameplate/inventorySlack, and without it a claim that `time` absorbed a
+      remainder is unfalsifiable.
+
+      ⛔⛔ IT IS DEMAND PERISHABILITY AND IT IS NOT A QUESTION ABOUT WILLINGNESS.
+      An earlier draft of this annotation asked "will this demand wait?", and that
+      wording was a defect rather than a shorthand. ⭐ THE HOLDER DOES NOT GET TO
+      REFUSE. A customer who leaves has not declined anything; the demand DECAYED,
+      the same way an unsold pastry decays, and the same way `inventorySlack` measures
+      supply decaying. Asking instead what a third party is WILLING to tolerate puts
+      an unfalsifiable claim about somebody else's state of mind into a filing made by
+      the party who benefits from the answer — which is the unchecked exit that
+      terminates inquiry, reintroduced in the very element added to close it.
+
+      ⭐ SO THE PAIR IS EXACT. `inventorySlack` asks whether the SUPPLY survives being
+      held across time; this asks whether the DEMAND does. There is no fourth
+      condition because demand has no nameplate to run hot against.
+
+      ⭐⭐ AND IT IS OBSERVABLE, WHICH WILLINGNESS WAS NOT. Whether queued work is
+      eventually served or quietly ages out is visible in any ticket system.
+
+      ⛔⛔ BUT WHAT YOU OBSERVE IS A DURATION AND WHAT THIS FIELD HOLDS IS A QUANTITY,
+      AND AN EARLIER DRAFT OF THIS PARAGRAPH FILED THE WRONG ONE. It said: on a belt at
+      a hundred slots an hour carrying ninety-five muffins, five slots an hour are free,
+      "so a late muffin waits about twelve minutes" — and twelve minutes is not what
+      goes here. The slack is FIVE MUFFINS AN HOUR. Twelve minutes is `q / clearance`,
+      a different quantity in a different dimension that happens to describe the same
+      belt.
+      ⭐ THE BRIDGE IS `quantity = duration x rate`, and it must be crossed by the
+      filer, because this field is compared against holder shares and shares are in the
+      layer's unit. A duration filed here is dimensionally wrong however true it is.
+      ⚠️ AND THE PULL TOWARD THE DURATION IS NOT SLOPPINESS. A buffer's size is
+      naturally measured as a duration — how long the work sits, how long before the
+      caller leaves — so every slack in this schema will be MEASURED one way and FILED
+      another. Say which you did.
+      ⛔ A SLACK IS EXPRESSED IN THE UNIT OF THE SHARES IT BOUNDS, and a slack measured
+      as a duration is converted before filing.
+      ⛔ NOT REACHABLE BY A VALIDATOR. A unit is an `xs:token`; XSD 1.0 cannot compare
+      one element's unit against another's, and no schema can see a multiplication that
+      was skipped. An implementer still owes both checks.
+
+      ⛔⛔ `derived` IS AVAILABLE ONLY WHERE THE LAYER RUNS CONTINUOUSLY, which almost
+      nothing does. ⛔ NOT REACHABLE BY A VALIDATOR: nothing in a document says what duty
+      cycle its supply runs on, so a `derived` slack cannot be checked for the assumption
+      it rests on. The derivation `duration = q / clearance` assumes the clearance is
+      spread evenly across the unit's denominator, and a duty cycle is exactly the
+      violation of that assumption. A line running 02:00-05:00 at one muffin every five
+      seconds:
+
+        nameplate   10800 s / 5 s      =  2160 muffins per day
+        demand                            2000 muffins per day
+        clearance                          160 muffins per day   ** THIS is the slack **
+
+        spread over the day  1440 min / 160  =  9 minutes
+        inside the window     180 min / 160  =  68 seconds
+        missed the window       05:00-02:00  =  21 hours
+
+      Nine minutes occurs NOWHERE on that line. It is an average of two numbers, neither
+      of which is nine minutes. The quantity — 160 a day — survives the duty cycle
+      untouched, which is the second reason this field holds the quantity.
+
+      ⭐⭐⭐ AND HENCE A FILING RULE THIS CORPUS ALREADY OBEYS WITHOUT HAVING WRITTEN IT
+      DOWN: THE UNIT'S DENOMINATOR MUST COVER AT LEAST ONE WHOLE DUTY CYCLE. "2160
+      muffins per day" is true always; "720 muffins per hour" is true for three hours
+      and false for twenty-one. `shifts per week` and `launches per quarter` both pass.
+      ⛔ NOT REACHABLE BY A VALIDATOR: a unit is an `xs:token` and nothing in it says
+      what cycle the supply runs on.
+
+      ⛔ IT SITS ON THE LAYER RATHER THAN ON THE SUPPLY BECAUSE IT IS A FACT ABOUT
+      DEMAND, and `demand` is a bare Claim with nowhere to hang it. If demand ever
+      gains structure this is the first thing that should move into it.
+
+      ⛔ A HOLDER'S SHARE MUST NOT EXCEED THIS WHERE `absorber = time`.
+      ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
+      compare across elements. An implementer still owes this check; the schema
+      cannot take it from them.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="name"      type="xs:token"/>
-      <xs:element name="demand"    type="pm:StatedClaim"/>
-      <xs:element name="supply"    type="pm:Facility"/>
-      <xs:element name="remainder" type="pm:StatedRemainder"/>
+      <xs:element name="name"        type="xs:token"/>
+      <xs:element name="demand"      type="pm:StatedClaim"/>
+      <xs:element name="timeSlack"   type="pm:StatedClaim"/>
+      <xs:element name="supply"      type="pm:Facility"/>
+      <xs:element name="remainder"   type="pm:StatedRemainder"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -929,6 +1996,11 @@
       ⭐ ZERO COUPLINGS IS THE MODEL'S ASSUMPTION, NOT A PROVEN PROPERTY. A document
       with no couplings is not evidence of independence; it is a document where
       nobody looked.
+      ⭐⭐ THAT SENTENCE STOOD HERE FOR TWO REVISIONS WHILE THE ELEMENT IT DESCRIBES
+      WAS `minOccurs="0" maxOccurs="unbounded"`, WHICH IS TO SAY THE SCHEMA NAMED THE
+      DEFECT AND THEN ENCODED IT. `Stack/couplings` is a `StatedCouplings` now, so
+      "nobody looked" and "somebody looked and the layers are independent" are two
+      filings rather than one empty list. See StatedCouplings.
 
       ⭐⭐ AND IT IS WHY THE STACK CARRIES NO ORDER. "Stack" is the inherited word,
       but nothing here claims layer A sits above layer B, because an ordering
@@ -939,6 +2011,39 @@
       `observed` is REQUIRED. A coupling filed without saying what was observed is
       an opinion, and the one element in this schema whose purpose is to carry a
       refutation is the last place to accept one.
+
+      ⭐⭐⭐ WHAT HAPPENS TO A COUPLING WHEN A HIGHER LEVEL FUSES ITS ENDS. A consolidation
+      (`asrt:composition`) takes layers from filings below and states its own stack, so a
+      coupling filed at one level meets a fusion at the next. Three rules, and none of them
+      is reachable by a validator because the two levels are two documents.
+
+      ⛔⛔ FIRST, AND IT IS THE ONE MOST LIKELY TO BE GOT WRONG: A COUPLING IS NEVER
+      EVIDENCE FOR A FUSION. Coupling and fungibility are INDEPENDENT AXES, and both
+      off-diagonal cases are ordinary. Two delivery teams in two countries are one layer
+      and not coupled at all — neither one's remainder moves when the other hires. A
+      delivery team and an out-of-hours rota are tightly coupled and NOT one layer, because
+      an extra engineer on the rota delivers no features. ⚠️ A fusion that cited a coupling
+      as its justification would be answering the wrong question: fungibility is whether a
+      unit of supply in one part can serve demand in the other, which is not what a coupling
+      measures.
+
+      ⭐⭐ SECOND, A COUPLING PROPAGATES UPWARD AND ATTENUATES. If A and B are coupled and a
+      higher level puts A inside X while B stays inside Y, then X and Y are coupled — but
+      MORE WEAKLY, because relief applied to X may land on A's fellow parts rather than on
+      A. The upper strength is bounded by A's share of X. ⛔ AN INHERITED COUPLING RE-FILED
+      AT THE SAME STRENGTH IS EITHER LUCKY OR UNEXAMINED, and `strength` is where that shows.
+
+      ⭐⭐ THIRD, FUSING TWO COUPLED LAYERS DESTROYS A FILED OBSERVATION, AND THE COMPOSER
+      OWES A REASON. The coupling had two ends in a stack; above the fusion there is one
+      layer and no coupling to file. That is not an omission and not evidence either way —
+      it is an observation the upper level has chosen to absorb, and `asrt:Fusion/observed`
+      is where it says so. ⚠️ A composition that silently fuses two layers a filing below it
+      reported as coupled has overruled that filing without arguing with it.
+
+      ⚠️ AND A COUPLING IS NEVER INHERITED BY COPYING. Each level observed its own system;
+      carrying a lower level's row upward unchanged is the cached-value problem `Holder`
+      already names, one document apart.
+      ⛔ NOT REACHABLE BY A VALIDATOR, for all four: the levels are separate filings.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="from"     type="xs:token"/>
@@ -950,12 +2055,29 @@
 
   <xs:complexType name="Stack">
     <xs:annotation><xs:documentation>
-      The layers of one system, and any couplings somebody has observed between
-      them. ⚠️ Document order is not significant. See Coupling.
+      The layers of one system THAT MATTERED TO WHOEVER FILED, and what somebody found when
+      they looked for couplings between them. ⚠️ Document order is not significant. See Coupling.
+
+      ⛔⛔⛔ THIS TYPE USED TO SAY "the layers of one system" AND READ AS THOUGH IT ENUMERATED
+      ONE. It never did. There is one system; a filing holds a PROJECTION of it, and which
+      layers are in scope is decided by the reader rather than by the system — which is where
+      the analogy to a Rust trait breaks, because there the type decides what it implements.
+
+      ⭐⭐ THE CONSEQUENCE IS WHY `scope` IS REQUIRED. A second document holding a layer this
+      one does not is TWO PROJECTIONS OF ONE SYSTEM, not evidence that this filer omitted
+      anything. An auditor who composes a client's filing and adds a layer is filing their own
+      view, and without a declared scope that reads as an allegation. See ScopeExtent.
+
+      ⛔ `couplings` IS REQUIRED, AND IT IS THE ONLY REQUIRED ELEMENT IN THIS SCHEMA THAT
+      ASKS A FILER WHETHER THEY TESTED THE MODEL. Everything else asks what they measured.
+      A stack is a claim that these layers hold their remainders independently; requiring
+      the wrapper makes the filer say whether that claim was checked, in the same way
+      `StatedRemainder` makes them say whether a layer has a remainder at all.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="layer"    type="pm:Layer"    maxOccurs="unbounded"/>
-      <xs:element name="coupling" type="pm:Coupling" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="scope"     type="pm:StatedScope"/>
+      <xs:element name="layer"     type="pm:Layer" maxOccurs="unbounded"/>
+      <xs:element name="couplings" type="pm:StatedCouplings"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -1213,6 +2335,7 @@
   <xs:element name="processModulus">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="notation" type="pm:StatedNotation"/>
         <xs:element name="regime" type="pm:Regime" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="stack" type="pm:Stack"/>
         <xs:element name="operation" type="pm:Operation" minOccurs="0" maxOccurs="unbounded"/>
@@ -1240,12 +2363,12 @@
     </xs:keyref>
 
     <xs:keyref name="couplingFrom" refer="pm:layerName">
-      <xs:selector xpath="pm:stack/pm:coupling"/>
+      <xs:selector xpath="pm:stack/pm:couplings/pm:coupling"/>
       <xs:field    xpath="pm:from"/>
     </xs:keyref>
 
     <xs:keyref name="couplingTo" refer="pm:layerName">
-      <xs:selector xpath="pm:stack/pm:coupling"/>
+      <xs:selector xpath="pm:stack/pm:couplings/pm:coupling"/>
       <xs:field    xpath="pm:to"/>
     </xs:keyref>
   </xs:element>
