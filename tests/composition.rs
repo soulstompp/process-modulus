@@ -352,15 +352,29 @@ fn joining_two_filings_on_the_layer_name_produces_a_false_positive() {
 
 /// Everything about a layer that this namespace owns outright, as a join key. This is
 /// the fallback a consolidator reaches for once names have failed: match on the facts.
+/// A stated slack reduced to the fact, and never to the prose beside it.
+///
+/// ⛔⛔ `Absence/note` IS PROSE, AND PROSE IS WRITTEN IN THE FILER'S OWN LANGUAGE. Debugging
+/// the whole `StatedClaim` swept the note into the fingerprint, so two layers agreed only
+/// while both filings happened to be written in English. Translating the Portuguese member
+/// broke it, which is the right failure: it was reporting a property of the WRITING as a
+/// property of the supply. The reason is the fact this namespace owns; the note is not.
+fn slack_fact(s: &StatedClaimType) -> String {
+    match s {
+        StatedClaimType::Claim(c) => format!("{},{},{},{}", c.low, c.most_likely, c.high, c.unit),
+        StatedClaimType::Absent(a) => format!("{:?}", a.reason),
+    }
+}
+
 fn fingerprint(l: &LayerType) -> String {
     let mut kinds: Vec<String> = holder_kinds(l).iter().map(|k| format!("{k:?}")).collect();
     kinds.sort();
     format!(
-        "{:?}|{:?}|{:?}|{:?}|{}",
+        "{:?}|{}|{}|{}|{}",
         fit(l),
-        l.time_slack,
-        l.supply.nameplate.capacity_slack,
-        l.supply.nameplate.inventory_slack,
+        slack_fact(&l.time_slack),
+        slack_fact(&l.supply.nameplate.capacity_slack),
+        slack_fact(&l.supply.nameplate.inventory_slack),
         kinds.join(",")
     )
 }
