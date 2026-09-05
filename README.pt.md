@@ -410,13 +410,13 @@ E uma terceira via, que verifica as regras a que um validador não chega:
 
 ```bash
 createdb process_modulus_proof
-psql -d process_modulus_proof -f assets/sql/schema.ddl \
+psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
                               -f assets/sql/rules.sql
 ```
 
 O Postgres lê o próprio conjunto de documentos — sem Rust, sem extensões, sem superutilizador.
-Ver [`assets/sql/README.pt.md`](assets/sql/README.pt.md), que é o documento onde as regras
+Ver [`assets/sqlc/README.pt.md`](assets/sqlc/README.pt.md), que é o documento onde as regras
 são demonstradas.
 
 O `assets/corpus/` tem doze documentos: um contrato empresarial e a sua tradução portuguesa, uma
@@ -460,7 +460,9 @@ A metade de fluxo descreve onde uma oferta encontra uma procura e o que consome 
 **O esquema não enumera as camadas.** O que faz de alguma coisa uma camada é que o seu resto pode
 ser suportado independentemente do de todas as outras. Isso é um teste que se aplica em vez de uma
 lista que é preciso receber, é também o quarto falsificador do modelo, e quer dizer que uma camada
-nova não exige alteração ao esquema. A pilha não tem ordem pela mesma razão: uma ordenação entre
+nova não exige alteração ao esquema. É a mesma frase que decide quando duas declarações
+sustentam **uma** só camada — ver [uma consolidação é uma
+declaração](#uma-consolidação-é-uma-declaração-e-quem-compõe-assina-a). A pilha não tem ordem pela mesma razão: uma ordenação entre
 camadas seria ela própria um acoplamento, e afirmá-la no contentor prejulgaria a pergunta a que o
 `Coupling` existe para responder.
 
@@ -612,7 +614,7 @@ coisas o transportam:
 
 | | |
 |---|---|
-| `Fusion` | que camadas declaradas são **uma** só camada, e porquê. **Fundir só o que é fungível**: se uma unidade de oferta de uma parte pode servir a procura da outra, então não suportam os seus restos independentemente e são uma camada. Se não pode, são duas, e um `Coupling` é onde vai parar qualquer interação observada. Esse juízo é de quem compõe, o `observed` é onde o defende, e é a afirmação com que um leitor tem direito a discordar. Uma camada sem fusão nenhuma é o terceiro caso — uma que quem compõe **originou**, como uma escala de serviço ao nível do grupo |
+| `Fusion` | que camadas declaradas são **uma** só camada, e porquê. **Fundir só o que é fungível**: se uma unidade de oferta de uma parte pode servir a procura da outra, então não suportam os seus restos independentemente e são uma camada. Se não pode, são duas, e um `Coupling` é onde vai parar qualquer interação observada. Esse juízo é de quem compõe, o `observed` é onde o defende, e é a afirmação com que um leitor tem direito a discordar. ⚠️ O teste é entre duas equipas *diferentes* por construção, portanto «servem clientes diferentes» não lhe responde — o que o decide é se as pessoas de uma equipa conseguem pegar no trabalho da outra. O [`merge-group-composition.xml`](assets/corpus/merge-group-composition.xml) responde-lhe com prova e mostra a regra a recusar no mesmo fôlego: duas equipas de entrega fundem-se porque qualquer dos lados pegou no trabalho acumulado do outro dentro de uma semana, onze vezes este ano, enquanto o piquete fica camada à parte porque o desfasamento de oito horas o torna não fungível. Uma camada sem fusão nenhuma é o terceiro caso — uma que quem compõe **originou**, como uma escala de serviço ao nível do grupo |
 | `Part` | uma camada declarada a entrar, com o `factor` que a põe na unidade da camada composta. `4,4 GPU + 545 GPU-hora` não é uma soma, e quem compõe e multiplica por 720 em silêncio fez exatamente a aritmética não auditada que este documento existe para expor. Um fator é ele próprio uma afirmação de três pontos, porque um mês são `[672, 720, 744]` horas |
 | `Elimination` | o que foi retirado, e porque é que a figura fundida **não** é a soma das suas partes. Quando um membro encomenda trabalho a outro, ambos o declaram como procura própria, honestamente, e a procura do grupo é a soma menos a encomenda. Nomeia qual das três quantidades atinge, já que um ajustamento que não o diga é aplicado ao número que o leitor tiver por acaso na mão |
 

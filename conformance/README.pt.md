@@ -259,3 +259,28 @@ Estão aqui agrupadas por aquilo que um implementador tem de fazer para as cumpr
 ⚠️ **Esta é uma vista agrupada e não uma segunda lista.** A versão inglesa é a autoritativa e
 transporta as quarenta e quatro linhas com o tipo exato em que cada regra está enunciada. Se as
 duas divergirem, a inglesa está certa e isto é o defeito.
+
+### ⛔ Acoplamento e fungibilidade são eixos independentes
+
+Isto não está na vista agrupada acima porque não é uma regra a cumprir. É a leitura errada que dois
+leitores já fizeram, e fica aqui para que o terceiro não a faça.
+
+Nenhuma das duas linhas de `Coupling` diz que um acoplamento é prova a favor de uma fusão, e isso é
+deliberado. **Acoplamento e fungibilidade são eixos independentes**, e os documentos deste
+repositório preenchem as duas células fora da diagonal. Duas equipas de entrega em dois países são
+uma só camada e não estão acopladas de todo. Uma equipa de entrega e um piquete fora de horas estão
+fortemente acoplados e são duas camadas, porque um engenheiro no piquete não entrega
+funcionalidades. Uma fusão que cite um acoplamento como justificação responde a uma pergunta
+diferente daquela que lhe foi feita.
+
+⚠️ **E a pergunta da fungibilidade é entre instâncias por construção.** «Uma parte» e «a outra» são
+duas instâncias, portanto «o mesmo TIPO e não a mesma INSTÂNCIA» é onde a pergunta está VIVA, e
+nunca onde é respondida. É respondida no `observed`, com prova. Ver a `asrt:Fusion`.
+
+### ⛔ Um quarto limite está deliberadamente fora da tabela
+
+Listá-lo daria a entender que alguém o deve. As unidades das partes de uma fusão NÃO são verificadas
+e não devem ser: as partes escrevem legitimamente uma unidade de duas maneiras — `people` e
+`pessoas` — e afirmar que nomeiam uma só unidade É O QUE A FUSÃO DIZ. Um verificador que exija
+igualdade de cadeias de carateres rejeita o caso para que o tipo existe. É um limite do mundo e não
+uma dívida de quem implementa.

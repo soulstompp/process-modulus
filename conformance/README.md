@@ -201,10 +201,10 @@ contain.
 
 **It does not discharge the rules; it discharges them FOR THIS CORPUS.** An adopter runs the
 same file against their own filings, which is the point of shipping it. And the query reports how
-many rows each rule examined, because four of the sixteen currently see only two layers apiece —
-almost nothing in the corpus files a numeric slack, and a bound with nothing to bound passes
-loudest. ⛔ Two report `VACUOUS` outright and are left saying so rather than quietly counted as
-passing.
+many rows each rule examined, because thin coverage is the failure mode here — almost nothing in
+the corpus files a numeric slack, and a bound with nothing to bound passes loudest. As of
+2026-09-02 one rule is `⚠️ thin` at a single row, and ⛔ **one reports `VACUOUS` outright** and is
+left saying so rather than quietly counted as passing.
 
 ⛔ What SQL still cannot reach is prose against data: whether a coupling's `observed` describes a
 real observation, whether a `narrowsWhen` names something that would actually narrow the range,
@@ -307,6 +307,13 @@ countries are one layer and not coupled at all. A delivery team and an out-of-ho
 tightly coupled and are two layers, because an engineer on the rota delivers no features. A
 fusion citing a coupling as its justification would be answering a different question from
 the one it was asked.
+
+⭐ The same holds one axis over, for fungibility against DOUBLE COUNTING. A fusion's nameplate
+elimination is how much supply its parts counted in common, and the documents here now populate
+that scale end to end: `none` at `merge-group-composition`'s `labour`, a whole part at its
+`shift-line`, and the middle at `assets/fixtures/every-partial-elimination.xml`. The parts are
+fungible at all three. An elimination is no more evidence for a kind of fusion than a coupling
+is evidence for a fusion at all.
 
 The `composition` row is a guarantee that weakens with depth, which makes it the one most
 worth stating. `partIdentity` is an `xs:key` and it is COMPLETE while every part is a leaf;

@@ -141,7 +141,7 @@ quanto ao total.
 Segunda, e pior: `d mod q` é um **dente de serra**, pelo que, avaliado nos três pontos de um
 intervalo, não tem de ficar ordenado. `d = (4,5; 5,2; 6,7)` com `q = 1` dá resíduos
 `(0,5; 0,2; 0,7)`, que não é sequer um intervalo de três pontos válido, ao passo que `d` está
-perfeitamente bem formado. **Dez das vinte camadas com quantum em `assets/corpus/` estão nesse
+perfeitamente bem formado. **Quinze das vinte e três camadas com quantum em `assets/corpus/` estão nesse
 estado.** O total é uma identidade; a divisão em duas metades não é representável como dois
 intervalos no caso geral. O esquema só transporta o total, pelo que nada está partido — mas
 leia-se a decomposição como uma derivação de `r` e nunca como instrução de preenchimento para
@@ -232,8 +232,8 @@ argumento. Avaliado num só canto, pela razão da anti-correlação acima.
 
 ⚠️ Dois limites, ambos a saber antes de confiar nisto. É um instrumento **só do ajustamento incerto**: sob interferência a exposição É o limite superior de `|n − d|` e a desigualdade
 degenera na regra da soma das quotas; sob folga é zero. E está **por exercitar** — nem uma
-camada em `assets/corpus/` declara uma margem de capacidade numérica, pelo que fica muda em dezanove
-de vinte e uma. Um limite sem nada que limitar é o que passa mais alto, e o repositório di-lo no
+camada em `assets/corpus/` declara uma margem de capacidade numérica, pelo que fica muda em vinte e três
+de vinte e quatro. Um limite sem nada que limitar é o que passa mais alto, e o repositório di-lo no
 próprio teste em vez de se contar como coberto.
 
 ## Três grãos, dos quais o modelo declara dois
@@ -339,6 +339,20 @@ por isso a declarar qual das duas, e é a diferença entre uma regra exata e um 
 quando a oferta de uma pode servir a procura da outra. É um juízo, é obrigatório transportar
 prosa, e **não** é `C` — acoplamento e fungibilidade são eixos independentes, e o corpus povoa
 as duas células fora da diagonal.
+
+⛔ **Também não é `e`, e esse é um erro de tipo e não uma confusão de vocabulário.** O
+`F ∈ {0,1}^{L×P}` transporta o juízo de fungibilidade; o `e ∈ ℝ^L` transporta o que duas partes
+contaram duas vezes. O `e` não é função do `F`: uma fusão de dois estabelecimentos disjuntos tem
+`e = 0` e é perfeitamente fungível, enquanto uma fusão de dois pretendentes a uma máquina tem `e`
+igual à capacidade nominal de uma parte inteira e é igualmente fungível. O
+`assets/fixtures/every-partial-elimination.xml` declara o meio dessa escala — `e = 3` contra partes
+de 10 — e concilia sob a mesma regra. Ler a operação a partir do `e` — agrupamento aqui, agregação
+ali — quantiza uma grandeza e infere um juízo a partir de um ajustamento. Não há parâmetro nenhum com valor de operador em `x = F Φ x − e`, nem etiqueta de tipo
+numa linha do `F`; a equação é a mesma equação em todos os casos.
+
+⭐ **Uma camada que quem compõe originou é uma linha de zeros do `F`** — uma camada composta sem
+partes, cujas figuras são de quem compõe. Nada na aritmética o proíbe, e o modelo precisa disso: uma
+escala ao nível do grupo pertence à casa-mãe e não veio de membro nenhum.
 
 ## Como verificar
 

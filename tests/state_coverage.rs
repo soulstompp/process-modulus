@@ -43,12 +43,12 @@ enum Verdict {
     Incoherent(&'static str),
     /// Permitted, coherent, unfiled. Recorded so that filing one is a deliberate act.
     ///
-    /// ⭐⭐ THERE ARE CURRENTLY NONE, AND THAT IS THE RESULT RATHER THAN A REASON TO DELETE
-    /// THE VARIANT. Every state either has a document filing it or has an argument here for
-    /// why it means nothing. Removing this arm would leave the next dark state nowhere to be
-    /// recorded except a reviewer's memory, which is where the eight of them found by this
-    /// pass had been living.
-    #[allow(dead_code)]
+    /// ⭐⭐ THE BUDGET IS TWO, ENFORCED BELOW, AND THAT IS WHAT MAKES THIS ARM HONEST RATHER
+    /// THAN A PARKING SPACE. Every other state either has a document filing it or has an
+    /// argument here for why it means nothing. Removing this arm would leave the next dark
+    /// state nowhere to be recorded except a reviewer's memory, which is where the eight of
+    /// them found by this pass had been living — but leaving it UNCAPPED would let the next
+    /// one be recorded and never settled, which is the same failure wearing a label.
     Open(&'static str),
 }
 use Verdict::{Exercised, Incoherent, Open};
@@ -92,6 +92,34 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("boundOrigin", NotApplicable, Exercised),
         ("boundOrigin", Derived, Exercised),
         // ---- the wrappers that were already here, and were never measured ----
+        ("StatedRemainder", RNone, Exercised),
+        ("StatedRemainder", Unmeasured, Open(
+            "the schema's own annotation calls it \"the honest and commonest answer on a labour \
+             layer\" — nobody has looked at whether this layer has a remainder. Coherent and \
+             permitted; no document in this corpus needs it, because every layer here either \
+             files a remainder or has looked and found none",
+        )),
+        ("StatedRemainder", NotApplicable, Incoherent(
+            "⛔ THE MALFORMED QUESTION IS ONE LEVEL IN, NOT HERE. `notApplicable` says a \
+             question PRESUPPOSES something false. \"Which side of zero is this remainder on?\" \
+             presupposes a remainder, so where there is none that question really is malformed \
+             — and `StatedFit` carries `notApplicable` for exactly that, exercised. \"Does this \
+             layer have a remainder?\" presupposes only that it is a layer, which it is, and it \
+             has an answer: no. That answer is `none`. `unstated/margin-ratio` is the case — \
+             demand and nameplate both `notApplicable`, a ratio with nothing that queues and \
+             nothing that is consumed — and it files `none` with the note \"no quantum, so \
+             nothing is left over\". A layer where the question is genuinely malformed would \
+             refute this argument, and none has been filed",
+        )),
+        ("StatedRemainder", Derived, Incoherent(
+            "⛔ IT WOULD DENY THREE THINGS TO CLAIM ONE. `derived` says the answer is stated \
+             elsewhere and repeating it here would be a restatement — true of the remainder's \
+             QUANTITY, which is why `Remainder/quantity` files `derived` and this corpus uses \
+             it. But declining the whole wrapper also declines the absorber and the holders, \
+             and neither is derivable from anything: an absorber is a borrowed term somebody \
+             CHOSE, and a holder is an observation somebody MADE. No arrangement of figures \
+             implies either",
+        )),
         ("StatedFit", RNone, Incoherent(
             "⭐ THE `transition` CORRECTION, AS A RULE. `absent reason=\"none\"` was doing the \
              missing third member's job — a demand of [3,4,5] against a nameplate of 4 was \
@@ -189,6 +217,7 @@ const COMPOSITIONS: &[&str] = &[
     "corpus/merge-group-composition.xml",
     "corpus/merge-holding-composition.xml",
     "fixtures/every-elimination.xml",
+    "fixtures/every-partial-elimination.xml",
 ];
 const FIXTURES: &[&str] = &["fixtures/every-absence.xml", "fixtures/every-draft.xml"];
 const COVERAGES: &[&str] = &[
@@ -290,6 +319,14 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
                         }
                     }
                 }
+            }
+            // ⭐⭐⭐ THE WRAPPER ITSELF, WHICH THIS FILE MISSED FOR TWO REVISIONS. `Layer`
+            // requires a `StatedRemainder` so that a sender who disagrees with "every layer
+            // has a remainder" must SAY SO; only the `Remainder` arm was ever walked, so the
+            // arm carrying the disagreement was counted nowhere. `assets/ddl/schema.ddl` was
+            // dropping it at the same time and for the same reason.
+            if let pm::StatedRemainderType::Absent(a) = &l.remainder {
+                bump("StatedRemainder", reason(a));
             }
             if let pm::StatedRemainderType::Remainder(r) = &l.remainder {
                 if let StatedFitType::Absent(a) = &r.sign {

@@ -37,7 +37,7 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 const BUILD_RS: &str = include_str!("../build.rs");
 
 /// Every instance, and the prefix whose namespace it must match.
-const INSTANCES: [(&str, &str, &str); 17] = [
+const INSTANCES: [(&str, &str, &str); 18] = [
     // The same filing in European Portuguese: same three layers, same argument, declared
     // by a microentity under IES's AnexoASNC instead of US-GAAP.
     (
@@ -131,6 +131,11 @@ const INSTANCES: [(&str, &str, &str); 17] = [
         "assets/fixtures/every-local-part.xml",
         "asrt",
         include_str!("../assets/fixtures/every-local-part.xml"),
+    ),
+    (
+        "assets/fixtures/every-partial-elimination.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-partial-elimination.xml"),
     ),
 ];
 
@@ -368,13 +373,13 @@ fn the_crate_version_tracks_the_schema_version() {
 ///
 /// ⭐ IT HAS ALREADY HAPPENED ONCE. `contrato-empresarial.xml` was added, gated by
 /// `no_example_is_exempt_from_the_namespace_gate` above, swept by `corpus_parse.rs`, and silently
-/// absent from every coverage count in `assets/sql/README.md`. This is that gate one directory
+/// absent from every coverage count in `assets/sqlc/README.md`. This is that gate one directory
 /// over, and it needs no database.
 #[test]
 fn every_corpus_document_is_ingested_by_the_sql() {
     let root = env!("CARGO_MANIFEST_DIR");
-    let ingest = fs::read_to_string(format!("{root}/assets/sql/ingest.sql"))
-        .expect("assets/sql/ingest.sql");
+    let ingest =
+        fs::read_to_string(format!("{root}/assets/sql/ingest.sql")).expect("assets/sql/ingest.sql");
 
     let dir = format!("{root}/assets/corpus");
     let mut on_disk: Vec<String> = fs::read_dir(&dir)

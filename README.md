@@ -403,13 +403,13 @@ And a third way, which checks the rules a validator cannot reach:
 
 ```bash
 createdb process_modulus_proof
-psql -d process_modulus_proof -f assets/sql/schema.ddl \
+psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
                               -f assets/sql/rules.sql
 ```
 
 Postgres reads the corpus itself — no Rust, no extensions, no superuser. See
-[`assets/sql/README.md`](assets/sql/README.md).
+[`assets/sqlc/README.md`](assets/sqlc/README.md).
 
 `assets/corpus/` holds twelve documents: an enterprise contract and its European Portuguese
 counterpart, a refutation, one that
@@ -452,7 +452,9 @@ The flow half describes where a supply meets a demand and what draws on it.
 **The schema does not enumerate the layers.** What makes something a layer is that its
 remainder can be held independently of every other layer's. That is a test you can apply
 rather than a list you have to be given, it is also the model's fourth falsifier, and it
-means a new layer needs no schema change. The stack is unordered for the same reason: an
+means a new layer needs no schema change. It is the same sentence that decides when two
+filings hold **one** layer — see [a consolidation is a
+filing](#a-consolidation-is-a-filing-and-the-composer-signs-it). The stack is unordered for the same reason: an
 ordering between layers would itself be a coupling, and asserting one in the container
 would prejudge the question `Coupling` exists to answer.
 
@@ -597,7 +599,7 @@ the composer supplies the mapping in its own document and signs it, and three th
 
 | | |
 |---|---|
-| `Fusion` | which filed layers are **one** layer, and why. **Fuse only what is fungible**: if a unit of supply in one part can serve demand in the other, they do not hold their remainders independently and they are one layer. If it cannot, they are two, and a `Coupling` is where any observed interaction goes. That judgement is the composer's, `observed` is where they defend it, and it is the claim a reader is entitled to argue with. A layer with no fusion at all is the third case — one the composer **originated**, like a group-level rota |
+| `Fusion` | which filed layers are **one** layer, and why. **Fuse only what is fungible**: if a unit of supply in one part can serve demand in the other, they do not hold their remainders independently and they are one layer. If it cannot, they are two, and a `Coupling` is where any observed interaction goes. That judgement is the composer's, `observed` is where they defend it, and it is the claim a reader is entitled to argue with. ⚠️ The test is between two *different* teams by construction, so "they serve different customers" does not answer it — what settles it is whether one team's people can take the other's work. [`merge-group-composition.xml`](assets/corpus/merge-group-composition.xml) answers it with evidence and shows the rule refusing in the same breath: two delivery teams fuse because either side has picked up the other's backlog within a week, eleven times this year, while on-call stays a separate layer because the eight-hour offset makes it unfungible. A layer with no fusion at all is the third case — one the composer **originated**, like a group-level rota |
 | `Part` | one filed layer going in, with the `factor` that puts it in the composed layer's unit. `4.4 GPU + 545 GPU-hour` is not a sum, and a composer who quietly multiplies by 720 has done exactly the unaudited arithmetic this document exists to expose. A factor is itself a three-point claim, because a month is `[672, 720, 744]` hours |
 | `Elimination` | what was removed, and why the fused figure is therefore **not** the sum of its parts. When one member commissions work from another, both file it as their own demand, honestly, and the group's demand is the sum minus the commission. It names which of the three quantities it hits, since an adjustment that does not say is applied to whichever number the reader happened to be holding |
 

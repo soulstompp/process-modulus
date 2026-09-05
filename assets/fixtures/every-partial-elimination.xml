@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔ A STIPULATION, NOT A FILING. Nothing here was measured. The figures exist to put one
+  state of the model in front of a checker, and that state is a PARTIAL NAMEPLATE
+  ELIMINATION: two parts that each hold their own capacity AND a block they both count.
+
+  ⭐⭐ WHY THE CELL WAS DARK. Every sized nameplate elimination in this repository removes a
+  WHOLE part's nameplate — one machine both members filed. That reads as "one supply, several
+  claimants" and invites the conclusion that a nameplate elimination discriminates a KIND of
+  fusion. It does not. `e` is a MAGNITUDE: how much supply the parts counted in common. Here it
+  is 3 of a 10, which is neither none nor a whole part, and the arithmetic is unchanged.
+
+    team-a nameplate   10 shifts per week   7 its own, plus the 3 it may call on
+    team-b nameplate   10 shifts per week   7 its own, plus the SAME 3
+    shared block        3 shifts per week   counted by both, so eliminated once
+    fused              17 shifts per week   10 + 10 - 3
+
+  ⭐ AND THE PARTS ARE FUNGIBLE THROUGHOUT, at e = 0, at e = 3 and at e = 10. Fungibility is a
+  judgement carried in `observed`; the elimination is an adjustment to an arithmetic. They are
+  independent axes, which is the reading this document exists to make unavailable.
+-->
+<asrt:composition
+    xmlns:asrt="https://example.invalid/assertion/1.0"
+    xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>group-parent</asrt:witness>
+  <asrt:observedAt>2026-09-02</asrt:observedAt>
+
+  <asrt:provenance>
+    <pm:party>group-parent</pm:party>
+    <pm:standing>
+      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a fixture stands behind nothing</pm:note></pm:absent>
+    </pm:standing>
+    <pm:note>stipulated: a fixture stands behind nothing</pm:note>
+  </asrt:provenance>
+
+  <asrt:regime>
+    <pm:id>stipulated</pm:id>
+    <pm:framework>
+      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a fixture reports under no framework</pm:note></pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>no positions are coded here</pm:note></pm:absent>
+    </pm:chart>
+  </asrt:regime>
+
+  <pm:processModulus>
+    <pm:notation>
+      <pm:uri>urn:example:fixture:group:every-partial-elimination</pm:uri>
+    </pm:notation>
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>stipulated: two teams and the layer they are parts of. The group runs more
+                    than this and this document does not carry it</pm:basis>
+        </pm:scope>
+      </pm:scope>
+      <pm:layer>
+        <pm:name>team-a</pm:name>
+        <pm:demand>
+          <pm:claim>
+              <pm:low>6</pm:low><pm:mostLikely>7</pm:mostLikely><pm:high>8</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the first team's shifts, including its call on the shared block</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+              <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+              <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: the lines run every week of the period</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>team-b</pm:name>
+        <pm:demand>
+          <pm:claim>
+              <pm:low>5</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>7</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the second team's shifts, including its call on the shared block</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+              <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+              <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: the lines run every week of the period</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>shift-capacity</pm:name>
+        <pm:demand>
+          <pm:claim>
+              <pm:low>11</pm:low><pm:mostLikely>13</pm:mostLikely><pm:high>15</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the two teams as one layer of the group</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+              <pm:low>17</pm:low><pm:mostLikely>17</pm:mostLikely><pm:high>17</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:lumpy>
+                  <pm:size>
+                    <pm:claim>
+              <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+                  </pm:size>
+                  <pm:origin>intrinsic</pm:origin>
+                </pm:lumpy>
+                <pm:window>
+                  <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: the lines run every week of the period</pm:note></pm:absent>
+                </pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:couplings>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>stipulated: this stack holds a composed layer and the two layers it is
+                   made of, which is not a set of independent quantizations, so there is no
+                   pair to couple</pm:note>
+        </pm:absent>
+      </pm:couplings>
+    </pm:stack>
+  </pm:processModulus>
+
+  <asrt:fusion>
+    <asrt:name>shift-capacity</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:group:every-partial-elimination</pm:notation>
+          <pm:id>team-a</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-02</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>group-parent</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:group:every-partial-elimination</pm:notation>
+          <pm:id>team-b</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-02</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>Either team can take the other's work and has done so, so a unit of supply in
+      one serves demand in the other and they are one layer. ⭐ That judgement is unaffected by
+      the block they share: it would read the same if they shared nothing, and the same again if
+      they shared everything. What the shared block changes is the ARITHMETIC below, not this
+      sentence.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:claim>
+              <pm:low>3</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>3</pm:high>
+              <pm:unit>shifts per week</pm:unit>
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>it is the size of the shared block, stated in both parts</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+        </asrt:quantity>
+        <asrt:against>nameplate</asrt:against>
+        <asrt:observed>Three of the ten shifts each team files are the same three shifts, on a
+          block both may schedule onto. Both filings are honest and the group holds seventeen,
+          not twenty. ⛔ This is SMALLER than either part, which is the state nothing else in
+          this repository files.</asrt:observed>
+      </asrt:elimination>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:absent><pm:reason>none</pm:reason><pm:note>somebody looked and no shift is asked for twice</pm:note></pm:absent>
+        </asrt:quantity>
+        <asrt:against>demand</asrt:against>
+        <asrt:observed>The order books were read against each other and no shift is requested by
+          both teams. Somebody looked, and the answer is zero.</asrt:observed>
+      </asrt:elimination>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+</asrt:composition>

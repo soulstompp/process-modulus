@@ -75,8 +75,8 @@ about the total.
 
 Second, and worse: `d mod q` is a **sawtooth**, so evaluated at an interval's three points it
 need not be ordered. `d = (4.5, 5.2, 6.7)` at `q = 1` gives residues `(0.5, 0.2, 0.7)`, which
-is not a valid three-point interval at all, while `d` is perfectly well formed. **Ten of the
-twenty lumpy layers in `assets/corpus/` are in that state.** The total is an identity; the split is
+is not a valid three-point interval at all, while `d` is perfectly well formed. **Fifteen of the
+twenty-three lumpy layers in `assets/corpus/` are in that state.** The total is an identity; the split is
 not representable as two intervals in general. The schema happens to carry only the total, so
 nothing is broken — but read the decomposition as a derivation of `r`, never as a filing
 instruction for its two halves.
@@ -162,7 +162,7 @@ the anti-correlation reason above.
 ⚠️ Two limits, both worth knowing before you trust it. It is a **transition-fit instrument
 only**: under interference the exposure IS `|n − d|`'s high bound and the inequality degenerates
 into the share-sum rule, and under clearance it is zero. And it is **unexercised** — not one
-layer in `assets/corpus/` files a numeric capacity slack, so it is silent on nineteen of twenty-one.
+layer in `assets/corpus/` files a numeric capacity slack, so it is silent on twenty-three of twenty-four.
 A bound with nothing to bound passes loudest, and the repository says so at the test rather than
 scoring itself as covered.
 
@@ -259,6 +259,21 @@ notes:
 in one can serve demand in the other. That is a judgement, it is required to carry prose, and
 it is emphatically **not** `C` — coupling and fungibility are independent axes, and the corpus
 populates both off-diagonal cells.
+
+⛔ **It is not `e` either, and that one is a type error rather than a confusion of vocabulary.**
+`F ∈ {0,1}^{L×P}` carries the fungibility judgement; `e ∈ ℝ^L` carries what two parts counted
+twice. `e` is not a function of `F`: a fusion of two disjoint establishments has `e = 0` and is
+perfectly fungible, while a fusion of two claimants on one machine has `e` equal to a whole part's
+nameplate and is equally fungible. `assets/fixtures/every-partial-elimination.xml` files the
+middle of that scale — `e = 3` against parts of 10 — and reconciles under the same rule. Reading
+the operation off `e` — pooling here, aggregation there — quantises a magnitude and infers a
+judgement from an adjustment. There is no operator-valued
+parameter anywhere in `x = F Φ x − e`, and no type tag on a row of `F`; the equation is the same
+equation in every case.
+
+⭐ **A layer the composer originated is a zero row of `F`** — a composed layer with no parts, whose
+figures are the composer's own. Nothing in the arithmetic forbids it, and the model needs it: a
+group-level rota belongs to the parent and came from no member.
 
 ## Checking it
 

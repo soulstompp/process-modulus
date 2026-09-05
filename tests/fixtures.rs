@@ -58,6 +58,12 @@ fn local() -> CompositionType {
     CompositionType::deserialize(&mut rd).expect("every-local-part.xml parses")
 }
 
+fn partial() -> CompositionType {
+    let xml = read("fixtures/every-partial-elimination.xml");
+    let mut rd = SliceReader::new(&xml);
+    CompositionType::deserialize(&mut rd).expect("every-partial-elimination.xml parses")
+}
+
 /// The URN a filing gives for itself — the S-28 repair, and the whole of local composition.
 fn notation(doc: &ProcessModulusElementType) -> Option<&str> {
     match &doc.notation {
@@ -320,6 +326,7 @@ fn every_fixture_declares_that_it_is_a_stipulation() {
         "every-elimination.xml",
         "every-claimed.xml",
         "every-local-part.xml",
+        "every-partial-elimination.xml",
         "every-draft.xml",
     ] {
         let body = read(&format!("fixtures/{name}"));
@@ -341,7 +348,7 @@ fn every_fixture_declares_that_it_is_a_stipulation() {
 /// the distinction is a string comparison against the filing's own name.
 ///
 /// ⚠️ I proposed a new relation peer to `Fusion` for this, and two more refusals that were not
-/// refusals. See `AGENTS.md` §16. The whole of it was one missing self-identifier.
+/// refusals. The whole of it was one missing self-identifier.
 #[test]
 fn a_composer_builds_a_layer_out_of_two_layers_they_built() {
     let c = local();
@@ -482,5 +489,68 @@ fn a_filing_that_declines_to_name_itself_cannot_be_a_part() {
                 );
             }
         }
+    }
+}
+
+/// ⭐⭐⭐ A NAMEPLATE ELIMINATION IS A MAGNITUDE, NOT A SELECTOR, AND THIS IS THE FIXTURE THAT
+/// SAYS SO. Every other sized nameplate elimination in this repository removes a WHOLE part —
+/// `merge-group-composition`'s `shift-line`, and `every-local-part`'s `both-views`, which
+/// asserts the whole-copy property directly. Two data points at one end of a scale read like a
+/// category, and the category they suggest is that a nameplate elimination discriminates a KIND
+/// of fusion.
+///
+/// ⛔ It does not. `e` is how much supply the parts counted in common: none, some, or all of a
+/// part. This fixture files SOME — 3 of a 10 — and the sum rule is the same rule, unmodified.
+/// The parts are fungible here exactly as they are at both ends, and `observed` says so in the
+/// document; nothing about the arithmetic decides that judgement.
+#[test]
+fn a_partial_nameplate_elimination_reconciles_under_the_unmodified_sum_rule() {
+    let c = partial();
+    let f = fusion(&c, "shift-capacity");
+    let stack = &c.process_modulus;
+
+    for (what, of, against) in [
+        (
+            "demand",
+            demand as fn(&LayerType) -> Triple,
+            EliminationAgainstType::Demand,
+        ),
+        ("nameplate", nameplate, EliminationAgainstType::Nameplate),
+    ] {
+        let computed = expected(stack, f, against, of).expect("a filed elimination owes a sum");
+        let stated = of(layer(stack, "shift-capacity"));
+        assert!(
+            close(stated, computed),
+            "`shift-capacity` {what}: composed {stated:?} against Σ parts less eliminations \
+             {computed:?}"
+        );
+    }
+
+    // ⭐⭐ THE PROPERTY THAT MAKES IT PARTIAL, ASSERTED RATHER THAN DESCRIBED: the removed
+    // figure is strictly smaller than either part's nameplate and strictly greater than zero.
+    // `both-views` asserts the opposite end of the same scale — removed == one whole part — and
+    // between them the two fixtures show `e` taking a value rather than selecting a case.
+    let e = f
+        .eliminations
+        .content
+        .iter()
+        .find_map(|x| match x {
+            StatedEliminationsTypeContent::Elimination(e)
+                if e.against == EliminationAgainstType::Nameplate =>
+            {
+                Some(e)
+            }
+            _ => None,
+        })
+        .expect("a nameplate elimination");
+    let removed = triple(&e.quantity).expect("sized");
+    for part_name in ["team-a", "team-b"] {
+        let p = nameplate(layer(stack, part_name));
+        assert!(
+            removed.1 > 0.0 && removed.1 < p.1,
+            "the nameplate elimination is {removed:?}; {part_name} files {p:?}. A partial \
+             elimination is strictly between nothing and a whole part, and it is the state \
+             nothing else in this repository files"
+        );
     }
 }
