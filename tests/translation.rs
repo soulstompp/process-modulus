@@ -165,7 +165,9 @@ fn no_translation_is_a_stub() {
         let src = schema(file);
         for (i, _) in src.match_indices(r#"<xs:documentation xml:lang="en">"#) {
             let after = &src[i..];
-            let en_end = after.find("</xs:documentation>").expect("unclosed documentation");
+            let en_end = after
+                .find("</xs:documentation>")
+                .expect("unclosed documentation");
             let en = &after[..en_end];
 
             let rest = &after[en_end..];
@@ -174,7 +176,9 @@ fn no_translation_is_a_stub() {
                 _ => continue, // the English block has no Portuguese sibling; caught elsewhere
             };
             let pt_rest = &rest[pt_start..];
-            let pt_end = pt_rest.find("</xs:documentation>").expect("unclosed documentation");
+            let pt_end = pt_rest
+                .find("</xs:documentation>")
+                .expect("unclosed documentation");
             let pt = &pt_rest[..pt_end];
 
             assert!(
@@ -208,7 +212,8 @@ fn the_untranslated_remainder_is_visible() {
     for file in ["process-modulus.xsd", "assertion.xsd"] {
         let src = schema(file);
         // every declaration that has prose worth translating
-        let annotated = src.matches("<xs:documentation").count() - src.matches(r#"xml:lang="pt""#).count();
+        let annotated =
+            src.matches("<xs:documentation").count() - src.matches(r#"xml:lang="pt""#).count();
         let done = translated_in(&src).len();
         total += done;
         println!("{file}: {done} translated, {annotated} annotations in the file");
