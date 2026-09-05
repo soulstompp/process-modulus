@@ -202,9 +202,15 @@
               <pm:kind>instrument</pm:kind>
             </pm:narrowing>
           </pm:narrowsWhen>
-          <!-- ⭐ `notApplicable`, WHICH THE CORPUS NEVER FILES ANYWHERE. A share of
-               customers is not a committed quantity: there is no author to ask about the
-               edge of it, so the question is malformed rather than unanswered. -->
+          <!-- ⭐ `notApplicable`, FOR THE SECOND OF THE TWO REASONS THE TYPE LISTS. A share
+               of customers is not a committed quantity: there is no author to ask about the
+               edge of it, so the question is malformed rather than unanswered.
+               ⚠ THIS USED TO SAY THE CORPUS NEVER FILES IT, AND THAT STOPPED BEING TRUE. The
+               corpus now files `notApplicable` on sixteen jagged draws, all of them the OTHER
+               reading: an observed count, where the malformation is that a count has no edge
+               to have been set. A ratio has no author; a count has no spread. Two different
+               ways for the question to be wrong, and this fixture holds the one the corpus
+               does not reach. -->
           <pm:boundOrigin>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>

@@ -715,7 +715,7 @@
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
                   <pm:absent>
-                    <pm:reason>none</pm:reason>
+                    <pm:reason>notApplicable</pm:reason>
                     <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                   </pm:absent>
                 </pm:boundOrigin>
@@ -905,7 +905,7 @@
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
                   <pm:absent>
-                    <pm:reason>none</pm:reason>
+                    <pm:reason>notApplicable</pm:reason>
                     <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                   </pm:absent>
                 </pm:boundOrigin>
@@ -1096,7 +1096,7 @@
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
                   <pm:absent>
-                    <pm:reason>none</pm:reason>
+                    <pm:reason>notApplicable</pm:reason>
                     <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                   </pm:absent>
                 </pm:boundOrigin>
@@ -1364,7 +1364,7 @@
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
                   <pm:absent>
-                    <pm:reason>none</pm:reason>
+                    <pm:reason>notApplicable</pm:reason>
                     <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                   </pm:absent>
                 </pm:boundOrigin>
@@ -1857,8 +1857,8 @@
             </pm:narrowsWhen>
             <pm:boundOrigin>
               <pm:absent>
-                <pm:reason>none</pm:reason>
-                <pm:note>nothing sets this bound. It is the size of the double counting the composer found</pm:note>
+                <pm:reason>derived</pm:reason>
+                <pm:note>the size of the double counting, and it follows from a bound stated elsewhere: it is the ten shifts both parts file as their own nameplate, copied whole. `against` and `between` say which bound</pm:note>
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>group-parent</pm:party>
@@ -1912,8 +1912,8 @@
             </pm:narrowsWhen>
             <pm:boundOrigin>
               <pm:absent>
-                <pm:reason>none</pm:reason>
-                <pm:note>nothing sets this bound. It is the size of the double counting the composer found</pm:note>
+                <pm:reason>derived</pm:reason>
+                <pm:note>the size of the double counting, and it follows from a bound stated elsewhere: it is the 4.4 shifts the consuming part files as its own draw, copied whole. `against` and `between` say which bound</pm:note>
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>group-parent</pm:party>

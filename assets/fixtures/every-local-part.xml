@@ -476,8 +476,9 @@
             <pm:low>1800</pm:low><pm:mostLikely>2000</pm:mostLikely><pm:high>2400</pm:high>
             <pm:unit>muffins per day</pm:unit>
             <pm:narrowsWhen>
-              <pm:absent><pm:reason>notApplicable</pm:reason>
-                <pm:note>this is one view removed whole; there is no range to tighten</pm:note></pm:absent>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: this is the demand copied whole, so whatever would tighten the
+                        demand tightens this — and nobody has said what that is</pm:note></pm:absent>
             </pm:narrowsWhen>
             <pm:boundOrigin>
               <pm:absent><pm:reason>derived</pm:reason>

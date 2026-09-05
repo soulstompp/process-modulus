@@ -405,7 +405,7 @@
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
-                  <pm:reason>none</pm:reason>
+                  <pm:reason>notApplicable</pm:reason>
                   <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
@@ -592,7 +592,7 @@
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
-                  <pm:reason>none</pm:reason>
+                  <pm:reason>notApplicable</pm:reason>
                   <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
@@ -849,7 +849,7 @@
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
-                  <pm:reason>none</pm:reason>
+                  <pm:reason>notApplicable</pm:reason>
                   <pm:note>uma contagem do que foi efetivamente servido. Nada fixa o seu limite e não há com quem o negociar</pm:note>
                 </pm:absent>
               </pm:boundOrigin>

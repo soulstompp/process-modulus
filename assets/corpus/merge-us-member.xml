@@ -379,7 +379,7 @@
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
-                  <pm:reason>none</pm:reason>
+                  <pm:reason>notApplicable</pm:reason>
                   <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
@@ -604,7 +604,7 @@
               </pm:narrowsWhen>
               <pm:boundOrigin>
                 <pm:absent>
-                  <pm:reason>none</pm:reason>
+                  <pm:reason>notApplicable</pm:reason>
                   <pm:note>a count of what was actually served. Nothing sets its edge and there is nobody to negotiate one</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
