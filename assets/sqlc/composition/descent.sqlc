@@ -1,0 +1,34 @@
+# THE TRANSITIVE CLOSURE OF F: every layer reachable from a composition through parts, at any
+# depth, with the route that reached it. One row per (root, reached layer, path) -- so a layer
+# reachable two ways appears twice, on purpose, because the duplication IS the finding.
+#
+# ⭐⭐⭐ COMPOSITIONS NEST, AND THE SECOND LEVEL IS WHERE THE MODEL STOPS BEING CHECKABLE BY
+#    ANY VALIDATOR. A holding composes a group, which composes its members. At one level "no
+#    part used twice" is a key. At two it becomes "no leaf reachable by two paths", and the
+#    second path runs through a document the first does not contain.
+#
+# ⭐⭐ NO DEPTH BOUND AND NO GUESS. SQL:2016's `CYCLE` clause stops the recursion exactly when
+#    a layer repeats WITHIN ITS OWN PATH -- which is the definition of the thing that would
+#    hang a reader -- and hands back the route that closed the loop as data. A depth bound is
+#    a guess about how deep a legitimate composition goes; this is the actual question.
+#    ⛔ A DIAMOND IS NOT A CYCLE. One leaf reached down two different branches is not a
+#      repeat within a path, so it still comes back twice, which is what the leaf rule needs.
+#      The two walks that preceded this one disagreed about that: one truncated at depth ten
+#      and the other did not return at all on a document that closed a loop.
+-- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    :compose(composition/parts.sqlc)
+),
+walk(root_filing, root_layer, filing, layer, depth, path) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer]
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk

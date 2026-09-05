@@ -1,0 +1,25 @@
+# n, THE NAMEPLATE VECTOR. One row per (filing, layer) that states what the supply can do,
+# as a three-point claim. A layer whose nameplate is a typed absence has no row.
+#
+# ⭐⭐ DIVISIBILITY IS TWO INDEPENDENT AXES AND THIS RELATION CARRIES BOTH, because a
+#    supply can be lumpy in AMOUNT and intermittent in TIME at once.
+#      `lumpy` + `quantum_*` -- the supply arrives in whole units of that size.
+#      `window_*`            -- the supply is only available for that much of a period.
+#    ⛔ `lumpy` IS NULLABLE AND THE THIRD STATE IS THE POINT: neither lumpy nor continuous,
+#      because nobody said which. A boolean has two states and this question has three.
+#
+# ⛔ AN ABSENT WINDOW IS NOT A BLANK. `none` = runs continuously. `notApplicable` = the unit
+#   has no denominator, so "five days of what?" has no answer. `unmeasured` = nobody asked,
+#   and that is the state in which a time slack CANNOT be derived from a clearance.
+-- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL

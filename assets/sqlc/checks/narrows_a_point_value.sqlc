@@ -1,0 +1,37 @@
+# EVERY CLAIM FILED AS A POINT, BESIDE WHAT IT SAYS WOULD NARROW IT. One row per point claim
+# anywhere in a document, `violates` where the answer is anything but `notApplicable`.
+#
+# ⭐ THE RULE: a point value files narrowsWhen as notApplicable, having no range. A figure with
+#   no width has nothing to tighten, so any other answer is a sentence that cannot be acted on
+#   -- a paste from a neighbouring claim, or a claim filed at the wrong width.
+#
+# ⛔ AND `unmeasured` IS A VIOLATION HERE TOO, WHICH THE OLD FORM COULD NOT SAY. It tested
+#   for a STATED narrowing sentence only, so a point value answering "nobody has said what
+#   would narrow this" passed. But that answer presupposes there is something to narrow: on a
+#   point the question is not unanswered, it is inapplicable, and those are different facts.
+#   ⚠️ THIS IS STRICTER THAN WHAT IT REPLACED AND THE ROSTER SENTENCE IS WHY -- it says the
+#     claim FILES notApplicable, not merely that it files no condition. All 94 point claims
+#     in this corpus do. What would refute the strictness is a point value with an honest
+#     reason to answer otherwise; `derived` would be the candidate, and `tests/state_coverage.rs`
+#     has already ruled it incoherent for a narrowing, which leaves the strict form standing.
+#
+# ⛔⛔ THIS RULE READ ⛔ VACUOUS FOR AS LONG AS IT RAN OVER `layer.demand_*`. `narrowsWhen` is
+#    on `Claim` and claims are everywhere, but the claim's own width was reachable only from
+#    the table of the thing it described -- so the rule was written against demands, and no
+#    demand in this corpus is a point value. It examined nothing and said so, loudly, which is
+#    what the coverage table is for. It now examines every point claim in every document.
+-- pm:Claim/pm:narrowsWhen on any pm:Claim where low = high.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.owns || ' claim ' || c.seq AS layer,
+           c.narrows_absent IS DISTINCT FROM 'notApplicable' AS violates,
+           format('%s exactly, and it still answers %s', c.mode,
+                  coalesce(c.narrows_kind::text, 'absent: ' || c.narrows_absent)) AS detail
+    FROM (
+        :compose(epistemics/point_claims.sqlc)
+    ) c
+) p ON true
+WHERE r.slug = 'narrows_a_point_value'

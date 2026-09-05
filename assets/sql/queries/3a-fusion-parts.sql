@@ -1,22 +1,45 @@
 -- §3  The parts going into each composed layer, with their conversion factors.
---
--- This is `F` and `Φ` in one result set: each row is an incidence entry (this part composes
--- into that layer) carrying the factor that puts it in the composed layer's unit. A part
--- with no factor converts by one, which is what the `coalesce` says.
---
--- ⛔ ABSENT MEANS ONE, EXACTLY, AND NEVER "UNKNOWN" — see `asrt:Part`. A conversion nobody
--- measured is a typed absence inside the claim, which is a different document from a part
--- with no factor at all, and `coalesce` here is reading the second.
-SELECT p.composition                   AS "composition!",
-       p.composed_layer                AS "composed!",
+-- composition/parts.sqlc against layers/demand.sqlc; F and Phi live in one table.
+SELECT p.composition                      AS "composition!",
+       p.composed_layer                   AS "composed!",
        coalesce(p.factor_low, 1)::float8  AS "f_low!",
        coalesce(p.factor_mode, 1)::float8 AS "f_mode!",
        coalesce(p.factor_high, 1)::float8 AS "f_high!",
-       l.demand_low::float8            AS "d_low!",
-       l.demand_mode::float8           AS "d_mode!",
-       l.demand_high::float8           AS "d_high!"
+       d.d_low::float8                    AS "d_low!",
+       d.d_mode::float8                   AS "d_mode!",
+       d.d_high::float8                   AS "d_high!"
+FROM (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
 FROM pm.part p
+
+) p
 JOIN pm.filing_identity fi ON fi.notation = p.part_filing
 JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
 WHERE l.demand_low IS NOT NULL
+
+) d
+  ON d.filing = p.part_filing AND d.layer = p.part_layer
 ORDER BY p.composition, p.composed_layer, p.part_layer

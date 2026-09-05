@@ -1,0 +1,26 @@
+# d, THE DEMAND VECTOR. One row per (filing, layer) that states a demand as a three-point
+# claim. A layer whose demand is a typed absence has NO ROW HERE, which is the sparse
+# reading: the vector has no entry there rather than an entry of zero.
+#
+# ⭐ THE THREE POINTS ARE NOT AN ERROR BAR. `low` and `high` are the edges somebody owns
+#   and `mode` is the figure they would quote. Every arithmetic downstream carries all
+#   three, because collapsing to the mode is exactly the flattening this model exists to
+#   refuse.
+#
+# ⭐⭐ AND THE TWO NARROWING COLUMNS SAY WHAT THE WIDTH IS MADE OF. `instrument` means the
+#    width is IGNORANCE and a better measurement removes it; `intervention` means the width
+#    is VARIATION and only changing the process does. They answer different questions and
+#    a range without them is weaker -- which a receiver is now entitled to say with a
+#    number. See epistemics/widths.sqlc for the census.
+-- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL

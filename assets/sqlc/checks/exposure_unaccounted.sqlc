@@ -1,0 +1,45 @@
+# EVERY SUPPLY THAT CANNOT RUN HOT AND STATES ALL ITS UNSERVED SHARES, BESIDE WHAT ITS OWN
+# NUMBERS SAY WENT UNSERVED. One row per examined layer, `violates` where the exposure
+# exceeds what anybody admits.
+#
+# ⭐⭐⭐ THE ONE PLACE THIS MODEL MEASURES SOMETHING WITH NO INSTRUMENT BEHIND IT. Nobody
+#    filed the exposure; it is the ceiling the filer's OWN demand and nameplate imply -- the
+#    largest demand against the smallest supply. What could have gone unserved is at most
+#    what the buffer can absorb plus what they admit went unserved, and the buffer here
+#    absorbs nothing by their own measurement. So the whole exposure has to be accounted for
+#    in the holder rows.
+#
+# ⛔⛔ EVALUATED AT THE HIGH CORNER, ON PURPOSE. The two sides of a transition fit are
+#    ANTI-CORRELATED -- the week demand ran highest is not the week supply ran lowest -- so
+#    anything summed across the demand range reports a week that never happened.
+#
+# ⛔ AN UNSTATED UNSERVED SHARE SUSPENDS THE INEQUALITY, so those layers are absent rather
+#   than passing. Inheriting a neighbouring rule's `exposure > 0` filter instead is a
+#   different population, and it counted three rows where nine are checked.
+-- pm:Buffer kind="capacity" measured zero, against summed customer/unrealised shares.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT e.filing, e.layer,
+           e.exposure > e.unserved + 1e-9 AS violates,
+           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+    FROM (
+        SELECT x.filing, x.layer, x.exposure, coalesce(u.unserved, 0) AS unserved
+        FROM      (
+            :compose(layers/measured_zero_exposure.sqlc)
+        ) x
+        LEFT JOIN (
+            SELECT filing, layer,
+                   sum(share_high)                            AS unserved,
+                   count(*) FILTER (WHERE share_high IS NULL) AS unstated
+            FROM (
+                :compose(entries/unserved_holders.sqlc)
+            ) h
+            GROUP BY filing, layer
+        ) u USING (filing, layer)
+        WHERE coalesce(u.unstated, 0) = 0
+    ) e
+) p ON true
+WHERE r.slug = 'exposure_unaccounted'

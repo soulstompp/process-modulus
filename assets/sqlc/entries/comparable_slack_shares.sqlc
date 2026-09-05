@@ -1,0 +1,17 @@
+# THE SLACK/SHARE PAIRS THAT CAN BE COMPARED AT ALL. One row per (layer, buffer, holder kind)
+# where BOTH the slack and the share state a unit.
+#
+# ⭐⭐ A SLACK IS COMPARED AGAINST HOLDER SHARES, SO IT HAS TO BE IN THE SAME UNIT -- and a
+#    pair where either side declines to say is not a mismatch, it is an unanswerable
+#    question. Making the population "both stated" rather than "all pairs" is the difference
+#    between a rule that examines something and a rule that reports on rows it cannot read.
+-- pm:Buffer and pm:Holder claims, each carrying its own unit.
+SELECT s.filing, s.layer, s.buffer, h.kind,
+       s.unit AS slack_unit, h.share_unit
+FROM      (
+    :compose(entries/slacks.sqlc)
+) s
+JOIN      (
+    :compose(entries/holders.sqlc)
+) h USING (filing, layer)
+WHERE s.unit IS NOT NULL AND h.share_unit IS NOT NULL

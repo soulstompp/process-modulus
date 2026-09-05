@@ -1,24 +1,62 @@
 -- §4  The one layer where a conversion factor is correlated with itself.
---
--- `merge-holding-composition/compute` converts a US part metered per reserved card into
--- GPU-hour. One factor multiplies BOTH the nameplate and the demand, so the two converted
--- intervals move together.
---
--- ⛔ The example takes the filed remainder (`qty_*`) against the remainder RE-DERIVED from
--- the converted nameplate and demand with the bounds crossed. They agree at the mode and
--- nowhere else, because the mode is the one point where the factor is a single number with
--- no spread to double. Both figures are arithmetically correct; only the filed one is the
--- remainder.
+-- layers/remainder.sqlc at the one layer with a spread conversion factor.
 SELECT l.qty_low::float8      AS "q_low!",
        l.qty_mode::float8     AS "q_mode!",
        l.qty_high::float8     AS "q_high!",
-       l.demand_low::float8   AS "d_low!",
-       l.demand_mode::float8  AS "d_mode!",
-       l.demand_high::float8  AS "d_high!",
-       n.amount_low::float8   AS "n_low!",
-       n.amount_mode::float8  AS "n_mode!",
-       n.amount_high::float8  AS "n_high!"
+       r.d_low::float8        AS "d_low!",
+       r.d_mode::float8       AS "d_mode!",
+       r.d_high::float8       AS "d_high!",
+       r.n_low::float8        AS "n_low!",
+       r.n_mode::float8       AS "n_mode!",
+       r.n_high::float8       AS "n_high!"
+FROM (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
 FROM pm.layer l
-JOIN pm.nameplate n USING (filing, layer)
-WHERE l.filing = 'merge-holding-composition'
-  AND l.layer = 'compute'
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN pm.layer l USING (filing, layer)
+WHERE r.filing = 'merge-holding-composition'
+  AND r.layer  = 'compute'

@@ -1,0 +1,52 @@
+-- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    SELECT p.composition AS filing, p.composed_layer AS layer,
+           l.layer IS NULL AS violates,
+           format('local part `%s` is not a layer of this filing', p.part_layer) AS detail
+    FROM      (
+        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM pm.part p
+
+) p
+JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+
+    ) p
+    LEFT JOIN pm.layer l ON l.filing = p.composition AND l.layer = p.part_layer
+) p ON true
+WHERE r.slug = 'local_part_dangles'

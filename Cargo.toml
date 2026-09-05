@@ -42,7 +42,7 @@ anyhow = "1"
 [dev-dependencies]
 # ⭐ `query_as!` verifies at COMPILE TIME that a query returns what the struct claims.
 # That is the same species of guarantee as tests/namespace.rs and the version lock:
-# a drift between assets/sql/schema.ddl and the code becomes a build failure rather
+# a drift between assets/ddl/schema.ddl and the code becomes a build failure rather
 # than a runtime surprise in an example nobody runs. The `.sqlx` cache is committed,
 # so building needs no database; `cargo sqlx prepare` regenerates it.
 sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "postgres", "macros"] }

@@ -1,0 +1,31 @@
+# EVERY COUPLING THAT SURVIVES A FUSION, BESIDE THE CEILING ITS PART'S SHARE PUTS ON IT. One
+# row per examined coupling, `violates` where the upper filing claims more movement than the
+# lower one can support.
+#
+# ⭐⭐⭐ THE RULE: a coupling attenuates through a fusion, bounded by the part's share. The
+#    dependence survives composition but weakens, because the composed layer is only partly
+#    the coupled part -- at most that part's share of it can move. The ceiling is arithmetic
+#    over THREE documents, which is what makes it uncheckable anywhere but here.
+#
+# ⛔ RUN THIS ALONE AND READ THE ROW COUNT, NOT THE VERDICT. One row in this corpus, because
+#   only three filings state any coupling at all, one of those has no parts, and no fixture
+#   states one. That is a fact about who wrote what, not about the world -- and it is exactly
+#   what a coverage table is for.
+-- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT a.upper_filing AS filing, a.from_layer AS layer,
+           coalesce(a.low  > a.ceil_low  + 1e-9, false)
+        OR coalesce(a.mode > a.ceil_mode + 1e-9, false)
+        OR coalesce(a.high > a.ceil_high + 1e-9, false) AS violates,
+           format('%s->%s files %s at the mode, and %s''s share of it caps that at %s',
+                  a.from_layer, a.to_layer, a.mode, a.lower_filing,
+                  round(a.ceil_mode, 3)) AS detail
+    FROM (
+        :compose(composition/attenuated.sqlc)
+    ) a
+) p ON true
+WHERE r.slug = 'coupling_does_not_attenuate'

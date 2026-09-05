@@ -1,0 +1,18 @@
+# S, THE SLACK MATRIX: how much each buffer holds, in the layer's own unit. One row per
+# (filing, layer, buffer), which is the sparse form of an L x 3 matrix, and `sized` says
+# whether that row carries a number or a typed reason it does not.
+#
+# ⭐⭐ THESE WERE BOOLEANS ONCE, AND A BIT SAYS A BUFFER EXISTS RATHER THAN HOW MUCH IT
+#    HOLDS -- so any share at all fitted inside it and the inequality that bounds shares
+#    against slack could not fail. Three columns became three rows carrying magnitudes, and
+#    the bound became checkable.
+#
+# ⛔ AN UNSIZED ROW IS STILL A ROW. `none` = somebody looked and there is no slack.
+#   `unmeasured` = nobody looked. Densifying both into 0.0 destroys the difference for good,
+#   and it is the difference between a bound that holds and a bound nobody tested.
+-- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s

@@ -1,0 +1,46 @@
+# THE COMPOSITION RULE, COMPUTED AND SET BESIDE WHAT WAS FILED. One row per composed layer
+# that owes the equality, carrying the sum of its converted parts less its eliminations, the
+# figure the document actually states, and whether the two agree.
+#
+#     x_composed = F Φ x_parts − e_x
+#
+# ⭐⭐ THE ELIMINATION IS THE TERM THAT IS EASY TO FORGET, AND FORGETTING IT IS HOW THIS
+#    ARITHMETIC WAS WRONG THE FIRST TIME IT RAN. Two parts that both count the same shared
+#    machine sum to more machine than exists; `e` is what the composer says was counted
+#    twice. Dropping it does not produce an obviously silly number -- it produces a slightly
+#    large one, which is worse.
+#
+# ⭐ AND THE ROWS THAT ARE NOT HERE ARE NOT FAILURES. A fusion suspended on either ground is
+#   absent rather than counted as a pass, so `agrees` is a verdict over documents that
+#   claimed something. See composition/owed_equality.sqlc.
+#
+# ⛔ THIS SPANS TWO DOCUMENTS, WHICH IS WHY NO GRAMMAR CAN STATE IT. The parts are in one
+#   filing and the composed figure is in another; XSD 1.0 cannot follow the reference, let
+#   alone add up what is on the other end.
+-- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+SELECT c.composition, c.composed_layer,
+       sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
+       sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
+       sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
+       max(d.d_low)  AS filed_low,
+       max(d.d_mode) AS filed_mode,
+       max(d.d_high) AS filed_high,
+       (sum(c.d_low)  - coalesce(max(e.low),  0) = max(d.d_low)
+    AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
+    AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
+FROM      (
+    :compose(composition/converted.sqlc)
+) c
+JOIN      (
+    :compose(composition/owed_equality.sqlc)
+) o
+       ON o.filing = c.composition AND o.layer = c.composed_layer
+JOIN      (
+    :compose(layers/demand.sqlc)
+) d
+       ON d.filing = c.composition AND d.layer = c.composed_layer
+LEFT JOIN pm.elimination e
+       ON e.composition = c.composition
+      AND e.composed_layer = c.composed_layer
+      AND e.quantity = 'demand'
+GROUP BY c.composition, c.composed_layer

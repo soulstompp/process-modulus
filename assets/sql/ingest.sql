@@ -1,13 +1,4 @@
--- Load assets/corpus/*.xml into the relations declared by assets/sql/schema.ddl.
---
--- ⛔ RUN THIS FROM THE REPOSITORY ROOT: psql -f assets/sql/ingest.sql
---    The `\set` lines below run `cat` on the CLIENT, so the paths are relative to
---    wherever you invoked psql. Nothing here needs superuser and nothing reads a
---    file from the server, which is the point: no Rust, no extensions, no setup.
---
--- ⭐ EVERY DOCUMENT LANDS IN ONE `source` TABLE FIRST and every extraction below
---    reads from there. So exactly one place in this file touches the filesystem,
---    and the rest is ordinary SQL you can run again without re-reading anything.
+-- Load assets/corpus/*.xml into the relations declared by assets/ddl/schema.ddl.
 
 SET search_path TO pm, public;
 
@@ -15,7 +6,7 @@ BEGIN;
 
 TRUNCATE source, elimination, elimination_search, part, coupling, coupling_search,
          induction, draw, operation, holder, slack, nameplate, layer, regime,
-         narrowing, bound_origin, stack_scope, filing CASCADE;
+         narrowing, bound_origin, claim, stack_scope, filing CASCADE;
 
 \set d `cat assets/corpus/enterprise-contract.xml`
 INSERT INTO source VALUES ('enterprise-contract', XMLPARSE(DOCUMENT :'d'));
@@ -44,6 +35,9 @@ INSERT INTO source VALUES ('every-absence', XMLPARSE(DOCUMENT :'d'));
 INSERT INTO source VALUES ('every-elimination', XMLPARSE(DOCUMENT :'d'));
 \set d `cat assets/fixtures/every-local-part.xml`
 INSERT INTO source VALUES ('every-local-part', XMLPARSE(DOCUMENT :'d'));
+
+\set d `cat assets/fixtures/every-partial-elimination.xml`
+INSERT INTO source VALUES ('every-partial-elimination', XMLPARSE(DOCUMENT :'d'));
 
 -- ---------------------------------------------------------------------------
 -- Filings.
@@ -106,6 +100,7 @@ INSERT INTO layer
 SELECT s.name, x.name,
        x.d_low, x.d_mode, x.d_high, x.d_unit, x.d_absent::absence_reason, x.d_narrows,
        x.d_kind::narrowing_kind, x.d_narrows_absent::absence_reason,
+       x.r_absent::absence_reason, x.r_note,
        x.sign::fit, x.sign_absent::absence_reason, x.absorber_taxonomy, x.absorber_value,
        x.q_low, x.q_mode, x.q_high, x.q_unit, x.q_absent::absence_reason
 FROM source s,
@@ -121,6 +116,8 @@ FROM source s,
          d_narrows text   PATH 'pm:demand/pm:claim/pm:narrowsWhen/pm:narrowing/pm:condition',
          d_kind    text   PATH 'pm:demand/pm:claim/pm:narrowsWhen/pm:narrowing/pm:kind',
          d_narrows_absent text PATH 'pm:demand/pm:claim/pm:narrowsWhen/pm:absent/pm:reason',
+                                                               r_absent text PATH 'pm:remainder/pm:absent/pm:reason',
+         r_note   text PATH 'pm:remainder/pm:absent/pm:note',
          sign        text PATH 'pm:remainder/pm:remainder/pm:sign/pm:fit',
          sign_absent text PATH 'pm:remainder/pm:remainder/pm:sign/pm:absent/pm:reason',
          absorber_taxonomy text PATH 'pm:remainder/pm:remainder/pm:absorber/pm:term/pm:taxonomy',
@@ -258,6 +255,19 @@ FROM source s,
                party text    PATH 'pm:party',
                as_of text    PATH 'pm:asOf') x;
 
+-- pm:Claim, wherever one appears -- 12 different parents across two schemas.
+INSERT INTO claim
+SELECT s.name, x.seq, x.owns, x.low, x.mode, x.high, x.unit
+FROM source s,
+     XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0' AS pm),
+       '//pm:claim' PASSING s.body
+       COLUMNS seq FOR ORDINALITY,
+               owns text    PATH 'name(..)',
+               low  numeric PATH 'pm:low',
+               mode numeric PATH 'pm:mostLikely',
+               high numeric PATH 'pm:high',
+               unit text    PATH 'pm:unit') x;
+
 -- ⭐ Every narrowing anywhere in the document, in document order.
 INSERT INTO narrowing
 SELECT s.name, x.seq, x.condition, x.kind::narrowing_kind, x.absent::absence_reason
@@ -269,8 +279,7 @@ FROM source s,
                kind      text PATH 'pm:narrowing/pm:kind',
                absent    text PATH 'pm:absent/pm:reason') x;
 
--- ⭐ And every bound origin, in the same document order, so the two can be joined on `seq`:
---   a claim's Nth narrowing and its Nth origin are the same claim's.
+-- pm:Claim/pm:boundOrigin, in the same document order as the claims above.
 INSERT INTO bound_origin
 SELECT s.name, x.seq, x.origin::constraint_origin, x.absent::absence_reason
 FROM source s,
@@ -356,7 +365,6 @@ WHERE s.name IN (SELECT name FROM filing);
 -- ⭐ F AND Phi IN ONE TABLE, because a part IS an incidence entry and its conversion
 --   factor at the same time. A NULL factor means the units already agree, which is
 --   phi = 1 and is filed by OMISSION rather than by writing 1 three times.
---
 --   Two nested XMLTABLEs: the outer one yields each fusion and captures its own
 --   element as `frag`, the inner one reads the parts out of that fragment. XPath has
 --   no join, so this is where relational algebra starts earning its keep.

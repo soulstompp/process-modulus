@@ -1,0 +1,44 @@
+# r = n − d, THE REMAINDER VECTOR, WITH ITS SIGN DERIVED AND ITS EXPOSURE MEASURED.
+# One row per layer that states BOTH a demand and a nameplate, so both operands exist.
+# The key is (filing, layer) and every downstream fit question reads this relation.
+#
+# ⛔⛔ SUBTRACTING TWO INTERVALS REVERSES THE BOUNDS. The low of n − d pairs n's LOW
+#    against d's HIGH, because the smallest remainder is the smallest supply meeting the
+#    largest demand. Get it backwards and every remainder in the corpus comes out inside
+#    out while every individual number still looks plausible.
+#
+# ⭐⭐ `derived_fit` IS A COMPARISON OF TWO RANGES AND NOT OF TWO POINTS -- ISO 286's own
+#    criterion, borrowed intact. `clearance` = supply exceeds demand ACROSS THE WHOLE RANGE.
+#    `interference` = demand exceeds supply across the whole range. `transition` = the
+#    ranges overlap, so which one wins depends on where in the range you land. That third
+#    case is the one a two-valued encoding cannot name, and the corpus contains it.
+#
+# ⭐ `exposure` IS WHAT THE FILING'S OWN NUMBERS SAY COULD HAVE GONE UNSERVED: the largest
+#   demand against the smallest supply, floored at zero. It is not a measurement anybody
+#   made; it is the ceiling their two measurements imply, which is why the rule built on
+#   it compares against what they ADMIT went unserved rather than against a reading.
+#
+# ⛔ THIS RELATION WAS ONCE WRITTEN THREE TIMES AND DRIFTED -- twice inside one file, under
+#   one name, with different column lists, so a coverage table reported on a `base` that
+#   was not the `base` the rules ran against. It is one file now and both readings compose it.
+-- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    :compose(layers/demand.sqlc)
+) d
+JOIN      (
+    :compose(layers/nameplate.sqlc)
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)

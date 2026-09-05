@@ -8,7 +8,7 @@
 //! ARITHMETIC. `tests/independence.rs` argues that corroboration between two things sharing
 //! a code path is worth nothing. A query that computes a number and a README that says "look,
 //! it is right" is ONE WITNESS ASSERTING. Recomputing it by a different route and comparing
-//! is two, and the claim `assets/sql/README.md` makes — that a matrix product IS a join with
+//! is two, and the claim `assets/sqlc/README.md` makes — that a matrix product IS a join with
 //! a `GROUP BY` — stops being something the author said and becomes something that was
 //! checked.
 //!
@@ -19,7 +19,7 @@
 //!
 //! ```text
 //! createdb process_modulus_proof
-//! psql -d process_modulus_proof -f assets/sql/schema.ddl -f assets/sql/ingest.sql
+//! psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
 //! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
 //!   cargo run --example matrices
 //! ```
@@ -28,6 +28,7 @@
 //! passes when it did not execute is the vacuity trap this repository keeps naming.
 
 use nalgebra::{DMatrix, DVector};
+use std::collections::BTreeMap;
 
 /// One layer's demand and nameplate, with the fit the document filed.
 struct Layer {
@@ -40,6 +41,10 @@ struct Layer {
     n_mode: f64,
     n_high: f64,
     sign: String,
+    /// `corpus` or `fixture`. ⭐ Kept because the two must never be pooled in a count: every
+    /// fixture layer reaching this query is a `transition`, written to exercise the state
+    /// real filings almost never reach, so a pooled census reports the rare case as ordinary.
+    evidence: String,
 }
 
 /// ⭐⭐ EVERY MATRIX HERE IS REALLY THREE, and there is no interval type in `nalgebra` to
@@ -68,7 +73,7 @@ fn classify(r_low: f64, r_high: f64) -> &'static str {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL").map_err(|_| {
         "DATABASE_URL is unset. This example proves two computations agree, and it cannot \
-         do that without the rows. Load them with assets/sql/schema.ddl and ingest.sql."
+         do that without the rows. Load them with assets/ddl/schema.ddl and ingest.sql."
     })?;
     let pool = sqlx::postgres::PgPool::connect(&url).await?;
 
@@ -76,8 +81,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 1. r = n - d, and the fit read off the ranges.
     // ------------------------------------------------------------------
     let rows = sqlx::query_file_as!(Layer, "assets/sql/queries/1-fit-from-ranges.sql")
-    .fetch_all(&pool)
-    .await?;
+        .fetch_all(&pool)
+        .await?;
 
     let n = rows.len();
     let d = Triple {
@@ -113,18 +118,54 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         disagreements, 0,
         "a filed fit disagrees with its own ranges"
     );
+
+    // ⭐⭐ THE CENSUS, AND WHY IT IS PRINTED RATHER THAN COUNTED. `docs/linear-algebra.md`
+    // quotes these figures, and until this section existed they were maintained by reading
+    // the XML and counting. They drifted, twice, and the second time took an afternoon to
+    // notice. The rows the assertion above already ran on are the same rows the note needs,
+    // so the note's numbers come from here or they are somebody's recollection.
+    let mut census: BTreeMap<(&str, &str), usize> = BTreeMap::new();
+    for row in &rows {
+        *census
+            .entry((row.evidence.as_str(), row.sign.as_str()))
+            .or_default() += 1;
+    }
+    for evidence in ["corpus", "fixture"] {
+        let tally: Vec<String> = census
+            .iter()
+            .filter(|((e, _), _)| *e == evidence)
+            .map(|((_, fit), c)| format!("{c} {fit}"))
+            .collect();
+        let total: usize = census
+            .iter()
+            .filter(|((e, _), _)| *e == evidence)
+            .map(|(_, c)| c)
+            .sum();
+        println!("   {evidence:<8} {total:>3} layers: {}", tally.join(", "));
+    }
+
+    // ⛔ THE FLOOR IS ON THE CORPUS ALONE, and that is the whole reason `evidence` is
+    // selected. Counting all 32 rows would let the fixtures hold this assertion up while the
+    // corpus emptied underneath it, which is the vacuity trap one level out: a check with
+    // plenty to check, none of it the thing being claimed.
+    let corpus_layers: usize = census
+        .iter()
+        .filter(|((e, _), _)| *e == "corpus")
+        .map(|(_, c)| c)
+        .sum();
     assert!(
-        n >= 20,
-        "only {n} layers carry a demand, a nameplate and a fit; a check with almost \
-         nothing to check passes loudest"
+        corpus_layers >= 20,
+        "only {corpus_layers} CORPUS layers carry a demand, a nameplate and a fit; a check \
+         with almost nothing to check passes loudest, and the fixtures cannot stand in \
+         because every one of them is a transition"
     );
 
     // ------------------------------------------------------------------
     // 2. D-transpose N: computed, empty, and the reason is the thesis.
     // ------------------------------------------------------------------
     let ops = sqlx::query_file!("assets/sql/queries/2-draws-and-inductions.sql")
-    .fetch_all(&pool)
-    .await?;
+        .fetch_all(&pool)
+        .await?;
 
     let stated = ops
         .iter()
@@ -147,8 +188,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 3. x_composed = F Phi x_parts - e, as an actual matrix product.
     // ------------------------------------------------------------------
     let parts = sqlx::query_file!("assets/sql/queries/3a-fusion-parts.sql")
-    .fetch_all(&pool)
-    .await?;
+        .fetch_all(&pool)
+        .await?;
 
     let mut composed: Vec<(String, String)> = parts
         .iter()
@@ -183,8 +224,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     ];
 
     let expected = sqlx::query_file!("assets/sql/queries/3b-composed-demand.sql")
-    .fetch_all(&pool)
-    .await?;
+        .fetch_all(&pool)
+        .await?;
 
     let mut checked = 0;
     let mut suspended = 0;
@@ -234,8 +275,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 5. What densifying costs. The interesting failure, kept for the end.
     // ------------------------------------------------------------------
     let couplings = sqlx::query_file!("assets/sql/queries/5-coupling-presence.sql")
-    .fetch_all(&pool)
-    .await?;
+        .fetch_all(&pool)
+        .await?;
 
     let l = couplings.len();
     let values = DMatrix::<f64>::zeros(l, l);
@@ -282,8 +323,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 4. Phi is correlated with itself, and the corpus shows it.
     // ------------------------------------------------------------------
     let c = sqlx::query_file!("assets/sql/queries/4-converted-remainder.sql")
-    .fetch_one(&pool)
-    .await?;
+        .fetch_one(&pool)
+        .await?;
 
     // The remainder as FILED: each part's own remainder converted, then added.
     let filed = DVector::from_vec(vec![c.q_low, c.q_mode, c.q_high]);
@@ -333,6 +374,102 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             totals counts phi's spread twice. Both figures are arithmetically correct; only\n   \
             the filed one is the remainder.",
         dl, dh
+    );
+
+    // ------------------------------------------------------------------
+    // 6. The residue census: how often the sawtooth defeats a filed demand.
+    // ------------------------------------------------------------------
+    let residue = sqlx::query_file!("assets/sql/queries/6-residue-census.sql")
+        .fetch_all(&pool)
+        .await?;
+
+    let mut residue_disagreements = 0;
+    let mut sawtoothed = 0;
+    for row in &residue {
+        // ⛔ A QUANTUM WITH A SPREAD WOULD MAKE `d mod q` THREE DIFFERENT DIVISIONS, and the
+        //    query divides by the mode. Every filed quantum in this corpus is a point value,
+        //    so that is currently free — but it is an assumption, and an assumption that
+        //    stops holding silently is the failure this repository keeps naming. Asserted.
+        assert!(
+            (row.q_low - row.q_high).abs() < 1e-9,
+            "{}/{} files a quantum spanning {} to {}, so `d mod q` is three divisions rather \
+             than one and §6 is silently taking the mode. That is a legitimate filing state; \
+             this census owes a corner argument before it can count it.",
+            row.filing,
+            row.layer,
+            row.q_low,
+            row.q_high
+        );
+        // The second witness: Postgres computed `mod`, this recomputes it with `%`.
+        let q = row.q_mode;
+        let (lo, md, hi) = (row.d_low % q, row.d_mode % q, row.d_high % q);
+        let computed = !(lo <= md && md <= hi);
+        if computed != row.sawtoothed {
+            eprintln!(
+                "  ⛔ {}/{}: SQL says {}, Rust says {computed}",
+                row.filing, row.layer, row.sawtoothed
+            );
+            residue_disagreements += 1;
+        }
+        if computed {
+            sawtoothed += 1;
+        }
+    }
+    println!(
+        "6. residue census: {} lumpy corpus layers, {sawtoothed} sawtoothed, \
+         {residue_disagreements} disagreements",
+        residue.len()
+    );
+    assert_eq!(
+        residue_disagreements, 0,
+        "Postgres `mod` and Rust `%` disagree about a residue"
+    );
+    // ⭐ BOUNDED ON BOTH SIDES, because both vacuous ends are reachable and neither is
+    //   interesting. All-clean would mean the corpus files only demands sitting on the
+    //   lattice; all-sawtoothed would mean the ordered case is unexercised. The claim is
+    //   that this is the ORDINARY state of a real filing, and that needs both to occur.
+    assert!(
+        sawtoothed > 0 && sawtoothed < residue.len(),
+        "{sawtoothed} of {} lumpy layers sawtooth. At either extreme this census demonstrates \
+         nothing: the note's claim is that an unordered residue is ordinary rather than \
+         universal.",
+        residue.len()
+    );
+
+    // ------------------------------------------------------------------
+    // 7. Slack coverage, and the column that reads zero.
+    // ------------------------------------------------------------------
+    let slacks = sqlx::query_file!("assets/sql/queries/7-slack-coverage.sql")
+        .fetch_all(&pool)
+        .await?;
+
+    let mut per_buffer: BTreeMap<&str, (usize, usize)> = BTreeMap::new();
+    for row in &slacks {
+        let e = per_buffer.entry(row.buffer.as_str()).or_default();
+        e.1 += 1;
+        if row.sized {
+            e.0 += 1;
+        }
+    }
+    println!(
+        "7. slack coverage (corpus): {} (layer, buffer) rows",
+        slacks.len()
+    );
+    for (buffer, (sized, total)) in &per_buffer {
+        let flag = if *sized == 0 { "  ⛔ unexercised" } else { "" };
+        println!("   {buffer:<10} {sized} sized of {total}{flag}");
+    }
+
+    // ⛔⛔ NO ASSERTION PINS `capacity` AT ZERO, and that is deliberate. An equality here
+    //     would turn today's gap into tomorrow's failure: the first filer to size a capacity
+    //     slack would break the build for doing the thing the model wants. The zero is
+    //     REPORTED, loudly, and `docs/linear-algebra.md` says the bound is unexercised on the
+    //     strength of this line rather than on somebody's memory.
+    let sized_total: usize = per_buffer.values().map(|(s, _)| s).sum();
+    assert!(
+        sized_total > 0,
+        "not one slack in the corpus carries a number, so the share-sum bound has nothing to \
+         bound anywhere and every inequality in §3 of the note passes vacuously"
     );
 
     println!("\nAll checks passed.");

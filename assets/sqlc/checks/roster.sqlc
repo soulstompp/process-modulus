@@ -1,0 +1,44 @@
+# THE RULES THIS REPOSITORY CLAIMS TO ENFORCE. One row per rule: a slug, the sentence the
+# schema states it in, and where the argument for it lives.
+#
+# ⭐⭐⭐ THIS IS THE ONE PLACE A RULE'S NAME IS WRITTEN, AND EVERY CHECK JOINS IT TO LEARN ITS
+#    OWN. That is not tidiness -- it is what makes a rule able to report that it examined
+#    NOTHING. A check that simply filters its population disappears from a `GROUP BY` when the
+#    population is empty, so the single most important verdict this file can return, ⛔ VACUOUS,
+#    is exactly the one a grouping cannot produce. Joining the roster first means the row
+#    exists before the population does.
+#
+# ⭐⭐ "A BOUND WITH NOTHING TO BOUND PASSES LOUDEST." An empty violations table is the good
+#    outcome and it is also what a checker that examines nothing returns. The two are
+#    indistinguishable from the outside, and this relation is what separates them.
+#
+# ⛔ A ROW HERE WITH NO CHECK BEHIND IT IS A CLAIM WITH NOTHING UNDER IT, and a check with no
+#   row here is a rule nobody declared. Both directions are anti-joined in
+#   reports/rule_integrity.sqlc, which is empty when the two agree.
+-- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)

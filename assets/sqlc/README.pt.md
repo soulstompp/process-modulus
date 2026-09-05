@@ -4,16 +4,41 @@
 > que o repositório trata como autoritativa quando as duas divergirem. Os nomes dos ficheiros, das
 > tabelas e dos elementos do XSD ficam em inglês, porque são os nomes do artefacto.
 
-Cinco ficheiros e uma afirmação.
+Noventa e seis consultas e uma afirmação.
 
 ```
-schema.ddl            o modelo como relações
+../ddl/schema.ddl     o modelo como relações
 ingest.sql            o Postgres a ler assets/corpus/*.xml sozinho, sem ajuda nenhuma
-matrices.sql          as matrizes, extraídas com junções
-rules.sql             as regras a que o XSD 1.0 não chega, como uma só consulta
-queries/              as seis consultas do exemplo, um ficheiro cada, executáveis no psql
+matrices.sql          as matrizes, extraídas com junções — um percurso, sem lógica própria
+rules.sql             as regras a que o XSD 1.0 não chega — uma montagem, sem lógica própria
+queries/              as oito consultas do exemplo, um ficheiro cada, executáveis no psql
 ../../examples/matrices.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
+
+**Cada um desses ficheiros é composto a partir de consultas mais pequenas, e cada consulta
+mais pequena corre sozinha.** Os `assets/sqlc/*.sqlc` são modelos; o `cargo sqlc compose`
+transforma-os nos `assets/sql/*.sql`, que são os que o psql e o `sqlx` leem. O objetivo da
+separação não é evitar repetir uma junção. É que cada ficheiro nomeia UM objeto relacional,
+diz nos comentários `#` o que esse objeto É e o que SIGNIFICA, e pode ser executado por si só
+por quem queira olhar para os dados e fazer uma pergunta que nada tem a ver com as de cima.
+
+```
+scope/         que documentos estou a ver             — corpus, fixtures, tudo
+units/         que unidades têm denominador
+layers/        os vetores indexados por camada        — d, n, r = n − d, o amortecedor
+entries/       as matrizes esparsas                   — H, S, C, D, N
+composition/   F e Φ, a descida, e o que é devido     — partes, conversão, descida, folhas
+epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos
+checks/        um ficheiro por regra: cada linha examinada, com um veredito em cada uma
+reports/       achados que uma pessoa decide, e as duas vistas de checks/
+```
+
+⭐⭐ **A árvore é a ordem de derivação do próprio modelo.** `layers/remainder.sqlc` compõe
+`layers/demand.sqlc` e `layers/nameplate.sqlc`, porque um resto É uma diferença de dois
+vetores. `composition/leaves.sqlc` faz anti-junção com `composition/fusions.sqlc`, porque uma
+folha É uma camada alcançada que não é uma fusão. Ler as arestas `:compose()` de cima para
+baixo é ler o que este modelo considera construído a partir de quê — que é aquilo que os
+esquemas afirmam em prosa e que, até agora, não se podia verificar nem sequer percorrer.
 
 **A afirmação:** quarenta e quatro regras deste modelo estão escritas na prosa dos esquemas e não
 são verificadas por nada, porque o XSD 1.0 não tem `xs:assert` e não consegue comparar um elemento
@@ -41,7 +66,7 @@ superutilizador.
 
 ```
 createdb process_modulus_proof
-psql -d process_modulus_proof -f assets/sql/schema.ddl \
+psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
                               -f assets/sql/rules.sql
 ```
@@ -107,7 +132,7 @@ Distingui-los é todo o assunto, dos dois lados.
 | **o mesmo zero, duas vezes** | um facto com duas grafias | `absent reason="none"` contra uma afirmação de `[0,0,0]` |
 | **o zero de fronteira** | uma comparação a assentar exatamente na linha | `n_low = d_high` — uma convenção escolhida |
 | **o zero que NÃO devia ser zero** | uma tabela cujo vazio significaria que ninguém foi ver | os reencaminhamentos abaixo |
-| **o zero que agora são dois zeros** | um branco que transportava «verificado e não há» e «ninguém verificou» ao mesmo tempo | `coupling_search`, `elimination_search` — [§6](#6-o-zero-que-afinal-eram-dois) |
+| **o zero que agora são dois zeros** | um branco que transportava «verificado e não há» e «ninguém verificou» ao mesmo tempo | `coupling_search`, `elimination_search` — [§8](#8-o-zero-que-afinal-eram-dois) |
 
 **O bom zero é o primeiro a perceber**, porque é o que as pessoas apagam. O `DᵀN` sai vazio neste
 conjunto de documentos. Não porque a consulta esteja errada — porque a única operação que ao mesmo
@@ -175,7 +200,7 @@ PROCURA E NÃO SOBRE LINHA NENHUMA.** A `coupling_search` tem uma linha por decl
 aconteceu quando alguém foi procurar; a `elimination_search` faz o mesmo por cada fusão. Nenhuma é
 uma matriz, nenhuma tem forma, e nenhuma podia ter sido uma coluna na tabela alta que explica — não
 se atribui «ninguém foi ver» a uma linha que não está lá. →
-**[§6](#6-o-zero-que-afinal-eram-dois)**
+**[§8](#8-o-zero-que-afinal-eram-dois)**
 
 Isto é a ausência tipificada a chegar pelo lado relacional. É a razão de todas as colunas de
 quantidade terem uma coluna `absent` companheira a transportar uma razão, e de o DDL obrigar a que
@@ -265,6 +290,27 @@ nominal de mão de obra quase nunca se elimina. Uma reserva que um membro detenh
 outro elimina-se. Se a sua consolidação está a compensar capacidade com a mesma liberdade com que
 compensa rédito, uma das duas coisas está errada.
 
+### ⭐⭐ O que autoriza uma linha de `F`, para começar
+
+O `F` parece uma matriz de participações e não é. O perímetro de consolidação diz QUE entidades
+entram; não diz quais das capacidades delas são a **mesma capacidade**. Um 1 no `F` diz que duas
+camadas declaradas são UMA só camada, e o que o autoriza é a **fungibilidade**: pode uma unidade de
+oferta de uma parte servir a procura da outra?
+
+⛔ **A pergunta é entre dois membros diferentes por construção**, portanto «servem clientes
+diferentes em países diferentes» não lhe responde — isso é uma afirmação sobre acoplamento. O que a
+decide é se as pessoas de um membro conseguem pegar no trabalho do outro.
+
+⭐ **É por isso que o parágrafo acima não é uma contradição.** As pessoas de dois membros são dois
+conjuntos de pessoas, portanto a `nameplate` quase nunca se elimina — e esses dois conjuntos podem
+à mesma ser uma só camada, porque fungível quer dizer *intermutável*, e não *partilhado*. O
+dinheiro é fungível sem ser uma só moeda. A eliminação mede a dupla contagem, o `F` transporta o
+juízo de fungibilidade, e são eixos independentes: ler um a partir do outro é o erro que um ficheiro
+tão cheio de aritmética de outro modo convidaria a cometer.
+
+O juízo é de quem compõe, é obrigado a transportar prosa, e é a afirmação com que quem lê tem
+direito a discordar. Ver a `asrt:Fusion`.
+
 ### ⭐⭐ A pergunta que o seu auditor faz, e a que o modelo não sabia responder até este mês
 
 *Alguém foi procurar a dupla contagem?*
@@ -283,7 +329,7 @@ eliminations absent notApplicable uma só parte      -> nada que possa ser conta
 
 **Três veredictos, e não dois.** Um verificador tem de conseguir dizer *não verificado*, porque
 reportar uma passagem numa reconciliação que ninguém executou é a mesma falha que reportar uma
-passagem numa regra que não examinou linha nenhuma. → **[§6](#6-o-zero-que-afinal-eram-dois)**
+passagem numa regra que não examinou linha nenhuma. → **[§8](#8-o-zero-que-afinal-eram-dois)**
 
 ### Onde o instinto de um contabilista está errado, e vale dez minutos
 
@@ -480,10 +526,24 @@ limpa tem linhas aqui e isso está correto**, que é a razão de não estarem mi
 cima:
 
 ```
-uma fusão que absorva um acoplamento entre as suas próprias partes tem de o dizer
-  merge-group-composition  compute-us -> compute-pt   para merge-holding-composition/compute
-  merge-group-composition  labour -> on-call          para merge-holding-composition/staff
+merge-group-composition    compute-us -> compute-pt   merge-holding-composition/compute
+merge-group-composition    labour -> on-call          merge-holding-composition/staff
+merge-group-composition    labour -> shift-line       (nenhuma fusão contém as duas pontas)
+merge-holding-composition  staff -> shift-line        (nenhuma fusão contém as duas pontas)
+refutation                 compute -> labour          (nenhuma fusão contém as duas pontas)
 ```
+
+As três linhas não absorvidas estão ali de propósito. Um reencaminhamento que imprimisse só os
+seus achados seria tão ilegível como uma regra que imprimisse só as suas violações: *cinco
+acoplamentos examinados e dois absorvidos* é uma afirmação; duas linhas não são.
+
+⭐⭐ **Também reportado aqui: a outra afirmação que um documento pode refutar neste formato.** O
+modelo diz que todas as camadas têm um resto, e o `StatedRemainder` é uma escolha — um resto, ou
+uma razão tipificada para não haver nenhum — pelo que quem declare e discorde o tem de dizer em vez
+de deixar um campo vazio. Duas camadas do conjunto fazem-no, e ambas argumentam o mesmo por
+palavras diferentes: uma oferta sem quantum divide exatamente, logo nada sobra. Leia-se ao lado do
+relatório de independência; são os dois falsificadores do modelo e cada um tem um invólucro
+construído para transportar a recusa.
 
 Também reportado aqui: a cobertura do `narrowsWhen`. A anotação diz *«uma afirmação sem ele é mais
 fraca, e quem recebe tem direito a dizê-lo»* — portanto quem recebe di-lo com um número. **20 de 26
@@ -493,28 +553,29 @@ estreitaria *de facto* o intervalo é prosa. Contar que afirmações se recusam 
 **3. Cobertura**, e esta importa mais do que a primeira:
 
 ```
-uma afirmação com intervalo não declara narrowsWhen como notApplicable           37   ok
-o sinal concorda com a comparação de intervalos                                  33   ok
-um quantum é expresso na unidade da capacidade nominal que divide                32   ok
-a capacidade nominal é múltiplo inteiro do quantum                               32   ok
-as parcelas declaradas somam a grandeza                                          20   ok
-uma referência de parte resolve para uma declaração que está aqui                19   ok
-uma janela é notApplicable só onde a unidade não tem denominador                 16   ok
-nenhuma camada-folha é alcançável por dois caminhos                              10   ok
-um ajustamento de folga exclui customer e unrealised                              9   ok
-uma margem é expressa na unidade das parcelas que limita                          6   ok
-uma fusão que absorva um acoplamento entre as suas partes tem de o dizer          5   ok
-um acoplamento atenua-se numa fusão, limitado pela quota da parte                 4   ok
-uma fusão só chama malformada à dupla contagem quando tem uma parte               4   ok
-um zero medido é declarado como ausência, e não como afirmação de zero            3   ok
-uma parcela não excede a margem do amortecedor que a absorveu                     3   ok
-uma oferta que não pode correr acima nomeia quem ficou por servir                 3   ok
-uma janela é transportada através de uma fusão e nunca somada                     3   ok
-a exposição não excede a margem mais as parcelas por servir                       3   ok
-uma parte local nomeia uma camada da sua própria pilha                            2   fina
-as partes locais não ciclam                                                       2   fina
-uma margem de tempo derivada precisa de uma janela que o permita                  1   fina
-um valor pontual declara narrowsWhen como notApplicable, por não ter intervalo    0   VÁCUA
+regra                                                                           examinadas  violações  veredito
+uma afirmação com intervalo não declara narrowsWhen como notApplicable                  40          0  ok
+o sinal concorda com a comparação de intervalos                                         35          0  ok
+um quantum é expresso na unidade da capacidade nominal que divide                       35          0  ok
+a capacidade nominal é múltiplo inteiro do quantum                                      35          0  ok
+uma referência de parte resolve para uma declaração que está aqui                       21          0  ok
+as parcelas declaradas somam a grandeza                                                 20          0  ok
+uma janela é notApplicable só onde a unidade não tem denominador                        16          0  ok
+um ajustamento de folga exclui customer e unrealised                                    12          0  ok
+nenhuma camada-folha é alcançável por dois caminhos                                     12          0  ok
+a exposição não excede a margem mais as parcelas por servir                              9          0  ok
+uma margem é expressa na unidade das parcelas que limita                                 6          0  ok
+uma fusão só chama malformada à dupla contagem quando tem uma parte                      4          0  ok
+uma parte local nomeia uma camada da sua própria pilha                                   4          0  ok
+as partes locais não ciclam                                                              4          0  ok
+um zero medido é declarado como ausência, e não como afirmação de zero                   3          0  ok
+uma parcela não excede a margem do amortecedor que a absorveu                            3          0  ok
+uma oferta que não pode correr acima nomeia quem ficou por servir                        3          0  ok
+uma janela é transportada através de uma fusão e nunca somada                            3          0  ok
+um resto negado não é contradito pelos números da própria camada                         2          0  fina
+um acoplamento atenua-se numa fusão, limitado pela quota da parte                        1          0  fina
+uma margem de tempo derivada precisa de uma janela que o permita                         1          0  fina
+um valor pontual declara narrowsWhen como notApplicable, por não ter intervalo           0          0  VÁCUA
 ```
 
 **A última linha é a maquinaria a funcionar**, e não um defeito dela. Apanha um erro real — um
@@ -524,16 +585,40 @@ nada aqui e di-lo. Uma regra reportada como `ok` quando não examinou nada é o
 zero perigoso; uma regra reportada como VÁCUA é uma regra em que se pode confiar quanto ao resto da
 tabela.
 
+⛔⛔ **E essa última linha é a que um verificador estruturalmente não consegue produzir, e é por
+isso que as regras estão construídas como estão.** Agrupar uma população filtrada por regra faz
+com que uma regra de população vazia não contribua com linha nenhuma — portanto o veredito mais
+importante que esta tabela pode devolver seria entregue por *silêncio*, que é indistinguível de a
+regra não existir. Por isso cada verificação junta primeiro o `checks/roster.sqlc`, onde a frase
+de cada regra está escrita exatamente uma vez; a linha do roster existe antes de a população
+existir. `examinadas` passa a ser a contagem do que a regra olhou, `violações` a contagem do que
+falhou, e as duas tabelas acima são `WHERE violates` e `GROUP BY rule` sobre uma só relação — que
+não pode discordar de si própria sobre o que foi examinado. A versão anterior reescrevia cada
+população num segundo dialeto de si mesma, e **três das vinte e duas reescritas discordavam da
+regra sobre que reportavam** — uma delas em voz alta que chegava para chamar `ok` a uma regra que
+examina uma única linha.
+
 ⭐⭐ **Quatro destas linhas são novas e nenhuma delas é uma ideia nova.** Cada uma já estava escrita
 na prosa dos esquemas e era INVERIFICÁVEL, porque em cada caso o estado de que depende era um branco
 — uma lista vazia, um elemento em falta, uma enumeração omitida — e um branco não tem razão por que
 agrupar. *Uma janela é transportada através de uma fusão e nunca somada* é a mais afiada: apanhou um
 defeito vivo à primeira execução, uma camada composta que tinha deixado cair o ciclo de
 funcionamento da sua parte, onde a queda era idêntica byte a byte a uma linha que corre sete dias
-por semana. → **[§6](#6-o-zero-que-afinal-eram-dois)**
+por semana. → **[§8](#8-o-zero-que-afinal-eram-dois)**
 
 Outras três são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
-uma margem numérica, e a composição local é exercitada por um único documento de estipulação.
+uma margem numérica, apenas três declarações registam algum acoplamento, e exatamente duas camadas
+negam ter um resto.
+
+⭐⭐ **Esta última é o falsificador do próprio modelo, e até esta passagem a base de dados
+deitava-o fora.** O `StatedRemainder` é uma escolha — um resto, ou uma razão tipificada para não
+haver nenhum — e todas as camadas são obrigadas a transportar um *precisamente* para que quem
+declare e discorde de «todas as camadas têm um resto» o tenha de dizer explicitamente. O
+`ingest.sql` lia apenas o primeiro ramo, pelo que as duas camadas que tomam o segundo chegavam
+como cinco NULL e liam-se como documentos que nada tinham dito. Uma delas diz o contrário na sua
+própria nota: *«declarado como contraexemplo à afirmação de que todas as camadas transportam um
+resto, **e não como uma lacuna neste documento**.»* Uma lacuna foi exatamente o que ficou
+guardado.
 
 ### Acoplamentos, e as três formas em que aparecem
 
@@ -607,10 +692,20 @@ como aritmética vetorial, uma linha por extremo. Depois classifica cada camada 
 
 ```
 1. ajustamentos recalculados a partir dos intervalos: 32 camadas, 0 discordâncias
+   conjunto    24 camadas: 9 clearance, 14 interference, 1 transition
+   fixtures     8 camadas: 8 transition
 ```
 
-Também afirma `n >= 20` antes de afirmar seja o que for sobre as respostas, para que a verificação
-não possa passar por não ter examinado nada. ↑ *a afirmação que isto resolve é [`r = n − d` inverte
+⭐⭐ **O recenseamento é separado por `evidence`, e a separação é o conteúdo.** Todas as camadas de
+fixture que chegam a esta consulta são `transition` — foram escritas para exercitar o estado que as
+declarações reais quase nunca alcançam — pelo que uma contagem conjunta reporta a ÚNICA transição do
+conjunto como nove, e o `docs/linear-algebra.md` cita esse número.
+
+Afirma um mínimo antes de afirmar seja o que for sobre as respostas, para que a verificação não
+possa passar por não ter examinado nada — e o mínimo é sobre o CONJUNTO apenas, não sobre as 32
+linhas. Contar as fixtures deixá-las-ia sustentar a afirmação enquanto o conjunto se esvaziava por
+baixo, que é a armadilha da vacuidade um nível acima: muito que verificar, nada disso aquilo que
+está a ser afirmado. ↑ *a afirmação que isto resolve é [`r = n − d` inverte
 os extremos](#r--n--d-inverte-os-extremos).*
 
 ### 2. `DᵀN`, o bom zero
@@ -634,11 +729,11 @@ diagonal. Depois a fusão são três produtos matriciais a sério, um por extrem
 comparado com a procura que a camada composta declarou.
 
 ```
-3. F.Phi.x - e contra a procura composta declarada: 11 camadas, todas concordam; 1 suspensa
+3. F.Phi.x - e contra a procura composta declarada: 10 camadas, todas concordam; 2 suspensas
 ```
 
 ⭐⭐ **É aqui que «um produto matricial é uma junção com um `GROUP BY`» é verificado.** O
-`matrices.sql` calcula as mesmas oito linhas com uma junção e uma soma. A mesma resposta, dois
+`matrices.sql` calcula as mesmas dez linhas com uma junção e uma soma. A mesma resposta, dois
 algoritmos.
 ↑ *resolve [a ideia](#a-ideia-que-as-duas-álgebras-partilham), [a regra da
 fusão](#e-a-regra-da-fusão-confere), e a afirmação de que **uma consolidação É esta expressão** —
@@ -682,9 +777,63 @@ impressa ao lado dela é o número deste ficheiro que mais vale a pena ler.
 
 É por isso que as tabelas são esparsas e não densas, e é o mau zero num ecrã.
 ↑ *resolve [porque é que as tabelas têm a forma que
-têm](#porque-é-que-as-tabelas-têm-a-forma-que-têm) e a [§6](#6-o-zero-que-afinal-eram-dois).*
+têm](#porque-é-que-as-tabelas-têm-a-forma-que-têm) e a [§8](#8-o-zero-que-afinal-eram-dois).*
 
-### 6. O zero que afinal eram dois
+### 6. A contagem do resíduo, e o número que antes se contava à mão
+
+`r = mq − (d mod q)` divide um resto na metade que uma decisão de aquisição move e na metade
+que decisão nenhuma remove. A segunda metade é um **dente de serra** em `d`, pelo que nos três
+pontos de um intervalo não tem de voltar ordenada — e um trio desordenado não é sequer um intervalo,
+ao passo que a procura de onde saiu está perfeitamente bem formada.
+
+```
+6. contagem do resíduo: 23 camadas com quantum no conjunto, 15 com dente de serra, 0 discordâncias
+```
+
+O Postgres calcula o veredicto com `mod()`; o exemplo recalcula-o com `%`. A contagem de
+discordâncias é a segunda testemunha, e é o mesmo padrão a que o resto deste ficheiro obedece.
+
+⚠️ A secção afirma também que todos os quanta declarados são PONTUAIS. Um quantum com amplitude
+torna `d mod q` em três divisões diferentes e a consulta divide pela moda — de momento sai grátis,
+já que nenhum quantum do conjunto tem intervalo, e continua a ser um pressuposto. Afirmado em vez de
+assumido, para que deixe de ser grátis em silêncio.
+
+⭐⭐ **Limitado dos dois lados, porque ambos os extremos vazios são alcançáveis e nenhum deles
+interessa.** Tudo limpo significaria que o conjunto só declara procuras assentes na rede; tudo com
+dente de serra significaria que o caso ordenado está por exercitar. A afirmação é que um resíduo
+desordenado é ORDINÁRIO e não universal, e isso precisa que ambos ocorram.
+
+⛔ Este número é citado no [`docs/linear-algebra.md`](../../docs/linear-algebra.md), onde era mantido
+lendo o XML e contando. Derivou duas vezes, e à segunda era o denominador tanto como o numerador.
+↑ *resolve a metade do dente de serra de [`r = n − d` inverte os
+extremos](#r--n--d-inverte-os-extremos).*
+
+### 7. Cobertura das margens, e a coluna que lê zero
+
+Uma linha por (camada, `buffer`): se essa margem foi dimensionada, ou qual a ausência tipada que ali
+está em vez disso.
+
+```
+7. cobertura das margens (conjunto): 78 linhas (camada, buffer)
+   capacity   0 dimensionadas de 26  ⛔ por exercitar
+   inventory  2 dimensionadas de 26
+   time       1 dimensionada de 26
+```
+
+⛔⛔ **O número interessante é o zero.** A `capacity` é a coluna que transporta a desigualdade da
+diferença — o que a procura e a capacidade nominal de um documento dizem que podia ter ficado por servir, contra o
+que a oferta consegue absorver mais o que o documento admite recusar. Nem uma camada deste conjunto
+a dimensiona, pelo que esse limite nunca foi exercitado, e um limite sem nada que limitar é o que
+passa mais alto.
+
+**Nada afirma que fique em zero**, e isso é deliberado. Uma igualdade aqui faria com que o primeiro
+a dimensionar uma margem de capacidade partisse a compilação por fazer exatamente aquilo que o
+modelo quer. O zero é REPORTADO, e a afirmação fica um nível acima: que *alguma* margem em algum
+sítio transporta um número, para que a regra da soma das quotas não passe contra uma tabela vazia.
+↑ *resolve [porque é que as tabelas têm a forma que
+têm](#porque-é-que-as-tabelas-têm-a-forma-que-têm).*
+
+### 8. O zero que afinal eram dois
 
 Não é uma secção do exemplo — é uma secção do `rules.sql`, e a razão de as cinco anteriores terem
 ficado mais afiadas. Cinco codificações nos dois esquemas continham um facto de três ou quatro

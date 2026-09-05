@@ -1,0 +1,20 @@
+# EVERY SLACK/SHARE PAIR THAT STATES BOTH UNITS, BESIDE WHETHER THEY MATCH. One row per
+# examined pair, `violates` where they differ.
+#
+# ⭐ THE RULE: a slack is expressed in the unit of the shares it bounds. An inequality between
+#   two numbers in different units is not a failing comparison, it is a meaningless one -- so
+#   this is the precondition that makes share_exceeds_slack.sqlc mean anything at all.
+-- pm:Buffer and pm:Holder claims, each carrying its own unit.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.layer,
+           c.slack_unit <> c.share_unit AS violates,
+           format('slack in %s, shares in %s', c.slack_unit, c.share_unit) AS detail
+    FROM (
+        :compose(entries/comparable_slack_shares.sqlc)
+    ) c
+) p ON true
+WHERE r.slug = 'slack_unit_mismatch'

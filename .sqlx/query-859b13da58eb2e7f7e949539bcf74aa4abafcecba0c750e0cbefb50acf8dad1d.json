@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §7  Which buffers the corpus actually sizes, and the one that reads zero.\n-- entries/slacks.sqlc at corpus scope.\nSELECT s.filing            AS \"filing!\",\n       s.layer             AS \"layer!\",\n       s.buffer::text      AS \"buffer!\",\n       s.sized             AS \"sized!\",\n       s.absent::text      AS \"absent\"\nFROM (\n    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.bound_origin, s.bound_origin_absent\nFROM pm.slack s\n\n) s\nJOIN (\n    -- from pm.filing where evidence = 'corpus'; the axis is documented on that column.\nSELECT f.name AS filing, f.kind, f.evidence\nFROM pm.filing f\nWHERE f.evidence = 'corpus'\n\n) f USING (filing)\nORDER BY s.filing, s.layer, s.buffer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.slack",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.slack",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "buffer!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "sized!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "absent",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "859b13da58eb2e7f7e949539bcf74aa4abafcecba0c750e0cbefb50acf8dad1d"
+}

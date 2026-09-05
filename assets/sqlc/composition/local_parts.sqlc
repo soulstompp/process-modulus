@@ -1,0 +1,19 @@
+# THE PARTS A FILING DRAWS FROM ITS OWN STACK. One row per part whose notation is its own
+# composition's, so it names a layer that same document built.
+#
+# ⭐⭐⭐ XSD 1.0 CANNOT MAKE A KEYREF CONDITIONAL ON ANOTHER FIELD'S VALUE, which is why
+#    this set exists as a query rather than as a constraint. `composedLayerName` cannot be
+#    pointed at "the local stack, but only when the notation matches mine", so a local part
+#    naming a layer that is not there validates cleanly -- and so does a local part that
+#    closes a loop.
+#
+# ⛔⛔ AND THE LOOP IS THE ONE THAT WOULD HANG A READER. Layer A composed from B while B is
+#    composed from A is a document with no arithmetic in it: every figure depends on itself.
+#    A FOREIGN part cannot do that within one document; a local one can, and that is the
+#    cost of the capability. Both local-part rules examine exactly this relation.
+-- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    :compose(composition/part_references.sqlc)
+) p
+JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing

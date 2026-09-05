@@ -1,0 +1,23 @@
+# DID THE COMPOSER LOOK FOR DOUBLE COUNTING, AND WHAT DOES THE ANSWER OBLIGE THEM TO? One row
+# per answer, with how many fusions gave it and which arithmetic that leaves owed.
+#
+# ⭐⭐ THE SAME SHAPE AS THE COUPLING SEARCH, ONE DOCUMENT UP, AND THE ANSWER DECIDES WHICH
+#    ARITHMETIC IS OWED. `none` or `notApplicable`: the composed figure must equal the sum of
+#    its converted parts EXACTLY. `unmeasured`: no equality is owed at all, and a checker
+#    reporting a pass on one of those rows is reporting about nothing.
+#
+# ⛔ CORPUS ONLY -- a statement about how real composers file, not about the fixtures written
+#   to exercise the suspension.
+-- pm:Fusion/pm:Eliminations/pm:Absent, over the corpus.
+SELECT coalesce(s.answer::text, 'eliminations filed') AS the_search,
+       count(*) AS fusions,
+       CASE WHEN s.answer = 'unmeasured' THEN 'sum rule SUSPENDED'
+            ELSE 'sum rule exact' END AS what_is_owed
+FROM (
+    :compose(epistemics/searches.sqlc)
+) s
+JOIN (
+    :compose(scope/corpus.sqlc)
+) c USING (filing)
+WHERE s.looked_for = 'double counting across parts'
+GROUP BY 1, 3 ORDER BY 2 DESC

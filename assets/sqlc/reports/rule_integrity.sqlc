@@ -1,0 +1,44 @@
+# RULES DECLARED WITH NOTHING BEHIND THEM, AND CHECKS NOBODY DECLARED. One row per
+# disagreement between checks/roster.sqlc and checks/all.sqlc. EMPTY IS THE CORRECT OUTPUT.
+#
+# ⭐⭐ THE ROSTER IS A CLAIM ABOUT WHAT THIS REPOSITORY ENFORCES, AND A CLAIM NEEDS SOMETHING
+#    UNDER IT. A roster entry no check produces is a rule the repository advertises and does
+#    not run -- which reads to anybody as coverage. A check with no roster entry is a rule
+#    nobody declared, so it appears in the violations table and never in the coverage one.
+#
+# ⛔ THIS IS THE ONLY PLACE A RULE'S NAME COULD DRIFT, AND IT IS WHY THE FILE EXISTS. Every
+#   other name in the pipeline is read from the roster; only the join key -- a check's own slug
+#   -- is written twice. A typo there produces exactly one symptom, and this query is it.
+#
+# ⛔⛔⛔ AND THE THIRD BRANCH GUARDS THE ONE AMBIGUITY IN THE CHECK CONTRACT. `violates IS NULL`
+#    is how a check says IT EXAMINED NOTHING -- the roster row that found no population, the
+#    ⛔ VACUOUS verdict, the single most important thing this repository reports. A `violates`
+#    that came back NULL from THREE-VALUED LOGIC instead, on a row the check really did look
+#    at, is written identically and means the opposite. Coverage counts `violates IS NOT NULL`
+#    as its denominator, so such a row leaves the denominator without a word: the rule reports
+#    a smaller population and a cleaner verdict than it earned, and nothing anywhere says so.
+#    The query is one predicate, and the answer must always be no rows.
+-- checks/roster.sqlc against the rules checks/all.sqlc actually emits.
+SELECT 'declared, but no check produces it' AS problem, r.rule
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN ( SELECT DISTINCT rule FROM (
+    :compose(checks/all.sqlc)
+) a ) c USING (rule)
+WHERE c.rule IS NULL
+UNION ALL
+SELECT 'produced, but not on the roster', c.rule
+FROM      ( SELECT DISTINCT rule FROM (
+    :compose(checks/all.sqlc)
+) a ) c
+LEFT JOIN (
+    :compose(checks/roster.sqlc)
+) r USING (rule)
+WHERE r.rule IS NULL
+UNION ALL
+SELECT DISTINCT 'examined a row and returned neither true nor false', c.rule
+FROM (
+    :compose(checks/all.sqlc)
+) c
+WHERE c.violates IS NULL AND c.filing IS NOT NULL

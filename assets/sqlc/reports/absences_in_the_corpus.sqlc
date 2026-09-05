@@ -1,0 +1,10 @@
+# WHAT THE EVIDENCE DOES NOT ANSWER. The absence census over the documents that attest to a
+# real system.
+#
+# ⭐⭐ READ THIS AS A MAP OF THE MODEL'S EDGES. Every row is a question somebody was asked and
+#    declined, with the reason they gave -- so `unmeasured` rows are where an instrument would
+#    buy something, `none` rows are settled findings, and `notApplicable` rows are places the
+#    schema asks a question that does not arise. The three call for completely different work
+#    and a NULL would have made them one column of silence.
+-- reports/absence_census.sqlc at corpus scope.
+:compose(reports/absence_census.sqlc, @scope = scope/corpus.sqlc)

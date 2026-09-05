@@ -1,0 +1,40 @@
+# THE TWO HALVES OF EVERY CLAIM'S UNCERTAINTY, READ TOGETHER. One row per combination of what
+# would make a range smaller and who owns the edge it would have to move, counted over the
+# corpus.
+#
+# ⭐⭐⭐ THIS IS THE PAIR THE SCHEMA WAS RESTRUCTURED TO MAKE ASKABLE, AND FOR TWO REVISIONS
+#    NOTHING ASKED IT. `narrowsWhen` and `boundOrigin` were both promoted to required and
+#    typed on `Claim` precisely because they are one instrument -- and they were ingested into
+#    two tables joined by nothing, so the repository printed two censuses and never the
+#    crossing. The ingest comment even said the ordinal existed "so the two can be joined";
+#    no query ever did.
+#
+# ⛔⛔⛔ READ THE LARGEST CELL FIRST AND IT IS THE ONE THAT SHOULD SMART. "Nobody has said what
+#    would narrow this" crossed with "nothing sets this bound" is a claim with NO COURSE OF
+#    ACTION AND NO OWNER -- a bare number pair wearing a three-point estimate's clothes.
+#    Neither census alone can see it: in one it is an unremarkable `unmeasured`, in the other
+#    an unremarkable `none`. It is the honest measure of how much of this corpus is decoration.
+#
+# ⭐⭐ AND THE SMALL CELLS ARE WHERE THE ADVICE IS. `instrument` against `contractual` says
+#    measure it and then go renegotiate; `intervention` against `intrinsic` says the bound
+#    does not move at all, so the only way out is to stop being bound by that thing -- which
+#    is exactly what the one row filing it proposes, in prose, in this corpus.
+#
+# ⛔ CORPUS ONLY. The fixtures file combinations on purpose to prove the branches work, and
+#   counting a stipulation as evidence of what people actually write is the error this whole
+#   scope/ directory exists to prevent.
+-- epistemics/widths.sqlc against epistemics/edges.sqlc, joined on the claim they share.
+SELECT w.what_the_width_is_made_of AS what_would_narrow_it,
+       e.who_owns_the_edge         AS who_owns_the_edge,
+       count(*)                    AS claims
+FROM      (
+    :compose(epistemics/widths.sqlc)
+) w
+JOIN      (
+    :compose(epistemics/edges.sqlc)
+) e USING (filing, seq)
+JOIN      (
+    :compose(scope/corpus.sqlc)
+) s USING (filing)
+GROUP BY 1, 2
+ORDER BY 3 DESC, 1, 2

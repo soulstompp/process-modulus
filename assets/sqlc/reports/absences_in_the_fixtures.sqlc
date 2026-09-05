@@ -1,0 +1,12 @@
+# WHAT THIS REPOSITORY HAD TO INVENT. The absence census over the documents that stipulate a
+# state rather than attest to one.
+#
+# ⭐⭐ EVERY ROW HERE IS A STATE NO REAL FILING PRODUCED. A fixture exists because the corpus
+#    never reached the combination it asserts, so this relation is the list of branches the
+#    model can handle and has never actually met in the wild -- which is a different and more
+#    uncomfortable reading of the same census.
+#
+# ⛔ NOTHING HERE MAY BE COUNTED AS EVIDENCE. These are stipulations; they prove the code path
+#   works and say nothing whatever about the world.
+-- reports/absence_census.sqlc at fixture scope.
+:compose(reports/absence_census.sqlc, @scope = scope/fixtures.sqlc)

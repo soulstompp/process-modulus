@@ -1,0 +1,19 @@
+# ONE ROW PER DOCUMENT THAT WAS INGESTED, whatever it was written to attest.
+#
+# ⭐⭐ THE SET OF DOCUMENTS IS A CHOICE SOMEBODY MAKES ON PURPOSE, AND THIS FILE IS ONE OF
+#    THE THREE ANSWERS. Every query downstream is "some relation, over some set of
+#    documents". Composing a scope/ relation is what makes that choice a line somebody wrote
+#    rather than a `WHERE` clause somebody could forget. This is the widest answer: take
+#    everything that loaded.
+#    ⭐ IT IS BOTH A SLOT VALUE AND A RELATION COMPOSED DIRECTLY, and the two call sites are
+#      worth comparing. `matrices.sqlc` passes it into `entries/coupling_presence.sqlc`'s
+#      `@scope`; `queries/1-fit-from-ranges.sqlc` composes it as an ordinary join. Same file,
+#      same rows, and the slot form is the one where forgetting to choose fails to compose.
+#
+# ⛔⛔ THIS IS THE SCOPE A RULE RUNS UNDER AND A REPORT MUST NOT. A fixture is a
+#    STIPULATION -- it exists to put the model in a state the corpus never reached -- so
+#    a rule must be tested against it and a finding about the world must not count it.
+#    Choose scope/corpus.sqlc for anything that says "in this corpus".
+-- from pm.filing, both evidence values.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f

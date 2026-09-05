@@ -6,8 +6,9 @@
 --    matrices in docs/linear-algebra.md can be pulled out and
 --    multiplied. Copy the ideas, not the layout.
 --
--- Run it with:  psql -f sql/schema.ddl
--- Then ingest:  psql -f sql/ingest.sql      (from the repository root; it reads corpus/)
+-- Run it with:  psql -f assets/ddl/schema.ddl
+-- Then ingest:  psql -f assets/sql/ingest.sql   (from the repository root; it reads
+--                                                assets/corpus/ and assets/fixtures/)
 
 BEGIN;
 
@@ -120,6 +121,24 @@ CREATE TABLE layer (
     demand_narrows_kind   narrowing_kind,
     demand_narrows_absent absence_reason,
 
+    -- ⭐⭐⭐ THE WRAPPER THAT LETS THE MODEL BE CONTRADICTED, AND THIS DATABASE USED TO
+    --     THROW IT AWAY. `StatedRemainder` is a CHOICE -- a remainder, or a typed reason
+    --     there is none -- and EVERY layer is required to carry one, precisely so that a
+    --     sender who disagrees with "every layer has a remainder" has to say so EXPLICITLY
+    --     rather than leaving a field empty. `ingest.sql` read only the first branch, so
+    --     the two corpus layers that take the second landed here as five NULLs: sign,
+    --     absorber and quantity all blank, which is indistinguishable from a document that
+    --     said nothing at all.
+    --
+    --  ⛔⛔ AND ONE OF THEM SAYS SO IN THE NOTE, WHICH IS WHY THE NOTE IS STORED.
+    --     `refutation/object-storage` files `reason=none` with: "a supply with no quantum
+    --     divides exactly. Filed as a counter-example to the claim that every layer carries
+    --     a remainder, NOT AS A GAP IN THIS DOCUMENT." A gap is exactly what was stored.
+    --     Keeping only the reason keeps the fact and loses the argument, and the argument
+    --     is what the document was written to make.
+    remainder_absent      absence_reason,
+    remainder_absent_note text,
+
     -- the remainder's two halves: which side it is on, and how big it is
     sign          fit,
     sign_absent   absence_reason,
@@ -146,8 +165,43 @@ CREATE TABLE layer (
     PRIMARY KEY (filing, layer),
     CONSTRAINT demand_is_stated_or_typed_absent
         CHECK ((demand_low IS NOT NULL) <> (demand_absent IS NOT NULL)),
-    CONSTRAINT bounds_are_ordered
-        CHECK (demand_low IS NULL OR (demand_low <= demand_mode AND demand_mode <= demand_high))
+    -- ⛔⛔⛔ A THREE-POINT CLAIM IS WHOLE OR IT IS ABSENT, AND `num_nonnulls` IS WHY THIS FORM
+    --   RATHER THAN THE OBVIOUS ONE. This constraint used to read
+    --       CHECK (demand_low IS NULL OR (demand_low <= demand_mode AND demand_mode <= demand_high))
+    --   which READS correctly and ENFORCES nothing: with `demand_mode` NULL the comparison is
+    --   NULL, and a CHECK passes on NULL. Half a claim could be filed, and what it became
+    --   downstream was not a blank -- `greatest(NULL, 0)` ignores the NULL and returns a zero
+    --   exposure, and the fit CASE falls through to `transition`. A typed absence flattened
+    --   into a filed answer, which is the one thing this model exists to refuse.
+    --   Counting the non-nulls first is what makes the comparison two-valued.
+    -- ⭐ AND THE UNIT IS PART OF THE CLAIM. `Claim` requires low, mostLikely, high AND unit
+    --   together; XSD gets that structurally and the relational form has to say it. Every
+    --   other three-point claim in this file carries the same constraint under the same name.
+    CONSTRAINT a_demand_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(demand_low, demand_mode, demand_high) = 0
+               OR (num_nonnulls(demand_low, demand_mode, demand_high, demand_unit) = 4
+                   AND demand_low <= demand_mode AND demand_mode <= demand_high)),
+    -- ⭐ A layer files a remainder or says why it has none -- never both, never neither.
+    --   The denial is of the WHOLE element, so when it is present the remainder's own three
+    --   parts must be empty. XSD gets this structurally, because sign, absorber and quantity
+    --   live inside the element that was declined; the relational form has to say it.
+    CONSTRAINT a_layer_files_a_remainder_or_says_why_not
+        CHECK ((remainder_absent IS NOT NULL) = (sign IS NULL AND sign_absent IS NULL
+                                             AND qty_low IS NULL AND qty_absent IS NULL
+                                             AND absorber_taxonomy IS NULL)),
+    -- ⛔ AND INSIDE A FILED REMAINDER, THE SAME STATED-OR-TYPED-ABSENT RULE AS EVERYWHERE
+    --   ELSE. Both of these were missing: a filed remainder could carry neither a sign nor
+    --   a reason for having none, and the corpus happened not to.
+    CONSTRAINT a_filed_remainder_states_or_types_its_sign
+        CHECK (remainder_absent IS NOT NULL
+               OR ((sign IS NOT NULL) <> (sign_absent IS NOT NULL))),
+    CONSTRAINT a_filed_remainder_states_or_types_its_quantity
+        CHECK (remainder_absent IS NOT NULL
+               OR ((qty_low IS NOT NULL) <> (qty_absent IS NOT NULL))),
+    CONSTRAINT a_qty_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(qty_low, qty_mode, qty_high) = 0
+               OR (num_nonnulls(qty_low, qty_mode, qty_high, qty_unit) = 4
+                   AND qty_low <= qty_mode AND qty_mode <= qty_high))
 );
 
 CREATE TABLE nameplate (
@@ -215,7 +269,58 @@ CREATE TABLE nameplate (
     -- both. Enforced here because XSD enforces it there.
     CONSTRAINT a_window_is_stated_or_typed_absent
         CHECK (divisibility_absent IS NOT NULL
-               OR (window_low IS NOT NULL) <> (window_absent IS NOT NULL))
+               OR (window_low IS NOT NULL) <> (window_absent IS NOT NULL)),
+    CONSTRAINT a_amount_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(amount_low, amount_mode, amount_high) = 0
+               OR (num_nonnulls(amount_low, amount_mode, amount_high, amount_unit) = 4
+                   AND amount_low <= amount_mode AND amount_mode <= amount_high)),
+    CONSTRAINT a_quantum_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(quantum_low, quantum_mode, quantum_high) = 0
+               OR (num_nonnulls(quantum_low, quantum_mode, quantum_high, quantum_unit) = 4
+                   AND quantum_low <= quantum_mode AND quantum_mode <= quantum_high)),
+    CONSTRAINT a_window_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(window_low, window_mode, window_high) = 0
+               OR (num_nonnulls(window_low, window_mode, window_high, window_unit) = 4
+                   AND window_low <= window_mode AND window_mode <= window_high)),
+    CONSTRAINT a_draw_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(draw_low, draw_mode, draw_high) = 0
+               OR (num_nonnulls(draw_low, draw_mode, draw_high, draw_unit) = 4
+                   AND draw_low <= draw_mode AND draw_mode <= draw_high))
+);
+
+-- ⭐⭐⭐ EVERY THREE-POINT CLAIM IN A DOCUMENT, AND THE ELEMENT THAT MADE IT. `Claim` is the
+-- most reused type in the schema -- demands, nameplates, quanta, windows, draws, slacks,
+-- shares, factors, coupling strengths and eliminated quantities are all Claims -- so each of
+-- those tables carries its own copy of low/mostLikely/high/unit as columns of the thing it
+-- describes. That is the right shape for asking about a demand. It is the wrong shape, and
+-- for a while the only shape, for asking about A CLAIM.
+--
+-- ⛔⛔⛔ WHAT THE MISSING TABLE COST, EXACTLY. `narrowsWhen` and `boundOrigin` were ingested
+-- as bare document ordinals with no way back to the claim that made them, so the two rules
+-- that read a narrowing against its own width -- "a point value files narrowsWhen as
+-- notApplicable" and its converse -- could only be written over `layer.demand_*`, the one
+-- copy reachable from a table. No demand in this corpus is a point value, so one of them
+-- reported ⛔ VACUOUS and the other examined 40 of 182 claims and passed. The claim it could
+-- not see was a RANGED elimination quantity filing `notApplicable`, carrying a note pasted
+-- verbatim from the point-valued claim beside it -- which is the failure the rule's own
+-- comment names in those words.
+--
+-- ⭐⭐ AND THE ORDINAL BECOMES STRUCTURAL RATHER THAN LUCKY. `narrowing` and `bound_origin`
+-- keyed on a document-order ordinal and were joinable only because `Claim` requires exactly
+-- one of each, so the Nth of one belongs to the Nth of the other. That held, and nothing
+-- checked it: a desynchronised stream would have attributed every edge to the wrong claim in
+-- silence. Both tables now reference this one, so the coincidence is a foreign key.
+CREATE TABLE claim (
+    filing text NOT NULL REFERENCES filing(name),
+    seq    int  NOT NULL,          -- document order; the Nth pm:claim in the document
+    owns   text NOT NULL,          -- the element the claim is the value OF: pm:demand, pm:share
+    low    numeric NOT NULL,
+    mode   numeric NOT NULL,
+    high   numeric NOT NULL,
+    unit   text    NOT NULL,
+    PRIMARY KEY (filing, seq),
+    CONSTRAINT a_claim_is_ordered
+        CHECK (low <= mode AND mode <= high)
 );
 
 -- ⭐⭐⭐ EVERY NARROWING IN A DOCUMENT, WHEREVER IT SITS. `narrowsWhen` is on `Claim`, and
@@ -231,6 +336,7 @@ CREATE TABLE narrowing (
     kind      narrowing_kind,
     absent    absence_reason,
     PRIMARY KEY (filing, seq),
+    FOREIGN KEY (filing, seq) REFERENCES claim(filing, seq),
     CONSTRAINT a_narrowing_is_stated_or_typed_absent
         CHECK ((kind IS NOT NULL) <> (absent IS NOT NULL))
 );
@@ -254,6 +360,7 @@ CREATE TABLE bound_origin (
     origin constraint_origin,
     absent absence_reason,
     PRIMARY KEY (filing, seq),
+    FOREIGN KEY (filing, seq) REFERENCES claim(filing, seq),
     CONSTRAINT an_origin_is_stated_or_typed_absent
         CHECK ((origin IS NOT NULL) <> (absent IS NOT NULL))
 );
@@ -294,7 +401,11 @@ CREATE TABLE slack (
         CHECK ((low IS NOT NULL) <> (absent IS NOT NULL)),
     CONSTRAINT a_sized_slack_says_who_owns_its_edge
         CHECK (low IS NULL
-               OR (bound_origin IS NOT NULL) <> (bound_origin_absent IS NOT NULL))
+               OR (bound_origin IS NOT NULL) <> (bound_origin_absent IS NOT NULL)),
+    CONSTRAINT a_slack_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(low, mode, high) = 0
+               OR (num_nonnulls(low, mode, high, unit) = 4
+                   AND low <= mode AND mode <= high))
 );
 
 -- H, L x 5. Who bears the remainder and how much of it. A DISTRIBUTION rather than
@@ -315,7 +426,11 @@ CREATE TABLE holder (
     CONSTRAINT party_and_as_of_belong_to_a_counterparty
         CHECK (kind = 'counterparty' OR (party IS NULL AND as_of IS NULL)),
     CONSTRAINT a_counterparty_names_its_party
-        CHECK (kind <> 'counterparty' OR party IS NOT NULL)
+        CHECK (kind <> 'counterparty' OR party IS NOT NULL),
+    CONSTRAINT a_share_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(share_low, share_mode, share_high) = 0
+               OR (num_nonnulls(share_low, share_mode, share_high, share_unit) = 4
+                   AND share_low <= share_mode AND share_mode <= share_high))
 );
 
 CREATE TABLE operation (
@@ -336,7 +451,11 @@ CREATE TABLE draw (
     absent    absence_reason,
     PRIMARY KEY (filing, operation, layer),
     FOREIGN KEY (filing, operation) REFERENCES operation(filing, label),
-    FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer)
+    FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer),
+    CONSTRAINT a_draw_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(low, mode, high) = 0
+               OR (num_nonnulls(low, mode, high, unit) = 4
+                   AND low <= mode AND mode <= high))
 );
 
 -- N, P x L. A commitment made here that becomes a draw somewhere else, and who
@@ -353,7 +472,11 @@ CREATE TABLE induction (
     decider   text,
     PRIMARY KEY (filing, operation, layer),
     FOREIGN KEY (filing, operation) REFERENCES operation(filing, label),
-    FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer)
+    FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer),
+    CONSTRAINT a_induction_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(low, mode, high) = 0
+               OR (num_nonnulls(low, mode, high, unit) = 4
+                   AND low <= mode AND mode <= high))
 );
 
 -- ⭐⭐⭐ HOW MUCH OF THE SYSTEM IS IN THIS STACK. There is ONE system; a filing holds the
@@ -406,7 +529,11 @@ CREATE TABLE coupling (
     observation text,
     PRIMARY KEY (filing, from_layer, to_layer),
     FOREIGN KEY (filing, from_layer) REFERENCES layer(filing, layer),
-    FOREIGN KEY (filing, to_layer)   REFERENCES layer(filing, layer)
+    FOREIGN KEY (filing, to_layer)   REFERENCES layer(filing, layer),
+    CONSTRAINT a_coupling_strength_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(low, mode, high) = 0
+               OR (num_nonnulls(low, mode, high, unit) = 4
+                   AND low <= mode AND mode <= high))
 );
 
 -- ---------------------------------------------------------------------------
@@ -486,7 +613,13 @@ CREATE TABLE part (
     factor_high   numeric,
     PRIMARY KEY (composition, composed_layer, part_filing, part_layer),
     CONSTRAINT a_factor_is_strictly_positive
-        CHECK (factor_low IS NULL OR factor_low > 0)
+        CHECK (factor_low IS NULL OR factor_low > 0),
+    -- ⭐ No unit here, and that is not an omission: phi is a RATIO of two units, so the
+    --   claim is whole at three numbers.
+    CONSTRAINT a_factor_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(factor_low, factor_mode, factor_high) = 0
+               OR (num_nonnulls(factor_low, factor_mode, factor_high) = 3
+                   AND factor_low <= factor_mode AND factor_mode <= factor_high))
 );
 
 -- ⭐⭐ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? Same shape as `coupling_search` and the
@@ -516,7 +649,11 @@ CREATE TABLE elimination (
     unit           text,
     absent         absence_reason,
     reason         text,
-    PRIMARY KEY (composition, composed_layer, quantity)
+    PRIMARY KEY (composition, composed_layer, quantity),
+    CONSTRAINT a_eliminated_quantity_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(low, mode, high) = 0
+               OR (num_nonnulls(low, mode, high, unit) = 4
+                   AND low <= mode AND mode <= high))
 );
 
 COMMIT;

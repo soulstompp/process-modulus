@@ -1,0 +1,22 @@
+# THE BOTTOM OF EVERY DESCENT. One row per reached layer that is not itself built from parts,
+# with the route that reached it -- so a leaf on two branches appears twice.
+#
+# ⭐⭐ A LEAF IS DEFINED BY WHAT IT IS NOT, WHICH IS WHY THIS IS AN ANTI-JOIN AGAINST A NAMED
+#    RELATION RATHER THAN A `NOT EXISTS` INSIDE A PREDICATE. composition/fusions.sqlc is
+#    "the layers that are assembled"; a reached layer missing from it is a layer somebody
+#    measured directly. Naming the positive relation makes the negation readable and gives
+#    the same set a second use elsewhere.
+#
+# ⛔ COUNT THE ROWS PER (ROOT, LEAF) AND ANYTHING ABOVE ONE IS THE SAME SUPPLY ENTERING ONE
+#   TOTAL TWICE. Both routes are in the `path` column, which is what makes the finding
+#   actionable instead of merely true.
+-- pm:Part followed to a layer that names no parts of its own.
+SELECT d.*
+FROM      (
+    :compose(composition/descent.sqlc)
+) d
+LEFT JOIN (
+    :compose(composition/fusions.sqlc)
+) f
+       ON f.filing = d.filing AND f.layer = d.layer
+WHERE f.filing IS NULL

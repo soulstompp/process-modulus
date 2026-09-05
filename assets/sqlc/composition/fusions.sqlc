@@ -1,0 +1,16 @@
+# THE LAYERS THAT ARE BUILT FROM PARTS. One row per (filing, layer) that names at least one
+# part -- the set of layers for which a composition rule can be owed at all.
+#
+# ⭐ RUN THIS AGAINST layers/remainder.sqlc AND THE DIFFERENCE IS THE ATOMS: layers somebody
+#   measured directly rather than assembled. Every fusion arithmetic in this repository
+#   ranges over this relation and stops at that boundary.
+#
+# ⛔ ITS COMPLEMENT WITHIN A DESCENT IS A LEAF, and that is how composition/leaves.sqlc is
+#   defined: a reached layer with no row here is the bottom of the walk. Written as an
+#   anti-join rather than a NOT EXISTS, because "the layers that are fusions" is the object
+#   and "the layers that are not" is what falls out.
+-- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    :compose(composition/part_references.sqlc)
+) p

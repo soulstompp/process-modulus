@@ -1,0 +1,31 @@
+# EVERY TIME SLACK FILED AS `derived`, BESIDE WHETHER ITS WINDOW LICENSES THE DERIVATION. One
+# row per examined slack, `violates` where nothing licenses it.
+#
+# ⭐⭐ THE RULE: a derived time slack needs a window that permits the derivation. `q /
+#    clearance` spreads the spare evenly across the denominator; a stated window says it is
+#    concentrated instead, and `unmeasured` says nobody knows -- an assumption wearing a
+#    computation's clothes.
+#
+# ⭐ THE CHECK IS AN ANTI-JOIN AGAINST layers/derivation_licensed.sqlc, which is the positive
+#   statement of the same thing and the one worth reading: exactly two REASONS license it,
+#   "the supply runs continuously" and "the question has no denominator". Two answers, not
+#   two documents -- most layers in this corpus file one of them.
+-- pm:Buffer kind="time" reason="derived" against pm:Divisibility/window.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           lic.filing IS NULL AS violates,
+           format('timeSlack is `derived` and the window is %s',
+                  coalesce(d.window_absent::text,
+                           format('%s %s', d.window_low, d.window_unit))) AS detail
+    FROM      (
+        :compose(entries/derived_time_slacks.sqlc)
+    ) d
+    LEFT JOIN (
+        :compose(layers/derivation_licensed.sqlc)
+    ) lic USING (filing, layer)
+) p ON true
+WHERE r.slug = 'derived_slack_over_a_window'

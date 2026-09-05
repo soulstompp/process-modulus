@@ -1,0 +1,11 @@
+# A MEASURED ZERO, SPELLED AS A TYPED ABSENCE. One row per slack filing
+# `absent reason="none"`: somebody looked and there is no slack in that buffer.
+#
+# ⭐ THIS IS THE SCHEMA'S OWN IDIOM. An absence with a reason is how this model says
+#   "the answer is nothing, and I know that" as opposed to "I have nothing to say".
+-- pm:Buffer with pm:Absent reason="none".
+SELECT s.*
+FROM (
+    :compose(entries/slacks.sqlc)
+) s
+WHERE s.absent = 'none'

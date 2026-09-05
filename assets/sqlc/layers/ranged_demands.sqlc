@@ -1,0 +1,16 @@
+# THE DEMANDS FILED AS A RANGE. One row per layer whose demand spans a width, so there is
+# something a narrowing statement could actually reduce.
+#
+# ⭐⭐ THIS IS THE DENOMINATOR FOR THE ONE NUMBER A RECEIVER IS ENTITLED TO STATE AS A FACT.
+#    Judging whether a narrowing sentence WOULD narrow the range is prose and belongs to a
+#    person. Counting how many ranges decline to say anything at all is arithmetic, and it
+#    turns "a claim without one is weaker" from an opinion into a figure.
+#
+# ⛔ AND THE MIRROR OF THE POINT-VALUE RULE LIVES HERE: a range that files `narrowsWhen` as
+#   `notApplicable` is claiming it has no range, in a row that demonstrably has one.
+-- pm:Claim on pm:Demand where low <> high.
+SELECT d.*
+FROM (
+    :compose(layers/demand.sqlc)
+) d
+WHERE NOT d.is_a_point

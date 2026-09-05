@@ -1,0 +1,21 @@
+# THE DUTY CYCLE EVERY SUPPLY FILES, OR THE TYPED REASON IT FILES NONE. One row per
+# nameplate: how much of a period the supply is actually available for.
+#
+# ⭐⭐ A SECOND AXIS OF DIVISIBILITY AND NOT A THIRD VALUE OF THE FIRST. A supply can arrive
+#    in whole units AND be intermittent in time at once -- a truck that comes twice a week is
+#    both -- so the amount question and the calendar question are separate columns.
+#
+# ⛔⛔ AND A BLANK WOULD MEAN THREE THINGS AT ONCE, WHICH IS WHY IT IS TYPED.
+#      `none`          -- the supply runs continuously.
+#      `notApplicable` -- the unit has no denominator, so "five days of what?" is malformed.
+#      `unmeasured`    -- nobody asked.
+#    Only the last is arithmetically dangerous, and only because a time slack cannot be
+#    derived from a clearance when nobody knows whether the spare is spread evenly.
+#
+# ⛔ THIS RELATION DELIBERATELY DOES NOT REQUIRE A STATED NAMEPLATE AMOUNT. The window is a
+#   statement about the calendar; a supply nobody has sized still has one.
+-- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
+SELECT n.filing, n.layer,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent,
+       n.amount_unit
+FROM pm.nameplate n

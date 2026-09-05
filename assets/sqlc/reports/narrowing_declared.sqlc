@@ -1,0 +1,22 @@
+# HOW MANY RANGED DEMANDS DECLINE TO SAY WHAT WOULD NARROW THEM. One row: the ranges, the
+# silent ones, and the percentage.
+#
+# ⭐⭐ THE ONE NUMBER A RECEIVER IS ENTITLED TO STATE AS A FACT. The schema's annotation says a
+#    claim without a narrowing is WEAKER and a receiver is entitled to say so -- which is an
+#    opinion until somebody counts. Judging whether a particular sentence would ACTUALLY
+#    narrow a range is prose. Counting which ranges say nothing at all is arithmetic.
+#
+# ⛔⛔ CORPUS ONLY, BECAUSE IT IS A CLAIM ABOUT THE EVIDENCE. Fixtures are written to exercise
+#    states the corpus does not reach, so pooling them changes a finding about how people file
+#    into a finding about how this repository writes test data.
+-- pm:Claim/pm:narrowsWhen on ranged pm:Demand, over the corpus.
+SELECT count(*)                                                   AS ranged_demands,
+       count(*) FILTER (WHERE r.demand_narrows IS NULL)           AS say_nothing,
+       round(100.0 * count(*) FILTER (WHERE r.demand_narrows IS NULL)
+             / nullif(count(*), 0))                               AS pct
+FROM (
+    :compose(layers/ranged_demands.sqlc)
+) r
+JOIN (
+    :compose(scope/corpus.sqlc)
+) s USING (filing)

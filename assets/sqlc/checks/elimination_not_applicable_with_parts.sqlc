@@ -1,0 +1,22 @@
+# EVERY FUSION CALLING THE DOUBLE-COUNTING QUESTION MALFORMED, BESIDE HOW MANY PARTS IT HAS.
+# One row per examined fusion, `violates` where it has more than one.
+#
+# ⭐⭐ THE RULE: a fusion calls double counting malformed only when it has one part. Between a
+#    set of one nothing can be counted twice, so `notApplicable` is exactly right there.
+#    Between two or more the question HAS a population, and `notApplicable` becomes a claim
+#    that two supplies cannot possibly overlap -- a judgement about the world, which belongs in
+#    `observed` where somebody signs it rather than in an absence that reads as a technicality.
+-- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT m.composition AS filing, m.composed_layer AS layer,
+           m.parts > 1 AS violates,
+           format('%s parts and the search is `notApplicable`', m.parts) AS detail
+    FROM (
+        :compose(composition/malformed_double_counting.sqlc)
+    ) m
+) p ON true
+WHERE r.slug = 'elimination_not_applicable_with_parts'

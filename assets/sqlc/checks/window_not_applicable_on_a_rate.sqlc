@@ -1,0 +1,31 @@
+# EVERY NAMEPLATE CALLING THE DUTY-CYCLE QUESTION MALFORMED, BESIDE WHETHER ITS UNIT HAS A
+# DENOMINATOR. One row per examined nameplate, `violates` where the unit does have one.
+#
+# ⭐⭐ THE RULE: a window is notApplicable only where the unit has no denominator. `12 people`
+#    has no period, so "five days" has nothing to be five days of and the question really is
+#    malformed. `4 GPU-hours per week` has one, so the question is perfectly answerable -- and
+#    `notApplicable` there is a refusal dressed as a category error.
+#
+# ⛔ THE CHECK IS A SEMI-JOIN AGAINST units/with_denominator.sqlc, where the two spellings of
+#   "per" are reconciled. That reconciliation is a reader's judgement, and it is less honest
+#   than the one in layers/absorber.sqlc because it is written in SQL rather than in a row
+#   somebody can delete.
+-- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Nameplate/amount unit.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT w.filing, w.layer,
+           r.filing IS NOT NULL AS violates,
+           format('%s has a denominator, so the duty cycle question is answerable',
+                  w.amount_unit) AS detail
+    FROM      (
+        :compose(layers/windows.sqlc)
+    ) w
+    LEFT JOIN (
+        :compose(units/with_denominator.sqlc)
+    ) r USING (filing, layer)
+    WHERE w.window_absent = 'notApplicable'
+) p ON true
+WHERE r.slug = 'window_not_applicable_on_a_rate'

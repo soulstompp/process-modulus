@@ -1,0 +1,26 @@
+# THE LAYERS THAT DENY HAVING A REMAINDER AT ALL. One row per layer filing the second branch
+# of the `StatedRemainder` wrapper -- a typed reason there is no remainder, and the note that
+# argues for it.
+#
+# ⭐⭐⭐ THIS IS THE MODEL BEING CONTRADICTED IN ITS OWN FORMAT, WHICH IS WHAT THE WRAPPER IS
+#    FOR. The model claims every layer has a remainder. Requiring the wrapper forces a sender
+#    who disagrees to say so explicitly: `absent reason="none"` reads "somebody looked at this
+#    layer and there is no remainder", which is a filed counter-example rather than an empty
+#    field. Every row here is somebody exercising that right.
+#
+# ⛔⛔ AND FOR TWO REVISIONS THESE ROWS WERE INVISIBLE. `ingest.sql` read only the first branch,
+#    so a denial arrived as five NULLs -- sign, absorber and quantity all blank -- which is
+#    exactly the shape of a document that said nothing. One of the two notes says so in as many
+#    words: "filed as a counter-example ... NOT AS A GAP IN THIS DOCUMENT". A gap is what was
+#    stored. The note is carried here because keeping only the reason keeps the fact and loses
+#    the argument.
+#
+# ⭐ RUN THIS ALONE AND READ THE NOTES. Two rows, and both say the same thing in different
+#   words: a supply with no quantum divides exactly, so there is nothing left over. That is a
+#   claim about the world which the model's central assertion has to survive.
+-- pm:Layer/pm:remainder taking the pm:absent branch of pm:StatedRemainder.
+SELECT l.filing, l.layer,
+       l.remainder_absent      AS reason,
+       l.remainder_absent_note AS argument
+FROM pm.layer l
+WHERE l.remainder_absent IS NOT NULL

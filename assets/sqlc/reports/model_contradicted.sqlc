@@ -1,0 +1,39 @@
+# THE LAYERS THAT DENY THE MODEL'S CENTRAL CLAIM, AND THE ARGUMENT EACH ONE MAKES. One row per
+# corpus layer filing the `absent` branch of `StatedRemainder`, beside how many corpus layers
+# there are to deny it.
+#
+# ⭐⭐⭐ THE PAIR WITH THE INDEPENDENCE REPORT IS THE POINT. This model makes two claims a
+#    document can refute in the model's own format, and each has a wrapper built to carry the
+#    refusal. `Coupling` says the layers hold their remainders INDEPENDENTLY -- and the search
+#    beside it records whether anybody looked. `StatedRemainder` says EVERY LAYER HAS A
+#    REMAINDER -- and requiring the wrapper forces a sender who disagrees to say so explicitly
+#    rather than leaving a field empty. One has never been confirmed and has once been
+#    contradicted. This is the other one.
+#
+# ⛔⛔ AND THESE ROWS WERE INVISIBLE UNTIL `ingest.sql` READ THE SECOND BRANCH. A denial arrived
+#    as five NULLs -- sign, absorber and quantity all blank -- which is exactly the shape of a
+#    document that said nothing. `refutation/object-storage` anticipated that in its own note:
+#    "filed as a counter-example to the claim that every layer carries a remainder, NOT AS A GAP
+#    IN THIS DOCUMENT". A gap is what was stored.
+#
+# ⛔ CORPUS ONLY, ON THE SAME ARGUMENT AS THE INDEPENDENCE REPORT. "The model has been
+#   contradicted" is a claim about the EVIDENCE. A fixture that denies a remainder proves the
+#   branch works and says nothing whatever about the world, so counting one here would
+#   manufacture a refutation nobody made.
+--
+-- pm:StatedRemainder's absent branch, over the corpus.
+SELECT d.filing, d.layer, d.reason,
+       regexp_replace(d.argument, '\s+', ' ', 'g') AS the_counter_example,
+       format('%s of %s corpus layers deny having one',
+              count(*) OVER (),
+              (SELECT count(*) FROM pm.layer l
+                JOIN (
+                    :compose(scope/corpus.sqlc)
+                ) sc USING (filing))) AS how_common
+FROM (
+    :compose(layers/denied_remainders.sqlc)
+) d
+JOIN (
+    :compose(scope/corpus.sqlc)
+) s USING (filing)
+ORDER BY d.filing, d.layer

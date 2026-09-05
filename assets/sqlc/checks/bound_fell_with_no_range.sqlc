@@ -1,0 +1,53 @@
+# EVERY CLAIM FILED AS A POINT, BESIDE WHO IT SAYS OWNS THE EDGE. One row per point claim,
+# `violates` where the answer is that the bound is where the measurements fell.
+#
+# ⭐⭐⭐ THE RULE IS THE SCHEMA'S OWN TWO SENTENCES PUT BESIDE EACH OTHER.
+#    `boundOrigin absent reason="none"` is documented as: "NOTHING SETS IT. The bound is where
+#    the MEASUREMENTS FELL, not where a rule put them, and there is no lever to look for."
+#    A point value has no range, so nothing fell anywhere. The sentence describes a spread the
+#    claim does not have, and it is the answer a receiver would act on -- go measure again and
+#    the bound will move -- against a figure filed as though measuring again would change
+#    nothing.
+#
+# ⭐⭐ AND THE SCHEMA ALREADY NAMES THE RIGHT ANSWER, IN THE ENTRY DIRECTLY BELOW IT.
+#    `notApplicable` is "the quantity has no author to ask about: AN OBSERVED COUNT, a derived
+#    residual". An exact observation is precisely that. `derived` is the other honest answer,
+#    and it is what the great majority of point claims here give: the figure is stated in a
+#    sibling element -- `Nameplate/amountOrigin`, `LumpyQuantum/origin`, and on an elimination
+#    `asrt:against` plus `asrt:between` -- which is what licenses filing it without a width. So
+#    this rule does not forbid an exact claim. It asks that the exactness have an author, and
+#    the enum has a member for every honest one.
+#
+# ⭐⭐ THE CORPUS CONTAINED ITS OWN CONTROL, WHICH IS WHY THE FIRST RUN COULD BE ACTED ON.
+#    Seventeen `pm:jagged/pm:draw` claims are filed. Sixteen are points and all sixteen
+#    answered `none`; the ONE with a spread answers `derived`, under a comment that reads "a
+#    point draw converts into a range for the same reason the nameplate does: the cards drawn
+#    are EXACT, the hours they were drawn for are not." In the single place a draw stopped
+#    being a point, the author wrote down why the others are points. The rule was not imposing
+#    a reading -- it was reciting one the documents already made somewhere else.
+#    ⭐ Look for that shape before acting on any first run: the sibling that BREAKS the pattern
+#      is the author's own control, and it is worth more than the count of the ones that fit.
+#
+# ⛔⛔ THE THIRD CORNER OF A SQUARE, AND THE PAIR IS WHY IT IS VISIBLE AT ALL. Two rules
+#    already cross a claim's width against `narrowsWhen`: a point must file `notApplicable`, a
+#    range must not. This crosses the same width against `boundOrigin`, the other half of the
+#    required pair. Neither column alone can see it -- `none` is one of the two commonest
+#    boundOrigin answers and unremarkable on its own, and the width is unremarkable on its own.
+#
+# ⛔ WHAT WOULD REFUTE IT: a quantity that is genuinely exact, genuinely unowned, and genuinely
+#   not an observed count. The schema's own gloss on `none` argues no such thing exists, since
+#   an unowned bound is by construction one that measurement placed.
+-- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.owns || ' claim ' || c.seq AS layer,
+           c.origin_absent IS NOT DISTINCT FROM 'none' AS violates,
+           format('%s %s exactly, and nothing is said to set it', c.mode, c.unit) AS detail
+    FROM (
+        :compose(epistemics/point_claims.sqlc)
+    ) c
+) p ON true
+WHERE r.slug = 'bound_fell_with_no_range'

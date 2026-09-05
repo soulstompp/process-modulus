@@ -1,0 +1,16 @@
+# EVERY PART AS FILED, RESOLVED OR NOT. One row per (composition, composed layer, part) --
+# the raw incidence matrix F, before anybody has checked that the thing it points at exists.
+#
+# ⭐⭐ A PART IS AN INCIDENCE ENTRY AND A CONVERSION FACTOR AT ONCE, which is why F and Φ
+#    live in one table. The entry says "this layer of that document goes into this layer of
+#    mine"; the factor says what to multiply it by to get into my unit.
+#
+# ⛔ A PART NAMES ITS TARGET BY A NOTATION, NOT BY A FILENAME. Until a document declared its
+#   own notation, nothing in the corpus could resolve one of these rows at all -- so the
+#   conformance rule "a dependence end's filing exists, and the layer named is in it"
+#   presupposed a lookup the model did not provide. Writing the query is what surfaced that:
+#   a foreign key needs something to point at, and there was nothing.
+-- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM pm.part p

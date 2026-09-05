@@ -1,0 +1,13 @@
+# THE LAYERS WHOSE SUPPLY ARRIVES IN WHOLE UNITS. One row per layer filing `lumpy` with the
+# quantum that size means. Half a truck and half a licence do not exist, and this is the set
+# where that is true.
+#
+# ⛔ NOT THE COMPLEMENT OF "CONTINUOUS". A layer whose divisibility is a typed absence is in
+#   neither set: nobody said which it was. The three-valued reading is the whole reason
+#   `lumpy` is a nullable boolean rather than a NOT NULL one.
+-- pm:Nameplate/pm:Divisibility with a pm:LumpyQuantum.
+SELECT r.*
+FROM (
+    :compose(layers/remainder.sqlc)
+) r
+WHERE r.lumpy

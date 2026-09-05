@@ -1,0 +1,29 @@
+# F AND Φ, RESOLVED ALL THE WAY TO A LAYER THAT IS ACTUALLY HERE. One row per part whose
+# notation names a document in this corpus AND whose layer is in that document.
+#
+# ⭐⭐ THIS IS THE JOIN THAT WAS WRITTEN TEN TIMES. Every question about composition --
+#    convert the parts, walk the descent, find a leaf, attenuate a coupling -- starts by
+#    turning a notation into a filing and a filing plus a layer into a row. Written once,
+#    the resolution rule is one thing that can be corrected in one place.
+#
+# ⛔ A ROW MISSING FROM HERE THAT IS PRESENT IN composition/part_references.sqlc IS A
+#   DANGLING REFERENCE, and the difference between the two relations is exactly the
+#   violation set of that rule. The rule is an ANTI-JOIN rather than a NOT EXISTS, because
+#   "the parts that resolve" is the relation worth naming and "the parts that do not" is
+#   its complement.
+#
+# ⛔⛔ AND THE RESOLUTION IS A READER'S ASSERTION ONE STEP REMOVED. `filing_identity` says
+#    which document claims which notation, and `asserted_by` records who said it. Three of
+#    those rows used to read "the reader, from the filename" -- a guess dressed as data,
+#    written down so the guess stayed visible. They are read out of the documents now.
+-- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM      (
+    :compose(composition/part_references.sqlc)
+) p
+JOIN pm.filing_identity fi ON fi.notation = p.part_filing
+JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer

@@ -1,0 +1,34 @@
+# EVERY SLACK THAT STATES A NUMBER, BESIDE WHETHER THAT NUMBER IS ZERO. One row per sized
+# slack, `violates` where the filer wrote [0, 0, 0] instead of `absent reason="none"`.
+#
+# ⚠️ NOT A RULE THE SCHEMA STATES ANYWHERE. It is a finding handed over so somebody can decide
+#   whether it should be one, which is why it lives beside the rules rather than pretending to
+#   be one.
+#
+# ⭐⭐ WHY IT IS WORTH REPORTING: a receiver comparing two filings cannot treat two spellings
+#    as the same field. Both assert the same fact -- somebody looked and there is no slack --
+#    but one is a typed absence and the other is a claim, and every query that keys on the
+#    absence silently skips the filers who reached for a number. A rule that skips is
+#    indistinguishable from a rule that passes.
+#
+# ⛔ THE ARITHMETIC DOWNSTREAM IS ALREADY SAFE, because entries/measured_zero_capacity.sqlc
+#   unions both spellings. This check is about the CORPUS, not about the checker.
+-- pm:Buffer with a stated pm:Claim; the schema's idiom is pm:Absent reason="none".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT s.filing, s.layer,
+           z.filing IS NOT NULL AS violates,
+           format('%s slack stated as [0,0,0] where the idiom is absent reason="none"',
+                  s.buffer) AS detail
+    FROM      (
+        :compose(entries/slacks.sqlc)
+    ) s
+    LEFT JOIN (
+        :compose(entries/zero_by_claim.sqlc)
+    ) z USING (filing, layer, buffer)
+    WHERE s.sized
+) p ON true
+WHERE r.slug = 'zero_stated_as_a_claim'

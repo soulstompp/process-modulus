@@ -1,0 +1,11 @@
+# N, THE INDUCTION MATRIX: a commitment made here that becomes a draw somewhere else, and
+# who made it. Same shape as D, different fact, hence a different relation.
+#
+# ⭐⭐ ONLY AN INDUCTION NAMES A DECIDER, and that is the point of separating the two. A draw
+#    is a thing that occurred; an induction is a thing somebody CHOSE, creating a future
+#    draw on a different supply. Folding them into one table with a flag would have put an
+#    event and a decision in one slot.
+-- pm:Operation/pm:Induction, carrying pm:decider.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n

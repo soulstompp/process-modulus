@@ -1,0 +1,20 @@
+# WHAT THE UNCERTAINTY IN THIS CORPUS IS MADE OF. One row per kind of width, with how many
+# claims are that kind.
+#
+# ⭐⭐⭐ THE GRAIN QUESTION, ANSWERABLE FOR THE FIRST TIME. How much of the width here is
+#    IGNORANCE -- a better instrument reveals the number that was always there -- and how much
+#    is the world actually MOVING, where no measurement helps and only changing the process
+#    does? The two look identical on a page and call for completely different spending. Before
+#    `narrowsWhen` carried a kind there was nothing to group by, and the schema simply asserted
+#    the first reading throughout.
+#
+# ⛔ CORPUS ONLY. This is a statement about how real filers describe their own uncertainty.
+-- pm:Claim/pm:narrowsWhen kinds, over the corpus.
+SELECT w.what_the_width_is_made_of, count(*) AS claims
+FROM (
+    :compose(epistemics/widths.sqlc)
+) w
+JOIN (
+    :compose(scope/corpus.sqlc)
+) s USING (filing)
+GROUP BY 1 ORDER BY 2 DESC

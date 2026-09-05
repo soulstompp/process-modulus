@@ -1,0 +1,19 @@
+# A MEASURED ZERO, SPELLED AS A CLAIM OF [0, 0, 0]. One row per slack that states a numeric
+# range whose high is zero: the same fact as zero_by_absence.sqlc, filed the other way.
+#
+# ⛔⛔ NOTHING FORBIDS THIS SPELLING AND IT ASSERTS THE SAME THING, which is why keying on
+#    the absence alone silently skipped every filer who reached for a number instead -- and
+#    a rule that skips is indistinguishable from a rule that passes. Both spellings compose
+#    into entries/measured_zero_capacity.sqlc, so the downstream arithmetic sees the filer's
+#    fact rather than the filer's phrasing.
+#
+# ⭐ AND THE DIVERGENCE IS ITSELF WORTH REPORTING, WHICH IS THIS RELATION'S SECOND JOB. A
+#   receiver comparing two filings cannot treat two spellings as one field, so every row
+#   here is handed to checks/zero_stated_as_a_claim.sqlc. That is not a rule the schema
+#   states anywhere; it is a finding offered so somebody can decide whether it should be.
+-- pm:Buffer with a stated pm:Claim whose bounds are zero.
+SELECT s.*
+FROM (
+    :compose(entries/slacks.sqlc)
+) s
+WHERE s.high IS NOT NULL AND s.high = 0

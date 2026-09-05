@@ -1,0 +1,21 @@
+# THE LAYERS WHOSE FILED SIGN A RANGE COMPARISON COULD CONTRADICT. One row per layer that
+# states `clearance`, `transition` or `interference` outright.
+#
+# ⭐⭐⭐ ONLY A STATED SIGN CAN BE WRONG, AND THE THREE ABSENCES ARE NOT PADDING.
+#    `derived`       -- the sign IS the comparison, so it cannot disagree with it.
+#    `unmeasured`    -- nobody classified it; there is nothing to contradict.
+#    `notApplicable` -- the question does not arise here.
+#    A rule that counted those as examined would report itself as testing layers it never
+#    looked at, and a checker that flagged them would report a document for declining to
+#    make a claim. The first fixture to file `sign absent reason="derived"` was reported as
+#    a violation by exactly that mistake.
+#
+# ⛔ RUN THIS BESIDE layers/remainder.sqlc AND SUBTRACT: the difference is the set of layers
+#   nobody has classified, which is the honest denominator for "does the model agree with
+#   the documents?"
+-- pm:Remainder/sign, stated rather than absent.
+SELECT r.*
+FROM (
+    :compose(layers/remainder.sqlc)
+) r
+WHERE r.sign IS NOT NULL

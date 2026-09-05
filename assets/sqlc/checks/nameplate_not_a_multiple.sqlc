@@ -1,0 +1,23 @@
+# EVERY LUMPY LAYER WHOSE QUANTUM CAN DIVIDE, BESIDE WHETHER IT DOES. One row per examined
+# layer, `violates` where the nameplate is not a whole number of quanta.
+#
+# ⭐⭐ THE RULE: supply arrives in whole units, so the nameplate is a whole multiple of the
+#    quantum. Half a truck and half a licence do not exist, and a nameplate that is 2.5
+#    quanta is either a quantum filed at the wrong size or a nameplate that includes something
+#    the quantum does not describe.
+#
+# ⛔ A QUANTUM OF ZERO DIVIDES NOTHING, so it is not examined -- see layers/divisible.sqlc.
+-- pm:Nameplate/amount against pm:LumpyQuantum/size.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           abs(d.n_mode - d.quantum_mode * round(d.n_mode / d.quantum_mode)) > 1e-9 AS violates,
+           format('%s does not divide %s', d.quantum_mode, d.n_mode) AS detail
+    FROM (
+        :compose(layers/divisible.sqlc)
+    ) d
+) p ON true
+WHERE r.slug = 'nameplate_not_a_multiple'

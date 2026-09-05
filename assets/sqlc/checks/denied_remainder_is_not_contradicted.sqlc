@@ -1,0 +1,52 @@
+# EVERY LAYER THAT DENIES HAVING A REMAINDER, BESIDE WHETHER ITS OWN TWO NUMBERS IMPLY ONE.
+# One row per denial, `violates` where the layer states both a demand and a nameplate that
+# differ -- so the remainder it says does not exist is derivable from the filing itself.
+#
+# ⭐⭐ THE RULE: a layer that denies having a remainder is not contradicted by its own figures.
+#    `absent reason="none"` on the remainder wrapper means somebody looked and there is nothing
+#    left over. If that same layer files a demand AND a nameplate, then `r = n - d` is a
+#    quantity the document itself supplies, and unless the two coincide exactly the denial is
+#    refuted by the page it is written on. This spans three elements of one layer, which is
+#    why no grammar can state it.
+#
+# ⛔⛔ THE VERSION FIRST PROPOSED FOR THIS RULE WAS VACUOUS BY CONSTRUCTION, and it is worth
+#    recording why. It was "a denied remainder names no holders and no absorber" -- but
+#    `Holder` and `absorber` live INSIDE the `Remainder` element, so a layer that declined the
+#    element cannot carry either. XSD already enforces it structurally and the absorber half is
+#    now a CHECK in the DDL. A rule that cannot fail examines nothing however many rows it
+#    counts, which is the trap this whole file is written to name.
+#
+# ⭐ TODAY BOTH DENIALS FILE THEIR NAMEPLATE AS `notApplicable` -- a ratio and an object store,
+#   neither of which has a quantum to leave anything over -- so both pass, and the rule is thin
+#   rather than vacuous: it examines two real rows and could fail on the next filing.
+--
+-- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           (dm.d_low IS NOT NULL AND np.n_low IS NOT NULL
+            AND (np.n_low <> dm.d_low OR np.n_mode <> dm.d_mode
+                 OR np.n_high <> dm.d_high))                       AS violates,
+           CASE WHEN dm.d_low IS NULL OR np.n_low IS NULL
+                THEN format('`%s`, and no remainder is derivable: %s',
+                            d.reason,
+                            CASE WHEN dm.d_low IS NULL THEN 'no demand is stated'
+                                 ELSE 'no nameplate is stated' END)
+                ELSE format('`%s`, yet demand [%s, %s] against a nameplate of [%s, %s] '
+                            'leaves a remainder the filing supplies itself',
+                            d.reason, dm.d_low, dm.d_high, np.n_low, np.n_high)
+           END AS detail
+    FROM      (
+        :compose(layers/denied_remainders.sqlc)
+    ) d
+    LEFT JOIN (
+        :compose(layers/demand.sqlc)
+    ) dm USING (filing, layer)
+    LEFT JOIN (
+        :compose(layers/nameplate.sqlc)
+    ) np USING (filing, layer)
+) p ON true
+WHERE r.slug = 'denied_remainder_is_not_contradicted'

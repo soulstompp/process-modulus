@@ -1,0 +1,28 @@
+# EVERY SUPPLY WHOSE CAPACITY BUFFER WAS MEASURED AND FOUND EMPTY, BESIDE THE EXPOSURE ITS
+# OWN TWO MEASUREMENTS IMPLY. One row per layer where the excess demand had nowhere to go.
+#
+# ⭐⭐⭐ THE ARGUMENT IS ENTIRELY IN THE WORD "MEASURED". If somebody checked the capacity
+#    buffer and found it empty, the supply CANNOT have absorbed the excess by running harder
+#    -- there was nothing to run into. So whatever demand stood above the nameplate went
+#    unserved, and somebody has to be named as having gone without. An UNMEASURED capacity
+#    slack licenses none of that, because nobody knows whether the supply could have
+#    stretched, and a checker built on it would be reporting about nothing.
+#
+# ⭐⭐ `exposure` IS THE ONLY FIGURE IN THIS MODEL WITH NO INSTRUMENT BEHIND IT. Nobody filed
+#    it; it is the ceiling the filer's own demand and nameplate imply -- the largest demand
+#    against the smallest supply, evaluated at the HIGH CORNER on purpose, because the two
+#    sides of a transition fit are anti-correlated and anything summed across the range
+#    reports a week that never happened.
+#
+# ⛔ TWO RULES READ THIS RELATION AND THEY ASK DIFFERENT QUESTIONS OF IT. One wants the layers
+#   with a positive exposure and no named holder; the other wants every one of them, against
+#   the shares that were admitted. They shared these joins in two inlined copies before this
+#   file existed, which is one edit away from two populations under one argument.
+-- pm:Buffer kind="capacity" measured zero, against the layer's own r = n - d.
+SELECT r.*
+FROM      (
+    :compose(entries/measured_zero_capacity.sqlc)
+) z
+JOIN      (
+    :compose(layers/remainder.sqlc)
+) r USING (filing, layer)

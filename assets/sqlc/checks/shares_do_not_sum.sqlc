@@ -1,0 +1,34 @@
+# EVERY LAYER WHOSE HOLDER SHARES ARE ALL STATED, BESIDE THE MAGNITUDE THEY MUST ADD UP TO.
+# One row per examined layer, `violates` where the sum misses.
+#
+# ⭐⭐ THE RULE: the stated shares sum to the magnitude of the remainder. H is a DISTRIBUTION,
+#    so its row must account for the whole of what there was to bear -- no more, no less.
+#
+# ⛔⛔ ONE UNSTATED SHARE SUSPENDS THE CHECK RATHER THAN BREAKING IT, and the difference is
+#    the whole discipline. If a filer says one party's share is `unmeasured`, the sum is
+#    UNKNOWN -- not wrong. Treating the absence as a zero would manufacture a shortfall and
+#    report the document for a defect the checker introduced.
+-- pm:Remainder/pm:Holders summed against |r| at the mode.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT x.filing, x.layer,
+           abs(x.shares - x.magnitude) > 1e-9 AS violates,
+           format('shares %s against a magnitude of %s', x.shares, x.magnitude) AS detail
+    FROM (
+        SELECT r.filing, r.layer,
+               abs(r.r_mode)     AS magnitude,
+               sum(h.share_mode) AS shares
+        FROM      (
+            :compose(layers/remainder.sqlc)
+        ) r
+        JOIN      (
+            :compose(entries/holders.sqlc)
+        ) h USING (filing, layer)
+        GROUP BY r.filing, r.layer, r.r_mode
+        HAVING count(*) FILTER (WHERE h.share_mode IS NULL) = 0
+    ) x
+) p ON true
+WHERE r.slug = 'shares_do_not_sum'

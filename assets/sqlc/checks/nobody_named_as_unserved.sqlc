@@ -1,0 +1,34 @@
+# EVERY SUPPLY THAT CANNOT RUN HOT AND HAS DEMAND NOBODY COULD SERVE, BESIDE WHETHER ANYBODY
+# IS NAMED AS HAVING GONE WITHOUT. One row per examined layer, `violates` where no unserved
+# holder appears.
+#
+# ⭐⭐⭐ THE RULE, AND THE ARGUMENT IS ENTIRELY IN THE WORD "MEASURED". If the capacity buffer
+#    was checked and found empty, the supply CANNOT have absorbed the excess by running
+#    harder -- there was nothing to run into. So the demand above the nameplate went unserved,
+#    and somebody has to be named as having gone without. An UNMEASURED capacity slack
+#    licenses none of this, because nobody knows whether the supply could have stretched.
+#
+# ⛔ THE VIOLATION IS AN ANTI-JOIN AGAINST entries/unserved_holders.sqlc, which the clearance
+#   check semi-joins and the exposure check sums. One relation, three readings.
+-- pm:Buffer kind="capacity" measured zero, against pm:HolderKind customer/unrealised.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.layer,
+           u.filing IS NULL AS violates,
+           format('%s could not be served and no holder says so', c.exposure) AS detail
+    FROM (
+        SELECT e.filing, e.layer, e.exposure
+        FROM (
+            :compose(layers/measured_zero_exposure.sqlc)
+        ) e
+        WHERE e.exposure > 1e-9
+    ) c
+    LEFT JOIN ( SELECT DISTINCT filing, layer
+                FROM (
+                    :compose(entries/unserved_holders.sqlc)
+                ) h ) u USING (filing, layer)
+) p ON true
+WHERE r.slug = 'nobody_named_as_unserved'

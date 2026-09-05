@@ -1,0 +1,18 @@
+# THE DOCUMENTS THAT ARE THEMSELVES SOMEBODY'S PART. One row per filing that some other
+# composition names as a source.
+#
+# ⭐⭐ THIS IS WHAT MAKES A NESTING TWO LEVELS DEEP, AND TWO IS WHERE THE INTERESTING RULE
+#    STARTS. At one level "no part is used twice" is an ordinary key, checkable inside a
+#    single document. A composition that is ITSELF a part puts a second level underneath
+#    some root -- and now the same leaf can be reached down two different branches, through
+#    a document neither branch contains. That is the rule no validator can see.
+#
+# ⛔ SO A SINGLE-LEVEL FUSION CANNOT VIOLATE IT, HOWEVER MANY PARTS IT NAMES. Semi-joining
+#   parts against this relation is what restricts the leaf rule to the population where it
+#   has something to say.
+-- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
+SELECT DISTINCT fi.filing
+FROM      (
+    :compose(composition/part_references.sqlc)
+) p
+JOIN pm.filing_identity fi ON fi.notation = p.part_filing

@@ -1,0 +1,37 @@
+# WHAT EACH ABSORBING BUFFER WAS ASKED TO HOLD, BESIDE HOW MUCH IT HOLDS. One row per
+# (pressed layer, buffer it named) carrying the shares attributed to that buffer and the
+# slack filed for it.
+#
+# ⭐⭐ `unrealised` IS EXEMPT FROM THE SUM AND THAT EXEMPTION IS THE ARGUMENT, NOT A
+#    TECHNICALITY. The other holders name somebody who ABSORBED the remainder, so their
+#    shares have to fit inside the buffer that did the absorbing. `unrealised` names demand
+#    that was never met by anyone -- it is the overflow, not a load on the buffer, so
+#    counting it would bound the wrong quantity.
+#
+# ⛔ ONLY A SIZED SLACK BOUNDS ANYTHING. A buffer filed `unmeasured` has no magnitude to
+#   compare against, so those rows are absent rather than passing -- a bound with nothing to
+#   bound passes loudest.
+#
+# ⛔⛔ AND THE BUFFER IS REACHED THROUGH A READER'S ASSERTION. The absorber is a borrowed
+#    term; deciding that it names one of the three structural buffers is a judgement recorded
+#    in layers/absorber.sqlc, not a fact any filing states.
+-- pm:Holders summed against pm:Buffers/pm:Buffer, keyed by pm:Remainder/absorber.
+SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
+FROM (
+    SELECT p.filing, p.layer, a.buffer,
+           sum(h.share_mode) FILTER (WHERE h.kind <> 'unrealised') AS borne
+    FROM      (
+        :compose(layers/pressed.sqlc)
+    ) p
+    JOIN      (
+        :compose(layers/absorber.sqlc)
+    ) a USING (filing, layer)
+    JOIN      (
+        :compose(entries/holders.sqlc)
+    ) h USING (filing, layer)
+    GROUP BY p.filing, p.layer, a.buffer
+) b
+JOIN (
+    :compose(entries/slacks.sqlc)
+) s USING (filing, layer, buffer)
+WHERE s.mode IS NOT NULL

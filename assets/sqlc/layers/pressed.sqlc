@@ -1,0 +1,14 @@
+# THE LAYERS WHOSE REMAINDER IS CLAIMED TO BE ON OR OVER THE LINE. One row per layer filing
+# `interference` or `transition` -- demand meets or exceeds supply somewhere in the range.
+#
+# ⭐⭐ THIS IS THE SIDE WHERE SOMEBODY HAS TO BEAR SOMETHING. Under a clearance the supply is
+#    above demand everywhere and there is nothing to absorb; here there is, so the holder
+#    shares have a magnitude to add up to and the absorbing buffer has a size to fit inside.
+#    Both slack rules range over exactly this relation, and the clearance rule ranges over
+#    its complement.
+-- pm:Remainder/sign in {interference, transition}.
+SELECT r.*
+FROM (
+    :compose(layers/remainder.sqlc)
+) r
+WHERE r.sign IN ('interference', 'transition')

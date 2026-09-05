@@ -1,0 +1,69 @@
+-- epistemics/widths.sqlc against epistemics/edges.sqlc, joined on the claim they share.
+SELECT w.what_the_width_is_made_of AS what_would_narrow_it,
+       e.who_owns_the_edge         AS who_owns_the_edge,
+       count(*)                    AS claims
+FROM      (
+    -- pm:Claim/pm:narrowsWhen, wherever a claim appears.
+SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
+       n.narrows_kind AS kind, n.narrows_absent AS absent, n.narrows_condition AS condition,
+       CASE
+         WHEN n.narrows_kind = 'instrument'      THEN 'ignorance: measure it better'
+         WHEN n.narrows_kind = 'intervention'    THEN 'VARIATION: only changing the process helps'
+         WHEN n.narrows_kind = 'experiment'      THEN 'unknown, deliberately: an experiment would say'
+         WHEN n.narrows_absent = 'none'          THEN 'VARIATION: somebody looked, nothing would narrow it'
+         WHEN n.narrows_absent = 'notApplicable' THEN 'no range to narrow (a point value)'
+         ELSE 'nobody has said'
+       END AS what_the_width_is_made_of
+FROM (
+    -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
+SELECT c.filing, c.seq, c.owns,
+       c.low, c.mode, c.high, c.unit,
+       c.low = c.high AS is_a_point,
+       n.condition    AS narrows_condition,
+       n.kind         AS narrows_kind,
+       n.absent       AS narrows_absent,
+       b.origin,
+       b.absent       AS origin_absent
+FROM pm.claim c
+JOIN pm.narrowing    n USING (filing, seq)
+JOIN pm.bound_origin b USING (filing, seq)
+
+) n
+
+) w
+JOIN      (
+    -- pm:Claim/pm:boundOrigin, wherever a claim appears.
+SELECT b.filing, b.seq, b.owns, b.origin, b.origin_absent AS absent,
+       CASE
+         WHEN b.origin IS NOT NULL   THEN 'somebody owns it: ' || b.origin::text
+         WHEN b.origin_absent = 'derived'   THEN 'stated in a sibling element (amountOrigin, quantum origin)'
+         WHEN b.origin_absent = 'none'      THEN 'NOTHING sets it -- the range is where the measurements fell'
+         WHEN b.origin_absent = 'unmeasured' THEN 'nobody has asked'
+         ELSE 'not a bound on a committed quantity'
+       END AS who_owns_the_edge
+FROM (
+    -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
+SELECT c.filing, c.seq, c.owns,
+       c.low, c.mode, c.high, c.unit,
+       c.low = c.high AS is_a_point,
+       n.condition    AS narrows_condition,
+       n.kind         AS narrows_kind,
+       n.absent       AS narrows_absent,
+       b.origin,
+       b.absent       AS origin_absent
+FROM pm.claim c
+JOIN pm.narrowing    n USING (filing, seq)
+JOIN pm.bound_origin b USING (filing, seq)
+
+) b
+
+) e USING (filing, seq)
+JOIN      (
+    -- from pm.filing where evidence = 'corpus'; the axis is documented on that column.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f
+WHERE f.evidence = 'corpus'
+
+) s USING (filing)
+GROUP BY 1, 2
+ORDER BY 3 DESC, 1, 2

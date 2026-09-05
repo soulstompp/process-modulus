@@ -1,0 +1,34 @@
+# EVERY THREE-POINT CLAIM IN EVERY DOCUMENT, WITH THE ELEMENT THAT MADE IT, THE WIDTH IT
+# SPANS, AND THE TWO ANSWERS `Claim` REQUIRES OF IT. One row per claim: what would narrow
+# this range, and who owns the edge it would have to move.
+#
+# ⭐⭐⭐ THE GRAIN IS THE CLAIM AND NOT THE LAYER, AND THAT IS THE WHOLE POINT OF THE FILE.
+#    `Claim` is the most reused type in the schema: demands, nameplates, quanta, windows,
+#    draws, slacks, shares, factors, coupling strengths and eliminated quantities are all
+#    Claims. Every one of those lives in the table of the thing it describes, which is the
+#    right shape for asking about a demand and the wrong shape for asking about a claim.
+#    Twelve different parents in this corpus, across two schemas.
+#
+# ⛔⛔ WHAT COULD NOT BE ASKED BEFORE, AND IT IS THE HALF OF THE PAIR NOBODY HAD. `narrowsWhen`
+#    and `boundOrigin` were two tables keyed on a bare document ordinal with no way back to
+#    the claim, so a narrowing could be COUNTED and never COMPARED against the width it
+#    describes. Both rules that make that comparison ran over `layer.demand_*` -- 40 claims of
+#    182, and the only 40 with no point value among them. One reported VACUOUS; the other
+#    passed on a corpus containing a violation it could not reach.
+#
+# ⭐⭐ AND THE TWO COLUMNS ARE ONE INSTRUMENT. `narrowsWhen` says what would make the range
+#    SMALLER; `boundOrigin` says who owns the edge it would have to move. Same width, and
+#    three different courses of action depending on the answers: renegotiate, measure again,
+#    or accept it. Read apart they are two censuses; read together they are advice.
+-- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
+SELECT c.filing, c.seq, c.owns,
+       c.low, c.mode, c.high, c.unit,
+       c.low = c.high AS is_a_point,
+       n.condition    AS narrows_condition,
+       n.kind         AS narrows_kind,
+       n.absent       AS narrows_absent,
+       b.origin,
+       b.absent       AS origin_absent
+FROM pm.claim c
+JOIN pm.narrowing    n USING (filing, seq)
+JOIN pm.bound_origin b USING (filing, seq)

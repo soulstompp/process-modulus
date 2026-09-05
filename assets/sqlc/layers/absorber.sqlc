@@ -1,0 +1,23 @@
+# A(l), THE ABSORBER MAP: which of the three structural buffers each layer says took up its
+# remainder. One row per layer that names an absorber AND whose named term a reader has
+# mapped. A layer citing a taxonomy nobody has mapped has NO ROW, and that is correct --
+# the question is unanswerable, not answered zero.
+#
+# ⛔⛔ THE JOIN THROUGH `buffer_term` IS A READER'S ASSERTION AND NOT A DOCUMENT'S. The
+#    absorber travels as a taxonomy plus a value, so a Portuguese filing citing a translated
+#    edition of Factory Physics says `capacidade`. That `capacidade` IS `capacity` is a
+#    judgement somebody made; no filing says it. Deleting the mapping row makes the slack
+#    rules stop answering for that filing rather than answer wrongly, which is the behaviour
+#    worth having.
+#
+# ⭐ THIS IS WHY THE ABSORBER IS NOT AN ENUM. A restated value set is a fork, and a fork
+#   drifts with nothing able to notice. The first draft of the schema declared it as one and
+#   the corpus refused to load.
+-- pm:Remainder/absorber, resolved through pm.buffer_term.
+SELECT l.filing, l.layer,
+       l.absorber_taxonomy AS taxonomy,
+       l.absorber_value    AS term,
+       bt.buffer,
+       bt.note AS the_readers_warrant
+FROM pm.layer l
+JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.absorber_value

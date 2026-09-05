@@ -1,0 +1,47 @@
+# EVERY COUPLING, BESIDE THE FUSION THAT SWALLOWED IT IF ONE DID. One row per filed coupling,
+# with the composed layer holding both of its ends where such a layer exists.
+#
+# ⚠️ A REFERRAL AND NOT A VIOLATION -- the distinction that keeps this file honest. DETECTING
+#   the structure is mechanical: two coupled layers, one composed layer, both ends inside it.
+#   JUDGING whether the composer should have said so is prose, and prose is a person's job. So
+#   these are handed over rather than passed or failed, and a clean run HAS rows here.
+#
+# ⭐⭐ WHY IT MATTERS: once two coupled layers are inside one total, their dependence stops
+#    being visible from outside. Whoever reads the composed figure cannot tell that part of it
+#    moves together -- and that is exactly the information a fusion is supposed to preserve.
+#    The schema asks the composer to say so; nothing can make them.
+#
+# ⭐ THE UNABSORBED ROWS ARE THE DENOMINATOR AND THEY ARE HERE ON PURPOSE. A referral that
+#   printed only its findings would be as unreadable as a rule that printed only its
+#   violations: five couplings examined and two absorbed is a statement; two rows is not.
+#
+# ⛔⛔ CORPUS ONLY, AND IT WAS THE ONE REPORT IN THIS DIRECTORY THAT FORGOT TO SAY SO. A
+#    referral hands a document to a PERSON to judge, and a fixture's prose is stipulated
+#    rather than authored -- there is nobody to refer it to and nothing for them to weigh.
+#    No fixture files a coupling today, so this join changes no row; that is exactly the
+#    moment to write it, rather than the run after the first one does.
+-- pm:Coupling against pm:Fusion/pm:Part pairs that contain both of its ends, over the corpus.
+SELECT c.filing,
+       c.from_layer || ' -> ' || c.to_layer AS coupling,
+       CASE WHEN a.composition IS NULL THEN '(no fusion holds both ends)'
+            ELSE a.composition || '/' || a.composed_layer END AS absorbed_into,
+       left(regexp_replace(c.observation, '\s+', ' ', 'g'), 56) || '...' AS what_was_observed
+FROM (
+    :compose(entries/couplings.sqlc)
+) c
+LEFT JOIN (
+    SELECT DISTINCT x.part_filing AS filing, x.part_layer AS from_layer,
+           y.part_layer AS to_layer, x.composition, x.composed_layer
+    FROM (
+        :compose(composition/parts.sqlc)
+    ) x
+    JOIN (
+        :compose(composition/parts.sqlc)
+    ) y
+      ON y.composition = x.composition AND y.composed_layer = x.composed_layer
+     AND y.part_filing = x.part_filing
+) a USING (filing, from_layer, to_layer)
+JOIN      (
+    :compose(scope/corpus.sqlc)
+) sc USING (filing)
+ORDER BY 1, 2

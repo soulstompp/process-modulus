@@ -1,24 +1,73 @@
 -- §1  The remainder and its fit, read off the ranges rather than off a point.
---
--- Every layer that states both a demand range and a nameplate range, with the sign the
--- document filed. The example recomputes `r = n - d` with the bounds CROSSED — the low of
--- a difference pairs n's low against d's HIGH — classifies each layer by ISO 286's
--- criterion, and asserts the answer matches this `sign` column.
---
--- Run it alone and the interesting column is `sign!`: one layer in the whole corpus is a
--- `transition`, which is the case a two-member enumeration could not name.
-SELECT l.filing              AS "filing!",
-       l.layer               AS "layer!",
-       l.demand_low::float8  AS "d_low!",
-       l.demand_mode::float8 AS "d_mode!",
-       l.demand_high::float8 AS "d_high!",
-       n.amount_low::float8  AS "n_low!",
-       n.amount_mode::float8 AS "n_mode!",
-       n.amount_high::float8 AS "n_high!",
-       l.sign::text          AS "sign!"
+-- layers/signed.sqlc, with the evidence axis from pm.filing.
+SELECT s.filing              AS "filing!",
+       s.layer               AS "layer!",
+       s.d_low::float8       AS "d_low!",
+       s.d_mode::float8      AS "d_mode!",
+       s.d_high::float8      AS "d_high!",
+       s.n_low::float8       AS "n_low!",
+       s.n_mode::float8      AS "n_mode!",
+       s.n_high::float8      AS "n_high!",
+       s.sign::text          AS "sign!",
+       f.evidence            AS "evidence!"
+FROM (
+    -- pm:Remainder/sign, stated rather than absent.
+SELECT r.*
+FROM (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
 FROM pm.layer l
-JOIN pm.nameplate n USING (filing, layer)
 WHERE l.demand_low IS NOT NULL
-  AND n.amount_low IS NOT NULL
-  AND l.sign IS NOT NULL
-ORDER BY l.filing, l.layer
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+WHERE r.sign IS NOT NULL
+
+) s
+JOIN (
+    -- from pm.filing, both evidence values.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f
+
+) f USING (filing)
+ORDER BY s.filing, s.layer

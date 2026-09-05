@@ -1,0 +1,18 @@
+# THE COMPOSED LAYERS THAT DO OWE THE SUM RULE EXACTLY. One row per fusion that is not
+# suspended on either ground: their filed figure must equal the sum of their converted parts,
+# less the eliminations they filed.
+#
+# ⭐⭐ AN ANTI-JOIN IS A FILTER, AND THIS ONE IS THE FILTER THE WHOLE COMPOSITION ARGUMENT
+#    TURNS ON. `x_composed = F Φ x_parts − e` is not a law of the model; it is an obligation
+#    a document takes on by saying it looked. This relation is the set of documents that took
+#    it on, so it is the honest denominator for every claim that the composition rule holds.
+-- pm.part minus the two suspensions; see composition/suspended_fusions.sqlc.
+SELECT f.filing, f.layer
+FROM      (
+    :compose(composition/fusions.sqlc)
+) f
+LEFT JOIN (
+    :compose(composition/suspended_fusions.sqlc)
+) s
+       ON s.composition = f.filing AND s.composed_layer = f.layer
+WHERE s.composition IS NULL

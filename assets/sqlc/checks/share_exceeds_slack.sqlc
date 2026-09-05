@@ -1,0 +1,25 @@
+# EVERY PRESSED LAYER WHOSE ABSORBING BUFFER IS SIZED, BESIDE WHAT IT WAS ASKED TO HOLD. One
+# row per examined layer, `violates` where the shares exceed the slack.
+#
+# ⭐⭐ THE RULE: a share does not exceed the slack of the buffer that absorbed it. The
+#    remainder names an absorber; the absorber names a buffer; the buffer has a size. Shares
+#    attributed to it have to fit inside it, which is the inequality that makes a buffer a
+#    quantity rather than a label.
+#
+# ⛔ `unrealised` IS EXEMPT BECAUSE IT IS THE OVERFLOW rather than a load -- see
+#   entries/borne.sqlc, where the exemption is argued.
+-- pm:Holders against pm:Buffers, keyed by pm:Remainder/absorber through pm.buffer_term.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT b.filing, b.layer,
+           coalesce(b.borne > b.slack_mode + 1e-9, false) AS violates,
+           format('%s attributed to the %s buffer, whose slack is %s',
+                  b.borne, b.buffer, b.slack_mode) AS detail
+    FROM (
+        :compose(entries/borne.sqlc)
+    ) b
+) p ON true
+WHERE r.slug = 'share_exceeds_slack'

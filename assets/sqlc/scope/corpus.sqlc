@@ -1,0 +1,12 @@
+# THE DOCUMENTS THAT ATTEST TO A WORLD. One row per filing somebody wrote about a real
+# system, which is the only set a finding may be counted over.
+#
+# ⭐ A ROW HERE IS EVIDENCE. A row in scope/fixtures.sqlc is a stipulation, and the two
+#   cannot be pooled without turning a finding into a lie: `assets/fixtures/every-absence.xml`
+#   asserts coupling independence ON PURPOSE, to prove the branch works. Counted as
+#   evidence it would answer "has anybody tested the independence assumption?" with a yes
+#   that nobody earned.
+-- from pm.filing where evidence = 'corpus'; the axis is documented on that column.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f
+WHERE f.evidence = 'corpus'

@@ -1,0 +1,36 @@
+# EVERY PART REFERENCE AS FILED, BESIDE WHETHER IT LANDS ON ANYTHING. One row per part,
+# `violates` where the notation or the layer resolves to nothing.
+#
+# ⭐⭐ THE RULE: a part reference resolves to a filing that is here, and to a layer in it.
+#    This is a foreign key across documents, which is why no grammar can enforce it -- XSD 1.0
+#    cannot follow a cross-document reference, so it never had to resolve one.
+#
+# ⛔⛔ AND IT IS ONLY CHECKABLE BECAUSE A READER ASSERTED THE NOTATION-TO-DOCUMENT MAPPING.
+#    No filing used to declare its own notation at all, so a part reference could not be
+#    resolved from the corpus even in principle, and the conformance rule presupposed a lookup
+#    the model did not provide. Writing this query is what surfaced that.
+#
+# ⭐ THE VIOLATION IS THE DIFFERENCE BETWEEN TWO NAMED RELATIONS -- every part, minus the parts
+#   that resolve. An anti-join, not a NOT EXISTS, because "the parts that resolve" is the
+#   object with a life of its own and this rule is what falls out of it.
+-- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT a.composition AS filing, a.composed_layer AS layer,
+           r.composition IS NULL AS violates,
+           format('%s / %s resolves to nothing', a.part_filing, a.part_layer) AS detail
+    FROM      (
+        :compose(composition/part_references.sqlc)
+    ) a
+    LEFT JOIN (
+        :compose(composition/parts.sqlc)
+    ) r
+           ON r.composition    = a.composition
+          AND r.composed_layer = a.composed_layer
+          AND r.part_notation  = a.part_filing
+          AND r.part_layer     = a.part_layer
+) p ON true
+WHERE r.slug = 'unresolved_part'

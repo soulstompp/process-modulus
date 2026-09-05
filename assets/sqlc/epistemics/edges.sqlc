@@ -1,0 +1,28 @@
+# WHO OWNS EACH BOUND. One row per claim, classified by who chose the edge of its range.
+#
+# ⭐⭐ THE PAIR WITH `narrowsWhen` IS THE POINT: one says what would make a range SMALLER, the
+#    other says who owns the edge it would have to move. A bound somebody NEGOTIATED moves by
+#    renegotiating; a bound that is simply where the measurements fell moves by measuring
+#    again; an INTRINSIC bound does not move at all. Same width, three different courses of
+#    action.
+#
+# ⛔⛔ AS AN OPTIONAL BARE ENUMERATION THIS WAS FILED ONCE IN 124 CLAIMS, so it looked like an
+#    attribute of the two sized slacks rather than a question about every claim. Required and
+#    typed, the two commonest answers are `none` -- NOTHING sets this edge, the range is
+#    simply where the measurements fell -- and close behind it `derived`, where the model
+#    ALREADY states the author in a sibling element and had no way to point at it. Neither is
+#    a finding the single column could have produced.
+#    ⚠️ `derived` LED FOR A WHILE AND THIS COMMENT SAID SO AS THOUGH IT WERE SETTLED. The
+#      corpus grew and `none` passed it. A count in a comment is a claim with a date on it.
+-- pm:Claim/pm:boundOrigin, wherever a claim appears.
+SELECT b.filing, b.seq, b.owns, b.origin, b.origin_absent AS absent,
+       CASE
+         WHEN b.origin IS NOT NULL   THEN 'somebody owns it: ' || b.origin::text
+         WHEN b.origin_absent = 'derived'   THEN 'stated in a sibling element (amountOrigin, quantum origin)'
+         WHEN b.origin_absent = 'none'      THEN 'NOTHING sets it -- the range is where the measurements fell'
+         WHEN b.origin_absent = 'unmeasured' THEN 'nobody has asked'
+         ELSE 'not a bound on a committed quantity'
+       END AS who_owns_the_edge
+FROM (
+    :compose(epistemics/claims.sqlc)
+) b

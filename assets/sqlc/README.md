@@ -2,16 +2,41 @@
 
 > **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
 
-Five files and one claim.
+Ninety-six queries and one claim.
 
 ```
-schema.ddl            the model as relations
+../ddl/schema.ddl     the model as relations
 ingest.sql            Postgres reading assets/corpus/*.xml itself, with no help
-matrices.sql          the matrices, pulled out with joins
-rules.sql             the rules XSD 1.0 cannot reach, as one query
-queries/              the example's six queries, one file each, runnable in psql
+matrices.sql          the matrices, pulled out with joins — a tour, holding no logic
+rules.sql             the rules XSD 1.0 cannot reach — an assembly, holding no logic
+queries/              the example's eight queries, one file each, runnable in psql
 ../../examples/matrices.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
+
+**Every one of those is composed from smaller queries, and every smaller query runs alone.**
+`assets/sqlc/*.sqlc` are templates; `cargo sqlc compose` turns them into `assets/sql/*.sql`,
+which is what psql and `sqlx` read. The point of the split is not to avoid repeating a join.
+It is that each file names ONE relational object, says in its `#` comments what that object
+IS and what it MEANS, and can be run on its own by somebody who wants to look at the data and
+ask a question that has nothing to do with any of the above.
+
+```
+scope/         which documents am I looking at         — corpus, fixtures, everything
+units/         which units carry a denominator
+layers/        the L-indexed vectors                   — d, n, r = n − d, the absorber
+entries/       the sparse matrices                     — H, S, C, D, N
+composition/   F and Φ, the walk, and what it owes     — parts, conversion, descent, leaves
+epistemics/    what the documents say about knowing    — absences, searches, widths, edges
+checks/        one file per rule: every row it examined, with a verdict on each
+reports/       findings a person settles, and the two views of checks/
+```
+
+⭐⭐ **The tree is the model's own derivation order.** `layers/remainder.sqlc` composes
+`layers/demand.sqlc` and `layers/nameplate.sqlc`, because a remainder IS a difference of two
+vectors. `composition/leaves.sqlc` anti-joins `composition/fusions.sqlc`, because a leaf IS a
+reached layer that is not a fusion. Reading the `:compose()` edges top-down is reading what
+this model thinks is built out of what — which is the thing the schemas state in prose and
+could not, until now, be checked or even browsed.
 
 **The claim:** forty-four rules in this model are written in the schemas' prose and checked by
 nothing, because XSD 1.0 has no `xs:assert` and cannot compare one element against another.
@@ -38,7 +63,7 @@ The SQL half needs a Postgres and nothing else. No Rust, no extensions, no super
 
 ```
 createdb process_modulus_proof
-psql -d process_modulus_proof -f assets/sql/schema.ddl \
+psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
                               -f assets/sql/rules.sql
 ```
@@ -104,7 +129,7 @@ zero. Telling them apart is the entire subject, on both sides.
 | **the same zero, twice** | one fact with two spellings | `absent reason="none"` vs a claim of `[0,0,0]` |
 | **the boundary zero** | a comparison landing exactly on the line | `n_low = d_high` — a chosen convention |
 | **the zero that should NOT be zero** | a table whose emptiness would mean nobody looked | the referrals below |
-| **the zero that is now two zeros** | a blank that carried "checked and found nothing" and "nobody checked" at once | `coupling_search`, `elimination_search` — [§6](#6-the-zero-that-turned-out-to-be-two) |
+| **the zero that is now two zeros** | a blank that carried "checked and found nothing" and "nobody checked" at once | `coupling_search`, `elimination_search` — [§8](#8-the-zero-that-turned-out-to-be-two) |
 
 **The good zero is the one to understand first**, because it is the one people delete. `DᵀN`
 comes out empty in this corpus. Not because the query is wrong — because the only operation
@@ -170,7 +195,7 @@ ABOUT THE SEARCH RATHER THAN ABOUT ANY ROW.** `coupling_search` has one row per 
 what happened when somebody went looking; `elimination_search` does the same for each fusion.
 Neither is a matrix, neither has a shape, and neither could have been a column on the tall
 table it explains — you cannot attribute "nobody looked" to a row that is not there. →
-**[§6](#6-the-zero-that-turned-out-to-be-two)**
+**[§8](#8-the-zero-that-turned-out-to-be-two)**
 
 That is typed absence arriving from the relational side. It is why every quantity column has a
 partner `absent` column carrying a reason, and why the DDL makes exactly one of the two present:
@@ -256,6 +281,27 @@ part: two members' people are two sets of people, so labour nameplate almost nev
 reservation one member holds and **resells** to another does. If your consolidation is netting
 capacity as freely as it nets revenue, one of those two is wrong.
 
+### ⭐⭐ What licenses a row of `F` in the first place
+
+`F` looks like an ownership matrix and it is not one. Consolidation scope tells you WHICH entities
+go in; it does not tell you which of their capacities are the **same capacity**. A 1 in `F` says
+two filed layers are ONE layer, and what licenses it is **fungibility**: can a unit of supply in
+one part serve demand in the other?
+
+⛔ **The question is between two different members by construction**, so "they serve different
+customers in different countries" does not answer it — that is a statement about coupling. What
+settles it is whether one member's people can take the other's work.
+
+⭐ **Which is why the paragraph above is not a contradiction.** Two members' people are two sets of
+people, so `nameplate` almost never eliminates — and those two sets can still be one layer, because
+fungible means *interchangeable*, not *shared*. Money is fungible without being one coin. The
+elimination measures double counting, `F` carries the fungibility judgement, and they are
+independent axes: reading one off the other is the mistake a file this full of arithmetic would
+otherwise invite.
+
+The judgement is the composer's, it is required to carry prose, and it is the claim a reader is
+entitled to argue with. See `asrt:Fusion`.
+
 ### ⭐⭐ The question your auditor asks, which the model could not answer until this month
 
 *Did anybody look for the double counting?*
@@ -274,7 +320,7 @@ eliminations absent notApplicable one part         -> nothing to count twice
 
 **Three verdicts, not two.** A checker has to be able to say *unchecked*, because reporting a
 pass on a reconciliation nobody performed is the same failure as reporting a pass on a rule that
-examined no rows. → **[§6](#6-the-zero-that-turned-out-to-be-two)**
+examined no rows. → **[§8](#8-the-zero-that-turned-out-to-be-two)**
 
 ### Where an accountant's instinct is wrong, and it is worth ten minutes
 
@@ -390,7 +436,7 @@ remainder.** → **checked in [§4](#4-φ-correlated-with-itself)**
 
 ### And the fusion rule checks out
 
-`x_composed = F Φ x_parts − e`, over eight composed layers, exact on all three bounds.
+`x_composed = F Φ x_parts − e`, over eleven composed layers, exact on all three bounds.
 
 It was wrong the first time it ran, because I forgot `e`. The eliminations are the term you
 drop, and on one layer that is 90 GPU-hours of demand counted in two members' filings at once.
@@ -462,10 +508,23 @@ judging whether the sentence exists and means it is not. **A clean run has rows 
 correct**, which is why they are not mixed in above:
 
 ```
-a fusion absorbing a coupling between its own parts must say so
-  merge-group-composition  compute-us -> compute-pt   into merge-holding-composition/compute
-  merge-group-composition  labour -> on-call          into merge-holding-composition/staff
+merge-group-composition    compute-us -> compute-pt   merge-holding-composition/compute
+merge-group-composition    labour -> on-call          merge-holding-composition/staff
+merge-group-composition    labour -> shift-line       (no fusion holds both ends)
+merge-holding-composition  staff -> shift-line        (no fusion holds both ends)
+refutation                 compute -> labour          (no fusion holds both ends)
 ```
+
+The three unabsorbed rows are there on purpose. A referral that printed only its findings
+would be as unreadable as a rule that printed only its violations: *five couplings examined
+and two absorbed* is a statement; two rows is not.
+
+⭐⭐ **Also reported here: the other claim a document can refute in this format.** The model says
+every layer has a remainder, and `StatedRemainder` is a choice — a remainder, or a typed reason
+there is none — so a sender who disagrees has to say so rather than leave a field empty. Two
+corpus layers do, and both argue the same thing in different words: a supply with no quantum
+divides exactly, so nothing is left over. Read it beside the independence report; they are the
+model's two falsifiers and each has a wrapper built to carry the refusal.
 
 Also reported here: `narrowsWhen` coverage. The annotation says *"a claim without it is
 weaker, and a receiver is entitled to say so"* — so the receiver says it with a number.
@@ -476,28 +535,29 @@ offer one is not.
 **3. Coverage**, and this one matters more than the first:
 
 ```
-a ranged claim does not file narrowsWhen as notApplicable             37   ok
-sign agrees with the range comparison                                 33   ok
-a quantum is expressed in the unit of the nameplate it divides        32   ok
-the nameplate is a whole multiple of the quantum                      32   ok
-stated shares sum to the magnitude                                    20   ok
-a part reference resolves to a filing that is here                    19   ok
-a window is notApplicable only where the unit has no denominator      16   ok
-no leaf layer is reachable through two paths                          10   ok
-a clearance fit rules out customer and unrealised                      9   ok
-a slack is expressed in the unit of the shares it bounds               6   ok
-a fusion absorbing a coupling between its own parts must say so        5   ok
-a coupling attenuates through a fusion, bounded by the part's share    4   ok
-a fusion calls double counting malformed only when it has one part     4   ok
-a measured zero is filed as an absence, not as a claim of zero         3   ok
-a share does not exceed the slack of the buffer that absorbed it       3   ok
-a supply that cannot run hot names who went unserved                   3   ok
-a window is carried through a fusion and never summed                  3   ok
-exposure does not exceed slack plus unserved shares                    3   ok
-a local part names a layer in its own stack                            2   thin
-local parts do not cycle                                               2   thin
-a derived time slack needs a window that permits the derivation        1   thin
-a point value files narrowsWhen as notApplicable, having no range      0   VACUOUS
+rule                                                                 examined  violations  verdict
+a ranged claim does not file narrowsWhen as notApplicable                  40           0  ok
+a quantum is expressed in the unit of the nameplate it divides             35           0  ok
+sign agrees with the range comparison                                      35           0  ok
+the nameplate is a whole multiple of the quantum                           35           0  ok
+a part reference resolves to a filing that is here                         21           0  ok
+stated shares sum to the magnitude                                         20           0  ok
+a window is notApplicable only where the unit has no denominator           16           0  ok
+a clearance fit rules out customer and unrealised                          12           0  ok
+no leaf layer is reachable through two paths                               12           0  ok
+exposure does not exceed slack plus unserved shares                         9           0  ok
+a slack is expressed in the unit of the shares it bounds                    6           0  ok
+a fusion calls double counting malformed only when it has one part          4           0  ok
+a local part names a layer in its own stack                                 4           0  ok
+local parts do not cycle                                                    4           0  ok
+a measured zero is filed as an absence, not as a claim of zero              3           0  ok
+a share does not exceed the slack of the buffer that absorbed it            3           0  ok
+a supply that cannot run hot names who went unserved                        3           0  ok
+a window is carried through a fusion and never summed                       3           0  ok
+a denied remainder is not contradicted by the layer's own figures           2           0  thin
+a coupling attenuates through a fusion, bounded by the part's share         1           0  thin
+a derived time slack needs a window that permits the derivation             1           0  thin
+a point value files narrowsWhen as notApplicable, having no range           0           0  VACUOUS
 ```
 
 **The last line is the machinery working**, not a defect in it. It catches a real mistake — a
@@ -506,15 +566,36 @@ wrong width — and this corpus contains none, so it proves nothing here and say
 reported as `ok` when it examined nothing is the dangerous zero; a rule reported as VACUOUS is a
 rule you can trust the rest of the table about.
 
+⛔⛔ **And that last row is the one a checker structurally cannot produce, which is why the
+rules are built the way they are.** Group a filtered population by rule and a rule with an
+empty population contributes no row at all — so the single most important verdict this table
+can return would be delivered by *silence*, which is indistinguishable from the rule not
+existing. Every check therefore joins `checks/roster.sqlc` first, where each rule's sentence is
+written exactly once; the roster row exists before the population does. `examined` is then a
+count of what the rule looked at, `violations` a count of what failed, and the two tables above
+are `WHERE violates` and `GROUP BY rule` over one relation — which cannot disagree about what
+was examined. The previous version restated each population in a second dialect of itself, and
+**three of the twenty-two restatements disagreed with the rule they reported on** — one loudly
+enough to call a rule that examines a single row `ok`.
+
 ⭐⭐ **Four of these rows are new and none of them is a new idea.** Each was already written down
 in the schemas' prose and was UNCHECKABLE, because in each case the state it turns on was a blank
 — an empty list, a missing element, an omitted enumeration — and a blank has no reason to group
 by. *A window is carried through a fusion and never summed* is the sharpest: it caught a live
 defect on its first run, a composed layer that had dropped its part's duty cycle where the drop
-was byte-identical to a line that runs seven days a week. → **[§6](#6-the-zero-that-turned-out-to-be-two)**
+was byte-identical to a line that runs seven days a week. → **[§8](#8-the-zero-that-turned-out-to-be-two)**
 
-Three more are thin for the same reason the Rust tests are: almost nothing in the corpus files a
-numeric slack, and local composition is exercised by one fixture.
+Three more are thin for the same reason the Rust tests are: almost nothing in the corpus files
+a numeric slack, only three filings state any coupling at all, and exactly two layers deny
+having a remainder.
+
+⭐⭐ **That last one is the model's own falsifier, and until this pass the database threw it
+away.** `StatedRemainder` is a choice — a remainder, or a typed reason there is none — and every
+layer is required to carry one *precisely* so that a sender who disagrees with "every layer has
+a remainder" must say so explicitly. `ingest.sql` read only the first branch, so the two layers
+that take the second arrived as five NULLs and read as documents that had said nothing. One of
+them says otherwise in its own note: *"filed as a counter-example to the claim that every layer
+carries a remainder, **not as a gap in this document**."* A gap is exactly what was stored.
 
 ### Couplings, and the three shapes they come in
 
@@ -586,10 +667,19 @@ compares to the filed `sign`.
 
 ```
 1. fits recomputed from the ranges: 32 layers, 0 disagreements
+   corpus    24 layers: 9 clearance, 14 interference, 1 transition
+   fixture    8 layers: 8 transition
 ```
 
-It also asserts `n >= 20` before it asserts anything about the answers, so the check cannot
-pass by examining nothing. ↑ *the claim this settles is [`r = n − d` reverses its
+⭐⭐ **The census is split by `evidence` and the split is the content.** Every fixture layer that
+reaches this query is a `transition` — they were written to exercise the state real filings
+almost never reach — so a pooled count reports the corpus's ONE transition as nine, and
+`docs/linear-algebra.md` quotes that number.
+
+It asserts a floor before it asserts anything about the answers, so the check cannot pass by
+examining nothing — and the floor is on the CORPUS alone, not on all 32 rows. Counting the
+fixtures would let them hold the assertion up while the corpus emptied underneath it, which is
+the vacuity trap one level out: plenty to check, none of it the thing being claimed. ↑ *the claim this settles is [`r = n − d` reverses its
 bounds](#r--n--d-reverses-its-bounds).*
 
 ### 2. `DᵀN`, the good zero
@@ -612,11 +702,11 @@ diagonal. Then the fusion is three real matrix products, one per bound, and each
 compared against the demand the composed layer filed.
 
 ```
-3. F.Phi.x - e against the filed composed demand: 11 layers, all agree; 1 suspended
+3. F.Phi.x - e against the filed composed demand: 10 layers, all agree; 2 suspended
 ```
 
 ⭐⭐ **This is where "a matrix product is a join with a `GROUP BY`" gets checked.**
-`matrices.sql` computes the same eight rows with a join and a sum. Same answer, two algorithms.
+`matrices.sql` computes the same ten rows with a join and a sum. Same answer, two algorithms.
 ↑ *settles [the one idea](#the-one-idea-both-algebras-share), [the fusion
 rule](#and-the-fusion-rule-checks-out), and the claim that **a consolidation IS this
 expression** — [from the financial side](#from-the-financial-side).*
@@ -658,9 +748,64 @@ count printed beside it is the one number in this file most worth reading.
 
 That is why the tables are sparse rather than dense, and it is the bad zero in one screen.
 ↑ *settles [why the tables are shaped as they are](#why-the-tables-are-shaped-as-they-are) and
-[§6](#6-the-zero-that-turned-out-to-be-two).*
+[§8](#8-the-zero-that-turned-out-to-be-two).*
 
-### 6. The zero that turned out to be two
+### 6. The residue census, and the figure that used to be counted by hand
+
+`r = mq − (d mod q)` splits a remainder into the half a procurement decision moves and the half
+no decision removes. The second half is a **sawtooth** in `d`, so at an interval's three points it
+need not come back ordered — and an unordered triple is not an interval at all, while the demand
+it was computed from is perfectly well formed.
+
+```
+6. residue census: 23 lumpy corpus layers, 15 sawtoothed, 0 disagreements
+```
+
+Postgres computes the verdict with `mod()`; the example recomputes it with `%`. The disagreement
+count is the second witness, and it is the same standard the rest of this file runs on.
+
+⚠️ The section also asserts every filed quantum is a POINT VALUE. A quantum with a spread makes
+`d mod q` three different divisions and the query divides by the mode — currently free, since no
+corpus quantum has a range, and still an assumption. Asserted rather than assumed, so it stops
+being free out loud.
+
+⭐⭐ **Bounded at both ends, because both vacuous extremes are reachable and neither is
+interesting.** All-clean would mean the corpus files only demands sitting on the lattice;
+all-sawtoothed would mean the ordered case is unexercised. The claim is that an unordered residue
+is ORDINARY rather than universal, and that needs both to occur.
+
+⛔ This figure is quoted in [`docs/linear-algebra.md`](../../docs/linear-algebra.md), where it was
+maintained by reading the XML and counting. It drifted, twice, and the second time it was the
+denominator as well as the numerator.
+↑ *settles the sawtooth half of [`r = n − d` reverses its
+bounds](#r--n--d-reverses-its-bounds).*
+
+### 7. Slack coverage, and the column that reads zero
+
+One row per (layer, buffer): whether that buffer was sized, or which typed absence stands there
+instead.
+
+```
+7. slack coverage (corpus): 78 (layer, buffer) rows
+   capacity   0 sized of 26  ⛔ unexercised
+   inventory  2 sized of 26
+   time       1 sized of 26
+```
+
+⛔⛔ **The interesting number is the zero.** `capacity` is the column carrying the shortfall
+inequality — what a filing's own demand and nameplate say could have gone unserved, against what
+the supply can absorb plus what the document admits turning away. Not one layer in this corpus
+sizes it, so that bound has never been exercised, and a bound with nothing to bound passes
+loudest.
+
+**Nothing asserts it stays zero**, and that is deliberate. An equality here would make the first
+filer to size a capacity slack break the build for doing exactly what the model wants. The zero is
+REPORTED, and the assertion sits one level out: that *some* slack somewhere carries a number, so
+the share-sum rule is not passing against an empty table.
+↑ *settles [why the tables are shaped as they
+are](#why-the-tables-are-shaped-as-they-are).*
+
+### 8. The zero that turned out to be two
 
 Not a section of the example — a section of `rules.sql`, and the reason the previous five got
 sharper. Five encodings in the two schemas held a three- or four-valued fact in two states, and

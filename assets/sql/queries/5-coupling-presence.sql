@@ -1,21 +1,40 @@
 -- §5  What each filing says about couplings — and whether it says anything at all.
---
--- One row per corpus filing: how many couplings it states, and what its coupling SEARCH
--- reported if it states none. Those are two different facts and an empty table carries only
--- the first.
---
--- ⛔⛔ CORPUS ONLY, AND THIS IS A REPORT RATHER THAN A RULE, WHICH IS THE WHOLE REASON THE
--- DISTINCTION EXISTS. "No filing asserts independence" is a fact about THE EVIDENCE; a
--- stipulation that asserts it makes the finding a lie. `assets/fixtures/every-absence.xml`
--- files exactly that, on purpose, to prove the branch works — and it must not be counted
--- here. Rules run on fixtures; reports about the world do not.
--- See `assets/fixtures/README.md`.
-SELECT f.name           AS "filing!",
-       count(c.*)       AS "n!",
-       cs.absent::text  AS why
+-- entries/coupling_presence.sqlc over scope/corpus.sqlc.
+SELECT p.filing            AS "filing!",
+       p.couplings_filed   AS "n!",
+       p.search_answer::text AS why
+FROM (
+    -- pm:Stack/pm:couplings against pm:Couplings/pm:absent, over a scope the caller names.
+SELECT f.filing,
+       count(c.filing) AS couplings_filed,
+       s.answer        AS search_answer
+FROM      (
+    -- from pm.filing where evidence = 'corpus'; the axis is documented on that column.
+SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f
-LEFT JOIN pm.coupling c ON c.filing = f.name
-LEFT JOIN pm.coupling_search cs ON cs.filing = f.name
 WHERE f.evidence = 'corpus'
-GROUP BY f.name, cs.absent
-ORDER BY f.name
+
+) f
+LEFT JOIN (
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c USING (filing)
+LEFT JOIN (
+    -- pm:Stack/pm:Couplings and pm:Fusion/pm:Eliminations, each with its pm:Absent.
+SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,
+       cs.absent AS answer, cs.note
+FROM pm.coupling_search cs
+UNION ALL
+SELECT es.composition, 'double counting across parts', es.composed_layer,
+       es.absent, es.note
+FROM pm.elimination_search es
+
+) s
+       ON s.filing = f.filing AND s.looked_for = 'couplings between layers'
+GROUP BY f.filing, s.answer
+
+) p
+ORDER BY p.filing

@@ -1,0 +1,19 @@
+# THE LAYERS WHOSE WINDOW PERMITS DERIVING A TIME SLACK FROM A CLEARANCE. One row per
+# nameplate filing its window as `none` or `notApplicable`.
+#
+# ⭐⭐ THIS IS THE POSITIVE FORM OF A RULE USUALLY WRITTEN AS A NEGATION, and the positive
+#    form is the one that reads. `timeSlack = q / clearance` assumes the spare is spread
+#    evenly across the denominator. A stated window says it is NOT -- the machine runs 02:00
+#    to 05:00 -- so the division is over a base that does not exist. `unmeasured` says nobody
+#    knows whether it is, which is an assumption wearing a computation's clothes.
+#    ⛔ So exactly two REASONS license the derivation -- "it runs continuously" and "the
+#      question has no denominator" -- across however many layers file one of them. Two
+#      answers, not two documents. The check downstream is an ANTI-JOIN against this
+#      relation rather than a list of things to reject, because the licensing set is small,
+#      closed, and the thing a reader actually needs to know.
+-- pm:Divisibility/window absent for a licensing reason.
+SELECT w.filing, w.layer, w.window_absent AS licensed_because
+FROM (
+    :compose(layers/windows.sqlc)
+) w
+WHERE w.window_absent IN ('none', 'notApplicable')

@@ -1,0 +1,31 @@
+# EVERY PART THAT FILES A DUTY CYCLE, BESIDE THE WINDOW ITS COMPOSED LAYER FILES. One row per
+# examined part, `violates` where the composed layer dropped the calendar or changed it.
+#
+# ⭐⭐ THE RULE: a window is carried through a fusion and never summed. The schema states the
+#    failure in one sentence -- "two members naming one machine file one calendar between
+#    them; summing gives ten days a week." Amounts add because two supplies are two supplies.
+#    Calendars do not, because they are the same week seen twice.
+#
+# ⛔ BOTH HALVES WERE UNENFORCEABLE WHILE A DROPPED WINDOW AND A SUPPLY THAT RUNS CONTINUOUSLY
+#   WERE THE SAME DOCUMENT, and the holding level in this corpus had dropped one.
+-- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT w.composition AS filing, w.composed_layer AS layer,
+           (w.composed_window_low IS NULL
+            OR w.composed_window_low <> w.window_low) AS violates,
+           CASE WHEN w.composed_window_low IS NULL
+                THEN format('the part %s/%s files a %s-%s duty cycle and the composed '
+                            'layer files `%s`', w.part_filing, w.part_layer, w.window_low,
+                            w.window_unit, w.composed_window_absent)
+                ELSE format('composed window %s against a part''s %s -- carried, never summed',
+                            w.composed_window_low, w.window_low)
+           END AS detail
+    FROM (
+        :compose(composition/windowed_parts.sqlc)
+    ) w
+) p ON true
+WHERE r.slug = 'window_lost_or_summed'
