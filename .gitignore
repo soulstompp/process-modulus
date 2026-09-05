@@ -12,3 +12,7 @@ CLAUDE.md
 .cursor/
 .aider*
 .github/copilot-instructions.md
+
+# Local database credentials. `cargo sqlx prepare` reads DATABASE_URL from here, and the
+# host it points at is nobody else's business.
+.env
