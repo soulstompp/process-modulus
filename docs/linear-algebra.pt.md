@@ -190,21 +190,33 @@ Chamemos-lhe `S`, L×3. Cada resto nomeia um amortecedor como «absorber», o qu
 `A: L → {1,2,3}`, e a regra é
 
 ```
-Σ_{j ≠ unrealised} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]     onde r[ℓ] < 0 e S[ℓ,A(ℓ)] está declarado
+Σ_{j ∉ {customer, unrealised}} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]   onde r[ℓ] < 0 e S[ℓ,A(ℓ)] está declarado
 ```
 
 ⭐ Três pontos merecem ser assinalados a quem vier à procura de estrutura. **Isto eram valores
 booleanos até este passo**, o que tornava a desigualdade indizível — um bit diz que um
-amortecedor existe, não quanto ele leva, pelo que qualquer parcela cabia. **«unrealised» está
-isento por ser o transbordo**: procura que amortecedor nenhum recebeu. E a restrição é
-unilateral — as margens limitam apenas o lado da interferência, já que sob folga o excedente
+amortecedor existe, não quanto ele leva, pelo que qualquer parcela cabia. **OS DOIS detentores
+por servir estão isentos, por serem ambos o transbordo**: o «customer» e o «unrealised» nomeiam
+ambos procura que ninguém satisfez, e isso não é carga que o amortecedor tenha levado. Isentar só
+o «unrealised» somava à carga do amortecedor a degradação suportada por um cliente, e o `Fit`
+chama a esse mesmo par uma violação sob uma folga. E a restrição é unilateral — as margens limitam apenas o lado da interferência, já que sob folga o excedente
 *é* o resto e não há nada para absorver.
 
 ⚠️ A comparação é avaliada na moda, seguindo a convenção do sinal acima. A leitura estrita
 (pior parcela contra menor margem) existe e fica deliberadamente entregue a um perfil de
 conformidade, porque escolher entre as duas é uma política e não um facto. Em «shift-line»
-essa escolha não é cosmética: `1,7 ≤ 2,5` na moda, `2,9 ≤ 1,0` na leitura estrita. A mesma
-declaração, veredictos opostos.
+as duas leituras divergem bastante: `1,7 ≤ 2,5` na moda contra `2,9 ≤ 1,0` na estrita. ⚠️ Repare-se
+no que esse exemplo passou a ser: a «shift-line» não chega sequer a esta desigualdade, porque os
+seus dois detentores são «customer» e «unrealised» e o lado esquerdo fica, portanto, vazio. A
+questão de política é real; foi o corpus que deixou de a ilustrar.
+
+⛔⛔ **E o lado esquerdo está vazio em TODAS as camadas do corpus que chegam à regra, o que é um
+achado sobre a prova e não uma lacuna nela.** Em todas as camadas de interferência que dimensionam
+o amortecedor que absorve, todos os detentores são de uma das duas espécies por servir: não se
+absorveu coisa nenhuma, a procura foi recusada. O `Σ quotas servidas ≤ S` tem o lado esquerdo
+vazio porque o conjunto servido é vazio, o `checks/share_exceeds_slack` reporta ⛔ VACUOUS, e o
+`algebra/borne.sqlc` imprime `suportado = absorvido + por servir` por camada em cada execução, em
+vez de deixar isso a um comentário.
 
 ⛔ **`S` tem de estar na unidade da camada, e a sua medição natural não está.** O tamanho de um
 amortecedor observa-se como uma *duração* — quanto tempo o produto se conserva, quanto tempo o
@@ -223,7 +235,9 @@ mede algo sem instrumento por trás.** Em todo o resto, uma margem limita quotas
 declarou. Aqui limita uma quantidade derivada das entradas:
 
 ```
-max(0, d_high − n_low)   ≤   S[ℓ, capacidade]_high  +  Σ_{j ∈ {cliente, não realizado}} H[ℓ,j]_high
+max(0, d_high − n_low)   ≤   Σ_j S[ℓ,j]_high  +  Σ_{j ∈ {customer, unrealised}} H[ℓ,j]_high
+
+                             e apenas onde todos os S[ℓ,j] estão declarados
 ```
 
 Lido da esquerda para a direita: o que a procura e a capacidade nominal do próprio documento
@@ -232,11 +246,23 @@ o documento admite ter recusado. **A diferença é a quantidade interessante** �
 aconteceu e que nada registou, que é o assunto deste modelo dito como aritmética em vez de como
 argumento. Avaliado num só canto, pela razão da anti-correlação acima.
 
+⛔⛔ **O limite é sobre a LINHA inteira de `S`, e até este passo lia apenas a coluna da
+capacidade.** Os três amortecedores são substitutos: um excesso acima da capacidade nominal pode
+ser absorvido correndo acima do regime, recorrendo ao stock, ou pondo a procura à espera. Uma
+coluna fechada é UM CAMINHO fechado, o que não implica que alguma coisa tenha ficado por servir, e
+duas regras tiravam daí essa conclusão. ⭐ Uma margem não declarada SUSPENDE a desigualdade em vez
+de contribuir com zero, porque reduzir uma ausência a zero transforma *ninguém olhou* em *não há
+espaço* e fabrica uma falha a partir de uma lacuna.
+
 ⚠️ Dois limites, ambos a saber antes de confiar nisto. É um instrumento **só do ajustamento incerto**: sob interferência a exposição É o limite superior de `|n − d|` e a desigualdade
-degenera na regra da soma das quotas; sob folga é zero. E está **por exercitar** — nem uma
-camada em `assets/corpus/` declara uma margem de capacidade numérica, pelo que fica muda em vinte e três
-de vinte e quatro. Um limite sem nada que limitar é o que passa mais alto, e o repositório di-lo no
-próprio teste em vez de se contar como coberto.
+degenera na regra da soma das quotas; sob folga é zero. E fica **muda em quase todas as camadas
+expostas, pela razão que o próprio modelo prevê**: o `layers/exposure_scope.sqlc` arruma-as pelos
+três estados e o `algebra/exposure_standing.sqlc` obriga esses três a uma partição, portanto
+execute-se e leiam-se as contagens. Quase todas têm um amortecedor que ninguém dimensionou, e NEM
+UMA tem um amortecedor com espaço dentro. A suspensão nunca é o caso inofensivo; é sempre um
+caminho por medir, que é a mesma frase que o «people» diz sobre instrumentos. Um limite sem nada
+que limitar é o que passa mais alto, e a tabela de cobertura diz ⛔ VACUOUS em vez de se contar
+como coberto.
 
 ## Três grãos, dos quais o modelo declara dois
 
@@ -494,7 +520,7 @@ conjuntos em qualquer ponto da árvore sem lei nesse roster falha a construção
 substituem o que de outro modo seria uma sondagem à mão: o `|A| = |A∖B| + |A⋉B|` é verificado ao
 vivo em vez de argumentado num comentário.
 
-⚠️ Três sítios onde as duas álgebras divergem mesmo, e todos eles custaram aqui um defeito a
+⚠️ Cinco sítios onde as duas álgebras divergem mesmo, e todos eles custaram aqui um defeito a
 alguém antes de terem sido escritos:
 
 - O `σ` acumula. `σ_p(σ_q(A)) = σ_{p∧q}(A)`, que é a razão de uma regra herdar filtros que nunca
@@ -503,6 +529,22 @@ alguém antes de terem sido escritos:
   portanto uma diferença tem de ser tomada sobre a chave.
 - Sacos não são conjuntos. O `composition/descent` é um saco de propósito; desduplicá-lo destruiria
   exatamente o facto que o `leaf_reached_twice` existe para encontrar.
+- ⛔ **O `γ` e um `σ` seguido de `π` são indistinguíveis pela cardinalidade, e respondem a perguntas
+  opostas.** O `S` tem chave `(filing, layer, buffer)` e o assunto de qualquer regra tem chave
+  `(filing, layer)`, portanto o índice do amortecedor tem de ser colapsado. Agregá-lo lê a linha
+  inteira; filtrar por um amortecedor e deixar cair a coluna lê uma célula só. **Ambos dão a mesma
+  chave, a mesma aridade e uma linha por camada**, pelo que qualquer lei da lista passa nos dois e
+  contagem nenhuma os separa. Duas regras concluíram que houve procura por servir a partir de uma
+  premissa apenas sobre a coluna da capacidade, que é uma afirmação sobre um de três amortecedores
+  substituíveis. O indício nunca está no SQL: está em a prosa quantificar sobre a dimensão que a
+  consulta deixou cair.
+- ⛔ **Um `CASE` é uma partição por construção, pelo que a lei da partição não consegue ver
+  predicados sobrepostos.** O `Σ|classes| = |candidatos|` verifica-se seja qual for o comportamento
+  dos ramos, porque cada tuplo cai exatamente num deles façam o `p₁` e o `p₂` o que fizerem. A
+  disjunção tem de ser sondada nos **predicados**, contando as linhas em que dois ramos se
+  verificam ao mesmo tempo. O `Fit` publica três critérios e chama-lhes mutuamente exclusivos; o
+  `clearance` e o `interference` verificam-se ambos quando uma capacidade nominal pontual iguala
+  uma procura pontual, e o `layers/remainder.sqlc` resolve-o pela ordem dos ramos.
 
 ⚠️ E um custo, medido e não presumido: o `EXCEPT` é uma barreira de otimização. Perguntar ao
 `composition/owed_equality` por uma só camada composta avalia a árvore inteira e deita fora dez de

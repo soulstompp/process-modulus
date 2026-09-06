@@ -120,21 +120,32 @@ Each layer also carries three **slacks**, one per buffer, in the layer's unit: `
 one buffer as its `absorber`, so there is a selection `A: L → {1,2,3}`, and the rule is
 
 ```
-Σ_{j ≠ unrealised} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]        wherever r[ℓ] < 0 and S[ℓ,A(ℓ)] is stated
+Σ_{j ∉ {customer, unrealised}} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]   wherever r[ℓ] < 0 and S[ℓ,A(ℓ)] is stated
 ```
 
 ⭐ Three things are worth flagging to a reader who will look for structure here. **These were
 booleans until this pass**, which made the inequality unstatable — a bit says a buffer exists,
-not how much it holds, so any share fitted. **`unrealised` is exempt because it is the
-overflow**: demand that no buffer took. And the constraint is one-sided — the slacks bound the
-interference side only, since under clearance the spare *is* the remainder and there is nothing
-to absorb.
+not how much it holds, so any share fitted. **BOTH unserved holders are exempt, because both are
+the overflow**: `customer` and `unrealised` each name demand nobody met, which is not a load the
+buffer held. Exempting `unrealised` alone summed a customer's borne degradation into the buffer's
+load, and `Fit` calls the same pair a violation under a clearance. And the constraint is
+one-sided — the slacks bound the interference side only, since under clearance the spare *is* the
+remainder and there is nothing to absorb.
 
 ⚠️ The comparison is evaluated at the mode, following the `sign` convention above. The strict
 reading (worst share against smallest slack) is available and is deliberately left to a
 conformance profile, because choosing between them is a policy rather than a fact. On
-`shift-line` that choice is not cosmetic: `1.7 ≤ 2.5` at the mode, `2.9 ≤ 1.0` at the strict
-reading. Same filing, opposite verdicts.
+`shift-line` the two readings diverge sharply, `1.7 ≤ 2.5` at the mode against `2.9 ≤ 1.0`
+strictly. ⚠️ Note what that example now is: `shift-line` does not reach this inequality at all,
+because both its holders are `customer` and `unrealised` and the left side is therefore empty.
+The policy question is real; the corpus has stopped illustrating it.
+
+⛔⛔ **And the left side is empty on EVERY corpus layer that reaches the rule, which is a finding
+about the evidence rather than a gap in it.** On every interference layer that sizes its
+absorbing buffer, every holder is one of the two unserved kinds: nothing was absorbed at all, the
+demand was turned away. `Σ served shares ≤ S` has an empty left side because the served set is
+empty, `checks/share_exceeds_slack` reports ⛔ VACUOUS, and `algebra/borne.sqlc` prints
+`held = absorbed + unserved` per layer on every run rather than leaving that to a comment.
 
 ⛔ **`S` must be in the layer's unit, and its natural measurement is not.** A buffer's size is
 observed as a *duration* — how long stock keeps, how long a caller waits — while `H` is in the
@@ -151,7 +162,9 @@ something with no instrument behind it.** Everywhere above, a slack bounds share
 already filed. Here it bounds a quantity derived from the inputs:
 
 ```
-max(0, d_high − n_low)   ≤   S[ℓ, capacity]_high  +  Σ_{j ∈ {customer, unrealised}} H[ℓ,j]_high
+max(0, d_high − n_low)   ≤   Σ_j S[ℓ,j]_high  +  Σ_{j ∈ {customer, unrealised}} H[ℓ,j]_high
+
+                             and only where every S[ℓ,j] is stated
 ```
 
 Read left to right: what a filing's own demand and nameplate say could have gone unserved is at
@@ -160,12 +173,23 @@ the interesting quantity** — remainder that happened and that nothing recorded
 model's subject stated as arithmetic rather than as an argument. Evaluated at the one corner, for
 the anti-correlation reason above.
 
+⛔⛔ **The bound is over the whole ROW of `S`, and it read the capacity column alone until this
+pass.** The three buffers are substitutes: an excess above the nameplate can be absorbed by
+running hot, by drawing on stock, or by making the demand wait. One column closed is ONE ROUTE
+closed, which does not entail that anything went unserved, and two rules drew that conclusion
+from it. ⭐ An unstated slack SUSPENDS the inequality rather than contributing zero, because
+coalescing an absence to zero turns *nobody looked* into *there is no room* and manufactures a
+shortfall out of a gap.
+
 ⚠️ Two limits, both worth knowing before you trust it. It is a **transition-fit instrument
 only**: under interference the exposure IS `|n − d|`'s high bound and the inequality degenerates
-into the share-sum rule, and under clearance it is zero. And it is **unexercised** — not one
-layer in `assets/corpus/` files a numeric capacity slack, so it is silent on twenty-three of twenty-four.
-A bound with nothing to bound passes loudest, and the repository says so at the test rather than
-scoring itself as covered.
+into the share-sum rule, and under clearance it is zero. And it is **silent on almost every
+exposed layer, for the reason the model itself predicts**: `layers/exposure_scope.sqlc` sorts
+them into the three standings and `algebra/exposure_standing.sqlc` holds those to a partition, so
+run it and read the counts. Nearly all of them have a buffer nobody sized, and NOT ONE has a
+buffer with room in it. The suspension is never the harmless case; it is always an unmeasured
+route, which is the same sentence `people` states about instruments. A bound with nothing to
+bound passes loudest, and the coverage table says ⛔ VACUOUS rather than scoring it as covered.
 
 ## Three grains, of which the model files two
 
@@ -410,7 +434,7 @@ degenerate case, where lumpiness dissolves and the composed supply is effectivel
 with no law on that roster fails the build.** The laws replace what would otherwise be a hand
 probe: `|A| = |A∖B| + |A⋉B|` is checked live rather than argued in a comment.
 
-⚠️ Three places where the two algebras genuinely differ, all of which cost somebody a defect here
+⚠️ Five places where the two algebras genuinely differ, all of which cost somebody a defect here
 before they were written down:
 
 - `σ` accumulates. `σ_p(σ_q(A)) = σ_{p∧q}(A)`, which is why a rule inherits filters it never wrote
@@ -419,6 +443,20 @@ before they were written down:
   difference must be taken on the key.
 - Bags are not sets. `composition/descent` is a bag on purpose; deduplicating it would destroy the
   very fact `leaf_reached_twice` exists to find.
+- ⛔ **`γ` and `σ` followed by `π` are indistinguishable by cardinality, and they answer opposite
+  questions.** `S` is keyed `(filing, layer, buffer)` and every rule's subject is keyed
+  `(filing, layer)`, so the buffer index has to be collapsed. Aggregating it reads the whole row;
+  filtering to one buffer and dropping the column reads one cell. **Both yield the same key, the
+  same arity and one row per layer**, so every law on the roster passes on either, and no count
+  anywhere separates them. Two rules concluded that demand went unserved from a premise about the
+  capacity column alone, which is a statement about one of three substitutable buffers. The tell
+  is never in the SQL: it is that the prose quantifies over the dimension the query dropped.
+- ⛔ **A `CASE` is a partition by construction, so the partition law cannot see overlapping
+  predicates.** `Σ|classes| = |candidates|` holds however the arms behave, because every tuple
+  lands in exactly one of them whatever `p₁` and `p₂` do. Disjointness has to be probed on the
+  **predicates**, by counting the rows where two arms both hold. `Fit` publishes three criteria
+  and calls them mutually exclusive; `clearance` and `interference` both hold when a point
+  nameplate equals a point demand, and `layers/remainder.sqlc` settles it by arm order.
 
 ⚠️ And one cost, measured rather than assumed: `EXCEPT` is an optimisation barrier. Asking
 `composition/owed_equality` about a single composed layer evaluates the whole tree and discards
