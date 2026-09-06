@@ -226,6 +226,17 @@ const WITNESSES: &[Witness] = &[
         says: "a layer is composed from itself",
     },
     Witness {
+        rule: "conversion_cycle_does_not_close",
+        doc: "assets/fixtures/every-unit-cycle.xml",
+        from_: "<pm:low>0.0108</pm:low><pm:mostLikely>0.0112</pm:mostLikely><pm:high>0.0116</pm:high>",
+        to: "<pm:low>0.0018</pm:low><pm:mostLikely>0.0022</pm:mostLikely><pm:high>0.0026</pm:high>",
+        nth: 1,
+        // ⭐ THE CYCLE IS THE ONLY THING THAT MOVES. Each fusion still carries its own part
+        //   exactly, because the composed figures are derived from this factor; what breaks is
+        //   the walk all the way round, which is the one thing no single layer can see.
+        says: "converting GPU to GPU-hour to node-hour and back lands at a fifth of where it started",
+    },
+    Witness {
         rule: "one_part_fusion_alters_its_part",
         doc: "assets/corpus/merge-group-composition.xml",
         from_: "<pm:low>8</pm:low>

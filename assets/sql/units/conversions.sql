@@ -1,11 +1,9 @@
--- asrt:Fusion with one asrt:Part and no asrt:elimination, against layers/quantities.sqlc.
-SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
-       part.low  * coalesce(p.factor_low,  1) AS part_low,
-       part.mode * coalesce(p.factor_mode, 1) AS part_mode,
-       part.high * coalesce(p.factor_high, 1) AS part_high,
-       part.unit AS part_unit,
-       filed.low AS filed_low, filed.mode AS filed_mode, filed.high AS filed_high,
-       filed.unit AS filed_unit
+-- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
 FROM      (
     -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
@@ -86,6 +84,7 @@ FROM pm.slack s
 WHERE s.low IS NOT NULL
 
 ) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
 JOIN      (
     -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
 SELECT d.filing, d.layer, 'demand' AS quantity,
@@ -137,75 +136,6 @@ FROM pm.slack s
 ) s
 WHERE s.low IS NOT NULL
 
-) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
-       AND filed.quantity = part.quantity
-WHERE p.factor_absent IS NULL
-  AND (p.composition, p.composed_layer) IN (
-        SELECT composition, composed_layer
-        FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
-SELECT p.composition, p.composed_layer,
-       p.part_filing AS part_notation,
-       fi.filing     AS part_filing,
-       p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
- ) one
-        GROUP BY composition, composed_layer
-        HAVING count(*) = 1)
-  AND NOT EXISTS (
-        SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
-FROM pm.elimination e
- ) e
-        WHERE e.composition = p.composition AND e.composed_layer = p.composed_layer)
-  AND NOT EXISTS (
-        SELECT 1 FROM ( -- the two filings that lift the sum rule, each carrying the quantity it lifts.
--- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
-SELECT es.composition, es.composed_layer,
-       NULL::text AS quantity,
-       'the search was never made' AS suspended_because,
-       es.note
-FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
-SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
-FROM pm.elimination_search es
-
-) es
-WHERE es.answer = 'unmeasured'
-UNION ALL
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       'the overlap was found and could not be sized' AS suspended_because,
-       e.reason AS note
-FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
-FROM pm.elimination e
-
-) e
-WHERE e.absent IS NOT NULL
-
- ) s
-        WHERE s.composition = p.composition AND s.composed_layer = p.composed_layer)
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL

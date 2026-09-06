@@ -26,6 +26,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -48,7 +49,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p

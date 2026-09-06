@@ -38,6 +38,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -133,6 +134,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -261,6 +263,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -403,6 +406,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -556,6 +560,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -697,6 +702,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -781,6 +787,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -876,6 +883,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -977,6 +985,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1057,6 +1066,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1169,6 +1179,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1182,7 +1193,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -1192,11 +1203,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1249,6 +1260,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1271,11 +1283,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1313,7 +1325,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1329,7 +1341,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1373,6 +1385,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1408,11 +1421,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1445,11 +1458,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1535,6 +1548,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1600,6 +1614,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1665,6 +1680,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1729,6 +1745,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1758,11 +1775,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -1832,6 +1849,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -1944,6 +1962,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2024,6 +2043,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2046,7 +2066,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2086,6 +2106,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2124,11 +2145,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2173,7 +2194,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2277,6 +2298,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2293,7 +2315,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2342,6 +2364,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2359,7 +2382,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2380,7 +2403,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2437,6 +2460,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2530,6 +2554,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -2559,11 +2584,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2686,18 +2711,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2759,6 +2785,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
 
 ) c
@@ -2800,11 +3032,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2828,11 +3060,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2895,11 +3127,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -2923,11 +3155,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -3553,6 +3785,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -3618,6 +3851,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -3713,6 +3947,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -3841,6 +4076,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -3983,6 +4219,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4136,6 +4373,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4277,6 +4515,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4361,6 +4600,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4456,6 +4696,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4557,6 +4798,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4637,6 +4879,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4749,6 +4992,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4762,7 +5006,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -4772,11 +5016,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -4829,6 +5073,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4851,11 +5096,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -4893,7 +5138,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -4909,7 +5154,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -4953,6 +5198,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -4988,11 +5234,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5025,11 +5271,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5115,6 +5361,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5180,6 +5427,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5245,6 +5493,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5309,6 +5558,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5338,11 +5588,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5412,6 +5662,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5524,6 +5775,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5604,6 +5856,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5626,7 +5879,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5666,6 +5919,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5704,11 +5958,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5753,7 +6007,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5857,6 +6111,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5873,7 +6128,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5922,6 +6177,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -5939,7 +6195,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -5960,7 +6216,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -6017,6 +6273,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -6110,6 +6367,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -6139,11 +6397,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -6266,18 +6524,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -6339,6 +6598,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c
         UNION ALL
@@ -7050,7 +7515,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7065,7 +7530,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7172,7 +7637,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7185,7 +7650,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7231,7 +7696,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7302,11 +7767,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7345,11 +7810,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7391,11 +7856,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7433,7 +7898,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7450,11 +7915,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7490,7 +7955,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -7702,6 +8167,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -7732,6 +8198,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -7767,6 +8234,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -7862,6 +8330,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -7990,6 +8459,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8132,6 +8602,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8285,6 +8756,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8426,6 +8898,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8510,6 +8983,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8605,6 +9079,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8706,6 +9181,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8786,6 +9262,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8898,6 +9375,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -8911,7 +9389,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -8921,11 +9399,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -8978,6 +9456,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9000,11 +9479,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9042,7 +9521,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9058,7 +9537,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9102,6 +9581,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9137,11 +9617,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9174,11 +9654,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9264,6 +9744,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9329,6 +9810,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9394,6 +9876,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9458,6 +9941,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9487,11 +9971,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9561,6 +10045,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9673,6 +10158,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9753,6 +10239,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9775,7 +10262,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9815,6 +10302,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -9853,11 +10341,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -9902,7 +10390,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10006,6 +10494,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10022,7 +10511,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10071,6 +10560,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10088,7 +10578,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10109,7 +10599,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10166,6 +10656,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10259,6 +10750,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10288,11 +10780,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10415,18 +10907,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -10488,6 +10981,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c ) z) AS unproduced,
                (SELECT count(DISTINCT r.rule) FROM ( -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -10515,6 +11214,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10549,6 +11249,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10644,6 +11345,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10772,6 +11474,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -10914,6 +11617,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11067,6 +11771,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11208,6 +11913,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11292,6 +11998,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11387,6 +12094,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11488,6 +12196,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11568,6 +12277,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11680,6 +12390,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11693,7 +12404,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -11703,11 +12414,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -11760,6 +12471,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11782,11 +12494,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -11824,7 +12536,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -11840,7 +12552,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -11884,6 +12596,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -11919,11 +12632,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -11956,11 +12669,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12046,6 +12759,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12111,6 +12825,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12176,6 +12891,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12240,6 +12956,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12269,11 +12986,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12343,6 +13060,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12455,6 +13173,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12535,6 +13254,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12557,7 +13277,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12597,6 +13317,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12635,11 +13356,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12684,7 +13405,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12788,6 +13509,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12804,7 +13526,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12853,6 +13575,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -12870,7 +13593,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12891,7 +13614,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -12948,6 +13671,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -13041,6 +13765,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -13070,11 +13795,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -13197,18 +13922,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -13270,6 +13996,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c WHERE c.rule = r.rule)) AS produced
         UNION ALL
@@ -14009,7 +14941,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -14024,7 +14956,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -14823,7 +15755,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -14838,7 +15770,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -15717,7 +16649,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -15732,7 +16664,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -16430,6 +17362,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -16525,6 +17458,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -16653,6 +17587,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -16795,6 +17730,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -16948,6 +17884,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17089,6 +18026,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17173,6 +18111,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17268,6 +18207,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17369,6 +18309,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17449,6 +18390,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17561,6 +18503,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17574,7 +18517,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -17584,11 +18527,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17641,6 +18584,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17663,11 +18607,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17705,7 +18649,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17721,7 +18665,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17765,6 +18709,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17800,11 +18745,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17837,11 +18782,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -17927,6 +18872,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -17992,6 +18938,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18057,6 +19004,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18121,6 +19069,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18150,11 +19099,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18224,6 +19173,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18336,6 +19286,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18416,6 +19367,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18438,7 +19390,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18478,6 +19430,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18516,11 +19469,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18565,7 +19518,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18669,6 +19622,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18685,7 +19639,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18734,6 +19688,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18751,7 +19706,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18772,7 +19727,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -18829,6 +19784,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18922,6 +19878,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -18951,11 +19908,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -19078,18 +20035,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -19151,6 +20109,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c
         UNION ALL
@@ -19862,7 +21026,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -19877,7 +21041,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -19984,7 +21148,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -19997,7 +21161,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20043,7 +21207,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20114,11 +21278,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20157,11 +21321,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20203,11 +21367,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20245,7 +21409,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20262,11 +21426,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20302,7 +21466,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -20514,6 +21678,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -20544,6 +21709,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -20579,6 +21745,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -20674,6 +21841,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -20802,6 +21970,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -20944,6 +22113,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21097,6 +22267,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21238,6 +22409,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21322,6 +22494,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21417,6 +22590,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21518,6 +22692,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21598,6 +22773,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21710,6 +22886,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21723,7 +22900,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -21733,11 +22910,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -21790,6 +22967,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21812,11 +22990,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -21854,7 +23032,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -21870,7 +23048,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -21914,6 +23092,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -21949,11 +23128,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -21986,11 +23165,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22076,6 +23255,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22141,6 +23321,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22206,6 +23387,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22270,6 +23452,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22299,11 +23482,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22373,6 +23556,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22485,6 +23669,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22565,6 +23750,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22587,7 +23773,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22627,6 +23813,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22665,11 +23852,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22714,7 +23901,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22818,6 +24005,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22834,7 +24022,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22883,6 +24071,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -22900,7 +24089,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22921,7 +24110,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -22978,6 +24167,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23071,6 +24261,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23100,11 +24291,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -23227,18 +24418,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -23300,6 +24492,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c ) z) AS unproduced,
                (SELECT count(DISTINCT r.rule) FROM ( -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -23327,6 +24725,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23361,6 +24760,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23456,6 +24856,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23584,6 +24985,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23726,6 +25128,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -23879,6 +25282,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24020,6 +25424,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24104,6 +25509,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24199,6 +25605,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24300,6 +25707,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24380,6 +25788,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24492,6 +25901,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24505,7 +25915,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -24515,11 +25925,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24572,6 +25982,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24594,11 +26005,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24636,7 +26047,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24652,7 +26063,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24696,6 +26107,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24731,11 +26143,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24768,11 +26180,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -24858,6 +26270,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24923,6 +26336,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -24988,6 +26402,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25052,6 +26467,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25081,11 +26497,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25155,6 +26571,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25267,6 +26684,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25347,6 +26765,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25369,7 +26788,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25409,6 +26828,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25447,11 +26867,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25496,7 +26916,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25600,6 +27020,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25616,7 +27037,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25665,6 +27086,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25682,7 +27104,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25703,7 +27125,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -25760,6 +27182,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25853,6 +27276,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -25882,11 +27306,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -26009,18 +27433,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -26082,6 +27507,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c WHERE c.rule = r.rule)) AS produced
         UNION ALL
@@ -26821,7 +28452,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -26836,7 +28467,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -27635,7 +29266,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -27650,7 +29281,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -28529,7 +30160,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -28544,7 +30175,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -29235,6 +30866,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29303,6 +30935,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29398,6 +31031,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29526,6 +31160,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29668,6 +31303,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29821,6 +31457,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -29962,6 +31599,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30046,6 +31684,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30141,6 +31780,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30242,6 +31882,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30322,6 +31963,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30434,6 +32076,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30447,7 +32090,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -30457,11 +32100,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30514,6 +32157,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30536,11 +32180,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30578,7 +32222,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30594,7 +32238,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30638,6 +32282,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30673,11 +32318,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30710,11 +32355,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -30800,6 +32445,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30865,6 +32511,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30930,6 +32577,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -30994,6 +32642,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31023,11 +32672,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31097,6 +32746,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31209,6 +32859,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31289,6 +32940,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31311,7 +32963,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31351,6 +33003,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31389,11 +33042,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31438,7 +33091,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31542,6 +33195,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31558,7 +33212,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31607,6 +33261,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31624,7 +33279,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31645,7 +33300,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31702,6 +33357,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31795,6 +33451,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -31824,11 +33481,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -31951,18 +33608,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32024,6 +33682,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c
     UNION ALL
@@ -32736,7 +34600,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32751,7 +34615,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32859,7 +34723,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32872,7 +34736,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32918,7 +34782,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -32989,11 +34853,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33032,11 +34896,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33078,11 +34942,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33120,7 +34984,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33137,11 +35001,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33177,7 +35041,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -33389,6 +35253,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33419,6 +35284,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33454,6 +35320,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33549,6 +35416,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33677,6 +35545,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33819,6 +35688,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -33972,6 +35842,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34113,6 +35984,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34197,6 +36069,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34292,6 +36165,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34393,6 +36267,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34473,6 +36348,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34585,6 +36461,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34598,7 +36475,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -34608,11 +36485,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34665,6 +36542,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34687,11 +36565,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34729,7 +36607,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34745,7 +36623,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34789,6 +36667,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -34824,11 +36703,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34861,11 +36740,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -34951,6 +36830,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35016,6 +36896,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35081,6 +36962,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35145,6 +37027,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35174,11 +37057,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35248,6 +37131,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35360,6 +37244,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35440,6 +37325,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35462,7 +37348,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35502,6 +37388,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35540,11 +37427,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35589,7 +37476,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35693,6 +37580,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35709,7 +37597,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35758,6 +37646,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35775,7 +37664,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35796,7 +37685,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -35853,6 +37742,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35946,6 +37836,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -35975,11 +37866,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -36102,18 +37993,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -36175,6 +38067,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c ) z) AS unproduced,
                (SELECT count(DISTINCT r.rule) FROM ( -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -36202,6 +38300,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36236,6 +38335,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36331,6 +38431,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36459,6 +38560,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36601,6 +38703,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36754,6 +38857,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36895,6 +38999,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -36979,6 +39084,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37074,6 +39180,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37175,6 +39282,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37255,6 +39363,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37367,6 +39476,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37380,7 +39490,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -37390,11 +39500,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37447,6 +39557,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37469,11 +39580,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37511,7 +39622,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37527,7 +39638,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37571,6 +39682,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37606,11 +39718,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37643,11 +39755,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -37733,6 +39845,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37798,6 +39911,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37863,6 +39977,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37927,6 +40042,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -37956,11 +40072,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38030,6 +40146,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38142,6 +40259,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38222,6 +40340,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38244,7 +40363,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38284,6 +40403,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38322,11 +40442,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38371,7 +40491,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38475,6 +40595,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38491,7 +40612,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38540,6 +40661,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38557,7 +40679,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38578,7 +40700,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38635,6 +40757,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38728,6 +40851,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -38757,11 +40881,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38884,18 +41008,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -38957,6 +41082,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
  ) c WHERE c.rule = r.rule)) AS produced
         UNION ALL
@@ -39696,7 +42027,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -39711,7 +42042,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -40510,7 +42841,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -40525,7 +42856,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -41404,7 +43735,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -41419,7 +43750,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -42129,6 +44460,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42224,6 +44556,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42352,6 +44685,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42494,6 +44828,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42647,6 +44982,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42788,6 +45124,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42872,6 +45209,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -42967,6 +45305,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43068,6 +45407,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43148,6 +45488,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43260,6 +45601,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43273,7 +45615,7 @@ LEFT JOIN (
     FROM      (
         -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
     ) a
@@ -43283,11 +45625,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43340,6 +45682,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43362,11 +45705,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43404,7 +45747,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43420,7 +45763,7 @@ SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43464,6 +45807,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43499,11 +45843,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43536,11 +45880,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43626,6 +45970,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43691,6 +46036,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43756,6 +46102,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43820,6 +46167,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -43849,11 +46197,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -43923,6 +46271,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44035,6 +46384,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44115,6 +46465,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44137,7 +46488,7 @@ FROM pm.elimination_search es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44177,6 +46528,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44215,11 +46567,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44264,7 +46616,7 @@ SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44368,6 +46720,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44384,7 +46737,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44433,6 +46786,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44450,7 +46804,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44471,7 +46825,7 @@ SELECT p.*
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44528,6 +46882,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44621,6 +46976,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
@@ -44650,11 +47006,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44777,18 +47133,19 @@ WHERE s.low IS NOT NULL
 
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
@@ -44850,6 +47207,212 @@ WHERE e.absent IS NOT NULL
     ) c
 ) p ON true
 WHERE r.slug = 'one_part_fusion_alters_its_part'
+UNION ALL
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+WHERE s.low IS NOT NULL
+
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL
+
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'
 
 
 ) c

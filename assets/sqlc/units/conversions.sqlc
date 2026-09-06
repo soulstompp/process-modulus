@@ -1,0 +1,38 @@
+# EVERY CONVERSION THE CORPUS FILES, AS AN EDGE BETWEEN TWO UNITS. One row per fusion part that
+# carries a factor: the unit it converts FROM, the unit it converts TO, and the three bounds.
+#
+# ⭐⭐⭐ THE ENDPOINTS ARE FILED FACTS AND NOTHING HERE PARSES A UNIT STRING. A factor's own
+#    unit reads `GPU-hour per GPU` and only the DENOMINATOR half of that is structural, so
+#    reading the pair off the label would mean splitting free text on a preposition -- which is
+#    the `LIKE '% per %'` this directory has removed twice. It is unnecessary: a factor
+#    converts a PART LAYER into its COMPOSED LAYER, and both of those layers file their own
+#    unit. The edge is the two layers, and the label is only a label.
+#
+# ⛔⛔ THREE EDGES CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL and are deliberately absent from
+#    this relation. `pessoas` to `people`, and `turnos por semana` to `shifts per week` twice.
+#    Those compositions assert that a Portuguese unit and an English one are the same thing,
+#    and they assert it by OMITTING the element -- which `composition/converted.sqlc` reads as
+#    a factor of one. Two editions of one word is a judgement this repository has twice refused
+#    to make in SQL, and here it arrives as an absence instead. Filed as a finding rather than
+#    repaired, because the repair is a decision about what an omitted factor MEANS.
+#
+# ⚠️ A TYPED-ABSENT FACTOR IS NOT AN EDGE EITHER, and for a different reason: `unmeasured` says
+#    nobody sized the conversion, so there is no number to put on the arrow.
+-- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+SELECT DISTINCT
+       part.unit AS from_unit,
+       comp.unit AS to_unit,
+       p.factor_low, p.factor_mode, p.factor_high,
+       p.composition AS filing, p.composed_layer AS layer
+FROM      (
+    :compose(composition/parts.sqlc)
+) p
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+      AND part.quantity = 'nameplate'
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = 'nameplate'
+WHERE p.factor_low IS NOT NULL

@@ -1,0 +1,66 @@
+# EVERY CYCLE IN THE UNIT GRAPH, BESIDE THE PRODUCT OF THE FACTORS ROUND IT. One row per cycle,
+# `violates` where one does not lie inside that product.
+#
+# ⭐⭐ THE RULE: convert a quantity all the way round a cycle of units and you must be able to
+#    get back what you started with. `units/conversions.sqlc` reads each fusion part that
+#    carries a factor as an edge from its part layer's unit to its composed layer's unit, so
+#    the corpus is a graph and this walks it.
+#
+# ⛔⛔⛔ CONTAINMENT AND NOT EQUALITY, AND ARITHMETIC FORCES IT RATHER THAN TASTE. Two separate
+#    reasons, and both are worth knowing.
+#
+#    ⭐ THE FACTORS ARE INTERVALS. `merge-holding-composition` files its month as
+#      [672, 720, 744] and says why: "a month is not 720 hours; it is [672, 720, 744] and which
+#      one you got depends on which month." Three intervals multiplied give an interval, so the
+#      most a receiver can ask is that ONE IS INSIDE IT.
+#
+#    ⭐ AND NO DOCUMENT COULD CLOSE IT EXACTLY EVEN AT THE MODE. Every cycle in this graph runs
+#      through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal has only twos and fives under
+#      the line, so no pair of filable decimals multiplies to 1/720. The nine is the obstruction
+#      and it is a fact about the corpus's own calendar rather than about anybody's care.
+#
+# ⚠️⚠️ THE WIDTH IS THE DEPENDENCY PROBLEM AND NOT MEASUREMENT ERROR. The month that turns
+#    cards into card-hours is the SAME month that turns node-hours back into cards. Multiplying
+#    the intervals treats them as two independent months and spans nine per cent either way; a
+#    receiver who knew they were one month would get exactly one. Third site in this repository
+#    for the same fact, after `merge-holding-composition/compute`'s shares and the composed
+#    remainder beside them. ⛔ SO A TIGHTER RULE WOULD ACCUSE A CORRECT FILING, which is why
+#    this one is as loose as it is.
+#
+# ⭐ ONE ROW PER CYCLE AND NOT PER ROTATION. A three-edge cycle is found three times, once from
+#   each unit; the walk keeps the rotation that starts at the smallest unit so a reader counts
+#   cycles rather than starting points.
+-- units/conversions.sqlc walked until a unit repeats; the product against one.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    WITH RECURSIVE e AS (
+        :compose(units/conversions.sqlc)
+    ),
+    walk(start, at, depth, p_low, p_mode, p_high, path, filing, layer) AS (
+        SELECT from_unit, to_unit, 1, factor_low, factor_mode, factor_high,
+               ARRAY[from_unit, to_unit], filing, layer
+        FROM e
+        UNION ALL
+        SELECT w.start, e.to_unit, w.depth + 1,
+               w.p_low * e.factor_low, w.p_mode * e.factor_mode, w.p_high * e.factor_high,
+               w.path || e.to_unit, w.filing, w.layer
+        FROM walk w
+        JOIN e ON e.from_unit = w.at
+        WHERE w.depth < 6
+          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+    )
+    SELECT w.filing, w.layer,
+           NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
+           format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
+                  array_to_string(w.path, ' to '),
+                  round(w.p_low, 6), round(w.p_high, 6),
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+           AS detail
+    FROM walk w
+    WHERE w.at = w.start
+      AND w.start = (SELECT min(u) FROM unnest(w.path) u)
+) p ON true
+WHERE r.slug = 'conversion_cycle_does_not_close'

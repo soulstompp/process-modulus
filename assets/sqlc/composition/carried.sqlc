@@ -19,6 +19,19 @@
 #
 # ⭐ THE FACTOR STILL APPLIES. A single part may be converted into the composed layer's unit,
 #   so identity is "the part, converted" rather than "the part, copied".
+#
+# ⛔⛔ AND A FACTOR FILED AS ABSENT IS EXCLUDED RATHER THAN READ AS ONE. `coalesce(factor, 1)`
+#    is the fill this directory warns about wherever it appears: 1 is the multiplicative
+#    identity, and filling an absence with an identity element is only sound where the absence
+#    means MEASURED AND EMPTY. `asrt:factor` is a `pm:StatedClaim`, so its absent arm carries a
+#    typed reason, and `every-unsized-conversion/shift-capacity` files `unmeasured` on one of
+#    its parts -- a composer saying nobody measured the conversion. Read as 1 that becomes "the
+#    units are the same", which is a claim they declined to make. Identity cannot be asserted
+#    across a conversion nobody sized, so those parts leave this relation.
+#
+# ⚠️ THE OMITTED ELEMENT IS A DIFFERENT STATE AND IT STAYS. `minOccurs="0"` and no factor means
+#    no conversion is needed, which is the sender asserting the units already agree. That is a
+#    filing; `unmeasured` is a gap.
 -- asrt:Fusion with one asrt:Part and no asrt:elimination, against layers/quantities.sqlc.
 SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
        part.low  * coalesce(p.factor_low,  1) AS part_low,
@@ -37,7 +50,8 @@ JOIN      (
     :compose(layers/quantities.sqlc)
 ) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
        AND filed.quantity = part.quantity
-WHERE (p.composition, p.composed_layer) IN (
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
         SELECT composition, composed_layer
         FROM ( :compose(composition/parts.sqlc) ) one
         GROUP BY composition, composed_layer

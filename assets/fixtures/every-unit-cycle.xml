@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md. Nothing here was observed
+  and nothing here may be cited as evidence about any business.
+
+  ⭐⭐⭐ THE STATE THIS EXISTS FOR IS A CYCLE IN THE UNIT GRAPH, WHICH NO DOCUMENT COULD CLOSE
+  BEFORE. A conversion runs from a part layer's unit to the composed layer's unit and carries
+  `asrt:Part/factor`. Read that way every fusion is an EDGE between two units, and the whole
+  corpus is a graph. `merge-holding-composition` files the only edge there was, GPU to
+  GPU-hour at [672, 720, 744]. Two more close a cycle:
+
+      GPU  =[672, 720, 744]=>  GPU-hour  =0.125=>  node-hour  =[.0108,.0112,.0116]=>  GPU
+
+  ⛔⛔ AND THE CYCLE IS IN THE UNIT GRAPH, NEVER IN THE PART GRAPH. Parts are a DAG and two
+  rules exist to keep them one, `local_cycle` and `leaf_reached_twice`. The three layers below
+  form a chain, reserved-hours then node-capacity then cards, and nothing is composed
+  from itself. It is the UNITS that come back round.
+
+  ⭐⭐ WHAT THE CYCLE IS WORTH, AND IT IS NOT AN EQUALITY. Multiply the three:
+
+      low     672 x 0.125 x 0.0108  =  0.9072
+      mode    720 x 0.125 x 0.0112  =  1.008
+      high    744 x 0.125 x 0.0116  =  1.0788
+
+  One lies inside, and the product is not one. ⛔ IT CANNOT BE. A cycle through this graph
+  passes through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal has only twos and fives
+  under the line, so no pair of filable decimals multiplies to 1/720 and no document can make
+  these modes close exactly. The law a receiver can hold this to is CONTAINMENT: one lies
+  inside the product interval.
+
+  ⚠️⚠️ AND THE WIDTH IS NOT MEASUREMENT ERROR, IT IS THE DEPENDENCY PROBLEM AGAIN. The month
+  that turns cards into card-hours is the SAME month that turns node-hours back into cards.
+  Interval arithmetic multiplies them as two independent months and spans nine per cent either
+  way; a receiver who knew they were one month would get exactly one. That is the third site
+  in this repository where treating correlated quantities as independent widens a bound past
+  what the filer knows. See `merge-holding-composition/compute`'s shares, and the composed
+  remainder beside them.
+
+  ⭐ The two exactness classes are filed side by side ON PURPOSE. Eight cards to a chassis is
+  countable, so that factor is a point. A month is not one number, so the other has width, for
+  the reason merge-holding-composition gives about its own.
+-->
+<asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
+                  xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>capacity-desk</asrt:witness>
+  <asrt:observedAt>2026-09-06</asrt:observedAt>
+  <asrt:provenance>
+    <pm:party>capacity-desk</pm:party>
+    <pm:standing>
+      <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+    </pm:standing>
+    <pm:note>stipulated for the unit-cycle state; nothing here was observed</pm:note>
+  </asrt:provenance>
+
+  <asrt:regime>
+    <pm:id>stipulated</pm:id>
+    <pm:framework>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a fixture reports under no framework, and inventing one would file a fact
+                 nobody established</pm:note>
+      </pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>no positions are coded here, so there is no chart to code them in</pm:note>
+      </pm:absent>
+    </pm:chart>
+  </asrt:regime>
+
+  <pm:processModulus>
+
+    <pm:notation>
+      <pm:uri>urn:example:fixture:capacity-desk:every-unit-cycle</pm:uri>
+    </pm:notation>
+    <pm:evidence>
+      <pm:attests>stipulation</pm:attests>
+    </pm:evidence>
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>stipulated: one reserved pool counted three ways, so that the conversions between the three units form a closed cycle</pm:basis>
+        </pm:scope>
+      </pm:scope>
+      <pm:layer>
+        <pm:name>reserved-hours</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>2400</pm:low><pm:mostLikely>3200</pm:mostLikely><pm:high>4000</pm:high>
+              <pm:unit>GPU-hour</pm:unit>
+              <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+              <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the reserved-hours pool</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>4800</pm:low><pm:mostLikely>4800</pm:mostLikely><pm:high>4800</pm:high>
+                <pm:unit>GPU-hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>GPU-hour</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>capacity-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>2400</pm:low><pm:mostLikely>3200</pm:mostLikely><pm:high>4000</pm:high>
+                <pm:unit>GPU-hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the reservation simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>800</pm:low><pm:mostLikely>1600</pm:mostLikely><pm:high>2400</pm:high>
+                    <pm:unit>GPU-hour</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <pm:layer>
+        <pm:name>node-capacity</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>300</pm:low><pm:mostLikely>400</pm:mostLikely><pm:high>500</pm:high>
+              <pm:unit>node-hour</pm:unit>
+              <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+              <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the node-capacity pool</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>600</pm:low><pm:mostLikely>600</pm:mostLikely><pm:high>600</pm:high>
+                <pm:unit>node-hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>node-hour</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>capacity-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>300</pm:low><pm:mostLikely>400</pm:mostLikely><pm:high>500</pm:high>
+                <pm:unit>node-hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the reservation simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>100</pm:low><pm:mostLikely>200</pm:mostLikely><pm:high>300</pm:high>
+                    <pm:unit>node-hour</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <pm:layer>
+        <pm:name>cards</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>3.24</pm:low><pm:mostLikely>4.48</pm:mostLikely><pm:high>5.8</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+              <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the cards pool</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>6.48</pm:low><pm:mostLikely>6.72</pm:mostLikely><pm:high>6.96</pm:high>
+                <pm:unit>GPU</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>None</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>GPU</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>capacity-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>3.24</pm:low><pm:mostLikely>4.48</pm:mostLikely><pm:high>5.8</pm:high>
+                <pm:unit>GPU</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the reservation ledger is read per calendar month rather than per invoice</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the reservation simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.68</pm:low><pm:mostLikely>2.24</pm:mostLikely><pm:high>3.72</pm:high>
+                    <pm:unit>GPU</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:couplings>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>these three layers are one pool counted three ways rather than three layers that could move against each other</pm:note>
+        </pm:absent>
+      </pm:couplings>
+    </pm:stack>
+  </pm:processModulus>
+
+  <asrt:fusion>
+    <asrt:name>node-capacity</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>capacity-desk</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:capacity-desk:every-unit-cycle</pm:notation>
+          <pm:id>reserved-hours</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-06</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+      <!-- ⭐ AN EXACT CONVERSION, AND THE POINT VALUE IS THE ARGUMENT. Eight cards to a
+           chassis is a countable fact, so this factor has no width. Contrast the one
+           below, which converts through a calendar and cannot be a point. -->
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>0.125</pm:low><pm:mostLikely>0.125</pm:mostLikely><pm:high>0.125</pm:high>
+          <pm:unit>node-hour per GPU-hour</pm:unit>
+          <pm:denominator><pm:each>GPU-hour</pm:each></pm:denominator>
+          <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+        </pm:claim>
+      </asrt:factor>
+    </asrt:part>
+    <asrt:observed>The same pool counted in nodes rather than cards. A node carries eight cards and that is a fact about the chassis, so the conversion is exact and the three bounds coincide.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>cards</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>capacity-desk</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:capacity-desk:every-unit-cycle</pm:notation>
+          <pm:id>node-capacity</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-06</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+      <!-- ⭐⭐ AND THIS ONE HAS WIDTH, FOR THE REASON merge-holding-composition GIVES ABOUT
+           ITS OWN: a month is not one number. Filing a point here would assert a
+           precision the calendar does not have. -->
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>0.0108</pm:low><pm:mostLikely>0.0112</pm:mostLikely><pm:high>0.0116</pm:high>
+          <pm:unit>GPU per node-hour</pm:unit>
+          <pm:denominator><pm:each>node-hour</pm:each></pm:denominator>
+          <pm:narrowsWhen><pm:narrowing><pm:condition>the two ledgers are reconciled against one calendar rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+        </pm:claim>
+      </asrt:factor>
+    </asrt:part>
+    <asrt:observed>The same pool counted as cards held for the month. This conversion runs through a calendar and a utilisation, and neither is a fixed number.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+</asrt:composition>
