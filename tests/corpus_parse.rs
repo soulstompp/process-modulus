@@ -1264,12 +1264,17 @@ fn a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds() {
 /// already carries. A slack is the room at the other end — above the nameplate, in the
 /// stockroom, in the queue — which is what a buffer draws on when demand exceeds supply.
 ///
-/// ⭐⭐ AND `unrealised` IS EXEMPT, WHICH IS THE INTERESTING PART. Demand that never
-/// arrived was absorbed by nothing; it is what OVERFLOWED every buffer. So a sized slack
-/// begins to explain the unrealised share rather than merely recording it — on
-/// `merge-holding-composition#shift-line` the queue holds about 2.5 shifts, the customers
-/// who waited account for 1.7, and the 1.0 that did not fit is exactly the unrealised
-/// figure.
+/// ⭐⭐ AND THE UNSERVED PAIR IS EXEMPT, NOT `unrealised` ALONE, WHICH IS THE INTERESTING
+/// PART. Both name demand nobody met: overflow, not a load the buffer held. Exempting one
+/// of the two summed a customer's borne degradation into the buffer's load.
+///
+/// ⛔⛔ SO THIS RULE EXAMINES NOTHING IN THIS CORPUS, AND THAT IS A FINDING ABOUT THE
+/// EVIDENCE RATHER THAN A GAP IN IT. On every interference layer that sizes its absorbing
+/// buffer, every holder is `customer` or `unrealised`: nothing was absorbed at all, the
+/// demand was turned away. The left side of the inequality is empty because no share was
+/// served, which is the model's own subject stated by the data. `entries/borne.sqlc`
+/// traces the same vacuum stage by stage and `algebra/borne.sqlc` prints it as arithmetic
+/// every run, per layer, rather than as a count in a comment.
 ///
 /// ⚠️ EVALUATED AT `mostLikely`, following the `sign` rule, which is the existing precedent
 /// for comparing two independent intervals without inventing a convention. A profile
@@ -1277,6 +1282,7 @@ fn a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds() {
 /// and that choice belongs to the profile rather than to the model.
 #[test]
 fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
+    let mut candidates = 0;
     let mut checked = 0;
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
@@ -1298,30 +1304,55 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
             let Some((_, slack, _, _)) = absorber_slack(l) else {
                 continue; // unmeasured or none-with-no-figure: the check SUSPENDS
             };
+            candidates += 1;
+
+            // ⛔⛔ THE PARTITION, ASSERTED HERE BECAUSE THE EXEMPTION BELOW RESTS ON IT.
+            // `booked`, `counterparty` and `people` name somebody who ABSORBED; `customer`
+            // and `unrealised` name demand nobody met. The two classes must exhaust the
+            // stated shares. If they ever stop doing so, a share is dropped by both and the
+            // empty left side below stops being a finding and becomes an artefact nobody can
+            // see. algebra/borne.sqlc asserts the same identity over the same two relations.
+            let stated_shares = |unserved_class: bool| -> Vec<f64> {
+                r.holder
+                    .iter()
+                    .filter_map(|h| match h {
+                        StatedHolderType::Holder(h)
+                            if matches!(
+                                h.kind,
+                                HolderKindType::Unrealised | HolderKindType::Customer
+                            ) == unserved_class =>
+                        {
+                            stated(&h.share).map(|(_, ml, _, _)| ml)
+                        }
+                        _ => None,
+                    })
+                    .collect()
+            };
+            let held: f64 = r
+                .holder
+                .iter()
+                .filter_map(|h| match h {
+                    StatedHolderType::Holder(h) => stated(&h.share).map(|(_, ml, _, _)| ml),
+                    _ => None,
+                })
+                .sum();
+            let unserved: f64 = stated_shares(true).iter().sum();
 
             // ⛔ THE UNSERVED PAIR IS EXEMPT, NOT `unrealised` ALONE. Both name demand
             // nobody met, overflow, not a load the buffer held, and `Fit` calls the same
             // pair a violation under a clearance. Exempting one of the two summed a
             // customer's borne degradation into the buffer's load.
-            let absorbed: Vec<f64> = r
-                .holder
-                .iter()
-                .filter_map(|h| match h {
-                    StatedHolderType::Holder(h)
-                        if !matches!(
-                            h.kind,
-                            HolderKindType::Unrealised | HolderKindType::Customer
-                        ) =>
-                    {
-                        stated(&h.share).map(|(_, ml, _, _)| ml)
-                    }
-                    _ => None,
-                })
-                .collect();
+            let absorbed = stated_shares(false);
+            let borne: f64 = absorbed.iter().sum();
+            assert!(
+                (held - borne - unserved).abs() < 1e-9,
+                "{name} `{}`: {held} held is not {borne} absorbed + {unserved} unserved. The \
+                 two holder classes no longer exhaust the stated shares",
+                l.name
+            );
             if absorbed.is_empty() {
                 continue; // nothing was attributed to the buffer: no bound to test
             }
-            let borne: f64 = absorbed.iter().sum();
 
             assert!(
                 borne <= slack + 1e-9,
@@ -1338,12 +1369,25 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
         }
     }
 
-    // ⚠️ S-15's TRAP. Every slack in this corpus was `unmeasured` when this rule was
-    // written, so it passed by checking nothing and would have scored as covered.
+    // ⚠️ S-15's TRAP, GUARDING THE POPULATION THAT CAN ACTUALLY GO SILENT. Every slack in
+    // this corpus was `unmeasured` when this rule was written, so it passed by checking
+    // nothing and would have scored as covered.
+    //
+    // ⛔⛔ IT READ `checked >= 2`, AND THAT IS THE WRONG STAGE TO GUARD ONCE THE UNSERVED
+    // PAIR IS EXEMPT. `checked` is empty here on purpose: every candidate is removed by the
+    // exemption, not by a filter that matched nothing. Demanding otherwise demands a document
+    // the model predicts is rare, an absorbing holder with a STATED share against a SIZED
+    // slack, where `Remainder` says the share on a labour layer is "unmeasured BY DESIGN AND
+    // PERMANENTLY" and `capacitySlack` says a person is the one supply that can run hot.
+    //
+    // ⛔ What must not go silent is the population that REACHES the exemption. If an upstream
+    // filter empties that, the partition above never runs and the vacuum stops being a
+    // finding about the evidence and becomes a defect nothing reports.
     assert!(
-        checked >= 2,
-        "only {checked} layers pair an interference fit with a sized slack; a bound with \
-         nothing to bound passes loudest"
+        candidates >= 2,
+        "only {candidates} layers pair an interference fit with a sized absorber slack, and \
+         {checked} of those had a served share to bound; a bound with nothing to bound \
+         passes loudest"
     );
 }
 
@@ -1388,8 +1432,9 @@ fn exposure(d: Range, n: Range) -> f64 {
 /// ⭐⭐ A MEASURED ZERO, HOWEVER IT IS SPELLED. This read only the absence arm, and every
 /// measured-zero capacity slack in the corpus is now a stated `[0, 0, 0]`, so it silently
 /// stopped finding any, and the assertion downstream fell to zero examined rather than
-/// failing on a document. `entries/stated_zero_capacity.sqlc` had already made this
-/// decision on the SQL side and unions both spellings; this is the same union.
+/// failing on a document. ⭐ The SQL side no longer needs a union for it: `ClaimAbsence`
+/// carries no `none`, so the second spelling does not parse, and `layers/absorption.sqlc`
+/// reads the one that remains straight off `entries/slacks.sqlc`.
 ///
 /// ⛔ A SIZED SLACK IS NOT AUTOMATICALLY HEADROOM. Sized AT ZERO is the strongest statement
 /// the element can make, the supply cannot be run hot at any price, and the `boundOrigin`
