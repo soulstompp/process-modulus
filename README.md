@@ -192,6 +192,7 @@ people, and a person is not divisible.
   <pm:name>labour</pm:name>
 
   <pm:demand>
+    <pm:amount>
     <pm:claim>
       <pm:low>4.5</pm:low>
       <pm:mostLikely>5.2</pm:mostLikely>
@@ -212,6 +213,9 @@ people, and a person is not divisible.
       <pm:provenance><pm:party>platform</pm:party></pm:provenance>
       <pm:asOf>2026-08-30</pm:asOf>
     </pm:claim>
+    </pm:amount>
+    <!-- how long the demand survives unanswered, a second fact and not a bound on the first -->
+    <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
   </pm:demand>
 ```
 
@@ -278,18 +282,25 @@ alternatives is meant. It is not a blank.
         </pm:absent>
       </pm:capacitySlack>
       <pm:inventorySlack>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
-        </pm:absent>
+        <pm:claim>
+          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+          <pm:unit>people</pm:unit>
+          <pm:provenance>
+            <pm:party>platform</pm:party>
+            <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
+          </pm:provenance>
+        </pm:claim>
       </pm:inventorySlack>
     </pm:nameplate>
 ```
 
-The two `slack` elements say how much give each buffer has. A person can be run above
-their rating, so that buffer is open and nobody has measured how far — `unmeasured`. An
-unused hour cannot be saved for next week, so that one is shut, and `none` is the value
-that says somebody checked rather than that somebody skipped it. ⭐ The difference matters
+`capacitySlack` and `inventorySlack` say how much give each buffer has. A person can be run
+above their rating, so that buffer is open and nobody has measured how far, which is
+`unmeasured`. An
+unused hour cannot be saved for next week, so that one is shut, and a stated `[0, 0, 0]` is how
+the model says somebody checked rather than that somebody skipped it. ⛔ A measured zero is a
+CLAIM here, never an absence: it has a unit, an owner and a provenance, and the absence arm has
+nowhere to put any of the three. ⭐ The difference matters
 later: a share can only be attributed to a buffer that has room for it.
 
 `jagged` is the other face, which is what actually happened. This is where the argument
@@ -635,10 +646,11 @@ validate, so disagreement with the model can be filed rather than only discussed
 
 **Not a storage design.** The schemas declare no tables, keys, indexes or versioning
 constructs, on purpose: a database falls out of normalising the model properly, and that is the
-implementer's job. ⚠️ `assets/sql/` does contain a Postgres DDL, and it is not a counter-example — it
-exists to CHECK the model rather than to store it, and it says so in its first five lines.
-Nothing in it is normalised for writing or indexed for a workload. Copy the ideas, not the
-layout.
+implementer's job. ⚠️ `assets/ddl/schema.ddl` is a Postgres DDL, and it is not a counter-example.
+It follows the XML schema as closely as the two formalisms allow, so that what is proved against
+it is proved about the model rather than about a translation. It is sound and performant, and it
+exists to CHECK the model rather than to serve an application. A real deployment will want
+indexes, denormalisation and a write path this has no opinion about.
 
 **Not an ergonomic Rust API.** The crate is the schemas plus whatever the code generator makes
 of them, and the generated types read like generated types: no builders, no validation helpers,
@@ -664,8 +676,11 @@ checked **three independent ways**:
 
 ⭐ Each was proved able to fail before any pass was believed. The validator by three deliberate
 defects producing three distinct rejections; the Rust tests by perturbation against a scratchpad
-copy; the SQL by four edits inside a rolled-back transaction, which produced six violations
-because two of the rules are not independent of each other.
+copy; the SQL by deliberate edits inside a rolled-back transaction, each aimed at a different
+rule, which produce MORE violations than edits because the rules are not independent of one
+another. ⭐ Re-run it rather than trusting this sentence: perturb a sign, a holder share, a
+composed demand and a lumpy nameplate inside `BEGIN; ... ROLLBACK;`, then read
+`assets/sql/reports/violations.sql`. The count moves as rules are added; the finding does not.
 
 The crate's major and minor track the schema's `xs:schema/@version`, and
 `tests/namespace.rs` fails the build if they drift apart. ⚠️ What is **not** settled is the

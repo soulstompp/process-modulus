@@ -4,14 +4,20 @@
 > que o repositório trata como autoritativa quando as duas divergirem. Os nomes dos ficheiros, das
 > tabelas e dos elementos do XSD ficam em inglês, porque são os nomes do artefacto.
 
-Noventa e seis consultas e uma afirmação.
+Uma afirmação, e uma consulta para cada parte dela.
+
+⛔⛔⛔ **O `assets/sql/` É GERADO E APAGADO EM CADA COMPOSIÇÃO. NUNCA O EDITE.** As fontes são os
+`assets/sqlc/*.sqlc`; o `cargo sqlc compose --source assets/sqlc --target assets/sql` reescreve o
+diretório de destino inteiro. Se encontrou uma consulta a fazer grep em `assets/sql/`, procure o
+`.sqlc` dela antes de mexer em seja o que for, ou a sua edição desaparece na execução seguinte e
+nada lho dirá.
 
 ```
 ../ddl/schema.ddl     o modelo como relações
 ingest.sql            o Postgres a ler assets/corpus/*.xml sozinho, sem ajuda nenhuma
 matrices.sql          as matrizes, extraídas com junções — um percurso, sem lógica própria
 rules.sql             as regras a que o XSD 1.0 não chega — uma montagem, sem lógica própria
-queries/              as oito consultas do exemplo, um ficheiro cada, executáveis no psql
+queries/              um diretório por exemplo, um ficheiro por secção, executáveis no psql
 ../../examples/matrices.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
 
@@ -24,11 +30,12 @@ por quem queira olhar para os dados e fazer uma pergunta que nada tem a ver com 
 
 ```
 scope/         que documentos estou a ver             — corpus, fixtures, tudo
-units/         que unidades têm denominador
+units/         que unidades têm denominador           — e quais os denominadores, em todas as afirmações
 layers/        os vetores indexados por camada        — d, n, r = n − d, o amortecedor
 entries/       as matrizes esparsas                   — H, S, C, D, N
 composition/   F e Φ, a descida, e o que é devido     — partes, conversão, descida, folhas
-epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos
+eliminations/  e, o que quem compôs retirou e porquê  — apresentadas, derivadas, buscadas, suspensas
+epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos, raízes
 checks/        um ficheiro por regra: cada linha examinada, com um veredito em cada uma
 reports/       achados que uma pessoa decide, e as duas vistas de checks/
 ```
@@ -46,9 +53,15 @@ com outro. Repare-se no que essas regras dizem de facto. *As parcelas somam a gr
 concorda com a comparação de intervalos. Nenhuma folha é alcançável por dois caminhos.* São
 junções, somas e comparações — impossíveis numa gramática, correntes numa linguagem de consulta.
 
-**O que isto não é.** Não é um esquema de base de dados recomendado. Nada aqui está normalizado
-para escrita, indexado para uma carga de trabalho, ou moldado para uma aplicação. Copiem-se as
-ideias, não a disposição.
+**O que isto é.** Um esquema relacional que segue o esquema XML tão de perto quanto os dois
+formalismos permitem, para que uma afirmação aqui provada seja uma afirmação sobre o modelo e não
+sobre uma tradução dele. É sólido e é eficiente: a composição encaixa dezenas de níveis e o
+planeador puxa todos para cima, o que foi medido e não presumido.
+
+**O que não é.** Afinado para a vossa carga de trabalho. A forma foi escolhida para manter visível
+a correspondência com o XSD, não para servir os padrões de leitura de uma aplicação, e uma
+instalação real vai querer índices, desnormalização e um caminho de escrita sobre o qual isto não
+tem opinião. Levem o modelo; moldem o armazenamento para o trabalho que têm à frente.
 
 **Três entradas, e são o mesmo assunto a três profundidades.** Escolha-se aquela que já é a
 ferramenta diária — qualquer uma pode ser lida primeiro e as outras duas remetem para ela.
@@ -160,7 +173,7 @@ A álgebra relacional são seis operações. Já se usam todas; eis onde cada um
 | **projeção** (π) | ficar com algumas colunas | extrair `(camada, low, moda, high)` de uma declaração |
 | **renomeação** (ρ) | chamar outra coisa a uma coluna | como `D` e `Dᵀ` diferem; uma transposta é uma renomeação |
 | **produto** (×) | cada linha contra cada linha | o que uma junção é antes de se acrescentar a condição |
-| **união** (∪) | as linhas de qualquer um | como o `rules.sql` dobra dezasseis verificações numa resposta |
+| **união** (∪) | as linhas de qualquer um | como o `rules.sql` dobra numa só resposta todas as verificações de `checks/roster.sqlc` |
 | **diferença** (−) | as linhas de um que não estão no outro | **é o que uma verificação de regra É** |
 
 Essa última linha é a útil. O `rules.sql` nunca pergunta *«isto passou?»*. Pede as linhas que
@@ -514,7 +527,8 @@ havia lá nada.
 
 ## O que as consultas podem e não podem dizer
 
-O `rules.sql` imprime três tabelas, e a diferença entre elas é a maior parte do desenho.
+O `rules.sql` imprime três GÉNEROS de tabela, e a diferença entre os géneros é a maior parte do
+desenho.
 
 **1. Violações.** Linhas que falham uma regra. Vazio é o bom resultado.
 
@@ -553,52 +567,33 @@ estreitaria *de facto* o intervalo é prosa. Contar que afirmações se recusam 
 **3. Cobertura**, e esta importa mais do que a primeira:
 
 ```
-regra                                                                           examinadas  violações  veredito
-uma afirmação com intervalo não declara narrowsWhen como notApplicable                  40          0  ok
-o sinal concorda com a comparação de intervalos                                         35          0  ok
-um quantum é expresso na unidade da capacidade nominal que divide                       35          0  ok
-a capacidade nominal é múltiplo inteiro do quantum                                      35          0  ok
-uma referência de parte resolve para uma declaração que está aqui                       21          0  ok
-as parcelas declaradas somam a grandeza                                                 20          0  ok
-uma janela é notApplicable só onde a unidade não tem denominador                        16          0  ok
-um ajustamento de folga exclui customer e unrealised                                    12          0  ok
-nenhuma camada-folha é alcançável por dois caminhos                                     12          0  ok
-a exposição não excede a margem mais as parcelas por servir                              9          0  ok
-uma margem é expressa na unidade das parcelas que limita                                 6          0  ok
-uma fusão só chama malformada à dupla contagem quando tem uma parte                      4          0  ok
-uma parte local nomeia uma camada da sua própria pilha                                   4          0  ok
-as partes locais não ciclam                                                              4          0  ok
-um zero medido é declarado como ausência, e não como afirmação de zero                   3          0  ok
-uma parcela não excede a margem do amortecedor que a absorveu                            3          0  ok
-uma oferta que não pode correr acima nomeia quem ficou por servir                        3          0  ok
-uma janela é transportada através de uma fusão e nunca somada                            3          0  ok
-um resto negado não é contradito pelos números da própria camada                         2          0  fina
-um acoplamento atenua-se numa fusão, limitado pela quota da parte                        1          0  fina
-uma margem de tempo derivada precisa de uma janela que o permita                         1          0  fina
-um valor pontual declara narrowsWhen como notApplicable, por não ter intervalo           0          0  VÁCUA
+psql -d process_modulus_proof -f assets/sql/reports/coverage.sql
 ```
 
-**A última linha é a maquinaria a funcionar**, e não um defeito dela. Apanha um erro real — um
-valor pontual não tem intervalo para estreitar, portanto um `narrowsWhen` num deles é uma cópia ou
-uma afirmação declarada com a largura errada — e este conjunto não contém nenhum, portanto não prova
-nada aqui e di-lo. Uma regra reportada como `ok` quando não examinou nada é o
-zero perigoso; uma regra reportada como VÁCUA é uma regra em que se pode confiar quanto ao resto da
-tabela.
+Uma linha por regra, ordenada por quanto examinou: o tamanho da população que olhou, quantas
+dessas a violaram, e um veredito sobre a própria contagem. `ok`; `⚠️  thin`, quando uma ou duas
+linhas são uma demonstração e não uma prova; e `⛔ VACUOUS`, quando a regra não examinou coisa
+nenhuma.
 
-⛔⛔ **E essa última linha é a que um verificador estruturalmente não consegue produzir, e é por
+**Uma linha VACUOUS é a maquinaria a funcionar**, e não um defeito dela. A regra está escrita e
+está ligada, e este conjunto não tem nada para ela olhar, portanto não prova nada aqui e di-lo.
+Uma regra reportada como `ok` quando não examinou nada é o zero perigoso; uma regra reportada
+como VACUOUS é uma regra em que se pode confiar quanto ao resto do relatório.
+
+⛔⛔ **E essa linha é a que um verificador estruturalmente não consegue produzir, e é por
 isso que as regras estão construídas como estão.** Agrupar uma população filtrada por regra faz
 com que uma regra de população vazia não contribua com linha nenhuma — portanto o veredito mais
-importante que esta tabela pode devolver seria entregue por *silêncio*, que é indistinguível de a
-regra não existir. Por isso cada verificação junta primeiro o `checks/roster.sqlc`, onde a frase
+importante que este relatório pode devolver seria entregue por *silêncio*, que é indistinguível de
+a regra não existir. Por isso cada verificação junta primeiro o `checks/roster.sqlc`, onde a frase
 de cada regra está escrita exatamente uma vez; a linha do roster existe antes de a população
 existir. `examinadas` passa a ser a contagem do que a regra olhou, `violações` a contagem do que
-falhou, e as duas tabelas acima são `WHERE violates` e `GROUP BY rule` sobre uma só relação — que
-não pode discordar de si própria sobre o que foi examinado. A versão anterior reescrevia cada
-população num segundo dialeto de si mesma, e **três das vinte e duas reescritas discordavam da
+falhou, e a tabela das violações e este relatório são `WHERE violates` e `GROUP BY rule` sobre uma
+só relação — que não pode discordar de si própria sobre o que foi examinado. A versão anterior
+reescrevia cada população num segundo dialeto de si mesma, e **três das vinte e duas reescritas discordavam da
 regra sobre que reportavam** — uma delas em voz alta que chegava para chamar `ok` a uma regra que
 examina uma única linha.
 
-⭐⭐ **Quatro destas linhas são novas e nenhuma delas é uma ideia nova.** Cada uma já estava escrita
+⭐⭐ **Algumas dessas linhas são novas e nenhuma delas é uma ideia nova.** Cada uma já estava escrita
 na prosa dos esquemas e era INVERIFICÁVEL, porque em cada caso o estado de que depende era um branco
 — uma lista vazia, um elemento em falta, uma enumeração omitida — e um branco não tem razão por que
 agrupar. *Uma janela é transportada através de uma fusão e nunca somada* é a mais afiada: apanhou um
@@ -606,7 +601,7 @@ defeito vivo à primeira execução, uma camada composta que tinha deixado cair 
 funcionamento da sua parte, onde a queda era idêntica byte a byte a uma linha que corre sete dias
 por semana. → **[§8](#8-o-zero-que-afinal-eram-dois)**
 
-Outras três são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
+As finas são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
 uma margem numérica, apenas três declarações registam algum acoplamento, e exatamente duas camadas
 negam ter um resto.
 
@@ -691,21 +686,21 @@ como aritmética vetorial, uma linha por extremo. Depois classifica cada camada 
 286 e compara com o `sign` declarado.
 
 ```
-1. ajustamentos recalculados a partir dos intervalos: 32 camadas, 0 discordâncias
-   conjunto    24 camadas: 9 clearance, 14 interference, 1 transition
-   fixtures     8 camadas: 8 transition
+1. ajustamentos recalculados a partir dos intervalos: 38 camadas, 0 discordâncias
+   observation  24 camadas: 9 clearance, 14 interference, 1 transition
+   stipulation  14 camadas: 6 clearance, 8 transition
 ```
 
-⭐⭐ **O recenseamento é separado por `evidence`, e a separação é o conteúdo.** Todas as camadas de
-fixture que chegam a esta consulta são `transition` — foram escritas para exercitar o estado que as
-declarações reais quase nunca alcançam — pelo que uma contagem conjunta reporta a ÚNICA transição do
-conjunto como nove, e o `docs/linear-algebra.md` cita esse número.
+⭐⭐ **O recenseamento é separado por `evidence`, e a separação é o conteúdo.** As estipulações
+foram escritas para exercitar os estados que as declarações reais quase nunca alcançam, a
+`transition` acima de todos, pelo que uma contagem conjunta dá às transições do conjunto o peso
+das fixtures e reporta uma estipulação como prova.
 
 Afirma um mínimo antes de afirmar seja o que for sobre as respostas, para que a verificação não
-possa passar por não ter examinado nada — e o mínimo é sobre o CONJUNTO apenas, não sobre as 32
-linhas. Contar as fixtures deixá-las-ia sustentar a afirmação enquanto o conjunto se esvaziava por
-baixo, que é a armadilha da vacuidade um nível acima: muito que verificar, nada disso aquilo que
-está a ser afirmado. ↑ *a afirmação que isto resolve é [`r = n − d` inverte
+possa passar por não ter examinado nada — e o mínimo é sobre o CONJUNTO apenas, não sobre todas as
+linhas do recenseamento. Contar as fixtures deixá-las-ia sustentar a afirmação enquanto o conjunto
+se esvaziava por baixo, que é a armadilha da vacuidade um nível acima: muito que verificar, nada
+disso aquilo que está a ser afirmado. ↑ *a afirmação que isto resolve é [`r = n − d` inverte
 os extremos](#r--n--d-inverte-os-extremos).*
 
 ### 2. `DᵀN`, o bom zero
@@ -729,11 +724,11 @@ diagonal. Depois a fusão são três produtos matriciais a sério, um por extrem
 comparado com a procura que a camada composta declarou.
 
 ```
-3. F.Phi.x - e contra a procura composta declarada: 10 camadas, todas concordam; 2 suspensas
+3. F.Phi.x - e contra a procura composta declarada: 11 camadas, todas concordam; 3 suspensas
 ```
 
 ⭐⭐ **É aqui que «um produto matricial é uma junção com um `GROUP BY`» é verificado.** O
-`matrices.sql` calcula as mesmas dez linhas com uma junção e uma soma. A mesma resposta, dois
+`matrices.sql` calcula as mesmas linhas com uma junção e uma soma. A mesma resposta, dois
 algoritmos.
 ↑ *resolve [a ideia](#a-ideia-que-as-duas-álgebras-partilham), [a regra da
 fusão](#e-a-regra-da-fusão-confere), e a afirmação de que **uma consolidação É esta expressão** —
@@ -815,16 +810,25 @@ está em vez disso.
 
 ```
 7. cobertura das margens (conjunto): 78 linhas (camada, buffer)
-   capacity   0 dimensionadas de 26  ⛔ por exercitar
-   inventory  2 dimensionadas de 26
-   time       1 dimensionada de 26
+   capacity   11 dimensionadas de 26
+   inventory  18 dimensionadas de 26
+   time       11 dimensionadas de 26
 ```
 
-⛔⛔ **O número interessante é o zero.** A `capacity` é a coluna que transporta a desigualdade da
-diferença — o que a procura e a capacidade nominal de um documento dizem que podia ter ficado por servir, contra o
-que a oferta consegue absorver mais o que o documento admite recusar. Nem uma camada deste conjunto
-a dimensiona, pelo que esse limite nunca foi exercitado, e um limite sem nada que limitar é o que
-passa mais alto.
+⛔⛔ **O número interessante é que toda a margem de capacidade dimensionada lê `[0, 0, 0]`.** A
+`capacity` transporta a desigualdade da diferença: o que a procura e a capacidade nominal de um
+documento dizem que podia ter ficado por servir, contra o que a oferta consegue absorver mais o que
+o documento admite recusar. Onze camadas do conjunto dimensionam-na e todas a dimensionam a zero,
+o que é quem declara a dizer que a oferta não pode ser levada ao esforço a preço nenhum. **Esse é o
+limite mais apertado possível, não um limite em falta**, e é um facto diferente das quinze que
+declaram `unmeasured`.
+
+⚠️ **Este parágrafo dizia o contrário até 2026-09-06, e vale a pena saber porquê.** Os zeros eram
+declarados como `absent reason="none"` e contados como ausências; quando o `pm:StatedClaim` se
+estreitou e um zero medido passou a ser uma afirmação, a coluna mudou e a frase não. O que continua
+por exercitar é uma margem de capacidade NÃO nula: nenhuma declaração enunciou ainda uma, pelo que
+a desigualdade nunca teve de limitar contra um número real. Corra-se
+`cargo run --example matrices` para o censo atual em vez de confiar neste bloco.
 
 **Nada afirma que fique em zero**, e isso é deliberado. Uma igualdade aqui faria com que o primeiro
 a dimensionar uma margem de capacidade partisse a compilação por fazer exatamente aquilo que o
@@ -849,20 +853,20 @@ corretos.** Nada num booleano, ou numa lista vazia, aponta para o que ele não c
 | `CoverageEntry/complete`, o único `xs:boolean` | *a testemunha responde a PARTE da pergunta* |
 
 ```
-⛔⛔⛔ ALGUÉM TESTOU O MODELO?
+⛔⛔⛔ ALGUÉM TESTOU O MODELO?          -- assets/sql/reports/independence_tested.sql
 +----------------------------------------------+--------+
-| a_hipotese_da_independencia           | pilhas |
+| a_hipotese_da_independencia                  | pilhas |
 +----------------------------------------------+--------+
-| alguém foi ver e as camadas MOVEM-SE JUNTAS  | 3 |
-| NINGUÉM FOI VER                              | 3 |
-| uma só camada; não há par para acoplar       | 1 |
+| NINGUÉM FOI VER                              |      4 |
+| alguém foi ver e as camadas MOVEM-SE JUNTAS  |      3 |
+| uma só camada; não há par para acoplar       |      1 |
 +----------------------------------------------+--------+
 ```
 
 ⛔⛔ **Leia-se a linha que não está lá.** Nenhuma pilha deste conjunto afirma independência. A
 afirmação central do modelo — a de que uma camada é um sítio onde um resto é suportado
-*independentemente do de todas as outras* — nunca foi testada em oito declarações, e foi uma vez
-contradita. Isso é um facto sobre a PROVA e não sobre um documento qualquer, e só é um facto porque
+*independentemente do de todas as outras* — nunca foi testada por declaração nenhuma daqui, e foi
+uma vez contradita. Isso é um facto sobre a PROVA e não sobre um documento qualquer, e só é um facto porque
 a lista vazia deixou de ser uma resposta.
 
 **A mesma forma um documento acima, e aqui a resposta muda a aritmética.** Uma fusão que declare
@@ -875,10 +879,16 @@ volta a um aviso.
 **E exigir o `boundOrigin` produziu um resultado que ninguém andava a procurar.**
 
 ```
-| declarado num elemento irmão (amountOrigin, origem do quantum) | 48 |
-| NADA o fixa -- o intervalo é onde as medições caíram           | 68 |
-| ninguém perguntou                                              |  3 |
-| alguém é dono dele: contractual / intrinsic / policy           |  5 |
+                                                       -- assets/sql/reports/bound_ownership.sql
+| quem é dono do extremo                                         | afirmações |
++----------------------------------------------------------------+------------+
+| NADA o fixa -- o intervalo é onde as medições caíram           |         59 |
+| declarado num elemento irmão (amountOrigin, origem do quantum) |         56 |
+| alguém é dono dele: intrinsic                                  |         32 |
+| não é um limite sobre uma quantidade comprometida              |         22 |
+| alguém é dono dele: contractual                                |         13 |
+| ninguém perguntou                                              |          3 |
+| alguém é dono dele: policy                                     |          1 |
 ```
 
 Cerca de um terço do conjunto responde `derived`, o que quer dizer que **o modelo já enuncia o autor

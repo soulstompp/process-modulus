@@ -192,7 +192,11 @@ did not add rules; it made rules that were already written down reachable. ⛔ T
 carry-through rule found a live defect on its first run: a composed layer had silently dropped
 its part's duty cycle, and the drop was byte-identical to a line that runs seven days a week.
 
-⭐⭐ **SIXTEEN OF THE FORTY-FOUR ARE NO LONGER ONLY OWED — THEY RUN.**
+⭐⭐ **THE ONES THAT ARE NO LONGER ONLY OWED, BUT RUN, ARE THE ROSTER.**
+[`assets/sqlc/checks/roster.sqlc`](../assets/sqlc/checks/roster.sqlc) carries one row per rule
+that runs, with the sentence it enforces, and it is the only place that sentence is written. A
+number here would be a number nobody recounts: this paragraph has drifted from its own table
+twice already, which is why it now names the file instead.
 [`assets/sql/rules.sql`](../assets/sql/rules.sql) expresses them as one query over the corpus
 loaded into Postgres, and an empty result means every one of them held. That includes the rule
 no validator can see in principle: *no leaf layer is reachable through two paths* needs a
@@ -202,9 +206,12 @@ contain.
 **It does not discharge the rules; it discharges them FOR THIS CORPUS.** An adopter runs the
 same file against their own filings, which is the point of shipping it. And the query reports how
 many rows each rule examined, because thin coverage is the failure mode here — almost nothing in
-the corpus files a numeric slack, and a bound with nothing to bound passes loudest. As of
-2026-09-02 one rule is `⚠️ thin` at a single row, and ⛔ **one reports `VACUOUS` outright** and is
-left saying so rather than quietly counted as passing.
+the corpus files a numeric slack, and a bound with nothing to bound passes loudest.
+[`assets/sql/reports/coverage.sql`](../assets/sql/reports/coverage.sql) prints the verdict per
+rule, `ok` against `⚠️ thin` against ⛔ `VACUOUS`, and a rule that examined nothing is **left
+saying so rather than quietly counted as passing**. The counts are not repeated here: this
+document and its Portuguese twin last carried two DIFFERENT answers to the same question, which
+is what a number in prose does.
 
 ⛔ What SQL still cannot reach is prose against data: whether a coupling's `observed` describes a
 real observation, whether a `narrowsWhen` names something that would actually narrow the range,
@@ -310,8 +317,11 @@ the one it was asked.
 
 ⭐ The same holds one axis over, for fungibility against DOUBLE COUNTING. A fusion's nameplate
 elimination is how much supply its parts counted in common, and the documents here now populate
-that scale end to end: `none` at `merge-group-composition`'s `labour`, a whole part at its
-`shift-line`, and the middle at `assets/fixtures/every-partial-elimination.xml`. The parts are
+that scale end to end: a stated `[0, 0, 0]` at `merge-group-composition`'s `labour`, a whole part
+at its `shift-line`, and the middle at `assets/fixtures/every-partial-elimination.xml`. ⛔ The
+bottom of that scale is a CLAIM of zero and not `absent reason="none"`: an elimination's
+`quantity` is a `pm:StatedClaim`, whose reasons are `{unmeasured, notApplicable, derived}`, and
+`none` is not in the type. The parts are
 fungible at all three. An elimination is no more evidence for a kind of fusion than a coupling
 is evidence for a fusion at all.
 
@@ -363,9 +373,10 @@ So `r` is exact for **any** demand and **any** nameplate, interval or not — `�
 with opposite signs and never has to resolve. But `demand mod q` is a **sawtooth**, so
 evaluated at a demand range's three points it need not be ordered at all: `(4.5, 5.2, 6.7)` at
 `q = 1` gives residues `(0.5, 0.2, 0.7)`, which violates `low ≤ mostLikely ≤ high` — the first
-rule in the table above — while the demand that produced it is perfectly well formed. **Ten of
-the twenty lumpy layers in `assets/corpus/` are in that state today**, including `refutation.xml`'s
-`compute` at `(3.0, 5.2, 0.4)`.
+rule in the table above — while the demand that produced it is perfectly well formed. **Lumpy
+layers in `assets/corpus/` are in that state today**, `refutation.xml`'s `compute` at
+`(3.0, 5.2, 0.4)` among them. `cargo run --example matrices` counts them against the lumpy
+total, in its residue census.
 
 **The schema is already safe and the reasoning for it was simply never written down.**
 `Remainder` carries `quantity`, `sign`, `absorber` and `holder` — the total, and never the two
@@ -396,9 +407,12 @@ and left to the profile rather than fixed in the model.
 ⛔ AND AN UNSIZED ELIMINATION MAKES THE SUM UNCOMPUTABLE RATHER THAN SATISFIED. A checker
 that read an `unmeasured` elimination as zero would find the layer reconciling exactly and
 report success about a figure it has been told is overstated. `unchecked` is a third state
-and folding it into `checked and passed` is the failure this whole file is about. An
-absence reason of `none` is the opposite case and DOES mean zero: the composer looked and
-there was nothing to remove.
+and folding it into `checked and passed` is the failure this whole file is about. The zero is
+the opposite case, and it is a CLAIM rather than an absence: an elimination that sizes to
+nothing is filed `[0, 0, 0]`, because `Elimination/quantity` is a `pm:StatedClaim` and
+`pm:ClaimAbsenceReason` has no `none` for it to hide in. `none` on the `eliminations` wrapper
+says a different thing again, that the composer searched and found no double counting at all,
+and that leaves the sum EXACT.
 
 ### The decision about Schematron, written down rather than left silent
 

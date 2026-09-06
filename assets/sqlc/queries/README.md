@@ -1,8 +1,28 @@
-# `queries/` — the example's SQL, as templates
+# `queries/`, the examples' SQL, as templates
 
-One file per query in [`../../../examples/matrices.rs`](../../../examples/matrices.rs),
-pulled out so they can be read and run without Rust. Each is a single statement and each
-answers one numbered section of [`../README.md`](../README.md).
+**One subdirectory per example, one file per query.** Pulled out so they can be read and run
+without Rust; each is a single statement.
+
+| directory | example | the question it asks |
+|---|---|---|
+| `matrices/` | [`examples/matrices.rs`](../../../examples/matrices.rs) | does the arithmetic agree with itself? |
+| `readiness/` | [`examples/readiness.rs`](../../../examples/readiness.rs) | may you compute here at all? |
+| `observations/` | [`examples/observations.rs`](../../../examples/observations.rs) | what does the corpus say? |
+| `soundness/` | [`examples/soundness.rs`](../../../examples/soundness.rs) | does the machinery do what it claims? |
+
+⭐ **The directory is the correspondence, rather than something a reader has to remember.** A
+query added to `readiness/` and never read by `readiness.rs` shows up as an orphan in
+`observations.rs`, which asserts that nothing in `assets/sqlc/` is reached by nothing at all.
+
+⚠️ `matrices/` answers the numbered sections of [`../README.md`](../README.md). The other three
+do not map onto it: `readiness/` is a view of `arithmetic/all.sqlc`, `observations/` is a tour of
+relations whose product is knowledge rather than a verdict, and `soundness/` is a view of
+`algebra/all.sqlc`, the set-algebraic laws each relation claims to obey.
+
+⭐⭐ **`soundness/` is the only one that can accuse nobody's filing.** The other three ask about
+the arithmetic, the data and the corpus; that one asks whether the QUERIES compute what they say.
+It is where a difference that fails to a plausible table gets caught. See the sql skill's
+`set-algebra.md`.
 
 ⭐ **Each one composes the same relations the rules do**, rather than restating the joins.
 `1-fit-from-ranges` composes `layers/signed.sqlc`, which is also the population the sign rule
@@ -16,7 +36,7 @@ These are `.sqlc` templates. `cargo sqlc compose` writes the runnable SQL to
 
 ```
 cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
-psql -d process_modulus_proof -f assets/sql/queries/1-fit-from-ranges.sql
+psql -d process_modulus_proof -f assets/sql/queries/matrices/1-fit-from-ranges.sql
 ```
 
 ⚠️ **`#` is stripped, `--` is not.** A `#` line is a template comment: it exists for whoever
@@ -37,7 +57,7 @@ against a live database at build time. After editing a template, recompose and r
 
 ```
 cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
-cargo sqlx prepare -- --example matrices
+cargo sqlx prepare -- --all-targets   # every example reads query_file!; one target prunes the rest
 ```
 
 ⛔ **`assets/sql/` is generated and wiped on every compose.** Nothing hand-written survives

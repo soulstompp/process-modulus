@@ -10,7 +10,7 @@ evidence about one.
 ## Why they cannot live in one directory
 
 The corpus's dark states are EVIDENCE. No stack in `assets/corpus/` files `couplings` as
-`absent reason="none"`, because nobody in those seven filings tested whether their layers move
+`absent reason="none"`, because nobody filing into that corpus tested whether their layers move
 independently — **and that is a finding about the state of the evidence**, reported by
 `rules.sql` and asserted by `tests/corpus_parse.rs`.
 
@@ -36,7 +36,9 @@ different axes, which is the split the schema itself draws between `Verdict` and
 | `every-elimination.xml` | `StatedEliminations/none` and `/unmeasured`, and the two different sums they owe |
 | `every-claimed.xml` | `Claimed/partial`, the value `CoverageEntry/complete` could not hold |
 | `every-local-part.xml` | the three-layer construction: theirs, mine, one made of both — and `StatedNotation/uri` under a LOCAL part |
-| `every-draft.xml` | `StatedNotation/unmeasured` and `StatedScope/unmeasured` — the document a first-time adopter actually has |
+| `every-partial-elimination.xml` | the middle of the elimination scale: a nameplate `e` that is neither zero nor a whole part, so `e` reads as a MAGNITUDE rather than as a kind of fusion |
+| `every-unsized-conversion.xml` | `Part/factor`'s absent arm: a conversion nobody measured, which is not a part that needs none |
+| `every-draft.xml` | `StatedNotation/unmeasured`, `StatedScope/unmeasured` and `StatedEvidence/unmeasured` — the document a first-time adopter actually has, including the one state where it will not even say whether it observed anything |
 
 **A fixture proves reachability, never correctness.** That a document filing
 `claimed = partial` validates says the state exists; it says nothing about whether a runner

@@ -2,14 +2,19 @@
 
 > **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
 
-Ninety-six queries and one claim.
+One claim, and a query for every part of it.
+
+⛔⛔⛔ **`assets/sql/` IS GENERATED AND WIPED ON EVERY COMPOSE. NEVER EDIT IT.** The sources are
+`assets/sqlc/*.sqlc`; `cargo sqlc compose --source assets/sqlc --target assets/sql` rewrites the
+whole target directory. If you found a query by grepping `assets/sql/`, find its `.sqlc` before
+you touch anything, or your edit is gone on the next run and nothing will tell you.
 
 ```
 ../ddl/schema.ddl     the model as relations
 ingest.sql            Postgres reading assets/corpus/*.xml itself, with no help
 matrices.sql          the matrices, pulled out with joins — a tour, holding no logic
 rules.sql             the rules XSD 1.0 cannot reach — an assembly, holding no logic
-queries/              the example's eight queries, one file each, runnable in psql
+queries/              one directory per example, one file per section, each runnable in psql
 ../../examples/matrices.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
 
@@ -22,11 +27,12 @@ ask a question that has nothing to do with any of the above.
 
 ```
 scope/         which documents am I looking at         — corpus, fixtures, everything
-units/         which units carry a denominator
+units/         which units carry a denominator         — and which denominators, over all claims
 layers/        the L-indexed vectors                   — d, n, r = n − d, the absorber
 entries/       the sparse matrices                     — H, S, C, D, N
 composition/   F and Φ, the walk, and what it owes     — parts, conversion, descent, leaves
-epistemics/    what the documents say about knowing    — absences, searches, widths, edges
+eliminations/  e, what a composer took out and why     — filed, derived, searched, suspended
+epistemics/    what the documents say about knowing    — absences, searches, widths, edges, roots
 checks/        one file per rule: every row it examined, with a verdict on each
 reports/       findings a person settles, and the two views of checks/
 ```
@@ -44,9 +50,15 @@ Look at what those rules actually say. *The shares sum to the magnitude. The sig
 the range comparison. No leaf is reachable by two paths.* Those are joins and sums and
 comparisons — impossible in a grammar, ordinary in a query language.
 
-**What this is not.** It is not a recommended database schema. Nothing here is normalised
-for writing, indexed for a workload, or shaped for an application. Copy the ideas, not the
-layout.
+**What this is.** A relational schema that follows the XML schema as closely as the two
+formalisms allow, so that a claim proved here is a claim about the model rather than about a
+translation of it. It is sound and it is performant: the composition nests dozens deep and the
+planner pulls every level up, measured rather than assumed.
+
+**What it is not.** Tuned for your workload. The shape is chosen to keep the correspondence with
+the XSD visible, not to serve an application's read patterns, and a real deployment will want
+indexes, denormalisation and a write path this has no opinion about. Take the model; shape the
+storage for the job in front of you.
 
 **Three ways in, and they are the same subject at three depths.** Take whichever one is
 already your daily tool — you can read any of them first and the other two refer to it.
@@ -156,7 +168,7 @@ Relational algebra is six operations. You use all of them already; here is where
 | **projection** (π) | keep some columns | pulling `(layer, low, mode, high)` out of a filing |
 | **rename** (ρ) | call a column something else | how `D` and `Dᵀ` differ; a transpose is a rename |
 | **product** (×) | every row against every row | what a join is before you add the condition |
-| **union** (∪) | the rows of either | how `rules.sql` folds sixteen checks into one answer |
+| **union** (∪) | the rows of either | how `rules.sql` folds every check on `checks/roster.sqlc` into one answer |
 | **difference** (−) | the rows of one not in the other | **what a rule check IS** |
 
 That last row is the useful one. `rules.sql` never asks *"did this pass?"* It asks for the rows
@@ -497,7 +509,8 @@ Writing a foreign key found it. A key needs something to point at, and there was
 
 ## What the queries can and cannot say
 
-`rules.sql` prints three tables, and the difference between them is most of the design.
+`rules.sql` prints three KINDS of table, and the difference between the kinds is most of the
+design.
 
 **1. Violations.** Rows that fail a rule. Empty is the good outcome.
 
@@ -535,59 +548,41 @@ offer one is not.
 **3. Coverage**, and this one matters more than the first:
 
 ```
-rule                                                                 examined  violations  verdict
-a ranged claim does not file narrowsWhen as notApplicable                  40           0  ok
-a quantum is expressed in the unit of the nameplate it divides             35           0  ok
-sign agrees with the range comparison                                      35           0  ok
-the nameplate is a whole multiple of the quantum                           35           0  ok
-a part reference resolves to a filing that is here                         21           0  ok
-stated shares sum to the magnitude                                         20           0  ok
-a window is notApplicable only where the unit has no denominator           16           0  ok
-a clearance fit rules out customer and unrealised                          12           0  ok
-no leaf layer is reachable through two paths                               12           0  ok
-exposure does not exceed slack plus unserved shares                         9           0  ok
-a slack is expressed in the unit of the shares it bounds                    6           0  ok
-a fusion calls double counting malformed only when it has one part          4           0  ok
-a local part names a layer in its own stack                                 4           0  ok
-local parts do not cycle                                                    4           0  ok
-a measured zero is filed as an absence, not as a claim of zero              3           0  ok
-a share does not exceed the slack of the buffer that absorbed it            3           0  ok
-a supply that cannot run hot names who went unserved                        3           0  ok
-a window is carried through a fusion and never summed                       3           0  ok
-a denied remainder is not contradicted by the layer's own figures           2           0  thin
-a coupling attenuates through a fusion, bounded by the part's share         1           0  thin
-a derived time slack needs a window that permits the derivation             1           0  thin
-a point value files narrowsWhen as notApplicable, having no range           0           0  VACUOUS
+psql -d process_modulus_proof -f assets/sql/reports/coverage.sql
 ```
 
-**The last line is the machinery working**, not a defect in it. It catches a real mistake — a
-point value has no range to tighten, so `narrowsWhen` on one is a paste or a claim filed at the
-wrong width — and this corpus contains none, so it proves nothing here and says so. A rule
-reported as `ok` when it examined nothing is the dangerous zero; a rule reported as VACUOUS is a
-rule you can trust the rest of the table about.
+One row per rule, ordered by how much it examined: the size of the population it looked at,
+how many of those breached it, and a verdict on the count itself. `ok`; `⚠️  thin`, where one
+or two rows is a demonstration rather than evidence; and `⛔ VACUOUS`, where the rule examined
+nothing whatever.
 
-⛔⛔ **And that last row is the one a checker structurally cannot produce, which is why the
+**A VACUOUS row is the machinery working**, not a defect in it. The rule is written and it is
+wired in, and this corpus holds nothing for it to look at, so it proves nothing here and says
+so. A rule reported as `ok` when it examined nothing is the dangerous zero; a rule reported as
+VACUOUS is a rule you can trust the rest of the report about.
+
+⛔⛔ **And that row is the one a checker structurally cannot produce, which is why the
 rules are built the way they are.** Group a filtered population by rule and a rule with an
-empty population contributes no row at all — so the single most important verdict this table
+empty population contributes no row at all — so the single most important verdict this report
 can return would be delivered by *silence*, which is indistinguishable from the rule not
 existing. Every check therefore joins `checks/roster.sqlc` first, where each rule's sentence is
 written exactly once; the roster row exists before the population does. `examined` is then a
-count of what the rule looked at, `violations` a count of what failed, and the two tables above
-are `WHERE violates` and `GROUP BY rule` over one relation — which cannot disagree about what
-was examined. The previous version restated each population in a second dialect of itself, and
+count of what the rule looked at, `violations` a count of what failed, and the violations table
+and this report are `WHERE violates` and `GROUP BY rule` over one relation — which cannot
+disagree about what was examined. The previous version restated each population in a second dialect of itself, and
 **three of the twenty-two restatements disagreed with the rule they reported on** — one loudly
 enough to call a rule that examines a single row `ok`.
 
-⭐⭐ **Four of these rows are new and none of them is a new idea.** Each was already written down
+⭐⭐ **Some of those rows are new and none of them is a new idea.** Each was already written down
 in the schemas' prose and was UNCHECKABLE, because in each case the state it turns on was a blank
 — an empty list, a missing element, an omitted enumeration — and a blank has no reason to group
 by. *A window is carried through a fusion and never summed* is the sharpest: it caught a live
 defect on its first run, a composed layer that had dropped its part's duty cycle where the drop
 was byte-identical to a line that runs seven days a week. → **[§8](#8-the-zero-that-turned-out-to-be-two)**
 
-Three more are thin for the same reason the Rust tests are: almost nothing in the corpus files
-a numeric slack, only three filings state any coupling at all, and exactly two layers deny
-having a remainder.
+The thin ones are thin for the same reason the Rust tests are: almost nothing in the corpus
+files a numeric slack, only three filings state any coupling at all, and exactly two layers
+deny having a remainder.
 
 ⭐⭐ **That last one is the model's own falsifier, and until this pass the database threw it
 away.** `StatedRemainder` is a choice — a remainder, or a typed reason there is none — and every
@@ -666,20 +661,21 @@ as vector arithmetic, one line per bound. Then classifies each layer by ISO 286'
 compares to the filed `sign`.
 
 ```
-1. fits recomputed from the ranges: 32 layers, 0 disagreements
-   corpus    24 layers: 9 clearance, 14 interference, 1 transition
-   fixture    8 layers: 8 transition
+1. fits recomputed from the ranges: 38 layers, 0 disagreements
+   observation  24 layers: 9 clearance, 14 interference, 1 transition
+   stipulation  14 layers: 6 clearance, 8 transition
 ```
 
-⭐⭐ **The census is split by `evidence` and the split is the content.** Every fixture layer that
-reaches this query is a `transition` — they were written to exercise the state real filings
-almost never reach — so a pooled count reports the corpus's ONE transition as nine, and
-`docs/linear-algebra.md` quotes that number.
+⭐⭐ **The census is split by `evidence` and the split is the content.** The stipulations were
+written to exercise the states real filings almost never reach, `transition` above all, so a
+pooled count hands the corpus's transitions the fixtures' weight and reports a stipulation as
+evidence.
 
 It asserts a floor before it asserts anything about the answers, so the check cannot pass by
-examining nothing — and the floor is on the CORPUS alone, not on all 32 rows. Counting the
-fixtures would let them hold the assertion up while the corpus emptied underneath it, which is
-the vacuity trap one level out: plenty to check, none of it the thing being claimed. ↑ *the claim this settles is [`r = n − d` reverses its
+examining nothing — and the floor is on the CORPUS alone, not on every row in the census.
+Counting the fixtures would let them hold the assertion up while the corpus emptied underneath
+it, which is the vacuity trap one level out: plenty to check, none of it the thing being
+claimed. ↑ *the claim this settles is [`r = n − d` reverses its
 bounds](#r--n--d-reverses-its-bounds).*
 
 ### 2. `DᵀN`, the good zero
@@ -702,11 +698,11 @@ diagonal. Then the fusion is three real matrix products, one per bound, and each
 compared against the demand the composed layer filed.
 
 ```
-3. F.Phi.x - e against the filed composed demand: 10 layers, all agree; 2 suspended
+3. F.Phi.x - e against the filed composed demand: 11 layers, all agree; 3 suspended
 ```
 
 ⭐⭐ **This is where "a matrix product is a join with a `GROUP BY`" gets checked.**
-`matrices.sql` computes the same ten rows with a join and a sum. Same answer, two algorithms.
+`matrices.sql` computes the same rows with a join and a sum. Same answer, two algorithms.
 ↑ *settles [the one idea](#the-one-idea-both-algebras-share), [the fusion
 rule](#and-the-fusion-rule-checks-out), and the claim that **a consolidation IS this
 expression** — [from the financial side](#from-the-financial-side).*
@@ -787,16 +783,24 @@ instead.
 
 ```
 7. slack coverage (corpus): 78 (layer, buffer) rows
-   capacity   0 sized of 26  ⛔ unexercised
-   inventory  2 sized of 26
-   time       1 sized of 26
+   capacity   11 sized of 26
+   inventory  18 sized of 26
+   time       11 sized of 26
 ```
 
-⛔⛔ **The interesting number is the zero.** `capacity` is the column carrying the shortfall
-inequality — what a filing's own demand and nameplate say could have gone unserved, against what
-the supply can absorb plus what the document admits turning away. Not one layer in this corpus
-sizes it, so that bound has never been exercised, and a bound with nothing to bound passes
-loudest.
+⛔⛔ **The interesting number is that every sized capacity slack reads `[0, 0, 0]`.** `capacity`
+carries the shortfall inequality: what a filing's own demand and nameplate say could have gone
+unserved, against what the supply can absorb plus what the document admits turning away. Eleven
+corpus layers size it and every one of them sizes it at zero, which is a filer saying the supply
+cannot be run hot at any price. **That is the tightest possible bound, not a missing one**, and it
+is a different fact from the fifteen that file `unmeasured`.
+
+⚠️ **This paragraph said the opposite until 2026-09-06, and the reason is worth knowing.** The
+zeroes used to be filed as `absent reason="none"` and were counted as absences; when
+`pm:StatedClaim` narrowed and a measured zero became a claim, the column moved and the sentence
+did not. What is still unexercised is a **non-zero** capacity slack: no filing has yet stated one,
+so the inequality has never had to bind against a real number. Run
+`cargo run --example matrices` for the current census rather than trusting this block.
 
 **Nothing asserts it stays zero**, and that is deliberate. An equality here would make the first
 filer to size a capacity slack break the build for doing exactly what the model wants. The zero is
@@ -821,19 +825,19 @@ boolean, or in an empty list, points at what it cannot say.
 | `CoverageEntry/complete`, the only `xs:boolean` | *the witness answers PART of the question* |
 
 ```
-⛔⛔⛔ HAS ANYBODY TESTED THE MODEL?
+⛔⛔⛔ HAS ANYBODY TESTED THE MODEL?      -- assets/sql/reports/independence_tested.sql
 +----------------------------------------------+--------+
-| the_independence_assumption           | stacks |
+| the_independence_assumption                  | stacks |
 +----------------------------------------------+--------+
-| somebody looked and the layers MOVE TOGETHER | 3 |
-| NOBODY LOOKED                                | 3 |
-| one layer; no pair to couple                 | 1 |
+| NOBODY LOOKED                                |      4 |
+| somebody looked and the layers MOVE TOGETHER |      3 |
+| one layer; no pair to couple                 |      1 |
 +----------------------------------------------+--------+
 ```
 
 ⛔⛔ **Read the row that is not there.** No stack in this corpus asserts independence. The
 model's central claim — that a layer is a place where a remainder is held *independently of every
-other layer's* — has never been tested in eight filings, and has once been contradicted. That is
+other layer's* — has never been tested by any filing here, and has once been contradicted. That is
 a fact about the EVIDENCE rather than about any one document, and it is a fact only because the
 empty list stopped being an answer.
 
@@ -846,10 +850,16 @@ second, which is the sum rule `Elimination` exists to make exact, silently back 
 **And requiring `boundOrigin` produced a result nobody was looking for.**
 
 ```
-| stated in a sibling element (amountOrigin, quantum origin)  | 48 |
-| NOTHING sets it -- the range is where the measurements fell | 68 |
-| nobody has asked                                            | 3 |
-| somebody owns it: contractual / intrinsic / policy          | 5 |
+                                                       -- assets/sql/reports/bound_ownership.sql
+| who_owns_the_edge                                           | claims |
++-------------------------------------------------------------+--------+
+| NOTHING sets it -- the range is where the measurements fell |     59 |
+| stated in a sibling element (amountOrigin, quantum origin)  |     56 |
+| somebody owns it: intrinsic                                 |     32 |
+| not a bound on a committed quantity                         |     22 |
+| somebody owns it: contractual                               |     13 |
+| nobody has asked                                            |      3 |
+| somebody owns it: policy                                    |      1 |
 ```
 
 Roughly a third of the corpus answers `derived`, meaning **the model already states the author of

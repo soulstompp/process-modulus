@@ -188,7 +188,11 @@ que as enuncia, de forma que um leitor consiga distinguir uma regra vinculativa 
 verificada. As três linhas marcadas abaixo com asterisco estão enunciadas em prosa sem essa
 marca, o que é uma lacuna na marcação e não no raciocínio.
 
-**Dezasseis das quarenta e quatro já não são apenas devidas — correm.** O
+**As que já não são apenas devidas, mas correm, são o roster.** O
+[`assets/sqlc/checks/roster.sqlc`](../assets/sqlc/checks/roster.sqlc) tem uma linha por cada
+regra que corre, com a frase que ela impõe, e é o único sítio onde essa frase está escrita. Um
+número aqui seria um número que ninguém volta a contar: este parágrafo já se afastou da sua
+própria tabela duas vezes, e por isso passa a nomear o ficheiro. O
 [`assets/sql/rules.sql`](../assets/sql/rules.sql) exprime-as como uma consulta sobre o conjunto
 de documentos carregado em Postgres, e um resultado vazio quer dizer que todas se verificaram.
 Isso inclui a regra que validador nenhum vê por princípio: *nenhuma camada-folha é alcançável
@@ -197,10 +201,13 @@ atravessa uma declaração que o primeiro não contém.
 
 **Isso não desobriga das regras; desobriga-as PARA ESTE CONJUNTO DE DOCUMENTOS.** Um adotante
 corre o mesmo ficheiro contra as suas próprias declarações, que é o essencial de o distribuir. E
-a consulta reporta quantas linhas cada regra examinou, porque quatro das dezasseis veem
-atualmente apenas duas camadas cada — quase nada no conjunto declara uma margem numérica, e um
-limite sem nada para limitar é o que passa mais alto. Duas reportam `VACUOUS` abertamente e
-ficam a dizê-lo em vez de serem silenciosamente contadas como passadas.
+a consulta reporta quantas linhas cada regra examinou, porque a cobertura escassa é o modo de
+falha aqui: um limite sem nada para limitar é o que passa mais alto. O
+[`assets/sql/reports/coverage.sql`](../assets/sql/reports/coverage.sql) imprime o veredito de
+cada regra, `ok` contra `⚠️ thin` contra ⛔ `VACUOUS`, e uma regra que não examinou nada **fica a
+dizê-lo em vez de ser silenciosamente contada como passada**. As contagens não se repetem aqui:
+este documento e o seu gémeo inglês chegaram a dar duas respostas DIFERENTES à mesma pergunta, que
+é o que um número em prosa faz.
 
 O que o SQL continua a não alcançar é prosa contra dados: se o `observed` de um acoplamento
 descreve uma observação real, se um `narrowsWhen` nomeia algo que estreitaria de facto o
@@ -231,8 +238,9 @@ não — o `⌊⌋` aparece duas vezes com sinais opostos e nunca tem de se reso
 q` é um **dente de serra**, pelo que, avaliado nos três pontos de um intervalo de procura, não
 tem de ficar ordenado de todo: `(4,5; 5,2; 6,7)` com `q = 1` dá resíduos `(0,5; 0,2; 0,7)`, que
 viola `low ≤ mostLikely ≤ high` — a primeira regra da tabela — ao passo que a procura que os
-produziu está perfeitamente bem formada. **Dez das vinte camadas com quantum em
-`assets/corpus/` estão hoje nesse estado.**
+produziu está perfeitamente bem formada. **Há camadas com quantum em `assets/corpus/` hoje nesse
+estado.** O `cargo run --example matrices` conta-as contra o total das camadas com quantum, no seu
+recenseamento do resíduo.
 
 **O esquema já está seguro e o raciocínio para isso é que nunca tinha sido escrito.** O
 `Remainder` transporta `quantity`, `sign`, `absorber` e `holder` — o total, e nunca as duas

@@ -197,6 +197,7 @@ pessoas, e uma pessoa não é divisível.
   <pm:name>labour</pm:name>
 
   <pm:demand>
+    <pm:amount>
     <pm:claim>
       <pm:low>4.5</pm:low>
       <pm:mostLikely>5.2</pm:mostLikely>
@@ -217,6 +218,9 @@ pessoas, e uma pessoa não é divisível.
       <pm:provenance><pm:party>platform</pm:party></pm:provenance>
       <pm:asOf>2026-08-30</pm:asOf>
     </pm:claim>
+    </pm:amount>
+    <!-- how long the demand survives unanswered, a second fact and not a bound on the first -->
+    <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
   </pm:demand>
 ```
 
@@ -282,18 +286,25 @@ razão diz qual das alternativas se quer dizer. Não é um branco.
         </pm:absent>
       </pm:capacitySlack>
       <pm:inventorySlack>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
-        </pm:absent>
+        <pm:claim>
+          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+          <pm:unit>people</pm:unit>
+          <pm:provenance>
+            <pm:party>platform</pm:party>
+            <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
+          </pm:provenance>
+        </pm:claim>
       </pm:inventorySlack>
     </pm:nameplate>
 ```
 
-Os dois elementos de margem dizem quanta folga tem cada amortecedor. Uma pessoa pode ser levada
-acima da sua capacidade nominal, portanto esse amortecedor está aberto e ninguém mediu até onde —
-`unmeasured`. Uma hora não usada não pode ser guardada para a semana seguinte, portanto esse está
-fechado, e `none` é o valor que diz que alguém verificou e não que alguém saltou a pergunta. A
+O `capacitySlack` e o `inventorySlack` dizem quanta folga tem cada amortecedor. Uma pessoa pode ser
+levada acima da sua capacidade nominal, portanto esse amortecedor está aberto e ninguém mediu até
+onde, o que é `unmeasured`. Uma hora não usada não pode ser guardada para a semana seguinte,
+portanto esse
+está fechado, e um `[0, 0, 0]` declarado é como o modelo diz que alguém verificou e não que alguém
+saltou a pergunta. ⛔ Um zero medido é aqui uma AFIRMAÇÃO, nunca uma ausência: tem unidade, dono e
+proveniência, e o ramo da ausência não tem onde pôr nenhuma das três. A
 diferença conta mais à frente: uma parcela só pode ser atribuída a um amortecedor que tenha folga
 para ela.
 
@@ -651,10 +662,11 @@ portanto o desacordo com o modelo pode ser declarado em vez de apenas discutido.
 
 **Não é um desenho de armazenamento.** Os esquemas não declaram tabelas, chaves, índices nem
 construções de versionamento, de propósito: uma base de dados sai de normalizar o modelo como deve
-ser, e isso é trabalho de quem implementa. O `assets/sql/` contém de facto um DDL de Postgres, e
-não é um contraexemplo — existe para VERIFICAR o modelo e não para o armazenar, e di-lo nas suas
-primeiras cinco linhas. Nada ali está normalizado para escrita nem indexado para uma carga de
-trabalho. Copiem-se as ideias, não a disposição.
+ser, e isso é trabalho de quem implementa. O `assets/ddl/schema.ddl` é um DDL de Postgres, e não é
+um contraexemplo. Segue o esquema XML tão de perto quanto os dois formalismos permitem, para que o
+que ali se prova seja provado sobre o modelo e não sobre uma tradução. É sólido e eficiente, e
+existe para VERIFICAR o modelo e não para servir uma aplicação. Uma instalação real vai querer
+índices, desnormalização e um caminho de escrita sobre o qual isto não tem opinião.
 
 **Não é uma API Rust ergonómica.** A biblioteca é os esquemas mais o que o gerador de código fizer
 deles, e os tipos gerados leem-se como tipos gerados: sem construtores fluentes, sem auxiliares de
@@ -680,9 +692,12 @@ eles, e o conjunto de documentos é verificado de **três maneiras independentes
 
 Cada um foi provado capaz de falhar antes de qualquer passagem ser acreditada. O validador por
 três defeitos deliberados que produziram três rejeições distintas; os testes em Rust por
-perturbação contra uma cópia em memória; o SQL por quatro edições dentro de uma transação
-revertida, que produziram seis violações porque duas das regras não são independentes uma da
-outra.
+perturbação contra uma cópia em memória; o SQL por edições deliberadas dentro de uma transação
+revertida, cada uma apontada a uma regra diferente, que produzem MAIS violações do que edições
+porque as regras não são independentes umas das outras. ⭐ Volte-se a correr em vez de confiar
+nesta frase: perturbe-se um sinal, uma quota de detentor, uma procura composta e um valor nominal
+com quantum dentro de `BEGIN; ... ROLLBACK;`, e leia-se o `assets/sql/reports/violations.sql`. A
+contagem muda à medida que se acrescentam regras; o achado não.
 
 O maior e o menor da biblioteca acompanham o `xs:schema/@version` do esquema, e o
 `tests/namespace.rs` faz falhar a compilação se se afastarem. O que **não** está decidido são os
