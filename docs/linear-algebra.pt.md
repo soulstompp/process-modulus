@@ -209,9 +209,11 @@ declaração, veredictos opostos.
 ⛔ **`S` tem de estar na unidade da camada, e a sua medição natural não está.** O tamanho de um
 amortecedor observa-se como uma *duração* — quanto tempo o produto se conserva, quanto tempo o
 cliente espera —, ao passo que `H` está na unidade da camada. O declarante deve, portanto,
-`quantidade = duração × taxa` antes de declarar. As três margens dimensionadas ou descritas no
-corpus foram todas medidas como durações; numa das três a multiplicação parece não ter sido
-feita. Saber se `[0, S]` é fechado é uma questão bem menor do que essa — e é fechado: um
+`quantidade = duração × taxa` antes de declarar. As margens do corpus que trazem um tamanho
+acima de zero foram todas medidas como durações; numa delas a multiplicação parece não ter sido
+feita. O `cargo run --example matrices` imprime o recenseamento das margens, dimensionadas contra
+ausentes, uma linha por amortecedor. Saber se `[0, S]` é fechado é uma questão bem menor do que
+essa — e é fechado: um
 amortecedor exatamente cheio ainda não falhou, falha a unidade seguinte. ⭐ O único intervalo
 genuinamente semiaberto do modelo é o resíduo, `(−d) mod q ∈ [0, q)`, semiaberto pela razão da
 ISO 8601 — em `q` volta a 0 em vez de significar «cheio».
@@ -353,6 +355,173 @@ numa linha do `F`; a equação é a mesma equação em todos os casos.
 ⭐ **Uma camada que quem compõe originou é uma linha de zeros do `F`** — uma camada composta sem
 partes, cujas figuras são de quem compõe. Nada na aritmética o proíbe, e o modelo precisa disso: uma
 escala ao nível do grupo pertence à casa-mãe e não veio de membro nenhum.
+
+## O mesmo modelo em álgebra relacional, e porque se calculam os dois
+
+Tudo o que vem acima é uma formulação matricial. O repositório transporta também uma formulação
+relacional, e as duas são calculadas de forma independente e afirmadas iguais em cada execução.
+Isso não é ornamento. É a única razão pela qual qualquer uma delas merece confiança, e o lado
+relacional consegue dizer três coisas que o lado matricial estruturalmente não consegue.
+
+⛔⛔ **Este documento é o único sítio onde os dois registos são ARGUMENTADOS em conjunto, e isso é
+deliberado.** As relações esparsas NOMEIAM, sim, a matriz de que cada uma é a forma esparsa, logo
+na primeira linha, porque quem lê deve saber que objeto tem à frente: o `entries/holders.sqlc`
+abre com *«H, THE HOLDER MATRIX»* e o `entries/slacks.sqlc` com *«S, THE SLACK MATRIX»*. O que
+nenhum cabeçalho `#` faz é RACIOCINAR nesse registo. O que mais perto chega,
+`entries/cross_layer_edges.sqlc`, diz que *«um índice partilhado é o que um produto matricial É»* e
+argumenta em junções no resto do ficheiro, o que é a fronteira e não uma exceção a ela. **Portanto
+os nomes são partilhados e os operadores não**, e quem chega a uma consulta nunca tem de segurar um
+segundo formalismo para a seguir. Esta secção é onde os operadores ficam lado a lado, portanto quem
+quiser passar de um registo ao outro usa-a como dicionário e o resto do ficheiro como um dos seus
+lados.
+
+### O dicionário
+
+Cada objeto acima tem uma relação com nome. As cardinalidades são vivas; voltem a contar-se com
+`SELECT count(*)` sobre o `.sql` composto, e o `cargo sqlc compose` regenera-os a todos.
+
+| na nota | relação | linhas |
+|---|---|---|
+| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` | 43, 39, 16 |
+| `r = n − d` | `layers/remainder` | 39 |
+| `F` (incidência) | `composition/parts` | 23 |
+| `Φ x` (partes convertidas) | `composition/converted` | 23 |
+| `F Φ x − e` | `composition/fused` | 11 |
+| `e` | `eliminations/filed` | 15 |
+| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` | 54, 129, 5 |
+| `D`, `N` | `entries/draws`, `entries/inductions` | 4, 2 |
+
+### As operações, que são a parte que merece a atenção de quem revê
+
+**Um produto matriz-vetor é uma junção com um `GROUP BY`.** Não por analogia. O `F Φ x` é
+calculado em dois ficheiros, e a diferença entre eles é toda a diferença entre uma matriz diagonal
+e uma matriz geral:
+
+```
+Φ x    composition/converted.sqlc    partes ⋈ procura, vezes um escalar   23 linhas para 23
+F (·)  composition/fused.sqlc        a mesma junção, mais γ_soma          23 linhas para 11
+```
+
+⭐⭐⭐ **Uma matriz diagonal é uma junção sem agregação. Uma matriz geral é a mesma junção com
+ela.** O `Φ` não pode misturar linhas, portanto não precisa de `GROUP BY`; o `F` soma partes numa
+camada composta, portanto é exatamente um `γ` sobre a incidência. Em tudo o resto são idênticos.
+
+O resto do conjunto de operadores traduz-se com a mesma clareza:
+
+| operação | relacional | nota |
+|---|---|---|
+| transposta `Dᵀ` | `ρ`, renomeação | nenhum dado se move; `Dᵀ` é o `D` com duas colunas renomeadas |
+| `−e` | `⟕` e depois um `coalesce` guardado | o preenchimento só é sólido depois de `σ` retirar as linhas que nada devem |
+| uma linha nula de `F` | uma camada composta sem linha de parte | uma anti-junção, com a forma de `composition/leaves` |
+| `DᵀN` | uma junção sobre o índice de operação partilhado | os padrões compõem-se; as quantidades não, por causa das unidades |
+
+### Esparsidade, e a única coisa que a matriz não consegue dizer
+
+O `F` é **14 × 22**. Densa, isso são 308 entradas; a relação guarda **23**. Sete vírgula cinco por
+cento.
+
+⛔⛔⛔ **Na matriz, uma entrada nula e uma entrada ausente são o mesmo valor. Na relação são uma
+linha que diz zero e nenhuma linha, e a diferença entre as duas é todo o assunto deste modelo.**
+Um `0` em `F` diz que quem compôs considerou estas duas camadas e as julgou não fungíveis. Uma
+linha em falta não diz coisa nenhuma. A álgebra linear tem um só símbolo para as duas.
+
+A mesma lacuna atravessa todas as quantidades. Uma entrada de matriz vem de `ℝ`. Uma célula de
+relação aqui vem de
+
+```
+ℝ  ⊎  {none, unmeasured, notApplicable, derived}
+```
+
+um coproduto, e não um número com uma sentinela. E o conjunto da direita não é fixo: numa posição
+`pm:StatedClaim` estreita-se para o subconjunto de três membros sem o `none`, porque um zero
+medido transporta unidade, observador e proveniência, e o ramo da ausência não tem lugar para
+nenhum dos três. Um zero ali é uma afirmação de `[0, 0, 0]`. Essa distinção é irrepresentável em
+`ℝ`, é a razão de o `NULL` ser recusado em todo o lado, e nove restrições `CHECK` seguram-na na
+base de dados.
+
+### A regra da composição é a inclusão-exclusão
+
+```
+x_composto = Σ x_partes − e            |A ∪ B| = |A| + |B| − |A ∩ B|
+```
+
+São a mesma identidade, com o `e` no lugar de `|A ∩ B|`. Esse enquadramento responde à pergunta
+que a nota deixa em aberto acima, que é porque tem o `e` de ser declarado:
+
+⛔ **De `|A|` e `|B|` nada recupera `|A ∩ B|`.** Uma camada transporta uma grandeza, nunca o
+conjunto que a grandeza conta, portanto a correção não é uma função dos operandos. É esse todo o
+argumento para a `asrt:Elimination` ser uma observação com um ramo `unmeasured`.
+
+⭐⭐ **A não ser que se pivote para uma incidência cujos elementos transportem grandezas próprias,
+e os do `F` transportam.** Uma parte É uma camada, e uma camada transporta a sua própria procura e
+capacidade nominal. Exprima-se então uma sobreposição na base das partes e a correção sai
+completa, sem nada declarado: o `eliminations/derived.sqlc` calcula-a. O teste é se os elementos
+da incidência são eles próprios objetos medidos. Os do `F` são; os do `D` e do `N` não são, e o
+mesmo pivô não compra ali nada.
+
+⛔ O que o pivô não consegue nomear é o resíduo: uma sobreposição que é uma fatia de uma parte e
+não uma parte inteira também não tem elemento na base pivotada. Esse caso, e só esse, é para o que
+serve o elemento declarado.
+
+### O quantum, e a aritmética da divisibilidade
+
+A oferta chega em unidades inteiras, portanto `n mod q = 0`. Duas consequências que a formulação
+matricial não tem maneira de enunciar.
+
+**Existe um quantum composto, e é o máximo divisor comum.** Se as partes transportam `q₁` e `q₂` na
+mesma unidade, então `n₁ = a q₁` e `n₂ = b q₂`, e `{a q₁ + b q₂}` é exatamente o conjunto dos
+múltiplos de `g = mdc(q₁, q₂)`, por Bézout. Portanto o `g` divide todas as somas atingíveis e é o
+maior número que o faz. Pedir um quantum "melhor" dentro de uma só camada é a pergunta errada: ali
+o quantum é OBSERVADO, e escolher o maior divisor de `n` seria inferir o facto a partir da figura.
+
+⭐⭐⭐ **E por isso a eliminação tem de ser ela própria um múltiplo inteiro do quantum composto.**
+`n_composto = n₁ + n₂ − e`, e o `g` divide a soma, portanto `g | n_composto` exige `g | e`. **Não
+se pode eliminar meia máquina.** Verifica-se em todos os casos do conjunto onde é verificável: o
+`every-local-part/both-views` elimina 2160 contra `q = 12`, que são 180 fornos inteiros.
+
+⛔ **Entre unidades não há quantum composto nenhum, e a razão é mais estreita do que parece.** O
+mdc é uma operação de uma só unidade. O `merge-holding-composition/compute` funde `720 GPU-hour`
+com `8 GPU` e número nenhum divide os dois. Isso não são dados incómodos; é a mesma parede do `Φ`,
+que é o que atravessa unidades, e um fator de conversão multiplica também um quantum. O `g = 1` é
+o outro caso degenerado, onde a granularidade se dissolve e a oferta composta é, para todos os
+efeitos, contínua.
+
+### As leis são afirmadas, não presumidas
+
+O `algebra/roster.sqlc` transporta uma linha por cada lei de álgebra de conjuntos que esta árvore
+reivindica, e o `examples/soundness.rs` afirma cada uma em cada execução. **Uma diferença de
+conjuntos em qualquer ponto da árvore sem lei nesse roster falha a construção.** As leis
+substituem o que de outro modo seria uma sondagem à mão: o `|A| = |A∖B| + |A⋉B|` é verificado ao
+vivo em vez de argumentado num comentário.
+
+⚠️ Três sítios onde as duas álgebras divergem mesmo, e todos eles custaram aqui um defeito a
+alguém antes de terem sido escritos:
+
+- O `σ` acumula. `σ_p(σ_q(A)) = σ_{p∧q}(A)`, que é a razão de uma regra herdar filtros que nunca
+  escreveu e de a sua população real viver em ficheiros que o autor não abriu.
+- O `π` **não** distribui sobre o `∖`. Projete-se primeiro e subtrai-se sobre menos atributos,
+  portanto uma diferença tem de ser tomada sobre a chave.
+- Sacos não são conjuntos. O `composition/descent` é um saco de propósito; desduplicá-lo destruiria
+  exatamente o facto que o `leaf_reached_twice` existe para encontrar.
+
+⚠️ E um custo, medido e não presumido: o `EXCEPT` é uma barreira de otimização. Perguntar ao
+`composition/owed_equality` por uma só camada composta avalia a árvore inteira e deita fora dez de
+onze linhas, porque uma diferença de conjuntos tem de materializar os dois lados antes de poder
+subtrair. A anti-junção de que foi convertido empurra o predicado da chave para dentro dos três
+ramos. A conversão foi feita por legibilidade, que é um ganho real; isto é o seu preço.
+
+### Calculam-se os dois, e a concordância é a afirmação
+
+O `examples/matrices.rs` constrói o `F`, o `Φ` e o `x` em `nalgebra` e avalia três produtos
+matriciais. O `assets/sql/` avalia a mesma expressão como junções e `GROUP BY`. Nenhum deriva do
+outro, e o exemplo afirma que concordam até `1e-9` sobre as onze camadas compostas que devem a
+igualdade. O `checks/fusion_sum_disagrees` faz disso depois uma regra de conformidade e não um
+teste.
+
+⭐ É esse o sentido de transportar os dois. Uma formulação matricial é fácil de raciocinar e fácil
+de errar em silêncio, porque qualquer erro de forma continua a produzir um número. Uma formulação
+relacional é mais difícil de ler e falha alto. Correr as duas e afirmar a concordância é como uma
+afirmação neste repositório ganha a palavra «verificado».
 
 ## Como verificar
 

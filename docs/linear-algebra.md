@@ -138,9 +138,10 @@ reading. Same filing, opposite verdicts.
 
 ⛔ **`S` must be in the layer's unit, and its natural measurement is not.** A buffer's size is
 observed as a *duration* — how long stock keeps, how long a caller waits — while `H` is in the
-layer's unit, so the filer owes `quantity = duration × rate` before filing. All three sized or
-described slacks in the corpus were measured as durations; one of the three appears not to have
-been multiplied. Whether `[0, S]` is closed is a much smaller question than that, and it is
+layer's unit, so the filer owes `quantity = duration × rate` before filing. Every slack in the
+corpus carrying a size above zero was measured as a duration, and one of them appears not to
+have been multiplied; `cargo run --example matrices` prints the slack census, sized against
+absent, one row per buffer. Whether `[0, S]` is closed is a much smaller question than that, and it is
 closed: a buffer exactly full has not failed, the next unit fails. ⭐ The one genuinely
 half-open interval in the model is the residue, `(−d) mod q ∈ [0, q)`, half-open for the ISO
 8601 reason — at `q` it wraps to 0 rather than meaning "full".
@@ -274,6 +275,168 @@ equation in every case.
 ⭐ **A layer the composer originated is a zero row of `F`** — a composed layer with no parts, whose
 figures are the composer's own. Nothing in the arithmetic forbids it, and the model needs it: a
 group-level rota belongs to the parent and came from no member.
+
+## The same model in relational algebra, and why both are computed
+
+Everything above is a matrix formulation. The repository also carries a relational one, and the
+two are computed independently and asserted equal on every run. That is not decoration. It is the
+only reason either can be trusted, and the relational side can say three things the matrix side
+structurally cannot.
+
+⛔⛔ **This document is the only place the two registers are ARGUED together, and that is
+deliberate.** The sparse relations do NAME the matrix each is the sparse form of, in their opening
+line, because a reader should know which object is in front of them: `entries/holders.sqlc` opens
+*"H, THE HOLDER MATRIX"* and `entries/slacks.sqlc` *"S, THE SLACK MATRIX"*. What no `#` header
+does is REASON in that register. The one that comes closest, `entries/cross_layer_edges.sqlc`,
+says *"a shared index is what a matrix product IS"* and then argues in joins for the rest of the
+file, which is the boundary rather than an exception to it. **So the nouns are shared and the
+operators are not**, and a reader arriving at a query never has to hold a second formalism to
+follow it. This section is where the operators are set side by side, so if you want to move
+between the two, it is the dictionary and the rest of the file is one side of it.
+
+### The dictionary
+
+Every object above has a named relation. Cardinalities are live; recount them with
+`SELECT count(*)` over the composed `.sql`, and `cargo sqlc compose` regenerates all of them.
+
+| in the note | relation | rows |
+|---|---|---|
+| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` | 43, 39, 16 |
+| `r = n − d` | `layers/remainder` | 39 |
+| `F` (incidence) | `composition/parts` | 23 |
+| `Φ x` (converted parts) | `composition/converted` | 23 |
+| `F Φ x − e` | `composition/fused` | 11 |
+| `e` | `eliminations/filed` | 15 |
+| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` | 54, 129, 5 |
+| `D`, `N` | `entries/draws`, `entries/inductions` | 4, 2 |
+
+### The operations, which are the part worth the reviewer's attention
+
+**A matrix-vector product is a join with a `GROUP BY`.** Not by analogy. `F Φ x` is computed in
+two files and the difference between them is the whole of the difference between a diagonal
+matrix and a general one:
+
+```
+Φ x    composition/converted.sqlc    parts ⋈ demand, times a scalar     23 rows in, 23 out
+F (·)  composition/fused.sqlc        the same join, plus γ_sum          23 rows in, 11 out
+```
+
+⭐⭐⭐ **A diagonal matrix is a join without aggregation. A general matrix is the same join with
+it.** `Φ` cannot mix rows, so it needs no `GROUP BY`; `F` sums parts into a composed layer, so it
+is exactly a `γ` over the incidence. Everything else about the two is identical.
+
+The rest of the operator set maps as plainly:
+
+| operation | relational | note |
+|---|---|---|
+| transpose `Dᵀ` | `ρ`, rename | no data moves; `Dᵀ` is `D` with two columns renamed |
+| `−e` | `⟕` then a guarded `coalesce` | the fill is sound only after `σ` removes the rows owing nothing |
+| a zero row of `F` | a composed layer with no part row | an anti-join, `composition/leaves` in shape |
+| `DᵀN` | a join on the shared operation index | the patterns compose; the quantities do not, for units |
+
+### Sparsity, and the one thing the matrix cannot say
+
+`F` is **14 × 22**. Dense that is 308 entries; the relation stores **23**. Seven and a half per
+cent.
+
+⛔⛔⛔ **In the matrix, a zero entry and an absent entry are the same value. In the relation they
+are a row that says zero and no row at all, and the difference between those two is this model's
+entire subject.** A `0` in `F` says the composer considered these two layers and judged them not
+fungible. A missing row says nothing whatever. Linear algebra has one symbol for both.
+
+The same gap runs through every quantity. A matrix entry is drawn from `ℝ`. A relation's cell here
+is drawn from
+
+```
+ℝ  ⊎  {none, unmeasured, notApplicable, derived}
+```
+
+a coproduct, not a number with a sentinel. And the right-hand set is not fixed: at a
+`pm:StatedClaim` position it narrows to the three-member subset without `none`, because a measured
+zero carries a unit, an observer and a provenance and the absence arm has a home for none of them.
+A zero there is a claim of `[0, 0, 0]`. That distinction is unrepresentable in `ℝ`, it is the
+reason `NULL` is refused throughout, and nine `CHECK` constraints hold it in the database.
+
+### The composition rule is inclusion-exclusion
+
+```
+x_composed = Σ x_parts − e            |A ∪ B| = |A| + |B| − |A ∩ B|
+```
+
+They are the same identity, with `e` in the place of `|A ∩ B|`. That framing answers the question
+the note leaves open above, which is why `e` has to be filed at all:
+
+⛔ **From `|A|` and `|B|` nothing recovers `|A ∩ B|`.** A layer carries a magnitude, never the set
+the magnitude counts, so the correction is not a function of the operands. That is the whole
+argument for `asrt:Elimination` being an observation with an `unmeasured` arm.
+
+⭐⭐ **Unless you pivot to an incidence whose elements carry measures of their own, and `F`'s do.**
+A part IS a layer, and a layer carries its own demand and nameplate. So express an overlap in the
+part basis and the correction falls out complete, with nothing filed: `eliminations/derived.sqlc`
+computes it. The test is whether the incidence's elements are themselves measured objects. `F`'s
+are; `D`'s and `N`'s are not, and the same pivot buys nothing there.
+
+⛔ What the pivot cannot name is the residue: an overlap that is a slice of a part rather than a
+whole one has no element in the pivoted basis either. That case, and only that case, is what the
+filed element is for.
+
+### The quantum, and the arithmetic of divisibility
+
+Supply arrives in whole units, so `n mod q = 0`. Two consequences the matrix formulation has no
+way to state.
+
+**A composed quantum exists, and it is the greatest common divisor.** If parts carry `q₁` and `q₂`
+in the same unit then `n₁ = a q₁` and `n₂ = b q₂`, and `{a q₁ + b q₂}` is exactly the set of
+multiples of `g = gcd(q₁, q₂)` by Bézout. So `g` divides every achievable sum and is the largest
+number that does. Asking for a "best" `q` within a single layer is the wrong question: there the
+quantum is observed, and choosing the largest divisor of `n` would infer the physics from the
+number.
+
+⭐⭐⭐ **And therefore the elimination must itself be a whole multiple of the composed quantum.**
+`n_composed = n₁ + n₂ − e`, and `g` divides the sum, so `g | n_composed` requires `g | e`. **You
+cannot eliminate half a machine.** It holds in every corpus case where it is checkable:
+`every-local-part/both-views` eliminates 2160 against `q = 12`, which is 180 whole ovens.
+
+⛔ **Across units there is no composed quantum at all, and the reason is narrower than it sounds.**
+`gcd` is a same-unit operation. `merge-holding-composition/compute` fuses `720 GPU-hour` with
+`8 GPU` and no number divides both. That is not awkward data; it is the same wall as `Φ`, which is
+what crosses units, and a conversion factor multiplies a quantum too. `g = 1` is the other
+degenerate case, where lumpiness dissolves and the composed supply is effectively continuous.
+
+### The laws are asserted, not assumed
+
+`algebra/roster.sqlc` carries one row per set-algebraic law this tree claims, and
+`examples/soundness.rs` asserts every one on every run. **A set difference anywhere in the tree
+with no law on that roster fails the build.** The laws replace what would otherwise be a hand
+probe: `|A| = |A∖B| + |A⋉B|` is checked live rather than argued in a comment.
+
+⚠️ Three places where the two algebras genuinely differ, all of which cost somebody a defect here
+before they were written down:
+
+- `σ` accumulates. `σ_p(σ_q(A)) = σ_{p∧q}(A)`, which is why a rule inherits filters it never wrote
+  and why its real population lives in files its author did not open.
+- `π` does **not** distribute over `∖`. Project first and you subtract on fewer attributes, so a
+  difference must be taken on the key.
+- Bags are not sets. `composition/descent` is a bag on purpose; deduplicating it would destroy the
+  very fact `leaf_reached_twice` exists to find.
+
+⚠️ And one cost, measured rather than assumed: `EXCEPT` is an optimisation barrier. Asking
+`composition/owed_equality` about a single composed layer evaluates the whole tree and discards
+ten of eleven rows, because a set difference must materialise both sides before it can subtract.
+The anti-join it was converted away from pushes the key predicate into all three arms. The
+conversion was made for legibility, which is a real gain; this is its price.
+
+### Both are computed, and the agreement is the claim
+
+`examples/matrices.rs` builds `F`, `Φ` and `x` in `nalgebra` and evaluates three matrix products.
+`assets/sql/` evaluates the same expression as joins and `GROUP BY`s. Neither is derived from the
+other, and the example asserts they agree to `1e-9` over the eleven composed layers that owe the
+equality. `checks/fusion_sum_disagrees` then makes it a conformance rule rather than a test.
+
+⭐ That is the point of carrying both. A matrix formulation is easy to reason about and easy to be
+wrong in silently, because every shape error still produces a number. A relational formulation is
+harder to read and fails loudly. Running both and asserting agreement is how a claim in this
+repository earns the word "checked".
 
 ## Checking it
 
