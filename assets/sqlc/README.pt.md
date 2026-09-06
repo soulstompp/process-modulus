@@ -17,6 +17,7 @@ nada lho dirá.
 ingest.sql            o Postgres a ler assets/corpus/*.xml sozinho, sem ajuda nenhuma
 matrices.sql          as matrizes, extraídas com junções — um percurso, sem lógica própria
 rules.sql             as regras a que o XSD 1.0 não chega — uma montagem, sem lógica própria
+invariance.sql        cada falha dita de uma segunda maneira, com todas as regras a correr de novo
 queries/              um diretório por exemplo, um ficheiro por secção, executáveis no psql
 ../../examples/matrices.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
@@ -37,6 +38,7 @@ composition/   F e Φ, a descida, e o que é devido     — partes, conversão, 
 eliminations/  e, o que quem compôs retirou e porquê  — apresentadas, derivadas, buscadas, suspensas
 epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos, raízes
 checks/        um ficheiro por regra: cada linha examinada, com um veredito em cada uma
+relabellings/  o que uma regra não pode notar: o mesmo sistema, dito de outra maneira
 reports/       achados que uma pessoa decide, e as duas vistas de checks/
 ```
 
@@ -86,6 +88,16 @@ psql -d process_modulus_proof -f assets/ddl/schema.ddl \
 
 Execute-se a partir da raiz do repositório — o `ingest.sql` lê `assets/corpus/*.xml` do lado do
 cliente, portanto os caminhos são relativos ao sítio onde o `psql` foi iniciado.
+
+O `invariance.sql` é uma execução à parte e faz uma pergunta diferente: haverá alguma regra que
+leia uma palavra que o modelo diz que ela não pode ler? Reescreve cada falha de uma segunda
+maneira, volta a correr todas as regras e imprime os vereditos que se mexeram. ⛔ Escreve nas
+tabelas do corpus e desfaz todas as reescritas, pelo que a base de dados que lê é a base de
+dados que deixa.
+
+```
+psql -d process_modulus_proof -f assets/sql/invariance.sql
+```
 
 A segunda metade recalcula as mesmas respostas por outra via e afirma que coincidem:
 

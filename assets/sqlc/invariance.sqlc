@@ -1,0 +1,209 @@
+-- Say each shortfall a second way and re-run every rule.
+#
+#   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/invariance.sql
+#
+# ⭐⭐⭐ WHY THIS FILE EXISTS. `HolderKind` argues one word for two different things, and the
+#    argument is good: "unserved" and not "refused" or "turned away, and the word is
+#    load-bearing because both of the other two name an ACTOR". A reserved card that errors a
+#    request did refuse it; a caller who waits past their patience was refused by nobody, they
+#    left. Then the sentence that makes it checkable: BOTH LAND IN THE SAME TWO HOLDERS, SO THE
+#    WORD COVERING THEM MUST NOT DECIDE WHICH HAPPENED. That is not a claim about the type. It
+#    is a claim about every rule in checks/, and until this file there was nothing behind it.
+#
+# ⭐⭐ A RELABELLING IS NOT A SECOND FILING. Every rewrite below holds the demand, the
+#    nameplate, the remainder, the fit, the holders and every magnitude exactly where they
+#    were, and changes only the word. So a verdict that moves cannot be blamed on a different
+#    number; the rule read the word.
+#
+# ⛔⛔⛔ NOTHING HERE IS COMMITTED, AND THAT IS THE ONLY REASON A PERTURBATION MAY TOUCH THE
+#    CORPUS TABLES AT ALL. Each rewrite runs inside its own `BEGIN` and ends at `ROLLBACK`,
+#    so the database this reads is the database it leaves. The recorded verdicts survive
+#    because the table holding them is created BEFORE the first rewrite and is never written
+#    inside one.
+#
+# ⛔⛔ THE THIRD RUN IS EXPECTED TO MOVE AND THE FILE IS WORTHLESS WITHOUT IT. A diff that is
+#    quietly comparing a relation to itself reports `steady` for everything, which is exactly
+#    what two passing invariants look like. `unserved_as_absorbed` crosses a line the rules
+#    read on purpose, so a `steady` there is not good news -- it says the harness is blind and
+#    the other two results mean nothing.
+#
+# ⛔⛔ THE DIFF COUNTS AND DOES NOT SUBTRACT, AND WRITING IT THE OBVIOUS WAY WAS WRONG.
+#    checks/all.sqlc IS A BAG: three rules examine several items per layer that produce the
+#    same sentence -- two shares against one slack, two paths through one local part -- so
+#    identical rows are legitimately repeated. `EXCEPT` deduplicates, which means a verdict
+#    that changes only HOW MANY TIMES it is said survives the difference invisibly, and the
+#    file reports `steady` on a rule that moved. Grouping and comparing the two counts keeps
+#    the multiplicity, and `said_before`/`said_after` show it. ⭐ Same distinction
+#    algebra/roster.sqlc carries in its `multiplicity` column, met here for the same reason.
+#
+# ⛔ THE REWRITES ARE STATEMENTS AND NOT RELATIONS, WHICH IS WHY THEY LIVE HERE RATHER THAN
+#   UNDER relabellings/. What each one is FOR is a relation and does live there, so somebody
+#   can read what this repository claims a rule must not notice without running anything.
+
+SET search_path TO pm, public;
+\pset border 2
+\pset null '·'
+
+\echo
+\echo '=== The relabellings, and what the model claims each one must do to a verdict. ===='
+-- relabellings/roster.sqlc: what is rewritten, the sentence it tests, and the gate.
+:compose(relabellings/roster.sqlc);
+
+-- checks/all.sqlc, recorded before anything is rewritten. Committed on its own so that the
+-- rollback ending each run below cannot take it with it.
+CREATE TEMP TABLE verdict_before AS
+:compose(checks/all.sqlc);
+
+\echo
+\echo '=== 1. refusal_as_decay ⭐ THE ONE THE ANNOTATION IS ABOUT. ======================='
+\echo 'On every layer whose own demand and nameplate imply a shortfall nobody could serve,'
+\echo 'move the empty buffer from capacity to time. Before: the supply had no room to run'
+\echo 'into. After: the demand did not survive the wait. The same quantity goes without,'
+\echo 'to the same holders, and `Layer/timeSlack` says the second one in as many words --'
+\echo '"the holder does not get to refuse, the demand DECAYED".'
+BEGIN;
+
+-- layers/stated_zero_exposure.sqlc: exactly the population the unserved rules examine.
+WITH shortfall AS (
+    SELECT z.filing, z.layer
+    FROM (
+        :compose(layers/stated_zero_exposure.sqlc)
+    ) z
+    WHERE z.exposure > 1e-9
+),
+swapped AS (
+    SELECT s.filing, s.layer,
+           CASE s.buffer WHEN 'capacity' THEN 'time' ELSE 'capacity' END::buffer AS buffer,
+           s.low, s.mode, s.high, s.unit, s.absent, s.bound_origin, s.bound_origin_absent
+    FROM shortfall JOIN pm.slack s USING (filing, layer)
+    WHERE s.buffer IN ('capacity', 'time')
+)
+UPDATE pm.slack d
+   SET low   = w.low,   mode   = w.mode, high = w.high, unit = w.unit, absent = w.absent,
+       bound_origin = w.bound_origin, bound_origin_absent = w.bound_origin_absent
+  FROM swapped w
+ WHERE (d.filing, d.layer, d.buffer) = (w.filing, w.layer, w.buffer);
+
+-- checks/all.sqlc again, over the rewritten corpus.
+CREATE TEMP TABLE verdict_after AS
+:compose(checks/all.sqlc);
+
+CREATE TEMP TABLE moved AS
+SELECT g.*
+FROM (
+    SELECT rule, filing, layer, violates, detail,
+           count(*) FILTER (WHERE side = 'before') AS said_before,
+           count(*) FILTER (WHERE side = 'after')  AS said_after
+    FROM ( SELECT 'before' AS side, v.* FROM verdict_before v
+           UNION ALL
+           SELECT 'after',          v.* FROM verdict_after  v ) u
+    GROUP BY rule, filing, layer, violates, detail
+) g
+WHERE g.said_before <> g.said_after;
+
+SELECT * FROM moved ORDER BY rule, filing, layer;
+-- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
+SELECT r.slug, r.expected, o.observed,
+       CASE WHEN r.expected = o.observed  THEN 'held'
+            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
+            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+FROM (
+    :compose(relabellings/roster.sqlc)
+) r
+CROSS JOIN (SELECT CASE WHEN count(*) > 0 THEN 'moves' ELSE 'steady' END AS observed FROM moved) o
+WHERE r.slug = 'refusal_as_decay';
+
+ROLLBACK;
+
+\echo
+\echo '=== 2. experienced_or_not ========================================================'
+\echo 'Swap the two unserved holders on every layer that names only one of them. The axis'
+\echo 'between them is whether anybody experienced it, and both are demand nobody served.'
+\echo '⚠️ A layer naming BOTH is skipped: merging two shares would invent a figure, and an'
+\echo 'invented figure is a different filing rather than the same one said differently.'
+BEGIN;
+
+UPDATE pm.holder h
+   SET kind = CASE h.kind WHEN 'customer' THEN 'unrealised' ELSE 'customer' END::holder_kind
+ WHERE h.kind IN ('customer', 'unrealised')
+   AND NOT EXISTS (SELECT 1 FROM pm.holder o
+                    WHERE (o.filing, o.layer) = (h.filing, h.layer)
+                      AND o.kind IN ('customer', 'unrealised') AND o.kind <> h.kind);
+
+-- checks/all.sqlc again, over the rewritten corpus.
+CREATE TEMP TABLE verdict_after AS
+:compose(checks/all.sqlc);
+
+CREATE TEMP TABLE moved AS
+SELECT g.*
+FROM (
+    SELECT rule, filing, layer, violates, detail,
+           count(*) FILTER (WHERE side = 'before') AS said_before,
+           count(*) FILTER (WHERE side = 'after')  AS said_after
+    FROM ( SELECT 'before' AS side, v.* FROM verdict_before v
+           UNION ALL
+           SELECT 'after',          v.* FROM verdict_after  v ) u
+    GROUP BY rule, filing, layer, violates, detail
+) g
+WHERE g.said_before <> g.said_after;
+
+SELECT * FROM moved ORDER BY rule, filing, layer;
+-- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
+SELECT r.slug, r.expected, o.observed,
+       CASE WHEN r.expected = o.observed  THEN 'held'
+            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
+            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+FROM (
+    :compose(relabellings/roster.sqlc)
+) r
+CROSS JOIN (SELECT CASE WHEN count(*) > 0 THEN 'moves' ELSE 'steady' END AS observed FROM moved) o
+WHERE r.slug = 'experienced_or_not';
+
+ROLLBACK;
+
+\echo
+\echo '=== 3. unserved_as_absorbed ⛔ THE DEFEATER. ROWS BELOW ARE THE GOOD OUTCOME. ====='
+\echo 'Call the customer who went without a person who absorbed it. This one is meant to be'
+\echo 'seen: `unserved` and `absorbed` are a difference in kind, and entries/holders.sqlc'
+\echo 'says so. If the two runs above hold still and this one does too, the diff is broken'
+\echo 'and nothing on this page is evidence of anything.'
+BEGIN;
+
+UPDATE pm.holder h
+   SET kind = 'people'
+ WHERE h.kind = 'customer'
+   AND NOT EXISTS (SELECT 1 FROM pm.holder o
+                    WHERE (o.filing, o.layer) = (h.filing, h.layer) AND o.kind = 'people');
+
+-- checks/all.sqlc again, over the rewritten corpus.
+CREATE TEMP TABLE verdict_after AS
+:compose(checks/all.sqlc);
+
+CREATE TEMP TABLE moved AS
+SELECT g.*
+FROM (
+    SELECT rule, filing, layer, violates, detail,
+           count(*) FILTER (WHERE side = 'before') AS said_before,
+           count(*) FILTER (WHERE side = 'after')  AS said_after
+    FROM ( SELECT 'before' AS side, v.* FROM verdict_before v
+           UNION ALL
+           SELECT 'after',          v.* FROM verdict_after  v ) u
+    GROUP BY rule, filing, layer, violates, detail
+) g
+WHERE g.said_before <> g.said_after;
+
+SELECT * FROM moved ORDER BY rule, filing, layer;
+-- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
+SELECT r.slug, r.expected, o.observed,
+       CASE WHEN r.expected = o.observed  THEN 'held'
+            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
+            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+FROM (
+    :compose(relabellings/roster.sqlc)
+) r
+CROSS JOIN (SELECT CASE WHEN count(*) > 0 THEN 'moves' ELSE 'steady' END AS observed FROM moved) o
+WHERE r.slug = 'unserved_as_absorbed';
+
+ROLLBACK;
+
+DROP TABLE verdict_before;

@@ -107,7 +107,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .flatten()
         .map(|e| fs::read_to_string(e.path()).unwrap_or_default())
         .collect();
-    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc"];
+    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc"];
 
     let mut unobserved: Vec<&str> = Vec::new();
     for (name, _) in &files {

@@ -14,6 +14,7 @@ you touch anything, or your edit is gone on the next run and nothing will tell y
 ingest.sql            Postgres reading assets/corpus/*.xml itself, with no help
 matrices.sql          the matrices, pulled out with joins — a tour, holding no logic
 rules.sql             the rules XSD 1.0 cannot reach — an assembly, holding no logic
+invariance.sql        each shortfall said a second way, and every rule re-run on it
 queries/              one directory per example, one file per section, each runnable in psql
 ../../examples/matrices.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
@@ -34,6 +35,7 @@ composition/   F and Φ, the walk, and what it owes     — parts, conversion, d
 eliminations/  e, what a composer took out and why     — filed, derived, searched, suspended
 epistemics/    what the documents say about knowing    — absences, searches, widths, edges, roots
 checks/        one file per rule: every row it examined, with a verdict on each
+relabellings/  what a rule must not notice: the same system, said differently
 reports/       findings a person settles, and the two views of checks/
 ```
 
@@ -82,6 +84,15 @@ psql -d process_modulus_proof -f assets/ddl/schema.ddl \
 
 Run it from the repository root — `ingest.sql` reads `assets/corpus/*.xml` from the client
 side, so paths are relative to wherever you started `psql`.
+
+`invariance.sql` is a separate run, and it asks a different question: does any rule read a word
+the model says it must not? It rewrites each shortfall a second way, re-runs every rule, and
+prints the verdicts that moved. ⛔ It writes to the corpus tables and rolls every rewrite back,
+so the database it reads is the database it leaves.
+
+```
+psql -d process_modulus_proof -f assets/sql/invariance.sql
+```
 
 The second half recomputes the same answers a different way and asserts they match:
 
