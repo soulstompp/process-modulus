@@ -1,0 +1,33 @@
+# EVERY EXPOSED LAYER LANDS IN EXACTLY ONE STANDING. One row: how many layers carry an exposure,
+# how many were classified, and how many were classified twice.
+#
+# ⭐⭐⭐ A PARTITION FAILS TO A SMALLER POPULATION, NEVER TO AN ERROR. A layer falling through all
+#    three arms vanishes from the census and from the rules that read the third one, and the
+#    coverage table then reports a cleaner verdict than it earned. `CASE` has an `ELSE`, so the
+#    arms cannot all miss today, and that is exactly the kind of guarantee an edit removes
+#    silently. Counting both sides is what catches it.
+#
+# ⛔ THE JOIN INSIDE layers/exposure_scope IS THE RISK. layers/absorption.sqlc groups the slack
+#   matrix by layer, so it is one row per layer by construction. If it ever stops being one, the
+#   exposed layers fan out, every standing count still looks reasonable, and the third arm feeds
+#   two rules twice.
+-- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'layers/exposure_scope' AS subject,
+           x.exposed = x.classified AND x.doubled = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice',
+                  x.exposed, x.classified, x.doubled) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/remainder.sqlc) ) r
+               WHERE r.exposure > 1e-9)                                          AS exposed,
+             (SELECT count(*) FROM ( :compose(layers/exposure_scope.sqlc) ) z)   AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer
+                                     FROM ( :compose(layers/exposure_scope.sqlc) ) z
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+         ) x
+) p ON true
+WHERE a.slug = 'exposure_standing'

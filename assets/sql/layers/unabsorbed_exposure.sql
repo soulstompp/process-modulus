@@ -1,29 +1,4 @@
--- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
-SELECT a.site, p.filing, p.layer, p.verdict, p.detail
-FROM      (
-    -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
-SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = q / clearance',   'quantum x remainder',             NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
-) AS a(slug, site, operands, guarded_by)
-
-) a
-LEFT JOIN (
-    SELECT x.filing, x.layer,
-           CASE WHEN u.unstated > 0                        THEN 'suspended'
-                WHEN u.share_units <> ARRAY[x.unit]        THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           format('exposure %s in %s against %s unserved holder(s)',
-                  round(x.exposure, 3), x.unit, u.holders) AS detail
-    FROM      (
-        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
+-- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
     -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
@@ -102,32 +77,3 @@ WHERE r.exposure > 1e-9
 
 ) s
 WHERE s.standing = 'every buffer sized and empty'
-
-    ) x
-    JOIN      (
-        -- entries/unserved_holders.sqlc folded to one row per layer.
-SELECT h.filing, h.layer,
-       count(*)                                        AS holders,
-       count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
-       sum(h.share_high)                                AS unserved_high,
-       sum(h.share_mode)                                AS unserved_mode,
-       array_agg(DISTINCT h.share_unit)                 AS share_units
-FROM (
-    -- pm:HolderKind values `customer` and `unrealised`.
-SELECT h.*
-FROM (
-    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
-SELECT h.filing, h.layer, h.kind,
-       h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
-       h.party, h.as_of
-FROM pm.holder h
-
-) h
-WHERE h.kind IN ('customer', 'unrealised')
-
-) h
-GROUP BY h.filing, h.layer
-
-    ) u USING (filing, layer)
-) p ON true
-WHERE a.slug = 'exposure_bounded'

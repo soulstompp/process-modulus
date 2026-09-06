@@ -343,7 +343,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -368,30 +368,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -438,7 +423,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (

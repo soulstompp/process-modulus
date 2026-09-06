@@ -1,5 +1,5 @@
-# EVERY SUPPLY THAT CANNOT RUN HOT, AND WHETHER ITS EXPOSURE CAN BE SET AGAINST WHO WENT
-# WITHOUT. One row per layer filing a stated-zero capacity buffer.
+# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS, AND WHETHER ITS EXPOSURE CAN BE SET AGAINST WHO
+# WENT WITHOUT. One row per layer whose every buffer is accounted for and empty.
 #
 # ⭐⭐ `exposure` IS THE ONLY FIGURE IN THIS MODEL WITH NO INSTRUMENT BEHIND IT -- the ceiling
 #    the filer's own demand and nameplate imply -- and the shares it is compared against ARE
@@ -7,7 +7,7 @@
 #
 # ⛔ AN UNSTATED UNSERVED SHARE SUSPENDS THE INEQUALITY. checks/exposure_unaccounted drops
 #   those layers with a WHERE; this relation reports them as suspended instead of as absent.
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
@@ -20,7 +20,7 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        :compose(layers/stated_zero_exposure.sqlc)
+        :compose(layers/unabsorbed_exposure.sqlc)
     ) x
     JOIN      (
         :compose(entries/unserved_totals.sqlc)

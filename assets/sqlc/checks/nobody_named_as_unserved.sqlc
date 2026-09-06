@@ -1,16 +1,18 @@
-# EVERY SUPPLY THAT CANNOT RUN HOT AND HAS DEMAND NOBODY COULD SERVE, BESIDE WHETHER ANYBODY
-# IS NAMED AS HAVING GONE WITHOUT. One row per examined layer, `violates` where no unserved
+# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS AND DEMAND NOBODY COULD SERVE, BESIDE WHETHER
+# ANYBODY IS NAMED AS HAVING GONE WITHOUT. One row per examined layer, `violates` where no unserved
 # holder appears.
 #
-# ⭐⭐⭐ THE RULE, AND THE ARGUMENT IS ENTIRELY IN THE WORD "MEASURED". If the capacity buffer
-#    was checked and found empty, the supply CANNOT have absorbed the excess by running
-#    harder -- there was nothing to run into. So the demand above the nameplate went unserved,
-#    and somebody has to be named as having gone without. An UNMEASURED capacity slack
-#    licenses none of this, because nobody knows whether the supply could have stretched.
+# ⭐⭐⭐ THE RULE, AND THE ARGUMENT IS ENTIRELY IN THE WORD "EVERY". If every buffer was
+#    accounted for and none of them had room, the excess above the nameplate CANNOT have been
+#    absorbed by running hot, by drawing on stock or by making the demand wait. There was
+#    nowhere to go, so it went unserved and somebody has to be named as having gone without.
+#    ONE UNMEASURED BUFFER LICENSES NONE OF THIS, whatever the other two say, because nobody
+#    knows what that route could have taken. layers/exposure_scope.sqlc classifies all three
+#    standings; this rule reads the one that concludes anything.
 #
 # ⛔ THE VIOLATION IS AN ANTI-JOIN AGAINST entries/unserved_holders.sqlc, which the clearance
 #   check semi-joins and the exposure check sums. One relation, three readings.
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -22,7 +24,7 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            :compose(layers/stated_zero_exposure.sqlc)
+            :compose(layers/unabsorbed_exposure.sqlc)
         ) e
         WHERE e.exposure > 1e-9
     ) c

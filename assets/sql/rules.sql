@@ -17,7 +17,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -111,7 +111,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -218,14 +218,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -258,30 +258,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -328,7 +313,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -351,14 +359,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -387,34 +395,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -461,7 +455,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -501,7 +518,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -641,7 +658,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -724,7 +741,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -818,7 +835,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -918,7 +935,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -984,7 +1001,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1095,7 +1112,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1174,7 +1191,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1297,7 +1314,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1458,7 +1475,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1522,7 +1539,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1586,7 +1603,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1649,7 +1666,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1751,7 +1768,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1830,7 +1847,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1909,7 +1926,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -1970,7 +1987,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -2160,7 +2177,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -2224,7 +2241,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -2318,7 +2335,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3172,7 +3189,7 @@ FROM (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3221,6 +3238,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
  ) g
@@ -3235,7 +3253,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3329,7 +3347,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3436,14 +3454,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3476,30 +3494,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -3546,7 +3549,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -3569,14 +3595,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3605,34 +3631,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -3679,7 +3691,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -3719,7 +3754,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3859,7 +3894,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -3942,7 +3977,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4036,7 +4071,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4136,7 +4171,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4202,7 +4237,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4313,7 +4348,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4392,7 +4427,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4515,7 +4550,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4676,7 +4711,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4740,7 +4775,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4804,7 +4839,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4867,7 +4902,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -4969,7 +5004,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5048,7 +5083,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5127,7 +5162,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5188,7 +5223,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5378,7 +5413,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5442,7 +5477,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5536,7 +5571,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -5965,7 +6000,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -5990,30 +6025,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -6060,7 +6080,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -6423,6 +6466,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -6548,6 +6592,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -6776,6 +6821,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -6928,6 +6974,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -6943,7 +6990,7 @@ LEFT JOIN (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -6972,7 +7019,7 @@ SELECT * FROM (VALUES
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7006,7 +7053,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7100,7 +7147,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7207,14 +7254,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7247,30 +7294,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -7317,7 +7349,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -7340,14 +7395,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7376,34 +7431,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -7450,7 +7491,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -7490,7 +7554,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7630,7 +7694,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7713,7 +7777,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7807,7 +7871,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7907,7 +7971,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -7973,7 +8037,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8084,7 +8148,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8163,7 +8227,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8286,7 +8350,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8447,7 +8511,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8511,7 +8575,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8575,7 +8639,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8638,7 +8702,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8740,7 +8804,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8819,7 +8883,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8898,7 +8962,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -8959,7 +9023,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9149,7 +9213,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9213,7 +9277,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9307,7 +9371,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9394,7 +9458,7 @@ WHERE r.slug = 'denied_remainder_is_not_contradicted'
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9427,7 +9491,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9521,7 +9585,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9628,14 +9692,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9668,30 +9732,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -9738,7 +9787,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -9761,14 +9833,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -9797,34 +9869,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -9871,7 +9929,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -9911,7 +9992,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10051,7 +10132,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10134,7 +10215,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10228,7 +10309,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10328,7 +10409,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10394,7 +10475,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10505,7 +10586,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10584,7 +10665,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10707,7 +10788,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10868,7 +10949,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10932,7 +11013,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -10996,7 +11077,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11059,7 +11140,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11161,7 +11242,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11240,7 +11321,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11319,7 +11400,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11380,7 +11461,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11570,7 +11651,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11634,7 +11715,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -11728,7 +11809,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -12185,7 +12266,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -12210,30 +12291,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -12280,7 +12346,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -12987,7 +13076,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -13012,30 +13101,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -13082,7 +13156,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -13447,6 +13544,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -13512,6 +13610,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -13867,7 +13966,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -13892,30 +13991,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -13962,7 +14046,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -14329,6 +14436,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -14616,6 +14724,230 @@ FROM pm.stack_scope ss
 ) p ON true
 WHERE a.slug = 'remainder_standing'
 UNION ALL
+-- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'layers/exposure_scope' AS subject,
+           x.exposed = x.classified AND x.doubled = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice',
+                  x.exposed, x.classified, x.doubled) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+ ) r
+               WHERE r.exposure > 1e-9)                                          AS exposed,
+             (SELECT count(*) FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z)   AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer
+                                     FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+         ) x
+) p ON true
+WHERE a.slug = 'exposure_standing'
+UNION ALL
 -- epistemics/searches.sqlc against the two relations it unions.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -14628,6 +14960,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -14684,7 +15017,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -14778,7 +15111,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -14885,14 +15218,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -14925,30 +15258,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -14995,7 +15313,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -15018,14 +15359,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15054,34 +15395,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -15128,7 +15455,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -15168,7 +15518,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15308,7 +15658,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15391,7 +15741,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15485,7 +15835,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15585,7 +15935,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15651,7 +16001,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15762,7 +16112,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15841,7 +16191,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -15964,7 +16314,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16125,7 +16475,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16189,7 +16539,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16253,7 +16603,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16316,7 +16666,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16418,7 +16768,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16497,7 +16847,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16576,7 +16926,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16637,7 +16987,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16827,7 +17177,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16891,7 +17241,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -16985,7 +17335,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -17414,7 +17764,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -17439,30 +17789,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -17509,7 +17844,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -17872,6 +18230,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -17997,6 +18356,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -18225,6 +18585,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -18377,6 +18738,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -18392,7 +18754,7 @@ LEFT JOIN (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18421,7 +18783,7 @@ SELECT * FROM (VALUES
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18455,7 +18817,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18549,7 +18911,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18656,14 +19018,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18696,30 +19058,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -18766,7 +19113,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -18789,14 +19159,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -18825,34 +19195,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -18899,7 +19255,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -18939,7 +19318,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19079,7 +19458,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19162,7 +19541,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19256,7 +19635,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19356,7 +19735,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19422,7 +19801,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19533,7 +19912,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19612,7 +19991,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19735,7 +20114,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19896,7 +20275,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -19960,7 +20339,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20024,7 +20403,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20087,7 +20466,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20189,7 +20568,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20268,7 +20647,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20347,7 +20726,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20408,7 +20787,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20598,7 +20977,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20662,7 +21041,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20756,7 +21135,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20843,7 +21222,7 @@ WHERE r.slug = 'denied_remainder_is_not_contradicted'
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20876,7 +21255,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -20970,7 +21349,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21077,14 +21456,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21117,30 +21496,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -21187,7 +21551,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -21210,14 +21597,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21246,34 +21633,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -21320,7 +21693,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -21360,7 +21756,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21500,7 +21896,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21583,7 +21979,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21677,7 +22073,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21777,7 +22173,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21843,7 +22239,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -21954,7 +22350,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22033,7 +22429,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22156,7 +22552,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22317,7 +22713,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22381,7 +22777,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22445,7 +22841,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22508,7 +22904,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22610,7 +23006,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22689,7 +23085,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22768,7 +23164,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -22829,7 +23225,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -23019,7 +23415,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -23083,7 +23479,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -23177,7 +23573,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -23634,7 +24030,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -23659,30 +24055,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -23729,7 +24110,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -24436,7 +24840,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -24461,30 +24865,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -24531,7 +24920,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -24896,6 +25308,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -24961,6 +25374,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -25316,7 +25730,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -25341,30 +25755,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -25411,7 +25810,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -25778,6 +26200,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -26065,6 +26488,230 @@ FROM pm.stack_scope ss
 ) p ON true
 WHERE a.slug = 'remainder_standing'
 UNION ALL
+-- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'layers/exposure_scope' AS subject,
+           x.exposed = x.classified AND x.doubled = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice',
+                  x.exposed, x.classified, x.doubled) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+ ) r
+               WHERE r.exposure > 1e-9)                                          AS exposed,
+             (SELECT count(*) FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z)   AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer
+                                     FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+         ) x
+) p ON true
+WHERE a.slug = 'exposure_standing'
+UNION ALL
 -- epistemics/searches.sqlc against the two relations it unions.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -26077,6 +26724,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -26126,7 +26774,7 @@ WHERE a.slug = 'searches'
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26175,6 +26823,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
  ) g
@@ -26192,7 +26841,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26286,7 +26935,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26393,14 +27042,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26433,30 +27082,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -26503,7 +27137,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -26526,14 +27183,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26562,34 +27219,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -26636,7 +27279,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -26676,7 +27342,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26816,7 +27482,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26899,7 +27565,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -26993,7 +27659,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27093,7 +27759,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27159,7 +27825,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27270,7 +27936,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27349,7 +28015,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27472,7 +28138,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27633,7 +28299,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27697,7 +28363,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27761,7 +28427,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27824,7 +28490,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -27926,7 +28592,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28005,7 +28671,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28084,7 +28750,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28145,7 +28811,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28335,7 +29001,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28399,7 +29065,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28493,7 +29159,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -28923,7 +29589,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -28948,30 +29614,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -29018,7 +29669,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -29382,6 +30056,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -29507,6 +30182,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -29735,6 +30411,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -29887,6 +30564,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -29902,7 +30580,7 @@ LEFT JOIN (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -29931,7 +30609,7 @@ SELECT * FROM (VALUES
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -29965,7 +30643,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30059,7 +30737,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30166,14 +30844,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30206,30 +30884,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -30276,7 +30939,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -30299,14 +30985,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30335,34 +31021,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -30409,7 +31081,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -30449,7 +31144,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30589,7 +31284,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30672,7 +31367,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30766,7 +31461,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30866,7 +31561,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -30932,7 +31627,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31043,7 +31738,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31122,7 +31817,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31245,7 +31940,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31406,7 +32101,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31470,7 +32165,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31534,7 +32229,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31597,7 +32292,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31699,7 +32394,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31778,7 +32473,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31857,7 +32552,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -31918,7 +32613,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32108,7 +32803,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32172,7 +32867,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32266,7 +32961,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32353,7 +33048,7 @@ WHERE r.slug = 'denied_remainder_is_not_contradicted'
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32386,7 +33081,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32480,7 +33175,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32587,14 +33282,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32627,30 +33322,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -32697,7 +33377,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -32720,14 +33423,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -32756,34 +33459,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -32830,7 +33519,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -32870,7 +33582,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33010,7 +33722,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33093,7 +33805,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33187,7 +33899,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33287,7 +33999,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33353,7 +34065,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33464,7 +34176,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33543,7 +34255,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33666,7 +34378,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33827,7 +34539,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33891,7 +34603,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -33955,7 +34667,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34018,7 +34730,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34120,7 +34832,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34199,7 +34911,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34278,7 +34990,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34339,7 +35051,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34529,7 +35241,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34593,7 +35305,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -34687,7 +35399,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -35144,7 +35856,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -35169,30 +35881,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -35239,7 +35936,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -35946,7 +36666,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -35971,30 +36691,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -36041,7 +36746,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -36406,6 +37134,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -36471,6 +37200,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -36826,7 +37556,7 @@ WHERE n.draw_mode   IS NOT NULL
 ) p ON true
 WHERE a.slug = 'draw_bounded'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -36851,30 +37581,15 @@ LEFT JOIN (
            format('exposure %s in %s against %s unserved holder(s)',
                   round(x.exposure, 3), x.unit, u.holders) AS detail
     FROM      (
-        -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+        -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -36921,7 +37636,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
     ) x
     JOIN      (
@@ -37288,6 +38026,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -37575,6 +38314,230 @@ FROM pm.stack_scope ss
 ) p ON true
 WHERE a.slug = 'remainder_standing'
 UNION ALL
+-- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'layers/exposure_scope' AS subject,
+           x.exposed = x.classified AND x.doubled = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice',
+                  x.exposed, x.classified, x.doubled) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+ ) r
+               WHERE r.exposure > 1e-9)                                          AS exposed,
+             (SELECT count(*) FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z)   AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer
+                                     FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+         ) x
+) p ON true
+WHERE a.slug = 'exposure_standing'
+UNION ALL
 -- epistemics/searches.sqlc against the two relations it unions.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -37587,6 +38550,7 @@ SELECT * FROM (VALUES
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
   ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
 ) AS a(slug, law, governs, form, multiplicity)
 
@@ -37655,7 +38619,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -37749,7 +38713,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -37856,14 +38820,14 @@ GROUP BY h.filing, h.layer
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
+-- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -37896,30 +38860,15 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -37966,7 +38915,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) e
         WHERE e.exposure > 1e-9
@@ -37989,14 +38961,14 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38025,34 +38997,20 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
-SELECT r.*
-FROM      (
-    -- pm:Nameplate/pm:capacitySlack, zero either way.
-SELECT z.filing, z.layer, z.high AS zero
-FROM (
-    -- a slack element with a stated pm:Claim whose bounds are zero.
+            -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-) z
-WHERE z.buffer = 'capacity'
-
-) z
-JOIN      (
+    -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
+FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
@@ -38099,7 +39057,30 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-) r USING (filing, layer)
+) r
+JOIN      (
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s
+GROUP BY s.filing, s.layer
+
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+
+) s
+WHERE s.standing = 'every buffer sized and empty'
 
         ) x
         JOIN      (
@@ -38139,7 +39120,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38279,7 +39260,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38362,7 +39343,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38456,7 +39437,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38556,7 +39537,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38622,7 +39603,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38733,7 +39714,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38812,7 +39793,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -38935,7 +39916,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39096,7 +40077,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39160,7 +40141,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39224,7 +40205,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39287,7 +40268,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39389,7 +40370,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39468,7 +40449,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39547,7 +40528,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39608,7 +40589,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39798,7 +40779,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39862,7 +40843,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
@@ -39956,7 +40937,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),

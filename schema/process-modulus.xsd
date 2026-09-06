@@ -4387,15 +4387,19 @@
 
           ⛔ AND HALF OF IT IS STILL UNEXERCISED, WHICH IS THE POINT OF SAYING SO.
           The corpus now sizes this slack, and every layer that does files
-          `[0, 0, 0]`. A stated zero is what makes the rule computable, because
-          only a filer saying the buffer is empty licenses the conclusion that the
-          excess went unserved. It also means the `capacitySlack.high` term has
+          `[0, 0, 0]`. A stated zero is what makes anything computable here,
+          because only a filer saying the buffer is empty licenses a conclusion
+          about what that route could have taken. ⚠️ ONE BUFFER IS NOT THE
+          LICENCE, THOUGH. The three are substitutes, so concluding that an excess
+          went UNSERVED needs every route accounted for and none of them with room:
+          a capacity zero beside an unmeasured queue says one door is shut and says
+          nothing whatever about the others. It also means the `capacitySlack.high` term has
           never been anything but zero: nobody has yet measured how far a supply
           can run ABOVE its rating, so that term is carried and never tested. The
           cure is a measurement, not a figure invented to give the rule something
-          to chew on. `assets/sql/entries/stated_zero_capacity.sql` is the
-          population, and the `boundOrigin` beside each row says how the zero came
-          to be one.
+          to chew on. `assets/sql/layers/exposure_scope.sql` is the population and
+          sorts it by which of the three standings a layer is in, and the
+          `boundOrigin` beside each sized row says how the zero came to be one.
 
           SEE ALSO
 
@@ -4465,12 +4469,16 @@
       ⛔ E METADE DISTO CONTINUA POR EXERCITAR, QUE É A RAZÃO DE O DIZER. O corpus já dimensiona
       esta margem, e todas as camadas que o fazem declaram `[0, 0, 0]`. É o zero declarado que torna
       a regra calculável, porque só um declarante a dizer que o amortecedor está vazio licencia a
-      conclusão de que o excesso não foi servido. Também quer dizer que o termo `capacitySlack.high`
+      conclusão sobre o que esse caminho poderia ter levado. ⚠️ UM AMORTECEDOR SÓ NÃO É A LICENÇA. Os três
+      são substitutos, portanto concluir que um excesso ficou POR SERVIR exige todos os caminhos
+      contabilizados e nenhum com espaço: um zero de capacidade ao lado de uma fila por medir diz que
+      uma porta está fechada e não diz absolutamente nada sobre as outras. Também quer dizer que o termo `capacitySlack.high`
       nunca foi outra coisa senão zero: ninguém mediu ainda até onde uma oferta consegue correr ACIMA
       do seu valor nominal, portanto esse termo é carregado e nunca posto à prova. A cura é uma
       medição, e não uma figura inventada para dar à regra algo que mastigar. O
-      `assets/sql/entries/stated_zero_capacity.sql` é a população, e o `boundOrigin` ao lado de cada
-      linha diz por que via o zero veio a ser zero.
+      `assets/sql/layers/exposure_scope.sql` é a população e arruma-a por qual dos três estados a
+      camada ocupa, e o `boundOrigin` ao lado de cada linha dimensionada diz por que via o zero veio
+      a ser zero.
 
       VER TAMBÉM
 

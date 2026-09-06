@@ -5,7 +5,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('fit_disagrees',                        'sign agrees with the range comparison'),
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),

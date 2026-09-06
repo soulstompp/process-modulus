@@ -63,11 +63,11 @@ CREATE TEMP TABLE verdict_before AS
 \echo '"the holder does not get to refuse, the demand DECAYED".'
 BEGIN;
 
--- layers/stated_zero_exposure.sqlc: exactly the population the unserved rules examine.
+-- layers/unabsorbed_exposure.sqlc: exactly the population the unserved rules examine.
 WITH shortfall AS (
     SELECT z.filing, z.layer
     FROM (
-        :compose(layers/stated_zero_exposure.sqlc)
+        :compose(layers/unabsorbed_exposure.sqlc)
     ) z
     WHERE z.exposure > 1e-9
 ),

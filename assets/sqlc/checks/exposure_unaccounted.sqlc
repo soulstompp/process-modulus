@@ -1,4 +1,4 @@
-# EVERY SUPPLY THAT CANNOT RUN HOT AND STATES ALL ITS UNSERVED SHARES, BESIDE WHAT ITS OWN
+# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS THAT STATES ALL ITS UNSERVED SHARES, BESIDE WHAT ITS OWN
 # NUMBERS SAY WENT UNSERVED. One row per examined layer, `violates` where the exposure
 # exceeds what anybody admits.
 #
@@ -7,7 +7,9 @@
 #    largest demand against the smallest supply. What could have gone unserved is at most
 #    what the buffer can absorb plus what they admit went unserved, and the buffer here
 #    absorbs nothing by their own measurement. So the whole exposure has to be accounted for
-#    in the holder rows.
+#    in the holder rows. ⭐ `absorbable` is now READ rather than assumed: it is a sum across
+#    the whole buffer row and it is zero by construction of this population, where the literal
+#    `0` in the sentence below was a claim about the capacity column alone.
 #
 # ⛔⛔ EVALUATED AT THE HIGH CORNER, ON PURPOSE. The two sides of a transition fit are
 #    ANTI-CORRELATED -- the week demand ran highest is not the week supply ran lowest -- so
@@ -23,7 +25,7 @@
 #    three of them real. arithmetic/exposure_bounded.sqlc, the site this rule guards, inner-joins
 #    and declares three; a guard and its site disagreeing about their population is the guard's
 #    defect, and reports/coverage.sqlc was counting the difference as coverage.
--- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
+-- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -31,11 +33,12 @@ FROM      (
 LEFT JOIN (
     SELECT e.filing, e.layer,
            e.exposure > e.unserved + 1e-9 AS violates,
-           format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
+           format('exposure %s, absorbable %s, unserved %s',
+                  e.exposure, e.absorbable, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
+        SELECT x.filing, x.layer, x.exposure, x.absorbable, u.unserved_high AS unserved
         FROM      (
-            :compose(layers/stated_zero_exposure.sqlc)
+            :compose(layers/unabsorbed_exposure.sqlc)
         ) x
         JOIN      (
             :compose(entries/unserved_totals.sqlc)

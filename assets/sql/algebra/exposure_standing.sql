@@ -1,4 +1,4 @@
--- layers/remainder.sqlc against layers/remainder_scope.sqlc.
+-- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
     -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
@@ -16,10 +16,10 @@ SELECT * FROM (VALUES
 
 ) a
 LEFT JOIN (
-    SELECT 'layers/remainder_scope' AS subject,
-           x.computable = x.classified AND x.doubled = 0 AS holds,
-           format('%s computable remainders, %s classified, %s classified twice',
-                  x.computable, x.classified, x.doubled) AS detail
+    SELECT 'layers/exposure_scope' AS subject,
+           x.exposed = x.classified AND x.doubled = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice',
+                  x.exposed, x.classified, x.doubled) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
@@ -66,16 +66,13 @@ WHERE n.amount_low IS NOT NULL
 
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
- ) r)       AS computable,
-             (SELECT count(*) FROM ( -- layers/remainder.sqlc against pm:Stack/pm:scope, pm:Couplings/pm:absent and entries/spillovers.sqlc.
-SELECT r.filing, r.layer,
-       sc.extent,
-       cs.answer AS search,
-       sp.observed_in AS spilled_from,
-       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'
-            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'
-            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'
-            ELSE 'bounded and the pairs answered' END AS standing
+ ) r
+               WHERE r.exposure > 1e-9)                                          AS exposed,
+             (SELECT count(*) FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
 FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
@@ -124,71 +121,33 @@ WHERE n.amount_low IS NOT NULL
 JOIN pm.layer l USING (filing, layer)
 
 ) r
-LEFT JOIN (
-    -- pm:Stack/pm:scope, with its pm:basis.
-SELECT ss.filing, ss.extent, ss.basis, ss.absent
-FROM pm.stack_scope ss
-
-) sc ON sc.filing = r.filing
-LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
-) cs ON cs.filing = r.filing
-LEFT JOIN ( SELECT DISTINCT borne_by, from_layer, observed_in FROM (
-    -- pm:Couplings/pm:coupling, projected onto every other filing holding both of its ends.
-SELECT c.filing        AS observed_in,
-       b.filing        AS borne_by,
-       c.from_layer,
-       c.to_layer,
-       c.mode          AS observed_mode,
-       c.unit          AS observed_unit,
-       s.answer        AS their_search,
-       sc.extent       AS their_extent
-FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
-SELECT c.filing, c.from_layer, c.to_layer,
-       c.low, c.mode, c.high, c.unit, c.observation
-FROM pm.coupling c
-
-) c
 JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
 
-) b  ON b.layer = c.from_layer AND b.filing <> c.filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
+) s
+GROUP BY s.filing, s.layer
 
-) b2 ON b2.filing = b.filing AND b2.layer = c.to_layer
-LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
-) s  ON s.filing = b.filing
-LEFT JOIN (
-    -- pm:Stack/pm:scope, with its pm:basis.
-SELECT ss.filing, ss.extent, ss.basis, ss.absent
-FROM pm.stack_scope ss
-
-) sc ON sc.filing = b.filing
-
-) x ) sp ON sp.borne_by = r.filing AND sp.from_layer = r.layer
- ) z) AS classified,
-             (SELECT count(*) FROM ( SELECT filing, layer FROM ( -- layers/remainder.sqlc against pm:Stack/pm:scope, pm:Couplings/pm:absent and entries/spillovers.sqlc.
-SELECT r.filing, r.layer,
-       sc.extent,
-       cs.answer AS search,
-       sp.observed_in AS spilled_from,
-       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'
-            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'
-            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'
-            ELSE 'bounded and the pairs answered' END AS standing
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
+ ) z)   AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer
+                                     FROM ( -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
+SELECT r.*, a.absorbable, a.unknown,
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
+            ELSE                       'every buffer sized and empty' END AS standing
 FROM      (
     -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
@@ -237,63 +196,28 @@ WHERE n.amount_low IS NOT NULL
 JOIN pm.layer l USING (filing, layer)
 
 ) r
-LEFT JOIN (
-    -- pm:Stack/pm:scope, with its pm:basis.
-SELECT ss.filing, ss.extent, ss.basis, ss.absent
-FROM pm.stack_scope ss
-
-) sc ON sc.filing = r.filing
-LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
-) cs ON cs.filing = r.filing
-LEFT JOIN ( SELECT DISTINCT borne_by, from_layer, observed_in FROM (
-    -- pm:Couplings/pm:coupling, projected onto every other filing holding both of its ends.
-SELECT c.filing        AS observed_in,
-       b.filing        AS borne_by,
-       c.from_layer,
-       c.to_layer,
-       c.mode          AS observed_mode,
-       c.unit          AS observed_unit,
-       s.answer        AS their_search,
-       sc.extent       AS their_extent
-FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
-SELECT c.filing, c.from_layer, c.to_layer,
-       c.low, c.mode, c.high, c.unit, c.observation
-FROM pm.coupling c
-
-) c
 JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
+    -- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+SELECT s.filing, s.layer,
+       sum(coalesce(s.high, 0))
+         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+       count(*)
+         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
+FROM (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
 
-) b  ON b.layer = c.from_layer AND b.filing <> c.filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
+) s
+GROUP BY s.filing, s.layer
 
-) b2 ON b2.filing = b.filing AND b2.layer = c.to_layer
-LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
-) s  ON s.filing = b.filing
-LEFT JOIN (
-    -- pm:Stack/pm:scope, with its pm:basis.
-SELECT ss.filing, ss.extent, ss.basis, ss.absent
-FROM pm.stack_scope ss
-
-) sc ON sc.filing = b.filing
-
-) x ) sp ON sp.borne_by = r.filing AND sp.from_layer = r.layer
+) a USING (filing, layer)
+WHERE r.exposure > 1e-9
  ) z
                                      GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
          ) x
 ) p ON true
-WHERE a.slug = 'remainder_standing'
+WHERE a.slug = 'exposure_standing'

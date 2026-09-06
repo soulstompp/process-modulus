@@ -1,0 +1,30 @@
+# EVERY EXPOSURE THAT HAD NOWHERE TO GO. One row per layer where every buffer is accounted for
+# and none of them has room, beside the exposure its own two measurements imply.
+#
+# ⭐⭐⭐ THE ARGUMENT IS THE WHOLE ROW AND IT USED TO BE ONE COLUMN. This read "the capacity
+#    buffer is a stated zero", and that is one route closed rather than nowhere to go: the same
+#    layer could still have drawn on stock or made the demand wait. Two rules rest on this
+#    population, and both concluded that somebody went without from a premise that did not
+#    carry it. `S` is an L x 3 matrix and the three buffers are substitutes; the index belongs
+#    in a column, which is where assets/ddl/schema.ddl has always kept it.
+#
+# ⭐⭐ AND THE ESCAPE CLAUSE THAT MAKES IT SOUND WAS ALREADY WRITTEN, FOR ONE BUFFER. "An absent
+#    capacity slack licenses none of this, because nobody knows whether the supply could have
+#    stretched." That is true of all three and was carried to none of the others.
+#
+# ✅⛔ AND IT RESTS ON `stated`, NOT ON `measured`. Once every zero carried a `boundOrigin` the
+#    population could be read back, and none of the capacity zeros was measured: `contractual`,
+#    a reserved block somebody negotiated, and `intrinsic`, a material limit. A shelf life
+#    entails a zero, a negotiation fixes one, an observation records one, and all three are
+#    somebody saying the buffer is empty and standing behind it.
+#
+# ⛔ TWO RULES READ THIS RELATION AND THEY ASK DIFFERENT QUESTIONS OF IT. One wants the layers
+#   with no named holder; the other wants every one of them, against the shares that were
+#   admitted. They shared these joins in two inlined copies before this file existed, which is
+#   one edit away from two populations under one argument.
+-- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
+SELECT s.*
+FROM (
+    :compose(layers/exposure_scope.sqlc)
+) s
+WHERE s.standing = 'every buffer sized and empty'

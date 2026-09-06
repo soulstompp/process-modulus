@@ -19,4 +19,5 @@
            algebra/borne.sqlc,
            algebra/arithmetic_class.sqlc,
            algebra/remainder_standing.sqlc,
+           algebra/exposure_standing.sqlc,
            algebra/searches.sqlc)
