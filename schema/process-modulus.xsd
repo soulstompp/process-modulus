@@ -305,8 +305,23 @@
         transition    the ranges overlap              partly each way
         interference  nameplate.high ≤ demand.low     the WHOLE range interferes
 
-      Total and exhaustive: three cases, mutually exclusive, covering every pair of ranges.
-      `mostLikely` decides nothing here.
+      Total and exhaustive: three cases covering every pair of ranges, and disjoint everywhere
+      except at ONE pair. `mostLikely` decides nothing here.
+
+      ⭐ THAT PAIR IS A POINT NAMEPLATE EQUAL TO A POINT DEMAND, and all three criteria admit
+      it: the whole range clears, the whole range interferes, and the ranges overlap. Chaining
+      the first two forces every bound together,
+
+        nameplate.low ≥ demand.high ≥ demand.low ≥ nameplate.high ≥ nameplate.low
+
+      so there is no second such pair and no range width left to argue about. IT IS A CLEARANCE
+      FIT, which is ISO 286's own answer for the line-to-line case, where minimum clearance is
+      zero. Nothing went unmet, so `customer` and `unrealised` are ruled out exactly as they are
+      anywhere else under a clearance, and the draw says nobody absorbed anything either.
+
+      ⚠️ A SENDER READING THE INTERFERENCE CRITERION LITERALLY WOULD FILE `interference` HERE and
+      would not be wrong on the arithmetic, which is why this paragraph exists rather than a
+      note in a query. The comparison is settled in prose because it is the prose a filer reads.
 
       WHAT AN INTERFERENCE FIT DOES IS THE WHOLE REASON FOR THE WORD. It is not a failure,
       the assembly still works, AND IT WORKS BY DEFORMING THE MATERIAL. The deformation is
@@ -449,8 +464,24 @@
         transition    os intervalos sobrepõem-se      em parte de cada lado
         interference  nameplate.high ≤ demand.low     o intervalo INTEIRO interfere
 
-      Total e exaustivo: três casos, mutuamente exclusivos, a cobrir todos os pares de intervalos. O
-      `mostLikely` não decide nada aqui.
+      Total e exaustivo: três casos a cobrir todos os pares de intervalos, e disjuntos em toda a
+      parte menos NUM par. O `mostLikely` não decide nada aqui.
+
+      ⭐ ESSE PAR É UM NAMEPLATE PONTUAL IGUAL A UMA PROCURA PONTUAL, e os três critérios admitem-no:
+      o intervalo inteiro folga, o intervalo inteiro interfere, e os intervalos sobrepõem-se.
+      Encadeando os dois primeiros, todos os limites ficam presos uns aos outros,
+
+        nameplate.low ≥ demand.high ≥ demand.low ≥ nameplate.high ≥ nameplate.low
+
+      portanto não há um segundo par assim nem sobra largura de intervalo nenhuma para discutir.
+      É UM AJUSTAMENTO `clearance`, que é a própria resposta da ISO 286 para o caso linha a linha,
+      em que a folga mínima é zero. Nada ficou por servir, portanto o `customer` e o `unrealised`
+      ficam excluídos exatamente como em qualquer outra `clearance`, e o consumo diz também que
+      ninguém absorveu coisa nenhuma.
+
+      ⚠️ QUEM LEIA O CRITÉRIO DE INTERFERÊNCIA À LETRA APRESENTARIA AQUI `interference` e não estaria
+      errado na aritmética, e é por isso que existe este parágrafo e não uma nota numa consulta. A
+      comparação fica decidida em prosa porque é a prosa que um declarante lê.
 
       O QUE UM AJUSTAMENTO DE INTERFERÊNCIA FAZ É TODA A RAZÃO DA PALAVRA. Não é uma falha, a
       montagem funciona à mesma, E FUNCIONA DEFORMANDO O MATERIAL. A deformação é permanente, é o

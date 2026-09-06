@@ -13,6 +13,15 @@
 #    ranges overlap, so which one wins depends on where in the range you land. That third
 #    case is the one a two-valued encoding cannot name, and the corpus contains it.
 #
+# ⛔⛔ THE ARM ORDER IN `derived_fit` IS A DECISION AND NOT AN ARTEFACT. The three criteria are
+#    disjoint everywhere except at one pair, a POINT nameplate equal to a POINT demand, where
+#    all three admit it: chaining the first two forces `n_low >= d_high >= d_low >= n_high >=
+#    n_low`, so every bound is equal and `r = [0, 0, 0]`. The first arm wins and returns
+#    `clearance`, which is ISO 286's answer for the line-to-line case and the only one of the
+#    three whose downstream reading is right: nothing went unmet, so checks/clearance_with_unserved
+#    rules out the two holders that cannot be there. ⚠️ Swapping these two arms would silently
+#    reclassify that pair, and `Fit`'s annotation now says so in prose rather than leaving it here.
+#
 # ⭐ `exposure` IS WHAT THE FILING'S OWN NUMBERS SAY COULD HAVE GONE UNSERVED: the largest
 #   demand against the smallest supply, floored at zero. It is not a measurement anybody
 #   made; it is the ceiling their two measurements imply, which is why the rule built on
