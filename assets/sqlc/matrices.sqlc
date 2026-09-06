@@ -139,8 +139,11 @@ FROM (
 ORDER BY 1, 2;
 \echo '⭐ Every row agrees. A fusion that states nobody looked for double counting owes no'
 \echo '  equality and is SUSPENDED rather than counted as a pass -- and so is one that found'
-\echo '  the overlap and could not size it. Both grounds are in'
-\echo '  assets/sqlc/composition/suspended_fusions.sqlc, which is what this query anti-joins.'
+\echo '  the overlap and could not size it, and so is one whose CONVERSION nobody sized. All'
+\echo '  three grounds are in composition/suspension_grounds.sqlc; this anti-joins'
+\echo '  composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
+\echo '  fusion suspended on two grounds is suspended ONCE, and the day a third ground arrived'
+\echo '  the difference turned fourteen fusions into seventeen rows.'
 \echo '  That is the composition rule checked against real filings, and XSD 1.0 cannot state'
 \echo '  it, let alone check it: it spans two documents.'
 

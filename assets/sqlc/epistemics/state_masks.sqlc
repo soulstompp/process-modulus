@@ -1,0 +1,40 @@
+# WHICH ABSENCE REASONS EACH QUESTION HAS EVER TAKEN, AS A FOUR-BIT WORD. One row per question,
+# the mask reading `n u a d` for none, unmeasured, notApplicable, derived, and a dot where the
+# corpus has never used that reason.
+#
+# ⭐⭐⭐ `AbsenceReason` IS FOUR MEMBERS, SO A SITE'S REACHED STATES ARE A WORD RATHER THAN A LIST,
+#    and that is the whole trick. Asked as rows, "which reasons does `remainder sign` file" is
+#    twelve rows nobody reads. Asked as a word it is `.uad`, and it sits beside `boundOrigin`'s
+#    `nuad` in a sorted column where the missing bit is the first thing the eye lands on.
+#
+# ⛔⛔ AN ADMITTED BIT THAT IS NEVER SET IS A QUESTION, AND ONE OF THEM WAS A DEFECT. `StatedFit`
+#    admitted `nuad` and `remainder sign` exercised `.uad`, for twenty documents. The element's
+#    own annotation had been refusing the missing bit in prose the whole time -- overlapping
+#    ranges are a `transition` fit, which the value arm NAMES -- so the type was one word behind
+#    its own documentation. Narrowed 2026-09-06 with zero corpus edits, because no document had
+#    ever taken the bit. Four passes of reading annotations had not found it; this `GROUP BY`
+#    did, first time.
+#
+# ⭐⭐ AND THE MASKS CLUSTER, WHICH IS STRUCTURE RATHER THAN TRIVIA. Sort by the word and sixteen
+#    wrappers fall into a handful of KINDS. Two questions with one mask are the same kind of
+#    question; a mask that is a strict subset of another is a candidate for the narrower type.
+#    ⚠️ A subset is a candidate and never a verdict: a site may simply be young. The reading is
+#    "go and look at this one", which is what an observation is for.
+#
+# ⛔ IT DOES NOT KNOW WHAT IS ADMISSIBLE, only what was taken. The admissible word lives in the
+#   XSD (`pm:Absence` is `nuad`, `pm:ClaimAbsence` is `.uad`) and in this database as the
+#   `a_..._absence_has_no_none` CHECKs. Comparing the two is the reader's job, and stating that
+#   plainly is better than a relation that guesses at a grammar it cannot see.
+-- epistemics/absences.sqlc folded to one four-bit word per question.
+SELECT a.question,
+       (CASE WHEN bool_or(a.reason = 'none')          THEN 'n' ELSE '.' END) ||
+       (CASE WHEN bool_or(a.reason = 'unmeasured')    THEN 'u' ELSE '.' END) ||
+       (CASE WHEN bool_or(a.reason = 'notApplicable') THEN 'a' ELSE '.' END) ||
+       (CASE WHEN bool_or(a.reason = 'derived')       THEN 'd' ELSE '.' END) AS mask,
+       count(*)                                                             AS filings,
+       count(*) FILTER (WHERE a.reason = 'none')                            AS as_none
+FROM (
+    :compose(epistemics/absences.sqlc)
+) a
+WHERE a.reason IS NOT NULL
+GROUP BY a.question

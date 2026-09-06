@@ -1,0 +1,29 @@
+# THE FUSIONS WHOSE PARTS CARRY A CONVERSION NOBODY SIZED. One row per such fusion, shaped like
+# the two elimination suspensions beside it so the union stays a union.
+#
+# ⭐⭐⭐ AN UNSIZED CONVERSION LIFTS THE SUM FOR THE SAME REASON AN UNSIZED ELIMINATION DOES, and
+#    the schema already made that argument about the other one: "an entry whose `quantity` takes
+#    its absent branch is a composer who found the overlap and could not size it, so the sum is
+#    lifted exactly where the elimination was filed." A factor is the other multiplier in
+#    `Σ converted parts`. If nobody sized it, the converted part is not a number and the sum it
+#    feeds is not owed.
+#
+# ⛔⛔ AND WITHOUT THIS THE EXCLUSION IN composition/converted.sqlc WOULD SILENTLY UNDER-COUNT.
+#    That relation drops a part whose factor is typed-absent, because converting it by one would
+#    assert the units agree, which is the claim the filer declined to make. A dropped part in a
+#    sum that still owes equality is a shortfall the checker invented. This is the ground that
+#    keeps the two consistent.
+#
+# ⚠️ THE POPULATION IS ONE AND IT IS ALREADY SUSPENDED ON ANOTHER GROUND.
+#    `every-unsized-conversion/shift-capacity` files its elimination search as `unmeasured` too,
+#    so no verdict moves today. Recorded plainly rather than dressed up: this makes structural a
+#    thing that is currently true by luck, which is the same repair as every CHECK in the DDL.
+-- asrt:Part/asrt:factor taking its pm:absent branch, as a suspension of the composed sum.
+SELECT p.composition, p.composed_layer,
+       NULL::text AS quantity,
+       'the conversion was filed and could not be sized' AS suspended_because,
+       p.factor_absent::text AS note
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+WHERE p.factor_absent IS NOT NULL

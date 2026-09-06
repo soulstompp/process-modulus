@@ -12,6 +12,17 @@
 #    nothing would narrow this" is not missing information; it is a finding, and it belongs
 #    with `intervention` rather than with the rows nobody has considered.
 #
+# ⭐⭐⭐ AND `absent reason="derived"` IS A THIRD READING THAT IS NEITHER. The width is not in the
+#    world at all: it is a function of a SIBLING claim's width, so nothing needs measuring and
+#    nothing needs changing, and a receiver holding both already has it. A `booked` share under
+#    a clearance is the nameplate less the demand, so it narrows exactly as far as the demand
+#    does and never one step further.
+#    ⛔ IT WENT UNFILED FOR THE WHOLE OF 0.3.0 AND FIVE CLAIMS SAID IT IN PROSE INSTEAD, typed
+#    `instrument` -- a width made of ignorance that a better instrument reveals -- when no
+#    instrument is involved and nothing is unmeasured. `tests/state_coverage.rs` had the cell
+#    marked incoherent on the ground that there is nothing in a document to derive a narrowing
+#    from; there is, whenever a claim is computed from the claims beside it.
+#
 # ⛔ THE ROWS ARE SCATTERED ACROSS DEMANDS, NAMEPLATES, QUANTA, SLACKS, SHARES, FACTORS AND
 #   COUPLING STRENGTHS, because `narrowsWhen` sits on `Claim` and claims are everywhere.
 #   Gathering them is what makes the question answerable at the level of a document.

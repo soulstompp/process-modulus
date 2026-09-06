@@ -7,10 +7,13 @@
 #    Reading that as a zero -- which `coalesce(e.low, 0)` does -- asserts a sum the composer
 #    explicitly declined to make.
 #
-# ⛔ SO THE SUSPENSION HAS TWO GROUNDS AT TWO LEVELS, and a checker that handles only the
+# ⛔ SO THE SUSPENSION HAS GROUNDS AT MORE THAN ONE LEVEL, and a checker that handles only the
 #   first is right about three fusions and wrong about the fourth. They are separate files so
-#   each can be run and counted alone, and united in composition/suspended_fusions.sqlc so no
-#   caller has to remember both.
+#   each can be run and counted alone, and united in composition/suspension_grounds.sqlc so no
+#   caller has to remember them. ⚠️ THAT UNION IS A BAG: one fusion can be suspended on more
+#   than one ground and is suspended once, which is why composition/suspended_fusions.sqlc
+#   exists as the projection and why a third ground once turned fourteen fusions into
+#   seventeen rows.
 #
 # ⭐⭐⭐ IT CARRIES `quantity` RATHER THAN PINNING IT, WHICH IS WHAT MAKES IT COMPOSABLE. An
 #    elimination is filed PER QUANTITY (pm.elimination's key is composition, composed layer,

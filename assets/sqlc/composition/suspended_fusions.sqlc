@@ -1,23 +1,17 @@
-# THE COMPOSED LAYERS THAT OWE NO SUM, AND FOR WHICH QUANTITY. One row per (composed layer,
-# ground), carrying which ground it was and which quantity it lifts.
+# THE FUSIONS THAT OWE NO EXACT SUM. One row per suspended fusion per quantity, and NEVER more
+# than one however many grounds a composer filed.
 #
-# ⛔⛔⛔ READ `quantity` BEFORE YOU USE THIS. NULL means EVERY quantity is suspended (nobody
-#    searched at all); a value means exactly that quantity is (the overlap was found and could
-#    not be sized against it). A caller computing one quantity's sum wants
-#    `quantity IS NULL OR quantity = '<that one>'`. This file used to claim "no sum at all" while
-#    its second arm pinned `demand` and dropped the column, so the claim was true of one arm and
-#    false of the other, and nothing downstream could tell.
+# ⭐⭐⭐ A SUSPENSION IS A SET AND ITS REASONS ARE A BAG, and keeping them in one relation put a
+#    bag where every caller wanted a set. `composition/suspension_grounds.sqlc` is the bag: one
+#    row per ground, carrying `suspended_because` for anybody who needs to say WHY. This is the
+#    projection onto the key that matters, and it is what an anti-join or a count should read.
 #
-# ⭐⭐⭐ THIS RELATION EXISTS BECAUSE OF DE MORGAN AND IT IS WORTH SAYING WHY. The condition
-#    it replaces was written as a conjunction of two negations, in two different SQL idioms,
-#    at two call sites -- an `IS DISTINCT FROM` beside a `NOT EXISTS`. That is the most
-#    drift-prone shape there is: two ways to say NOT, neither of which names what is being
-#    excluded. `NOT a AND NOT b` is `NOT (a OR b)`, so the thing to name is the DISJUNCTION:
-#    the fusions that are suspended. The callers then anti-join one relation, and adding a
-#    third ground for suspension is a new file rather than a new clause in two predicates.
-#
-# ⛔ RUN THIS ALONE BEFORE READING ANY COMPOSITION CHECK. Every row here is a fusion whose
-#   arithmetic is not owed, and a checker reporting a pass on one of these rows is reporting
-#   about nothing.
--- the two filings that lift the sum rule, each carrying the quantity it lifts.
-:union(ALL eliminations/unsearched.sqlc, eliminations/unsized.sqlc)
+# ⛔ THE DISTINCT IS LOAD-BEARING RATHER THAN DEFENSIVE. `every-unsized-conversion/shift-capacity`
+#    files an unsearched elimination AND an unsized conversion, so it appears twice upstream and
+#    is suspended once. Dropping the projection is how a count of fourteen fusions became
+#    seventeen.
+-- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+SELECT DISTINCT g.composition, g.composed_layer, g.quantity
+FROM (
+    :compose(composition/suspension_grounds.sqlc)
+) g

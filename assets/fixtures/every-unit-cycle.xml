@@ -163,7 +163,9 @@
                     <pm:low>800</pm:low><pm:mostLikely>1600</pm:mostLikely><pm:high>2400</pm:high>
                     <pm:unit>GPU-hour</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
-                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                    </pm:narrowsWhen>
                     <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
@@ -252,7 +254,9 @@
                     <pm:low>100</pm:low><pm:mostLikely>200</pm:mostLikely><pm:high>300</pm:high>
                     <pm:unit>node-hour</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
-                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                    </pm:narrowsWhen>
                     <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
@@ -341,7 +345,9 @@
                     <pm:low>0.68</pm:low><pm:mostLikely>2.24</pm:mostLikely><pm:high>3.72</pm:high>
                     <pm:unit>GPU</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
-                    <pm:narrowsWhen><pm:narrowing><pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                    </pm:narrowsWhen>
                     <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>

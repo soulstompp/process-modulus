@@ -3,8 +3,10 @@
 # demand eliminations they filed.
 #
 # ⛔⛔ THE `quantity` COLUMN READS `demand` AND THAT IS A DECLARATION, NOT DECORATION. This
-#    relation answers one quantity's question, because composition/suspended_fusions.sqlc is now
-#    per-quantity and this file chooses which grain it wants. It used to take the whole
+#    relation answers one quantity's question, because composition/suspended_fusions.sqlc is
+#    per-quantity and this file chooses which grain it wants. ⭐ It reads the SET rather than
+#    composition/suspension_grounds.sqlc, and the `EXCEPT` would have been immune either way --
+#    which is exactly how a bag went unnoticed here for revisions. It used to take the whole
 #    suspension set with no such choice, which was correct only for as long as demand was the
 #    only sum anybody computed. A nameplate sibling filters the same union on `'nameplate'`, and
 #    the point of the column is that whoever writes it cannot forget to.

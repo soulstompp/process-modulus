@@ -18,8 +18,9 @@
 #   already held it -- a header documenting the dependency it declined to compose. Taking the
 #   verdict from the named relation is what makes a change to `owed_equality` reach here.
 # ⚠️ THE REASON JOIN IS NARROWED TO THE DEMAND GRAIN, AND IT HAS TO BE. This site computes the
-#   demand sum, and composition/suspended_fusions.sqlc is now one row per (composed layer,
-#   ground) carrying the quantity it lifts. Without the narrowing a nameplate-only suspension
+#   demand sum, and composition/suspension_grounds.sqlc is one row per (composed layer, ground)
+#   carrying the quantity it lifts -- a BAG. composition/suspended_fusions.sqlc is its
+#   projection onto the fusion, and this site needs the reasons, so it folds the bag itself. Without the narrowing a nameplate-only suspension
 #   would supply this site's reason, and TWO grounds on one fusion would emit two rows for one
 #   candidate -- which algebra/arithmetic_class.sqlc would catch as a partition failure, but the
 #   cause would be this join rather than anything a document filed.
@@ -44,9 +45,19 @@ LEFT JOIN (
     LEFT JOIN (
         :compose(composition/owed_equality.sqlc)
     ) o USING (filing, layer)
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
+    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
+    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
+    --   REASONS as well, so it aggregates them rather than reaching for the projection.
     LEFT JOIN (
-        :compose(composition/suspended_fusions.sqlc)
+        SELECT g.composition, g.composed_layer,
+               string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
+                   AS suspended_because
+        FROM (
+            :compose(composition/suspension_grounds.sqlc)
+        ) g
+        WHERE coalesce(g.quantity, 'demand') = 'demand'
+        GROUP BY g.composition, g.composed_layer
     ) s ON s.composition = f.filing AND s.composed_layer = f.layer
-       AND coalesce(s.quantity, 'demand') = 'demand'
 ) p ON true
 WHERE a.slug = 'fusion_sum'

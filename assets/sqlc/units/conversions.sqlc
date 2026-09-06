@@ -8,13 +8,23 @@
 #    converts a PART LAYER into its COMPOSED LAYER, and both of those layers file their own
 #    unit. The edge is the two layers, and the label is only a label.
 #
-# ⛔⛔ THREE EDGES CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL and are deliberately absent from
-#    this relation. `pessoas` to `people`, and `turnos por semana` to `shifts per week` twice.
-#    Those compositions assert that a Portuguese unit and an English one are the same thing,
-#    and they assert it by OMITTING the element -- which `composition/converted.sqlc` reads as
-#    a factor of one. Two editions of one word is a judgement this repository has twice refused
-#    to make in SQL, and here it arrives as an absence instead. Filed as a finding rather than
-#    repaired, because the repair is a decision about what an omitted factor MEANS.
+# ✅⛔⛔ THREE EDGES USED TO CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL, and finding them is
+#    what this relation was built for. `pessoas` to `people`, and `turnos por semana` to
+#    `shifts per week` twice. Those compositions asserted that a Portuguese unit and an English
+#    one are the same thing, and asserted it by OMITTING the element -- which
+#    `composition/converted.sqlc` reads as a factor of one. Two editions of one word is a
+#    judgement this repository has twice refused to make in SQL, and it was arriving as an
+#    absence instead.
+#    ⭐ Two now file `[1, 1, 1]` with a `boundOrigin` and a provenance, so the assertion has an
+#    author and a note saying what would make it false; the third files `unmeasured`, which is
+#    a composer saying they looked at a real crossing and could not size it.
+#    `checks/unit_crossing_without_a_factor` is what keeps it that way, and the count of
+#    factorless crossings is ZERO rather than three by luck.
+#
+# ⚠️ NINETEEN PARTS STILL OMIT THE ELEMENT and every one of them is correct: their unit and
+#    their composed layer's already agree, so the identity is forced by structure the document
+#    states and there is no author to name. That is the whole distinction the rule enforces --
+#    an omission is only ever allowed to mean "nothing to convert".
 #
 # ⚠️ A TYPED-ABSENT FACTOR IS NOT AN EDGE EITHER, and for a different reason: `unmeasured` says
 #    nobody sized the conversion, so there is no number to put on the arrow.

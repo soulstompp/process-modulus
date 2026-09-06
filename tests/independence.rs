@@ -37,6 +37,12 @@ const PERMITTED: &[&str] = &[
     "sqlx",
     "tokio",
     "nalgebra",
+    // ⭐⭐ dev only, for examples/simulation/. THE ADMISSION TEST IS WHETHER IT CARRIES
+    // A MODEL, and NeXosim does not: it is mailboxes, an event queue and a clock, with
+    // no stock, no flow and no opinion about what a shortfall is. The stock-and-flow
+    // layer that sits above it in the wild is exactly what must NOT be taken, because
+    // that layer is somebody else's answer to the question this crate asks, and two
+    // answers only corroborate while they are two. `serde` rides along because the
 ];
 
 /// Every `key = value` line inside a `[…dependencies]` table.
@@ -86,6 +92,31 @@ fn every_dependency_is_on_the_permitted_list() {
             "`{name}` is not on the permitted list, so this crate may now share a type \
              with the model it exists to corroborate independently. If the dependency is \
              genuinely third-party, add it to PERMITTED deliberately. Offending line: {l}"
+        );
+    }
+}
+
+/// ⛔⛔⛔ AND THE LIST MAY NOT NAME WHAT THE MANIFEST DOES NOT TAKE, which is the half that was
+/// missing and the half that would have caught a real mistake. `every_dependency_is_on_the_
+/// permitted_list` asks that every dependency is permitted; nothing asked that every permission
+/// is used. A name sitting on the list with no dependency behind it is worse than dead weight:
+/// it is a decision recorded as taken when nobody took it, and the file's own doc says adding a
+/// name IS the decision.
+///
+/// ⚠️ IT HAPPENED ON 2026-09-06 AND A BROAD `git add` IS HOW. Two names arrived on the list from
+/// an unrelated working thread, in a commit whose message did not mention them, and every test
+/// passed because the gate only looked one way. The push would have shipped an allowlist
+/// pre-authorising a dependency the crate does not take.
+#[test]
+fn every_permitted_name_is_a_dependency_the_manifest_takes() {
+    let taken: Vec<String> = dependency_lines()
+        .into_iter()
+        .map(|l| dependency_name(l).to_string())
+        .collect();
+    for p in PERMITTED {
+        assert!(
+            taken.iter().any(|t| t == p),
+            "`{p}` is on the permitted list and this crate does not depend on it. A permission              nobody uses is a decision recorded as taken: remove the name, and add it back with              the dependency it authorises. Taken: {taken:?}"
         );
     }
 }

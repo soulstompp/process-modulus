@@ -1778,6 +1778,16 @@
             delivery teams ran two under establishment are the two months the rota
             overran. NEITHER MEMBER COULD OBSERVE THIS: neither files the rota.
           </pm:observed>
+          <!-- ⛔ REQUIRED NOW, AND THE OMISSION USED TO SAY THIS IN A SECOND WAY. The
+               direction is on the routing logs and the magnitude is not, which is what
+               `unmeasured` means; leaving the element out said the same thing without a
+               word for it, and two of this corpus's five couplings did. -->
+          <pm:strength>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>the rota is not metered against the delivery establishment, so nobody has sized how much of a person each engineer is worth</pm:note>
+            </pm:absent>
+          </pm:strength>
         </pm:coupling>
 
         <!-- ⭐ THE ONE THAT GETS INHERITED. Read it beside merge-holding-composition.xml,
@@ -1836,6 +1846,16 @@
             reservation, so the Portuguese layer's clearance falls when the US layer's
             demand peaks. Observed on the routing logs, not on either filing.
           </pm:observed>
+          <!-- ⛔ REQUIRED NOW, AND THE OMISSION USED TO SAY THIS IN A SECOND WAY. The
+               direction is on the routing logs and the magnitude is not, which is what
+               `unmeasured` means; leaving the element out said the same thing without a
+               word for it, and two of this corpus's five couplings did. -->
+          <pm:strength>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>the routing logs record that it happens and carry no volume, so the share of the Portuguese clearance this removes is unsized</pm:note>
+            </pm:absent>
+          </pm:strength>
         </pm:coupling>
       </pm:couplings>
 
@@ -1873,6 +1893,27 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>pt</asrt:regime>
       </asrt:layer>
+      <!-- ⛔⛔ A UNIT CROSSING, SO THE CONVERSION IS FILED EVEN THOUGH IT IS ONE. Leaving the
+           element out would convert this part by an unwritten 1, which is exactly what
+           `composition/converted.sqlc` used to do on its own authority. The two editions of
+           this unit are the same unit BECAUSE THIS COMPOSER SAYS SO, and `policy` is who to
+           argue with: they could have found they were not. ⚠️ Read the unit out loud. If it
+           sounds absurd, that is the assertion becoming visible rather than staying implicit. -->
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+          <pm:unit>people per pessoa</pm:unit>
+          <pm:denominator><pm:each>pessoas</pm:each></pm:denominator>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>
+          <pm:provenance><pm:party>group-parent</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>the two members count heads on the same basis, checked against both establishment registers; a member counting full-time equivalents would not convert at one</pm:note>
+          </pm:provenance>
+        </pm:claim>
+      </asrt:factor>
     </asrt:part>
 
     <!-- ⭐⭐ THE FUNGIBILITY CLAIM, WHICH IS WHAT A FUSION ACTUALLY ASSERTS, WRITTEN
@@ -2108,6 +2149,27 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>pt</asrt:regime>
       </asrt:layer>
+      <!-- ⛔⛔ A UNIT CROSSING, SO THE CONVERSION IS FILED EVEN THOUGH IT IS ONE. Leaving the
+           element out would convert this part by an unwritten 1, which is exactly what
+           `composition/converted.sqlc` used to do on its own authority. The two editions of
+           this unit are the same unit BECAUSE THIS COMPOSER SAYS SO, and `policy` is who to
+           argue with: they could have found they were not. ⚠️ Read the unit out loud. If it
+           sounds absurd, that is the assertion becoming visible rather than staying implicit. -->
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+          <pm:unit>shifts per week per turno por semana</pm:unit>
+          <pm:denominator><pm:each>turnos por semana</pm:each></pm:denominator>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>
+          <pm:provenance><pm:party>group-parent</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>one turno is one shift of the same length on the same line; the members roster the same calendar</pm:note>
+          </pm:provenance>
+        </pm:claim>
+      </asrt:factor>
     </asrt:part>
 
     <!-- ⭐ FUNGIBILITY IS NOT A JUDGEMENT CALL HERE, WHICH IS RARE. Elsewhere a fusion

@@ -1224,13 +1224,7 @@
                     <pm:period>semana</pm:period>
                   </pm:denominator>
                   <pm:narrowsWhen>
-                    <!-- ⭐ E A NOTA AQUI DIZIA `notApplicable` ENQUANTO DESCREVIA UM
-                         ESTREITAMENTO, o que o `range_says_no_range` apanhou. Um vão de 21 a
-                         76 tem largura, e o que a aperta está nomeado um elemento ao lado. -->
-                    <pm:narrowing>
-                      <pm:condition>o intervalo da procura estreita; esta quota é esse intervalo subtraído a uma placa fixa, portanto estreita exatamente o mesmo</pm:condition>
-                      <pm:kind>instrument</pm:kind>
-                    </pm:narrowing>
+                    <pm:absent><pm:reason>derived</pm:reason><pm:note>o que estreitaria isto não é um ato mas um cálculo: esta quota é o intervalo da procura subtraído a uma placa fixa, portanto quem receba, tendo ambos, deriva a sua largura em vez de esperar que alguém volte a medir</pm:note></pm:absent>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
                     <pm:absent><pm:reason>derived</pm:reason><pm:note>o limite é o limite da procura, subtraído a uma placa fixa</pm:note></pm:absent>

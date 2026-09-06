@@ -48,3 +48,5 @@ WHERE l.demand_low IS NOT NULL
 
 ) d
        ON d.filing = p.part_filing AND d.layer = p.part_layer
+  -- ⛔ A TYPED-ABSENT FACTOR IS NOT A FACTOR OF ONE. See the header.
+  AND p.factor_absent IS NULL

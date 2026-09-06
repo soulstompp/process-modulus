@@ -531,6 +531,21 @@ como um período inteiro, cotado na unidade do próprio período, com a origem q
 poderia encurtar. Um resto de zero é uma folga, declarada com um sinal e uma quantidade de
 `[0, 0, 0]`, porque o caso linha a linha da ISO 286 é uma folga cuja folga mínima é zero.
 
+Um elemento neutro pode assentar numa ausência, mas só quando o neutro é **forçado**. São duas
+condições e ambas são necessárias: o neutro tem de decorrer de estrutura que o documento já
+declara, de modo que não haja autor a nomear nem nada que alguém assine; e a ausência não pode
+deitar fora mais nada que o valor transportaria. Um fator de conversão entre duas unidades
+idênticas é forçado, porque é a igualdade das unidades que o faz um, e um fator não transporta
+mais nada. Uma fração de serviço de um não é forçada: uma linha pode correr continuamente porque
+não se pode parar, porque alguém a prometeu ou porque alguém a guarneceu, e a ausência perde qual
+delas. Um resto de zero é forçado por uma placa igual a uma procura, e ainda assim não pode ser
+uma ausência, porque a ausência deita fora o sinal e os detentores.
+
+E «forçado» é uma afirmação sobre que documentos conseguem alcançar a ausência, portanto só é
+verdade onde uma regra a torna verdadeira. Uma conversão é obrigatória sempre que as unidades
+diferem, o que deixa um fator omitido a significar uma só coisa: as unidades já concordam. Onde
+nenhuma regra confina a ausência ao caso forçado, o valor pertence ao documento.
+
 O resíduo é o caso honesto, e é uma terceira operação e não uma exceção. Uma seleção de um
 conjunto fechado tem elemento neutro ∅: nenhum amortecedor absorveu o resto, nada fixa este
 limite, alguém procurou acoplamentos e as camadas movem-se independentemente. Nada aí tem

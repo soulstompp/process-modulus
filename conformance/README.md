@@ -277,6 +277,8 @@ permitted.
 | a fusion filing `eliminations` as `none` or `notApplicable` owes an EXACT sum: the composed figure equals `Σ` converted parts. Filing it as `unmeasured` suspends the check rather than passing it | `Fusion` (`assertion.xsd`) |
 | a fusion filing `eliminations` as `notApplicable` has exactly one part, since between a set of one nothing can be counted twice | `Fusion` (`assertion.xsd`) |
 | a fusion of ONE part that eliminates nothing carries that part unchanged, in every quantity the layer files and not only its demand | `Fusion` (`assertion.xsd`) |
+| a part whose unit differs from the layer it is composed into files what converts it, even where the conversion is one, because then somebody is asserting the two units interchange | `Part` (`assertion.xsd`) |
+| converting a quantity round a cycle of units returns what it started with: one lies inside the product of the factors round the cycle | `Part` (`assertion.xsd`) |
 | a layer restated by a second filing that claims to carry it through unchanged agrees with the first, `absorber` included \* | `composition` (`assertion.xsd`) |
 
 The four `dependence` rows are not a weakness of that design. They are the reason it is a

@@ -17,8 +17,8 @@
 # rule, and one relation, composition/suspended_fusions.sqlc, which this anti-joins.
 #
 # ⚠️ PROBE THE EXCLUSION RATHER THAN TRUSTING THE COUNT. `s.composition IS NULL` is safe only
-#   because `composition` is NOT NULL on both arms of suspended_fusions; a nullable column would
-#   keep matched rows silently.
+#   because `composition` is NOT NULL on every arm of suspension_grounds, which suspended_fusions
+#   projects; a nullable column would keep matched rows silently.
 #   ⭐ THE LAW IS RECOMPUTED RATHER THAN RECORDED, algebra/composed_demand.sqlc, every run.
 -- layers/demand.sqlc minus composition/suspended_fusions.sqlc, with eliminations/filed.sqlc.
 SELECT d.filing                     AS "filing!",

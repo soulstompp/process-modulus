@@ -138,13 +138,16 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
              CHOSE, and a holder is an observation somebody MADE. No arrangement of figures \
              implies either",
         )),
-        ("StatedFit", RNone, Incoherent(
-            "⭐ THE `transition` CORRECTION, AS A RULE. `absent reason=\"none\"` was doing the \
-             missing third member's job — a demand of [3,4,5] against a nameplate of 4 was \
-             filed as an absence of fit when it is a transition fit. There is no such thing as \
-             two ranges with no relation between them, so `none` cannot mean anything here. A \
-             layer with nothing to compare against is `notApplicable`",
-        )),
+        // ⭐⭐⭐ THE CELL IS GONE AND THE ARGUMENT IT CARRIED IS WHY. It said `none` was doing
+        // the missing third member's job: a demand of [3,4,5] against a nameplate of 4 is a
+        // TRANSITION fit, which the value arm names, so the absence was a second door to a
+        // filed answer. That argument was right and lived only here and in the annotation
+        // while the grammar admitted the state for revisions. `StatedFit` takes a
+        // `pm:ClaimAbsence` now, so there is no cell because there is no state.
+        // ⛔ FOUND BY A BIT MASK, not by reading. Fold `epistemics/absences.sqlc` to one row
+        // per site and the reasons become a four-bit word; every site that admits `none`
+        // showed `n` except two, and this was one of them: admitted, refused in prose, filed
+        // zero times in twenty documents.
         ("StatedFit", Unmeasured, Exercised),
         ("StatedFit", NotApplicable, Exercised),
         ("StatedFit", Derived, Exercised),
@@ -274,10 +277,27 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
             "nothing in a document implies how much of the system lies outside it. That is \
              precisely the fact no filing could state before 0.3.0",
         )),
-        ("StatedNarrowing", Derived, Incoherent(
-            "what would tighten a range is a claim about instruments and interventions that do \
-             not exist yet. There is nothing in the document to derive it from",
-        )),
+        // ⭐⭐⭐ AND THIS CELL SAID `Incoherent` UNTIL 2026-09-06, on the argument that "what
+        // would tighten a range is a claim about instruments and interventions that do not
+        // exist yet. There is nothing in the document to derive it from." There is, whenever a
+        // claim is COMPUTED from its siblings. A `booked` share under a clearance is
+        // `nameplate − demand`, so what would tighten it is the demand's own narrowing, one
+        // element over and already filed. ⛔ Five claims were saying exactly that in prose and
+        // typing themselves `instrument` — a width made of IGNORANCE that a better instrument
+        // reveals — when no instrument is involved and nothing is unmeasured.
+        //
+        // ⚠️ SECOND CELL IN THIS TABLE REFUTED BY A FILING THIS WEEK, after
+        // `StatedRemainder / NotApplicable`. The `Incoherent` arm is where this model's blind
+        // spots are written down, which is the whole reason it carries an argument rather than
+        // a flag.
+        ("StatedNarrowing", Derived, Exercised),
+        // ⭐⭐ NEW ON 2026-09-06, AND THE STATE EXISTED ALL ALONG WITH NOTHING IN IT.
+        // `Coupling/strength` was an OPTIONAL `pm:StatedClaim`, which is two ways to say
+        // nothing: the corpus omitted the element twice and filed this typed absence never.
+        // The element is required now and the wrapper carries the absence, so a coupling
+        // whose direction is on the routing logs and whose magnitude is on nobody's says so
+        // in the one word that means it.
+        ("strength", Unmeasured, Exercised),
     ]
 }
 
@@ -377,10 +397,12 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
         for c in &doc.stack.couplings.content {
             match c {
                 pm::StatedCouplingsTypeContent::Absent(a) => bump("StatedCouplings", reason(a)),
+                // ⭐ REQUIRED SINCE 2026-09-06, so there is no `Option` to unwrap and no way
+                //   to reach this site without a verdict. `strength` was optional AND a
+                //   `StatedClaim`, which is two ways to say nothing: the corpus omitted the
+                //   element twice and filed the typed absence never.
                 pm::StatedCouplingsTypeContent::Coupling(k) => {
-                    if let Some(st) = &k.strength {
-                        claims.push(("strength", st));
-                    }
+                    claims.push(("strength", &k.strength));
                 }
             }
         }
@@ -438,7 +460,7 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
                 pm::StatedRemainderType::Absent(a) => bump("StatedRemainder", claim_reason(a)),
                 pm::StatedRemainderType::Remainder(r) => {
                     if let StatedFitType::Absent(a) = &r.sign {
-                        bump("StatedFit", reason(a));
+                        bump("StatedFit", claim_reason(a));
                     }
                     if let pm::StatedBorrowedTermType::Absent(a) = &r.absorber {
                         bump("absorber", reason(a));
@@ -680,7 +702,7 @@ const MEASURED_AT: [(&str, Measured); 16] = [
     ("StatedScope", At(&["StatedScope"])),
     // ---- the four that were never in frame ----
     ("StatedClaim", At(&["amount", "patience", "timeSlack", "capacitySlack", "inventorySlack",
-        "draw", "operation draw", "share", "remainder quantity", "premium"])),
+        "draw", "operation draw", "share", "remainder quantity", "premium", "strength"])),
     ("StatedBorrowedTerm", At(&["standing", "framework", "chart", "absorber"])),
     ("StatedBasis", At(&["measurementBasis"])),
     ("StatedHolder", NotYet(

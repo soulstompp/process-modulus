@@ -2452,7 +2452,8 @@
 
       WHAT IT REFUSES
 
-      ⛔ `absent reason="none"` meaning "the ranges overlap". Overlapping ranges at the
+      ⛔ `absent reason="none"` meaning "the ranges overlap", AND THE GRAMMAR NOW REFUSES IT
+      TOO: this wrapper takes a `pm:ClaimAbsence`, so the state is not spellable. Overlapping ranges at the
       nominal size are a `transition` fit — the textbook case rather than a boundary
       curiosity — and a demand of [3, 4, 5] people against a nameplate of 4 is one. Reading
       it as an absence evaluates a range comparison at `mostLikely` and reports no fit where
@@ -2501,7 +2502,7 @@
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="fit"    type="pm:Fit"/>
-      <xs:element name="absent" type="pm:Absence"/>
+      <xs:element name="absent" type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -4966,8 +4967,16 @@
         from · to  the two layers.
         observed   what was seen. REQUIRED — the one element in this schema whose purpose is
                    to carry a refutation is the last place to accept an opinion.
-        strength   how much, as a `pm:StatedClaim`. Optional, because the direction is
-                   frequently known when the magnitude is not.
+        strength   how much, as a `pm:StatedClaim`. REQUIRED, and the wrapper carries the
+                   absence. "The direction is known and the magnitude is not" is what
+                   `unmeasured` MEANS, so an optional element said it a second way and
+                   the corpus proved it: two of five couplings omitted the element and
+                   NONE ever filed the typed absence. The state with a word went unused
+                   because a state without one was easier to reach.
+                   ⛔ This is the argument two paragraphs down, applied one level in.
+                   `Stack/couplings` is a wrapper so that an empty list cannot mean both
+                   "nobody looked" and "somebody looked and found none"; an omitted
+                   `strength` meant both in exactly the same way.
 
       WHAT IT OBLIGES
 
@@ -5112,7 +5121,7 @@
       <xs:element name="from"     type="xs:token"/>
       <xs:element name="to"       type="xs:token"/>
       <xs:element name="observed" type="xs:string"/>
-      <xs:element name="strength" type="pm:StatedClaim" minOccurs="0"/>
+      <xs:element name="strength" type="pm:StatedClaim"/>
     </xs:sequence>
   </xs:complexType>
 

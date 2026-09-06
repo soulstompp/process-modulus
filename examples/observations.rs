@@ -371,6 +371,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⛔ `(notApplicable)` is the question being malformed, not unanswered: two quanta");
     println!("      in different units have no common divisor to find.");
 
+    // ⭐⭐⭐ THE ONE OBSERVATION THAT IS ABOUT THE SCHEMA RATHER THAN THE BUSINESS. Every other
+    //    section here asks what the filings say; this asks which STATES they have ever reached.
+    //    `AbsenceReason` is four members, so the answer per question is a four-bit word, and
+    //    the split between the words carrying `n` and the words not carrying it is the
+    //    `pm:Absence` / `pm:ClaimAbsence` boundary, printed from the data instead of read off
+    //    the grammar. A question on the wrong side of it is a defect, and one was: `StatedFit`
+    //    admitted `none` for revisions while `remainder sign` never once took it, and its own
+    //    annotation had been refusing the state in prose the whole time.
+    let masks = sqlx::query_file!("assets/sql/queries/observations/12-state-masks.sql")
+        .fetch_all(&pool)
+        .await?;
+    let reaching = masks.iter().filter(|m| m.mask.starts_with('n')).count();
+    println!(
+        "
+13. which of the four absence reasons has each question ever taken? {} of {} reach `none`",
+        reaching,
+        masks.len()
+    );
+    for m in &masks {
+        println!(
+            "   {:<38} {}   {:>4} filed{}",
+            m.question,
+            m.mask,
+            m.filings,
+            if m.as_none > 0 { format!(", {} as `none`", m.as_none) } else { String::new() }
+        );
+    }
+    println!("   ⭐ Read the column, not the rows. A bit a type ADMITS and no document has ever");
+    println!("      set is either a state nobody needs or a state the type should not have, and");
+    println!("      both deserve a sentence. Four passes of reading annotations missed the one");
+    println!("      this found.");
+
     println!("\nAll checks passed.");
     Ok(())
 }

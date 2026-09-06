@@ -226,6 +226,32 @@ const WITNESSES: &[Witness] = &[
         says: "a layer is composed from itself",
     },
     Witness {
+        rule: "unit_crossing_without_a_factor",
+        doc: "assets/corpus/merge-group-composition.xml",
+        from_: "      <asrt:factor>
+        <pm:claim>
+          <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+          <pm:unit>people per pessoa</pm:unit>
+          <pm:denominator><pm:each>pessoas</pm:each></pm:denominator>
+          <pm:narrowsWhen>
+            <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>
+          <pm:provenance><pm:party>group-parent</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>the two members count heads on the same basis, checked against both establishment registers; a member counting full-time equivalents would not convert at one</pm:note>
+          </pm:provenance>
+        </pm:claim>
+      </asrt:factor>",
+        to: "",
+        nth: 1,
+        // ⭐ THE WITNESS IS A DELETION, which is the only mutation that reaches this rule: it
+        //   fires on an element that is NOT there. Removing it puts the corpus back in the
+        //   state it was in before 2026-09-06, where `pessoas` became `people` on the
+        //   authority of a `coalesce` in a query.
+        says: "a part quoted in `pessoas` is composed into a layer quoted in `people` and says nothing about the conversion",
+    },
+    Witness {
         rule: "conversion_cycle_does_not_close",
         doc: "assets/fixtures/every-unit-cycle.xml",
         from_: "<pm:low>0.0108</pm:low><pm:mostLikely>0.0112</pm:mostLikely><pm:high>0.0116</pm:high>",

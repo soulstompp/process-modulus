@@ -1223,13 +1223,7 @@
                     <pm:period>week</pm:period>
                   </pm:denominator>
                   <pm:narrowsWhen>
-                    <!-- ⭐ AND THE NOTE HERE USED TO SAY `notApplicable` WHILE DESCRIBING A
-                         NARROWING, WHICH `range_says_no_range` CAUGHT. A span of 21 to 76 has
-                         width, and what tightens it is named one element over. -->
-                    <pm:narrowing>
-                      <pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate, so it narrows exactly as far</pm:condition>
-                      <pm:kind>instrument</pm:kind>
-                    </pm:narrowing>
+                    <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
                     <pm:absent><pm:reason>derived</pm:reason><pm:note>the bound is the demand's bound, subtracted from a fixed nameplate</pm:note></pm:absent>

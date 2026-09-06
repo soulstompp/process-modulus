@@ -1193,7 +1193,7 @@
       <xs:element name="from"     type="asrt:FiledLayer"/>
       <xs:element name="to"       type="asrt:FiledLayer"/>
       <xs:element name="observed" type="xs:string"/>
-      <xs:element name="strength" type="pm:StatedClaim" minOccurs="0"/>
+      <xs:element name="strength" type="pm:StatedClaim"/>
     </xs:sequence>
   </xs:complexType>
 

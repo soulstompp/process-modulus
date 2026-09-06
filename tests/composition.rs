@@ -1265,7 +1265,7 @@ fn an_inherited_coupling_is_weaker_than_the_one_it_came_from() {
         couplings(&doc.stack)
             .into_iter()
             .find(|c| c.from == from && c.to == to)
-            .and_then(|c| c.strength.as_ref())
+            .map(|c| &c.strength)
             .and_then(triple)
             .unwrap_or_else(|| panic!("no coupling `{from}` -> `{to}` with a stated strength"))
     };

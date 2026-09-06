@@ -446,6 +446,21 @@ says who could shorten it. A remainder of zero is a clearance fit, filed with a 
 quantity of `[0, 0, 0]`, because ISO 286's line-to-line case is a clearance whose minimum
 clearance is zero.
 
+An identity element may sit in an absence, but only when the identity is **forced**. Two
+conditions, and both are required: the identity must follow from structure the document already
+states, so there is no author to name and nothing for anybody to sign; and the absence must
+discard nothing else the value would have carried. A conversion factor between two identical
+units is forced, because the units being equal is what makes it one, and a factor carries
+nothing else. A duty fraction of one is not forced: a line may run continuously because it
+cannot stop, because somebody promised it, or because somebody staffed it, and the absence
+loses which. A remainder of zero is forced by a nameplate equal to a demand, and still may not
+be an absence, because the absence throws away the sign and the holders.
+
+And "forced" is a claim about which documents can reach the absence, so it is only true where a
+rule makes it true. A conversion is required wherever the units differ, which leaves an omitted
+factor meaning one thing: the units already agree. Where no rule confines an absence to the
+forced case, the value belongs in the document.
+
 The residue is the honest case, and it is a third operation rather than an exception. A
 selection from a closed set has identity ∅: no buffer absorbed the remainder, nobody sets this
 bound, somebody looked for couplings and the layers move independently. Nothing there has a

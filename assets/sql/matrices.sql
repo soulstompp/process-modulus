@@ -361,6 +361,8 @@ WHERE l.demand_low IS NOT NULL
 
 ) d
        ON d.filing = p.part_filing AND d.layer = p.part_layer
+  -- ⛔ A TYPED-ABSENT FACTOR IS NOT A FACTOR OF ONE. See the header.
+  AND p.factor_absent IS NULL
 
 ) c
 JOIN      (
@@ -381,7 +383,10 @@ FROM pm.part p
 EXCEPT
 SELECT s.composition, s.composed_layer, 'demand'
 FROM (
-    -- the two filings that lift the sum rule, each carrying the quantity it lifts.
+    -- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+SELECT DISTINCT g.composition, g.composed_layer, g.quantity
+FROM (
+    -- the three filings that lift the sum rule, one row per GROUND, carrying the quantity it lifts.
 -- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
 SELECT es.composition, es.composed_layer,
        NULL::text AS quantity,
@@ -408,7 +413,44 @@ FROM pm.elimination e
 
 ) e
 WHERE e.absent IS NOT NULL
+UNION ALL
+-- asrt:Part/asrt:factor taking its pm:absent branch, as a suspension of the composed sum.
+SELECT p.composition, p.composed_layer,
+       NULL::text AS quantity,
+       'the conversion was filed and could not be sized' AS suspended_because,
+       p.factor_absent::text AS note
+FROM (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
 
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+WHERE p.factor_absent IS NOT NULL
+
+
+) g
 
 ) s
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
@@ -448,8 +490,11 @@ GROUP BY c.composition, c.composed_layer
 ORDER BY 1, 2;
 \echo '⭐ Every row agrees. A fusion that states nobody looked for double counting owes no'
 \echo '  equality and is SUSPENDED rather than counted as a pass -- and so is one that found'
-\echo '  the overlap and could not size it. Both grounds are in'
-\echo '  assets/sqlc/composition/suspended_fusions.sqlc, which is what this query anti-joins.'
+\echo '  the overlap and could not size it, and so is one whose CONVERSION nobody sized. All'
+\echo '  three grounds are in composition/suspension_grounds.sqlc; this anti-joins'
+\echo '  composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
+\echo '  fusion suspended on two grounds is suspended ONCE, and the day a third ground arrived'
+\echo '  the difference turned fourteen fusions into seventeen rows.'
 \echo '  That is the composition rule checked against real filings, and XSD 1.0 cannot state'
 \echo '  it, let alone check it: it spans two documents.'
 

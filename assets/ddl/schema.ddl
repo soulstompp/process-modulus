@@ -239,6 +239,11 @@ CREATE TABLE layer (
     -- ⛔ `StatedRemainder` takes a `ClaimAbsence` for the reason above: an ingested `'none'`
     --    here is a document that did not validate.
     CONSTRAINT a_remainder_absence_has_no_none CHECK (remainder_absent <> 'none'),
+    -- ⛔ `StatedFit` takes a `ClaimAbsence` too, and its annotation had refused this state in
+    --    prose for revisions while the type admitted it: overlapping ranges are a `transition`
+    --    fit, which the value arm NAMES, so `none` was a second door to a filed answer. Zero
+    --    documents ever took it; the mask over `epistemics/absences.sqlc` is what found it.
+    CONSTRAINT a_sign_absence_has_no_none CHECK (sign_absent <> 'none'),
     CONSTRAINT a_remainder_quantity_absence_has_no_none CHECK (qty_absent <> 'none'),
     PRIMARY KEY (filing, layer),
     CONSTRAINT patience_is_stated_or_typed_absent
@@ -683,9 +688,18 @@ CREATE TABLE coupling (
     mode        numeric,
     high        numeric,
     unit        text,
-    -- ⭐ `pm:Coupling/strength` is the second optional `pm:StatedClaim` in these schemas, and
-    --   carries the same three states as `part.factor`: no element, a stated strength, or a
-    --   dependence somebody observed and could not size.
+    -- ⭐⭐ `pm:Coupling/strength` WAS THE SECOND OPTIONAL `pm:StatedClaim` IN THESE SCHEMAS AND
+    --   IS REQUIRED NOW, so this column has two states and not three. The three were: no
+    --   element, a stated strength, or a dependence somebody observed and could not size. The
+    --   first and the third are one fact. The element's own annotation justified the
+    --   optionality as "the direction is frequently known when the magnitude is not", which is
+    --   the definition of `unmeasured`, and the corpus proved they had collapsed: two of five
+    --   couplings omitted the element and NOT ONE ever filed the typed absence.
+    -- ⛔ `asrt:Part/factor` KEEPS ITS THREE, and the asymmetry is the point. An omitted factor
+    --   means the part's unit and the composed layer's already agree, so the identity is FORCED
+    --   by structure the document states and there is no author to name. An omitted strength
+    --   was forced by nothing. `checks/unit_crossing_without_a_factor` is what keeps the first
+    --   true: omit the element where the units DIFFER and the rule fires.
     strength_absent absence_reason,
     observation text,
     CONSTRAINT a_strength_absence_has_no_none CHECK (strength_absent <> 'none'),
