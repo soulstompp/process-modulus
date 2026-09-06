@@ -16,4 +16,6 @@ SELECT p.*
 FROM      (
     :compose(composition/part_references.sqlc)
 ) p
-JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+JOIN      (
+    :compose(composition/notations.sqlc)
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing

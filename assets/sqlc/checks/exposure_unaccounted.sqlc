@@ -16,7 +16,14 @@
 # ⛔ AN UNSTATED UNSERVED SHARE SUSPENDS THE INEQUALITY, so those layers are absent rather
 #   than passing. Inheriting a neighbouring rule's `exposure > 0` filter instead is a
 #   different population, and it counted three rows where nine are checked.
--- pm:Buffer kind="capacity" measured zero, against summed customer/unrealised shares.
+# ⛔⛔⛔ IT INNER-JOINS THE UNSERVED TOTAL, AND THE OUTER JOIN IT REPLACES WAS INVENTING ROWS.
+#    `coalesce(u.unserved, 0)` gave a layer with NO unserved holder a zero nobody filed, so six
+#    such layers entered the examined set. All six read `exposure = 0`, so `0 > 0 + 1e-9` is
+#    false and the rule passed on every one of them WITHOUT BEING ABLE TO FIRE. Nine examined,
+#    three of them real. arithmetic/exposure_bounded.sqlc, the site this rule guards, inner-joins
+#    and declares three; a guard and its site disagreeing about their population is the guard's
+#    defect, and reports/coverage.sqlc was counting the difference as coverage.
+-- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -26,20 +33,14 @@ LEFT JOIN (
            e.exposure > e.unserved + 1e-9 AS violates,
            format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, coalesce(u.unserved, 0) AS unserved
+        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
         FROM      (
-            :compose(layers/measured_zero_exposure.sqlc)
+            :compose(layers/stated_zero_exposure.sqlc)
         ) x
-        LEFT JOIN (
-            SELECT filing, layer,
-                   sum(share_high)                            AS unserved,
-                   count(*) FILTER (WHERE share_high IS NULL) AS unstated
-            FROM (
-                :compose(entries/unserved_holders.sqlc)
-            ) h
-            GROUP BY filing, layer
+        JOIN      (
+            :compose(entries/unserved_totals.sqlc)
         ) u USING (filing, layer)
-        WHERE coalesce(u.unstated, 0) = 0
+        WHERE u.unstated = 0
     ) e
 ) p ON true
 WHERE r.slug = 'exposure_unaccounted'

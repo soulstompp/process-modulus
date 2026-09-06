@@ -1,18 +1,45 @@
-# THE COMPOSED LAYERS THAT DO OWE THE SUM RULE EXACTLY. One row per fusion that is not
-# suspended on either ground: their filed figure must equal the sum of their converted parts,
-# less the eliminations they filed.
+# THE COMPOSED LAYERS THAT DO OWE THE DEMAND SUM EXACTLY. One row per fusion not suspended on
+# either ground: their filed demand must equal the sum of their converted parts, less the
+# demand eliminations they filed.
+#
+# ⛔⛔ THE `quantity` COLUMN READS `demand` AND THAT IS A DECLARATION, NOT DECORATION. This
+#    relation answers one quantity's question, because composition/suspended_fusions.sqlc is now
+#    per-quantity and this file chooses which grain it wants. It used to take the whole
+#    suspension set with no such choice, which was correct only for as long as demand was the
+#    only sum anybody computed. A nameplate sibling filters the same union on `'nameplate'`, and
+#    the point of the column is that whoever writes it cannot forget to.
 #
 # ⭐⭐ AN ANTI-JOIN IS A FILTER, AND THIS ONE IS THE FILTER THE WHOLE COMPOSITION ARGUMENT
 #    TURNS ON. `x_composed = F Φ x_parts − e` is not a law of the model; it is an obligation
 #    a document takes on by saying it looked. This relation is the set of documents that took
 #    it on, so it is the honest denominator for every claim that the composition rule holds.
--- pm.part minus the two suspensions; see composition/suspended_fusions.sqlc.
-SELECT f.filing, f.layer
-FROM      (
+#
+# ⭐⭐⭐ AND IT IS WRITTEN AS `EXCEPT`, WHICH IS WHAT IT ALWAYS MEANT. The line below said
+#    "pm.part MINUS the two suspensions" while the SQL underneath it was a LEFT JOIN with a
+#    NULL test -- an idiom that names the left operand and buries the right one inside an ON
+#    clause. `EXCEPT` names both, in the order the sentence reads, and the set difference is
+#    exact here because both arms are the bare key: fusions is already `SELECT DISTINCT`, and
+#    EXCEPT deduplicates.
+#
+# ⛔ THIS IS NOT A GENERAL SUBSTITUTION FOR THE ANTI-JOIN. `composition/leaves.sqlc` projects
+#   `d.*` and carries the left row's payload through, which EXCEPT cannot do: it compares whole
+#   rows and returns only what both arms can spell. Key-only difference is the case that
+#   converts, and there are three of them in this tree.
+#
+# ⚠️ AN EMPTY OR SHORT RESULT IS NOT EVIDENCE HERE ON ITS OWN. `EXCEPT` shares precedence with
+#   `UNION` in Postgres and associates left, so a missing pair of parentheses returns the wrong
+#   set rather than an error, and a wrong set of composed layers is a perfectly ordinary table.
+#   ⭐ THE LAW IS RECOMPUTED RATHER THAN RECORDED. algebra/owed_equality.sqlc asserts
+#   |A| = |A∖B| + |A⋉B| over these operands on every run, so a number written here would be a
+#   number nobody recounts. Read it there.
+-- composition/fusions.sqlc minus the suspensions that lift the demand sum.
+SELECT f.filing, f.layer, 'demand' AS quantity
+FROM (
     :compose(composition/fusions.sqlc)
 ) f
-LEFT JOIN (
+EXCEPT
+SELECT s.composition, s.composed_layer, 'demand'
+FROM (
     :compose(composition/suspended_fusions.sqlc)
 ) s
-       ON s.composition = f.filing AND s.composed_layer = f.layer
-WHERE s.composition IS NULL
+WHERE s.quantity IS NULL OR s.quantity = 'demand'

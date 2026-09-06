@@ -1,5 +1,6 @@
 -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
 SELECT c.composition, c.composed_layer,
+       'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
        sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
        sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
@@ -10,8 +11,9 @@ SELECT c.composition, c.composed_layer,
     AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
     AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
 FROM      (
-    -- pm:Part/pm:ConversionFactor applied to the part layer's pm:Demand.
+    -- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       'demand' AS quantity,
        d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
        d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
        d.d_high * coalesce(p.factor_high, 1) AS d_high
@@ -29,8 +31,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 JOIN      (
@@ -52,9 +64,9 @@ WHERE l.demand_low IS NOT NULL
 
 ) c
 JOIN      (
-    -- pm.part minus the two suspensions; see composition/suspended_fusions.sqlc.
-SELECT f.filing, f.layer
-FROM      (
+    -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
+SELECT f.filing, f.layer, 'demand' AS quantity
+FROM (
     -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
@@ -66,26 +78,40 @@ FROM pm.part p
 ) p
 
 ) f
-LEFT JOIN (
-    -- the two pm:Absent reason="unmeasured" filings that lift the sum rule.
--- pm:Fusion/pm:Eliminations with pm:Absent reason="unmeasured".
+EXCEPT
+SELECT s.composition, s.composed_layer, 'demand'
+FROM (
+    -- the two filings that lift the sum rule, each carrying the quantity it lifts.
+-- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
 SELECT es.composition, es.composed_layer,
+       NULL::text AS quantity,
        'the search was never made' AS suspended_because,
        es.note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
-WHERE es.absent = 'unmeasured'
+
+) es
+WHERE es.answer = 'unmeasured'
 UNION ALL
--- pm:Eliminations/pm:Elimination quantity="demand" with pm:Absent reason="unmeasured".
-SELECT e.composition, e.composed_layer,
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
 FROM pm.elimination e
-WHERE e.quantity = 'demand' AND e.absent = 'unmeasured'
+
+) e
+WHERE e.absent IS NOT NULL
 
 
 ) s
-       ON s.composition = f.filing AND s.composed_layer = f.layer
-WHERE s.composition IS NULL
+WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
 ) o
        ON o.filing = c.composition AND o.layer = c.composed_layer
@@ -105,7 +131,14 @@ WHERE l.demand_low IS NOT NULL
 
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN pm.elimination e
+LEFT JOIN (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+
+) e
        ON e.composition = c.composition
       AND e.composed_layer = c.composed_layer
       AND e.quantity = 'demand'

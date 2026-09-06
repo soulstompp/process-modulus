@@ -23,6 +23,9 @@
   <pm:notation>
     <pm:uri>urn:example:fixture:bakery:every-absence</pm:uri>
   </pm:notation>
+  <pm:evidence>
+    <pm:attests>stipulation</pm:attests>
+  </pm:evidence>
 
   <pm:stack>
     <pm:scope>
@@ -40,25 +43,35 @@
       <pm:name>oven</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>1800</pm:low>
-          <pm:mostLikely>2000</pm:mostLikely>
-          <pm:high>2400</pm:high>
-          <pm:unit>muffins per day</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing would tighten this range, because the width is
-                       the day-to-day movement of the trade rather than anything unmeasured</pm:note>
-            </pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>1800</pm:low>
+            <pm:mostLikely>2000</pm:mostLikely>
+            <pm:high>2400</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:denominator>
+              <pm:period>day</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing would tighten this range, because the width is
+                         the day-to-day movement of the trade rather than anything unmeasured</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <pm:timeSlack>
@@ -80,6 +93,9 @@
               <pm:mostLikely>2160</pm:mostLikely>
               <pm:high>2160</pm:high>
               <pm:unit>muffins per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent><pm:reason>notApplicable</pm:reason>
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -99,6 +115,9 @@
                   <pm:claim>
                     <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
                     <pm:unit>muffins per day</pm:unit>
+                    <pm:denominator>
+                      <pm:period>day</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent><pm:reason>notApplicable</pm:reason>
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -130,8 +149,21 @@
               <pm:note>stipulated: the oven can be pushed and nobody has measured how far</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: a muffin baked today is not a muffin for next week</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>muffins per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>bakery</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: a muffin baked today is not a muffin for next week</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
 
@@ -191,34 +223,46 @@
       <pm:name>counter</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>0.4</pm:low>
-          <pm:mostLikely>0.5</pm:mostLikely>
-          <pm:high>0.6</pm:high>
-          <pm:unit>share of customers served within two minutes</pm:unit>
-          <pm:narrowsWhen>
-            <pm:narrowing>
-              <pm:condition>the queue timer is read off the till rather than estimated</pm:condition>
-              <pm:kind>instrument</pm:kind>
-            </pm:narrowing>
-          </pm:narrowsWhen>
-          <!-- ⭐ `notApplicable`, FOR THE SECOND OF THE TWO REASONS THE TYPE LISTS. A share
-               of customers is not a committed quantity: there is no author to ask about the
-               edge of it, so the question is malformed rather than unanswered.
-               ⚠ THIS USED TO SAY THE CORPUS NEVER FILES IT, AND THAT STOPPED BEING TRUE. The
-               corpus now files `notApplicable` on sixteen jagged draws, all of them the OTHER
-               reading: an observed count, where the malformation is that a count has no edge
-               to have been set. A ratio has no author; a count has no spread. Two different
-               ways for the question to be wrong, and this fixture holds the one the corpus
-               does not reach. -->
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>notApplicable</pm:reason>
-              <pm:note>a ratio is not a quantity anybody commits, so asking who could have
-                       committed a different edge of it is malformed rather than unanswered</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>0.4</pm:low>
+            <pm:mostLikely>0.5</pm:mostLikely>
+            <pm:high>0.6</pm:high>
+            <pm:unit>share of customers served within two minutes</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>the queue timer is read off the till rather than estimated</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <!-- ⭐ `notApplicable`, FOR THE SECOND OF THE TWO REASONS THE TYPE LISTS. A share
+                 of customers is not a committed quantity: there is no author to ask about the
+                 edge of it, so the question is malformed rather than unanswered.
+                 ⚠ THIS USED TO SAY THE CORPUS NEVER FILES IT, AND THAT STOPPED BEING TRUE. The
+                 corpus now files `notApplicable` on sixteen jagged draws, all of them the OTHER
+                 reading: an observed count, where the malformation is that a count has no edge
+                 to have been set. A ratio has no author; a count has no spread. Two different
+                 ways for the question to be wrong, and this fixture holds the one the corpus
+                 does not reach. -->
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>a ratio is not a quantity anybody commits, so asking who could have
+                         committed a different edge of it is malformed rather than unanswered</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <pm:timeSlack>
@@ -313,20 +357,30 @@
       <pm:name>oven-b</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>900</pm:low>
-          <pm:mostLikely>1000</pm:mostLikely>
-          <pm:high>1200</pm:high>
-          <pm:unit>muffins per day</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>900</pm:low>
+            <pm:mostLikely>1000</pm:mostLikely>
+            <pm:high>1200</pm:high>
+            <pm:unit>muffins per day</pm:unit>
+            <pm:denominator>
+              <pm:period>day</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <pm:timeSlack>
@@ -341,6 +395,9 @@
             <pm:claim>
               <pm:low>1080</pm:low><pm:mostLikely>1080</pm:mostLikely><pm:high>1080</pm:high>
               <pm:unit>muffins per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent><pm:reason>notApplicable</pm:reason>
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -359,6 +416,9 @@
                   <pm:claim>
                     <pm:low>12</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>12</pm:high>
                     <pm:unit>muffins per day</pm:unit>
+                    <pm:denominator>
+                      <pm:period>day</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent><pm:reason>notApplicable</pm:reason>
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -382,8 +442,21 @@
               <pm:note>stipulated</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: a muffin baked today is not one for next week</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>muffins per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>bakery</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: a muffin baked today is not one for next week</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -436,20 +509,30 @@
       <pm:name>delivery</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>40</pm:low><pm:mostLikely>55</pm:mostLikely><pm:high>80</pm:high>
-          <pm:unit>drops per day</pm:unit>
-          <pm:narrowsWhen>
-            <pm:narrowing>
-              <pm:condition>the van tracker is read rather than the driver's own log</pm:condition>
-              <pm:kind>instrument</pm:kind>
-            </pm:narrowing>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>40</pm:low><pm:mostLikely>55</pm:mostLikely><pm:high>80</pm:high>
+            <pm:unit>drops per day</pm:unit>
+            <pm:denominator>
+              <pm:period>day</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>the van tracker is read rather than the driver's own log</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <pm:timeSlack>
@@ -492,8 +575,21 @@
             <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: an unused drop slot does not keep</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>drops per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>bakery</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: an unused drop slot does not keep</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -551,18 +647,28 @@
     <pm:layer>
       <pm:name>mixer</pm:name>
       <pm:demand>
-        <pm:claim>
-          <pm:low>1400</pm:low><pm:mostLikely>1600</pm:mostLikely><pm:high>1900</pm:high>
-          <pm:unit>doughs per day</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>1400</pm:low><pm:mostLikely>1600</pm:mostLikely><pm:high>1900</pm:high>
+            <pm:unit>doughs per day</pm:unit>
+            <pm:denominator>
+              <pm:period>day</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
         <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -574,6 +680,9 @@
             <pm:claim>
               <pm:low>1500</pm:low><pm:mostLikely>1500</pm:mostLikely><pm:high>1500</pm:high>
               <pm:unit>doughs per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent><pm:reason>notApplicable</pm:reason>
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -592,6 +701,9 @@
                   <pm:claim>
                     <pm:low>25</pm:low><pm:mostLikely>25</pm:mostLikely><pm:high>25</pm:high>
                     <pm:unit>doughs per day</pm:unit>
+                    <pm:denominator>
+                      <pm:period>day</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent><pm:reason>notApplicable</pm:reason>
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -614,8 +726,21 @@
             <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>doughs per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>bakery</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: nothing keeps until next week</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -655,18 +780,28 @@
     <pm:layer>
       <pm:name>mixer-b</pm:name>
       <pm:demand>
-        <pm:claim>
-          <pm:low>900</pm:low><pm:mostLikely>1000</pm:mostLikely><pm:high>1200</pm:high>
-          <pm:unit>doughs per day</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>900</pm:low><pm:mostLikely>1000</pm:mostLikely><pm:high>1200</pm:high>
+            <pm:unit>doughs per day</pm:unit>
+            <pm:denominator>
+              <pm:period>day</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
         <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -678,6 +813,9 @@
             <pm:claim>
               <pm:low>1050</pm:low><pm:mostLikely>1050</pm:mostLikely><pm:high>1050</pm:high>
               <pm:unit>doughs per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent><pm:reason>notApplicable</pm:reason>
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -696,6 +834,9 @@
                   <pm:claim>
                     <pm:low>25</pm:low><pm:mostLikely>25</pm:mostLikely><pm:high>25</pm:high>
                     <pm:unit>doughs per day</pm:unit>
+                    <pm:denominator>
+                      <pm:period>day</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent><pm:reason>notApplicable</pm:reason>
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -718,8 +859,21 @@
             <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>doughs per day</pm:unit>
+              <pm:denominator>
+                <pm:period>day</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>bakery</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: nothing keeps until next week</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>

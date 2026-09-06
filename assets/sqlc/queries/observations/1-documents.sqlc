@@ -1,0 +1,23 @@
+-- §1  Every document that reached the database, and what it says about itself.
+#
+# ⛔⛔ THE EMPTY COLUMN IS THE FINDING, and it is why epistemics/documents.sqlc was written.
+# `pm:processModulus` is the only root that names no witness, so a stipulation and an
+# observation are the same shape to anything reading the tree. That relation has existed and
+# been read by nothing; this is where somebody looks at it.
+# ⭐ AND THE STANDARD A COMPOSITION WORKS UNDER, which is a different question from the regime.
+# The regime says what the MEMBERS reported under; the citation says which instrument governs the
+# act of combining them. It had no home in this database until 2026-09-06 and is empty for every
+# root but `composition`, which is correct rather than thin.
+-- epistemics/documents.sqlc, with the citation a composition works under.
+SELECT d.filing                       AS "filing!",
+       d.root                         AS "root!",
+       d.evidence                     AS "evidence",
+       coalesce(d.witness, '')        AS "witness!",
+       coalesce(c.instrument || coalesce(' ' || c.clause, ''), '') AS "under!"
+FROM (
+    :compose(epistemics/documents.sqlc)
+) d
+LEFT JOIN (
+    :compose(composition/citations.sqlc)
+) c ON c.composition = d.filing AND c.seq = 1
+ORDER BY d.root, d.filing

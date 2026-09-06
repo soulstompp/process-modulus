@@ -30,16 +30,11 @@ FROM (
     :compose(entries/couplings.sqlc)
 ) c
 LEFT JOIN (
-    SELECT DISTINCT x.part_filing AS filing, x.part_layer AS from_layer,
-           y.part_layer AS to_layer, x.composition, x.composed_layer
+    SELECT DISTINCT sp.part_filing AS filing, sp.from_layer, sp.to_layer,
+           sp.composition, sp.composed_layer
     FROM (
-        :compose(composition/parts.sqlc)
-    ) x
-    JOIN (
-        :compose(composition/parts.sqlc)
-    ) y
-      ON y.composition = x.composition AND y.composed_layer = x.composed_layer
-     AND y.part_filing = x.part_filing
+        :compose(composition/sibling_parts.sqlc)
+    ) sp
 ) a USING (filing, from_layer, to_layer)
 JOIN      (
     :compose(scope/corpus.sqlc)

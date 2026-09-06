@@ -24,6 +24,9 @@
   <pm:notation>
     <pm:uri>urn:example:declaracao:padaria-do-largo:2026-08-30</pm:uri>
   </pm:notation>
+  <pm:evidence>
+    <pm:attests>observation</pm:attests>
+  </pm:evidence>
 
   <!-- Ao abrigo do que este documento reporta.
        Uma microentidade portuguesa reporta sob o AnexoASNC da IES, e ao contrário do
@@ -62,28 +65,40 @@
       <pm:name>pessoal</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>4.5</pm:low>
-          <pm:mostLikely>5.2</pm:mostLikely>
-          <pm:high>6.0</pm:high>
-          <pm:unit>pessoas</pm:unit>
-          <pm:narrowsWhen>
-            <pm:narrowing>
-              <pm:condition>as interrupções de apoio passarem a ser registadas em tempo em vez de estimadas</pm:condition>
-              <pm:kind>instrument</pm:kind>
-            </pm:narrowing>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>padaria-do-largo</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>4.5</pm:low>
+            <pm:mostLikely>5.2</pm:mostLikely>
+            <pm:high>6.0</pm:high>
+            <pm:unit>pessoas</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>as interrupções de apoio passarem a ser registadas em tempo em vez de estimadas</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>padaria-do-largo</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <!-- ⛔⛔ `unmeasured` E NÃO `none`. Dizer que a procura aqui não sobrevive de todo a
@@ -114,6 +129,11 @@
               <pm:mostLikely>4</pm:mostLikely>
               <pm:high>4</pm:high>
               <pm:unit>pessoas</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -140,6 +160,11 @@
                     <pm:mostLikely>1</pm:mostLikely>
                     <pm:high>1</pm:high>
                     <pm:unit>pessoas</pm:unit>
+                    <pm:denominator>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                      </pm:absent>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -171,10 +196,21 @@
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>a capacidade não usada hoje está PERDIDA. As horas não usadas da semana passada não podem ser armazenadas para servir esta semana, e é por isso que `absorber = inventory` nesta camada é lisamente falso</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>pessoas</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>a capacidade não usada hoje está PERDIDA. As horas não usadas da semana passada não podem ser armazenadas para servir esta semana, e é por isso que `absorber = inventory` nesta camada é lisamente falso</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -271,36 +307,59 @@
       <pm:name>computacao</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>3.1</pm:low>
-          <pm:mostLikely>4.4</pm:mostLikely>
-          <pm:high>6.0</pm:high>
-          <pm:unit>GPU</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
-            </pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>padaria-do-largo</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>3.1</pm:low>
+            <pm:mostLikely>4.4</pm:mostLikely>
+            <pm:high>6.0</pm:high>
+            <pm:unit>GPU</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>padaria-do-largo</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <!-- um pedido de inferência que espera até amanhã não foi servido -->
       <pm:timeSlack>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>um pedido de inferência que espera até amanhã não foi servido. À granularidade desta camada a procura não sobrevive de todo a ser retida</pm:note>
-        </pm:absent>
+        <pm:claim>
+          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+          <pm:unit>GPU</pm:unit>
+          <pm:denominator>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:denominator>
+          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+          <pm:provenance>
+            <pm:party>padaria-do-largo</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>um pedido de inferência que espera até amanhã não foi servido. À granularidade desta camada a procura não sobrevive de todo a ser retida</pm:note>
+          </pm:provenance>
+        </pm:claim>
       </pm:timeSlack>
 
       <pm:supply>
@@ -312,6 +371,11 @@
               <pm:mostLikely>8</pm:mostLikely>
               <pm:high>8</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -339,6 +403,11 @@
                     <pm:mostLikely>8</pm:mostLikely>
                     <pm:high>8</pm:high>
                     <pm:unit>GPU</pm:unit>
+                    <pm:denominator>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                      </pm:absent>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -365,17 +434,39 @@
             </pm:divisibility>
           </pm:divisibility>
           <pm:capacitySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>uma placa reservada não pode ser levada acima da sua capacidade nominal a preço nenhum</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>uma placa reservada não pode ser levada acima da sua capacidade nominal a preço nenhum</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:capacitySlack>
           <!-- uma hora-GPU reservada e não consumida esta perdida; não ha nada para adiantar -->
           <pm:inventorySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>uma hora-placa reservada e não consumida está perdida; não há nada para adiantar</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>uma hora-placa reservada e não consumida está perdida; não há nada para adiantar</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -385,6 +476,11 @@
               <pm:mostLikely>4.4</pm:mostLikely>
               <pm:high>4.4</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -433,6 +529,11 @@
                   <pm:mostLikely>3.6</pm:mostLikely>
                   <pm:high>4.9</pm:high>
                   <pm:unit>GPU</pm:unit>
+                  <pm:denominator>
+                    <pm:absent>
+                      <pm:reason>notApplicable</pm:reason>
+                    </pm:absent>
+                  </pm:denominator>
                   <pm:narrowsWhen>
                     <pm:narrowing>
                       <pm:condition>o consumo passar a ser amostrado ao minuto em vez de à hora</pm:condition>
@@ -470,28 +571,38 @@
       <pm:name>capacidade-entregavel</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>5</pm:low>
-          <pm:mostLikely>6</pm:mostLikely>
-          <pm:high>8</pm:high>
-          <pm:unit>lançamentos por trimestre</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
-            </pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>product</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>5</pm:low>
+            <pm:mostLikely>6</pm:mostLikely>
+            <pm:high>8</pm:high>
+            <pm:unit>lançamentos por trimestre</pm:unit>
+            <pm:denominator>
+              <pm:period>trimestre</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nada fixa este limite. O intervalo é onde as observações caíram e não onde uma regra as pôs, portanto não há aqui alavanca nenhuma a procurar</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>product</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <!-- um cliente espera por uma vaga de entrega, e é isso que permite que o amortecedor
@@ -512,6 +623,9 @@
               <pm:mostLikely>3</pm:mostLikely>
               <pm:high>3</pm:high>
               <pm:unit>lançamentos por trimestre</pm:unit>
+              <pm:denominator>
+                <pm:period>trimestre</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -560,6 +674,9 @@
                     <pm:mostLikely>1</pm:mostLikely>
                     <pm:high>1</pm:high>
                     <pm:unit>lançamentos por trimestre</pm:unit>
+                    <pm:denominator>
+                      <pm:period>trimestre</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -586,10 +703,21 @@
             </pm:divisibility>
           </pm:divisibility>
           <pm:capacitySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>entregar adiantado em relação ao que a casa produz não está à venda</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>lançamentos por trimestre</pm:unit>
+              <pm:denominator>
+                <pm:period>trimestre</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>entregar adiantado em relação ao que a casa produz não está à venda</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:capacitySlack>
           <!-- VERDADE AQUI E FALSO NAS OUTRAS DUAS. Uma entrega pode ser adiantada e retida,
                e é isso que faz de `absorber = inventory` nesta camada uma afirmação e
@@ -625,6 +753,9 @@
               <pm:mostLikely>4</pm:mostLikely>
               <pm:high>6</pm:high>
               <pm:unit>lançamentos por trimestre</pm:unit>
+              <pm:denominator>
+                <pm:period>trimestre</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:narrowing>
                   <pm:condition>o trabalho acabado e não entregue passar a ser datado em vez de contado</pm:condition>
@@ -654,6 +785,9 @@
               <pm:mostLikely>3</pm:mostLikely>
               <pm:high>3</pm:high>
               <pm:unit>lançamentos por trimestre</pm:unit>
+              <pm:denominator>
+                <pm:period>trimestre</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -704,6 +838,9 @@
                   <pm:mostLikely>2</pm:mostLikely>
                   <pm:high>3</pm:high>
                   <pm:unit>lançamentos por trimestre</pm:unit>
+                  <pm:denominator>
+                    <pm:period>trimestre</pm:period>
+                  </pm:denominator>
                   <pm:narrowsWhen>
                     <pm:narrowing>
                       <pm:condition>os lançamentos escorregados passarem a ser datados contra o trimestre a que foram comprometidos</pm:condition>
@@ -733,6 +870,9 @@
                   <pm:mostLikely>1</pm:mostLikely>
                   <pm:high>2</pm:high>
                   <pm:unit>lançamentos por trimestre</pm:unit>
+                  <pm:denominator>
+                    <pm:period>trimestre</pm:period>
+                  </pm:denominator>
                   <pm:narrowsWhen>
                     <pm:narrowing>
                       <pm:condition>as oportunidades perdidas por falta de vaga de entrega passarem a ser registadas como tal</pm:condition>
@@ -809,6 +949,11 @@
           <pm:mostLikely>1</pm:mostLikely>
           <pm:high>2</pm:high>
           <pm:unit>lançamentos</pm:unit>
+          <pm:denominator>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+            </pm:absent>
+          </pm:denominator>
           <pm:narrowsWhen>
             <pm:narrowing>
               <pm:condition>as obrigações assinadas passarem a ser decompostas antes da assinatura em vez de depois</pm:condition>
@@ -834,6 +979,11 @@
           <pm:mostLikely>1.2</pm:mostLikely>
           <pm:high>3.0</pm:high>
           <pm:unit>GPU</pm:unit>
+          <pm:denominator>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+            </pm:absent>
+          </pm:denominator>
           <pm:narrowsWhen>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>

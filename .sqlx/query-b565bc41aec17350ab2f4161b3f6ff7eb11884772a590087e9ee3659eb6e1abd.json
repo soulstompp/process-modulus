@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §2  The operations that both draw and induce, the entries `D-transpose N` would have.\n-- entries/cross_layer_edges.sqlc, the join on the shared (filing, operation) index.\nSELECT x.operation        AS \"operation!\",\n       x.drawn_from       AS \"drawn!\",\n       x.drawn::float8    AS d_val,\n       x.commits          AS \"commits!\",\n       x.committed::float8 AS n_val\nFROM (\n    -- the shared index is (filing, operation); pm:Operation carries both children.\nSELECT d.filing, d.operation,\n       d.layer AS drawn_from, d.mode AS drawn,\n       n.layer AS commits,    n.mode AS committed,\n       coalesce(d.unit, '(unmeasured)') || ' * '\n    || coalesce(n.unit, '(unmeasured)') AS the_unit_that_warns_you,\n       d.mode * n.mode                    AS the_product_nobody_should_use\nFROM      (\n    -- pm:Operation/pm:Draw.\nSELECT d.filing, d.operation, d.layer,\n       d.low, d.mode, d.high, d.unit, d.absent\nFROM pm.draw d\n\n) d\nJOIN      (\n    -- pm:Operation/pm:Induction, carrying pm:decidedBy.\nSELECT n.filing, n.operation, n.layer,\n       n.low, n.mode, n.high, n.unit, n.absent, n.decider\nFROM pm.induction n\n\n) n USING (filing, operation)\n\n) x\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "operation!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "operation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "drawn!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "commits!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.induction",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "n_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      false,
+      null
+    ]
+  },
+  "hash": "b565bc41aec17350ab2f4161b3f6ff7eb11884772a590087e9ee3659eb6e1abd"
+}

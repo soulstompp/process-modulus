@@ -1,0 +1,42 @@
+-- §6  The residue's three points, and whether they came back in order.
+#
+# ONE ROW PER LUMPY CORPUS LAYER WITH A STATED DEMAND, carrying the demand's three points, the
+# quantum's, and whether the residue evaluated at those points comes back ORDERED.
+#
+# ⭐⭐ `r = mq - (d mod q)` SPLITS A REMAINDER INTO A PART A PROCUREMENT DECISION MOVES AND A
+# PART NO DECISION REMOVES. The second half is a SAWTOOTH in `d`, so evaluated at an interval's
+# three points it need not come back ordered, and an unordered triple is not a valid interval
+# at all, while the demand it was computed from is perfectly well formed.
+#
+# ⭐ The example recomputes every `mod` in Rust and asserts the verdict matches this column, so
+# the figure the note quotes is calculated twice rather than counted by hand, which is what it
+# was, and it drifted.
+#
+# ⚠️ `quantum_mode` ALONE IS THE DIVISOR because every filed quantum in this corpus is a point
+# value. The example ASSERTS that rather than assuming it: a quantum with a spread would make
+# "the residue" three different divisions and this query would be picking one silently.
+#
+# ⛔ CORPUS ONLY. The fixtures exist to exercise states the corpus does not reach, so counting
+# them here would report coverage this model has not actually been filed against.
+-- layers/lumpy.sqlc at corpus scope; the sawtooth is mod(d, q) at the three points.
+SELECT l.filing               AS "filing!",
+       l.layer                AS "layer!",
+       l.d_low::float8        AS "d_low!",
+       l.d_mode::float8       AS "d_mode!",
+       l.d_high::float8       AS "d_high!",
+       n.quantum_low::float8  AS "q_low!",
+       n.quantum_mode::float8 AS "q_mode!",
+       n.quantum_high::float8 AS "q_high!",
+       (NOT (mod(l.d_low,  l.quantum_mode) <= mod(l.d_mode, l.quantum_mode)
+         AND mod(l.d_mode, l.quantum_mode) <= mod(l.d_high, l.quantum_mode)))
+                              AS "sawtoothed!"
+FROM (
+    :compose(layers/lumpy.sqlc)
+) l
+JOIN (
+    :compose(scope/corpus.sqlc)
+) f USING (filing)
+JOIN (
+    :compose(layers/nameplate.sqlc)
+) n USING (filing, layer)
+ORDER BY l.filing, l.layer

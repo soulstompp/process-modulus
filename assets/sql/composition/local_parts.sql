@@ -7,4 +7,9 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing

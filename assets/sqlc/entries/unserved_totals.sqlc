@@ -1,0 +1,31 @@
+# THE UNSERVED SHARES OF A LAYER, TOTALLED, WITH WHAT WOULD SUSPEND THE TOTAL. One row per layer
+# holding at least one `customer` or `unrealised` share: how many such holders, how many left
+# their share unstated, the sum of the ones that stated it, and the units they used.
+#
+# ⭐⭐⭐ TWO CALLERS COMPUTED THIS γ SEPARATELY AND DISAGREED ABOUT ITS POPULATION.
+#    arithmetic/exposure_bounded.sqlc inner-joins entries/unserved_holders.sqlc, so a layer with
+#    no unserved holder is not a candidate. checks/exposure_unaccounted.sqlc outer-joined it and
+#    supplied `coalesce(unserved, 0)`, so six such layers entered its examined set carrying a
+#    zero nobody filed. All six read `exposure = 0`, so the check could not fire on any of them
+#    and still counted them toward its coverage: 9 examined against a site that declares 3.
+#
+# ⛔⛔ AN UNSTATED SHARE IS NOT A ZERO SHARE, WHICH IS WHY `unstated` IS A COLUMN AND NOT A
+#    FILTER. `sum()` skips NULLs silently, so a layer where nobody stated a share sums to NULL
+#    and one where half did sums to half the truth. Both callers must decide what to do about
+#    that, and they decide differently: the site reports `suspended`, the check declines to
+#    examine. Carrying the count lets each say so instead of each rediscovering it.
+#
+# ⭐ `share_units` IS THE DISTINCT SET, so a caller comparing against its layer's own unit asks
+#   whether that set is exactly its own unit and nothing else. A NULL unit lands in the array and
+#   makes the comparison false, which is correct: an unstated unit is not a matching one.
+-- entries/unserved_holders.sqlc folded to one row per layer.
+SELECT h.filing, h.layer,
+       count(*)                                        AS holders,
+       count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
+       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_mode)                                AS unserved_mode,
+       array_agg(DISTINCT h.share_unit)                 AS share_units
+FROM (
+    :compose(entries/unserved_holders.sqlc)
+) h
+GROUP BY h.filing, h.layer

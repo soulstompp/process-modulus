@@ -1,0 +1,38 @@
+# EVERY LAYER WHOSE SHARES ARE BOUNDED BY A SLACK, AND WHETHER THAT BOUND IS AVAILABLE. One row
+# per layer that names an absorber a reader has mapped.
+#
+# ⭐⭐ THIS SITE IS THE ONE THAT IS GUARDED, AND IT IS WORTH SEEING WHY. checks/slack_unit_mismatch
+#    exists precisely because an inequality between two numbers in different units is not a
+#    failing comparison but a meaningless one -- so it is the precondition that makes
+#    share_exceeds_slack mean anything. Every other inequality in this model wants the same
+#    precondition and seven of them do not have it.
+#
+# ⛔ AN UNSIZED SLACK SUSPENDS THE BOUND. entries/borne.sqlc drops those rows; this one names
+#   them, which is how `share_exceeds_slack` came to read ⛔ VACUOUS without anything saying so.
+-- the slack named by pm:Remainder/pm:absorber, against pm:Remainder/pm:holder.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT s.filing, s.layer,
+           CASE WHEN s.mode IS NULL                  THEN 'suspended'
+                WHEN h.unstated > 0                  THEN 'suspended'
+                WHEN h.share_units <> ARRAY[s.unit]  THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN s.mode IS NULL
+                     THEN format('the %s buffer is %s', s.buffer, s.absent)
+                WHEN h.unstated > 0
+                     THEN format('%s of %s shares unstated, against a %s slack of %s',
+                                 h.unstated, h.holders, s.buffer, s.mode)
+                ELSE format('%s shares bounded by a %s slack of %s',
+                            h.holders, s.buffer, s.mode)
+           END AS detail
+    FROM      (
+        :compose(entries/absorbing_slack.sqlc)
+    ) s
+    JOIN      (
+        :compose(entries/holder_totals.sqlc)
+    ) h USING (filing, layer)
+) p ON true
+WHERE a.slug = 'shares_bounded'

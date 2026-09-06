@@ -48,6 +48,9 @@
     <pm:notation>
       <pm:uri>urn:example:fixture:group:every-partial-elimination</pm:uri>
     </pm:notation>
+    <pm:evidence>
+      <pm:attests>stipulation</pm:attests>
+    </pm:evidence>
     <pm:stack>
       <pm:scope>
         <pm:scope>
@@ -59,12 +62,22 @@
       <pm:layer>
         <pm:name>team-a</pm:name>
         <pm:demand>
-          <pm:claim>
-              <pm:low>6</pm:low><pm:mostLikely>7</pm:mostLikely><pm:high>8</pm:high>
-              <pm:unit>shifts per week</pm:unit>
-              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
-            </pm:claim>
+          <pm:amount>
+            <pm:claim>
+                <pm:low>6</pm:low><pm:mostLikely>7</pm:mostLikely><pm:high>8</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+            </pm:absent>
+          </pm:patience>
         </pm:demand>
         <pm:timeSlack>
           <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -76,6 +89,9 @@
               <pm:claim>
               <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -88,6 +104,9 @@
                     <pm:claim>
               <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -103,7 +122,21 @@
               <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
-              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+              <pm:claim>
+                <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                <pm:provenance>
+                  <pm:party>group-parent</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                  <pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note>
+                </pm:provenance>
+              </pm:claim>
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
@@ -141,12 +174,22 @@
       <pm:layer>
         <pm:name>team-b</pm:name>
         <pm:demand>
-          <pm:claim>
-              <pm:low>5</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>7</pm:high>
-              <pm:unit>shifts per week</pm:unit>
-              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
-            </pm:claim>
+          <pm:amount>
+            <pm:claim>
+                <pm:low>5</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>7</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+            </pm:absent>
+          </pm:patience>
         </pm:demand>
         <pm:timeSlack>
           <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -158,6 +201,9 @@
               <pm:claim>
               <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -170,6 +216,9 @@
                     <pm:claim>
               <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -185,7 +234,21 @@
               <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
-              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+              <pm:claim>
+                <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                <pm:provenance>
+                  <pm:party>group-parent</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                  <pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note>
+                </pm:provenance>
+              </pm:claim>
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
@@ -223,12 +286,22 @@
       <pm:layer>
         <pm:name>shift-capacity</pm:name>
         <pm:demand>
-          <pm:claim>
-              <pm:low>11</pm:low><pm:mostLikely>13</pm:mostLikely><pm:high>15</pm:high>
-              <pm:unit>shifts per week</pm:unit>
-              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
-            </pm:claim>
+          <pm:amount>
+            <pm:claim>
+                <pm:low>11</pm:low><pm:mostLikely>13</pm:mostLikely><pm:high>15</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+            </pm:absent>
+          </pm:patience>
         </pm:demand>
         <pm:timeSlack>
           <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -240,6 +313,9 @@
               <pm:claim>
               <pm:low>17</pm:low><pm:mostLikely>17</pm:mostLikely><pm:high>17</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -252,6 +328,9 @@
                     <pm:claim>
               <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -267,7 +346,21 @@
               <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
-              <pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note></pm:absent>
+              <pm:claim>
+                <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                <pm:unit>shifts per week</pm:unit>
+                <pm:denominator>
+                  <pm:period>week</pm:period>
+                </pm:denominator>
+                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                <pm:provenance>
+                  <pm:party>group-parent</pm:party>
+                  <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                  <pm:note>stipulated: a shift not worked this week cannot be banked for next</pm:note>
+                </pm:provenance>
+              </pm:claim>
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
@@ -348,6 +441,9 @@
           <pm:claim>
               <pm:low>3</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>3</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>it is the size of the shared block, stated in both parts</pm:note></pm:absent></pm:boundOrigin>
             </pm:claim>
@@ -360,7 +456,21 @@
       </asrt:elimination>
       <asrt:elimination>
         <asrt:quantity>
-          <pm:absent><pm:reason>none</pm:reason><pm:note>somebody looked and no shift is asked for twice</pm:note></pm:absent>
+          <pm:claim>
+            <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+            <pm:unit>shifts per week</pm:unit>
+            <pm:denominator>
+              <pm:period>week</pm:period>
+            </pm:denominator>
+            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
+            <pm:provenance>
+              <pm:party>group-parent</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            </pm:provenance>
+          </pm:claim>
         </asrt:quantity>
         <asrt:against>demand</asrt:against>
         <asrt:observed>The order books were read against each other and no shift is requested by

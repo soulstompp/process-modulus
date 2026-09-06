@@ -21,6 +21,8 @@ LEFT JOIN (
     FROM      (
         :compose(composition/local_parts.sqlc)
     ) p
-    LEFT JOIN pm.layer l ON l.filing = p.composition AND l.layer = p.part_layer
+    LEFT JOIN (
+        :compose(layers/every_layer.sqlc)
+    ) l ON l.filing = p.composition AND l.layer = p.part_layer
 ) p ON true
 WHERE r.slug = 'local_part_dangles'

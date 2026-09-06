@@ -1,0 +1,24 @@
+# EVERY LUMPY SUPPLY WHOSE RATING HAS TO DIVIDE BY ITS QUANTUM, AND WHETHER THE DIVISION IS
+# AVAILABLE. One row per lumpy layer with a stated remainder.
+#
+# ⭐ THE SECOND GUARDED SITE. checks/quantum_unit_mismatch says it plainly: a division across
+#   units is not a wrong answer, it is not an answer. That sentence is true of every row in
+#   this roster and is written at exactly two of them.
+-- pm:Divisibility/pm:quantum against pm:Nameplate/pm:amount.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT l.filing, l.layer,
+           CASE WHEN l.quantum_mode IS NULL                            THEN 'suspended'
+                WHEN l.quantum_unit IS DISTINCT FROM l.amount_unit     THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN l.quantum_mode IS NULL THEN 'no quantum stated'
+                ELSE format('%s of %s against a rating in %s',
+                            l.quantum_mode, l.quantum_unit, l.amount_unit) END AS detail
+    FROM (
+        :compose(layers/lumpy.sqlc)
+    ) l
+) p ON true
+WHERE a.slug = 'whole_multiple'

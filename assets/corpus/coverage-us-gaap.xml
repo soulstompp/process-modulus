@@ -14,6 +14,9 @@
                xmlns:pm="https://example.invalid/process-flow/1.0">
 
   <asrt:witness>gaap-us</asrt:witness>
+  <asrt:evidence>
+    <pm:attests>observation</pm:attests>
+  </asrt:evidence>
 
   <asrt:regime>
     <pm:id>us-gaap</pm:id>

@@ -1,0 +1,24 @@
+# THE LAYERS A DOUBLE COUNT RUNS BETWEEN, WHICH IS THE EVIDENCE FOR AN ELIMINATION. One row per
+# `asrt:between` on a filed elimination: which party's filing, which layer of it, under which
+# regime and which version the composer read.
+#
+# ⭐⭐⭐ AN ELIMINATION WITHOUT THIS IS A NUMBER WITH NO SUBJECT. `eliminations/filed.sqlc` says a
+#    composer removed 90 GPU-hours from `merge-holding-composition/compute`. It cannot say WHAT
+#    was counted twice. These rows can: `compute-us` and `compute-pt`, both from `group-parent`,
+#    both under the `group` regime. That is the difference between an adjustment and an argument.
+#
+# ⛔⛔ IT HAD NO HOME IN THE DATABASE AT ALL UNTIL 2026-09-06, and eight of them were read from
+#    the XML and dropped on every ingest. Nothing noticed because no rule read them: a rule reads
+#    only what it needs, so a field no rule reads is under no pressure to exist. Only asking
+#    "could I write this document back out" finds a hole like this, which is a question the query
+#    side structurally cannot ask.
+#
+# ⛔ `notation` IS A FOREIGN REFERENCE AND MAY DANGLE, so it carries no foreign key, exactly as
+#   `composition/part_references.sqlc` does not. `asrt:Elimination` argues the point directly,
+#   refusing a keyref that would restrict `between` to the fusion's own parts because "a group
+#   eliminating against a member that files nothing, or against a layer folded into a different
+#   composed layer, is ordinary".
+-- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+SELECT b.composition, b.composed_layer, b.quantity, b.seq,
+       b.party, b.notation, b.layer, b.version, b.regime
+FROM pm.elimination_between b

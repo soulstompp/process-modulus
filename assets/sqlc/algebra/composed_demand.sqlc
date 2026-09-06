@@ -1,0 +1,32 @@
+# THE COMPOSED DEMANDS THE EXAMPLE READS, AGAINST THE FUSIONS THAT OWE NO SUM, CHECKED AS A
+# PARTITION OF EVERY STATED DEMAND. One row: whether |demand| = |3b| + |demand ⋉ suspended|.
+#
+# ⛔⛔ `kept` COMPOSES THE SUBJECT RATHER THAN RE-DERIVING IT, AND THAT IS THE WHOLE POINT OF THE
+#    LAW. It used to spell the anti-join out inline, so it governed a COPY of
+#    queries/matrices/3b-composed-demand.sqlc: change that file's WHERE and this law still passed,
+#    which is the one failure a soundness contract cannot afford because it is invisible.
+#    algebra/owed_equality.sqlc composes composition/owed_equality.sqlc for the same reason.
+#
+# ⭐ THE LEFT OPERAND IS A SET HERE, SO THIS ONE COULD CONVERT TO `EXCEPT` -- AND MUST NOT. The
+#   query carries the demand's three points and the eliminations beside them, and `EXCEPT`
+#   returns only what both arms can spell. π does not distribute over ∖: project first and you
+#   subtract on fewer attributes. The anti-join is correct for payload, not merely habitual.
+-- layers/demand.sqlc partitioned by the query the roster names as this law's subject.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'queries/matrices/3b-composed-demand' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s stated demands = %s carried + %s suspended', x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/demand.sqlc) ) d) AS total,
+             (SELECT count(*) FROM ( :compose(queries/matrices/3b-composed-demand.sqlc) ) k) AS kept,
+             (SELECT count(*) FROM ( :compose(layers/demand.sqlc) ) d
+               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
+                              WHERE s.composition = d.filing AND s.composed_layer = d.layer
+                                AND coalesce(s.quantity, 'demand') = 'demand')) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'composed_demand'

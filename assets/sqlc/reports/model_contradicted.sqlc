@@ -26,7 +26,9 @@ SELECT d.filing, d.layer, d.reason,
        regexp_replace(d.argument, '\s+', ' ', 'g') AS the_counter_example,
        format('%s of %s corpus layers deny having one',
               count(*) OVER (),
-              (SELECT count(*) FROM pm.layer l
+              (SELECT count(*) FROM (
+                    :compose(layers/every_layer.sqlc)
+                ) l
                 JOIN (
                     :compose(scope/corpus.sqlc)
                 ) sc USING (filing))) AS how_common

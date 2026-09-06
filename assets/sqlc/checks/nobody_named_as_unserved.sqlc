@@ -10,7 +10,7 @@
 #
 # ⛔ THE VIOLATION IS AN ANTI-JOIN AGAINST entries/unserved_holders.sqlc, which the clearance
 #   check semi-joins and the exposure check sums. One relation, three readings.
--- pm:Buffer kind="capacity" measured zero, against pm:HolderKind customer/unrealised.
+-- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -22,7 +22,7 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            :compose(layers/measured_zero_exposure.sqlc)
+            :compose(layers/stated_zero_exposure.sqlc)
         ) e
         WHERE e.exposure > 1e-9
     ) c

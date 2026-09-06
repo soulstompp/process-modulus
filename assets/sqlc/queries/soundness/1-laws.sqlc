@@ -1,0 +1,16 @@
+-- §1  Every set-algebraic law this tree claims, and whether it holds.
+#
+# ONE ROW PER (LAW, SUBJECT). The cardinalities that decide each law are in `detail`, so a reader
+# can see the arithmetic rather than take the boolean on trust.
+#
+# ⭐⭐ A LAW WITH NO SUBJECTS REPORTS ⛔ VACUOUS RATHER THAN VANISHING, which is why every law
+# joins algebra/roster.sqlc before its population, the same reason checks/ does.
+-- algebra/all.sqlc, as the example reads it.
+SELECT z.law                            AS "law!",
+       coalesce(z.subject, '')          AS "subject!",
+       z.holds                          AS "holds",
+       coalesce(z.detail, '')           AS "detail!"
+FROM (
+    :compose(algebra/all.sqlc)
+) z
+ORDER BY z.law, z.subject

@@ -1,0 +1,28 @@
+# THE TWO KINDS OF DILIGENCE SEARCH AGAINST THE UNION THAT HOLDS BOTH. One row: whether
+# |A ⊎ B| = |A| + |B|.
+#
+# ⭐ A `UNION ALL` OF TWO COMPOSED RELATIONS IS TRIVIALLY ADDITIVE -- WHICH IS WHY THIS LAW IS A
+#   DRIFT CHECK RATHER THAN AN ALGEBRA CHECK, AND SAYING SO IS THE HONEST THING. It cannot fail on
+#   the operator; it fails when somebody adds a predicate to the union file, drops an arm, or
+#   writes bare `UNION` and silently deduplicates. Those are the ways a hand-written union goes
+#   wrong, and none of them raises an error.
+#
+# ⛔ Composer-generated `:union(ALL …)` does NOT earn a row here: the arms are spliced verbatim
+#   and there is no call site to drift. Only hand-written unions do.
+-- epistemics/searches.sqlc against the two relations it unions.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'epistemics/searches' AS subject,
+           x.whole = x.couplings + x.eliminations AS holds,
+           format('%s searches = %s coupling + %s double-counting',
+                  x.whole, x.couplings, x.eliminations) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(epistemics/searches.sqlc) ) s)              AS whole,
+             (SELECT count(*) FROM ( :compose(epistemics/coupling_searches.sqlc) ) c)     AS couplings,
+             (SELECT count(*) FROM ( :compose(eliminations/searched.sqlc) ) e)  AS eliminations
+         ) x
+) p ON true
+WHERE a.slug = 'searches'

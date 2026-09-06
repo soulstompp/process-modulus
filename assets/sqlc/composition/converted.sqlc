@@ -14,9 +14,14 @@
 # ⛔ AND THE FACTOR IS CORRELATED WITH ITSELF. One factor multiplies both a part's nameplate
 #   and its demand, so the two converted intervals move together. Difference them as though
 #   they were independent and the spread gets counted twice -- which is why a composed
-#   remainder is CONVERTED and never re-derived. See queries/4-converted-remainder.sql.
--- pm:Part/pm:ConversionFactor applied to the part layer's pm:Demand.
+#   remainder is CONVERTED and never re-derived. See queries/matrices/4-converted-remainder.sql.
+# ⛔ IT IS Φ APPLIED TO DEMAND, AND THE `quantity` COLUMN SAYS SO. The relation composes
+#   layers/demand.sqlc and nothing else, so `d_low/d_mode/d_high` are converted DEMANDS. A
+#   nameplate composition would be the same Φ over layers/nameplate.sqlc and is a sibling file,
+#   not a parameter of this one.
+-- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       'demand' AS quantity,
        d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
        d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
        d.d_high * coalesce(p.factor_high, 1) AS d_high

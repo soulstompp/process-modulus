@@ -1,0 +1,77 @@
+# THE LARGEST QUANTUM A COMPOSED LAYER CAN CARRY, WHERE THE SET ADMITS ONE. One row per composed
+# layer all of whose parts state a quantum, carrying the greatest common divisor of those quanta
+# and the number of distinct units they were stated in.
+#
+# ⭐⭐⭐ THE ACHIEVABLE COMPOSED SUPPLIES FORM AN IDEAL, AND ITS GENERATOR IS THE ANSWER. Each
+#    part's nameplate ranges over the multiples of its own quantum, so the attainable sums are
+#    { a·q₁ + b·q₂ : a, b ∈ ℤ }, which by Bézout is exactly the set of multiples of gcd(q₁, q₂).
+#    The gcd therefore divides every attainable sum, and no larger element does. Equivalently and
+#    more plainly: it is the greatest element of the INTERSECTION of the parts' divisor sets.
+#
+# ⛔⛔ ASKING FOR A "BEST" QUANTUM OF A SINGLE LAYER IS THE WRONG QUESTION. There the divisor set
+#    of `n` is never empty (1 and `n` are always in it), so existence decides nothing, and the
+#    quantum is OBSERVED rather than chosen: it is the indivisible unit supply arrives in.
+#    Selecting the largest divisor of `n` would infer the fact from the figure. The question only
+#    becomes well posed over a SET of parts, where the intersection can be narrower than any one
+#    divisor set and is what the composition actually admits.
+#
+# ⛔⛔⛔ ACROSS UNITS THE INTERSECTION IS NOT EMPTY, IT IS UNDEFINED, and the distinction is the
+#    whole reason this relation returns a TYPED ABSENCE rather than a number. Divisibility is a
+#    relation on one ordered set; two quanta in different units are elements of different sets and
+#    no common divisor is expressible. The fold will still produce an integer if you let it, and
+#    that integer is meaningless: `merge-holding-composition/compute` folds `720 GPU-hour` against
+#    `8 GPU` and yields 8, which divides neither quantity in any sense a filer could act on.
+#
+# ⭐⭐⭐ SO `absent` READS `notApplicable`, WHICH IS EXACTLY WHAT THAT VALUE MEANS HERE: the
+#    question is malformed at this row, and there is nothing to look for. Carrying the reason
+#    beside the empty column is the same move the rest of the model makes everywhere else, and it
+#    is why a caller cannot mistake "no common quantum exists" for "nobody computed one". A number
+#    would have been the wrong answer; a NULL alone would have been an unexplained one.
+#
+# ⭐ `q = 1` IS THE OTHER DEGENERATE CASE AND IS A REAL ANSWER, not a missing one. Every integer is
+#   a multiple of 1, so the constraint is vacuous and the composed supply is continuous for all the
+#   arithmetic can tell. Saying so is more useful than declining to answer.
+#
+# ⛔ THE FOLD IS RECURSIVE BECAUSE gcd HAS NO AGGREGATE. gcd(a,b,c) = gcd(gcd(a,b),c) is
+#   associative, so the order of the fold is immaterial; the ordering below exists only to make
+#   the recursion terminate, not to choose an answer.
+-- composition/parts.sqlc against layers/lumpy.sqlc, folded by gcd over each composed layer.
+WITH RECURSIVE base AS (
+    SELECT p.composition, p.composed_layer, l.quantum_unit, l.quantum_mode
+    FROM (
+        :compose(composition/parts.sqlc)
+    ) p
+    JOIN (
+        :compose(layers/lumpy.sqlc)
+    ) l ON l.filing = p.part_filing AND l.layer = p.part_layer
+    WHERE l.quantum_mode IS NOT NULL AND l.quantum_mode > 0
+),
+shape AS (
+    SELECT composition, composed_layer,
+           count(*)                      AS parts,
+           count(DISTINCT quantum_unit)  AS units,
+           min(quantum_unit)             AS unit
+    FROM base GROUP BY composition, composed_layer
+),
+ordered AS (
+    SELECT b.*, row_number() OVER (PARTITION BY b.composition, b.composed_layer
+                                   ORDER BY b.quantum_unit, b.quantum_mode) AS i
+    FROM base b
+),
+fold AS (
+    SELECT composition, composed_layer, i, quantum_mode AS g FROM ordered WHERE i = 1
+  UNION ALL
+    SELECT o.composition, o.composed_layer, o.i, gcd(f.g, o.quantum_mode)
+    FROM fold f
+    JOIN ordered o ON o.composition    = f.composition
+                  AND o.composed_layer = f.composed_layer
+                  AND o.i              = f.i + 1
+)
+SELECT s.composition, s.composed_layer, s.parts, s.units,
+       CASE WHEN s.units = 1 THEN s.unit END                    AS unit,
+       CASE WHEN s.units = 1 THEN f.g      END                  AS composed_quantum,
+       CASE WHEN s.units > 1 THEN 'notApplicable'::pm.absence_reason END AS absent
+FROM shape s
+JOIN fold  f ON f.composition = s.composition
+            AND f.composed_layer = s.composed_layer
+            AND f.i = s.parts

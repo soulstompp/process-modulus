@@ -1,0 +1,25 @@
+# WHAT EACH COMPOSER REMOVED FROM A COMPOSED LAYER, PER QUANTITY. One row per
+# (composition, composed layer, quantity): the amount taken out because two parts counted it
+# twice, or the typed reason it could not be sized.
+#
+# ⭐⭐⭐ AN ELIMINATION IS THE ONLY ENTRY IN THIS MODEL THAT MAKES A NUMBER SMALLER, and this is
+#    the wrapper the rest of this directory is built on. Before it existed,
+#    `composition/fused.sqlc` and `queries/matrices/3b-composed-demand.sqlc` reached into
+#    `pm.elimination` with the same three-clause join -- composition, composed layer,
+#    `quantity = 'demand'` -- character for character, in two files, differing only in which
+#    alias they bound it to.
+#
+# ⛔⛔ THE ZERO-FILL IS NOT HERE, AND THAT IS DELIBERATE. `coalesce(low, 0)` reads "nothing was
+#    eliminated", which is true only after `composition/owed_equality.sqlc` has already removed
+#    the fusions that owe no sum. A composer who says "we know these hours are double counted and
+#    cannot say by how much" files `absent = 'unmeasured'`, and coalescing that to zero asserts a
+#    reconciliation they explicitly declined to make. The absence is carried; the caller decides.
+#
+# ⭐ `quantity` IS A COLUMN BECAUSE AN ELIMINATION IS PER-QUANTITY. Demand may be double counted
+#   while the nameplate is not -- two teams sharing one machine overlap in what they ask of it and
+#   not in what it can make. Filtering to `'demand'` is a caller's question, not this relation's.
+-- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e

@@ -4,8 +4,12 @@
 # ⭐⭐ THIS IS THE SIDE WHERE SOMEBODY HAS TO BEAR SOMETHING. Under a clearance the supply is
 #    above demand everywhere and there is nothing to absorb; here there is, so the holder
 #    shares have a magnitude to add up to and the absorbing buffer has a size to fit inside.
-#    Both slack rules range over exactly this relation, and the clearance rule ranges over
-#    its complement.
+#    checks/clearance_with_unserved.sqlc ranges over the complement.
+#
+# ⛔ ON OR OVER THE LINE IS NOT THE SAME QUESTION AS "WHAT DID THE BUFFER ABSORB", and the
+#   one consumer of this relation narrows it again to `interference` for exactly that reason
+#   -- see entries/borne.sqlc, where the narrowing is argued. Under a `transition` both sides
+#   are live at once and no single magnitude here says which one a share is on.
 -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
 FROM (

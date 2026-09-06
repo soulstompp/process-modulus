@@ -1,6 +1,12 @@
-# THE COMPOSITION RULE, COMPUTED AND SET BESIDE WHAT WAS FILED. One row per composed layer
-# that owes the equality, carrying the sum of its converted parts less its eliminations, the
-# figure the document actually states, and whether the two agree.
+# THE COMPOSITION RULE FOR DEMAND, COMPUTED AND SET BESIDE WHAT WAS FILED. One row per composed
+# layer that owes the demand equality, carrying the sum of its converted parts less its demand
+# eliminations, the figure the document actually states, and whether the two agree.
+#
+# ⛔⛔ THE `quantity` COLUMN READS `demand` BECAUSE THIS FILE PINS IT AT LINE 47, and a relation
+#    that pins a dimension has to declare it or it cannot be composed safely. `pm.elimination`'s
+#    key is (composition, composed layer, QUANTITY): six nameplate eliminations and two draw
+#    eliminations are filed in this corpus and no SQL reads them. Somebody reaching for "the
+#    composition rule" gets the demand one, and now the columns say which.
 #
 #     x_composed = F Φ x_parts − e_x
 #
@@ -19,6 +25,7 @@
 #   alone add up what is on the other end.
 -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
 SELECT c.composition, c.composed_layer,
+       'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
        sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
        sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
@@ -39,7 +46,9 @@ JOIN      (
     :compose(layers/demand.sqlc)
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN pm.elimination e
+LEFT JOIN (
+    :compose(eliminations/filed.sqlc)
+) e
        ON e.composition = c.composition
       AND e.composed_layer = c.composed_layer
       AND e.quantity = 'demand'

@@ -35,6 +35,9 @@
                  xmlns:pm="https://example.invalid/process-flow/1.0">
 
   <asrt:witness>group-consolidation</asrt:witness>
+  <asrt:evidence>
+    <pm:attests>observation</pm:attests>
+  </asrt:evidence>
   <asrt:observedAt>2026-08-30</asrt:observedAt>
 
   <!-- ⚠️ The observer, and the standing of the observation. `reviewed-not-audited` is
@@ -150,6 +153,11 @@
         <pm:mostLikely>0.3</pm:mostLikely>
         <pm:high>0.6</pm:high>
         <pm:unit>share of the fall in the parent's labour remainder</pm:unit>
+        <pm:denominator>
+          <pm:absent>
+            <pm:reason>notApplicable</pm:reason>
+          </pm:absent>
+        </pm:denominator>
         <pm:narrowsWhen>
           <pm:narrowing>
             <pm:condition>the enterprise contract's own draw is separated out, which needs a quarter in which only one of the two changes</pm:condition>

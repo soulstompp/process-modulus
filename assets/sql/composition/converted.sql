@@ -1,5 +1,6 @@
--- pm:Part/pm:ConversionFactor applied to the part layer's pm:Demand.
+-- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       'demand' AS quantity,
        d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
        d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
        d.d_high * coalesce(p.factor_high, 1) AS d_high
@@ -17,8 +18,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 JOIN      (

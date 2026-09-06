@@ -1,0 +1,15 @@
+-- §2  How often a claim says where it came from.
+#
+# ⭐⭐ ALMOST NOBODY CLAIMS ANY STANDING. Three states, not two: a claim carrying provenance, a
+# claim whose provenance was asked for and refused, and a claim with no provenance element at
+# all. Folding the last two would count a silence as a refusal.
+#
+# ⛔ epistemics/standing.sqlc HAS BEEN READ BY NOTHING, and its own header quotes a figure the
+# relation no longer returns. A number in a comment is a number nobody recounts.
+-- epistemics/standing.sqlc, folded to its three verdicts.
+SELECT s.what_the_claim_says AS "says!", count(*) AS "claims!"
+FROM (
+    :compose(epistemics/standing.sqlc)
+) s
+GROUP BY s.what_the_claim_says
+ORDER BY count(*) DESC

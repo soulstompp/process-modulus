@@ -1,0 +1,21 @@
+-- §5  Which buffers the corpus sizes, and which of them read zero.
+#
+# ⭐⭐⭐ A SIZED ZERO AND AN UNMEASURED BUFFER ARE OPPOSITE CLAIMS AND THIS SPLITS THEM. Eleven
+# corpus layers size their capacity slack and every one of them sizes it at [0,0,0] -- a filer
+# saying the supply cannot stretch. That is the TIGHTEST possible bound, not a missing one.
+#
+# ⛔⛔ THE PROSE SAID OTHERWISE FOR AS LONG AS NOBODY PRINTED IT. Two places in this repository
+# stated that no corpus layer sizes a capacity slack, and the number was eleven. Neither was
+# lying when written; the corpus moved and the sentence did not, because no program read it.
+# That is what this whole example is for.
+-- reports/slack_census.sqlc over every filing, projected for the example.
+SELECT c.buffer         AS "buffer!",
+       c.evidence       AS "evidence",
+       c.sized          AS "sized!",
+       c.sized_at_zero  AS "sized_at_zero!",
+       c.absent         AS "absent!",
+       c.rows           AS "rows!"
+FROM (
+    :compose(reports/slack_census.sqlc, @scope = scope/every_filing.sqlc)
+) c
+ORDER BY c.buffer, c.evidence

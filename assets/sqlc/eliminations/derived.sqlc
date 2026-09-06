@@ -1,0 +1,57 @@
+# ONE ROW PER PART THAT TWO COMPOSED LAYERS ARE BOTH BUILT FROM, WITH THE MAGNITUDE THAT WOULD
+# ENTER TWICE. The pairwise intersection of the fusions' part sets, carrying the shared part's
+# own demand and nameplate: if anybody sums the two composed layers, this is the supply counted
+# twice and this is how much of it there is.
+#
+# ⭐⭐⭐ HERE THE EXCLUSION IS FULLY DERIVABLE, AND THAT IS THE POINT OF PIVOTING TO `F`. A layer's
+#    quantity is a magnitude, and from |A| and |B| nothing recovers |A intersect B|. But pivot
+#    from layer-indexed magnitudes to the PART incidence and the elements are named: the overlap
+#    of two composed layers IS a part, a part IS a layer, and a layer carries its own figures.
+#    So `sum - e` closes with nothing filed. Set theory reaches all the way.
+#
+# ⛔⛔ AND THAT IS WHY `asrt:Elimination` STILL HAS TO EXIST. Inside ONE fusion the overlap need
+#    not be a whole part: `every-partial-elimination` shares 3 of each part's 10, and
+#    `merge-holding-composition/compute` eliminates 90 against parts of 545 and 4.4. Nothing in
+#    the model names a slice of a part, so those magnitudes cannot be pivoted to and must be
+#    observed. The sub-part overlap is the ONLY unreachable case, and `e` is the element that
+#    carries it.
+#
+# ⛔ checks/leaf_reached_twice.sqlc IS THE ONE-ROOT CASE AND THIS IS THE TWO-ROOT CASE. That rule
+#   walks (root, leaf) pairs inside a single descent, and scopes itself on purpose: "only a
+#   nested composition can do this, so a single-level fusion is not examined however many parts
+#   it names". A holding composing a group AND naming a member directly is two paths from ONE
+#   root. Two documents composing the same layer is two paths from TWO roots, no descent holds
+#   both, and widening the leaf rule would change its quantifier rather than its reach.
+#
+# ⭐⭐ A REFERRAL, NEVER A VIOLATION. Two filings composing the same layer is not a defect in
+#    either. It becomes one only if somebody adds the two composed figures together, and whether
+#    anybody will is not a question a query can answer. Third of a set that all sit on the
+#    boundary between filings: entries/spillovers.sqlc finds two layers that move together with
+#    nobody saying so; the unjudged fungibility pairs find two layers sharing a unit with nobody
+#    saying whether they are one layer; this finds two built from the same supply.
+#
+# ⛔ THE ROW COMPARISON KEEPS IT A SET OF PAIRS RATHER THAN A BAG OF ORDERED ONES, admitting each
+#   unordered pair once and dropping the reflexive case, so a composed layer is never reported
+#   against itself.
+-- composition/parts.sqlc crossed with itself on the part each side names, with that part's own figures.
+SELECT a.part_filing, a.part_layer,
+       a.composition    AS composition_a, a.composed_layer AS composed_a,
+       b.composition    AS composition_b, b.composed_layer AS composed_b,
+       (a.composition = b.composition) AS within_one_filing,
+       d.d_mode         AS would_double_count_demand,
+       n.n_mode         AS would_double_count_nameplate,
+       d.d_unit         AS unit
+FROM      (
+    :compose(composition/parts.sqlc)
+) a
+JOIN      (
+    :compose(composition/parts.sqlc)
+) b ON  b.part_filing = a.part_filing
+    AND b.part_layer  = a.part_layer
+    AND (a.composition, a.composed_layer) < (b.composition, b.composed_layer)
+LEFT JOIN (
+    :compose(layers/demand.sqlc)
+) d ON d.filing = a.part_filing AND d.layer = a.part_layer
+LEFT JOIN (
+    :compose(layers/nameplate.sqlc)
+) n ON n.filing = a.part_filing AND n.layer = a.part_layer

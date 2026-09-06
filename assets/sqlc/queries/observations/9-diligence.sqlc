@@ -1,0 +1,23 @@
+-- §9  Across every kind of search this model defines, how often did somebody actually look?
+#
+# ONE ROW PER (KIND OF SEARCH, ANSWER). Two questions are asked of documents about their own
+# diligence -- did you look for couplings between your layers, did you look for double counting
+# across your parts -- and this is the only place both are counted together.
+#
+# ⭐⭐ NEITHER HALF GIVES THIS NUMBER. epistemics/coupling_searches.sqlc and
+# eliminations/searched.sqlc each answer for one question; the union answers for the
+# model. "How often does anybody look at all" is a fact about the practice rather than about
+# either mechanism, and it needs both arms in one relation to be askable.
+#
+# ⛔ A NULL ANSWER IS NOT AN ABSENCE. It means the document filed the thing itself -- real
+# couplings, real eliminations -- so the search question is answered by the content. Counting it
+# as a refusal would report a document that did the work as one that declined it.
+-- epistemics/searches.sqlc, folded by question and answer.
+SELECT s.looked_for                                   AS "looked_for!",
+       coalesce(s.answer::text, 'filed the thing')    AS "answer!",
+       count(*)                                       AS "times!"
+FROM (
+    :compose(epistemics/searches.sqlc)
+) s
+GROUP BY s.looked_for, s.answer
+ORDER BY s.looked_for, count(*) DESC

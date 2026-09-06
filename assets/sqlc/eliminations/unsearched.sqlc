@@ -1,0 +1,26 @@
+# THE FUSIONS THAT OWE NO EQUALITY BECAUSE NOBODY LOOKED FOR DOUBLE COUNTING. One row per
+# composed layer whose elimination SEARCH is `unmeasured`.
+#
+# ⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED. A composer who states they
+#    never searched has not claimed their figure equals the sum of its parts. Asserting the
+#    equality anyway is a checker inventing a claim the document declined to make -- which is
+#    the exact defect the search element was added to prevent, arriving in the checker
+#    instead of in the document.
+#
+# ⭐⭐ ITS `quantity` IS NULL, AND THAT MEANS EVERY QUANTITY RATHER THAN NONE. A composer who
+#    never searched owes no sum for demand, nameplate OR draw, so this arm is coarser than its
+#    sibling eliminations/unsized.sqlc, which suspends exactly the quantity it was filed against.
+#    The union carries the column so a caller can tell the two apart; read it as
+#    `quantity IS NULL OR quantity = <the one I am computing>`.
+#
+# ⛔ `none` AND `notApplicable` DO NOT SUSPEND ANYTHING. "I looked and found none" and "the
+#   question does not arise" both leave the sum rule EXACT. Only "nobody looked" removes it.
+-- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
+SELECT es.composition, es.composed_layer,
+       NULL::text AS quantity,
+       'the search was never made' AS suspended_because,
+       es.note
+FROM (
+    :compose(eliminations/searched.sqlc)
+) es
+WHERE es.answer = 'unmeasured'

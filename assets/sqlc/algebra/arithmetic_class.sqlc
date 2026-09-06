@@ -1,0 +1,27 @@
+# EVERY ARITHMETIC CANDIDATE, AND WHETHER IT LANDS IN EXACTLY ONE VERDICT CLASS. One row per site.
+#
+# ⭐⭐⭐ A COUNT-ONLY PARTITION CHECK IS INSUFFICIENT IN PRINCIPLE, AND THIS ONE IS BY KEY.
+#    Σ|classes| = |candidates| passes when a tuple in two classes is cancelled by a tuple in none.
+#    The classes must be pairwise disjoint AND jointly exhaustive, which is a statement about each
+#    candidate, not about the totals. So: group by (site, filing, layer) and require exactly one.
+#
+# ⛔ NOT EXHAUSTIVE IS THE SILENT ONE. A candidate falling through every CASE branch vanishes from
+#   the denominator, and the site then reports a smaller population and a cleaner verdict than it
+#   earned -- the same failure `violates IS NULL` is guarded against in checks/.
+-- arithmetic/all.sqlc, one candidate to exactly one verdict.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT z.site AS subject,
+           count(*) FILTER (WHERE z.classes <> 1) = 0 AS holds,
+           format('%s candidates, %s in exactly one class', count(*),
+                  count(*) FILTER (WHERE z.classes = 1)) AS detail
+    FROM ( SELECT site, filing, layer, count(*) AS classes
+           FROM ( :compose(arithmetic/all.sqlc) ) w
+           WHERE w.verdict IS NOT NULL
+           GROUP BY site, filing, layer ) z
+    GROUP BY z.site
+) p ON true
+WHERE a.slug = 'arithmetic_class'

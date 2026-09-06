@@ -11,7 +11,7 @@
 # ⛔ `counterparty` IS THE ONLY KIND THAT NAMES A PARTY AND A DATE, because it is the only
 #   one whose bearer is a third party with an agreement behind it. The schema enforces both
 #   directions of that: no other kind may name one, and a counterparty must.
--- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+-- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of

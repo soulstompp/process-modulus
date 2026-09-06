@@ -28,6 +28,9 @@
                xmlns:pm="https://example.invalid/process-flow/1.0">
 
   <asrt:witness>snc-port</asrt:witness>
+  <asrt:evidence>
+    <pm:attests>observation</pm:attests>
+  </asrt:evidence>
 
   <asrt:regime>
     <pm:id>ies-anexo-asnc</pm:id>

@@ -1,0 +1,29 @@
+# THE LEAF LAYERS AGAINST THE ONES THAT NAME PARTS, CHECKED AS A PARTITION OF THE DESCENT. One
+# row: whether |descent| = |leaves| + |descent ⋉ fusions|.
+#
+# ⛔⛔⛔ THE LEFT OPERAND IS A BAG AND THAT IS THE WHOLE REASON THIS LAW MATTERS.
+#    composition/descent.sqlc carries 28 rows over 20 distinct (filing, layer): a layer reachable
+#    through two paths appears twice, and those duplicates ARE what checks/leaf_reached_twice
+#    exists to find. The anti-join preserves them; `EXCEPT` would deduplicate and silently drop
+#    eight rows -- erasing the subject of a rule while still returning a plausible table.
+#    ⭐ PROBE: rewrite composition/leaves.sqlc as `EXCEPT` and this law must fail.
+-- composition/descent.sqlc partitioned by composition/fusions.sqlc, multiplicity preserved.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/leaves' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s descent rows = %s leaves + %s that name parts (over %s distinct keys)',
+                  x.total, x.kept, x.removed, x.keys) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/descent.sqlc) ) d)  AS total,
+             (SELECT count(DISTINCT (d.filing, d.layer)) FROM ( :compose(composition/descent.sqlc) ) d) AS keys,
+             (SELECT count(*) FROM ( :compose(composition/leaves.sqlc) ) l)   AS kept,
+             (SELECT count(*) FROM ( :compose(composition/descent.sqlc) ) d
+               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/fusions.sqlc) ) f
+                              WHERE f.filing = d.filing AND f.layer = d.layer)) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'leaves'

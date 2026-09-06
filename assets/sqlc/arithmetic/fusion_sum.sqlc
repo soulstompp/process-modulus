@@ -1,0 +1,52 @@
+# EVERY FUSION THAT OWES ITS PARTS AN EQUALITY, AND WHETHER THE SUM IS OWED AT ALL. One row per
+# composed layer reached by at least one part.
+#
+# ⛔⛔⛔ THE UNITS ARE NOT CHECKED HERE AND MUST NOT BE. conformance/README.md:326 -- "the units
+#    of a fusion's parts are NOT checked and must not be ... asserting that they name one unit
+#    IS WHAT A FUSION SAYS." A filer who fuses two layers has DECLARED them commensurable, and
+#    a checker that tested it would be overruling a judgement no document owes it. This is the
+#    one site on the roster whose empty guard is correct, which is why `(forbidden)` is a value
+#    and not a NULL.
+#
+# ⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED. A composer who never searched for
+#    double counting, or who found it and could not size it, owes no equality -- so the rows
+#    composition/suspended_fusions.sqlc names are absent from the arithmetic rather than
+#    passing it. assertion.xsd:1934 states the verdict table this follows.
+#
+# ⛔ THE VERDICT COMES FROM composition/owed_equality.sqlc AND THE REASON FROM ITS COMPLEMENT.
+#   This file used to re-derive the anti-join while its own `--` line cited the relation that
+#   already held it -- a header documenting the dependency it declined to compose. Taking the
+#   verdict from the named relation is what makes a change to `owed_equality` reach here.
+# ⚠️ THE REASON JOIN IS NARROWED TO THE DEMAND GRAIN, AND IT HAS TO BE. This site computes the
+#   demand sum, and composition/suspended_fusions.sqlc is now one row per (composed layer,
+#   ground) carrying the quantity it lifts. Without the narrowing a nameplate-only suspension
+#   would supply this site's reason, and TWO grounds on one fusion would emit two rows for one
+#   candidate -- which algebra/arithmetic_class.sqlc would catch as a partition failure, but the
+#   cause would be this join rather than anything a document filed.
+#   ⭐ At most one ground can apply per quantity because assertion.xsd makes StatedEliminations
+#   an xs:choice: a fusion files an `absent` or `elimination+`, never both. That is a grammar
+#   guarantee the DDL does not carry, which is why the narrowing is written rather than assumed.
+-- asrt:Fusion/asrt:Part against asrt:Eliminations, via composition/owed_equality.sqlc.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT f.filing, f.layer,
+           CASE WHEN o.filing IS NULL THEN 'suspended'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN o.filing IS NULL
+                     THEN format('no equality is owed: %s', s.suspended_because)
+                ELSE 'the sum is owed exactly' END AS detail
+    FROM      (
+        :compose(composition/fusions.sqlc)
+    ) f
+    LEFT JOIN (
+        :compose(composition/owed_equality.sqlc)
+    ) o USING (filing, layer)
+    LEFT JOIN (
+        :compose(composition/suspended_fusions.sqlc)
+    ) s ON s.composition = f.filing AND s.composed_layer = f.layer
+       AND coalesce(s.quantity, 'demand') = 'demand'
+) p ON true
+WHERE a.slug = 'fusion_sum'

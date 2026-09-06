@@ -22,7 +22,7 @@ use std::fs;
 ///
 /// ⛔ ADDING A NAME HERE IS THE WHOLE DECISION, exactly as it is in `tests/independence.rs`.
 /// The list is the claim; the assertions below only hold the schema to it.
-const TRANSLATED: [(&str, &str); 65] = [
+const TRANSLATED: [(&str, &str); 71] = [
     ("process-modulus.xsd", "Remainder"),
     ("process-modulus.xsd", "Fit"),
     ("process-modulus.xsd", "HolderKind"),
@@ -30,11 +30,17 @@ const TRANSLATED: [(&str, &str); 65] = [
     ("process-modulus.xsd", "AbsenceReason"),
     ("process-modulus.xsd", "Provenance"),
     ("process-modulus.xsd", "Absence"),
+    ("process-modulus.xsd", "ClaimAbsenceReason"),
+    ("process-modulus.xsd", "ClaimAbsence"),
     ("process-modulus.xsd", "StatedRemainder"),
     ("process-modulus.xsd", "StatedBorrowedTerm"),
     ("process-modulus.xsd", "StatedDivisibility"),
     ("process-modulus.xsd", "StatedConstraintOrigin"),
     ("process-modulus.xsd", "StatedNotation"),
+    ("process-modulus.xsd", "EvidenceKind"),
+    ("process-modulus.xsd", "StatedDenominator"),
+    ("process-modulus.xsd", "Demand"),
+    ("process-modulus.xsd", "StatedEvidence"),
     ("process-modulus.xsd", "ScopeExtent"),
     ("process-modulus.xsd", "Scope"),
     ("process-modulus.xsd", "StatedScope"),

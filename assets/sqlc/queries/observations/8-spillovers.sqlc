@@ -1,0 +1,19 @@
+-- §8  Layer pairs another document watched move together, held by a filing that has not looked.
+#
+# ⛔⛔⛔ A REFERRAL, NEVER A VIOLATION. A filing is not the system. Nobody named here filed
+# anything wrong, and `enterprise-contract` says so itself: its coupling search is `unmeasured`
+# and the note explains that refutation.xml observed the same two layers in a later quarter, so
+# the absence is the honest prior state rather than a claim of independence.
+#
+# ⭐ THE AUTHOR KNEW AND WROTE IT IN PROSE. No query found it until this one.
+-- entries/spillovers.sqlc, as referrals rather than findings.
+SELECT s.borne_by                       AS "borne_by!",
+       s.from_layer                     AS "from_layer!",
+       s.to_layer                       AS "to_layer!",
+       s.observed_in                    AS "observed_in!",
+       coalesce(s.their_search::text, 'a coupling of its own') AS "their_search!",
+       coalesce(s.their_extent, '')     AS "their_extent!"
+FROM (
+    :compose(entries/spillovers.sqlc)
+) s
+ORDER BY s.borne_by, s.from_layer, s.to_layer

@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §7  Every remainder, and what its filing established about the set it sits in.\n-- layers/remainder_scope.sqlc, folded to its four standings.\nSELECT z.standing AS \"standing!\", count(*) AS \"remainders!\",\n       string_agg(DISTINCT z.filing, ', ' ORDER BY z.filing) AS \"filings!\"\nFROM (\n    -- layers/remainder.sqlc against pm:Stack/pm:scope, pm:Couplings/pm:absent and entries/spillovers.sqlc.\nSELECT r.filing, r.layer,\n       sc.extent,\n       cs.answer AS search,\n       sp.observed_in AS spilled_from,\n       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'\n            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'\n            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'\n            ELSE 'bounded and the pairs answered' END AS standing\nFROM      (\n    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.\nSELECT d.filing, d.layer,\n       l.sign, l.sign_absent,\n       l.absorber_taxonomy, l.absorber_value,\n       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,\n       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,\n       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH\n       n.n_mode - d.d_mode AS r_mode,\n       n.n_high - d.d_low  AS r_high,\n       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'\n            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'\n            ELSE 'transition' END AS derived_fit,\n       greatest(d.d_high - n.n_low, 0) AS exposure,\n       n.lumpy, n.quantum_mode, n.quantum_unit\nFROM      (\n    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.\nSELECT l.filing, l.layer,\n       l.demand_low  AS d_low,\n       l.demand_mode AS d_mode,\n       l.demand_high AS d_high,\n       l.demand_unit AS d_unit,\n       l.demand_low = l.demand_high AS is_a_point,\n       l.demand_narrows,\n       l.demand_narrows_kind,\n       l.demand_narrows_absent\nFROM pm.layer l\nWHERE l.demand_low IS NOT NULL\n\n) d\nJOIN      (\n    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.\nSELECT n.filing, n.layer,\n       n.amount_low  AS n_low,\n       n.amount_mode AS n_mode,\n       n.amount_high AS n_high,\n       n.amount_unit AS n_unit,\n       n.amount_origin,\n       n.lumpy, n.divisibility_absent,\n       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,\n       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent\nFROM pm.nameplate n\nWHERE n.amount_low IS NOT NULL\n\n) n USING (filing, layer)\nJOIN pm.layer l USING (filing, layer)\n\n) r\nLEFT JOIN (\n    -- pm:Stack/pm:scope, with its pm:basis.\nSELECT ss.filing, ss.extent, ss.basis, ss.absent\nFROM pm.stack_scope ss\n\n) sc ON sc.filing = r.filing\nLEFT JOIN (\n    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n\n) cs ON cs.filing = r.filing\nLEFT JOIN ( SELECT DISTINCT borne_by, from_layer, observed_in FROM (\n    -- pm:Couplings/pm:coupling, projected onto every other filing holding both of its ends.\nSELECT c.filing        AS observed_in,\n       b.filing        AS borne_by,\n       c.from_layer,\n       c.to_layer,\n       c.mode          AS observed_mode,\n       c.unit          AS observed_unit,\n       s.answer        AS their_search,\n       sc.extent       AS their_extent\nFROM      (\n    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.\nSELECT c.filing, c.from_layer, c.to_layer,\n       c.low, c.mode, c.high, c.unit, c.observation\nFROM pm.coupling c\n\n) c\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) b  ON b.layer = c.from_layer AND b.filing <> c.filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) b2 ON b2.filing = b.filing AND b2.layer = c.to_layer\nLEFT JOIN (\n    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n\n) s  ON s.filing = b.filing\nLEFT JOIN (\n    -- pm:Stack/pm:scope, with its pm:basis.\nSELECT ss.filing, ss.extent, ss.basis, ss.absent\nFROM pm.stack_scope ss\n\n) sc ON sc.filing = b.filing\n\n) x ) sp ON sp.borne_by = r.filing AND sp.from_layer = r.layer\n\n) z\nGROUP BY z.standing\nORDER BY count(*) DESC\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "standing!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "remainders!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "filings!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "26f020258acecc86a0c31f2c94ddaf4bd486bff6e54afa7d705eed92fcba0571"
+}

@@ -7,10 +7,14 @@
 #    against slack could not fail. Three columns became three rows carrying magnitudes, and
 #    the bound became checkable.
 #
-# ⛔ AN UNSIZED ROW IS STILL A ROW. `none` = somebody looked and there is no slack.
-#   `unmeasured` = nobody looked. Densifying both into 0.0 destroys the difference for good,
-#   and it is the difference between a bound that holds and a bound nobody tested.
--- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+# ⛔ AN UNSIZED ROW IS STILL A ROW, AND `none` IS NOT ONE OF THE REASONS IT CAN CARRY. All
+#   three slacks are `pm:StatedClaim`, so a buffer somebody looked at and found empty is a
+#   SIZED row reading `[0, 0, 0]` in the layer's unit. What is left for `absent` is
+#   `unmeasured` = nobody looked, `notApplicable` = the buffer does not arise here, and
+#   `derived` = the receiver computes it. Densifying an unsized row into 0.0 destroys the
+#   difference for good, and it is the difference between a bound that holds and a bound
+#   nobody tested.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,

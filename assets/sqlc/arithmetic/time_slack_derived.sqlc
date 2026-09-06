@@ -1,0 +1,33 @@
+# EVERY LAYER THAT DERIVED ITS TIME SLACK RATHER THAN MEASURING IT, AND WHETHER THE DIVISION
+# BEHIND IT HOLDS. One row per time slack filed `absent reason="derived"`.
+#
+# ⭐⭐⭐ THE MULTIPLICATION IS OWED AND IT IS INVISIBLE ONCE DONE. `timeSlack = q / clearance`
+#    turns a quantity into a DURATION, so the two sides are not merely in different units --
+#    they are of different kinds, and the answer looks perfectly well formed either way. The
+#    schema says so at process-modulus.xsd:4691: a slack filed as a duration is dimensionally
+#    wrong however true it is.
+#
+# ⛔ checks/derived_slack_over_a_window ASKS A DIFFERENT QUESTION OF THE SAME ROWS -- whether
+#   the window licenses the assumption -- and that one is guarded. Whether the arithmetic
+#   itself is dimensionally sound is not asked anywhere.
+-- pm:Layer/pm:timeSlack absent reason="derived", against the quantum it was divided from.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT t.filing, t.layer,
+           CASE WHEN r.quantum_mode IS NULL                      THEN 'suspended'
+                WHEN r.quantum_unit IS DISTINCT FROM r.unit       THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN r.quantum_mode IS NULL THEN 'no quantum to divide'
+                ELSE format('a quantum of %s %s over a clearance in %s, yielding a duration',
+                            r.quantum_mode, r.quantum_unit, r.unit) END AS detail
+    FROM      (
+        :compose(entries/derived_time_slacks.sqlc)
+    ) t
+    JOIN      (
+        :compose(layers/remainder.sqlc)
+    ) r USING (filing, layer)
+) p ON true
+WHERE a.slug = 'time_slack_derived'

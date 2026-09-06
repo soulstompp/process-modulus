@@ -1,0 +1,14 @@
+-- §2  Every contract's roster against the population it declares.
+#
+# EMPTY IS THE CORRECT OUTPUT, ACROSS ALL THREE CONTRACTS, the conformance rules, the arithmetic
+# sites, and the algebraic laws themselves.
+#
+# ⛔ AND THE ALGEBRA CONTRACT CHECKING ITSELF IS NOT CIRCULAR, it is the same second-witness move
+# the whole repository is built on: reports/integrity.sqlc computes the roster difference with
+# EXCEPT, and algebra/integrity.sqlc computes the same sets by counting. Two routes to one answer.
+-- reports/integrity.sqlc, read by the example.
+SELECT z.contract AS "contract!", z.problem AS "problem!", z.subject AS "subject!"
+FROM (
+    :compose(reports/integrity.sqlc)
+) z
+ORDER BY z.contract, z.subject

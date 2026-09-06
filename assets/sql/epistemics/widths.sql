@@ -11,8 +11,10 @@ SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
        END AS what_the_width_is_made_of
 FROM (
     -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns,
+SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,

@@ -1,0 +1,39 @@
+# EVERY REMAINDER THIS MODEL CAN COMPUTE, BESIDE WHAT ITS FILING ESTABLISHED ABOUT THE SET IT
+# SITS IN. One row per computable remainder: the extent its stack declared, what its coupling
+# search reported, and any spillover somebody else observed into it.
+#
+# ⭐⭐⭐ A REMAINDER IS ONLY MEANINGFUL IF THE LAYER SET IS CLOSED. `r = n - d` is a fact about
+#    one layer, and the model then treats the stack as a set of independent quantizations. Two
+#    things break that, and only one of them is about this document: nobody bounded the set, or
+#    a pair it holds spills over. Nineteen of thirty-six remainders here sit in a set somebody
+#    established; twelve sit in one nobody has asked about.
+#
+# ⛔⛔ THE VERDICT IS COMPUTED FOR EVERY REMAINDER, AND THAT IS THE ASSERTION RATHER THAN THE
+#    ANSWER. `unbounded` is the honest state for a filing written to argue about three layers,
+#    and it must never fail anything. What must fail is a remainder that reaches the arithmetic
+#    without this question having been put to it at all.
+#
+# ⭐ `unbounded` IS NOT A SMALLER `scoped`. epistemics/scopes.sqlc has the argument: `scoped`
+#   says somebody established what lies outside, `unbounded` says nobody looked. Folding them
+#   would count a silence as a boundary.
+-- layers/remainder.sqlc against pm:Stack/pm:scope, pm:Couplings/pm:absent and entries/spillovers.sqlc.
+SELECT r.filing, r.layer,
+       sc.extent,
+       cs.answer AS search,
+       sp.observed_in AS spilled_from,
+       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'
+            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'
+            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'
+            ELSE 'bounded and the pairs answered' END AS standing
+FROM      (
+    :compose(layers/remainder.sqlc)
+) r
+LEFT JOIN (
+    :compose(epistemics/scopes.sqlc)
+) sc ON sc.filing = r.filing
+LEFT JOIN (
+    :compose(epistemics/coupling_searches.sqlc)
+) cs ON cs.filing = r.filing
+LEFT JOIN ( SELECT DISTINCT borne_by, from_layer, observed_in FROM (
+    :compose(entries/spillovers.sqlc)
+) x ) sp ON sp.borne_by = r.filing AND sp.from_layer = r.layer

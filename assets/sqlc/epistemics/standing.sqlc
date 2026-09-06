@@ -1,0 +1,38 @@
+# WHO STANDS BEHIND EACH CLAIM, AND ON WHAT AUTHORITY. One row per three-point claim in the
+# corpus: the party asserting it, the standing they claim, and the typed reason where they
+# claim none.
+#
+# ⭐⭐⭐ THE AXIS THE SCHEMA CALLS LOAD-BEARING AND THE DATABASE COULD NOT SEE. `pm:Provenance`
+#    appeared nowhere in ingest.sqlc until 0.4 -- no table, no column, no path -- so `standing`,
+#    which `Dependence` describes as "the axis separating a statutory auditor's observation
+#    from a controller's hunch", was filed 117 times and readable by nothing below the XML. It
+#    was found by asking a different question: tests/state_coverage.rs declared verdicts for
+#    twelve wrappers and `StatedBorrowedTerm` was not among them.
+#
+# ⛔⛔ AND THE FIRST THING IT SAYS IS THAT ALMOST NOBODY CLAIMS ANY. One stated standing in the
+#    whole corpus against 116 explicit refusals and 124 claims carrying no provenance element
+#    at all. ⚠️ Those figures were 58 and 124 when this header was written, and the first one
+#    aged while the second did not: the corpus grew its Portuguese twins and the refusals
+#    doubled. examples/observations.rs prints all three now, so the next time they move it is
+#    a diff rather than a comment nobody recounted.
+#
+#    That is a finding about the EVIDENCE and not a defect in it -- `unmeasured` here reads
+#    "no standing vocabulary is published for this assertion", which is the honest answer when
+#    no authority publishes a list to borrow from.
+#
+# ⭐ THE THREE STATES ARE NOT TWO. A claim with no `provenance` element said nothing; one whose
+#   `standing` is `absent` was asked and answered. Folding them would count a silence as a
+#   refusal, which is the same collapse `StatedBorrowedTerm`'s own annotation refuses at
+#   `Regime/framework`.
+-- pm:Claim/pm:provenance, with pm:StatedBorrowedTerm at pm:standing.
+SELECT c.filing, c.seq, c.owns, c.layer,
+       c.prov_party AS party,
+       c.prov_standing_taxonomy AS taxonomy,
+       c.prov_standing_value    AS standing,
+       c.prov_standing_absent   AS standing_absent,
+       CASE WHEN c.prov_standing_value  IS NOT NULL THEN 'claimed'
+            WHEN c.prov_standing_absent IS NOT NULL THEN 'asked and refused'
+            ELSE 'no provenance filed' END AS what_the_claim_says
+FROM      (
+    :compose(epistemics/claims.sqlc)
+) c

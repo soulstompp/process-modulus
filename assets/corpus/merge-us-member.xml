@@ -32,6 +32,9 @@
   <pm:notation>
     <pm:uri>urn:example:filing:us-member:2026-08-31</pm:uri>
   </pm:notation>
+  <pm:evidence>
+    <pm:attests>observation</pm:attests>
+  </pm:evidence>
 
   <pm:regime>
     <pm:id>us-gaap</pm:id>
@@ -68,28 +71,40 @@
       <pm:name>labour</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>4.5</pm:low>
-          <pm:mostLikely>5.2</pm:mostLikely>
-          <pm:high>6.0</pm:high>
-          <pm:unit>people</pm:unit>
-          <pm:narrowsWhen>
-            <pm:narrowing>
-              <pm:condition>support interrupts are time-recorded instead of estimated</pm:condition>
-              <pm:kind>instrument</pm:kind>
-            </pm:narrowing>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>us-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-31</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>4.5</pm:low>
+            <pm:mostLikely>5.2</pm:mostLikely>
+            <pm:high>6.0</pm:high>
+            <pm:unit>people</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>support interrupts are time-recorded instead of estimated</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>us-member</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
         <pm:absent>
@@ -107,6 +122,11 @@
               <pm:mostLikely>4</pm:mostLikely>
               <pm:high>4</pm:high>
               <pm:unit>people</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -131,6 +151,11 @@
                     <pm:mostLikely>1</pm:mostLikely>
                     <pm:high>1</pm:high>
                     <pm:unit>people</pm:unit>
+                    <pm:denominator>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                      </pm:absent>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -162,10 +187,21 @@
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>people</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>us-member</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -264,34 +300,57 @@
       <pm:name>compute</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>3.1</pm:low>
-          <pm:mostLikely>4.4</pm:mostLikely>
-          <pm:high>6.0</pm:high>
-          <pm:unit>GPU</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>nobody has said what would tighten this range</pm:note>
-            </pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>us-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-31</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>3.1</pm:low>
+            <pm:mostLikely>4.4</pm:mostLikely>
+            <pm:high>6.0</pm:high>
+            <pm:unit>GPU</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>us-member</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>an inference request that waits until tomorrow was not served. At this layer’s granularity the demand does not survive being held at all</pm:note>
-        </pm:absent>
+        <pm:claim>
+          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+          <pm:unit>GPU</pm:unit>
+          <pm:denominator>
+            <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+          </pm:denominator>
+          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+          <pm:provenance>
+            <pm:party>us-member</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>an inference request that waits until tomorrow was not served. At this layer’s granularity the demand does not survive being held at all</pm:note>
+          </pm:provenance>
+        </pm:claim>
       </pm:timeSlack>
 
       <pm:supply>
@@ -303,6 +362,11 @@
               <pm:mostLikely>8</pm:mostLikely>
               <pm:high>8</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -327,6 +391,11 @@
                     <pm:mostLikely>8</pm:mostLikely>
                     <pm:high>8</pm:high>
                     <pm:unit>GPU</pm:unit>
+                    <pm:denominator>
+                      <pm:absent>
+                        <pm:reason>notApplicable</pm:reason>
+                      </pm:absent>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -352,16 +421,38 @@
             </pm:divisibility>
           </pm:divisibility>
           <pm:capacitySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>a reserved card cannot be run above its rating at any price</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>us-member</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>a reserved card cannot be run above its rating at any price</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>a reserved card-hour not drawn is gone; there is nothing to build ahead</pm:note>
-            </pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:party>us-member</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>a reserved card-hour not drawn is gone; there is nothing to build ahead</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
@@ -371,6 +462,11 @@
               <pm:mostLikely>4.4</pm:mostLikely>
               <pm:high>4.4</pm:high>
               <pm:unit>GPU</pm:unit>
+              <pm:denominator>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                </pm:absent>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -416,6 +512,11 @@
                   <pm:mostLikely>3.6</pm:mostLikely>
                   <pm:high>4.9</pm:high>
                   <pm:unit>GPU</pm:unit>
+                  <pm:denominator>
+                    <pm:absent>
+                      <pm:reason>notApplicable</pm:reason>
+                    </pm:absent>
+                  </pm:denominator>
                   <pm:narrowsWhen>
                     <pm:absent>
                       <pm:reason>unmeasured</pm:reason>
@@ -457,28 +558,38 @@
       <pm:name>shift-line</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>4.8</pm:low>
-          <pm:mostLikely>5.6</pm:mostLikely>
-          <pm:high>6.4</pm:high>
-          <pm:unit>shifts per week</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>nobody has said what would tighten this range</pm:note>
-            </pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent>
-              <pm:reason>none</pm:reason>
-              <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
-            </pm:absent>
-          </pm:boundOrigin>
-          <pm:provenance><pm:party>us-member</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-31</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>4.8</pm:low>
+            <pm:mostLikely>5.6</pm:mostLikely>
+            <pm:high>6.4</pm:high>
+            <pm:unit>shifts per week</pm:unit>
+            <pm:denominator>
+              <pm:period>week</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where the observations fell, not where a rule put them, so there is no lever here to look for</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>us-member</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-31</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
         <pm:absent>
@@ -496,6 +607,9 @@
               <pm:mostLikely>10</pm:mostLikely>
               <pm:high>10</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -520,6 +634,9 @@
                     <pm:mostLikely>1</pm:mostLikely>
                     <pm:high>1</pm:high>
                     <pm:unit>shifts per week</pm:unit>
+                    <pm:denominator>
+                      <pm:period>week</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
@@ -554,6 +671,11 @@
                       <pm:mostLikely>5</pm:mostLikely>
                       <pm:high>5</pm:high>
                       <pm:unit>days</pm:unit>
+                      <pm:denominator>
+                        <pm:absent>
+                          <pm:reason>notApplicable</pm:reason>
+                        </pm:absent>
+                      </pm:denominator>
                       <pm:narrowsWhen>
                         <pm:absent>
                           <pm:reason>notApplicable</pm:reason>
@@ -596,6 +718,9 @@
               <pm:mostLikely>4.4</pm:mostLikely>
               <pm:high>4.4</pm:high>
               <pm:unit>shifts per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
@@ -646,6 +771,9 @@
                   <pm:mostLikely>4.4</pm:mostLikely>
                   <pm:high>5.2</pm:high>
                   <pm:unit>shifts per week</pm:unit>
+                  <pm:denominator>
+                    <pm:period>week</pm:period>
+                  </pm:denominator>
                   <pm:narrowsWhen>
                     <pm:absent>
                       <pm:reason>unmeasured</pm:reason>

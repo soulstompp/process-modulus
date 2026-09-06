@@ -95,7 +95,7 @@ fn triple(s: &StatedClaimType) -> Option<Triple> {
 }
 
 fn demand(l: &LayerType) -> Triple {
-    triple(&l.demand).expect("every fixture layer states its demand")
+    triple(&l.demand.amount).expect("every fixture layer states its demand")
 }
 
 fn nameplate(l: &LayerType) -> Triple {
@@ -152,7 +152,8 @@ fn expected(
                 StatedClaimType::Claim(q) => {
                     total = (total.0 - q.low, total.1 - q.most_likely, total.2 - q.high)
                 }
-                StatedClaimType::Absent(a) if a.reason == AbsenceReasonType::None => {}
+                // A zero elimination is `[0, 0, 0]` and lands in the arm above; the
+                // `none` spelling it used to take is not in `ClaimAbsenceReason`.
                 StatedClaimType::Absent(_) => return None,
             }
         }
@@ -251,7 +252,7 @@ fn the_sum_rule_rejects_a_fusion_that_does_not_reconcile() {
         .iter_mut()
         .find(|l| l.name == "oven")
         .expect("oven");
-    if let StatedClaimType::Claim(d) = &mut l.demand {
+    if let StatedClaimType::Claim(d) = &mut l.demand.amount {
         d.low += 100.0;
         d.most_likely += 100.0;
         d.high += 100.0;
@@ -317,8 +318,17 @@ fn the_same_figures_owe_different_arithmetic_under_a_different_search() {
     );
 }
 
-/// ⭐ The fixtures are stipulations and must say so, in the document, where a reader who opens
-/// one file without reading the directory's README will meet it.
+/// ⭐ The fixtures are stipulations and must say so TWICE: in a comment, where a reader who
+/// opens one file without reading the directory's README will meet it, and in `pm:evidence`,
+/// where a RECEIVER will. Until 0.4 only the comment existed, and `assets/sql/ingest.sql`
+/// matched it as a substring over the whole document, so a corpus file that merely quoted the
+/// sentence became a stipulation, and a Portuguese fixture had to announce itself in English.
+///
+/// ⛔⛔ `every-draft.xml` IS THE ONE EXCEPTION AND IT IS THE ENTIRE POINT OF THAT FILE. It
+/// files `absent reason="unmeasured"` deliberately, because the state a first-time adopter's
+/// document is really in is "nobody has said", and `tests/state_coverage.rs` can only call
+/// that state Exercised if some document is in it. The comment still announces the file, so a
+/// human is never misled; the element declines to, so a machine is never made to guess.
 #[test]
 fn every_fixture_declares_that_it_is_a_stipulation() {
     for name in [
@@ -335,6 +345,20 @@ fn every_fixture_declares_that_it_is_a_stipulation() {
             "{name}: a fixture that does not announce itself will eventually be quoted as \
              evidence, which is the one thing this directory must not allow"
         );
+
+        if name == "every-draft.xml" {
+            assert!(
+                !body.contains("<pm:attests>"),
+                "{name}: this file exists to be the document that DECLINES to say. Filing a \
+                 value here leaves StatedEvidence/unmeasured with nothing exercising it"
+            );
+        } else {
+            assert!(
+                body.contains("<pm:attests>stipulation</pm:attests>"),
+                "{name}: the comment announces it to a reader and nothing announces it to a \
+                 receiver. That is the gap `pm:evidence` was added to close"
+            );
+        }
     }
 }
 

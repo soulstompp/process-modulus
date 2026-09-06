@@ -1,0 +1,32 @@
+# EVERY LAYER THAT FILED A REMAINDER QUANTITY OF ITS OWN, BESIDE THE ONE ITS TWO MEASUREMENTS
+# IMPLY. One row per layer stating pm:Remainder/pm:quantity.
+#
+# ⛔⛔⛔ `qty_unit` WAS READ BY NOTHING IN THIS REPOSITORY. Two layers file a remainder
+#    magnitude directly and both are compared against `n - d` -- by matrices.sqlc and by
+#    queries/matrices/4-converted-remainder.sqlc -- without either reading the unit the filer
+#    wrote beside the number. A grep for the column name across every .sqlc returned those two
+#    projections and no predicate anywhere. layers/filed_remainders.sqlc now carries it, and
+#    this is the site that asks the question.
+#
+# ⭐ AND THE COMPARISON IS NOT ALWAYS OWED. assertion.xsd:1783 says a CONVERTED part's
+#   remainder is converted directly and never re-derived, so the two genuinely disagree away
+#   from the mode. This relation reports whether the units permit the question, not whether
+#   the numbers match.
+-- pm:Remainder/pm:quantity against the layer's own r = n - d.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT l.filing, l.layer,
+           CASE WHEN l.qty_low IS NULL                       THEN 'suspended'
+                WHEN l.qty_unit IS DISTINCT FROM l.unit      THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
+                ELSE format('filed %s %s against a derived %s %s',
+                            l.qty_mode, l.qty_unit, round(l.r_mode, 3), l.unit) END AS detail
+    FROM      (
+        :compose(layers/filed_against_derived.sqlc)
+    ) l
+) p ON true
+WHERE a.slug = 'filed_remainder'

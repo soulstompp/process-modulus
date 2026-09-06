@@ -1,0 +1,13 @@
+# THE STANDARDS A COMPOSITION WORKS UNDER. One row per `asrt:citation` on a composition: the
+# instrument as a taxonomy and a value, the clause where one is named, and the edition read.
+#
+# ⭐⭐ A CONSOLIDATION IS PERFORMED UNDER A RULE, AND THIS IS WHERE THE COMPOSER NAMES IT. The
+#    regime says which framework the members reported under; the citation says which instrument
+#    governs the act of combining them. Two different questions, and only one of them was
+#    storable before 2026-09-06.
+#
+# ⛔ Homeless for the same reason `eliminations/between.sqlc` was: repeating, read by no rule,
+#   therefore under no pressure to exist. Two are filed in this corpus.
+-- asrt:composition/asrt:citation, one row each.
+SELECT c.composition, c.seq, c.taxonomy, c.instrument, c.clause, c.version
+FROM pm.composition_citation c

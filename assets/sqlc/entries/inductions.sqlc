@@ -5,7 +5,7 @@
 #    is a thing that occurred; an induction is a thing somebody CHOSE, creating a future
 #    draw on a different supply. Folding them into one table with a flag would have put an
 #    event and a decision in one slot.
--- pm:Operation/pm:Induction, carrying pm:decider.
+-- pm:Operation/pm:Induction, carrying pm:decidedBy.
 SELECT n.filing, n.operation, n.layer,
        n.low, n.mode, n.high, n.unit, n.absent, n.decider
 FROM pm.induction n

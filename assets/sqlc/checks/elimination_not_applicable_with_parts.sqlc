@@ -16,7 +16,7 @@ LEFT JOIN (
            m.parts > 1 AS violates,
            format('%s parts and the search is `notApplicable`', m.parts) AS detail
     FROM (
-        :compose(composition/malformed_double_counting.sqlc)
+        :compose(eliminations/malformed.sqlc)
     ) m
 ) p ON true
 WHERE r.slug = 'elimination_not_applicable_with_parts'

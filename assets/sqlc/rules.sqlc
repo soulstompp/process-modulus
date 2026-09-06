@@ -35,6 +35,13 @@ SET search_path TO pm, public;
 :compose(reports/coupling_absorbed_by_a_fusion.sqlc);
 
 \echo
+\echo '⚠️ And the correction nobody filed: a layer built into TWO composed layers. Summing those'
+\echo '  two counts its supply twice. Derived rather than observed, because the overlap IS a part'
+\echo '  and a part carries its own figures. An elimination corrects a composition somebody did;'
+\echo '  this one is about a composition nobody has done yet.'
+:compose(reports/derived_eliminations.sqlc);
+
+\echo
 \echo '⭐ And what a receiver is entitled to say about narrowsWhen, as a number rather than'
 \echo '  an opinion. The annotation: "a claim without it is weaker, and a receiver is'
 \echo '  entitled to say so". Judging whether the sentence would ACTUALLY narrow the range'
@@ -78,10 +85,10 @@ SET search_path TO pm, public;
 \echo
 \echo '⭐⭐ WHO OWNS THE EDGE, BESIDE WHAT WOULD NARROW IT. The pair is the point: narrowsWhen'
 \echo '   says what would make a range SMALLER, boundOrigin says who owns the edge it would'
-\echo '   move. As an optional bare enumeration it was filed ONCE in 124 claims; required and'
-\echo '   typed, the answer that leads is that NOTHING sets the edge -- the range is simply'
-\echo '   where the measurements fell -- with `derived` close behind it, where the model'
-\echo '   already states the author in a sibling element and had no way to point at it.'
+\echo '   move. As an optional bare enumeration it was filed ONCE across the corpus; required'
+\echo '   and typed, the answer that leads is that NOTHING sets the edge -- the range is'
+\echo '   simply where the measurements fell -- with `derived` close behind it, where the'
+\echo '   model already states the author in a sibling element and had no way to point at it.'
 :compose(reports/bound_ownership.sqlc);
 
 \echo
@@ -108,9 +115,10 @@ SET search_path TO pm, public;
 :compose(reports/absences_in_the_corpus.sqlc);
 
 \echo
-\echo '⛔ And the roster against itself: a rule declared with no check behind it, or a check'
-\echo '  nobody declared. An empty table is the correct outcome and the only one.'
-:compose(reports/rule_integrity.sqlc);
+\echo '⛔ And every roster against itself: something declared with nothing behind it, or produced'
+\echo '  and never declared. Three contracts are checked: the conformance rules, the arithmetic'
+\echo '  sites, and the set-algebraic laws. An empty table is the correct outcome and the only one.'
+:compose(reports/integrity.sqlc);
 
 \echo
 \echo === Coverage. ⛔ A rule that examined nothing is not a rule that passed. =========

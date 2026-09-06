@@ -1,0 +1,17 @@
+-- §7  Every remainder, and what its filing established about the set it sits in.
+#
+# ⭐⭐⭐ A REMAINDER IS ONLY MEANINGFUL IF THE LAYER SET IS CLOSED, and this is where the model
+# says whether anybody closed it. Twelve of thirty-six sit in a set nobody bounded -- which is
+# the honest state for a filing written to argue about three layers, and must never fail
+# anything.
+#
+# ⛔ THE ASSERTION IS THAT THE QUESTION WAS PUT, NOT THAT IT WAS ANSWERED WELL. A remainder
+# reaching the arithmetic without appearing here at all is the failure; `unbounded` is not.
+-- layers/remainder_scope.sqlc, folded to its four standings.
+SELECT z.standing AS "standing!", count(*) AS "remainders!",
+       string_agg(DISTINCT z.filing, ', ' ORDER BY z.filing) AS "filings!"
+FROM (
+    :compose(layers/remainder_scope.sqlc)
+) z
+GROUP BY z.standing
+ORDER BY count(*) DESC

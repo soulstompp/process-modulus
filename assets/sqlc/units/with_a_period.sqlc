@@ -1,0 +1,25 @@
+# THE NAMEPLATE AMOUNTS WHOSE UNIT CARRIES A PERIOD. One row per layer whose supply is quoted
+# as a RATE -- `4 GPU-hours per week` -- as against a STOCK, `12 people`.
+#
+# ⭐⭐ WHY THE DISTINCTION IS A RELATION AND NOT AN `IF`. "What fraction of the period is this
+#    supply available?" is a malformed question against a stock: `12 people` has no period, so
+#    "five days" has nothing to be five days of. Against a rate it is perfectly answerable, and
+#    `notApplicable` there is a refusal dressed as a category error. The set of units that have
+#    a period is therefore the thing that decides whether an absence is honest.
+#
+# ✅⭐⭐⭐ IT WAS CALLED `with_denominator` AND IT TESTED THE WRONG PREDICATE. `LIKE '% per %' OR
+#    LIKE '% por %'` finds a denominator; this rule needs a PERIOD, and the corpus separates
+#    them -- `asrt:factor` files `GPU-hour per GPU`, whose denominator is a GPU. At nameplate
+#    grain the two had never disagreed, so the file could carry the wrong name and the right
+#    rows for as long as nobody filed the case that splits them.
+#
+# ⭐⭐ AND THE TWO EDITIONS ARE GONE FROM THE SQL ENTIRELY. `shifts per week` and `turnos por
+#    semana` both file `pm:denominator/pm:period`, so nothing here decides that `semana` IS
+#    `week`. That judgement used to live in an `OR` and belonged to no filing.
+-- pm:Claim/pm:denominator/pm:period, at pm:Nameplate/amount.
+SELECT c.filing, c.layer, c.unit, c.denominator AS period
+FROM      (
+    :compose(epistemics/claims.sqlc)
+) c
+WHERE c.owns = 'pm:amount'
+  AND c.denominator_kind = 'period'

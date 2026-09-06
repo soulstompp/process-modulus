@@ -1,0 +1,28 @@
+# EVERY COMPUTABLE REMAINDER, AND WHETHER IT WAS CLASSIFIED EXACTLY ONCE. One row.
+#
+# ⭐⭐ THE ASSERTION examples/observations.rs MAKES IS THAT THE CLOSURE QUESTION WAS PUT TO EVERY
+#    REMAINDER, AND THIS IS THAT ASSERTION AS ALGEBRA. layers/remainder_scope.sqlc must be a
+#    partition of layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic
+#    unasked, and disjoint, so no remainder is counted under two standings.
+#
+# ⛔ THE LEFT JOINS INSIDE remainder_scope ARE THE RISK. A layer whose filing declared two stack
+#   scopes, or two coupling searches, would fan out and be classified twice -- and the standing
+#   counts would still look reasonable. Cardinality on both sides is what catches it.
+-- layers/remainder.sqlc against layers/remainder_scope.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'layers/remainder_scope' AS subject,
+           x.computable = x.classified AND x.doubled = 0 AS holds,
+           format('%s computable remainders, %s classified, %s classified twice',
+                  x.computable, x.classified, x.doubled) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/remainder.sqlc) ) r)       AS computable,
+             (SELECT count(*) FROM ( :compose(layers/remainder_scope.sqlc) ) z) AS classified,
+             (SELECT count(*) FROM ( SELECT filing, layer FROM ( :compose(layers/remainder_scope.sqlc) ) z
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+         ) x
+) p ON true
+WHERE a.slug = 'remainder_standing'

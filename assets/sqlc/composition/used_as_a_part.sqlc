@@ -15,4 +15,6 @@ SELECT DISTINCT fi.filing
 FROM      (
     :compose(composition/part_references.sqlc)
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
+JOIN      (
+    :compose(composition/notations.sqlc)
+) fi ON fi.notation = p.part_filing

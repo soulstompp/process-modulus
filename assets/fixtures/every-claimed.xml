@@ -27,6 +27,9 @@
                xmlns:pm="https://example.invalid/process-flow/1.0">
 
   <asrt:witness>fixture-partial</asrt:witness>
+  <asrt:evidence>
+    <pm:attests>stipulation</pm:attests>
+  </asrt:evidence>
 
   <!-- ⭐ No regime. `Coverage/regime` is optional and its absence is a real state: a witness
        that is not an accounting model reports under no framework and should not be made to

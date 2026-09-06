@@ -5,7 +5,7 @@
 # ⭐ RUN THIS ONE ALONE TO SEE WHAT THE CORPUS IS MISSING. Every row here is a state
 #   somebody had to invent because no real filing produced it, so this relation is a
 #   readable list of the model's untested edges.
--- from pm.filing where evidence = 'fixture'; see assets/fixtures/README.md.
+-- from pm.filing where evidence = 'stipulation'; see assets/fixtures/README.md.
 SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f
-WHERE f.evidence = 'fixture'
+WHERE f.evidence = 'stipulation'

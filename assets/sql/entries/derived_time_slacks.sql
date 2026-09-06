@@ -1,4 +1,4 @@
--- pm:Buffer kind="time" with pm:Absent reason="derived", beside pm:Divisibility/window.
+-- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -9,7 +9,7 @@ FROM pm.nameplate n
 
 ) w
 JOIN      (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,

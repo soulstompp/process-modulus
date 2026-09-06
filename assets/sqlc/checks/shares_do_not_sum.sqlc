@@ -8,7 +8,15 @@
 #    the whole discipline. If a filer says one party's share is `unmeasured`, the sum is
 #    UNKNOWN -- not wrong. Treating the absence as a zero would manufacture a shortfall and
 #    report the document for a defect the checker introduced.
--- pm:Remainder/pm:Holders summed against |r| at the mode.
+# ⛔⛔⛔ THE UNIT GUARD IS THE HALF THIS RULE USED TO BE MISSING, AND ITS OWN SITE HAD IT.
+#    arithmetic/shares_sum.sqlc reports `not comparable` where a holder's share is quoted in a
+#    unit other than its layer's; this rule had no such branch and would have summed across
+#    units and compared the total to |r|. H is a distribution over the magnitude of `r`, so a
+#    share in a foreign unit is not a smaller share, it is not a share of this at all.
+#    arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule stands there,
+#    which left this check as the only thing between it and a wrong number. It agreed with the
+#    site on today's corpus only because no such document exists yet.
+-- pm:Remainder/pm:holder summed against |r| at the mode, via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -19,16 +27,16 @@ LEFT JOIN (
            format('shares %s against a magnitude of %s', x.shares, x.magnitude) AS detail
     FROM (
         SELECT r.filing, r.layer,
-               abs(r.r_mode)     AS magnitude,
-               sum(h.share_mode) AS shares
+               abs(r.r_mode)  AS magnitude,
+               h.shares_mode  AS shares
         FROM      (
             :compose(layers/remainder.sqlc)
         ) r
         JOIN      (
-            :compose(entries/holders.sqlc)
+            :compose(entries/holder_totals.sqlc)
         ) h USING (filing, layer)
-        GROUP BY r.filing, r.layer, r.r_mode
-        HAVING count(*) FILTER (WHERE h.share_mode IS NULL) = 0
+        WHERE h.unstated = 0
+          AND h.share_units = ARRAY[r.unit]
     ) x
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'

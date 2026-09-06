@@ -25,7 +25,6 @@ LEFT JOIN (
     :compose(entries/couplings.sqlc)
 ) c USING (filing)
 LEFT JOIN (
-    :compose(epistemics/searches.sqlc)
-) s
-       ON s.filing = f.filing AND s.looked_for = 'couplings between layers'
+    :compose(epistemics/coupling_searches.sqlc)
+) s ON s.filing = f.filing
 GROUP BY f.filing, s.answer

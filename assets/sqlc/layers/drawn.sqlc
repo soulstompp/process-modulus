@@ -1,0 +1,44 @@
+# EVERY SUPPLY THAT SAYS WHAT IT ACTUALLY SERVED, BESIDE WHAT IT COMMITTED AND HOW FAR IT CAN
+# STRETCH. One row per layer filing a `pm:Jagged/draw` against a stated rating.
+#
+# ⭐⭐⭐ THE THIRD OF THE LAYER'S THREE QUANTITIES, AND THE FIRST RELATION TO READ ONE.
+#    `EliminationAgainst` names all three -- demand, nameplate, draw -- and says why the third
+#    is there: "an implementation that eliminates demand and forgets the draw has silently
+#    claimed a utilisation it did not observe". Seventeen draws are filed. Before this file the
+#    only question anything asked of one was whether it was ABSENT -- epistemics/absences.sqlc
+#    reads `draw_absent` -- and no relation anywhere read the value. The warning was executed.
+#
+# ⛔ THE DRAW IS NOT THE DEMAND, AND THE CORPUS SETTLES THAT RATHER THAN ASSUMING IT. They
+#   agree at the mode in eight layers of seventeen and differ in nine, so a reader taking one
+#   for the other is wrong more often than right. `capability` was asked for 6 and served 3.
+#
+# ⛔⛔ A DRAW ABOVE THE DEMAND IS NOT A DEFECT, WHICH IS WHY THIS FILE REPORTS AND DOES NOT
+#    JUDGE. `merge-pt-member/linha-partilhada` draws 10 where its demand reaches 8.0 at most,
+#    and the filing says why: "A PRODUÇÃO INTEIRA DA LINHA... a fatia do irmão está aqui
+#    dentro, e está também na declaração dele" -- the whole line's output, of which a sibling's
+#    slice is that sibling's demand in its own filing. A rule reading "a supply cannot serve
+#    more than was asked" would fire on a correct document. The bound that holds is the
+#    supply's own, and it is in checks/draw_exceeds_the_supply.sqlc.
+#
+# ⛔ A DRAW AGAINST NO RATING IS NO ROW. `refutation/object-storage` draws 47 with its amount
+#   filed `notApplicable`; utilisation of a rating nobody stated is unanswerable, not zero.
+#   layers/absorber.sqlc states the principle.
+#
+# ⚠️ `capacity_slack` IS LEFT NULL WHERE IT IS UNMEASURED rather than coalesced to zero. Six of
+#   these layers do not know how far they can stretch, and a nameplate is not a ceiling until
+#   somebody says the buffer is empty.
+-- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+SELECT n.filing, n.layer,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       s.mode   AS capacity_slack,
+       s.absent AS capacity_absent
+FROM pm.nameplate n
+LEFT JOIN (
+    :compose(entries/slacks.sqlc)
+) s ON s.filing = n.filing AND s.layer = n.layer AND s.buffer = 'capacity'
+WHERE n.draw_mode   IS NOT NULL
+  AND n.amount_mode IS NOT NULL

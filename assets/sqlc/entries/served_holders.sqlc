@@ -1,0 +1,25 @@
+# THE HOLDERS WHOSE SHARE THE ABSORBING BUFFER ACTUALLY TOOK. One row per holder of a kind that
+# represents demand the system met: `booked`, `counterparty`, `people`.
+#
+# ⭐⭐⭐ IT IS THE POSITIVE SET OF THE MODEL'S OWN INEQUALITY AND IT HAD NO NAME. The rule is
+#    `Σ_{j served} H[l,j] <= S[l, A(l)]`: what was absorbed is bounded by what could absorb. Only
+#    the complement was a file, so three callers spelled this side out as
+#    `LEFT JOIN entries/unserved_holders.sqlc USING (filing, layer, kind)` followed by
+#    `u.kind IS NULL` -- an anti-join standing in for a kind test on a column already in hand,
+#    written three times, in a relation nobody could run alone and count.
+#
+# ⛔⛔ IT IS WRITTEN AS THE KINDS IT KEEPS, NOT AS A NEGATION OF ITS SIBLING. `NOT IN
+#    ('customer','unrealised')` would make this file's meaning depend on a list living somewhere
+#    else, and a sixth `pm:HolderKind` added to the schema would silently join the served side
+#    without anybody deciding it should. Naming the three is the decision, made here, visibly.
+#
+# ⭐ TOGETHER WITH entries/unserved_holders.sqlc IT EXHAUSTS entries/holders.sqlc, and that is not
+#   an assumption: algebra/borne.sqlc asserts `Σ all = Σ served + Σ unserved` on every run, and it
+#   composes BOTH files rather than re-deriving the split, so the law is about these relations
+#   and not about a copy of them.
+-- pm:HolderKind values `booked`, `counterparty` and `people`.
+SELECT h.*
+FROM (
+    :compose(entries/holders.sqlc)
+) h
+WHERE h.kind IN ('booked', 'counterparty', 'people')

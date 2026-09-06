@@ -1,0 +1,40 @@
+# THE DECLARED ROSTERS AGAINST THE POPULATIONS THEY DECLARE, CHECKED AS A PARTITION PER CONTRACT.
+# One row per contract: whether |roster| = |declared but unproduced| + |roster ⋉ population|.
+#
+# ⭐⭐ THE DEDUP IS INTENDED ON ONE SIDE AND THE LAW IS WRITTEN AROUND IT. `checks/all.sqlc`
+#    carries 663 rows over 23 distinct rule names; `EXCEPT` collapses them, and that collapse IS
+#    the question -- which rule NAMES appear that nothing declares. So the law is stated over
+#    distinct subjects on both sides, not over rows.
+#
+# ⛔ reports/integrity.sqlc IS THE ONE RELATION HERE WHOSE EMPTINESS PROVES NOTHING ON ITS OWN,
+#   because a mis-parenthesised EXCEPT returns a plausible table. This law is the second witness:
+#   it counts the same sets a different way and must agree.
+-- checks/ and arithmetic/ rosters partitioned by the populations they declare.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT x.contract AS subject,
+           x.declared = x.unproduced + x.produced AS holds,
+           format('%s declared = %s unproduced + %s produced',
+                  x.declared, x.unproduced, x.produced) AS detail
+    FROM (
+        SELECT 'rules' AS contract,
+               (SELECT count(DISTINCT r.rule) FROM ( :compose(checks/roster.sqlc) ) r) AS declared,
+               (SELECT count(*) FROM ( SELECT r.rule FROM ( :compose(checks/roster.sqlc) ) r
+                                       EXCEPT
+                                       SELECT c.rule FROM ( :compose(checks/all.sqlc) ) c ) z) AS unproduced,
+               (SELECT count(DISTINCT r.rule) FROM ( :compose(checks/roster.sqlc) ) r
+                 WHERE EXISTS (SELECT 1 FROM ( :compose(checks/all.sqlc) ) c WHERE c.rule = r.rule)) AS produced
+        UNION ALL
+        SELECT 'arithmetic',
+               (SELECT count(DISTINCT b.site) FROM ( :compose(arithmetic/roster.sqlc) ) b),
+               (SELECT count(*) FROM ( SELECT b.site FROM ( :compose(arithmetic/roster.sqlc) ) b
+                                       EXCEPT
+                                       SELECT z.site FROM ( :compose(arithmetic/all.sqlc) ) z ) y),
+               (SELECT count(DISTINCT b.site) FROM ( :compose(arithmetic/roster.sqlc) ) b
+                 WHERE EXISTS (SELECT 1 FROM ( :compose(arithmetic/all.sqlc) ) z WHERE z.site = b.site))
+    ) x
+) p ON true
+WHERE a.slug = 'integrity'

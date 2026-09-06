@@ -4,7 +4,7 @@
 # ⭐ THE RULE: a slack is expressed in the unit of the shares it bounds. An inequality between
 #   two numbers in different units is not a failing comparison, it is a meaningless one -- so
 #   this is the precondition that makes share_exceeds_slack.sqlc mean anything at all.
--- pm:Buffer and pm:Holder claims, each carrying its own unit.
+-- the slack claims and pm:Remainder/pm:holder claims, each carrying its own unit.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

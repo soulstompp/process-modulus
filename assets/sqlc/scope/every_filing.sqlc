@@ -7,7 +7,7 @@
 #    everything that loaded.
 #    ⭐ IT IS BOTH A SLOT VALUE AND A RELATION COMPOSED DIRECTLY, and the two call sites are
 #      worth comparing. `matrices.sqlc` passes it into `entries/coupling_presence.sqlc`'s
-#      `@scope`; `queries/1-fit-from-ranges.sqlc` composes it as an ordinary join. Same file,
+#      `@scope`; `queries/matrices/1-fit-from-ranges.sqlc` composes it as an ordinary join. Same file,
 #      same rows, and the slot form is the one where forgetting to choose fails to compose.
 #
 # ⛔⛔ THIS IS THE SCOPE A RULE RUNS UNDER AND A REPORT MUST NOT. A fixture is a

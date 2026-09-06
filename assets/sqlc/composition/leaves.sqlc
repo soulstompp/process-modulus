@@ -10,6 +10,16 @@
 # ⛔ COUNT THE ROWS PER (ROOT, LEAF) AND ANYTHING ABOVE ONE IS THE SAME SUPPLY ENTERING ONE
 #   TOTAL TWICE. Both routes are in the `path` column, which is what makes the finding
 #   actionable instead of merely true.
+# ⚠️ AN ANTI-JOIN THAT MATCHES NOTHING RETURNS THE WHOLE LEFT SIDE AND LOOKS LIKE A WORKING
+#   RELATION. Nothing about the row count says the exclusion happened.
+#   ⭐ THE LAW IS RECOMPUTED RATHER THAN RECORDED, algebra/leaves.sqlc, every run. It is also
+#   the one law with a live counter-example: rewrite this file as `EXCEPT` and it reports
+#   28 = 15 + 5, because descent is a bag on the key and EXCEPT deduplicates eight rows away.
+#
+# ⭐⭐ `f.filing` IS THE RIGHT COLUMN TO TEST, AND THE CHOICE IS NOT FREE. It is the join key and
+#    `pm.part.composition` is NOT NULL, so a matched row can never carry a NULL there. Testing a
+#    NULLABLE column of the right-hand relation instead would keep matched rows whose payload
+#    happens to be null -- an anti-join that quietly under-removes, with no symptom.
 -- pm:Part followed to a layer that names no parts of its own.
 SELECT d.*
 FROM      (

@@ -1,0 +1,31 @@
+# EVERY SUPPLY THAT SERVED SOMETHING, AND WHETHER ITS DRAW CAN BE PUT BESIDE ITS RATING. One
+# row per layer stating both a draw and a nameplate amount.
+#
+# ⛔⛔ THREE UNITS MEET HERE AND NOTHING COMPARES ANY PAIR OF THEM. `draw <= n + S` reads a
+#    draw, a rating and a capacity slack, and the check written this week compares the numbers
+#    without ever asking whether they are numbers of the same thing. All sixteen agree today,
+#    which is what makes it easy not to notice.
+#
+# ⚠️ AN UNMEASURED CAPACITY SLACK SUSPENDS THE BOUND RATHER THAN ZEROING IT. A nameplate is
+#   not a ceiling until somebody says the buffer is empty; layers/drawn.sqlc leaves the column
+#   NULL for exactly that reason and this relation reports the six layers it happens to.
+-- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           CASE WHEN d.capacity_slack IS NULL                       THEN 'suspended'
+                WHEN d.draw_unit IS DISTINCT FROM d.n_unit          THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN d.capacity_slack IS NULL
+                     THEN format('the capacity buffer is %s', d.capacity_absent)
+                WHEN d.draw_unit IS DISTINCT FROM d.n_unit
+                     THEN format('a draw in %s against a rating in %s', d.draw_unit, d.n_unit)
+                ELSE format('draw, rating and slack all in %s', d.n_unit) END AS detail
+    FROM (
+        :compose(layers/drawn.sqlc)
+    ) d
+) p ON true
+WHERE a.slug = 'draw_bounded'

@@ -1,0 +1,30 @@
+# THE SLACK OF THE BUFFER THAT ACTUALLY ABSORBS THE LAYER. One row per layer whose absorber
+# resolves to a buffer, carrying that one buffer's slack and nothing about the other two.
+#
+# ⭐⭐⭐ THIS IS THE `S[l, A(l)]` TERM OF THE MODEL'S OWN INEQUALITY, AND IT HAD NO NAME. A layer
+#    carries three slacks and names ONE of them as its absorber; every statement of the form
+#    "the shares a layer holds are bounded by its slack" means that one. Written out, the term is
+#    layers/absorber.sqlc joined to entries/slacks.sqlc on (filing, layer, BUFFER), and the third
+#    key is the whole point: drop it and you are comparing a layer against every buffer it has.
+#
+# ⛔⛔ DROPPING IT IS EXACTLY WHAT entries/comparable_slack_shares.sqlc DID, and the rule built on
+#    it, checks/slack_unit_mismatch.sqlc, says "a slack is expressed in the unit of the shares IT
+#    BOUNDS" while examining every slack in the layer. Two thirds of the pairs it examined were
+#    between a holder and a buffer that absorbs nothing of theirs, where a differing unit is not
+#    a defect at all. arithmetic/roster.sqlc names that rule the guard for `shares_bounded`,
+#    whose site restricts to the absorber -- so the guard was strictly wider than the site.
+#
+# ⭐ THE JOIN TO pm.buffer_term IS INSIDE layers/absorber.sqlc AND IS AN INNER ONE. A layer whose
+#   absorber term no reader's warrant resolves is not here, which is correct: nothing can be said
+#   about the slack of a buffer nobody identified.
+-- layers/absorber.sqlc joined to entries/slacks.sqlc on the buffer the layer actually names.
+SELECT a.filing, a.layer, a.buffer,
+       a.taxonomy, a.term, a.the_readers_warrant,
+       s.low, s.mode, s.high, s.unit, s.absent, s.sized,
+       s.bound_origin, s.bound_origin_absent
+FROM      (
+    :compose(layers/absorber.sqlc)
+) a
+JOIN      (
+    :compose(entries/slacks.sqlc)
+) s USING (filing, layer, buffer)

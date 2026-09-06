@@ -1,0 +1,19 @@
+-- §2  The operations that both draw and induce, the entries `D-transpose N` would have.
+#
+# ONE ROW PER CROSS-LAYER EDGE: an operation that consumes from one layer while committing on
+# another. This is the incidence half of `DᵀN`, which is the half that composes.
+#
+# ⭐ THE RESULT IS THE FINDING. In this corpus exactly one operation qualifies -- filed twice,
+# once in each language -- and its draw is UNMEASURED, so the product cannot be computed at
+# all. The matrix that would show cross-layer structure is empty precisely because the
+# interesting quantity has no instrument, which is what the model exists to be able to say.
+# `d_val` NULL is that.
+-- entries/cross_layer_edges.sqlc, the join on the shared (filing, operation) index.
+SELECT x.operation        AS "operation!",
+       x.drawn_from       AS "drawn!",
+       x.drawn::float8    AS d_val,
+       x.commits          AS "commits!",
+       x.committed::float8 AS n_val
+FROM (
+    :compose(entries/cross_layer_edges.sqlc)
+) x

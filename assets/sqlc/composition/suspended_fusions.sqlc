@@ -1,5 +1,12 @@
-# THE COMPOSED LAYERS THAT OWE NO SUM AT ALL. One row per composed layer suspended on either
-# ground, carrying which ground it was.
+# THE COMPOSED LAYERS THAT OWE NO SUM, AND FOR WHICH QUANTITY. One row per (composed layer,
+# ground), carrying which ground it was and which quantity it lifts.
+#
+# ⛔⛔⛔ READ `quantity` BEFORE YOU USE THIS. NULL means EVERY quantity is suspended (nobody
+#    searched at all); a value means exactly that quantity is (the overlap was found and could
+#    not be sized against it). A caller computing one quantity's sum wants
+#    `quantity IS NULL OR quantity = '<that one>'`. This file used to claim "no sum at all" while
+#    its second arm pinned `demand` and dropped the column, so the claim was true of one arm and
+#    false of the other, and nothing downstream could tell.
 #
 # ⭐⭐⭐ THIS RELATION EXISTS BECAUSE OF DE MORGAN AND IT IS WORTH SAYING WHY. The condition
 #    it replaces was written as a conjunction of two negations, in two different SQL idioms,
@@ -12,5 +19,5 @@
 # ⛔ RUN THIS ALONE BEFORE READING ANY COMPOSITION CHECK. Every row here is a fusion whose
 #   arithmetic is not owed, and a checker reporting a pass on one of these rows is reporting
 #   about nothing.
--- the two pm:Absent reason="unmeasured" filings that lift the sum rule.
-:union(ALL composition/suspended_by_search.sqlc, composition/suspended_by_quantity.sqlc)
+-- the two filings that lift the sum rule, each carrying the quantity it lifts.
+:union(ALL eliminations/unsearched.sqlc, eliminations/unsized.sqlc)

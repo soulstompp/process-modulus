@@ -1,0 +1,91 @@
+# EVERY CONTRACT THIS REPOSITORY DECLARES, AND WHERE IT DISAGREES WITH ITSELF. One row per
+# disagreement, naming the contract it came from. EMPTY IS THE CORRECT OUTPUT.
+#
+# ⭐⭐⭐ THE CONTRACT NAME IS ADDED AT THE UNION SITE, AND THAT IS WHAT MAKES ONE FILE ENOUGH.
+#    Each roster and each population is tagged with the contract it belongs to as it enters the
+#    set, so the difference is taken ONCE over `(contract, subject)` pairs rather than once per
+#    contract. Neither `checks/roster.sqlc` nor `arithmetic/roster.sqlc` knows it has a sibling;
+#    the caller knows, because the caller is the thing holding both. A member that carried its
+#    own label would be answering a question about the set it happens to be in, which is not a
+#    fact about the member.
+#
+# ⭐⭐ AND IT IS WHY THE TWO CONTRACTS NEED NO SHARED SHAPE. They spell their key differently --
+#    `rule` against `site` -- and their verdicts differ in TYPE: `violates` is a boolean,
+#    `verdict` is three-valued text. Neither difference survives contact with the union, because
+#    every branch here only ever asks `IS NULL` of the verdict, and the union site asks the
+#    QUESTION rather than carrying the value. `(c.violates IS NULL)` and `(z.verdict IS NULL)`
+#    both arrive as booleans. Nothing is renamed into a wrapper relation and nothing is flattened.
+#
+# ⛔⛔⛔ THE PARENTHESES AROUND EACH ARM ARE LOAD-BEARING. `EXCEPT` and `UNION ALL` share
+#    precedence in Postgres and associate left, so `A UNION ALL B EXCEPT C UNION ALL D` parses as
+#    `((A ∪ B) − C) ∪ D` and silently adds D back. Written without them this query returned 227
+#    rows where 0 was correct -- and 227 well-formed rows is not a thing anybody reads twice.
+#    ⭐ Which is why the probe below is not optional: an empty result proves nothing here on its
+#    own, because the broken form is also capable of returning one.
+#
+# ⭐ A THIRD ROSTER IS ONE MORE ARM IN EACH BRANCH. There will be one; the arithmetic roster did
+#   not exist yesterday. This is the file that grows, and no other file has to.
+#
+# ⚠️ THE SECOND BRANCH LOOKS UNREACHABLE AND IS NOT, AND THE DIFFERENCE IS WORTH KNOWING BEFORE
+#    SOMEBODY DELETES IT. Every check takes its rule NAME from the roster it joins, so removing a
+#    roster row does not produce an undeclared rule -- the check simply stops emitting, and the
+#    FIRST branch reports it. The second fires on a different failure: a check that breaks the
+#    contract by naming ITSELF, which is what copying a check file and editing it badly produces.
+#    Probed by replacing `r.rule` with a literal in one check: both branches fire together, which
+#    is the correct reading of that document.
+--
+-- ⚠️ PROBE BEFORE TRUSTING AN EMPTY RESULT. Add a row to checks/roster.sqlc naming a check that
+--    does not exist, recompose, and this must report it against `rules`. Do the same in
+--    arithmetic/roster.sqlc and it must report against `arithmetic`. Revert both.
+--    algebra/roster.sqlc likewise, reporting against `algebra`.
+-- checks/, arithmetic/ and algebra/: each roster against the population it declares.
+SELECT x.contract, 'declared, but nothing produces it' AS problem, x.subject
+FROM (
+    (
+        SELECT 'rules' AS contract, r.rule AS subject FROM ( :compose(checks/roster.sqlc) ) r
+        UNION ALL
+        SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
+        UNION ALL
+        SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
+    )
+    EXCEPT
+    (
+        SELECT 'rules', c.rule FROM ( :compose(checks/all.sqlc) ) c
+        UNION ALL
+        SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
+        UNION ALL
+        SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
+    )
+) x
+UNION ALL
+SELECT x.contract, 'produced, but nothing declares it', x.subject
+FROM (
+    (
+        SELECT 'rules' AS contract, c.rule AS subject FROM ( :compose(checks/all.sqlc) ) c
+        UNION ALL
+        SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
+        UNION ALL
+        SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
+    )
+    EXCEPT
+    (
+        SELECT 'rules', r.rule FROM ( :compose(checks/roster.sqlc) ) r
+        UNION ALL
+        SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
+        UNION ALL
+        SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
+    )
+) x
+UNION ALL
+SELECT DISTINCT p.contract, 'examined a row and returned no verdict', p.subject
+FROM (
+    SELECT 'rules' AS contract, c.rule AS subject, (c.violates IS NULL) AS silent, c.filing
+    FROM ( :compose(checks/all.sqlc) ) c
+    UNION ALL
+    SELECT 'arithmetic', z.site, (z.verdict IS NULL), z.filing
+    FROM ( :compose(arithmetic/all.sqlc) ) z
+    UNION ALL
+    SELECT 'algebra', w.law, (w.holds IS NULL), w.subject
+    FROM ( :compose(algebra/all.sqlc) ) w
+) p
+WHERE p.silent AND p.filing IS NOT NULL

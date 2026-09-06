@@ -596,7 +596,8 @@
       SEE ALSO
 
       `CoverageEntry` for one question. `Run` for what a runner observes against this.
-      `pm:Regime` for the three axes.
+      `Dependence` for ATTESTATION, the genre these four documents share. `pm:Regime` for
+      the three axes.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -632,13 +633,15 @@
 
       VER TAMBÉM
 
-      A `CoverageEntry` para uma pergunta. O `Run` para o que quem executa observa contra isto. O
-      `pm:Regime` para os três eixos.
+      A `CoverageEntry` para uma pergunta. O `Run` para o que quem executa observa contra isto. A
+      `Dependence` para a ATESTAÇÃO, o género que estes quatro documentos partilham. O `pm:Regime`
+      para os três eixos.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="witness" type="xs:token"/>
-      <xs:element name="regime"  type="pm:Regime"      minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="entry"   type="asrt:CoverageEntry" maxOccurs="unbounded"/>
+      <xs:element name="witness"  type="xs:token"/>
+      <xs:element name="evidence" type="pm:StatedEvidence"/>
+      <xs:element name="regime"   type="pm:Regime"      minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="entry"    type="asrt:CoverageEntry" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -756,8 +759,9 @@
 
       SEE ALSO
 
-      `Result` for one question. `Coverage` for what was claimed before the run. `Citation`
-      for the same edition argument applied to a standard.
+      `Result` for one question. `Coverage` for what was claimed before the run.
+      `Dependence` for ATTESTATION, the genre these four documents share. `Citation` for the
+      same edition argument applied to a standard.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -795,10 +799,12 @@
       VER TAMBÉM
 
       O `Result` para uma pergunta. A `Coverage` para o que foi afirmado antes da execução. A
-      `Citation` para o mesmo argumento da edição aplicado a uma norma.
+      `Dependence` para a ATESTAÇÃO, o género que estes quatro documentos partilham. A `Citation`
+      para o mesmo argumento da edição aplicado a uma norma.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness"       type="xs:token"/>
+      <xs:element name="evidence"      type="pm:StatedEvidence"/>
       <xs:element name="ranAt"         type="xs:date"/>
       <xs:element name="corpusVersion" type="xs:token"    minOccurs="0"/>
       <xs:element name="result"        type="asrt:Result" maxOccurs="unbounded"/>
@@ -1201,9 +1207,10 @@
       `pm:Coupling` is the same phenomenon inside one filing. But the dependence that
       matters most is frequently between TWO ENTITIES THAT FILE SEPARATELY AND CANNOT SEE
       EACH OTHER: a parent and a subsidiary, a supplier and a customer, two borrowers of one
-      lender. So a third party files it, and this schema already has that genre — `Coverage`
-      and `Run` are claims ABOUT things rather than elements INSIDE them, and each carries a
-      `witness`. The world already files it this way: a consolidation is a separate
+      lender. So a third party files it, and this schema already has that genre. AN
+      ATTESTATION is what the four documents in this file have in common: `Coverage`, `Run`,
+      `Dependence` and `Composition` are claims ABOUT things rather than elements INSIDE
+      them, and each carries a `witness`. The world already files it this way: a consolidation is a separate
       statement, not a footnote in the subsidiary's accounts.
 
       WHAT IT CONTAINS
@@ -1219,9 +1226,10 @@
                     for `pm:Jagged`'s stated reason.
         provenance  the firm's own chain: who entered, who approved, and above all
                     `standing`, the axis separating a statutory auditor's observation from a
-                    controller's hunch. Optional, because `witness` already forbids silence
-                    and every field inside is itself optional, so requiring the container
-                    would buy an empty tag.
+                    controller's hunch. Required, for `witness`'s reason carried one step:
+                    `witness` forbids ANONYMOUS testimony about somebody else's books, and
+                    `standing` is what says the observer was entitled to give it. A name
+                    without standing is a bystander.
         regime      the frameworks THIS OBSERVER computed remainders under. Each end names
                     which one its filing reported under.
         citation    the instrument under which this observer could see BOTH filings — a
@@ -1307,9 +1315,10 @@
       O `pm:Coupling` é o mesmo fenómeno dentro de uma só declaração. Mas a dependência que mais
       importa é muitas vezes entre DUAS ENTIDADES QUE DECLARAM SEPARADAMENTE E NÃO SE CONSEGUEM VER:
       uma casa-mãe e uma subsidiária, um fornecedor e um cliente, dois mutuários de um mesmo credor.
-      Portanto declara-a um terceiro, e este esquema já tem esse género — a `Coverage` e o `Run` são
-      afirmações SOBRE coisas e não elementos DENTRO delas, e cada uma transporta uma `witness`. O
-      mundo já declara assim: uma consolidação é uma declaração separada, não uma nota de rodapé nas
+      Portanto declara-a um terceiro, e este esquema já tem esse género. UMA ATESTAÇÃO é o que os
+      quatro documentos deste ficheiro têm em comum: a `Coverage`, o `Run`, a `Dependence` e a
+      `Composition` são afirmações SOBRE coisas e não elementos DENTRO delas, e cada uma transporta
+      uma `witness`. O mundo já declara assim: uma consolidação é uma declaração separada, não uma nota de rodapé nas
       contas da subsidiária.
 
       O QUE CONTÉM
@@ -1325,9 +1334,10 @@
                     razão já enunciada no `pm:Jagged`.
         provenance  a cadeia interna da firma: quem introduziu, quem aprovou, e sobretudo a
                     `standing`, o eixo que separa a observação de um revisor oficial de contas do
-                    palpite de um controller. Opcional, porque a `witness` já proíbe o silêncio e
-                    todos os campos lá dentro são eles próprios opcionais, portanto exigir o
-                    contentor compraria uma etiqueta vazia.
+                    palpite de um controller. Obrigatório, pela razão da `witness` levada um passo
+                    mais além: a `witness` proíbe o testemunho ANÓNIMO sobre os livros de outrem, e
+                    a `standing` é o que diz que quem observa tinha legitimidade para o dar. Um
+                    nome sem legitimidade é um transeunte.
         regime      os referenciais sob os quais ESTE OBSERVADOR calculou restos. Cada ponta diz sob
                     qual deles é que a sua declaração reportou.
         citation    o instrumento ao abrigo do qual este observador pôde ver AS DUAS declarações —
@@ -1404,6 +1414,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="witness"    type="xs:token"/>
+      <xs:element name="evidence"   type="pm:StatedEvidence"/>
       <xs:element name="observedAt" type="xs:date"/>
       <xs:element name="provenance" type="pm:Provenance"/>
       <xs:element name="regime"     type="pm:Regime"            minOccurs="0" maxOccurs="unbounded"/>
@@ -1633,9 +1644,12 @@
       part of it is low too. Reversing bounds here widens an interval by pairing a scenario
       against itself.
 
-      `quantity` filed as `absent reason="none"` says THIS NAMED PAIR has a double-counting
-      relation that sizes to zero this period: a commission agreement that existed all year
-      and was never exercised. It is a statement about one relation, not about the search.
+      `quantity` filed as `[0, 0, 0]` says THIS NAMED PAIR has a double-counting relation that
+      sizes to zero this period: a commission agreement that existed all year and was never
+      exercised. It is a statement about one relation, not about the search, and it is a CLAIM
+      rather than an absence, because `pm:StatedClaim`'s absent branch carries
+      `pm:ClaimAbsenceReason` and that type has no `none`. Whatever this element's absent
+      branch does say, it SUSPENDS the sum for the quantity it was filed against.
 
       WHAT IT REFUSES
 
@@ -1696,9 +1710,12 @@
       também é baixa. Inverter aqui os limites alarga um intervalo emparelhando um cenário consigo
       mesmo.
 
-      Uma `quantity` declarada como `absent reason="none"` diz que ESTE PAR NOMEADO tem uma relação
-      de dupla contagem que dimensiona a zero neste período: um acordo de comissão que existiu todo o
-      ano e nunca foi exercido. É uma declaração sobre uma relação, não sobre a procura.
+      Uma `quantity` declarada como `[0, 0, 0]` diz que ESTE PAR NOMEADO tem uma relação de dupla
+      contagem que dimensiona a zero neste período: um acordo de comissão que existiu todo o ano e
+      nunca foi exercido. É uma declaração sobre uma relação, não sobre a procura, e é uma AFIRMAÇÃO
+      e não uma ausência, porque o ramo de ausência da `pm:StatedClaim` carrega o
+      `pm:ClaimAbsenceReason` e esse tipo não tem `none`. O que quer que o ramo de ausência deste
+      elemento diga, SUSPENDE a soma para a quantidade contra a qual foi declarado.
 
       O QUE RECUSA
 
@@ -1918,10 +1935,16 @@
 
         none | notApplicable    `Σ` converted parts must EQUAL the composed figure, exactly
         unmeasured              no equality is owed. The check is SUSPENDED, not passed
-        elimination+            `Σ` converted parts less those eliminations, per quantity
+        elimination+ sized      `Σ` converted parts less those eliminations, per quantity
+        elimination+ unsized    no equality is owed FOR THAT QUANTITY. An entry whose
+                                `quantity` takes its absent branch is a composer who found the
+                                overlap and could not size it, so the sum is lifted exactly
+                                where the elimination was filed and owed everywhere else
 
       Suspended is a third outcome beside passed and failed, and a checker that reports two
-      has answered a question the composer declined to ask.
+      has answered a question the composer declined to ask. The last two rows are one state of
+      this element and two states of the entries inside it, which is why suspension has two
+      grounds at two levels: `assets/sql/composition/suspended_fusions.sql` unites them.
 
       WHAT IT REFUSES
 
@@ -1939,9 +1962,9 @@
 
       SEE ALSO
 
-      `Elimination` for what one entry means, including the narrower `none` on its
-      `quantity`. `Fusion` for what the sum is over. `pm:StatedCouplings` is this shape one
-      document down.
+      `Elimination` for what one entry means, including why a zero on its `quantity` is a
+      claim and not an absence. `Fusion` for what the sum is over. `pm:StatedCouplings` is
+      this shape one document down.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -1976,10 +1999,17 @@
         none | notApplicable    `Σ` das partes convertidas tem de IGUALAR a figura composta, exato
         unmeasured              não é devida igualdade nenhuma. A verificação fica SUSPENSA, não
                                 passada
-        elimination+            `Σ` das partes convertidas menos essas eliminações, por quantidade
+        elimination+ com valor  `Σ` das partes convertidas menos essas eliminações, por quantidade
+        elimination+ sem valor  não é devida igualdade nenhuma PARA ESSA QUANTIDADE. Uma entrada
+                                cuja `quantity` toma o ramo de ausência é quem compôs a encontrar
+                                a sobreposição sem a conseguir dimensionar, portanto a soma é
+                                levantada exatamente onde a eliminação foi declarada e continua
+                                devida em todas as outras
 
       Suspenso é um terceiro desfecho ao lado de passou e falhou, e um verificador que reporte dois
-      respondeu a uma pergunta que quem compôs recusou fazer.
+      respondeu a uma pergunta que quem compôs recusou fazer. As duas últimas linhas são um estado
+      deste elemento e dois estados das entradas lá dentro, e é por isso que a suspensão tem dois
+      fundamentos em dois níveis: o `assets/sql/composition/suspended_fusions.sql` une-os.
 
       O QUE RECUSA
 
@@ -1997,9 +2027,9 @@
 
       VER TAMBÉM
 
-      A `Elimination` para o que significa uma entrada, incluindo o `none` mais estreito da sua
-      `quantity`. A `Fusion` para saber sobre o que é a soma. As `pm:StatedCouplings` são esta forma
-      um documento abaixo.
+      A `Elimination` para o que significa uma entrada, incluindo porque é que um zero na sua
+      `quantity` é uma afirmação e não uma ausência. A `Fusion` para saber sobre o que é a soma. As
+      `pm:StatedCouplings` são esta forma um documento abaixo.
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="elimination" type="asrt:Elimination" maxOccurs="unbounded"/>
@@ -2200,8 +2230,9 @@
       WHAT IT IS
 
       A filing assembled out of other filings, plus the mapping saying what came from where.
-      It is `Dependence`'s genre — a third party who read filings they did not make — carried
-      one step further: this observer does not merely comment on the filings, THEY FILE.
+      It is an ATTESTATION in `Dependence`'s sense — a third party who read filings they did
+      not make — carried one step further: this observer does not merely comment on the
+      filings, THEY FILE.
 
       WHAT IT CONTAINS
 
@@ -2287,8 +2318,8 @@
       O QUE É
 
       Uma declaração montada a partir de outras declarações, mais o mapeamento que diz o que veio de
-      onde. É o género da `Dependence` — um terceiro que leu declarações que não fez — levado um passo
-      mais longe: quem observa não se limita a comentar as declarações, DECLARA.
+      onde. É uma ATESTAÇÃO no sentido da `Dependence` — um terceiro que leu declarações que não fez
+      — levada um passo mais longe: quem observa não se limita a comentar as declarações, DECLARA.
 
       O QUE CONTÉM
 

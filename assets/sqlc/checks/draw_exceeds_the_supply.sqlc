@@ -1,0 +1,34 @@
+# EVERY SUPPLY WHOSE CAPACITY BUFFER IS SIZED AND WHICH SAYS WHAT IT SERVED, BESIDE THE MOST IT
+# COULD HAVE SERVED. One row per examined layer, `violates` where the draw is over the line.
+#
+# ⭐⭐ THE RULE: a supply cannot serve more than its rating plus the headroom it filed. The
+#    nameplate is what it committed, the capacity buffer is how far it can run above that, and
+#    the draw is what came out. `draw > nameplate + capacitySlack` is a supply that produced
+#    more than it can produce, which is a filing error and never a fact.
+#
+# ⛔ IT IS THE SUPPLY'S BOUND AND NEVER THE DEMAND'S. "A draw does not exceed what was asked"
+#   is the rule this one is NOT, because a shared line's output is partly somebody else's
+#   demand -- see layers/drawn.sqlc, where the corpus's one instance is quoted. Bounding the
+#   draw by the demand would fire on a correct document, which is the defect
+#   share_exceeds_slack was carrying.
+#
+# ⛔ AN UNMEASURED CAPACITY BUFFER SUSPENDS THE RULE rather than passing it. Six layers do not
+#   know how far they can stretch; coalescing that to zero would turn "nobody looked" into
+#   "there is no headroom" and manufacture violations out of a gap. A nameplate becomes a
+#   ceiling only once somebody says the buffer is empty.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount plus pm:Nameplate/pm:capacitySlack.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           d.draw_mode > d.n_mode + d.capacity_slack + 1e-9 AS violates,
+           format('served %s against a rating of %s and %s of headroom',
+                  d.draw_mode, d.n_mode, d.capacity_slack) AS detail
+    FROM (
+        :compose(layers/drawn.sqlc)
+    ) d
+    WHERE d.capacity_slack IS NOT NULL
+) p ON true
+WHERE r.slug = 'draw_exceeds_the_supply'

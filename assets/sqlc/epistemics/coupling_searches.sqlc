@@ -1,0 +1,19 @@
+# DID ANYBODY LOOK FOR COUPLINGS BETWEEN THIS STACK'S LAYERS? One row per filing that was asked,
+# carrying what it answered and the note that argues for the answer.
+#
+# ⭐⭐⭐ A STACK WITH NO COUPLINGS FILED HAS EITHER INDEPENDENT LAYERS OR NOBODY WHO LOOKED, and
+#    an empty coupling table renders those two identically. They are opposite claims: one
+#    licenses treating each remainder on its own, the other says nothing at all. This is where
+#    the difference lives.
+#
+# ⛔ A NULL `answer` IS NOT AN ABSENCE. It means the document filed real couplings, so the
+#   search question is answered by the content rather than by a reason.
+#
+# ⭐⭐ IT WAS HALF OF A UNION THAT FIVE CALLERS TOOK BACK APART. epistemics/searches.sqlc built
+#    the two search kinds into one relation with a `looked_for` string, and then every caller
+#    that wanted one of them filtered on that string -- entries/coupling_presence.sqlc,
+#    reports/independence_tested.sqlc, and two relations that gave up and read pm.coupling_search
+#    raw. A union whose members were never files is a union nobody can compose half of.
+-- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+SELECT cs.filing, cs.absent AS answer, cs.note
+FROM pm.coupling_search cs

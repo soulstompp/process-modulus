@@ -1,8 +1,7 @@
--- pm:Holders summed against pm:Buffers/pm:Buffer, keyed by pm:Remainder/absorber.
+-- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
 SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
 FROM (
-    SELECT p.filing, p.layer, a.buffer,
-           sum(h.share_mode) FILTER (WHERE h.kind <> 'unrealised') AS borne
+    SELECT p.filing, p.layer, a.buffer, sum(h.share_mode) AS borne
     FROM      (
         -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
@@ -69,17 +68,24 @@ JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.abs
 
     ) a USING (filing, layer)
     JOIN      (
-        -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+        -- pm:HolderKind values `booked`, `counterparty` and `people`.
+SELECT h.*
+FROM (
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
 FROM pm.holder h
 
+) h
+WHERE h.kind IN ('booked', 'counterparty', 'people')
+
     ) h USING (filing, layer)
+    WHERE p.sign = 'interference'
     GROUP BY p.filing, p.layer, a.buffer
 ) b
 JOIN (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,

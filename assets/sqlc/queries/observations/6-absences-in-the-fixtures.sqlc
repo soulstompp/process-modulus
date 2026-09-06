@@ -1,0 +1,16 @@
+-- §6  What the fixtures decline to answer, which is the whole reason they exist.
+#
+# ⭐⭐ REPORTS ABOUT THE WORLD MUST NOT COUNT STIPULATIONS, AND THIS IS THE OTHER HALF OF THAT
+# RULE. `rules.sql` composes reports/absences_in_the_corpus.sqlc and correctly does not compose
+# this one: a fixture asserting independence on purpose would answer "has anybody tested the
+# assumption?" with a yes nobody earned. But the fixture census is still worth reading -- it is
+# just not a finding, so it belongs in an observation and not in a report of record.
+#
+# ⛔ IT HAD NO CALLER UNTIL NOW. The relation composed, emitted, and was read by nothing, which
+# reads from the outside exactly like a relation that does not exist.
+-- reports/absences_in_the_fixtures.sqlc, at last given a caller.
+SELECT a.question AS "question!", a.reason::text AS "reason!", a.times AS "times!"
+FROM (
+    :compose(reports/absences_in_the_fixtures.sqlc)
+) a
+ORDER BY a.times DESC, a.question

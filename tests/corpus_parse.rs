@@ -16,7 +16,8 @@ use std::fs;
 use process_modulus::asrt::CompositionType;
 use process_modulus::pm;
 use process_modulus::pm::{
-    AbsenceReasonType, ConstraintOriginType, FitType, HolderKindType, NarrowingKindType,
+    AbsenceReasonType, ClaimAbsenceReasonType, ConstraintOriginType, FitType, HolderKindType,
+    NarrowingKindType,
     OperationTypeContent, ProcessModulusElementType, StatedBorrowedTermType, StatedClaimType,
     StatedConstraintOriginType, StatedDivisibilityType, StatedFitType, StatedHolderType,
     StatedLumpyQuantumType, StatedNarrowingType, StatedRemainderType,
@@ -268,7 +269,7 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
         };
         assert_eq!(
             share.reason,
-            AbsenceReasonType::Unmeasured,
+            ClaimAbsenceReasonType::Unmeasured,
             "`unmeasured` is the claim on the `{:?}` share. `none` would assert somebody \
              looked and found zero",
             h.kind
@@ -280,7 +281,7 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
     };
     assert_eq!(
         q.reason,
-        AbsenceReasonType::Derived,
+        ClaimAbsenceReasonType::Derived,
         "the receiver computes it; a stored copy can disagree with its own inputs"
     );
 }
@@ -317,7 +318,7 @@ fn an_unserved_excess_splits_across_two_holders_that_sum_to_the_magnitude() {
         "the ones who never arrived"
     );
 
-    let (dl, dm, dh) = bounds(&l.demand, "capability demand");
+    let (dl, dm, dh) = bounds(&l.demand.amount, "capability demand");
     let (nl, nm, nh) = bounds(&l.supply.nameplate.amount, "capability nameplate");
 
     // ⚠️ Valid only because this fit is DETERMINATE: the whole demand range sits above
@@ -363,12 +364,15 @@ fn a_continuous_supply_files_a_remainder_of_none() {
     let Some(q) = continuous(l) else {
         panic!("object storage is bought continuously in this example, and states so");
     };
-    let StatedClaimType::Absent(premium) = &q.premium else {
-        panic!("the premium should be stated");
+    // ⭐ THE ZERO PREMIUM IS THE COUNTER-EXAMPLE, AND IT IS A CLAIM. `Continuous` reads
+    // above 0 / at 0 / below 0, and the middle used to be spelled `absent reason="none"`
+    // while the ends were claims -- a three-point scale nobody could compare as arithmetic.
+    let StatedClaimType::Claim(premium) = &q.premium else {
+        panic!("the premium should be stated, and a zero premium is a claim of zero");
     };
     assert_eq!(
-        premium.reason,
-        AbsenceReasonType::None,
+        (premium.low, premium.most_likely, premium.high),
+        (0.0, 0.0, 0.0),
         "a zero premium is the counter-example; `unmeasured` would only be a gap"
     );
 
@@ -670,7 +674,7 @@ fn a_capacity_slack_can_be_left_unmeasured_instead_of_guessed() {
     let StatedClaimType::Absent(a) = &l.supply.nameplate.capacity_slack else {
         panic!("this example has not established how far this supply can run above rating");
     };
-    assert_eq!(a.reason, AbsenceReasonType::Unmeasured);
+    assert_eq!(a.reason, ClaimAbsenceReasonType::Unmeasured);
 }
 
 /// S-3 and S-7, which turned out to be one repair. Three parties that used to
@@ -681,7 +685,7 @@ fn provenance_separates_the_three_parties_and_carries_standing() {
     let doc = load("unstated.xml");
     let l = layer(&doc, "margin-ratio");
 
-    let StatedClaimType::Claim(c) = &l.demand else {
+    let StatedClaimType::Claim(c) = &l.demand.amount else {
         panic!("this example states its demand");
     };
     let p = c
@@ -721,7 +725,7 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
     let doc = load("unstated.xml");
     let l = layer(&doc, "margin-ratio");
 
-    let StatedClaimType::Claim(c) = &l.demand else {
+    let StatedClaimType::Claim(c) = &l.demand.amount else {
         panic!("this example states its demand");
     };
     let StatedConstraintOriginType::Origin(o) = &c.bound_origin else {
@@ -865,7 +869,7 @@ fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
     let mut checked = 0;
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
-            let (Some((_, _, _, du)), Some((_, _, _, qu))) = (stated(&l.demand), quantum(l)) else {
+            let (Some((_, _, _, du)), Some((_, _, _, qu))) = (stated(&l.demand.amount), quantum(l)) else {
                 continue;
             };
             assert_eq!(
@@ -921,7 +925,7 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
 
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
-            let (Some((dl, dm, dh, _)), Some((ql, qm, qh, _))) = (stated(&l.demand), quantum(l))
+            let (Some((dl, dm, dh, _)), Some((ql, qm, qh, _))) = (stated(&l.demand.amount), quantum(l))
             else {
                 continue;
             };
@@ -1001,6 +1005,19 @@ fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
 
 /// ⛔⛔⛔ A WINDOW IS A NOTE ON THE UNIT'S DENOMINATOR, SO THE UNIT MUST HAVE ONE.
 ///
+/// What a claim files under its line, in words, for a failure message.
+///
+/// ⭐ THE THREE ARMS ARE THREE DIFFERENT ANSWERS AND ONLY ONE OF THEM IS A CYCLE. `each` is a
+/// denominator that exists and is not a period, `GPU-hour per GPU`, which is precisely the
+/// distinction a string test over the unit token cannot make.
+fn denominator_says(d: &pm::StatedDenominatorType) -> String {
+    match d {
+        pm::StatedDenominatorType::Period(p) => format!("the period `{p}`"),
+        pm::StatedDenominatorType::Each(e) => format!("`each {e}`, which is not a cycle"),
+        pm::StatedDenominatorType::Absent(a) => format!("no denominator ({:?})", a.reason),
+    }
+}
+
 /// The denominator supplies the period, the window supplies the live part of it, and the ratio
 /// is the duty fraction — `3 hours` against `2160 muffins per day` is 3h/1day. Which makes the
 /// denominator rule its precondition rather than a separate convention: the denominator must
@@ -1012,10 +1029,13 @@ fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
 /// than under-used: of every nameplate unit in this corpus only `shifts per week`, `turnos por
 /// semana` and `launches per quarter` have a denominator at all.
 ///
-/// ⚠️ THE CHECK IS A STRING TEST OVER FREE TEXT AND SHOULD BE READ AS ONE. A unit is an
-/// `xs:token` and nothing in the model distinguishes a rate from a stock, so this looks for a
-/// `per`/`por` token and would miss `muffins/day` or an unrecognised language. It catches the
-/// mistake that is actually available — a window filed against `people` — and not the general case.
+/// ✅ IT WAS A STRING TEST AND THE MODEL ANSWERS IT NOW. The caveat here read "a unit is an
+/// `xs:token` and nothing in the model distinguishes a rate from a stock", which was true when
+/// it was written and stopped being true with `pm:StatedDenominator`. Reading the token for a
+/// `per`/`por` word is the `LIKE '% per %'` the SQL side removed, still running: it would miss
+/// `muffins/day`, miss a third language, and count `GPU-hour per GPU` as a period when the arm
+/// that document files is `each`, explicitly not a cycle. ⛔ The schema forbids the read in as
+/// many words: "a unit is an `xs:token`; nothing may read inside it".
 #[test]
 fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
     let mut checked = 0;
@@ -1030,13 +1050,14 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
                     l.name
                 );
             };
-            let unit = &amount.unit;
             assert!(
-                unit.split_whitespace().any(|w| w == "per" || w == "por"),
-                "{name} `{}`: a window is filed against a nameplate in `{unit}`, which names no \
-                 period. A window is the live PART of the unit's denominator, so a unit without \
-                 one gives it nothing to be a fraction of — a stock has no cycle to be live in",
-                l.name
+                matches!(&amount.denominator, pm::StatedDenominatorType::Period(_)),
+                "{name} `{}`: a window is filed against a nameplate in `{}`, which files {}. A \
+                 window is the live PART of a period, so a unit with no period under the line \
+                 gives it nothing to be a fraction of, a stock has no cycle to be live in",
+                l.name,
+                amount.unit,
+                denominator_says(&amount.denominator),
             );
             checked += 1;
         }
@@ -1263,29 +1284,44 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
                 continue;
             };
             // Only an interference side draws on a slack; clearance is spare, not overflow.
-            // ⭐ `transition` is admitted because part of its range IS interference — the
-            // bound applies to that part, and a `transition` layer excluded here would be a
-            // layer whose overflow nothing bounds.
-            if !matches!(
-                &r.sign,
-                StatedFitType::Fit(FitType::Interference | FitType::Transition)
-            ) {
+            // ⛔ `transition` IS EXCLUDED, AND THE ARGUMENT FOR ADMITTING IT WAS ANSWERABLE.
+            // It read: a transition layer excluded here is a layer whose overflow nothing
+            // bounds. Its overflow is bounded, `exposure_unaccounted` derives the exposure
+            // from the layer's own demand and nameplate and bounds it against the unserved
+            // shares, which is the comparison a transition admits. What this rule reads is
+            // the holder shares, and under a transition those carry the CLEARANCE magnitude:
+            // `|n - d|` is the larger side and the one a filer can count. Bounding it by the
+            // absorbing slack compares opposite edges of one buffer.
+            if !matches!(&r.sign, StatedFitType::Fit(FitType::Interference)) {
                 continue;
             }
             let Some((_, slack, _, _)) = absorber_slack(l) else {
                 continue; // unmeasured or none-with-no-figure: the check SUSPENDS
             };
 
-            let borne: f64 = r
+            // ⛔ THE UNSERVED PAIR IS EXEMPT, NOT `unrealised` ALONE. Both name demand
+            // nobody met, overflow, not a load the buffer held, and `Fit` calls the same
+            // pair a violation under a clearance. Exempting one of the two summed a
+            // customer's borne degradation into the buffer's load.
+            let absorbed: Vec<f64> = r
                 .holder
                 .iter()
                 .filter_map(|h| match h {
-                    StatedHolderType::Holder(h) if h.kind != HolderKindType::Unrealised => {
+                    StatedHolderType::Holder(h)
+                        if !matches!(
+                            h.kind,
+                            HolderKindType::Unrealised | HolderKindType::Customer
+                        ) =>
+                    {
                         stated(&h.share).map(|(_, ml, _, _)| ml)
                     }
                     _ => None,
                 })
-                .sum();
+                .collect();
+            if absorbed.is_empty() {
+                continue; // nothing was attributed to the buffer: no bound to test
+            }
+            let borne: f64 = absorbed.iter().sum();
 
             assert!(
                 borne <= slack + 1e-9,
@@ -1317,7 +1353,7 @@ type Range = (f64, f64, f64);
 
 /// The demand and nameplate ranges of a layer, where both are stated.
 fn demand_and_nameplate(l: &pm::LayerType) -> Option<(Range, Range)> {
-    let (dl, dm, dh, _) = stated(&l.demand)?;
+    let (dl, dm, dh, _) = stated(&l.demand.amount)?;
     let (nl, nm, nh, _) = stated(&l.supply.nameplate.amount)?;
     Some(((dl, dm, dh), (nl, nm, nh)))
 }
@@ -1349,11 +1385,23 @@ fn exposure(d: Range, n: Range) -> f64 {
 }
 
 /// True where somebody looked at how far this supply can run above its rating and found zero.
+/// ⭐⭐ A MEASURED ZERO, HOWEVER IT IS SPELLED. This read only the absence arm, and every
+/// measured-zero capacity slack in the corpus is now a stated `[0, 0, 0]`, so it silently
+/// stopped finding any, and the assertion downstream fell to zero examined rather than
+/// failing on a document. `entries/stated_zero_capacity.sqlc` had already made this
+/// decision on the SQL side and unions both spellings; this is the same union.
+///
+/// ⛔ A SIZED SLACK IS NOT AUTOMATICALLY HEADROOM. Sized AT ZERO is the strongest statement
+/// the element can make, the supply cannot be run hot at any price, and the `boundOrigin`
+/// says by whose authority: a shelf life, a reserved block, or somebody's own ceiling.
+///
+/// ✅ ONE SPELLING NOW. This used to union a claim of zero with `absent reason="none"`,
+/// because both were legal and filers reached for either. `pm:ClaimAbsence` has no `none`.
 fn cannot_run_hot(l: &pm::LayerType) -> bool {
-    matches!(
-        &l.supply.nameplate.capacity_slack,
-        StatedClaimType::Absent(a) if a.reason == AbsenceReasonType::None
-    )
+    match &l.supply.nameplate.capacity_slack {
+        StatedClaimType::Absent(_) => false,
+        StatedClaimType::Claim(c) => c.low == 0.0 && c.most_likely == 0.0 && c.high == 0.0,
+    }
 }
 
 /// ⛔⛔⛔ THE FIT IS A COMPARISON OF TWO RANGES, AND IT WAS A COMPARISON OF TWO POINTS UNTIL
@@ -1514,12 +1562,11 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
                 continue;
             }
 
-            // A slack that is `unmeasured` suspends the check: the ceiling is unknown, not
-            // zero. `none` is a MEASURED zero and contributes nothing, which is the case
-            // that makes the inequality bite.
+            // An ABSENT slack suspends the check: the ceiling is unknown, not zero. A
+            // slack STATED at zero contributes nothing, which is the case that makes the
+            // inequality bite, and it now has only the one spelling.
             let absorbable = match &l.supply.nameplate.capacity_slack {
                 StatedClaimType::Claim(c) => c.high,
-                StatedClaimType::Absent(a) if a.reason == AbsenceReasonType::None => 0.0,
                 StatedClaimType::Absent(_) => continue,
             };
 
@@ -1594,7 +1641,7 @@ fn the_corpus_exercises_every_narrowing_kind() {
     for (_, doc) in corpus() {
         for l in &doc.stack.layer {
             for c in [
-                &l.demand,
+                &l.demand.amount,
                 &l.time_slack,
                 &l.supply.nameplate.amount,
                 &l.supply.nameplate.capacity_slack,
@@ -1632,8 +1679,9 @@ fn the_corpus_exercises_every_narrowing_kind() {
     );
     assert!(
         not_applicable > 0,
-        "no claim files `notApplicable`, so the point-value case — 59 of the corpus's 124 \
-         claims — is unrepresented in what this test can see"
+        "no claim files `notApplicable`, so the point-value case, which \
+         `assets/sql/reports/absences_in_the_corpus.sql` counts and which is most of the \
+         corpus, is unrepresented in what this test can see"
     );
     assert!(
         unmeasured > 0,
@@ -1745,15 +1793,21 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 l.name
             );
 
-            // `notApplicable` is a claim about the UNIT, and the unit is right there.
+            // `notApplicable` is a claim about the UNIT, and what sits under its line is
+            // filed one element over. ✅ This read `unit.contains(" per ")`, which is the
+            // removed `LIKE` again and which cannot tell a PERIOD from a denominator that
+            // merely exists, `GPU-hour per GPU` files `each`, and a duty cycle is still
+            // malformed there.
             if let Some(a) = absence {
                 if a.reason == AbsenceReasonType::NotApplicable {
-                    if let Some((_, _, _, unit)) = stated(&l.supply.nameplate.amount) {
+                    if let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount {
                         assert!(
-                            !unit.contains(" per ") && !unit.contains(" por "),
+                            !matches!(&amount.denominator, pm::StatedDenominatorType::Period(_)),
                             "{name} `{}`: the window question is malformed only where the unit \
-                             has no denominator, and `{unit}` has one",
-                            l.name
+                             has no period under the line, and `{}` files {}",
+                            l.name,
+                            amount.unit,
+                            denominator_says(&amount.denominator),
                         );
                     }
                 }
@@ -1770,7 +1824,7 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 if let StatedClaimType::Absent(a) = &l.time_slack {
                     assert_ne!(
                         a.reason,
-                        AbsenceReasonType::Derived,
+                        ClaimAbsenceReasonType::Derived,
                         "{name} `{}`: the supply is intermittent, or nobody has said it is not, \
                          so the spare is not spread evenly across the denominator and a time \
                          slack cannot be computed from the clearance",
@@ -1797,8 +1851,9 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
 }
 
 /// ⭐⭐⭐ WHO OWNS THE EDGE OF THIS RANGE. `Claim/boundOrigin` was an optional bare
-/// enumeration and it was filed ONCE IN 124 CLAIMS — which `Nameplate/capacitySlack`'s own
-/// annotation complains about, three types away, while asking for exactly this field.
+/// enumeration and it was filed ONCE IN THE WHOLE CORPUS, which `Nameplate/capacitySlack`'s
+/// own annotation complains about, three types away, while asking for exactly this field.
+/// `assets/sql/reports/bound_ownership.sql` prints what the required field gets instead.
 ///
 /// ⛔ AN OPTIONAL FIELD NOBODY FILLS IS NOT A WEAK SIGNAL, IT IS AN ABSENT ONE, and its blank
 /// could not separate "nobody has asked" from "NOTHING sets this bound — the range is where
@@ -1846,7 +1901,7 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
 
             // ⭐ `amount` sits beside `amountOrigin`, and a lumpy `size` beside its own
             // `origin`; `demand` and a `draw` sit beside nothing at all.
-            check("demand", &l.demand, false);
+            check("demand", &l.demand.amount, false);
             check("timeSlack", &l.time_slack, false);
             check("nameplate", &l.supply.nameplate.amount, true);
             check("capacitySlack", &l.supply.nameplate.capacity_slack, false);

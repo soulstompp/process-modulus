@@ -371,7 +371,7 @@
       single point.
 
       WHICH SUPPLIES MAY SIT ON THE INTERFERENCE SIDE AT ALL is a property of the supply. A
-      supply whose `capacitySlack` is `absent reason="none"` — somebody looked, and there is
+      supply whose `capacitySlack` is a stated `[0, 0, 0]`, somebody looked, and there is
       no room above the rating — CANNOT have absorbed an interference fit, so EVERY ONE of
       its holders must be `customer` or `unrealised`, and a document saying otherwise is
       internally inconsistent. A STATED SLACK BOUNDS RATHER THAN FORBIDS: holders may sit on
@@ -385,7 +385,7 @@
       fully drawn is exactly that. What cannot happen is for the interference side to have
       been absorbed by a supply with no room above its rating:
 
-        capacitySlack `absent reason="none"`, `sign` = transition, exposure > 0
+        capacitySlack stated as `[0, 0, 0]`, `sign` = transition, exposure > 0
           ==> AT LEAST ONE holder of kind `customer` or `unrealised`, the two that bear
               demand nobody served
 
@@ -512,7 +512,7 @@
       nenhum isolado.
 
       QUE OFERTAS PODEM SEQUER ESTAR DO LADO DA INTERFERÊNCIA é uma propriedade da oferta. Uma oferta
-      cujo `capacitySlack` seja `absent reason="none"` — alguém foi ver, e não há espaço acima do
+      cujo `capacitySlack` seja um `[0, 0, 0]` declarado, alguém foi ver, e não há espaço acima do
       valor nominal — NÃO PODE ter absorvido um ajustamento de interferência, portanto TODOS os seus
       detentores têm de ser `customer` ou `unrealised`, e um documento que diga o contrário é
       internamente incoerente. UMA MARGEM DECLARADA LIMITA EM VEZ DE PROIBIR: os detentores podem
@@ -526,7 +526,7 @@
       exatamente isso. O que não pode acontecer é o lado da interferência ter sido absorvido por uma
       oferta sem espaço acima do seu valor nominal:
 
-        capacitySlack `absent reason="none"`, `sign` = transition, exposição > 0
+        capacitySlack declarado como `[0, 0, 0]`, `sign` = transition, exposição > 0
           ==> PELO MENOS UM detentor de género `customer` ou `unrealised`, os dois que suportam
               procura que ninguém serviu
 
@@ -1164,6 +1164,131 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:simpleType name="ClaimAbsenceReason">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      Why a `Claim` has no value in this position. Three members: `AbsenceReason` without
+      `none`.
+
+      WHAT IT OBLIGES
+
+      `AbsenceReason` glosses `none` in two clauses -- "somebody looked and THE QUANTITY IS
+      ZERO, or THE THING DOES NOT HAPPEN" -- and only the second of those is an absence. A
+      quantity of zero has a unit, an observer, an author for its exactness and a
+      provenance, and the absence arm has a home for none of the four. So it is a claim, and
+      it is filed as one: [0, 0, 0] in the unit it is zero in.
+
+      ⭐ THE SCALE IS THE ARGUMENT. `Continuity/premium` reads above 0 / at 0 / below 0.
+      Spelling the middle as an absence made a three-point scale out of two claims and a
+      category error, and a receiver could not compare them as arithmetic. The same holds of
+      every buffer: a slack of zero is the SMALLEST SLACK, not the absence of one, and the
+      three `boundOrigin` values say which of the three ways it came to be zero.
+
+      WHAT IT REFUSES
+
+      ⛔ `none`, which is the whole reason this type exists. It stays correct on every
+      wrapper whose value is not a quantity -- `boundOrigin` (nothing sets this bound),
+      `window` (the duty fraction is one), `couplings` (somebody looked for couplings and
+      found none) -- and those keep `AbsenceReason` whole.
+
+      ⛔ Leaving it to a rule. It WAS a rule: `zero_stated_as_a_claim` examined 120 slacks,
+      and a relation existed only to name the violations. A narrower simpleType reaches it in
+      the validator instead, and both were deleted rather than kept as a second opinion.
+
+      SEE ALSO
+
+      `AbsenceReason` for the four, and for what `none` still means elsewhere. `Claim` for
+      what a value costs to state. `ClaimAbsence` for the shape that carries this.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Porque é que uma `Claim` não tem valor nesta posição. Três membros: o `AbsenceReason`
+      sem o `none`.
+
+      O QUE OBRIGA
+
+      O `AbsenceReason` explica o `none` em duas orações -- "alguém foi ver e A QUANTIDADE É
+      ZERO, ou A COISA NÃO ACONTECE" -- e só a segunda é uma ausência. Uma quantidade de zero
+      tem unidade, quem observou, um autor para a sua exatidão e proveniência, e o ramo da
+      ausência não tem casa para nenhuma das quatro. Portanto é uma afirmação, e é declarada
+      como tal: [0, 0, 0] na unidade em que é zero.
+
+      ⭐ A ESCALA É O ARGUMENTO. A `Continuity/premium` lê-se acima de 0 / em 0 / abaixo de 0.
+      Escrever o meio como ausência fazia de uma escala de três pontos duas afirmações mais um
+      erro de categoria, e quem recebe não as podia comparar como aritmética. O mesmo vale
+      para todos os amortecedores: uma folga de zero é a MENOR FOLGA e não a falta de uma, e os
+      três valores do `boundOrigin` dizem por qual das três vias ela veio a ser zero.
+
+      O QUE RECUSA
+
+      ⛔ O `none`, que é a razão inteira de este tipo existir. Continua correto em todos os
+      invólucros cujo valor não é uma quantidade -- o `boundOrigin` (nada fixa este limite), a
+      `window` (a fração de serviço é um), os `couplings` (alguém procurou acoplamentos e não
+      encontrou nenhum) -- e esses mantêm o `AbsenceReason` inteiro.
+
+      ⛔ Deixá-lo a uma regra. FOI uma regra: o `zero_stated_as_a_claim` examinava 120 folgas,
+      e existia uma relação só para nomear as violações. Um simpleType mais estreito alcança-o
+      no validador, e ambos foram apagados em vez de guardados como segunda opinião.
+
+      VER TAMBÉM
+
+      O `AbsenceReason` para os quatro, e para o que o `none` ainda significa noutros sítios. A
+      `Claim` para o que custa declarar um valor. A `ClaimAbsence` para a forma que carrega isto.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="unmeasured"/>
+      <xs:enumeration value="notApplicable"/>
+      <xs:enumeration value="derived"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="ClaimAbsence">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      `Absence` for a position that would hold a quantity. Same shape, narrower reason.
+
+      WHAT IT OBLIGES
+
+      The narrowing is the only difference and it is carried by `ClaimAbsenceReason`, so
+      everything `Absence` says about the note, the provenance and the date holds here
+      unchanged. A reader comparing the two types should find one line between them.
+
+      SEE ALSO
+
+      `Absence` for the shape. `ClaimAbsenceReason` for what it will not say. `StatedClaim`
+      for the choice this sits in.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      A `Absence` para uma posição que carregaria uma quantidade. A mesma forma, com a razão
+      mais estreita.
+
+      O QUE OBRIGA
+
+      O estreitamento é a única diferença e vem do `ClaimAbsenceReason`, portanto tudo o que a
+      `Absence` diz sobre a nota, a proveniência e a data vale aqui sem alteração. Quem
+      compare os dois tipos deve encontrar uma linha entre eles.
+
+      VER TAMBÉM
+
+      A `Absence` para a forma. O `ClaimAbsenceReason` para o que ela não dirá. O `StatedClaim`
+      para a escolha onde isto se insere.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="reason"     type="pm:ClaimAbsenceReason"/>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
   <!-- ==================================================================
        STATED: a value, or a typed reason there is none. Never silence.
 
@@ -1222,7 +1347,7 @@
   <xs:complexType name="StatedClaim">
     <xs:choice>
       <xs:element name="claim"  type="pm:Claim"/>
-      <xs:element name="absent" type="pm:Absence"/>
+      <xs:element name="absent" type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -1636,6 +1761,207 @@
     <xs:choice>
       <xs:element name="uri"    type="xs:anyURI"/>
       <xs:element name="absent" type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="EvidenceKind">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      What a document is evidence FOR. Two values, and they are NOT two kinds of document: a
+      stipulation is still a filing or a composition, and `processModulus` is the shape of
+      both.
+
+        observation  somebody looked at a real system and wrote down what they saw. It may be
+                     cited as evidence about that system.
+        stipulation  nothing here was observed. The document exists so that a state this
+                     schema admits is known to validate and to be handled, and it must never
+                     be cited as evidence about anything.
+
+      WHAT IT REFUSES
+
+      ⛔ A third value for "a claim about a corpus". `asrt:coverage` and `asrt:run` are
+      exactly that, and it is their ROOT ELEMENT that says so. A value here would be
+      determined entirely by which element the document is, which is two facts in one slot ,
+      the flattening `Provenance` and `Holder` both reject. The two axes are independent, and
+      `assets/fixtures/every-claimed.xml` shows it from the other side: a coverage document
+      that is a stipulation.
+
+      SEE ALSO
+
+      `StatedEvidence` for the wrapper and the one absence it admits. `AbsenceReason` for the
+      four reasons, three of which do not reach this question.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      **Português.**
+
+      O QUE É
+
+      Aquilo de que um documento é prova. Dois valores, e NÃO são dois tipos de documento: uma
+      estipulação continua a ser uma declaração ou uma composição, e o `processModulus` é a forma de
+      ambas.
+
+        observation  alguém olhou para um sistema real e escreveu o que viu. Pode ser citado como
+                     prova acerca desse sistema.
+        stipulation  nada aqui foi observado. O documento existe para que um estado que este esquema
+                     admite se saiba validar e tratar, e nunca pode ser citado como prova acerca de
+                     coisa nenhuma.
+
+      O QUE RECUSA
+
+      ⛔ Um terceiro valor para «uma afirmação sobre um corpus». A `asrt:coverage` e o `asrt:run` são
+      exatamente isso, e é o seu ELEMENTO DE RAIZ que o diz. Um valor aqui seria determinado
+      inteiramente por qual elemento o documento é, o que são dois factos numa só casa, o
+      achatamento que a `Provenance` e o `Holder` recusam ambos. Os dois eixos são independentes, e o
+      `assets/fixtures/every-claimed.xml` mostra-o do outro lado: um documento de cobertura que é uma
+      estipulação.
+
+      VER TAMBÉM
+
+      A `StatedEvidence` para o invólucro e a única ausência que admite. A `AbsenceReason` para as
+      quatro razões, três das quais não alcançam esta pergunta.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="observation"/>
+      <xs:enumeration value="stipulation"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="StatedEvidence">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A document saying what it is evidence for, or the typed reason it does not say.
+
+      IT IS A FACT ABOUT THE WHOLE DOCUMENT, AND IT IS THE SECOND ONE THIS SCHEMA CARRIES.
+      Every value inside a filing states its own `Provenance` and its own absence; the
+      document holding them said only WHICH document it is. So a receiver holding a
+      stipulation and a filing could not tell them apart, and that is the difference deciding
+      whether a number may be quoted at all.
+
+      WHAT IT CONTAINS
+
+        attests                     one of the two values
+        absent reason="unmeasured"  the document does not say. Every document written before
+                                    this element existed is in this state, and so is one
+                                    republished by somebody who did not write it
+
+      WHAT IT OBLIGES
+
+      THREE STATES, THREE HANDLINGS, which is why the absence earns its place rather than
+      being tidied into one of the values. `observation` is countable as evidence.
+      `stipulation` is what the rules are run against, that is what a stipulation is for.
+      A document that says neither is in NEITHER SET: visible to a roster of every document
+      and to no finding, which is the honest treatment of a document whose standing nobody
+      has stated.
+
+      WHAT IT REFUSES
+
+      ⛔ `absent reason="none"`. "Somebody looked and there is nothing to report" does not
+      parse here. A document that exists was written by somebody who knew whether they were
+      observing or stipulating, and the knowledge is not external the way a `notation` is.
+
+      ⛔ `absent reason="notApplicable"`. There is no document the question fails to reach.
+      Every document either reports something somebody saw, or it does not.
+
+      ⛔ `absent reason="derived"`. Nothing in the model implies a document's standing.
+      Admitting the reason would invite a receiver to infer evidence FROM CONTENT, which is
+      the inference this element exists to stop.
+
+      ⛔ Being optional. An omission and `unmeasured` would render identically, and the entire
+      cost of this element is paid to tell a silence from an answer.
+
+      ⛔ Appearing on `asrt:Composition`. A composition embeds a whole `processModulus`, and
+      that filing declares this exactly as it already declares the composition's `notation`.
+      Two declarations could disagree and no validator could see it.
+
+      WHERE IT IS CHECKED
+
+      `assets/sql/ingest.sql` reads it into `pm.filing.evidence`; `scope/corpus.sqlc` and
+      `scope/fixtures.sqlc` are the two sets it splits, and
+      `assets/sql/epistemics/documents.sql` shows it beside everything else a document says
+      about itself.
+
+      ⛔ NOT REACHABLE BY A VALIDATOR. Nothing inside a document can be checked against its
+      own claim to have been observed. `witness` and `Provenance/standing` are what carry
+      that weight, one level down and per fact.
+
+      SEE ALSO
+
+      `EvidenceKind` for the two values. `StatedNotation` for the other thing a document says
+      about itself. `Absence` for the asserter argument. `assets/fixtures/README.md` for why
+      this distinction is the whole reason that directory exists.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      **Português.**
+
+      O QUE É
+
+      Um documento a dizer de que é prova, ou a razão tipificada por que não o diz.
+
+      É UM FACTO SOBRE O DOCUMENTO INTEIRO, E É O SEGUNDO QUE ESTE ESQUEMA TRANSPORTA. Cada valor
+      dentro de uma declaração indica a sua própria `Provenance` e a sua própria ausência; o
+      documento que os contém dizia apenas QUE documento é. Portanto quem recebesse uma estipulação e
+      uma declaração não as conseguia distinguir, e essa é a diferença que decide se um número pode
+      sequer ser citado.
+
+      O QUE CONTÉM
+
+        attests                     um dos dois valores
+        absent reason="unmeasured"  o documento não o diz. Todos os documentos escritos antes de este
+                                    elemento existir estão neste estado, e também o está um
+                                    republicado por quem não o escreveu
+
+      O QUE OBRIGA
+
+      TRÊS ESTADOS, TRÊS TRATAMENTOS, e é por isso que a ausência merece o seu lugar em vez de ser
+      arrumada dentro de um dos valores. A `observation` conta-se como prova. A `stipulation` é
+      aquilo contra o qual as regras correm, é para isso que serve uma estipulação. Um documento que
+      não diz nem uma nem outra não está EM NENHUM DOS CONJUNTOS: visível numa lista de todos os
+      documentos e em nenhum achado, que é o tratamento honesto de um documento cuja legitimidade
+      ninguém declarou.
+
+      O QUE RECUSA
+
+      ⛔ `absent reason="none"`. «Alguém foi ver e não há nada a relatar» não se lê aqui. Um documento
+      que existe foi escrito por alguém que sabia se estava a observar ou a estipular, e esse saber
+      não é externo como o de uma `notation` é.
+
+      ⛔ `absent reason="notApplicable"`. Não há documento que a pergunta não alcance. Ou o documento
+      relata algo que alguém viu, ou não relata.
+
+      ⛔ `absent reason="derived"`. Nada no modelo implica a legitimidade de um documento. Admitir a
+      razão convidaria quem recebe a inferir a prova A PARTIR DO CONTEÚDO, que é precisamente a
+      inferência que este elemento existe para travar.
+
+      ⛔ Ser opcional. Uma omissão e o `unmeasured` ficariam iguais, e todo o custo deste elemento se
+      paga para distinguir um silêncio de uma resposta.
+
+      ⛔ Aparecer na `asrt:Composition`. Uma composição embute um `processModulus` inteiro, e essa
+      declaração indica isto tal como já indica a `notation` da composição. Duas declarações podiam
+      discordar e nenhum validador o veria.
+
+      ONDE É VERIFICADO
+
+      O `assets/sql/ingest.sql` lê-o para `pm.filing.evidence`; o `scope/corpus.sqlc` e o
+      `scope/fixtures.sqlc` são os dois conjuntos que separa, e o
+      `assets/sql/epistemics/documents.sql` mostra-o ao lado de tudo o resto que um documento diz
+      sobre si próprio.
+
+      ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR. Nada dentro de um documento pode ser confrontado com a sua
+      própria afirmação de ter sido observado. A `witness` e a `Provenance/standing` é que carregam
+      esse peso, um nível abaixo e facto a facto.
+
+      VER TAMBÉM
+
+      A `EvidenceKind` para os dois valores. A `StatedNotation` para a outra coisa que um documento
+      diz sobre si próprio. A `Absence` para o argumento de quem afirma. O
+      `assets/fixtures/README.md` para a razão por que esta distinção é o motivo inteiro de aquela
+      pasta existir.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="attests" type="pm:EvidenceKind"/>
+      <xs:element name="absent"  type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -2267,9 +2593,10 @@
 
       WHAT IT OBLIGES
 
-      ⚠️ THE COST IS REAL AND IT IS PAID BY EVERY SENDER. 124 claims in `assets/corpus/` each
-      carry one, of which 59 are `notApplicable` because they are point values. That is the
-      trade: a mechanical burden on every filing, in exchange for a fact that is otherwise
+      ⚠️ THE COST IS REAL AND IT IS PAID BY EVERY SENDER. Every claim in `assets/corpus/`
+      carries one, and the ones that read `notApplicable` are point values with nothing to
+      tighten. `assets/sql/reports/absences_in_the_corpus.sql` counts them by reason. That is
+      the trade: a mechanical burden on every filing, in exchange for a fact that is otherwise
       unstatable.
 
       WHAT IT REFUSES
@@ -2314,10 +2641,11 @@
 
       O QUE OBRIGA
 
-      ⚠️ O CUSTO É REAL E É PAGO POR TODOS OS QUE DECLARAM. As 124 afirmações do `assets/corpus/`
-      transportam cada uma a sua, das quais 59 são `notApplicable` por serem valores pontuais. É esse
-      o negócio: um encargo mecânico em todas as declarações, a troco de um facto que de outro modo
-      seria indeclarável.
+      ⚠️ O CUSTO É REAL E É PAGO POR TODOS OS QUE DECLARAM. Todas as afirmações do `assets/corpus/`
+      transportam a sua, e as que dizem `notApplicable` são valores pontuais sem nada para estreitar.
+      O `assets/sql/reports/absences_in_the_corpus.sql` conta-as por motivo. É esse o negócio: um
+      encargo mecânico em todas as declarações, a troco de um facto que de outro modo seria
+      indeclarável.
 
       O QUE RECUSA
 
@@ -2340,6 +2668,303 @@
     <xs:choice>
       <xs:element name="narrowing" type="pm:Narrowing"/>
       <xs:element name="absent"    type="pm:Absence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Demand">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      What is asked of a layer, and how long the asking survives being unanswered.
+
+      ⭐⭐⭐ IT IS THE HALF OF THE TIME AXIS `Divisibility` FILED AS MISSING. That element sits
+      on `Nameplate`, so its `window` is a fact about SUPPLY, and its own annotation says so in
+      as many words: "the mirror, demand with a lifetime, an SLA saying how long a queued
+      order stays an order, is a fact about DEMAND, and `Layer/timeSlack` records where that
+      has to go if demand ever gains structure. Half the axis, filed as half rather than
+      pretended whole." This is demand gaining structure.
+
+      WHAT IT CONTAINS
+
+        amount    the three-point claim this element used to BE. `Layer/demand` was a bare
+                  `StatedClaim`; it is now this wrapper, and the claim moved down one level
+                  without changing
+        patience  how long a queued order stays an order. A DURATION -- `10 minutes`,
+                  `2.5 shifts` -- and not a rate
+
+      WHAT IT OBLIGES
+
+      ⭐⭐ THE PATIENCE IS A RANGE, AND FILING THE SLA INSTEAD IS THE MISTAKE IT EXISTS TO
+      PREVENT. A shop knows the impatient customer leaves at three minutes and the last at ten,
+      with the mode between; that is a `Claim`, and the shop owner can give all three numbers
+      without instrumenting anything. "Service within five minutes" is not that fact. It is a
+      NEGOTIATED EDGE on it, and `Claim/boundOrigin` is where an edge says who owns it --
+      `contractual` for a term somebody agreed, `intrinsic` for a patience the world sets.
+      Filing the five alone flattens a distribution into its licence.
+
+      ⭐ AND IT MAKES A RENEGING QUEUE STATABLE. A queue with infinite patience is unstable
+      above rho = 1 and a queue that reneges is stable at any rho, because the backlog grows
+      until the wait reaches the patience and demand then departs at the rate the excess
+      arrives. `assets/corpus/merge-holding-composition.xml` argues exactly that in a comment,
+      for a layer whose unit is service time so the wait and the queue are one number. That
+      argument had to be written by hand because the patience had nowhere to be filed.
+
+      WHAT IT REFUSES
+
+      ⛔ Being a fourth buffer. The three are `inventory`, `capacity` and `time`, as published,
+      and a patience is not a fourth thing that absorbs variability -- it is the fact that
+      decides how much of the remainder the TIME buffer can hold before demand leaves instead
+      of waiting. `Layer/timeSlack` remains the buffer and this remains a property of demand.
+
+      ⛔ Being expressed in the layer's unit. A slack is quoted in the unit of the shares it
+      bounds, which `slack_unit_mismatch` enforces and should; a patience is a span of time and
+      bounds no shares. Where the layer's unit is service time the two coincide numerically,
+      and that coincidence is a fact about that layer rather than a licence to conflate them.
+
+      ⛔ A zero patience written as `absent reason="none"`. Demand that leaves the moment it is
+      not served has a patience of zero, and a measured zero is a claim: `patience` is a
+      `pm:StatedClaim`, whose absent arm carries `pm:ClaimAbsenceReason`, and that type has no
+      `none`. It is filed as `[0, 0, 0]` in the unit it is zero in. Two spellings of one fact
+      make every query that keys on the absence skip the filers who reached for a number, and
+      it is now the grammar that settles which spelling survives.
+
+      WHERE IT IS CHECKED
+
+      `assets/sql/layers/patience.sql` is the relation. ⛔ NOT REACHABLE BY A VALIDATOR: that
+      the patience is a duration at all. A unit is an `xs:token`, and `pm:StatedDenominator`
+      can say a claim has no period without saying the numerator is time.
+
+      SEE ALSO
+
+      `Divisibility` for the supply half of this axis and the sentence this element answers.
+      `Layer/timeSlack` for the buffer. `Claim/boundOrigin` for the SLA. `Remainder` for what
+      `unserved` means once demand can leave.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      **Português.**
+
+      O QUE É
+
+      O que é pedido a uma camada, e quanto tempo o pedido sobrevive sem resposta.
+
+      ⭐⭐⭐ É A METADE DO EIXO DO TEMPO QUE A `Divisibility` DECLAROU EM FALTA. Esse elemento assenta
+      na `Nameplate`, portanto a sua `window` é um facto sobre a OFERTA, e a sua própria anotação
+      di-lo com todas as letras: «o espelho, a procura com um tempo de vida, um SLA a dizer quanto
+      tempo uma encomenda em fila continua a ser uma encomenda, é um facto sobre a PROCURA, e o
+      `Layer/timeSlack` regista para onde isso tem de ir se a procura vier a ganhar estrutura.
+      Metade do eixo, declarada como metade em vez de fingida inteira.» Isto é a procura a ganhar
+      estrutura.
+
+      O QUE CONTÉM
+
+        amount    a afirmação de três pontos que este elemento ERA. O `Layer/demand` era uma
+                  `StatedClaim` nua; passa a ser este invólucro, e a afirmação desceu um nível sem
+                  mudar
+        patience  quanto tempo uma encomenda em fila continua a ser uma encomenda. Uma DURAÇÃO ,
+                  `10 minutes`, `2.5 shifts`, e não uma taxa
+
+      O QUE OBRIGA
+
+      ⭐⭐ A PACIÊNCIA É UM INTERVALO, E DECLARAR O SLA EM VEZ DELA É O ERRO QUE ISTO EXISTE PARA
+      IMPEDIR. Um café sabe que o cliente impaciente se vai embora aos três minutos e o último aos
+      dez, com a moda pelo meio; isso é uma `Claim`, e quem tem o café dá os três números sem
+      instrumentar nada. «Serviço em cinco minutos» não é esse facto. É um LIMITE NEGOCIADO sobre
+      ele, e o `Claim/boundOrigin` é onde um limite diz de quem é, `contractual` para uma cláusula
+      que alguém acordou, `intrinsic` para uma paciência que o mundo fixa. Declarar só os cinco
+      achata uma distribuição na sua licença.
+
+      ⭐ E TORNA DECLARÁVEL UMA FILA COM DESISTÊNCIAS. Uma fila de paciência infinita é instável
+      acima de rho = 1 e uma fila com desistências é estável a qualquer rho, porque a acumulação
+      cresce até a espera atingir a paciência e a procura passa então a sair ao ritmo a que o
+      excesso chega. O `assets/corpus/merge-holding-composition.xml` argumenta exatamente isso num
+      comentário, para uma camada cuja unidade é tempo de serviço e onde por isso a espera e a fila
+      são um só número. Esse argumento teve de ser escrito à mão porque a paciência não tinha onde
+      ser declarada.
+
+      O QUE RECUSA
+
+      ⛔ Ser um quarto amortecedor. Os três são `inventory`, `capacity` e `time`, como publicados, e
+      uma paciência não é uma quarta coisa que absorve variabilidade, é o facto que decide quanto
+      do resto o amortecedor de TEMPO consegue segurar antes de a procura se ir embora em vez de
+      esperar. O `Layer/timeSlack` continua a ser o amortecedor e isto continua a ser uma
+      propriedade da procura.
+
+      ⛔ Ser expressa na unidade da camada. Uma folga cota-se na unidade das quotas que limita, o que
+      o `slack_unit_mismatch` impõe e deve impor; uma paciência é um intervalo de tempo e não limita
+      quota nenhuma. Onde a unidade da camada é tempo de serviço as duas coincidem numericamente, e
+      essa coincidência é um facto sobre aquela camada e não uma licença para as confundir.
+
+      ⛔ Uma paciência zero escrita como `absent reason="none"`. A procura que se vai embora no
+      momento em que não é servida tem paciência zero, e um zero medido é uma afirmação: a
+      `patience` é uma `pm:StatedClaim`, cujo ramo de ausência carrega o `pm:ClaimAbsenceReason`,
+      e esse tipo não tem `none`. Declara-se `[0, 0, 0]` na unidade em que é zero. Duas grafias de
+      um facto fazem com que todas as consultas que se guiam pela ausência saltem quem declarou um
+      número, e é agora a gramática que decide qual das grafias sobrevive.
+
+      ONDE É VERIFICADO
+
+      O `assets/sql/layers/patience.sql` é a relação. ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR: que a
+      paciência seja sequer uma duração. Uma unidade é um `xs:token`, e a `pm:StatedDenominator`
+      pode dizer que uma afirmação não tem período sem dizer que o numerador é tempo.
+
+      VER TAMBÉM
+
+      A `Divisibility` para a metade da oferta deste eixo e a frase a que este elemento responde. O
+      `Layer/timeSlack` para o amortecedor. O `Claim/boundOrigin` para o SLA. O `Remainder` para o
+      que `unserved` passa a significar quando a procura se pode ir embora.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="amount"   type="pm:StatedClaim"/>
+      <xs:element name="patience" type="pm:StatedClaim"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedDenominator">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      What sits under the line in this claim's unit, or the typed reason nothing does.
+
+      ⭐⭐⭐ IT EXISTS BECAUSE `Claim`'s OWN ANNOTATION NAMED THE DEBT AND NOTHING PAID IT: "a
+      unit is an `xs:token` that says nothing about what cycle the supply runs on. An
+      implementer still owes each; the schema cannot take them from them." The implementer
+      paid it with `LIKE '% per %' OR LIKE '% por %'` over free text, in ONE of the twelve
+      places a `Claim` sits. That reasoning conflated two things: XSD 1.0 genuinely cannot
+      CHECK a denominator against another element, and from that it concluded the schema need
+      not ASK for one. It can ask.
+
+      WHAT IT CONTAINS
+
+        period                      a span of time the supply cycles through -- `week`,
+                                    `day`, `quarter`, `shift`. The duty-cycle question is
+                                    ANSWERABLE, and `Divisibility/window` must not call it
+                                    malformed
+        each                        a countable thing the claim is stated per one of --
+                                    `GPU`, `person`, `order`. There is a denominator and it is
+                                    NOT a cycle, so the duty-cycle question stays malformed
+        absent reason="notApplicable"  nothing under the line at all. A stock: `12 people`,
+                                    `GPU`, `GPU-hour`, whose hour is in the NUMERATOR
+        absent reason="unmeasured"  nobody has said. The state a document converted out of
+                                    another format arrives in
+
+      WHAT IT OBLIGES
+
+      ⭐⭐ `period` AND `each` ARE TWO ARMS AND NOT ONE, BECAUSE THIS CORPUS ALREADY SEPARATES
+      THEM. `asrt:factor` files `GPU-hour per GPU`, a conversion whose denominator is a GPU,
+      not a calendar. Collapsed into `notApplicable` it would be indistinguishable from `12
+      people`, which has no denominator at all, and the two are different facts about the same
+      supply. One arm would have made the schema agree with the `LIKE` it replaces: the query
+      cannot tell them apart either.
+
+      THE TWO EDITIONS STOP BEING A READER'S PROBLEM HERE. `shifts per week` and `turnos por
+      semana` both file `period`, and deciding that `semana` IS `week` was a judgement written
+      in SQL that no filing ever made. It is the filer's word now, in the filer's language,
+      and the query reads a `period` element rather than a preposition.
+
+      WHAT IT REFUSES
+
+      ⛔ `absent reason="none"`. "Somebody looked and there is no denominator" is exactly what
+      `notApplicable` already says here. Two spellings of one state is the collapse this
+      wrapper exists to prevent.
+
+      ⛔ `absent reason="derived"`. Deriving the denominator from the unit STRING is the
+      `LIKE` this element replaces, and admitting the reason would license it in the schema's
+      own voice. A unit is an `xs:token`; nothing may read inside it.
+
+      ⛔ Being optional. An omission and `unmeasured` would render identically, and a supply
+      whose denominator nobody stated is not the same as a stock.
+
+      WHERE IT IS CHECKED
+
+      `assets/sql/rules.sql` as `window_not_applicable_on_a_rate`, which semi-joins the claims
+      whose denominator is a `period`. `assets/sql/units/denominators.sql` is the census over
+      all twelve parents.
+
+      ⛔ NOT REACHABLE BY A VALIDATOR: that the denominator agrees with the unit written beside
+      it. XSD 1.0 cannot compare two elements, and `4 GPU-hours per week` filing `each` is a
+      well-formed lie.
+
+      SEE ALSO
+
+      `Claim` for the unit this describes. `StatedLumpyQuantum` for the window whose four
+      states this makes answerable. `Divisibility` for the axis. `Absence` for the asserter
+      argument.
+    </xs:documentation><xs:documentation xml:lang="pt">
+
+      **Português.**
+
+      O QUE É
+
+      O que fica debaixo do traço na unidade desta afirmação, ou a razão tipificada por que nada lá
+      fica.
+
+      ⭐⭐⭐ EXISTE PORQUE A ANOTAÇÃO DA PRÓPRIA `Claim` NOMEOU A DÍVIDA E NADA A PAGOU: «uma unidade é
+      um `xs:token` que não diz nada sobre o ciclo em que a oferta corre. Quem implementa continua a
+      dever cada uma; o esquema não lhas pode tirar.» Quem implementou pagou-a com `LIKE '% per %' OR
+      LIKE '% por %'` sobre texto livre, num dos doze sítios onde uma `Claim` se senta. Esse
+      raciocínio confundiu duas coisas: o XSD 1.0 não consegue mesmo VERIFICAR um denominador contra
+      outro elemento, e daí concluiu que o esquema não precisava de o PEDIR. Pode pedi-lo.
+
+      O QUE CONTÉM
+
+        period                      um intervalo de tempo por que a oferta passa ciclicamente ,
+                                    `week`, `day`, `quarter`, `shift`. A pergunta do ciclo de
+                                    serviço TEM RESPOSTA, e o `Divisibility/window` não lhe pode
+                                    chamar malformada
+        each                        uma coisa contável de que a afirmação vale por uma, `GPU`,
+                                    `person`, `order`. Há denominador e NÃO é um ciclo, portanto a
+                                    pergunta do ciclo continua malformada
+        absent reason="notApplicable"  nada debaixo do traço. Um stock: `12 people`, `GPU`,
+                                    `GPU-hour`, cuja hora está no NUMERADOR
+        absent reason="unmeasured"  ninguém disse. O estado em que chega um documento convertido
+                                    a partir de outro formato
+
+      O QUE OBRIGA
+
+      ⭐⭐ O `period` E O `each` SÃO DOIS BRAÇOS E NÃO UM, PORQUE ESTE CORPUS JÁ OS SEPARA. O
+      `asrt:factor` declara `GPU-hour per GPU`, uma conversão cujo denominador é um GPU, não um
+      calendário. Achatado em `notApplicable` ficaria indistinguível de `12 people`, que não tem
+      denominador nenhum, e os dois são factos diferentes sobre a mesma oferta. Um só braço teria
+      feito o esquema concordar com o `LIKE` que substitui: a consulta também não os distingue.
+
+      AS DUAS EDIÇÕES DEIXAM DE SER UM PROBLEMA DE QUEM LÊ. O `shifts per week` e o `turnos por
+      semana` declaram ambos `period`, e decidir que `semana` É `week` era um juízo escrito em SQL
+      que nenhuma declaração alguma vez fez. Agora é a palavra de quem declara, na língua de quem
+      declara, e a consulta lê um elemento `period` em vez de uma preposição.
+
+      O QUE RECUSA
+
+      ⛔ `absent reason="none"`. «Alguém foi ver e não há denominador» é exatamente o que o
+      `notApplicable` já diz aqui. Duas grafias de um estado é o achatamento que este invólucro
+      existe para impedir.
+
+      ⛔ `absent reason="derived"`. Derivar o denominador da CADEIA da unidade é o `LIKE` que este
+      elemento substitui, e admitir a razão licenciá-lo-ia na própria voz do esquema. Uma unidade é
+      um `xs:token`; nada pode ler lá dentro.
+
+      ⛔ Ser opcional. Uma omissão e o `unmeasured` ficariam iguais, e uma oferta cujo denominador
+      ninguém declarou não é o mesmo que um stock.
+
+      ONDE É VERIFICADO
+
+      No `assets/sql/rules.sql` como `window_not_applicable_on_a_rate`, que faz semi-junção às
+      afirmações cujo denominador é um `period`. O `assets/sql/units/denominators.sql` é o
+      recenseamento sobre os doze progenitores.
+
+      ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR: que o denominador concorde com a unidade escrita ao lado. O
+      XSD 1.0 não compara dois elementos, e `4 GPU-hours per week` a declarar `each` é uma mentira
+      bem formada.
+
+      VER TAMBÉM
+
+      A `Claim` para a unidade que isto descreve. O `StatedLumpyQuantum` para a janela cujos quatro
+      estados isto torna respondíveis. A `Divisibility` para o eixo. A `Absence` para o argumento de
+      quem afirma.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="period" type="xs:token"/>
+      <xs:element name="each"   type="xs:token"/>
+      <xs:element name="absent" type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -2374,7 +2999,9 @@
       SMALLER, the second says who owns the edge it would move. A range with neither is a
       number pair with error bars. Both are required, because as optional fields their blanks
       carried facts nothing else could state — and `boundOrigin` as a bare optional
-      enumeration was filed ONCE in 124 claims.
+      enumeration was filed ONCE in the whole corpus.
+      `assets/sql/reports/bound_ownership.sql` prints what the required, typed field gets
+      instead.
 
       `asserter` and `asOf` are not bookkeeping. In a chain of organisations, one party's
       claim about another party's capacity is a different fact from that party's own claim
@@ -2448,7 +3075,9 @@
       PEQUENO, o segundo diz quem é dono da borda que ele moveria. Um intervalo sem nenhum dos dois é
       um par de números com barras de erro. Ambos são obrigatórios, porque como campos opcionais os
       seus brancos transportavam factos que mais nada conseguia enunciar — e o `boundOrigin` como
-      enumeração opcional nua foi declarado UMA vez em 124 afirmações.
+      enumeração opcional nua foi declarado UMA vez em todo o corpus.
+      O `assets/sql/reports/bound_ownership.sql` imprime o que o campo obrigatório e tipificado
+      obtém em vez disso.
 
       O `asserter` e o `asOf` não são escrituração. Numa cadeia de organizações, a afirmação de uma
       parte sobre a capacidade de outra é um facto diferente da afirmação da própria sobre ela.
@@ -2493,6 +3122,7 @@
       <xs:element name="mostLikely"  type="xs:decimal"/>
       <xs:element name="high"        type="xs:decimal"/>
       <xs:element name="unit"        type="xs:token"/>
+      <xs:element name="denominator" type="pm:StatedDenominator"/>
       <xs:element name="narrowsWhen" type="pm:StatedNarrowing"/>
       <xs:element name="boundOrigin" type="pm:StatedConstraintOrigin"/>
       <xs:element name="provenance"  type="pm:Provenance" minOccurs="0"/>
@@ -3042,16 +3672,21 @@
       a FILING rather than an argument:
 
         premium above 0   the priced exit. Consistent with the model.
-        premium none      filed as zero by somebody who looked: a continuous supply that
-                          costs no more than the lumpy one.
+        premium at 0      a continuous supply that costs no more than the lumpy one, filed as
+                          zero by somebody who looked: `[0, 0, 0]` in the unit, because
+                          `pm:ClaimAbsenceReason` has no `none` for it to hide in.
         premium below 0   the continuous option is CHEAPER. That is a real problem for the
                           model, and it should be filed exactly this way rather than
                           discussed.
 
+      ⭐ The three read as one scale because all three are claims. Spelling the middle as an
+      absence made a three-point scale out of two claims and a category error, and a receiver
+      could not compare them as arithmetic.
+
       WHAT IT REFUSES
 
-      ⛔ Treating `none` and `unmeasured` as interchangeable here. One is a counter-example;
-      the other is a gap.
+      ⛔ Treating a zero premium and `unmeasured` as interchangeable here. One is a
+      counter-example; the other is a gap.
 
       SEE ALSO
 
@@ -3080,15 +3715,20 @@
       DECLARAÇÃO e não uma discussão:
 
         premium acima de 0   a saída paga. Coerente com o modelo.
-        premium none         declarado como zero por quem foi ver: uma oferta contínua que não custa
-                             mais do que a que vem aos lotes.
+        premium em 0         uma oferta contínua que não custa mais do que a que vem aos lotes,
+                             declarada como zero por quem foi ver: `[0, 0, 0]` na unidade, porque
+                             o `pm:ClaimAbsenceReason` não tem `none` onde ela se esconda.
         premium abaixo de 0  a opção contínua é MAIS BARATA. Isso é um problema a sério para o
                              modelo, e deve ser declarado exatamente assim em vez de discutido.
 
+      ⭐ Os três lêem-se como uma escala porque os três são afirmações. Escrever o meio como
+      ausência fazia de uma escala de três pontos duas afirmações mais um erro de categoria, e
+      quem recebe não as podia comparar como aritmética.
+
       O QUE RECUSA
 
-      ⛔ Tratar o `none` e o `unmeasured` como intermutáveis aqui. Um é um contraexemplo; o outro é
-      uma lacuna.
+      ⛔ Tratar um prémio de zero e o `unmeasured` como intermutáveis aqui. Um é um contraexemplo;
+      o outro é uma lacuna.
 
       VER TAMBÉM
 
@@ -3450,13 +4090,18 @@
       actually are:
 
         a claim                     available up to this much, in the layer's unit
-        absent reason="none"        somebody looked and it is zero
+        a claim of [0, 0, 0]        somebody looked and it is zero, in the layer's unit
         absent reason="unmeasured"  available, and nobody has sized it
         absent reason="derived"     computable here, e.g. from the clearance
 
+      ⛔ There is no `absent reason="none"` here. All three slacks are `pm:StatedClaim`, whose
+      absent arm is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, and that type is
+      `AbsenceReason` WITHOUT `none`. A measured zero has a unit, an observer and a provenance,
+      and the absence arm has a home for none of the three, so it is a claim.
+
       `capacitySlack` is the one fact about a supply that no arithmetic can recover. A GPU
       cannot run at 110 per cent; a disk cannot hold more than it holds; a month has at most
-      31 days — all file `absent reason="none"`. A PERSON CAN, and in most stacks labour is
+      31 days, all file a claim of `[0, 0, 0]` in the layer's own unit. A PERSON CAN, and in most stacks labour is
       the only supply that can. ⭐ That figure is the missing half of an existing costing
       method: Time-Driven ABC reports unused capacity as a separate figure, for exactly this
       model's reason, but implements ONE SIGN, because its unit of analysis is a machine-hour
@@ -3569,13 +4214,18 @@
       maioria de quem declara está mesmo:
 
         uma afirmação               disponível até este ponto, na unidade da camada
-        absent reason="none"        alguém foi ver e é zero
+        uma afirmação de [0, 0, 0]  alguém foi ver e é zero, na unidade da camada
         absent reason="unmeasured"  disponível, e ninguém a dimensionou
         absent reason="derived"     calculável aqui, por exemplo a partir da folga
 
+      ⛔ Não existe aqui `absent reason="none"`. As três folgas são `pm:StatedClaim`, cujo ramo de
+      ausência é um `pm:ClaimAbsence` que transporta `pm:ClaimAbsenceReason`, e esse tipo é o
+      `AbsenceReason` SEM o `none`. Um zero medido tem unidade, observador e proveniência, e o ramo
+      de ausência não tem lugar para nenhum dos três, portanto é uma afirmação.
+
       O `capacitySlack` é o único facto sobre uma oferta que aritmética nenhuma recupera. Uma GPU não
       corre a 110 por cento; um disco não guarda mais do que guarda; um mês tem no máximo 31 dias —
-      todos declaram `absent reason="none"`. UMA PESSOA CONSEGUE, e na maioria das pilhas a mão de
+      todos declaram uma afirmação de `[0, 0, 0]` na unidade da própria camada. UMA PESSOA CONSEGUE, e na maioria das pilhas a mão de
       obra é a única oferta que consegue. ⭐ Essa figura é a metade que falta a um método de custeio
       existente: o Time-Driven ABC reporta a capacidade não usada como figura separada, exatamente
       pela razão deste modelo, mas implementa UM SÓ SINAL, porque a sua unidade de análise é a
@@ -3704,12 +4354,17 @@
           ⛔ NOT REACHABLE BY A VALIDATOR. XSD 1.0 has no `xs:assert` and cannot
           compare across elements.
 
-          ⛔ AND IT IS UNEXERCISED, WHICH IS THE POINT OF SAYING SO. Not one layer
-          in `assets/corpus/` files a NUMERIC `capacitySlack`; every one is `none`
-          or `unmeasured`, which makes this check silent on nineteen of twenty-one
-          layers. A rule with nothing to bound passes loudest, and the cure is a
-          filer measuring how far a supply can run hot — not a figure invented to
-          give the rule something to chew on.
+          ⛔ AND HALF OF IT IS STILL UNEXERCISED, WHICH IS THE POINT OF SAYING SO.
+          The corpus now sizes this slack, and every layer that does files
+          `[0, 0, 0]`. A stated zero is what makes the rule computable, because
+          only a filer saying the buffer is empty licenses the conclusion that the
+          excess went unserved. It also means the `capacitySlack.high` term has
+          never been anything but zero: nobody has yet measured how far a supply
+          can run ABOVE its rating, so that term is carried and never tested. The
+          cure is a measurement, not a figure invented to give the rule something
+          to chew on. `assets/sql/entries/stated_zero_capacity.sql` is the
+          population, and the `boundOrigin` beside each row says how the zero came
+          to be one.
 
           SEE ALSO
 
@@ -3776,11 +4431,15 @@
       No `assets/sql/rules.sql` como `exposure_unaccounted`. ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR. O
       XSD 1.0 não tem `xs:assert` e não consegue comparar elementos entre si.
 
-      ⛔ E NÃO ESTÁ EXERCITADO, QUE É A RAZÃO DE O DIZER. Camada nenhuma do `assets/corpus/` declara
-      um `capacitySlack` NUMÉRICO; todas são `none` ou `unmeasured`, o que torna esta verificação
-      muda em dezanove de vinte e uma camadas. Uma regra sem nada que limitar passa com mais estrondo,
-      e a cura é alguém declarar quanto é que uma oferta consegue correr em esforço — e não uma
-      figura inventada para dar à regra algo que mastigar.
+      ⛔ E METADE DISTO CONTINUA POR EXERCITAR, QUE É A RAZÃO DE O DIZER. O corpus já dimensiona
+      esta margem, e todas as camadas que o fazem declaram `[0, 0, 0]`. É o zero declarado que torna
+      a regra calculável, porque só um declarante a dizer que o amortecedor está vazio licencia a
+      conclusão de que o excesso não foi servido. Também quer dizer que o termo `capacitySlack.high`
+      nunca foi outra coisa senão zero: ninguém mediu ainda até onde uma oferta consegue correr ACIMA
+      do seu valor nominal, portanto esse termo é carregado e nunca posto à prova. A cura é uma
+      medição, e não uma figura inventada para dar à regra algo que mastigar. O
+      `assets/sql/entries/stated_zero_capacity.sql` é a população, e o `boundOrigin` ao lado de cada
+      linha diz por que via o zero veio a ser zero.
 
       VER TAMBÉM
 
@@ -3802,7 +4461,8 @@
           stockpiled to serve this week's demand. `absorber = inventory` on a
           labour layer is therefore flatly false, obvious to any reader, and
           unreachable by any check without this element. The filing is
-          `absent reason="none"` — somebody looked, and the answer is zero.
+          `[0, 0, 0]` in the layer's unit: somebody looked, and the answer is zero.
+          `pm:StatedClaim`'s absent arm carries no `none` for it to hide in.
 
           ⚠️ THE SAME DIMENSION TRAP AS THE OTHER TWO SLACKS. What a stockpile is
           naturally measured in is a DURATION — how long the shelf life is, how
@@ -3835,7 +4495,8 @@
       se usa hoje DESAPARECE: as horas não usadas da semana passada não podem ser armazenadas para
       servir a procura desta semana. O `absorber = inventory` numa camada de mão de obra é portanto
       liso e falso, óbvio para quem leia, e inalcançável por verificação nenhuma sem este elemento. A
-      declaração é `absent reason="none"` — alguém foi ver, e a resposta é zero.
+      declaração é `[0, 0, 0]` na unidade da camada: alguém foi ver, e a resposta é zero. O ramo de
+      ausência da `pm:StatedClaim` não tem `none` onde ela se esconda.
 
       ⚠️ A MESMA ARMADILHA DIMENSIONAL DAS OUTRAS DUAS MARGENS. Aquilo em que um armazenamento é
       naturalmente medido é uma DURAÇÃO — quanto tempo dura, quantas semanas de cobertura a fábrica
@@ -4195,7 +4856,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="name"        type="xs:token"/>
-      <xs:element name="demand"      type="pm:StatedClaim"/>
+      <xs:element name="demand"      type="pm:Demand"/>
       <xs:element name="timeSlack"   type="pm:StatedClaim"/>
       <xs:element name="supply"      type="pm:Facility"/>
       <xs:element name="remainder"   type="pm:StatedRemainder"/>
@@ -4915,6 +5576,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="notation" type="pm:StatedNotation"/>
+        <xs:element name="evidence" type="pm:StatedEvidence"/>
         <xs:element name="regime" type="pm:Regime" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="stack" type="pm:Stack"/>
         <xs:element name="operation" type="pm:Operation" minOccurs="0" maxOccurs="unbounded"/>

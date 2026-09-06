@@ -1,0 +1,22 @@
+# WHAT EACH FILING CALLS ITSELF, AND WHO SAYS SO. One row per declared notation: the URI a part
+# reference points at, the filing in this corpus it resolves to, and the party that asserted the
+# identity.
+#
+# ⭐⭐⭐ THE RESOLUTION IS A READER'S ASSERTION AND NOT A DOCUMENT'S, WHICH IS WHY IT IS A ROW.
+#    Nothing inside a filing says which document its `ForeignId/notation` points at -- the
+#    corpus's own README records that finding. Somebody had to decide, and `asserted_by` is where
+#    that decision is signed. A model that resolved silently would be inventing a fact about the
+#    world in the middle of a join.
+#
+# ⛔⛔ IT WAS THE JOIN WRITTEN FIVE TIMES. `composition/parts.sqlc`, `used_as_a_part.sqlc`,
+#    `local_parts.sqlc`, `epistemics/documents.sqlc` and `epistemics/absences.sqlc` each reached
+#    into `pm.filing_identity` on their own. `composition/parts.sqlc`'s own header claims the
+#    resolution was "written ten times" and is now written once -- true of the resolved PART, and
+#    not of the identity table underneath it, which is what this file finally names.
+#
+# ⭐ `absent` IS A NOTATION NOBODY COULD RESOLVE. It is kept rather than filtered: a reference
+#   that points nowhere is the population `checks/unresolved_part.sqlc` exists to find, and a
+#   relation that dropped it would hand that rule an empty question.
+-- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi

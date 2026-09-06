@@ -43,6 +43,20 @@ CREATE TYPE constraint_origin AS ENUM ('intrinsic', 'contractual', 'policy');
 --    the two is populated. The CHECK constraints make that a checked property.
 CREATE TYPE absence_reason AS ENUM ('none', 'unmeasured', 'notApplicable', 'derived');
 
+-- ⭐⭐⭐ AND THE XSD NARROWS IT AT EVERY `pm:StatedClaim`. The absent arm there is a
+--    `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`: "three members, `AbsenceReason`
+--    without `none`". A measured zero has a unit, an observer, an author for its exactness and
+--    a provenance, and the absence arm has a home for none of the four, so a zero is a CLAIM of
+--    [0,0,0] and never an absence.
+-- ⛔ Nine columns carried the four-member enum at those positions until 2026-09-06, so Postgres
+--    would accept a `'none'` no valid document can produce. Each now carries its own
+--    `a_..._absence_has_no_none`. Zero rows ever violated it; the CHECK makes that structural
+--    rather than lucky.
+-- ⚠️ `CREATE DOMAIN ... CHECK (VALUE <> 'none')` is the tidier spelling and was tried first. It
+--    does not work here: a domain over an enum loses the enum's comparison against an unknown
+--    literal, so `WHERE absent = 'derived'` stops resolving at eighteen call sites. A CHECK
+--    keeps the column's type, and therefore its operators.
+
 -- ⭐ This model's own, added when `narrowsWhen` stopped being an optional bare string.
 CREATE TYPE narrowing_kind AS ENUM ('instrument', 'intervention', 'experiment');
 
@@ -59,7 +73,14 @@ CREATE TABLE source (
 
 CREATE TABLE filing (
     name text PRIMARY KEY REFERENCES source(name),
-    kind text NOT NULL CHECK (kind IN ('filing', 'composition')),
+    -- ⭐⭐ THE ROOT ELEMENT THE DOCUMENT DECLARES, read with `local-name()` rather than
+    -- guessed from a prefix. FIVE values and not two: `assets/corpus/` already holds
+    -- documents rooted at `coverage`, `dependence` and `run` that ingest does not yet load,
+    -- and a two-valued CHECK with an `ELSE 'filing'` would file every one of them as a plain
+    -- filing without complaining. A domain that closes where the SCHEMA closes cannot drift
+    -- from it in silence.
+    kind text NOT NULL CHECK (kind IN ('processModulus', 'composition',
+                                       'coverage', 'dependence', 'run')),
 
     -- ⛔⛔ WHAT THIS DOCUMENT IS EVIDENCE FOR, and it is a SECOND AXIS rather than a third
     -- `kind`. A fixture is still a filing or a composition; what differs is what it attests.
@@ -69,7 +90,20 @@ CREATE TABLE filing (
     -- ⭐ THE RULES MUST RUN ON FIXTURES -- that is what a fixture is for. THE REPORTS MUST
     -- NOT: "no stack in this corpus asserts independence" is a fact about the evidence, and a
     -- stipulation that asserts it would make the finding a lie. See assets/fixtures/README.md.
-    evidence text NOT NULL CHECK (evidence IN ('corpus', 'fixture'))
+    -- ⭐⭐ IN THE DOCUMENT'S OWN WORDS, NOT THE READER'S. This column used to read
+    -- `corpus`/`fixture` -- which directory the file sits in -- and was derived by matching an
+    -- English sentence in an XML comment. `pm:StatedEvidence` made it a filed fact, so the
+    -- values are the document's: `observation` (somebody looked at a real system) and
+    -- `stipulation` (nothing here was observed).
+    --
+    -- ⛔⛔ AND THE THIRD STATE IS WHY IT IS NULLABLE. A document may decline to say, and every
+    -- document written before the element existed is in exactly that state. Rendered as
+    -- `stipulation` it would be quarantined on a guess; rendered as `observation` it would be
+    -- quoted on one. It belongs to NEITHER scope, which is what a NULL here buys.
+    evidence text CHECK (evidence IN ('observation', 'stipulation')),
+    evidence_absent absence_reason,
+    CONSTRAINT a_document_says_what_it_is_evidence_for_or_why_not
+        CHECK ((evidence IS NOT NULL) <> (evidence_absent IS NOT NULL))
 );
 
 -- ⭐ TALL BECAUSE A FILING CAN REPORT UNDER MORE THAN ONE REGIME, and `refutation`
@@ -121,6 +155,27 @@ CREATE TABLE layer (
     demand_narrows_kind   narrowing_kind,
     demand_narrows_absent absence_reason,
 
+    -- ⭐⭐⭐ HOW LONG THE ASKING SURVIVES BEING UNANSWERED. `pm:Demand/patience`, and it is the
+    -- half of the time axis `pm:Divisibility` filed as missing: `window` is the supply's duty
+    -- cycle, this is demand's lifetime. A DURATION, so `patience_unit` is `shifts` or
+    -- `minutes` and NOT the layer's unit -- a slack is quoted in the unit of the shares it
+    -- bounds and a patience bounds none. Where the layer's unit is service time the two
+    -- coincide numerically, which is a fact about that layer rather than a licence to fold
+    -- these columns into `slack`.
+    --
+    -- ⛔ ZERO PATIENCE ARRIVES AS [0, 0, 0], NOT AS `patience_absent = 'none'`. Demand that
+    -- leaves the moment it is not served has a patience of zero, and a measured zero is a
+    -- claim: `pm:Demand/patience` is a `pm:StatedClaim`, whose absent arm carries
+    -- `pm:ClaimAbsenceReason`, and that type has no `none`. So an ingested `'none'` here is a
+    -- document that did not validate, and the three remaining reasons are what this column
+    -- can honestly hold.
+    patience_low    numeric,
+    patience_mode   numeric,
+    patience_high   numeric,
+    patience_unit   text,
+    patience_origin constraint_origin,
+    patience_absent absence_reason,
+
     -- ⭐⭐⭐ THE WRAPPER THAT LETS THE MODEL BE CONTRADICTED, AND THIS DATABASE USED TO
     --     THROW IT AWAY. `StatedRemainder` is a CHOICE -- a remainder, or a typed reason
     --     there is none -- and EVERY layer is required to carry one, precisely so that a
@@ -162,7 +217,15 @@ CREATE TABLE layer (
     qty_unit      text,
     qty_absent    absence_reason,
 
+    CONSTRAINT a_patience_absence_has_no_none CHECK (patience_absent <> 'none'),
+    CONSTRAINT a_remainder_quantity_absence_has_no_none CHECK (qty_absent <> 'none'),
     PRIMARY KEY (filing, layer),
+    CONSTRAINT patience_is_stated_or_typed_absent
+        CHECK ((patience_low IS NOT NULL) <> (patience_absent IS NOT NULL)),
+    CONSTRAINT a_patience_claim_is_whole_and_ordered
+        CHECK (num_nonnulls(patience_low, patience_mode, patience_high) = 0
+               OR (num_nonnulls(patience_low, patience_mode, patience_high, patience_unit) = 4
+                   AND patience_low <= patience_mode AND patience_mode <= patience_high)),
     CONSTRAINT demand_is_stated_or_typed_absent
         CHECK ((demand_low IS NOT NULL) <> (demand_absent IS NOT NULL)),
     -- ⛔⛔⛔ A THREE-POINT CLAIM IS WHOLE OR IT IS ABSENT, AND `num_nonnulls` IS WHY THIS FORM
@@ -259,6 +322,8 @@ CREATE TABLE nameplate (
     draw_unit      text,
     draw_absent    absence_reason,
 
+    CONSTRAINT a_amount_absence_has_no_none CHECK (amount_absent <> 'none'),
+    CONSTRAINT a_draw_absence_has_no_none CHECK (draw_absent <> 'none'),
     PRIMARY KEY (filing, layer),
     FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer),
     CONSTRAINT a_quantum_exists_exactly_when_the_supply_is_lumpy
@@ -314,13 +379,58 @@ CREATE TABLE claim (
     filing text NOT NULL REFERENCES filing(name),
     seq    int  NOT NULL,          -- document order; the Nth pm:claim in the document
     owns   text NOT NULL,          -- the element the claim is the value OF: pm:demand, pm:share
+    -- ⭐⭐ THE LAYER THIS CLAIM SITS IN, read with `ancestor::pm:layer/pm:name`. NULL is a real
+    -- answer and not a gap: a coupling strength, an elimination quantity and a part factor
+    -- are claims about a RELATION between layers rather than about one, and there is no
+    -- ancestor to find. Without this column `pm.claim` could answer questions about claims
+    -- and never join back to the layer relations, which is why units/with_denominator.sqlc
+    -- had to read `pm.nameplate` and reach 20 of the corpus's 92 rate-shaped claims.
+    layer  text,
     low    numeric NOT NULL,
     mode   numeric NOT NULL,
     high   numeric NOT NULL,
     unit   text    NOT NULL,
+
+    -- ⭐⭐⭐ WHAT SITS UNDER THE LINE, FILED RATHER THAN INFERRED. `pm:StatedDenominator`. Until
+    -- 0.4 this was `LIKE '% per %' OR LIKE '% por %'` over `unit`, which asked a reader to
+    -- decide that `semana` IS `week` -- a judgement no filing makes -- and could not tell a
+    -- PERIOD from a denominator that merely exists. `GPU-hour per GPU` has one and it is not a
+    -- cycle, so `kind` carries that difference rather than the query guessing at it.
+    denominator      text,
+    denominator_kind text CHECK (denominator_kind IN ('period', 'each')),
+    denominator_absent absence_reason,
+
+    -- ⭐⭐⭐ WHO ASSERTS THIS CLAIM, AND ON WHAT STANDING. `pm:Provenance`, and until 0.4 it
+    -- did not reach the database AT ALL -- zero columns, zero references in ingest -- while
+    -- the corpus filed 58 typed absences on `standing` alone. `standing` is the axis the
+    -- schema calls the one separating a statutory auditor's observation from a controller's
+    -- hunch, and every query about who stands behind a number was unanswerable below the XML.
+    --
+    -- ⭐ TAXONOMY PLUS VALUE, like `layer.absorber_*` and for the same reason: a borrowed term
+    -- travels with the list it was borrowed from, and a restated value set is a fork. There is
+    -- no `standing_term` table yet because no reader has mapped two editions of one standing
+    -- vocabulary -- when one does, it joins here exactly as `buffer_term` does.
+    prov_party             text,
+    prov_entered_by        text,
+    prov_approved_by       text,
+    prov_standing_taxonomy text,
+    prov_standing_value    text,
+    prov_standing_absent   absence_reason,
+    prov_note              text,
+
     PRIMARY KEY (filing, seq),
     CONSTRAINT a_claim_is_ordered
-        CHECK (low <= mode AND mode <= high)
+        CHECK (low <= mode AND mode <= high),
+    -- ⚠️ ALL-NULL IS LEGAL HERE AND MEANS "no provenance element", which `Claim` allows.
+    -- Within one, `standing` is required, so exactly one of the two arms must be present.
+    CONSTRAINT a_standing_is_stated_or_typed_absent
+        CHECK (num_nonnulls(prov_standing_value, prov_standing_absent) <= 1),
+    CONSTRAINT a_borrowed_standing_carries_its_taxonomy
+        CHECK ((prov_standing_taxonomy IS NULL) = (prov_standing_value IS NULL)),
+    CONSTRAINT a_denominator_is_stated_or_typed_absent
+        CHECK ((denominator IS NOT NULL) <> (denominator_absent IS NOT NULL)),
+    CONSTRAINT a_stated_denominator_says_which_kind_it_is
+        CHECK ((denominator IS NOT NULL) = (denominator_kind IS NOT NULL))
 );
 
 -- ⭐⭐⭐ EVERY NARROWING IN A DOCUMENT, WHEREVER IT SITS. `narrowsWhen` is on `Claim`, and
@@ -395,6 +505,7 @@ CREATE TABLE slack (
     -- of history has edges nobody chose, and an SLA has edges somebody negotiated.
     bound_origin constraint_origin,
     bound_origin_absent absence_reason,
+    CONSTRAINT a_slack_absence_has_no_none CHECK (absent <> 'none'),
     PRIMARY KEY (filing, layer, buffer),
     FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer),
     CONSTRAINT slack_is_stated_or_typed_absent
@@ -421,6 +532,7 @@ CREATE TABLE holder (
     share_absent absence_reason,
     party      text,
     as_of      date,
+    CONSTRAINT a_share_absence_has_no_none CHECK (share_absent <> 'none'),
     PRIMARY KEY (filing, layer, kind),   -- a kind appears at most once per remainder
     FOREIGN KEY (filing, layer) REFERENCES layer(filing, layer),
     CONSTRAINT party_and_as_of_belong_to_a_counterparty
@@ -526,14 +638,21 @@ CREATE TABLE coupling (
     mode        numeric,
     high        numeric,
     unit        text,
+    -- ⭐ `pm:Coupling/strength` is the second optional `pm:StatedClaim` in these schemas, and
+    --   carries the same three states as `part.factor`: no element, a stated strength, or a
+    --   dependence somebody observed and could not size.
+    strength_absent absence_reason,
     observation text,
+    CONSTRAINT a_strength_absence_has_no_none CHECK (strength_absent <> 'none'),
     PRIMARY KEY (filing, from_layer, to_layer),
     FOREIGN KEY (filing, from_layer) REFERENCES layer(filing, layer),
     FOREIGN KEY (filing, to_layer)   REFERENCES layer(filing, layer),
     CONSTRAINT a_coupling_strength_claim_is_whole_and_ordered
         CHECK (num_nonnulls(low, mode, high) = 0
                OR (num_nonnulls(low, mode, high, unit) = 4
-                   AND low <= mode AND mode <= high))
+                   AND low <= mode AND mode <= high)),
+    CONSTRAINT a_coupling_strength_is_stated_or_typed_absent
+        CHECK (num_nonnulls(low, strength_absent) <= 1)
 );
 
 -- ---------------------------------------------------------------------------
@@ -608,9 +727,20 @@ CREATE TABLE part (
     composed_layer text NOT NULL,
     part_filing   text NOT NULL,
     part_layer    text NOT NULL,
-    factor_low    numeric,     -- NULL means the units already agree, i.e. phi = 1
+    -- ⭐⭐⭐ THREE STATES, NOT TWO, BECAUSE THE WRAPPER IS OPTIONAL. `asrt:Part/factor` is
+    --   `minOccurs="0"` over `pm:StatedClaim`, so a part may (a) omit it, meaning the part is
+    --   ALREADY in the composed unit at phi = 1, or (b) state a conversion, or (c) file a typed
+    --   absence:
+    --   a conversion nobody measured. (a) and (c) are different documents and were the same
+    --   three NULLs here until `factor_absent` existed.
+    -- ⛔ Reading (c) as phi = 1 asserts a rate no composer filed. `asrt:Part` is explicit that
+    --   an absent factor means ONE **exactly**, never "unknown", which is true of (a) and is
+    --   exactly why (c) needs a column of its own rather than borrowing (a)'s silence.
+    factor_low    numeric,     -- all three NULL with factor_absent NULL: the units already agree
     factor_mode   numeric,
     factor_high   numeric,
+    factor_absent absence_reason,   -- (c): the typed reason nobody measured the conversion
+    CONSTRAINT a_factor_absence_has_no_none CHECK (factor_absent <> 'none'),
     PRIMARY KEY (composition, composed_layer, part_filing, part_layer),
     CONSTRAINT a_factor_is_strictly_positive
         CHECK (factor_low IS NULL OR factor_low > 0),
@@ -619,7 +749,23 @@ CREATE TABLE part (
     CONSTRAINT a_factor_claim_is_whole_and_ordered
         CHECK (num_nonnulls(factor_low, factor_mode, factor_high) = 0
                OR (num_nonnulls(factor_low, factor_mode, factor_high) = 3
-                   AND factor_low <= factor_mode AND factor_mode <= factor_high))
+                   AND factor_low <= factor_mode AND factor_mode <= factor_high)),
+    -- ⚠️ `<= 1`, not `<>`, and the difference is the third state. ALL-NULL IS LEGAL and means
+    --   "no factor element", exactly as `a_standing_is_stated_or_typed_absent` above allows
+    --   "no provenance element". A required wrapper gets `<>`; an optional one gets this.
+    CONSTRAINT a_factor_is_stated_or_typed_absent
+        CHECK (num_nonnulls(factor_low, factor_absent) <= 1),
+    -- ⭐⭐⭐ THE IMAGE OF AN xs:keyref THE GRAMMAR ALREADY ENFORCES. `assertion.xsd` is explicit:
+    --   "a fusion has a foreign end and a local one, the composed layer is in this very document
+    --   ... and a fusion naming a layer the composer did not file is a schema error." That is
+    --   `fusionName`, enforced by any validator. The database was missing its image.
+    -- ⛔ AND THE OTHER END IS DELIBERATELY UNKEYED. `(part_filing, part_layer)` gets no foreign
+    --   key and must not get one: `part_filing` is a NOTATION resolved through `filing_identity`,
+    --   whose own `absent` admits a filing that declines to name itself, and a part naming a
+    --   filing the reader does not hold is ordinary. `checks/local_part_dangles.sqlc` carries
+    --   that asymmetry as a rule, which is where it belongs.
+    CONSTRAINT a_composed_layer_is_a_layer_of_the_composing_filing
+        FOREIGN KEY (composition, composed_layer) REFERENCES layer(filing, layer)
 );
 
 -- ⭐⭐ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? Same shape as `coupling_search` and the
@@ -635,7 +781,10 @@ CREATE TABLE elimination_search (
     composed_layer text NOT NULL,
     absent         absence_reason,   -- NULL where the fusion actually files eliminations
     note           text,
-    PRIMARY KEY (composition, composed_layer)
+    PRIMARY KEY (composition, composed_layer),
+    -- ⭐ The image of `fusionName` again. See `part`.
+    CONSTRAINT a_searched_layer_is_a_layer_of_the_composing_filing
+        FOREIGN KEY (composition, composed_layer) REFERENCES layer(filing, layer)
 );
 
 -- e_x. Quantities double-counted across parts, filed one at a time with prose.
@@ -649,11 +798,56 @@ CREATE TABLE elimination (
     unit           text,
     absent         absence_reason,
     reason         text,
+    CONSTRAINT a_eliminated_quantity_absence_has_no_none CHECK (absent <> 'none'),
     PRIMARY KEY (composition, composed_layer, quantity),
     CONSTRAINT a_eliminated_quantity_claim_is_whole_and_ordered
         CHECK (num_nonnulls(low, mode, high) = 0
                OR (num_nonnulls(low, mode, high, unit) = 4
-                   AND low <= mode AND mode <= high))
+                   AND low <= mode AND mode <= high)),
+    -- ⭐ The image of `fusionName`, an xs:keyref the grammar already enforces. See `part`.
+    CONSTRAINT a_eliminated_layer_is_a_layer_of_the_composing_filing
+        FOREIGN KEY (composition, composed_layer) REFERENCES layer(filing, layer)
+);
+
+-- ⭐⭐⭐ THE LAYERS A DOUBLE COUNT RUNS BETWEEN, WHICH IS THE EVIDENCE FOR AN ELIMINATION.
+-- Repeating, `minOccurs="0" maxOccurs="unbounded"` on `asrt:Elimination`. It had no home here
+-- at all until 2026-09-06, and the corpus files eight of them: load
+-- `merge-holding-composition.xml`, write the XML back out, and every one was lost. Nothing
+-- noticed because no rule reads them, which is the shape of defect only the WRITE direction
+-- finds. A rule reads what it needs; a document must be storable whole.
+--
+-- ⛔ `notation` gets NO foreign key, for the same reason `part.part_filing` gets none: it is a
+-- foreign reference that may legitimately dangle. `asrt:Elimination` argues the point directly,
+-- refusing a keyref that would restrict `between` to the fusion's own parts, because "a group
+-- eliminating against a member that files nothing, or against a layer folded into a different
+-- composed layer, is ordinary".
+CREATE TABLE elimination_between (
+    composition    text NOT NULL,
+    composed_layer text NOT NULL,
+    quantity       text NOT NULL,
+    seq            int  NOT NULL,
+    party          text NOT NULL,
+    notation       text NOT NULL,   -- a pm:ForeignId notation; may name a filing nobody holds
+    layer          text NOT NULL,
+    version        text,
+    regime         text,
+    PRIMARY KEY (composition, composed_layer, quantity, seq),
+    FOREIGN KEY (composition, composed_layer, quantity)
+        REFERENCES elimination(composition, composed_layer, quantity)
+);
+
+-- ⭐ THE STANDARDS A COMPOSITION WORKS UNDER. Repeating on `asrt:Composition`, and homeless for
+-- the same reason and until the same date. Two are filed in this corpus.
+CREATE TABLE composition_citation (
+    composition text NOT NULL REFERENCES filing(name),
+    seq         int  NOT NULL,
+    -- ⭐ `asrt:instrument` is a pm:BorrowedTerm: a taxonomy and a value, the same shape
+    --   `buffer_term` and `Regime/framework` use. Two columns, never one.
+    taxonomy    text NOT NULL,
+    instrument  text NOT NULL,
+    clause      text,
+    version     text,
+    PRIMARY KEY (composition, seq)
 );
 
 COMMIT;

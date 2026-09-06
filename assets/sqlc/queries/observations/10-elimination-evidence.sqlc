@@ -1,0 +1,31 @@
+-- §10  What each filed elimination says it is BETWEEN, which is the evidence for the number.
+#
+# ONE ROW PER FILED ELIMINATION, with the layers it names as double counted folded beside it.
+# An elimination without its `between` is a number with no subject: the composer removed 90
+# GPU-hours and nothing says from what.
+#
+# ⭐⭐⭐ THESE ROWS DID NOT EXIST IN THE DATABASE UNTIL 2026-09-06. `asrt:Elimination/between` is
+# repeating and no rule read it, so it had no column, no table and no ingest, and eight of them
+# were parsed out of the corpus and discarded on every load. The query side could not find that:
+# a rule reads what it needs, so a field nothing reads is under no pressure to exist. The
+# question that finds it is "could I write this document back out from the database".
+#
+# ⛔ AN ELIMINATION WITH NO `between` IS NOT MALFORMED. The element is `minOccurs="0"`, and a
+# composer who eliminates against a member that files nothing has nothing to name. The count is
+# reported rather than asserted.
+-- eliminations/filed.sqlc with eliminations/between.sqlc folded per elimination.
+SELECT e.composition                              AS "composition!",
+       e.composed_layer                           AS "composed_layer!",
+       e.quantity                                 AS "quantity!",
+       coalesce(e.mode::text, '(' || e.absent || ')') AS "size!",
+       count(b.seq)                               AS "named!",
+       coalesce(string_agg(b.party || '/' || b.layer, ', ' ORDER BY b.seq), '(none named)')
+                                                  AS "between!"
+FROM (
+    :compose(eliminations/filed.sqlc)
+) e
+LEFT JOIN (
+    :compose(eliminations/between.sqlc)
+) b USING (composition, composed_layer, quantity)
+GROUP BY e.composition, e.composed_layer, e.quantity, e.mode, e.absent
+ORDER BY count(b.seq) DESC, 1, 2, 3

@@ -14,11 +14,21 @@
 #
 # ⛔ A NULL `answer` IS NOT AN ABSENCE HERE. It means the document actually filed the thing --
 #   real couplings, real eliminations -- so the search question is answered by the content.
+#
+# ⭐⭐ THE TWO MEMBERS ARE FILES NOW, AND THAT IS WHAT MAKES THIS UNION HONEST. It used to build
+#    both arms inline against their base tables, so every caller wanting one KIND of search
+#    filtered on the `looked_for` string this file had just invented -- a union taken back apart
+#    by string comparison at five call sites, two of which gave up and read the base table. A
+#    `:union` whose members are not files is a union nobody can compose half of.
 -- pm:Stack/pm:Couplings and pm:Fusion/pm:Eliminations, each with its pm:Absent.
 SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,
-       cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
+       cs.answer, cs.note
+FROM (
+    :compose(epistemics/coupling_searches.sqlc)
+) cs
 UNION ALL
 SELECT es.composition, 'double counting across parts', es.composed_layer,
-       es.absent, es.note
-FROM pm.elimination_search es
+       es.answer, es.note
+FROM (
+    :compose(eliminations/searched.sqlc)
+) es

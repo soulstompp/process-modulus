@@ -8,7 +8,7 @@ SELECT c.rule,
                  THEN '⚠️  thin'
             ELSE 'ok' END                             AS verdict
 FROM (
-    -- the twenty-two conformance rules XSD 1.0 cannot reach, one file each.
+    -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
 -- pm:Remainder/sign against pm:Demand and pm:Nameplate; conformance rule "sign agrees".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -18,11 +18,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -32,8 +32,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -102,7 +103,7 @@ WHERE r.sign IS NOT NULL
 ) p ON true
 WHERE r.slug = 'fit_disagrees'
 UNION ALL
--- pm:Remainder/pm:Holders summed against |r| at the mode.
+-- pm:Remainder/pm:holder summed against |r| at the mode, via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -111,11 +112,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -125,8 +126,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -140,8 +142,8 @@ LEFT JOIN (
            format('shares %s against a magnitude of %s', x.shares, x.magnitude) AS detail
     FROM (
         SELECT r.filing, r.layer,
-               abs(r.r_mode)     AS magnitude,
-               sum(h.share_mode) AS shares
+               abs(r.r_mode)  AS magnitude,
+               h.shares_mode  AS shares
         FROM      (
             -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
@@ -191,20 +193,31 @@ JOIN pm.layer l USING (filing, layer)
 
         ) r
         JOIN      (
-            -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+            -- entries/holders.sqlc folded to one row per layer.
+SELECT h.filing, h.layer,
+       count(*)                                     AS holders,
+       count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_mode)                             AS shares_mode,
+       sum(h.share_high)                             AS shares_high,
+       array_agg(DISTINCT h.share_unit)              AS share_units
+FROM (
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
 FROM pm.holder h
 
+) h
+GROUP BY h.filing, h.layer
+
         ) h USING (filing, layer)
-        GROUP BY r.filing, r.layer, r.r_mode
-        HAVING count(*) FILTER (WHERE h.share_mode IS NULL) = 0
+        WHERE h.unstated = 0
+          AND h.share_units = ARRAY[r.unit]
     ) x
 ) p ON true
 WHERE r.slug = 'shares_do_not_sum'
 UNION ALL
--- pm:Buffer kind="capacity" measured zero, against pm:HolderKind customer/unrealised.
+-- pm:Nameplate/pm:capacitySlack stated zero, against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -213,11 +226,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -227,8 +240,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -243,29 +257,16 @@ LEFT JOIN (
     FROM (
         SELECT e.filing, e.layer, e.exposure
         FROM (
-            -- pm:Buffer kind="capacity" measured zero, against the layer's own r = n - d.
+            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
 SELECT r.*
 FROM      (
-    -- pm:Buffers/pm:Buffer kind="capacity", zero either way.
-SELECT z.filing, z.layer, z.absent AS spelled_as_absent, z.high AS spelled_as_claim
+    -- pm:Nameplate/pm:capacitySlack, zero either way.
+SELECT z.filing, z.layer, z.high AS zero
 FROM (
-    -- pm:Buffer with pm:Absent reason="none".
+    -- a slack element with a stated pm:Claim whose bounds are zero.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.absent = 'none'
-UNION ALL
--- pm:Buffer with a stated pm:Claim whose bounds are zero.
-SELECT s.*
-FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -336,7 +337,7 @@ JOIN pm.layer l USING (filing, layer)
                     -- pm:HolderKind values `customer` and `unrealised`.
 SELECT h.*
 FROM (
-    -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -349,7 +350,7 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'
 UNION ALL
--- pm:Buffer kind="capacity" measured zero, against summed customer/unrealised shares.
+-- pm:Nameplate/pm:capacitySlack stated zero, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -358,11 +359,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -372,8 +373,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -386,31 +388,18 @@ LEFT JOIN (
            e.exposure > e.unserved + 1e-9 AS violates,
            format('exposure %s, absorbable 0, unserved %s', e.exposure, e.unserved) AS detail
     FROM (
-        SELECT x.filing, x.layer, x.exposure, coalesce(u.unserved, 0) AS unserved
+        SELECT x.filing, x.layer, x.exposure, u.unserved_high AS unserved
         FROM      (
-            -- pm:Buffer kind="capacity" measured zero, against the layer's own r = n - d.
+            -- pm:Nameplate/pm:capacitySlack stated zero, against the layer's own r = n - d.
 SELECT r.*
 FROM      (
-    -- pm:Buffers/pm:Buffer kind="capacity", zero either way.
-SELECT z.filing, z.layer, z.absent AS spelled_as_absent, z.high AS spelled_as_claim
+    -- pm:Nameplate/pm:capacitySlack, zero either way.
+SELECT z.filing, z.layer, z.high AS zero
 FROM (
-    -- pm:Buffer with pm:Absent reason="none".
+    -- a slack element with a stated pm:Claim whose bounds are zero.
 SELECT s.*
 FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.absent = 'none'
-UNION ALL
--- pm:Buffer with a stated pm:Claim whose bounds are zero.
-SELECT s.*
-FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -474,15 +463,19 @@ JOIN pm.layer l USING (filing, layer)
 ) r USING (filing, layer)
 
         ) x
-        LEFT JOIN (
-            SELECT filing, layer,
-                   sum(share_high)                            AS unserved,
-                   count(*) FILTER (WHERE share_high IS NULL) AS unstated
-            FROM (
-                -- pm:HolderKind values `customer` and `unrealised`.
+        JOIN      (
+            -- entries/unserved_holders.sqlc folded to one row per layer.
+SELECT h.filing, h.layer,
+       count(*)                                        AS holders,
+       count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
+       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_mode)                                AS unserved_mode,
+       array_agg(DISTINCT h.share_unit)                 AS share_units
+FROM (
+    -- pm:HolderKind values `customer` and `unrealised`.
 SELECT h.*
 FROM (
-    -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -491,15 +484,16 @@ FROM pm.holder h
 ) h
 WHERE h.kind IN ('customer', 'unrealised')
 
-            ) h
-            GROUP BY filing, layer
+) h
+GROUP BY h.filing, h.layer
+
         ) u USING (filing, layer)
-        WHERE coalesce(u.unstated, 0) = 0
+        WHERE u.unstated = 0
     ) e
 ) p ON true
 WHERE r.slug = 'exposure_unaccounted'
 UNION ALL
--- pm:Buffer with a stated pm:Claim; the schema's idiom is pm:Absent reason="none".
+-- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber through pm.buffer_term.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -508,11 +502,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -522,73 +516,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
-  ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
-  ('denied_remainder_is_not_contradicted',
-                                          'a denied remainder is not contradicted by the layer''s own figures')
-) AS r(slug, rule)
-
-) r
-LEFT JOIN (
-    SELECT s.filing, s.layer,
-           z.filing IS NOT NULL AS violates,
-           format('%s slack stated as [0,0,0] where the idiom is absent reason="none"',
-                  s.buffer) AS detail
-    FROM      (
-        -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-    ) s
-    LEFT JOIN (
-        -- pm:Buffer with a stated pm:Claim whose bounds are zero.
-SELECT s.*
-FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s
-WHERE s.high IS NOT NULL AND s.high = 0
-
-    ) z USING (filing, layer, buffer)
-    WHERE s.sized
-) p ON true
-WHERE r.slug = 'zero_stated_as_a_claim'
-UNION ALL
--- pm:Holders against pm:Buffers, keyed by pm:Remainder/absorber through pm.buffer_term.
-SELECT r.rule, p.filing, p.layer, p.violates, p.detail
-FROM      (
-    -- the conformance rules stated in the schemas' prose and gated by no grammar.
-SELECT * FROM (VALUES
-  ('fit_disagrees',                        'sign agrees with the range comparison'),
-  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
-  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
-  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
-  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
-  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
-  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
-  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
-  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
-  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
-  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
-  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
-  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
-  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
-  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
-  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -602,11 +532,10 @@ LEFT JOIN (
            format('%s attributed to the %s buffer, whose slack is %s',
                   b.borne, b.buffer, b.slack_mode) AS detail
     FROM (
-        -- pm:Holders summed against pm:Buffers/pm:Buffer, keyed by pm:Remainder/absorber.
+        -- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
 SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
 FROM (
-    SELECT p.filing, p.layer, a.buffer,
-           sum(h.share_mode) FILTER (WHERE h.kind <> 'unrealised') AS borne
+    SELECT p.filing, p.layer, a.buffer, sum(h.share_mode) AS borne
     FROM      (
         -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
@@ -673,17 +602,24 @@ JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.abs
 
     ) a USING (filing, layer)
     JOIN      (
-        -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+        -- pm:HolderKind values `booked`, `counterparty` and `people`.
+SELECT h.*
+FROM (
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
 FROM pm.holder h
 
+) h
+WHERE h.kind IN ('booked', 'counterparty', 'people')
+
     ) h USING (filing, layer)
+    WHERE p.sign = 'interference'
     GROUP BY p.filing, p.layer, a.buffer
 ) b
 JOIN (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -697,7 +633,7 @@ WHERE s.mode IS NOT NULL
 ) p ON true
 WHERE r.slug = 'share_exceeds_slack'
 UNION ALL
--- pm:Buffer and pm:Holder claims, each carrying its own unit.
+-- the slack claims and pm:Remainder/pm:holder claims, each carrying its own unit.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -706,11 +642,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -720,8 +656,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -734,20 +671,39 @@ LEFT JOIN (
            c.slack_unit <> c.share_unit AS violates,
            format('slack in %s, shares in %s', c.slack_unit, c.share_unit) AS detail
     FROM (
-        -- pm:Buffer and pm:Holder claims, each carrying its own unit.
+        -- entries/absorbing_slack.sqlc against pm:Remainder/pm:holder, each carrying its own unit.
 SELECT s.filing, s.layer, s.buffer, h.kind,
        s.unit AS slack_unit, h.share_unit
 FROM      (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- layers/absorber.sqlc joined to entries/slacks.sqlc on the buffer the layer actually names.
+SELECT a.filing, a.layer, a.buffer,
+       a.taxonomy, a.term, a.the_readers_warrant,
+       s.low, s.mode, s.high, s.unit, s.absent, s.sized,
+       s.bound_origin, s.bound_origin_absent
+FROM      (
+    -- pm:Remainder/absorber, resolved through pm.buffer_term.
+SELECT l.filing, l.layer,
+       l.absorber_taxonomy AS taxonomy,
+       l.absorber_value    AS term,
+       bt.buffer,
+       bt.note AS the_readers_warrant
+FROM pm.layer l
+JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.absorber_value
+
+) a
+JOIN      (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
        s.bound_origin, s.bound_origin_absent
 FROM pm.slack s
 
+) s USING (filing, layer, buffer)
+
 ) s
 JOIN      (
-    -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -769,11 +725,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -783,8 +739,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -862,11 +819,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -876,8 +833,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -952,7 +910,7 @@ WHERE l.quantum_mode > 0
 ) p ON true
 WHERE r.slug = 'nameplate_not_a_multiple'
 UNION ALL
--- pm:Remainder/sign = clearance against pm:HolderKind customer/unrealised.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount plus pm:Nameplate/pm:capacitySlack.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -961,11 +919,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -975,8 +933,75 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    SELECT d.filing, d.layer,
+           d.draw_mode > d.n_mode + d.capacity_slack + 1e-9 AS violates,
+           format('served %s against a rating of %s and %s of headroom',
+                  d.draw_mode, d.n_mode, d.capacity_slack) AS detail
+    FROM (
+        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+SELECT n.filing, n.layer,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       s.mode   AS capacity_slack,
+       s.absent AS capacity_absent
+FROM pm.nameplate n
+LEFT JOIN (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.bound_origin, s.bound_origin_absent
+FROM pm.slack s
+
+) s ON s.filing = n.filing AND s.layer = n.layer AND s.buffer = 'capacity'
+WHERE n.draw_mode   IS NOT NULL
+  AND n.amount_mode IS NOT NULL
+
+    ) d
+    WHERE d.capacity_slack IS NOT NULL
+) p ON true
+WHERE r.slug = 'draw_exceeds_the_supply'
+UNION ALL
+-- pm:Remainder/sign = clearance against pm:HolderKind customer/unrealised.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1037,7 +1062,7 @@ JOIN pm.layer l USING (filing, layer)
 
     ) r
     JOIN      (
-        -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+        -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -1048,7 +1073,7 @@ FROM pm.holder h
         -- pm:HolderKind values `customer` and `unrealised`.
 SELECT h.*
 FROM (
-    -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -1071,11 +1096,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1085,8 +1110,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1119,8 +1145,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
     ) r
            ON r.composition    = a.composition
@@ -1139,11 +1175,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1153,8 +1189,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1186,8 +1223,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path) AS (
@@ -1230,7 +1277,12 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
 
     ) n ON n.filing = l.root_filing
     GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
@@ -1246,11 +1298,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1260,8 +1312,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1286,7 +1339,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -1306,13 +1359,23 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -1333,8 +1396,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) pt
        ON pt.composition = up.filing AND pt.composed_layer = up.to_layer
@@ -1386,11 +1459,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1400,8 +1473,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1419,8 +1493,10 @@ LEFT JOIN (
 SELECT c.*
 FROM (
     -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns,
+SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,
@@ -1447,11 +1523,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1461,8 +1537,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1480,8 +1557,10 @@ LEFT JOIN (
 SELECT c.*
 FROM (
     -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns,
+SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,
@@ -1508,11 +1587,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1522,8 +1601,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1540,8 +1620,10 @@ LEFT JOIN (
 SELECT c.*
 FROM (
     -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns,
+SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,
@@ -1568,11 +1650,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1582,8 +1664,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1622,8 +1705,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 JOIN      (
@@ -1650,7 +1743,7 @@ WHERE pw.window_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_lost_or_summed'
 UNION ALL
--- pm:Buffer kind="time" reason="derived" against pm:Divisibility/window.
+-- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -1659,11 +1752,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1673,8 +1766,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1689,7 +1783,7 @@ LEFT JOIN (
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (
-        -- pm:Buffer kind="time" with pm:Absent reason="derived", beside pm:Divisibility/window.
+        -- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -1700,7 +1794,7 @@ FROM pm.nameplate n
 
 ) w
 JOIN      (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -1728,7 +1822,7 @@ WHERE w.window_absent IN ('none', 'notApplicable')
 ) p ON true
 WHERE r.slug = 'derived_slack_over_a_window'
 UNION ALL
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Nameplate/amount unit.
+-- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -1737,11 +1831,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1751,8 +1845,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1763,8 +1858,12 @@ SELECT * FROM (VALUES
 LEFT JOIN (
     SELECT w.filing, w.layer,
            r.filing IS NOT NULL AS violates,
-           format('%s has a denominator, so the duty cycle question is answerable',
-                  w.amount_unit) AS detail
+           CASE WHEN r.filing IS NOT NULL
+                THEN format('%s runs on a period, so the duty cycle question is answerable',
+                            w.amount_unit)
+                ELSE format('%s has no period under the line, so the question really is malformed',
+                            w.amount_unit)
+           END AS detail
     FROM      (
         -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
 SELECT n.filing, n.layer,
@@ -1774,13 +1873,31 @@ FROM pm.nameplate n
 
     ) w
     LEFT JOIN (
-        -- pm:Nameplate/amount unit, English or Portuguese edition.
-SELECT n.filing, n.layer, n.amount_unit AS unit
-FROM pm.nameplate n
-WHERE n.amount_unit LIKE '% per %' OR n.amount_unit LIKE '% por %'
+        -- pm:Claim/pm:denominator/pm:period, at pm:Nameplate/amount.
+SELECT c.filing, c.layer, c.unit, c.denominator AS period
+FROM      (
+    -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
+SELECT c.filing, c.seq, c.owns, c.layer,
+       c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
+       c.low = c.high AS is_a_point,
+       n.condition    AS narrows_condition,
+       n.kind         AS narrows_kind,
+       n.absent       AS narrows_absent,
+       b.origin,
+       b.absent       AS origin_absent
+FROM pm.claim c
+JOIN pm.narrowing    n USING (filing, seq)
+JOIN pm.bound_origin b USING (filing, seq)
+
+) c
+WHERE c.owns = 'pm:amount'
+  AND c.denominator_kind = 'period'
 
     ) r USING (filing, layer)
     WHERE w.window_absent = 'notApplicable'
+      AND w.amount_unit IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_not_applicable_on_a_rate'
 UNION ALL
@@ -1793,11 +1910,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1807,8 +1924,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1821,9 +1939,14 @@ LEFT JOIN (
            m.parts > 1 AS violates,
            format('%s parts and the search is `notApplicable`', m.parts) AS detail
     FROM (
-        -- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+        -- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
 SELECT es.composition, es.composed_layer, count(*) AS parts
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
+
+) es
 JOIN (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -1832,12 +1955,202 @@ FROM pm.part p
 
 ) p
   ON p.composition = es.composition AND p.composed_layer = es.composed_layer
-WHERE es.absent = 'notApplicable'
+WHERE es.answer = 'notApplicable'
 GROUP BY es.composition, es.composed_layer
 
     ) m
 ) p ON true
 WHERE r.slug = 'elimination_not_applicable_with_parts'
+UNION ALL
+-- asrt:Fusion/asrt:Part summed against the composed pm:Layer/pm:Demand, via composition/fused.sqlc.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    SELECT f.composition AS filing, f.composed_layer AS layer,
+           NOT f.agrees AS violates,
+           format('parts less eliminations give [%s, %s, %s]; the filing states [%s, %s, %s]',
+                  f.computed_low, f.computed_mode, f.computed_high,
+                  f.filed_low, f.filed_mode, f.filed_high) AS detail
+    FROM (
+        -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+SELECT c.composition, c.composed_layer,
+       'demand' AS quantity,
+       sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
+       sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
+       sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
+       max(d.d_low)  AS filed_low,
+       max(d.d_mode) AS filed_mode,
+       max(d.d_high) AS filed_high,
+       (sum(c.d_low)  - coalesce(max(e.low),  0) = max(d.d_low)
+    AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
+    AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
+FROM      (
+    -- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       'demand' AS quantity,
+       d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
+       d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
+       d.d_high * coalesce(p.factor_high, 1) AS d_high
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+JOIN      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+       ON d.filing = p.part_filing AND d.layer = p.part_layer
+
+) c
+JOIN      (
+    -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
+SELECT f.filing, f.layer, 'demand' AS quantity
+FROM (
+    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high
+FROM pm.part p
+
+) p
+
+) f
+EXCEPT
+SELECT s.composition, s.composed_layer, 'demand'
+FROM (
+    -- the two filings that lift the sum rule, each carrying the quantity it lifts.
+-- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
+SELECT es.composition, es.composed_layer,
+       NULL::text AS quantity,
+       'the search was never made' AS suspended_because,
+       es.note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
+FROM pm.elimination_search es
+
+) es
+WHERE es.answer = 'unmeasured'
+UNION ALL
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       'the overlap was found and could not be sized' AS suspended_because,
+       e.reason AS note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+
+) e
+WHERE e.absent IS NOT NULL
+
+
+) s
+WHERE s.quantity IS NULL OR s.quantity = 'demand'
+
+) o
+       ON o.filing = c.composition AND o.layer = c.composed_layer
+JOIN      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+       ON d.filing = c.composition AND d.layer = c.composed_layer
+LEFT JOIN (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+
+) e
+       ON e.composition = c.composition
+      AND e.composed_layer = c.composed_layer
+      AND e.quantity = 'demand'
+GROUP BY c.composition, c.composed_layer
+
+    ) f
+) p ON true
+WHERE r.slug = 'fusion_sum_disagrees'
 UNION ALL
 -- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -1848,11 +2161,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1862,8 +2175,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1885,10 +2199,20 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
 
     ) p
-    LEFT JOIN pm.layer l ON l.filing = p.composition AND l.layer = p.part_layer
+    LEFT JOIN (
+        -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+    ) l ON l.filing = p.composition AND l.layer = p.part_layer
 ) p ON true
 WHERE r.slug = 'local_part_dangles'
 UNION ALL
@@ -1901,11 +2225,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1915,8 +2239,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -1939,7 +2264,12 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
 
     ) p
     LEFT JOIN (
@@ -1955,7 +2285,12 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
 
 ),
 walk(filing, root, layer) AS (
@@ -1984,11 +2319,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -1998,8 +2333,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',

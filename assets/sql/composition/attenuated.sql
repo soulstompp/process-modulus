@@ -6,7 +6,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -26,13 +26,23 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -53,8 +63,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) pt
        ON pt.composition = up.filing AND pt.composed_layer = up.to_layer

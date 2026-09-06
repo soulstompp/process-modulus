@@ -44,6 +44,9 @@
   <pm:notation>
     <pm:uri>urn:example:filing:acme-platform:2026-08-30-margin</pm:uri>
   </pm:notation>
+  <pm:evidence>
+    <pm:attests>observation</pm:attests>
+  </pm:evidence>
 
   <!-- 1. reports under something, not yet named -->
   <pm:regime>
@@ -99,34 +102,46 @@
       <pm:name>margin-ratio</pm:name>
 
       <pm:demand>
-        <pm:claim>
-          <pm:low>18</pm:low>
-          <pm:mostLikely>22</pm:mostLikely>
-          <pm:high>25</pm:high>
-          <pm:unit>percent</pm:unit>
-          <pm:narrowsWhen>
-            <pm:narrowing>
-              <pm:condition>the quarter closes and actual cost lands</pm:condition>
-              <pm:kind>instrument</pm:kind>
-            </pm:narrowing>
-          </pm:narrowsWhen>
-          <!-- what BOUNDS the range, which is a different question from what would narrow it -->
-          <pm:boundOrigin>
-            <pm:origin>policy</pm:origin>
-          </pm:boundOrigin>
-          <pm:provenance>
-            <pm:party>finance</pm:party>
-            <pm:enteredBy>analyst-04</pm:enteredBy>
-            <pm:approvedBy>controller-01</pm:approvedBy>
-            <pm:standing>
-              <pm:term>
-                <pm:taxonomy>urn:example:assertion-standing:2026</pm:taxonomy>
-                <pm:value>reviewed-not-verified</pm:value>
-              </pm:term>
-            </pm:standing>
-          </pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>18</pm:low>
+            <pm:mostLikely>22</pm:mostLikely>
+            <pm:high>25</pm:high>
+            <pm:unit>percent</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>the quarter closes and actual cost lands</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <!-- what BOUNDS the range, which is a different question from what would narrow it -->
+            <pm:boundOrigin>
+              <pm:origin>policy</pm:origin>
+            </pm:boundOrigin>
+            <pm:provenance>
+              <pm:party>finance</pm:party>
+              <pm:enteredBy>analyst-04</pm:enteredBy>
+              <pm:approvedBy>controller-01</pm:approvedBy>
+              <pm:standing>
+                <pm:term>
+                  <pm:taxonomy>urn:example:assertion-standing:2026</pm:taxonomy>
+                  <pm:value>reviewed-not-verified</pm:value>
+                </pm:term>
+              </pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
 
       <!-- 3. malformed for the same reason: a ratio has no demand that queues, so

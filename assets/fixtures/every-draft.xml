@@ -27,6 +27,12 @@
                nobody has assigned one, so nothing can compose it yet</pm:note>
     </pm:absent>
   </pm:notation>
+  <pm:evidence>
+    <pm:absent>
+      <pm:reason>unmeasured</pm:reason>
+      <pm:note>this document does not say whether anything in it was observed. That is the state every document written before pm:evidence existed is in, and a receiver must put it in neither set</pm:note>
+    </pm:absent>
+  </pm:evidence>
 
   <pm:stack>
     <pm:scope>
@@ -41,18 +47,31 @@
     <pm:layer>
       <pm:name>press</pm:name>
       <pm:demand>
-        <pm:claim>
-          <pm:low>110</pm:low><pm:mostLikely>140</pm:mostLikely><pm:high>190</pm:high>
-          <pm:unit>reams per shift</pm:unit>
-          <pm:narrowsWhen>
-            <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
-          </pm:narrowsWhen>
-          <pm:boundOrigin>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
-          </pm:boundOrigin>
-        </pm:claim>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>110</pm:low><pm:mostLikely>140</pm:mostLikely><pm:high>190</pm:high>
+            <pm:unit>reams per shift</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>the unit came across from the old format and nobody has said what sits under its line. A first-time adopter is in this state, and a receiver must not read the token to get out of it</pm:note>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent><pm:reason>unmeasured</pm:reason>
+                <pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent><pm:reason>none</pm:reason>
+                <pm:note>stipulated: nothing sets this bound</pm:note></pm:absent>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+          </pm:absent>
+        </pm:patience>
       </pm:demand>
       <pm:timeSlack>
         <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
@@ -64,6 +83,9 @@
             <pm:claim>
               <pm:low>150</pm:low><pm:mostLikely>150</pm:mostLikely><pm:high>150</pm:high>
               <pm:unit>reams per shift</pm:unit>
+              <pm:denominator>
+                <pm:period>shift</pm:period>
+              </pm:denominator>
               <pm:narrowsWhen>
                 <pm:absent><pm:reason>notApplicable</pm:reason>
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -82,6 +104,9 @@
                   <pm:claim>
                     <pm:low>5</pm:low><pm:mostLikely>5</pm:mostLikely><pm:high>5</pm:high>
                     <pm:unit>reams per shift</pm:unit>
+                    <pm:denominator>
+                      <pm:period>shift</pm:period>
+                    </pm:denominator>
                     <pm:narrowsWhen>
                       <pm:absent><pm:reason>notApplicable</pm:reason>
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
@@ -104,8 +129,20 @@
             <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
-            <pm:absent><pm:reason>none</pm:reason>
-              <pm:note>stipulated: nothing keeps until next week</pm:note></pm:absent>
+            <pm:claim>
+              <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+              <pm:unit>reams per shift</pm:unit>
+              <pm:denominator>
+                <pm:period>shift</pm:period>
+              </pm:denominator>
+              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>stipulated: nothing keeps until next week</pm:note>
+              </pm:provenance>
+            </pm:claim>
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>

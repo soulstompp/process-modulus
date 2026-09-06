@@ -80,7 +80,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 1. r = n - d, and the fit read off the ranges.
     // ------------------------------------------------------------------
-    let rows = sqlx::query_file_as!(Layer, "assets/sql/queries/1-fit-from-ranges.sql")
+    let rows = sqlx::query_file_as!(Layer, "assets/sql/queries/matrices/1-fit-from-ranges.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -130,7 +130,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .entry((row.evidence.as_str(), row.sign.as_str()))
             .or_default() += 1;
     }
-    for evidence in ["corpus", "fixture"] {
+    for evidence in ["observation", "stipulation"] {
         let tally: Vec<String> = census
             .iter()
             .filter(|((e, _), _)| *e == evidence)
@@ -150,7 +150,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // plenty to check, none of it the thing being claimed.
     let corpus_layers: usize = census
         .iter()
-        .filter(|((e, _), _)| *e == "corpus")
+        .filter(|((e, _), _)| *e == "observation")
         .map(|(_, c)| c)
         .sum();
     assert!(
@@ -163,7 +163,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 2. D-transpose N: computed, empty, and the reason is the thesis.
     // ------------------------------------------------------------------
-    let ops = sqlx::query_file!("assets/sql/queries/2-draws-and-inductions.sql")
+    let ops = sqlx::query_file!("assets/sql/queries/matrices/2-draws-and-inductions.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -187,7 +187,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 3. x_composed = F Phi x_parts - e, as an actual matrix product.
     // ------------------------------------------------------------------
-    let parts = sqlx::query_file!("assets/sql/queries/3a-fusion-parts.sql")
+    let parts = sqlx::query_file!("assets/sql/queries/matrices/3a-fusion-parts.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -223,7 +223,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &f * (diag(|p| p.f_high) * vect(|p| p.d_high)),
     ];
 
-    let expected = sqlx::query_file!("assets/sql/queries/3b-composed-demand.sql")
+    let expected = sqlx::query_file!("assets/sql/queries/matrices/3b-composed-demand.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -274,7 +274,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 5. What densifying costs. The interesting failure, kept for the end.
     // ------------------------------------------------------------------
-    let couplings = sqlx::query_file!("assets/sql/queries/5-coupling-presence.sql")
+    let couplings = sqlx::query_file!("assets/sql/queries/matrices/5-coupling-presence.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -322,7 +322,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 4. Phi is correlated with itself, and the corpus shows it.
     // ------------------------------------------------------------------
-    let c = sqlx::query_file!("assets/sql/queries/4-converted-remainder.sql")
+    let c = sqlx::query_file!("assets/sql/queries/matrices/4-converted-remainder.sql")
         .fetch_one(&pool)
         .await?;
 
@@ -379,7 +379,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 6. The residue census: how often the sawtooth defeats a filed demand.
     // ------------------------------------------------------------------
-    let residue = sqlx::query_file!("assets/sql/queries/6-residue-census.sql")
+    let residue = sqlx::query_file!("assets/sql/queries/matrices/6-residue-census.sql")
         .fetch_all(&pool)
         .await?;
 
@@ -439,7 +439,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 7. Slack coverage, and the column that reads zero.
     // ------------------------------------------------------------------
-    let slacks = sqlx::query_file!("assets/sql/queries/7-slack-coverage.sql")
+    let slacks = sqlx::query_file!("assets/sql/queries/matrices/7-slack-coverage.sql")
         .fetch_all(&pool)
         .await?;
 

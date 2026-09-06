@@ -43,7 +43,8 @@ use process_modulus::asrt::{
 };
 use process_modulus::pm;
 use process_modulus::pm::{
-    AbsenceReasonType, AbsenceType, FitType, HolderKindType, LayerType, ProcessModulusElementType,
+    AbsenceReasonType, AbsenceType, ClaimAbsenceReasonType, FitType, HolderKindType, LayerType,
+    ProcessModulusElementType,
     RemainderType, StatedBorrowedTermType, StatedClaimType, StatedFitType, StatedHolderType,
     StatedRemainderType,
 };
@@ -125,7 +126,7 @@ fn layer<'a>(doc: &'a ProcessModulusElementType, name: &str) -> &'a LayerType {
 
 /// The layer's unit, taken from its demand. Every quantity on a layer is in it.
 fn unit(l: &LayerType) -> &str {
-    match &l.demand {
+    match &l.demand.amount {
         StatedClaimType::Claim(c) => c.unit.as_str(),
         StatedClaimType::Absent(_) => panic!("`{}`: demand is not stated", l.name),
     }
@@ -366,6 +367,20 @@ fn slack_fact(s: &StatedClaimType) -> String {
     }
 }
 
+/// The same fingerprint with the unit dropped from each of the three slack facts.
+///
+/// ⚠️ Segments 1..3 only. The holder-kinds segment is comma-joined too, and a layer bearing
+/// four kinds would be mangled by a blind split.
+fn without_units(fp: &str) -> String {
+    let mut seg: Vec<String> = fp.split('|').map(str::to_string).collect();
+    for s in seg.iter_mut().take(4).skip(1) {
+        if let Some((triple, _unit)) = s.rsplit_once(',') {
+            *s = triple.to_string();
+        }
+    }
+    seg.join("|")
+}
+
 fn fingerprint(l: &LayerType) -> String {
     let mut kinds: Vec<String> = holder_kinds(l).iter().map(|k| format!("{k:?}")).collect();
     kinds.sort();
@@ -401,11 +416,33 @@ fn joining_two_filings_on_the_facts_produces_a_false_negative() {
          example stopped carrying the asymmetric instrument that is the whole point"
     );
 
-    assert_eq!(
+    // ⭐⭐⭐ AND THE PAIR THAT IS NOT ONE LAYER DIFFERS BY EXACTLY ONE FACT: THE UNIT.
+    //
+    // This asserted the two fingerprints were IDENTICAL, and they were, because all three
+    // slacks were `absent reason="none"` and an absence carries no unit. Stating those zeros
+    // as claims put `GPU` and `GPU-hour` into the key, and that is not noise: it is the exact
+    // obstacle `merge-holding-composition` had to bridge with a `GPU-hour per GPU` factor
+    // when it did eventually fuse them.
+    //
+    // ⭐⭐ SO THEY WERE NEVER PERMANENTLY TWO LAYERS. `merge-group-composition` kept them
+    // apart as two ONE-PART fusions, `compute-us` and `compute-pt`; the holding company, one
+    // level up and with the standing to say so, made them one. A filing is never the system,
+    // and what the fact-based join was missing was not a better heuristic, it was a fusion
+    // nobody had filed yet.
+    let (us_fp, pt_fp) = (
         fingerprint(layer(&us, "compute")),
         fingerprint(layer(&pt, "compute")),
-        "these two are NOT one layer — different vendor, different contract, different \
-         unit — and every fact this namespace owns agrees across them"
+    );
+    assert_ne!(
+        us_fp, pt_fp,
+        "the unit is the one fact that separates them, and it is the one a conversion \
+         factor had to reconcile"
+    );
+    assert_eq!(
+        without_units(&us_fp),
+        without_units(&pt_fp),
+        "strip the units and every other fact this namespace owns still agrees across two \
+         layers that are NOT one, which is why the collision was never a heuristic problem"
     );
 }
 
@@ -462,7 +499,7 @@ fn triple(s: &StatedClaimType) -> Option<Triple> {
 }
 
 fn demand(l: &LayerType) -> Triple {
-    triple(&l.demand).unwrap_or_else(|| panic!("`{}`: demand is not stated", l.name))
+    triple(&l.demand.amount).unwrap_or_else(|| panic!("`{}`: demand is not stated", l.name))
 }
 
 fn nameplate(l: &LayerType) -> Triple {
@@ -791,7 +828,7 @@ fn expected(
     for e in eliminations(f).into_iter().filter(|e| e.against == against) {
         match &e.quantity {
             StatedClaimType::Claim(c) => total = eliminate(total, (c.low, c.most_likely, c.high)),
-            StatedClaimType::Absent(a) if a.reason == AbsenceReasonType::None => {}
+            // A zero elimination is `[0, 0, 0]` and eliminates nothing; `none` is gone.
             StatedClaimType::Absent(_) => return None,
         }
     }
@@ -826,10 +863,10 @@ fn the_fused_demand_reconciles_with_its_parts_less_the_eliminations() {
     // ⭐ THE ASYMMETRY, ASSERTED. Demand was double counted because both members booked
     // the same work; the PEOPLE were not, because two establishments are two sets of
     // people. An implementation that eliminated symmetrically would have invented a
-    // headcount reduction, so the composer filed the nameplate elimination as `none`
-    // rather than leaving a reader to guess that nobody looked.
+    // headcount reduction, so the composer filed the nameplate elimination as a stated
+    // `[0, 0, 0]` rather than leaving a reader to guess that nobody looked.
     let np = expected(labour, EliminationAgainstType::Nameplate, nameplate)
-        .expect("`none` means zero: the composer looked and there was nothing to remove");
+        .expect("a stated zero: the composer looked and there was nothing to remove");
     assert!(close(nameplate(layer(&c.process_modulus, "labour")), np));
 
     // And the elimination is doing real work: without it the equation fails.
@@ -856,7 +893,7 @@ fn an_elimination_nobody_could_size_is_not_a_zero() {
     let c = composition();
     let f = fusion(&c, "compute-pt");
 
-    let reasons: Vec<&AbsenceReasonType> = eliminations(f)
+    let reasons: Vec<&ClaimAbsenceReasonType> = eliminations(f)
         .into_iter()
         .filter_map(|e| match &e.quantity {
             StatedClaimType::Absent(a) => Some(&a.reason),
@@ -864,7 +901,7 @@ fn an_elimination_nobody_could_size_is_not_a_zero() {
         })
         .collect();
     assert!(
-        reasons.contains(&&AbsenceReasonType::Unmeasured),
+        reasons.contains(&&ClaimAbsenceReasonType::Unmeasured),
         "this layer's double count is certain and its size is not; the document has to be \
          able to say both"
     );
@@ -941,26 +978,42 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
     let c = composition();
     let (labour, line) = (fusion(&c, "labour"), fusion(&c, "shift-line"));
 
-    let sized = |f: &FusionType, a: EliminationAgainstType| {
-        triple(&elimination_against(f, a).quantity).is_some()
+    // ⭐⭐ THE ASYMMETRY IS A VALUE NOW AND NOT A PRESENCE, AND THAT IS THE STRONGER FORM.
+    // These four used to be `sized` / `!sized`: the two zero axes filed
+    // `absent reason="none"` and the test read which SLOT was empty. But an unsized
+    // elimination in this corpus means the reconciliation is UNCOMPUTABLE -- this file says
+    // so itself -- and both zeros here are reconciliations that were RUN: "payroll registers
+    // checked against each other for shared national identifiers; no person appears on both",
+    // "the two order books were reconciled against each other by customer and by week". A
+    // completed cross-check and one nobody ran read identically to anything keying on
+    // sized-ness, which is the `none`/`unmeasured` collapse happening one level up.
+    let eliminated = |f: &FusionType, a: EliminationAgainstType| -> f64 {
+        triple(&elimination_against(f, a).quantity)
+            .unwrap_or_else(|| panic!("every elimination in this fusion states its quantity"))
+            .1
     };
 
-    assert!(sized(labour, EliminationAgainstType::Demand));
-    assert!(!sized(labour, EliminationAgainstType::Nameplate));
+    assert!(eliminated(labour, EliminationAgainstType::Demand) > 0.0);
+    assert_eq!(eliminated(labour, EliminationAgainstType::Nameplate), 0.0);
 
-    assert!(sized(line, EliminationAgainstType::Nameplate));
-    assert!(!sized(line, EliminationAgainstType::Demand));
+    assert!(eliminated(line, EliminationAgainstType::Nameplate) > 0.0);
+    assert_eq!(eliminated(line, EliminationAgainstType::Demand), 0.0);
 
-    // ⚠️ BOTH UNSIZED ONES ARE `none` AND NOT `unmeasured`: the composer looked and there
-    // was nothing to remove. Filing no elimination at all would have said neither.
+    // ⚠️ AND THE TWO ZEROS SAY WHO LOOKED. This used to assert they were `none` and not
+    // `unmeasured` -- the composer looked and there was nothing to remove -- which is the
+    // distinction a stated zero carries BETTER than the absence did: `none` said somebody
+    // looked, and provenance says who. Filing no elimination at all still says neither.
     for (f, a) in [
         (labour, EliminationAgainstType::Nameplate),
         (line, EliminationAgainstType::Demand),
     ] {
-        match &elimination_against(f, a).quantity {
-            StatedClaimType::Absent(x) => assert_eq!(x.reason, AbsenceReasonType::None),
-            StatedClaimType::Claim(_) => unreachable!(),
-        }
+        let StatedClaimType::Claim(c) = &elimination_against(f, a).quantity else {
+            panic!("a reconciliation that was run and returned zero is a claim, not an absence")
+        };
+        assert!(
+            c.provenance.as_ref().and_then(|p| p.party.as_ref()).is_some(),
+            "a zero nobody signs is indistinguishable from a reconciliation nobody ran"
+        );
     }
 }
 
@@ -1109,7 +1162,7 @@ fn a_composition_composes_another_composition() {
         (EliminationAgainstType::Nameplate, nameplate),
     ] {
         let what = format!("{against:?}");
-        let computed = expected(staff, against, of).expect("both eliminations are `none`");
+        let computed = expected(staff, against, of).expect("both eliminations are stated zeros");
         assert!(
             close(of(composed_layer), computed),
             "level-2 {what}: composed {:?} against parts-less-eliminations {computed:?}",
@@ -1273,12 +1326,10 @@ fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
 
     let slack = |l: &LayerType| match &l.time_slack {
         StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high)),
-        StatedClaimType::Absent(a) => match a.reason {
-            // ⛔ `none` IS ZERO AND `unmeasured` IS NOT. Collapsing them is the defect
-            // `Absence` exists to prevent, reintroduced by the checker.
-            AbsenceReasonType::None => Some((0.0, 0.0, 0.0)),
-            _ => None,
-        },
+        // ⛔ AN ABSENT SLACK IS NOT A ZERO ONE. Collapsing them is the defect `Absence`
+        // exists to prevent, and it used to be reachable here because a zero could be
+        // spelled `none`. `pm:ClaimAbsence` has no `none`, so a zero arrives as a claim.
+        StatedClaimType::Absent(_) => None,
     };
 
     let parts = [

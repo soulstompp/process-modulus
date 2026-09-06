@@ -1,0 +1,26 @@
+-- §11  Whether a fused supply still arrives in whole units, and where that question has no answer.
+#
+# ONE ROW PER COMPOSED LAYER whose parts all state a quantum: the greatest common divisor of those
+# quanta where the parts share a unit, and a typed absence where they do not.
+#
+# ⭐⭐ THE SET OF ATTAINABLE COMPOSED SUPPLIES IS AN IDEAL. Each part's nameplate ranges over the
+# multiples of its own quantum, so the attainable sums are the multiples of gcd(q₁, q₂) by Bézout.
+# The gcd is therefore the greatest element of the intersection of the parts' divisor sets, and no
+# larger quantum divides every sum the parts could produce.
+#
+# ⛔ A `notApplicable` HERE IS NOT THIN COVERAGE. Divisibility is a relation on ONE ordered set, so
+# two quanta in different units have no common divisor to find. The row says the question is
+# malformed rather than unanswered, which is a different fact and the one a filer can act on.
+#
+# ⭐ AND `1` IS A REAL ANSWER, not a failure. Every integer is a multiple of one, so the constraint
+# is vacuous and the fused supply is continuous as far as the arithmetic can see.
+-- composition/composed_quantum.sqlc, ordered by whether the question has an answer.
+SELECT c.composition                                   AS "composition!",
+       c.composed_layer                                AS "composed_layer!",
+       c.parts                                         AS "parts!",
+       coalesce(c.unit, '(incommensurable)')           AS "unit!",
+       coalesce(c.composed_quantum::text, '(' || c.absent || ')') AS "quantum!"
+FROM (
+    :compose(composition/composed_quantum.sqlc)
+) c
+ORDER BY (c.absent IS NOT NULL) DESC, c.composition, c.composed_layer

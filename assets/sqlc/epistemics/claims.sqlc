@@ -9,6 +9,12 @@
 #    right shape for asking about a demand and the wrong shape for asking about a claim.
 #    Twelve different parents in this corpus, across two schemas.
 #
+# ⭐⭐ AND IT CARRIES `layer` NOW, WHICH IS WHAT LETS A CLAIM-GRAINED RELATION JOIN BACK. The
+#    ancestor axis supplies it at ingest; NULL means the claim is about a RELATION between
+#    layers -- a coupling strength, an elimination quantity, a part factor -- rather than
+#    about one. Before this column a rule that needed both grains had to read the per-table
+#    copy and reach one parent of twelve.
+#
 # ⛔⛔ WHAT COULD NOT BE ASKED BEFORE, AND IT IS THE HALF OF THE PAIR NOBODY HAD. `narrowsWhen`
 #    and `boundOrigin` were two tables keyed on a bare document ordinal with no way back to
 #    the claim, so a narrowing could be COUNTED and never COMPARED against the width it
@@ -21,8 +27,10 @@
 #    three different courses of action depending on the answers: renegotiate, measure again,
 #    or accept it. Read apart they are two censuses; read together they are advice.
 -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns,
+SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
+       c.denominator, c.denominator_kind, c.denominator_absent,
+       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,

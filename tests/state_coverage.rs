@@ -22,7 +22,7 @@
 //! like the other forty-four things XSD 1.0 cannot reach. Every one of them is a claim a
 //! reader is entitled to disagree with.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 
 use process_modulus::asrt::{ClaimedType, CompositionType, CoverageType};
@@ -158,6 +158,72 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("StatedNarrowing", Unmeasured, Exercised),
         ("StatedNarrowing", NotApplicable, Exercised),
         // ---- the two that arrived with local composition ----
+        // ---- ⭐⭐⭐ THE FOUR WRAPPERS THAT WERE NEVER IN FRAME ----
+        //
+        // Every cell below is `Exercised` and not one of them is a judgement call: each is a
+        // state some document in `assets/` actually files, counted by a walker that until now
+        // read what was INSIDE a claim and never the claim's own absence. The pass that built
+        // this table audited the wrappers that had ARGUMENTS to audit, and `StatedClaim`,
+        // `StatedHolder` and `StatedBasis` carry no annotation at all -- three bare
+        // `xs:choice` types with nothing to read. That is why the most reused wrapper in the
+        // schema had no row here.
+        ("amount", NotApplicable, Exercised),
+        ("amount", Unmeasured, Exercised),
+        ("patience", Unmeasured, Exercised),
+        ("timeSlack", Unmeasured, Exercised),
+        ("timeSlack", NotApplicable, Exercised),
+        ("timeSlack", Derived, Exercised),
+        ("capacitySlack", Unmeasured, Exercised),
+        ("capacitySlack", NotApplicable, Exercised),
+        ("inventorySlack", Unmeasured, Exercised),
+        ("inventorySlack", NotApplicable, Exercised),
+        ("draw", Unmeasured, Exercised),
+        ("draw", NotApplicable, Exercised),
+        ("operation draw", Unmeasured, Exercised),
+        ("share", Unmeasured, Exercised),
+        ("remainder quantity", Unmeasured, Exercised),
+        ("remainder quantity", Derived, Exercised),
+        ("premium", Unmeasured, Exercised),
+        // `StatedBasis` and `StatedBorrowedTerm`: the two that reach neither the database nor,
+        // until now, this table. `measurementBasis` is `notApplicable` 35 times because the
+        // quantity is physical -- a deliberate state `enterprise-contract` argues in its header.
+        ("measurementBasis", NotApplicable, Exercised),
+        ("standing", Unmeasured, Exercised),
+        ("framework", RNone, Exercised),
+        ("framework", Unmeasured, Exercised),
+        ("chart", Unmeasured, Exercised),
+        // ---- what sits under the line in a claim's unit ----
+        ("StatedDenominator", NotApplicable, Exercised),
+        ("StatedDenominator", Unmeasured, Exercised),
+        ("StatedDenominator", RNone, Incoherent(
+            "⛔ \"somebody looked and there is no denominator\" is precisely what \
+             `notApplicable` says at this site. Two spellings of one state is the collapse the \
+             wrapper exists to prevent, and the corpus files 91 of them",
+        )),
+        ("StatedDenominator", Derived, Incoherent(
+            "⛔ deriving the denominator from the unit STRING is the `LIKE '% per %'` this \
+             element replaced. Admitting the reason would license that read in the schema's own \
+             voice, and a unit is an `xs:token` nothing may look inside",
+        )),
+        // ---- what a document says about being evidence at all ----
+        ("StatedEvidence", Unmeasured, Exercised),
+        ("StatedEvidence", RNone, Incoherent(
+            "⛔ \"somebody looked and there is nothing to report\" does not parse. A document \
+             that exists was written by somebody who knew whether they were observing or \
+             stipulating, and unlike a `notation` that knowledge is not external, there is no \
+             registry to be waiting on",
+        )),
+        ("StatedEvidence", NotApplicable, Incoherent(
+            "⛔ there is no document the question fails to reach. Every document either reports \
+             something somebody saw, or it does not, and a document claiming the question is \
+             malformed is claiming to be outside the only distinction that decides whether it \
+             may be quoted",
+        )),
+        ("StatedEvidence", Derived, Incoherent(
+            "⛔ nothing in the model implies a document's standing. Admitting it would invite a \
+             receiver to infer evidence FROM CONTENT, which is the one inference this element \
+             exists to stop",
+        )),
         ("StatedNotation", RNone, Open(
             "a working document published under no identifier at all. Ordinary in practice, \
              and nothing in either directory is one: every document here is written to be \
@@ -231,8 +297,15 @@ fn read(rel: &str) -> String {
     fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"))
 }
 
-fn reason(a: &pm::AbsenceType) -> AbsenceReasonType {
-    a.reason.clone()
+fn reason(a: &pm::AbsenceType) -> String {
+    format!("{:?}", a.reason)
+}
+
+/// The same, for the narrowed absence a `StatedClaim` takes. `ClaimAbsenceReason` is
+/// `AbsenceReason` without `none`, so the two are different Rust enums with overlapping
+/// spellings, and the counter keys on the spelling.
+fn claim_reason(a: &pm::ClaimAbsenceType) -> String {
+    format!("{:?}", a.reason)
 }
 
 /// Count every (site, state) pair across both corpora at once.
@@ -247,52 +320,75 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
     // ⚠️ Keyed by the reason's `Debug` string: the generated enums derive `PartialEq` but not
     // `Ord`, and a map wants an ordering. The names are the schema's own enumeration values.
     fn walk(m: &mut BTreeMap<(&'static str, String), usize>, doc: &ProcessModulusElementType) {
-        let mut bump = |site: &'static str, r: AbsenceReasonType| {
-            *m.entry((site, format!("{r:?}"))).or_default() += 1
-        };
+        let mut bump = |site: &'static str, r: String| *m.entry((site, r)).or_default() += 1;
+
+        // ⭐⭐⭐ EVERY `StatedClaim` POSITION IS COLLECTED RATHER THAN HANDLED WHERE IT SITS, AND
+        // THAT IS THE REPAIR. The first version of this walker checked what was INSIDE each
+        // claim -- `narrowsWhen`, `boundOrigin` -- at every position, and never once checked
+        // the claim wrapper's OWN absence. So 259 typed absences across nine sites were counted
+        // nowhere, in the file whose whole job is counting them.
+        //
+        // ⛔⛔ IT IS THE SAME BUG THIS FILE ALREADY FIXED ONCE, FOUR MORE TIMES. The note below
+        // on `StatedRemainder` reads "only the `Remainder` arm was ever walked, so the arm
+        // carrying the disagreement was counted nowhere" -- and that was equally true of
+        // `StatedClaim`, `StatedHolder`, `StatedBasis` and `StatedBorrowedTerm`. Scattering the
+        // positions is what let it happen twice; one list is what stops it happening again.
+        let mut claims: Vec<(&'static str, &StatedClaimType)> = Vec::new();
+
         if let pm::StatedNotationType::Absent(a) = &doc.notation {
             bump("StatedNotation", reason(a));
+        }
+        if let pm::StatedEvidenceType::Absent(a) = &doc.evidence {
+            bump("StatedEvidence", reason(a));
         }
         if let pm::StatedScopeType::Absent(a) = &doc.stack.scope {
             bump("StatedScope", reason(a));
         }
 
-        // ⚠️ EVERY POSITION A `Claim` CAN SIT IN, AND THE FIRST DRAFT OF THIS WALKER MISSED
-        // THREE — coupling strengths, elimination quantities and part factors. The test above
-        // caught it, which is the point of asserting on a declared table rather than printing
-        // a percentage: an undercount looks exactly like a dark state.
+        // ⚠️ THE REGIME WAS NOT WALKED AT ALL. `StatedBorrowedTerm` exists, in its own words,
+        // "for the two places a borrowed term is the FRAME a document is read under".
+        for rg in &doc.regime {
+            if let pm::StatedBorrowedTermType::Absent(a) = &rg.framework {
+                bump("framework", reason(a));
+            }
+            if let pm::StatedBorrowedTermType::Absent(a) = &rg.chart {
+                bump("chart", reason(a));
+            }
+        }
+
         for c in &doc.stack.couplings.content {
             match c {
                 pm::StatedCouplingsTypeContent::Absent(a) => bump("StatedCouplings", reason(a)),
                 pm::StatedCouplingsTypeContent::Coupling(k) => {
-                    if let Some(StatedClaimType::Claim(c)) = &k.strength {
-                        if let StatedConstraintOriginType::Absent(a) = &c.bound_origin {
-                            bump("boundOrigin", reason(a));
-                        }
-                        if let StatedNarrowingType::Absent(a) = &c.narrows_when {
-                            bump("StatedNarrowing", reason(a));
-                        }
+                    if let Some(st) = &k.strength {
+                        claims.push(("strength", st));
                     }
                 }
             }
         }
-        for l in &doc.stack.layer {
-            for c in [
-                &l.demand,
-                &l.time_slack,
-                &l.supply.nameplate.capacity_slack,
-                &l.supply.nameplate.inventory_slack,
-                &l.supply.nameplate.amount,
-            ] {
-                if let StatedClaimType::Claim(c) = c {
-                    match &c.narrows_when {
-                        StatedNarrowingType::Absent(a) => bump("StatedNarrowing", reason(a)),
-                        StatedNarrowingType::Narrowing(_) => {}
-                    }
-                    if let StatedConstraintOriginType::Absent(a) = &c.bound_origin {
-                        bump("boundOrigin", reason(a));
-                    }
+
+        // ⚠️ NOR WERE THE OPERATIONS. A draw and an induced commitment are both `StatedClaim`.
+        for op in &doc.operation {
+            for c in &op.content {
+                match c {
+                    pm::OperationTypeContent::Draw(d) => claims.push(("operation draw", &d.quantity)),
+                    pm::OperationTypeContent::Induces(i) => claims.push(("commitment", &i.commitment)),
+                    _ => {}
                 }
+            }
+        }
+
+        for l in &doc.stack.layer {
+            claims.push(("demand", &l.demand.amount));
+            claims.push(("patience", &l.demand.patience));
+            claims.push(("timeSlack", &l.time_slack));
+            claims.push(("amount", &l.supply.nameplate.amount));
+            claims.push(("capacitySlack", &l.supply.nameplate.capacity_slack));
+            claims.push(("inventorySlack", &l.supply.nameplate.inventory_slack));
+            claims.push(("draw", &l.supply.jagged.draw));
+
+            if let pm::StatedBasisType::Absent(a) = &l.supply.jagged.measurement_basis {
+                bump("measurementBasis", reason(a));
             }
             if let StatedConstraintOriginType::Absent(a) = &l.supply.nameplate.amount_origin {
                 bump("amountOrigin", reason(a));
@@ -305,47 +401,63 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
                             pm::DivisibilityTypeContent::Window(
                                 StatedLumpyQuantumType::Absent(a),
                             ) => bump("window", reason(a)),
-                            pm::DivisibilityTypeContent::Lumpy(q) => {
-                                if let StatedClaimType::Claim(c) = &q.size {
-                                    if let StatedConstraintOriginType::Absent(a) = &c.bound_origin {
-                                        bump("boundOrigin", reason(a));
-                                    }
-                                    if let StatedNarrowingType::Absent(a) = &c.narrows_when {
-                                        bump("StatedNarrowing", reason(a));
-                                    }
-                                }
+                            pm::DivisibilityTypeContent::Lumpy(q) => claims.push(("size", &q.size)),
+                            pm::DivisibilityTypeContent::Continuous(c) => {
+                                claims.push(("premium", &c.premium))
                             }
                             _ => {}
                         }
                     }
                 }
             }
+
             // ⭐⭐⭐ THE WRAPPER ITSELF, WHICH THIS FILE MISSED FOR TWO REVISIONS. `Layer`
             // requires a `StatedRemainder` so that a sender who disagrees with "every layer
             // has a remainder" must SAY SO; only the `Remainder` arm was ever walked, so the
             // arm carrying the disagreement was counted nowhere. `assets/ddl/schema.ddl` was
             // dropping it at the same time and for the same reason.
-            if let pm::StatedRemainderType::Absent(a) = &l.remainder {
-                bump("StatedRemainder", reason(a));
-            }
-            if let pm::StatedRemainderType::Remainder(r) = &l.remainder {
-                if let StatedFitType::Absent(a) = &r.sign {
-                    bump("StatedFit", reason(a));
-                }
-                let mut claim = |c: &StatedClaimType| {
-                    if let StatedClaimType::Claim(c) = c {
-                        if let StatedConstraintOriginType::Absent(a) = &c.bound_origin {
-                            bump("boundOrigin", reason(a));
-                        }
-                        if let StatedNarrowingType::Absent(a) = &c.narrows_when {
-                            bump("StatedNarrowing", reason(a));
+            match &l.remainder {
+                pm::StatedRemainderType::Absent(a) => bump("StatedRemainder", reason(a)),
+                pm::StatedRemainderType::Remainder(r) => {
+                    if let StatedFitType::Absent(a) = &r.sign {
+                        bump("StatedFit", reason(a));
+                    }
+                    if let pm::StatedBorrowedTermType::Absent(a) = &r.absorber {
+                        bump("absorber", reason(a));
+                    }
+                    claims.push(("remainder quantity", &r.quantity));
+                    for h in &r.holder {
+                        match h {
+                            pm::StatedHolderType::Absent(a) => bump("holder", reason(a)),
+                            pm::StatedHolderType::Holder(h) => claims.push(("share", &h.share)),
                         }
                     }
-                };
-                claim(&r.quantity);
-                for h in &r.holder {
-                    if let pm::StatedHolderType::Holder(h) = h {
-                        claim(&h.share);
+                }
+            }
+        }
+
+        // ⛔⛔ THE WRAPPER AND WHAT IS INSIDE IT ARE TWO QUESTIONS, AND ONLY THE SECOND WAS EVER
+        // ASKED. `absent reason="unmeasured"` on a `capacitySlack` says nobody measured the
+        // headroom; a `boundOrigin` absence INSIDE a stated one says nobody owns its edge.
+        // Reading only the second answers a question about edges on a corpus that never filed
+        // the quantity.
+        for (site, c) in claims {
+            match c {
+                StatedClaimType::Absent(a) => bump(site, claim_reason(a)),
+                StatedClaimType::Claim(k) => {
+                    if let StatedNarrowingType::Absent(a) = &k.narrows_when {
+                        bump("StatedNarrowing", reason(a));
+                    }
+                    if let StatedConstraintOriginType::Absent(a) = &k.bound_origin {
+                        bump("boundOrigin", reason(a));
+                    }
+                    if let pm::StatedDenominatorType::Absent(a) = &k.denominator {
+                        bump("StatedDenominator", reason(a));
+                    }
+                    if let Some(pv) = &k.provenance {
+                        if let pm::StatedBorrowedTermType::Absent(a) = pv.standing.as_ref() {
+                            bump("standing", reason(a));
+                        }
                     }
                 }
             }
@@ -368,7 +480,7 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
             if let process_modulus::asrt::StatedEliminationsTypeContent::Absent(a) =
                 &f.eliminations.content[0]
             {
-                *m.entry(("StatedEliminations", format!("{:?}", reason(a))))
+                *m.entry(("StatedEliminations", reason(a)))
                     .or_default() += 1;
             }
             let mut claims: Vec<&StatedClaimType> = Vec::new();
@@ -381,11 +493,11 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
             for c in claims {
                 if let StatedClaimType::Claim(c) = c {
                     if let StatedConstraintOriginType::Absent(a) = &c.bound_origin {
-                        *m.entry(("boundOrigin", format!("{:?}", reason(a))))
+                        *m.entry(("boundOrigin", reason(a)))
                             .or_default() += 1;
                     }
                     if let StatedNarrowingType::Absent(a) = &c.narrows_when {
-                        *m.entry(("StatedNarrowing", format!("{:?}", reason(a))))
+                        *m.entry(("StatedNarrowing", reason(a)))
                             .or_default() += 1;
                     }
                 }
@@ -441,7 +553,7 @@ fn every_admitted_state_has_a_verdict_and_the_documents_agree_with_it() {
     // ⛔ A TABLE THAT DECLARED EVERYTHING Open WOULD PASS AND PROVE NOTHING. This is the
     // guard against the guard.
     assert!(
-        exercised >= 23,
+        exercised >= 48,
         "only {exercised} cells are exercised out of {} declared; this file is supposed to be \
          the answer to 'which states has anybody ever filed', not a list of intentions",
         table.len()
@@ -494,4 +606,156 @@ fn every_claimed_value_is_filed_somewhere() {
             "`claimed = {v:?}` is filed {n} time(s) against a verdict of {verdict:?}"
         );
     }
+}
+
+// ---------------------------------------------------------------------------
+// ⛔⛔⛔ THE LOOP THIS FILE COULD NOT CLOSE, AND THE ONE IT EXISTS TO CLOSE FOR EVERYTHING ELSE.
+//
+// The table above asserts, in prose, that "adding a wrapper to either schema and not adding it
+// here leaves its states unmeasured". Nothing enforced it. The site list was a Rust literal
+// checked only against the tally it produced itself, so a wrapper that was never in frame was
+// indistinguishable from one with no dark states, and FOUR of the sixteen never were.
+//
+// ⭐⭐ THE PATTERN IS ALREADY IN THIS DIRECTORY, TWICE. `tests/translation.rs` reads the schemas
+// and asserts its declared list is what is on disk, in BOTH directions.
+// `assets/sql/reports/integrity.sql` does the same for all three rosters, conformance, arithmetic and algebra: "declared,
+// but no check produces it" and "produced, but not on the roster". This file measured every
+// other instrument's coverage and had none of its own.
+//
+// ⚠️ WHY IT IS A SITE→TYPE MAP AND NOT A SET OF TYPES. One wrapper sits at several positions
+// and an absence MEANS different things at each, that is the whole argument for the table
+// above being keyed by site. `StatedConstraintOrigin` is `amountOrigin` and `boundOrigin`, and
+// `derived` is coherent at one and not the other. So the schema is read for TYPES, the table
+// declares SITES, and this map is the join nobody had written down.
+// ---------------------------------------------------------------------------
+
+/// How this file measures one wrapper.
+#[derive(Debug)]
+enum Measured {
+    /// The site names the table above keys on for this wrapper.
+    At(&'static [&'static str]),
+    /// ⛔ NO VERDICT DECLARED AT ANY OF ITS SITES, with the count of absences the corpus
+    /// actually files there and the reason it was missed. This arm exists so a gap is a ROW
+    /// rather than a silence, the same bargain `Verdict::Open` strikes one level down, and
+    /// the count below caps it at what was found, so it can only shrink.
+    NotYet(&'static str),
+}
+use Measured::{At, NotYet};
+
+/// Every wrapper in either schema that admits a `pm:Absence`, and where its states are counted.
+const MEASURED_AT: [(&str, Measured); 16] = [
+    ("StatedConstraintOrigin", At(&["amountOrigin", "boundOrigin"])),
+    ("StatedLumpyQuantum", At(&["window"])),
+    ("StatedCouplings", At(&["StatedCouplings"])),
+    ("StatedDenominator", At(&["StatedDenominator"])),
+    ("StatedDivisibility", At(&["StatedDivisibility"])),
+    ("StatedEliminations", At(&["StatedEliminations"])),
+    ("StatedEvidence", At(&["StatedEvidence"])),
+    ("StatedFit", At(&["StatedFit"])),
+    ("StatedNarrowing", At(&["StatedNarrowing"])),
+    ("StatedNotation", At(&["StatedNotation"])),
+    ("StatedRemainder", At(&["StatedRemainder"])),
+    ("StatedScope", At(&["StatedScope"])),
+    // ---- the four that were never in frame ----
+    ("StatedClaim", At(&["amount", "patience", "timeSlack", "capacitySlack", "inventorySlack",
+        "draw", "operation draw", "share", "remainder quantity", "premium"])),
+    ("StatedBorrowedTerm", At(&["standing", "framework", "chart"])),
+    ("StatedBasis", At(&["measurementBasis"])),
+    ("StatedHolder", NotYet(
+        "no document files one. That may be a real dark state worth an `Open` argument or an \
+         `Incoherent` one, a remainder nobody can name a holder for is a strong claim, but \
+         it has never been decided, which is the difference between an unfiled state and an \
+         unexamined one",
+    )),
+];
+
+/// The two schemas, read as text. ⚠️ Not `read()` above: that one is rooted at `assets/`.
+fn schema(name: &str) -> String {
+    let path = format!("{}/schema/{name}", env!("CARGO_MANIFEST_DIR"));
+    fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"))
+}
+
+/// The `name="X"` of every complexType containing an `absent` arm.
+///
+/// ⚠️ Walks back to the enclosing `<xs:complexType name=`, which works because every named type
+/// in both schemas is top level. The one anonymous complexType, `processModulus`'s, carries
+/// no `absent` and so is never the answer to this walk.
+fn wrappers_in(src: &str) -> BTreeSet<String> {
+    let mut found = BTreeSet::new();
+    for (i, _) in src.match_indices(r#"<xs:element name="absent""#) {
+        let head = &src[..i];
+        if let Some(d) = head.rfind(r#"<xs:complexType name=""#) {
+            let rest = &head[d + 22..];
+            if let Some(end) = rest.find('"') {
+                found.insert(rest[..end].to_string());
+            }
+        }
+    }
+    found
+}
+
+/// ⛔⛔⛔ ADDING A WRAPPER TO EITHER SCHEMA AND NOT ADDING IT HERE NOW FAILS THE BUILD.
+///
+/// That sentence was the table's claim about itself from the day it was written, and this is
+/// the first thing that holds it to it.
+#[test]
+fn every_wrapper_that_admits_an_absence_is_accounted_for() {
+    let mut on_disk = BTreeSet::new();
+    for file in ["process-modulus.xsd", "assertion.xsd"] {
+        on_disk.extend(wrappers_in(&schema(file)));
+    }
+    let accounted: BTreeSet<String> = MEASURED_AT.iter().map(|(t, _)| t.to_string()).collect();
+    assert_eq!(
+        on_disk, accounted,
+        "the wrappers on disk and the wrappers this file accounts for disagree. A new one \
+         needs either a site in the table above or a `NotYet` saying why not, silence is the \
+         one thing that must stop being available"
+    );
+}
+
+/// ⛔ AND IN THE OTHER DIRECTION: no site is keyed in the table that belongs to no wrapper.
+///
+/// ⚠️ A typo'd site name is the failure this catches, and it is invisible without it: a
+/// misspelled key declares verdicts nothing ever bumps, so its states read as `Exercised`
+/// against a tally of zero, which the assertion above would report as a dark state at a site
+/// that does not exist.
+#[test]
+fn every_site_in_the_table_belongs_to_a_declared_wrapper() {
+    let mapped: BTreeSet<&str> = MEASURED_AT
+        .iter()
+        .filter_map(|(_, m)| match m {
+            At(sites) => Some(sites.iter().copied()),
+            NotYet(_) => None,
+        })
+        .flatten()
+        .collect();
+    let keyed: BTreeSet<&str> = declared().iter().map(|(site, _, _)| *site).collect();
+    assert_eq!(
+        keyed, mapped,
+        "the sites the verdict table keys on and the sites MEASURED_AT maps are not the same set"
+    );
+}
+
+/// ⭐⭐ THE UNMEASURED SET MAY SHRINK AND MAY NOT GROW, which is what makes `NotYet` a record
+/// rather than a parking space, the same bargain, and the same danger, as `Verdict::Open`.
+///
+/// It began at four. `StatedClaim`, `StatedBorrowedTerm` and `StatedBasis` are measured now;
+/// `StatedHolder` is the one left, and it is left on purpose. No document has ever filed an
+/// absence at `Remainder/holder`, so there is nothing to declare `Exercised`, and deciding
+/// whether "somebody looked and nobody bears this remainder" contradicts the conservation
+/// claim, or is the sharpest counter-example the model admits, is a judgement about the model
+/// rather than a fact about the corpus. The wrapper carries no annotation to read it off.
+#[test]
+fn statedholder_is_the_only_wrapper_still_unmeasured() {
+    let not_yet: Vec<&str> = MEASURED_AT
+        .iter()
+        .filter(|(_, m)| matches!(m, NotYet(_)))
+        .map(|(t, _)| *t)
+        .collect();
+    assert_eq!(
+        not_yet,
+        ["StatedHolder"],
+        "declaring verdicts for one of these means removing it from here; adding a fifth means \
+         a wrapper went unmeasured after this test existed to stop that"
+    );
 }

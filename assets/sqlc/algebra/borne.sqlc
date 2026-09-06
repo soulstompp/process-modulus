@@ -1,0 +1,44 @@
+# WHAT EVERY HOLDER HOLDS, SPLIT INTO WHAT A BUFFER ABSORBED AND WHAT WENT UNSERVED. One row per
+# layer: whether the two sum back to the whole.
+#
+# ⭐⭐⭐ THE ANTI-JOIN IS INSIDE A `GROUP BY`, SO THE LAW IS ADDITIVE RATHER THAN CARDINAL.
+#    entries/borne.sqlc removes unserved holders and then sums per (filing, layer, buffer):
+#    removing SOME leaves the group standing with a smaller total, removing ALL drops the group.
+#    So counting rows says nothing here, and once produced a confident false finding. Σ is what
+#    must balance: Σall = Σkept + Σremoved.
+#
+# ⛔ AND THIS IS THE LAW BEHIND A ⛔ VACUOUS VERDICT. Every interference layer in this corpus that
+#   sizes its absorbing buffer has ALL of its holders unserved, so Σkept is zero and
+#   share_exceeds_slack examines nothing. The law still holds -- the sum balances at zero -- which
+#   is exactly the point: the vacuum is a finding about the evidence, not a broken operator.
+# ⛔⛔ THE LAW COMPOSES BOTH SIDES RATHER THAN RE-DERIVING THE SPLIT, WHICH IS WHAT MAKES IT A
+#    LAW ABOUT THEM. It used to compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over its
+#    own anti-join, so it asserted that ITS COPY of the split was exhaustive and would have gone
+#    on passing if entries/served_holders.sqlc changed underneath it. A law that re-derives its
+#    subject is the one failure a soundness contract cannot afford, because it is invisible.
+-- entries/served_holders.sqlc and entries/unserved_holders.sqlc against pm:Remainder/pm:holder.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT x.filing || ' / ' || x.layer AS subject,
+           abs(x.held - x.served - x.unserved) < 1e-9 AS holds,
+           format('%s held = %s absorbed + %s unserved', x.held, x.served, x.unserved) AS detail
+    FROM (
+        SELECT h.filing, h.layer,
+               sum(h.share_mode)                                            AS held,
+               coalesce((SELECT sum(v.share_mode) FROM (
+                   :compose(entries/served_holders.sqlc)
+               ) v WHERE v.filing = h.filing AND v.layer = h.layer), 0)      AS served,
+               coalesce((SELECT sum(u.share_mode) FROM (
+                   :compose(entries/unserved_holders.sqlc)
+               ) u WHERE u.filing = h.filing AND u.layer = h.layer), 0)      AS unserved
+        FROM (
+            :compose(entries/holders.sqlc)
+        ) h
+        WHERE h.share_mode IS NOT NULL
+        GROUP BY h.filing, h.layer
+    ) x
+) p ON true
+WHERE a.slug = 'borne'

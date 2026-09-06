@@ -28,16 +28,16 @@
 #   a rule examined nothing. A leading WITH cannot appear after UNION ALL, so a check needing
 #   recursion puts the walk in its own relation under composition/ and joins it -- which is
 #   better anyway, because the walk is then runnable by itself.
--- the twenty-two conformance rules XSD 1.0 cannot reach, one file each.
+-- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
 :union(ALL checks/fit_disagrees.sqlc,
            checks/shares_do_not_sum.sqlc,
            checks/nobody_named_as_unserved.sqlc,
            checks/exposure_unaccounted.sqlc,
-           checks/zero_stated_as_a_claim.sqlc,
            checks/share_exceeds_slack.sqlc,
            checks/slack_unit_mismatch.sqlc,
            checks/quantum_unit_mismatch.sqlc,
            checks/nameplate_not_a_multiple.sqlc,
+           checks/draw_exceeds_the_supply.sqlc,
            checks/clearance_with_unserved.sqlc,
            checks/unresolved_part.sqlc,
            checks/leaf_reached_twice.sqlc,
@@ -49,6 +49,7 @@
            checks/derived_slack_over_a_window.sqlc,
            checks/window_not_applicable_on_a_rate.sqlc,
            checks/elimination_not_applicable_with_parts.sqlc,
+           checks/fusion_sum_disagrees.sqlc,
            checks/local_part_dangles.sqlc,
            checks/local_cycle.sqlc,
            checks/denied_remainder_is_not_contradicted.sqlc)

@@ -25,7 +25,7 @@ ORDER BY filing, operation, layer;
 SELECT filing, operation, layer,
        coalesce(mode::text, '(' || absent || ')') AS entry, unit, decider
 FROM (
-    -- pm:Operation/pm:Induction, carrying pm:decider.
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
 SELECT n.filing, n.operation, n.layer,
        n.low, n.mode, n.high, n.unit, n.absent, n.decider
 FROM pm.induction n
@@ -56,7 +56,7 @@ FROM pm.draw d
 
 ) d
 JOIN      (
-    -- pm:Operation/pm:Induction, carrying pm:decider.
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
 SELECT n.filing, n.operation, n.layer,
        n.low, n.mode, n.high, n.unit, n.absent, n.decider
 FROM pm.induction n
@@ -81,7 +81,7 @@ ORDER BY 1, 2, 3;
 SELECT filing, from_layer, to_layer, low, mode, high, unit,
        left(observation, 60) || '...' AS observed
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -108,24 +108,18 @@ FROM pm.filing f
 
 ) f
 LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observation.
+    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
 
 ) c USING (filing)
 LEFT JOIN (
-    -- pm:Stack/pm:Couplings and pm:Fusion/pm:Eliminations, each with its pm:Absent.
-SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,
-       cs.absent AS answer, cs.note
+    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
-UNION ALL
-SELECT es.composition, 'double counting across parts', es.composed_layer,
-       es.absent, es.note
-FROM pm.elimination_search es
 
-) s
-       ON s.filing = f.filing AND s.looked_for = 'couplings between layers'
+) s ON s.filing = f.filing
 GROUP BY f.filing, s.answer
 
 ) p
@@ -137,7 +131,7 @@ ORDER BY 1;
 SELECT filing, layer, kind,
        coalesce(share_mode::text, '(' || share_absent || ')') AS share
 FROM (
-    -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
@@ -148,14 +142,22 @@ ORDER BY 1, 2, 3;
 
 \echo
 \echo 'S, and the count that matters is the SIZED column: a buffer nobody measured is not a'
-\echo 'buffer that is empty, and only a sized row can bound anything at all.'
-SELECT buffer,
-       count(*)                                        AS entries,
-       count(*) FILTER (WHERE sized)                   AS sized,
-       count(*) FILTER (WHERE absent = 'none')         AS measured_zero,
-       count(*) FILTER (WHERE absent = 'unmeasured')   AS nobody_measured
-FROM (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+\echo 'buffer that is empty, and only a sized row can bound anything at all. A SIZED_AT_ZERO is'
+\echo 'the tightest bound there is, not a missing one, and the split is the whole point.'
+\echo 'Stipulations are kept apart from observations: the fixtures file absences on purpose,'
+\echo 'so pooling them would answer "how much does this corpus measure" with a made-up number.'
+-- entries/slacks.sqlc by buffer, split by evidence, restricted by the caller's @scope.
+SELECT s.buffer::text                                          AS buffer,
+       f.evidence                                              AS evidence,
+       count(*) FILTER (WHERE s.sized)                         AS sized,
+       count(*) FILTER (WHERE s.sized AND s.mode = 0)          AS sized_at_zero,
+       count(*) FILTER (WHERE NOT s.sized)                     AS absent,
+       count(*) FILTER (WHERE s.absent = 'unmeasured')         AS nobody_measured,
+       count(*) FILTER (WHERE s.absent = 'notApplicable')      AS not_applicable,
+       count(*) FILTER (WHERE s.absent = 'derived')            AS derived,
+       count(*)                                                AS rows
+FROM      (
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -163,7 +165,15 @@ SELECT s.filing, s.layer, s.buffer,
 FROM pm.slack s
 
 ) s
-GROUP BY buffer ORDER BY buffer;
+JOIN      (
+    -- from pm.filing, both evidence values.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f
+
+) f USING (filing)
+GROUP BY s.buffer, f.evidence
+ORDER BY s.buffer, f.evidence
+;
 
 \echo
 \echo === r = n - d, and the bound reversal that is easy to get wrong =================
@@ -247,8 +257,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path) AS (
@@ -280,6 +300,7 @@ SELECT composition, composed_layer,
 FROM (
     -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
 SELECT c.composition, c.composed_layer,
+       'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
        sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
        sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
@@ -290,8 +311,9 @@ SELECT c.composition, c.composed_layer,
     AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
     AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
 FROM      (
-    -- pm:Part/pm:ConversionFactor applied to the part layer's pm:Demand.
+    -- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       'demand' AS quantity,
        d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
        d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
        d.d_high * coalesce(p.factor_high, 1) AS d_high
@@ -309,8 +331,18 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
 FROM pm.part p
 
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 JOIN      (
@@ -332,9 +364,9 @@ WHERE l.demand_low IS NOT NULL
 
 ) c
 JOIN      (
-    -- pm.part minus the two suspensions; see composition/suspended_fusions.sqlc.
-SELECT f.filing, f.layer
-FROM      (
+    -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
+SELECT f.filing, f.layer, 'demand' AS quantity
+FROM (
     -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
@@ -346,26 +378,40 @@ FROM pm.part p
 ) p
 
 ) f
-LEFT JOIN (
-    -- the two pm:Absent reason="unmeasured" filings that lift the sum rule.
--- pm:Fusion/pm:Eliminations with pm:Absent reason="unmeasured".
+EXCEPT
+SELECT s.composition, s.composed_layer, 'demand'
+FROM (
+    -- the two filings that lift the sum rule, each carrying the quantity it lifts.
+-- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
 SELECT es.composition, es.composed_layer,
+       NULL::text AS quantity,
        'the search was never made' AS suspended_because,
        es.note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
-WHERE es.absent = 'unmeasured'
+
+) es
+WHERE es.answer = 'unmeasured'
 UNION ALL
--- pm:Eliminations/pm:Elimination quantity="demand" with pm:Absent reason="unmeasured".
-SELECT e.composition, e.composed_layer,
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
+FROM (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
 FROM pm.elimination e
-WHERE e.quantity = 'demand' AND e.absent = 'unmeasured'
+
+) e
+WHERE e.absent IS NOT NULL
 
 
 ) s
-       ON s.composition = f.filing AND s.composed_layer = f.layer
-WHERE s.composition IS NULL
+WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
 ) o
        ON o.filing = c.composition AND o.layer = c.composed_layer
@@ -385,7 +431,14 @@ WHERE l.demand_low IS NOT NULL
 
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN pm.elimination e
+LEFT JOIN (
+    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+
+) e
        ON e.composition = c.composition
       AND e.composed_layer = c.composed_layer
       AND e.quantity = 'demand'
@@ -405,14 +458,27 @@ ORDER BY 1, 2;
 \echo 'A conversion factor multiplies BOTH the nameplate and the demand of one part, so'
 \echo 'the two converted intervals are CORRELATED. Difference them as though they were'
 \echo 'independent and phi''s spread gets counted twice.'
-WITH filed AS (          -- the remainder the document carries: converted directly
-    SELECT qty_low AS low, qty_mode AS mode, qty_high AS high
-    FROM pm.layer WHERE filing = 'merge-holding-composition' AND layer = 'compute'
-),
-rederived AS (           -- the same layer's own nameplate minus its own demand
-    SELECT r.r_low AS low, r.r_mode AS mode, r.r_high AS high
-    FROM (
-        -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT 'converted directly, as filed'       AS method, x.qty_low, x.qty_mode, x.qty_high
+FROM (
+    -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
+SELECT l.filing, l.layer,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       r.r_low, r.r_mode, r.r_high, r.unit,
+       r.d_low, r.d_mode, r.d_high,
+       r.n_low, r.n_mode, r.n_high, r.amount_unit,
+       r.sign, r.derived_fit
+FROM      (
+    -- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
+SELECT l.filing, l.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent
+FROM pm.layer l
+WHERE l.remainder_absent IS NULL
+
+) l
+JOIN      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
        l.sign, l.sign_absent,
        l.absorber_taxonomy, l.absorber_value,
@@ -458,12 +524,81 @@ WHERE n.amount_low IS NOT NULL
 ) n USING (filing, layer)
 JOIN pm.layer l USING (filing, layer)
 
-    ) r
-    WHERE r.filing = 'merge-holding-composition' AND r.layer = 'compute'
-)
-SELECT 'converted directly, as filed' AS method, low, mode, high FROM filed
+) r USING (filing, layer)
+
+) x
+WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute'
 UNION ALL
-SELECT 're-derived from the composed totals', low, mode, high FROM rederived;
+SELECT 're-derived from the composed totals', x.r_low, x.r_mode, x.r_high
+FROM (
+    -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
+SELECT l.filing, l.layer,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       r.r_low, r.r_mode, r.r_high, r.unit,
+       r.d_low, r.d_mode, r.d_high,
+       r.n_low, r.n_mode, r.n_high, r.amount_unit,
+       r.sign, r.derived_fit
+FROM      (
+    -- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
+SELECT l.filing, l.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent
+FROM pm.layer l
+WHERE l.remainder_absent IS NULL
+
+) l
+JOIN      (
+    -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
+SELECT d.filing, d.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
+       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
+       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
+       n.n_mode - d.d_mode AS r_mode,
+       n.n_high - d.d_low  AS r_high,
+       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
+            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS derived_fit,
+       greatest(d.d_high - n.n_low, 0) AS exposure,
+       n.lumpy, n.quantum_mode, n.quantum_unit
+FROM      (
+    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
+SELECT l.filing, l.layer,
+       l.demand_low  AS d_low,
+       l.demand_mode AS d_mode,
+       l.demand_high AS d_high,
+       l.demand_unit AS d_unit,
+       l.demand_low = l.demand_high AS is_a_point,
+       l.demand_narrows,
+       l.demand_narrows_kind,
+       l.demand_narrows_absent
+FROM pm.layer l
+WHERE l.demand_low IS NOT NULL
+
+) d
+JOIN      (
+    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.
+SELECT n.filing, n.layer,
+       n.amount_low  AS n_low,
+       n.amount_mode AS n_mode,
+       n.amount_high AS n_high,
+       n.amount_unit AS n_unit,
+       n.amount_origin,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent
+FROM pm.nameplate n
+WHERE n.amount_low IS NOT NULL
+
+) n USING (filing, layer)
+JOIN pm.layer l USING (filing, layer)
+
+) r USING (filing, layer)
+
+) x
+WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute';
 \echo '⛔ They agree at the MODE and nowhere else, because the mode is the one point where'
 \echo '   phi is a single number and has no spread to count twice. Both figures are'
 \echo '   arithmetically correct. Only the first is the remainder.'

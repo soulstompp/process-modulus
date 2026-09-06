@@ -1,0 +1,24 @@
+# THE LAYERS THAT STATE A REMAINDER OF THEIR OWN, WITH THE MAGNITUDE THEY PUT ON IT. One row per
+# layer filing the first branch of the `StatedRemainder` wrapper -- the sign, the buffer it names
+# as absorber, and the quantity if the filer gave one.
+#
+# ⭐⭐⭐ THE POSITIVE HALF OF layers/denied_remainders.sqlc, AND IT HAD TO BE NAMED BEFORE THE
+#    ANTI-JOIN COULD BE READ. Three separate call sites reached past both relations into
+#    `pm.layer` for `qty_low/mode/high/unit` -- arithmetic/filed_remainder.sqlc, matrices.sqlc
+#    and queries/matrices/4-converted-remainder.sqlc -- and one of them wrote
+#    `WHERE remainder_absent IS NULL`, which is the NOT its sibling already states positively.
+#
+# ⛔⛔ `qty_unit` WAS READ BY NOTHING IN THIS REPOSITORY. The filed remainder is compared against
+#    a derived `n - d` in two places and neither reads the unit the filer wrote beside the
+#    number. Carrying it here is what makes that comparison askable at all.
+#
+# ⭐ THE QUANTITY IS ITSELF A TYPED ABSENCE. A layer may state that it HAS a remainder -- naming
+#   its sign and its absorber -- and decline to size it. `qty_absent` is that filing, and it is a
+#   different document from one that denies the remainder outright.
+-- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
+SELECT l.filing, l.layer,
+       l.sign, l.sign_absent,
+       l.absorber_taxonomy, l.absorber_value,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent
+FROM pm.layer l
+WHERE l.remainder_absent IS NULL

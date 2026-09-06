@@ -1,0 +1,31 @@
+# EVERY HOLDER SHARE ON A LAYER, TOTALLED, WITH WHAT WOULD SUSPEND THE TOTAL. One row per layer
+# naming at least one holder: how many, how many left the share unstated, the sum of the stated
+# ones at the mode, and the distinct units they were quoted in.
+#
+# ⭐⭐⭐ THREE FILES COMPUTED THIS γ SEPARATELY AND TWO OF THEM DISAGREED ABOUT ONE DOCUMENT.
+#    arithmetic/shares_sum.sqlc, arithmetic/shares_bounded.sqlc and checks/shares_do_not_sum.sqlc
+#    each grouped entries/holders.sqlc by (filing, layer) for the same two numbers. The two
+#    arithmetic sites report an unstated share as `suspended` and a foreign unit as
+#    `not comparable`; the check had only a `HAVING` for the first and NO branch at all for the
+#    second, so it would have summed across units and compared the total to |r|.
+#
+# ⛔⛔ H IS A DISTRIBUTION OVER THE MAGNITUDE OF `r`, SO A SHARE IN ANOTHER UNIT IS NOT A SMALLER
+#    SHARE, IT IS NOT A SHARE OF THIS. That is why `share_units` is carried rather than assumed
+#    away: a caller compares it against its own layer's unit and decides. arithmetic/roster.sqlc
+#    records `guarded_by = NULL` for shares_sum, meaning no unit rule stands there at all, which
+#    made the check the only thing between that site and a wrong number.
+#
+# ⭐ `sum()` SKIPS NULLS SILENTLY, so a layer where half the holders stated a share sums to half
+#   the truth and looks like an ordinary number. `unstated` is the column that makes that
+#   visible, and every caller has to read it before it reads the sum.
+-- entries/holders.sqlc folded to one row per layer.
+SELECT h.filing, h.layer,
+       count(*)                                     AS holders,
+       count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_mode)                             AS shares_mode,
+       sum(h.share_high)                             AS shares_high,
+       array_agg(DISTINCT h.share_unit)              AS share_units
+FROM (
+    :compose(entries/holders.sqlc)
+) h
+GROUP BY h.filing, h.layer

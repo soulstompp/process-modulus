@@ -1,0 +1,27 @@
+-- §1  Every site the model does arithmetic at, and what guards the join.
+#
+# ONE ROW PER SITE ON arithmetic/roster.sqlc: how many instances may be computed, how many are
+# suspended by a typed absence, how many put two incommensurable numbers together, and the rule
+# that checks the operands are the same kind of thing.
+#
+# ⭐⭐⭐ RUN IT ALONE AND THE INTERESTING COLUMN IS `guarded_by!`. Most of the sites are
+#   blank. `r = n - d` is one of them -- the central computation in the model, thirty-six
+#   layers deep, subtracting across two unit columns that nothing compares.
+#
+# ⛔ A BLANK GUARD BESIDE A ZERO IN `not_comparable!` IS NOT A PASS. It is a site whose luck
+#   has not run out: the corpus happens to agree everywhere today, which is exactly the state
+#   that reads as safe and is not.
+-- arithmetic/roster.sqlc against arithmetic/all.sqlc, grouped by site.
+SELECT r.site                                                  AS "site!",
+       coalesce(r.guarded_by, '')                              AS "guarded_by!",
+       count(*) FILTER (WHERE z.verdict = 'computable')        AS "computable!",
+       count(*) FILTER (WHERE z.verdict = 'suspended')         AS "suspended!",
+       count(*) FILTER (WHERE z.verdict = 'not comparable')    AS "not_comparable!"
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) r
+LEFT JOIN (
+    :compose(arithmetic/all.sqlc)
+) z USING (site)
+GROUP BY r.slug, r.site, r.guarded_by
+ORDER BY r.slug

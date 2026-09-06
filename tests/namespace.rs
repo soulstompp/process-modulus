@@ -37,7 +37,7 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 const BUILD_RS: &str = include_str!("../build.rs");
 
 /// Every instance, and the prefix whose namespace it must match.
-const INSTANCES: [(&str, &str, &str); 18] = [
+const INSTANCES: [(&str, &str, &str); 19] = [
     // The same filing in European Portuguese: same three layers, same argument, declared
     // by a microentity under IES's AnexoASNC instead of US-GAAP.
     (
@@ -136,6 +136,14 @@ const INSTANCES: [(&str, &str, &str); 18] = [
         "assets/fixtures/every-partial-elimination.xml",
         "asrt",
         include_str!("../assets/fixtures/every-partial-elimination.xml"),
+    ),
+    // A part whose conversion nobody measured: `asrt:Part/factor` filed as a typed absence
+    // rather than omitted. The third state of an optional `pm:StatedClaim`, which `pm.part`
+    // could not store until `factor_absent` existed.
+    (
+        "assets/fixtures/every-unsized-conversion.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-unsized-conversion.xml"),
     ),
 ];
 

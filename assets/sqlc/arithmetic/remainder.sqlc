@@ -1,0 +1,34 @@
+# EVERY LAYER WHERE A REMAINDER WAS CONCEIVABLE, AND WHETHER IT COULD BE TAKEN. One row per
+# layer holding a nameplate row, verdict on whether `n - d` may be computed there at all.
+#
+# ⭐⭐⭐ THIS IS THE CANDIDATE POPULATION, NOT THE GATED ONE, AND THE DIFFERENCE IS THE POINT.
+#    layers/remainder.sqlc inner-joins demand to nameplate, so a layer missing either simply
+#    is not there -- the sparse reading, and correct for the arithmetic. But a relation that
+#    drops a row cannot report WHY, so the four layers this model declines to subtract on are
+#    invisible to everything downstream. Here they are rows.
+#
+# ⛔⛔ AND THE UNIT COMPARISON IS THE ONE NOTHING ELSE MAKES. layers/remainder.sqlc:28-29
+#    carries `d_unit` and `n_unit` as two separate columns and subtracts across them with no
+#    predicate. All 36 computable layers agree today, so the guard would bind 36 rows rather
+#    than none -- a rule worth having, not a bound with nothing to bound.
+-- pm:Demand/pm:claim against pm:Nameplate/pm:amount, before layers/remainder.sqlc drops either.
+SELECT a.site, p.filing, p.layer, p.verdict, p.detail
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT l.filing, l.layer,
+           CASE WHEN l.demand_low IS NULL OR n.amount_low IS NULL THEN 'suspended'
+                WHEN l.demand_unit IS DISTINCT FROM n.amount_unit  THEN 'not comparable'
+                ELSE 'computable' END AS verdict,
+           CASE WHEN l.demand_low IS NULL AND n.amount_low IS NULL
+                     THEN format('demand %s and nameplate %s', l.demand_absent, n.amount_absent)
+                WHEN l.demand_low IS NULL THEN format('demand %s', l.demand_absent)
+                WHEN n.amount_low IS NULL THEN format('nameplate %s', n.amount_absent)
+                WHEN l.demand_unit IS DISTINCT FROM n.amount_unit
+                     THEN format('%s against %s', l.demand_unit, n.amount_unit)
+                ELSE format('both in %s', l.demand_unit) END AS detail
+    FROM pm.layer l
+    JOIN pm.nameplate n USING (filing, layer)
+) p ON true
+WHERE a.slug = 'remainder'

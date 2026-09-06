@@ -25,9 +25,10 @@ WHERE NOT d.is_a_point
 
 ) r
 JOIN (
-    -- from pm.filing where evidence = 'corpus'; the axis is documented on that column.
+    -- from pm.filing where evidence = 'observation' and the kind attests to a world.
 SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f
-WHERE f.evidence = 'corpus'
+WHERE f.evidence = 'observation'
+  AND f.kind IN ('processModulus', 'composition', 'dependence')
 
 ) s USING (filing)

@@ -92,16 +92,11 @@ ORDER BY 1, 2, 3;
 
 \echo
 \echo 'S, and the count that matters is the SIZED column: a buffer nobody measured is not a'
-\echo 'buffer that is empty, and only a sized row can bound anything at all.'
-SELECT buffer,
-       count(*)                                        AS entries,
-       count(*) FILTER (WHERE sized)                   AS sized,
-       count(*) FILTER (WHERE absent = 'none')         AS measured_zero,
-       count(*) FILTER (WHERE absent = 'unmeasured')   AS nobody_measured
-FROM (
-    :compose(entries/slacks.sqlc)
-) s
-GROUP BY buffer ORDER BY buffer;
+\echo 'buffer that is empty, and only a sized row can bound anything at all. A SIZED_AT_ZERO is'
+\echo 'the tightest bound there is, not a missing one, and the split is the whole point.'
+\echo 'Stipulations are kept apart from observations: the fixtures file absences on purpose,'
+\echo 'so pooling them would answer "how much does this corpus measure" with a made-up number.'
+:compose(reports/slack_census.sqlc, @scope = scope/every_filing.sqlc);
 
 \echo
 \echo === r = n - d, and the bound reversal that is easy to get wrong =================
@@ -154,20 +149,17 @@ ORDER BY 1, 2;
 \echo 'A conversion factor multiplies BOTH the nameplate and the demand of one part, so'
 \echo 'the two converted intervals are CORRELATED. Difference them as though they were'
 \echo 'independent and phi''s spread gets counted twice.'
-WITH filed AS (          -- the remainder the document carries: converted directly
-    SELECT qty_low AS low, qty_mode AS mode, qty_high AS high
-    FROM pm.layer WHERE filing = 'merge-holding-composition' AND layer = 'compute'
-),
-rederived AS (           -- the same layer's own nameplate minus its own demand
-    SELECT r.r_low AS low, r.r_mode AS mode, r.r_high AS high
-    FROM (
-        :compose(layers/remainder.sqlc)
-    ) r
-    WHERE r.filing = 'merge-holding-composition' AND r.layer = 'compute'
-)
-SELECT 'converted directly, as filed' AS method, low, mode, high FROM filed
+SELECT 'converted directly, as filed'       AS method, x.qty_low, x.qty_mode, x.qty_high
+FROM (
+    :compose(layers/filed_against_derived.sqlc)
+) x
+WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute'
 UNION ALL
-SELECT 're-derived from the composed totals', low, mode, high FROM rederived;
+SELECT 're-derived from the composed totals', x.r_low, x.r_mode, x.r_high
+FROM (
+    :compose(layers/filed_against_derived.sqlc)
+) x
+WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute';
 \echo '⛔ They agree at the MODE and nowhere else, because the mode is the one point where'
 \echo '   phi is a single number and has no spread to count twice. Both figures are'
 \echo '   arithmetically correct. Only the first is the remainder.'

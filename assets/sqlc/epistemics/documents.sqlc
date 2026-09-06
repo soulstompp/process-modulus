@@ -1,0 +1,57 @@
+# WHAT EACH DOCUMENT SAYS ABOUT ITSELF. One row per loaded document: the root element it
+# declares, the namespace that element is in, the URN it claims, and -- from the assertion
+# roots -- who witnessed it and when.
+#
+# ⭐⭐⭐ THE FIRST RELATION IN THIS TREE THAT READS A ROOT ELEMENT. Every other query reaches
+#    past it with the descendant axis, because `//pm:stack/pm:layer` finds a stack whether it
+#    sits at the root or one level down inside a composition. That is the right shape for
+#    asking about a LAYER and the wrong shape for asking about a DOCUMENT -- which is why
+#    `filing.kind` was a substring match on a namespace PREFIX until this file existed. A
+#    prefix is the sender's lexical choice; `local-name()` and `namespace-uri()` are the
+#    document's own.
+#
+# ⛔⛔ THE EMPTY COLUMN IS THE FINDING. Five roots are declared across the two schemas, every
+#    `asrt:` one names a witness, and `pm:processModulus` is the only one that does not. A
+#    filing says WHICH document it is -- S-28 gave it that -- and then stops. Every fact
+#    inside it carries a `pm:Provenance`; the document carries none, so a stipulation and an
+#    observation are the same shape to anything reading the tree.
+#
+# ⛔ `observedAt` AND `ranAt` ARE LEFT AS TWO COLUMNS ON PURPOSE. They are the same question
+#   under two spellings and `asrt:coverage` asks it under neither, so a reader can see three
+#   roots owing a date answer it three different ways. Folding them with a `coalesce` would
+#   assert an equivalence no schema states -- the same reason `week` and `semana` stay apart
+#   in units/denominators.sqlc.
+#
+# ✅⭐⭐ `evidence` IS FILED NOW, AND THIS RELATION IS WHY IT COULD BE ASKED FOR. Writing the
+#    query is what made the gap visible: a column for what each document says about itself,
+#    with the one fact that decides whether a number may be quoted missing from it. Until 0.4
+#    ingest matched `A STIPULATION, NOT A FILING` as a substring over the whole serialised
+#    body -- English-only in a repository with a Portuguese edition, and true of any corpus
+#    document that merely QUOTED the sentence.
+#
+# ⛔ THE OTHER TWO PLACES A STIPULATION ANNOUNCES ITSELF, WHICH NOTHING READS AND NOTHING
+#   SHOULD. The directory it sits in is rejected as a source on purpose. And the `notation`
+#   below carries a `:fixture:` segment that no query touches -- `contrato-empresarial`
+#   already spells the sibling segment `:declaracao:` in the other edition, so that convention
+#   had drifted before anybody leaned on it. A URN is an identifier, not a claim.
+--
+-- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
+SELECT s.name AS filing,
+       x.root, x.ns,
+       fi.notation, fi.absent AS notation_absent,
+       f.evidence, f.evidence_absent,
+       x.witness, x.observed_at, x.ran_at
+FROM      pm.source s
+CROSS JOIN XMLTABLE(XMLNAMESPACES('https://example.invalid/assertion/1.0' AS asrt),
+       '/*' PASSING s.body
+       COLUMNS root        text PATH 'local-name(.)',
+               ns          text PATH 'namespace-uri(.)',
+               witness     text PATH 'asrt:witness',
+               observed_at text PATH 'asrt:observedAt',
+               ran_at      text PATH 'asrt:ranAt') x
+LEFT JOIN (
+    :compose(composition/notations.sqlc)
+) fi ON fi.filing = s.name
+-- ⛔ pm.filing raw, and deliberately: scope/every_filing.sqlc drops evidence_absent, and a
+--    document that declines to say what it is evidence FOR is exactly what this relation reports.
+LEFT JOIN pm.filing f ON f.name = s.name

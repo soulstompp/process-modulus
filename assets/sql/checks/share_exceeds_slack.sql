@@ -1,4 +1,4 @@
--- pm:Holders against pm:Buffers, keyed by pm:Remainder/absorber through pm.buffer_term.
+-- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber through pm.buffer_term.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7,11 +7,11 @@ SELECT * FROM (VALUES
   ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
   ('nobody_named_as_unserved',             'a supply that cannot run hot names who went unserved'),
   ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('zero_stated_as_a_claim',               'a measured zero is filed as an absence, not as a claim of zero'),
   ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
   ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
   ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
   ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
@@ -21,8 +21,9 @@ SELECT * FROM (VALUES
   ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no denominator'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
   ('denied_remainder_is_not_contradicted',
@@ -36,11 +37,10 @@ LEFT JOIN (
            format('%s attributed to the %s buffer, whose slack is %s',
                   b.borne, b.buffer, b.slack_mode) AS detail
     FROM (
-        -- pm:Holders summed against pm:Buffers/pm:Buffer, keyed by pm:Remainder/absorber.
+        -- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
 SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
 FROM (
-    SELECT p.filing, p.layer, a.buffer,
-           sum(h.share_mode) FILTER (WHERE h.kind <> 'unrealised') AS borne
+    SELECT p.filing, p.layer, a.buffer, sum(h.share_mode) AS borne
     FROM      (
         -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
@@ -107,17 +107,24 @@ JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.abs
 
     ) a USING (filing, layer)
     JOIN      (
-        -- pm:Remainder/pm:Holders; kind is pm:HolderKind.
+        -- pm:HolderKind values `booked`, `counterparty` and `people`.
+SELECT h.*
+FROM (
+    -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
        h.party, h.as_of
 FROM pm.holder h
 
+) h
+WHERE h.kind IN ('booked', 'counterparty', 'people')
+
     ) h USING (filing, layer)
+    WHERE p.sign = 'interference'
     GROUP BY p.filing, p.layer, a.buffer
 ) b
 JOIN (
-    -- pm:Layer/pm:Buffers; one element per pm:BufferKind.
+    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,

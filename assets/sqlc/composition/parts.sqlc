@@ -25,5 +25,9 @@ SELECT p.composition, p.composed_layer,
 FROM      (
     :compose(composition/part_references.sqlc)
 ) p
-JOIN pm.filing_identity fi ON fi.notation = p.part_filing
-JOIN pm.layer l ON l.filing = fi.filing AND l.layer = p.part_layer
+JOIN      (
+    :compose(composition/notations.sqlc)
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    :compose(layers/every_layer.sqlc)
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer

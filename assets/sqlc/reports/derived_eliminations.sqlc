@@ -1,0 +1,27 @@
+# LAYERS BUILT INTO TWO COMPOSED LAYERS, AND THE SUPPLY THAT WOULD ENTER TWICE. One row per
+# shared part, with the magnitude the double count would be and the evidence each side attests to.
+#
+# ⭐⭐ THE CORRECTION IS DERIVED, NOT FILED, AND NOTHING ELSE HERE CAN SAY THAT. A filed
+#    `asrt:Elimination` corrects a composition somebody performed. This corrects one nobody has
+#    performed yet: two documents each built a layer from the same supply, and the arithmetic
+#    that would go wrong has not been done. Pivoting to the part incidence is what makes the
+#    magnitude reachable, because the overlap IS a part and a part carries its own figures.
+#
+# ⛔ THE EVIDENCE AXIS IS CARRIED AND NEVER POOLED. Two fixtures sharing a part is a stipulation
+#   about the schema; two corpus filings sharing one would be a finding about the world. Counting
+#   them together would make the second out of the first.
+-- eliminations/derived.sqlc, with the evidence each composing document attests to.
+SELECT s.part_filing || '/' || s.part_layer      AS part,
+       s.composition_a || '/' || s.composed_a    AS counted_into,
+       s.composition_b || '/' || s.composed_b    AS and_also_into,
+       fa.evidence                               AS evidence,
+       s.would_double_count_demand               AS demand,
+       s.would_double_count_nameplate            AS nameplate,
+       s.unit
+FROM      (
+    :compose(eliminations/derived.sqlc)
+) s
+JOIN      (
+    :compose(scope/every_filing.sqlc)
+) fa ON fa.filing = s.composition_a
+ORDER BY fa.evidence, 1

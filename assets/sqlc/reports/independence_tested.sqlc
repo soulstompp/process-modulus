@@ -23,10 +23,9 @@ SELECT CASE
        END AS the_independence_assumption,
        count(*) AS stacks
 FROM (
-    :compose(epistemics/searches.sqlc)
+    :compose(epistemics/coupling_searches.sqlc)
 ) s
 JOIN (
     :compose(scope/corpus.sqlc)
 ) c USING (filing)
-WHERE s.looked_for = 'couplings between layers'
 GROUP BY 1 ORDER BY 2 DESC

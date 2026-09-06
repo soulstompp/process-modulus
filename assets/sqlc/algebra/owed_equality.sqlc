@@ -1,0 +1,25 @@
+# THE FUSIONS THAT OWE A SUM, AGAINST THE ONES THAT DO NOT, CHECKED AS A PARTITION OF ALL OF
+# THEM. One row: whether |fusions| = |owed_equality| + |fusions ⋉ suspended|.
+#
+# ⭐ THE ONLY DIFFERENCE IN THIS TREE WRITTEN AS `EXCEPT` OVER A SET. composition/fusions.sqlc is
+#   `SELECT DISTINCT` over the bare key, so bag and set semantics coincide and the law is exact.
+#   Change fusions to carry duplicates and this law fails before the silence does.
+-- composition/fusions.sqlc partitioned by composition/suspended_fusions.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/owed_equality' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s fusions = %s owing + %s suspended', x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f)        AS total,
+             (SELECT count(*) FROM ( :compose(composition/owed_equality.sqlc) ) o)  AS kept,
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
+               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
+                              WHERE s.composition = f.filing AND s.composed_layer = f.layer
+                                AND coalesce(s.quantity, 'demand') = 'demand')) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'owed_equality'
