@@ -177,12 +177,17 @@ level, which is `cannotAsk`, and reusing the existing word is better than mintin
 
 ## What a validator cannot reach, and an implementer therefore still owes
 
-XSD 1.0 has no `xs:assert` and cannot compare across elements. Forty-four rules in this model
-are stated in the schemas' own prose and gated by nothing. Forty-one of them carry the marker
-`NOT REACHABLE BY A VALIDATOR` at the annotation that states it, so a reader can tell a
-binding rule from an unenforced one. The three rows marked below with an asterisk are stated in prose
-without that marker, which is a gap in the marking rather than in the reasoning. The counts
-in this paragraph drifted from the table for at least two passes; they are now the table.
+XSD 1.0 has no `xs:assert` and cannot compare across elements, so the rules below are stated in
+the schemas' own prose and gated by nothing. Most carry the marker `NOT REACHABLE BY A
+VALIDATOR` at the annotation that states them, so a reader can tell a binding rule from an
+unenforced one; the rows marked with an asterisk do not, which is a gap in the marking rather
+than in the reasoning.
+
+⛔ **This paragraph used to count them, and the count was wrong three times over.** A number
+here is a number nobody recounts, and the table is the only thing that knows how many rows it
+has. `tests/conformance.rs` holds this table and its Portuguese twin to the same length and the
+same asterisks, because the two drifted to forty-seven rules against seven summarised groups
+before anything noticed.
 
 ⭐⭐⭐ **THREE ROWS ARE NEW AND NONE OF THEM IS A NEW IDEA.** Each was already stated in the
 schemas' prose and was UNCHECKABLE, because in each case the state it turns on was encoded as a
