@@ -16,10 +16,25 @@
 # ⭐⭐ AND THE TWO EDITIONS ARE GONE FROM THE SQL ENTIRELY. `shifts per week` and `turnos por
 #    semana` both file `pm:denominator/pm:period`, so nothing here decides that `semana` IS
 #    `week`. That judgement used to live in an `OR` and belonged to no filing.
+#
+# ✅⛔⛔ AND THE HEADER SAID `pm:Nameplate/amount` WHILE THE PREDICATE SAID `pm:amount`, WHICH
+#    IS BOTH OF THEM. `Demand/amount` and `Nameplate/amount` are the same element NAME, and
+#    `pm.claim.owns` used to carry a name, so this relation answered for the demand too and
+#    returned TWO ROWS PER LAYER. Its only consumer at the time was a semi-join, where a
+#    duplicate is invisible, so the fault sat here undetected until a second consumer joined
+#    on it. A duty cycle is a fraction of the NAMEPLATE's period; the demand's period is a
+#    different fact and belongs to a different question.
+#    ⛔ AND THE DISAGREEING LAYER ALREADY EXISTS, so this was live rather than latent.
+#    `every-absence/delivery` quotes its DEMAND `per day` and files no nameplate amount at
+#    all, so the old predicate put it in this relation on the strength of a fact about
+#    demand. It cost nothing only because that layer's window is `unmeasured`, and
+#    `window_not_applicable_on_a_rate` examines only `notApplicable` windows. One filing
+#    away from a wrong verdict is not the same as safe. `owns` is a two-segment PATH now, so
+#    the predicate names the position it always meant.
 -- pm:Claim/pm:denominator/pm:period, at pm:Nameplate/amount.
 SELECT c.filing, c.layer, c.unit, c.denominator AS period
 FROM      (
     :compose(epistemics/claims.sqlc)
 ) c
-WHERE c.owns = 'pm:amount'
+WHERE c.owns = 'pm:nameplate/pm:amount'
   AND c.denominator_kind = 'period'

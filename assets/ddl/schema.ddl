@@ -411,7 +411,19 @@ CREATE TABLE nameplate (
 CREATE TABLE claim (
     filing text NOT NULL REFERENCES filing(name),
     seq    int  NOT NULL,          -- document order; the Nth pm:claim in the document
-    owns   text NOT NULL,          -- the element the claim is the value OF: pm:demand, pm:share
+    -- ⭐⭐ THE POSITION THE CLAIM IS THE VALUE OF, as `parent/element`:
+    -- `pm:nameplate/pm:amount`, `pm:holder/pm:share`, `pm:quantum/pm:size`.
+    -- ⛔ ONE SEGMENT WAS NOT ENOUGH, AND THE COLUMN SPENT SEVERAL REVISIONS SAYING SO
+    -- WITHOUT ANYBODY READING IT. It carried the parent's NAME, and three names are filed at
+    -- two positions each: `pm:amount` is `Demand/amount` AND `Nameplate/amount` (86 claims),
+    -- `pm:size` is the amount quantum AND the window's (61), `pm:quantity` is a draw's AND a
+    -- remainder's (4). A filter on this column therefore answered for a position nobody
+    -- asked about. `units/with_a_period.sqlc` is the one relation that filters on it, and it
+    -- did exactly that: a duty cycle is a fraction of the NAMEPLATE's period and the relation
+    -- was returning the demand's too, two rows per layer. `every-absence/delivery` is the
+    -- filing that disagrees, quoting its demand `per day` with no nameplate amount at all,
+    -- and it cost nothing only because that layer's window is `unmeasured`.
+    owns   text NOT NULL,
     -- ⭐⭐ THE LAYER THIS CLAIM SITS IN, read with `ancestor::pm:layer/pm:name`. NULL is a real
     -- answer and not a gap: a coupling strength, an elimination quantity and a part factor
     -- are claims about a RELATION between layers rather than about one, and there is no

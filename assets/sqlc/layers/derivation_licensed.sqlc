@@ -18,15 +18,13 @@
 #    staffed round the clock licensed this derivation identically and neither said so. Now
 #    the licence is read off a FILED window, and the two spellings collapse into one.
 #
-# ⚠️⚠️ THE PERIOD ARRIVES BY A SEMI-JOIN AND NOT A JOIN, AND THAT IS A LATENT DEFECT ONE
-#    DIRECTORY OVER RATHER THAN A STYLE CHOICE. `units/with_a_period.sqlc` says it reads
-#    `pm:Nameplate/amount`, but `pm.claim.owns` records an ELEMENT NAME and not a PATH, so
-#    `Demand/amount` and `Nameplate/amount` are the same `pm:amount` to it and it returns two
-#    rows per layer. A plain join fans out. Today the two always agree on whether they carry a
-#    period -- checked, zero layers differ -- so nothing is wrong yet; the day one disagrees,
-#    a window would be measured against the DEMAND's period, which is not what a duty cycle is
-#    a fraction of. `window_not_applicable_on_a_rate` rests on the same relation and hides the
-#    same fan-out behind an `EXISTS`.
+# ⭐ THE PERIOD ARRIVES BY A SEMI-JOIN, WHICH IS NOW A CHOICE RATHER THAN A GUARD. This asks
+#    "is there a period equal to this window's unit" and uses no value from the answer, so
+#    `EXISTS` states the question it means. ⚠️ It started as a guard: `units/with_a_period.sqlc`
+#    read `pm.claim.owns`, which carried an element NAME and not a PATH, so `Demand/amount` and
+#    `Nameplate/amount` were one `pm:amount` to it and it returned two rows per layer. A plain
+#    join fanned out; a semi-join hid it, which is how the fault survived in its only other
+#    consumer. `owns` is a path now and the relation is one row per layer.
 #
 # ⭐⭐⭐ A WHOLE PERIOD IS QUOTED AS `1` IN THE PERIOD'S OWN UNIT, AND THAT IS THE WHOLE
 #    TRICK. `1 week` against a period of `week` is a duty fraction of one you can read

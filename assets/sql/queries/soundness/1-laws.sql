@@ -2448,7 +2448,7 @@ JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)
 
 ) c
-WHERE c.owns = 'pm:amount'
+WHERE c.owns = 'pm:nameplate/pm:amount'
   AND c.denominator_kind = 'period'
 
            ) p
@@ -2530,7 +2530,7 @@ JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)
 
 ) c
-WHERE c.owns = 'pm:amount'
+WHERE c.owns = 'pm:nameplate/pm:amount'
   AND c.denominator_kind = 'period'
 
     ) r USING (filing, layer)
@@ -4921,7 +4921,7 @@ JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)
 
 ) c
-WHERE c.owns = 'pm:amount'
+WHERE c.owns = 'pm:nameplate/pm:amount'
   AND c.denominator_kind = 'period'
 
            ) p
@@ -5003,7 +5003,7 @@ JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)
 
 ) c
-WHERE c.owns = 'pm:amount'
+WHERE c.owns = 'pm:nameplate/pm:amount'
   AND c.denominator_kind = 'period'
 
     ) r USING (filing, layer)

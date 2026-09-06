@@ -305,7 +305,23 @@ FROM source s,
      XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0' AS pm),
        '//pm:claim' PASSING s.body
        COLUMNS seq FOR ORDINALITY,
-               owns text    PATH 'name(..)',
+               -- ⛔⛔ TWO SEGMENTS, AND ONE WAS NOT ENOUGH. This read `name(..)`, the
+               -- PARENT'S NAME, and called it the position. It is not: three names are
+               -- filed at two positions each, so the column silently merged them.
+               --   `pm:amount`   `Demand/amount` with `Nameplate/amount`     86 claims
+               --   `pm:size`     `lumpy/size` with the WINDOW's `quantum/size`  61
+               --   `pm:quantity` `draw/quantity` with `remainder/quantity`      4
+               -- A duty cycle is a fraction of the NAMEPLATE's period, and
+               -- `units/with_a_period.sqlc` is the one relation that filters on this column.
+               -- It read `owns = 'pm:amount'` and therefore answered for the demand too,
+               -- returning two rows per layer. Nothing was wrong yet only because no layer
+               -- in this corpus disagrees with itself about carrying a period; the day one
+               -- does, a window gets measured against the wrong denominator.
+               -- ⭐ The grandparent settles all three, and `concat` is ordinary XPath 1.0.
+               -- A composite key would settle them too and would put the burden on every
+               -- caller to remember the second column, which is the trap rather than the
+               -- repair.
+               owns text    PATH 'concat(name(../..),"/",name(..))',
                -- ⭐ THE ANCESTOR AXIS, and it is ordinary XPath 1.0 that Postgres XMLTABLE has
                -- had all along. A claim about a coupling or an elimination has no layer
                -- ancestor and lands NULL, which is the right answer rather than a miss.

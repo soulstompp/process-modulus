@@ -1,8 +1,8 @@
--- pm:Claim/pm:denominator, across all twelve parents.
+-- pm:Claim/pm:denominator, across every position that files one.
 SELECT c.denominator_kind AS kind,
        c.denominator,
        count(*)               AS claims,
-       count(DISTINCT c.owns) AS parents,
+       count(DISTINCT c.owns) AS positions,
        string_agg(DISTINCT c.owns, ', ' ORDER BY c.owns) AS filed_on
 FROM      (
     -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.

@@ -307,8 +307,9 @@ FROM source s,
                party text    PATH 'pm:party',
                as_of text    PATH 'pm:asOf') x;
 
-# ⭐⭐⭐ EVERY CLAIM IN THE DOCUMENT, AND THE ELEMENT IT IS THE VALUE OF. `name(..)` is the
-#    whole trick and it is ordinary XPath 1.0: from the `pm:claim` node, the parent's name.
+# ⭐⭐⭐ EVERY CLAIM IN THE DOCUMENT, AND THE POSITION IT IS THE VALUE OF. The parent axis is
+#    the whole trick and it is ordinary XPath 1.0: from the `pm:claim` node, walk up. ⛔ TWO
+#    STEPS, NOT ONE -- see the column.
 #    Without it a claim's own width was unreachable from the narrowing that describes it, and
 #    the two rules that compare the two could only run over `layer.demand_*` -- 40 claims of
 #    182, and the only 40 with no point value among them.
@@ -330,7 +331,23 @@ FROM source s,
      XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0' AS pm),
        '//pm:claim' PASSING s.body
        COLUMNS seq FOR ORDINALITY,
-               owns text    PATH 'name(..)',
+               -- ⛔⛔ TWO SEGMENTS, AND ONE WAS NOT ENOUGH. This read `name(..)`, the
+               -- PARENT'S NAME, and called it the position. It is not: three names are
+               -- filed at two positions each, so the column silently merged them.
+               --   `pm:amount`   `Demand/amount` with `Nameplate/amount`     86 claims
+               --   `pm:size`     `lumpy/size` with the WINDOW's `quantum/size`  61
+               --   `pm:quantity` `draw/quantity` with `remainder/quantity`      4
+               -- A duty cycle is a fraction of the NAMEPLATE's period, and
+               -- `units/with_a_period.sqlc` is the one relation that filters on this column.
+               -- It read `owns = 'pm:amount'` and therefore answered for the demand too,
+               -- returning two rows per layer. Nothing was wrong yet only because no layer
+               -- in this corpus disagrees with itself about carrying a period; the day one
+               -- does, a window gets measured against the wrong denominator.
+               -- ⭐ The grandparent settles all three, and `concat` is ordinary XPath 1.0.
+               -- A composite key would settle them too and would put the burden on every
+               -- caller to remember the second column, which is the trap rather than the
+               -- repair.
+               owns text    PATH 'concat(name(../..),"/",name(..))',
                -- ⭐ THE ANCESTOR AXIS, and it is ordinary XPath 1.0 that Postgres XMLTABLE has
                -- had all along. A claim about a coupling or an elimination has no layer
                -- ancestor and lands NULL, which is the right answer rather than a miss.
