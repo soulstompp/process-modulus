@@ -26,6 +26,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
 ) AS r(slug, rule)
@@ -33,12 +34,24 @@ SELECT * FROM (VALUES
 ) r
 LEFT JOIN (
     SELECT x.filing, x.layer,
-           abs(x.shares - x.magnitude) > 1e-9 AS violates,
-           format('shares %s against a magnitude of %s', x.shares, x.magnitude) AS detail
+           abs(x.shares - x.magnitude) > 1e-9
+           OR x.shares_low  < x.mag_low  - 1e-9
+           OR x.shares_high > x.mag_high + 1e-9                       AS violates,
+           format('shares [%s, %s, %s] against a magnitude of [%s, %s, %s]',
+                  x.shares_low, x.shares, x.shares_high,
+                  x.mag_low, x.magnitude, x.mag_high)                 AS detail
     FROM (
         SELECT r.filing, r.layer,
                abs(r.r_mode)  AS magnitude,
-               h.shares_mode  AS shares
+               h.shares_mode  AS shares,
+               h.shares_low, h.shares_high,
+               -- ⭐ |r| OVER AN INTERVAL, AND THE STRADDLE IS THE CASE THAT NEEDS SAYING. A
+               --   remainder whose range crosses zero has a magnitude that reaches 0, which is
+               --   the transition fit: short at the top of the demand range and spare at the
+               --   bottom, both at once.
+               CASE WHEN r.r_low <= 0 AND r.r_high >= 0 THEN 0
+                    ELSE least(abs(r.r_low), abs(r.r_high)) END       AS mag_low,
+               greatest(abs(r.r_low), abs(r.r_high))                  AS mag_high
         FROM      (
             -- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
 SELECT d.filing, d.layer,
@@ -92,6 +105,7 @@ JOIN pm.layer l USING (filing, layer)
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,
        count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_low)                              AS shares_low,
        sum(h.share_mode)                             AS shares_mode,
        sum(h.share_high)                             AS shares_high,
        array_agg(DISTINCT h.share_unit)              AS share_units

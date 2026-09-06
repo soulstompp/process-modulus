@@ -1,0 +1,42 @@
+# EVERY QUANTITY A LAYER FILES, AS ROWS RATHER THAN COLUMNS. One row per layer per quantity,
+# with the element's own name as the key.
+#
+# ⭐⭐⭐ THE MODEL ALREADY TREATS THESE AS ONE KIND OF THING AND THE SQL DID NOT.
+#    `asrt:Elimination` carries a `quantity` and the corpus files eliminations naming THREE of
+#    them -- `demand`, `nameplate` and `draw` -- because two members naming one machine double
+#    count the machine as well as the orders. `composition/converted.sqlc` and
+#    `composition/fused.sqlc` both answer `'demand' AS quantity` as a literal, so the nameplate
+#    and draw eliminations a composer filed and sized are read by nothing.
+#
+# ⛔⛔ AND A FUSION CAN THEREFORE MOVE A NAMEPLATE IN SILENCE. Demonstrated 2026-09-06 with
+#    `examples/witnesses.rs`: `merge-group-composition/compute-us` is a ONE-PART fusion with no
+#    eliminations, its composed nameplate was moved from 8 GPU to 40 GPU -- five times the
+#    single part it is composed from -- and no composition rule noticed.
+#
+# ⭐ WHY FIVE AND NOT TWO. A layer's demand, its nameplate and its three buffer slacks are all
+#   quantities in the layer's own unit that a composition has to carry or account for. The
+#   three slacks arrive from `entries/slacks.sqlc` already tall, and the buffer enum names them
+#   exactly as the elements do.
+#
+# ⚠️ AN UNSIZED QUANTITY IS ABSENT FROM THIS RELATION rather than present with a NULL. A row
+#    here is a number somebody filed; a caller that needs to know a slack was DECLINED reads
+#    entries/slacks.sqlc, where the typed reason lives.
+-- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+SELECT d.filing, d.layer, 'demand' AS quantity,
+       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
+FROM (
+    :compose(layers/demand.sqlc)
+) d
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate',
+       n.n_low, n.n_mode, n.n_high, n.n_unit
+FROM (
+    :compose(layers/nameplate.sqlc)
+) n
+UNION ALL
+SELECT s.filing, s.layer, s.buffer || 'Slack',
+       s.low, s.mode, s.high, s.unit
+FROM (
+    :compose(entries/slacks.sqlc)
+) s
+WHERE s.low IS NOT NULL

@@ -26,6 +26,7 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('local_cycle',                          'local parts do not cycle'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
                                           'a denied remainder is not contradicted by the layer''s own figures')
 ) AS r(slug, rule)
@@ -33,9 +34,20 @@ SELECT * FROM (VALUES
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           d.draw_mode > d.n_mode + d.capacity_slack + 1e-9 AS violates,
-           format('served %s against a rating of %s and %s of headroom',
-                  d.draw_mode, d.n_mode, d.capacity_slack) AS detail
+           -- the WHOLE draw above the WHOLE of what the supply could make
+           d.draw_low > d.n_high + d.capacity_high + 1e-9              AS violates,
+           CASE WHEN d.draw_low  > d.n_high + d.capacity_high + 1e-9
+                THEN format('served [%s, %s] against at most %s: the whole range is over the '
+                            'line', d.draw_low, d.draw_high,
+                            d.n_high + d.capacity_high)
+                WHEN d.draw_high <= d.n_low + d.capacity_low + 1e-9
+                THEN format('served [%s, %s] against at least %s: the whole range clears',
+                            d.draw_low, d.draw_high, d.n_low + d.capacity_low)
+                ELSE format('served [%s, %s] against [%s, %s]: the ranges overlap, so this '
+                            'document does not settle whether the supply was overrun',
+                            d.draw_low, d.draw_high,
+                            d.n_low + d.capacity_low, d.n_high + d.capacity_high)
+           END                                                        AS detail
     FROM (
         -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
@@ -44,7 +56,9 @@ SELECT n.filing, n.layer,
        n.amount_mode AS n_mode,
        n.amount_high AS n_high,
        n.amount_unit AS n_unit,
+       s.low    AS capacity_low,
        s.mode   AS capacity_slack,
+       s.high   AS capacity_high,
        s.absent AS capacity_absent
 FROM pm.nameplate n
 LEFT JOIN (

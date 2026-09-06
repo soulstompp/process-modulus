@@ -2,6 +2,7 @@
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,
        count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_low)                              AS shares_low,
        sum(h.share_mode)                             AS shares_mode,
        sum(h.share_high)                             AS shares_high,
        array_agg(DISTINCT h.share_unit)              AS share_units

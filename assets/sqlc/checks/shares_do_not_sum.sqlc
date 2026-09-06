@@ -16,6 +16,26 @@
 #    arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule stands there,
 #    which left this check as the only thing between it and a wrong number. It agreed with the
 #    site on today's corpus only because no such document exists yet.
+# ⭐⭐⭐ AND IT READS THE WHOLE INTERVAL, NOT THE MIDDLE NUMBER. This compared `abs(r_mode)`
+#    against `shares_mode` and nothing else, in a model whose entire thesis is that a quantity
+#    is a RANGE. Demonstrated 2026-09-06: widening `enterprise-contract/support-cover`'s only
+#    share from [21, 50, 76] to [21, 50, 300] -- on a layer whose whole nameplate is 168 -- was
+#    accepted by all 24 rules, because the mode did not move. Three other rules still do
+#    arithmetic on the mode alone.
+#
+# ⛔⛔ CONTAINMENT AT THE ENDS AND EQUALITY AT THE MODE, AND THE ASYMMETRY IS NOT A COMPROMISE.
+#    Requiring equality at the ends would accuse a MORE careful filing. Checked over every
+#    layer this rule examines: 21 of 22 have shares equal to the magnitude at all three points,
+#    and one does not -- `merge-holding-composition/compute`, whose shares [1414, 4085.6] sit
+#    INSIDE a magnitude of [1092, 4198.8]. That is the cross-unit fusion, and a narrower
+#    interval is what composing per-part and converting gives you: `(Σn) − (Σd)` treats the two
+#    sums as independent, and `Σ(nᵢ − dᵢ)` does not. The naive bound is the loose one, so a
+#    rule demanding equality with it would report the accurate document.
+#
+# ⭐ |r| OVER AN INTERVAL NEEDS THE STRADDLE CASE. Where `r` crosses zero the magnitude reaches
+#   0, which is the transition fit stated as arithmetic: short at the top of the demand range
+#   and spare at the bottom, both at once. Taking `least(|r_low|, |r_high|)` there would invent
+#   a floor the layer does not have.
 -- pm:Remainder/pm:holder summed against |r| at the mode, via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -23,12 +43,24 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT x.filing, x.layer,
-           abs(x.shares - x.magnitude) > 1e-9 AS violates,
-           format('shares %s against a magnitude of %s', x.shares, x.magnitude) AS detail
+           abs(x.shares - x.magnitude) > 1e-9
+           OR x.shares_low  < x.mag_low  - 1e-9
+           OR x.shares_high > x.mag_high + 1e-9                       AS violates,
+           format('shares [%s, %s, %s] against a magnitude of [%s, %s, %s]',
+                  x.shares_low, x.shares, x.shares_high,
+                  x.mag_low, x.magnitude, x.mag_high)                 AS detail
     FROM (
         SELECT r.filing, r.layer,
                abs(r.r_mode)  AS magnitude,
-               h.shares_mode  AS shares
+               h.shares_mode  AS shares,
+               h.shares_low, h.shares_high,
+               -- ⭐ |r| OVER AN INTERVAL, AND THE STRADDLE IS THE CASE THAT NEEDS SAYING. A
+               --   remainder whose range crosses zero has a magnitude that reaches 0, which is
+               --   the transition fit: short at the top of the demand range and spare at the
+               --   bottom, both at once.
+               CASE WHEN r.r_low <= 0 AND r.r_high >= 0 THEN 0
+                    ELSE least(abs(r.r_low), abs(r.r_high)) END       AS mag_low,
+               greatest(abs(r.r_low), abs(r.r_high))                  AS mag_high
         FROM      (
             :compose(layers/remainder.sqlc)
         ) r

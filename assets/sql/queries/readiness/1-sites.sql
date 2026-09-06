@@ -132,6 +132,7 @@ JOIN pm.layer l USING (filing, layer)
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,
        count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_low)                              AS shares_low,
        sum(h.share_mode)                             AS shares_mode,
        sum(h.share_high)                             AS shares_high,
        array_agg(DISTINCT h.share_unit)              AS share_units
@@ -213,6 +214,7 @@ FROM pm.slack s
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,
        count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       sum(h.share_low)                              AS shares_low,
        sum(h.share_mode)                             AS shares_mode,
        sum(h.share_high)                             AS shares_high,
        array_agg(DISTINCT h.share_unit)              AS share_units
@@ -347,7 +349,9 @@ SELECT n.filing, n.layer,
        n.amount_mode AS n_mode,
        n.amount_high AS n_high,
        n.amount_unit AS n_unit,
+       s.low    AS capacity_low,
        s.mode   AS capacity_slack,
+       s.high   AS capacity_high,
        s.absent AS capacity_absent
 FROM pm.nameplate n
 LEFT JOIN (

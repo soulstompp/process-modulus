@@ -276,6 +276,7 @@ permitted.
 | a `window` filed as `notApplicable` sits on a unit with no denominator, since a unit that names a period can be answered | `Divisibility` |
 | a fusion filing `eliminations` as `none` or `notApplicable` owes an EXACT sum: the composed figure equals `Σ` converted parts. Filing it as `unmeasured` suspends the check rather than passing it | `Fusion` (`assertion.xsd`) |
 | a fusion filing `eliminations` as `notApplicable` has exactly one part, since between a set of one nothing can be counted twice | `Fusion` (`assertion.xsd`) |
+| a fusion of ONE part that eliminates nothing carries that part unchanged, in every quantity the layer files and not only its demand | `Fusion` (`assertion.xsd`) |
 | a layer restated by a second filing that claims to carry it through unchanged agrees with the first, `absorber` included \* | `composition` (`assertion.xsd`) |
 
 The four `dependence` rows are not a weakness of that design. They are the reason it is a

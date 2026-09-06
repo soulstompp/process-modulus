@@ -1,0 +1,43 @@
+# EVERY FUSION OF ONE PART THAT ELIMINATES NOTHING, BESIDE THE PART IT CARRIES. One row per
+# such fusion per quantity, `violates` where the composed figure is not the part's.
+#
+# ⭐⭐ THE RULE: a fusion of one part with nothing eliminated carries that part unchanged. There
+#    is nothing to sum, nothing to subtract and no judgement to make, so a difference here has
+#    no defence. `every-local-part` states the case it is testing: "A one-part fusion is not
+#    degenerate: it says this reviewer read that layer and carried it." Carrying is an
+#    assertion and therefore a thing that can be got wrong.
+#
+# ⛔⛔⛔ AND IT IS THE ONLY RULE THAT ASKS ABOUT A COMPOSED NAMEPLATE OR A COMPOSED SLACK.
+#    `fusion_sum_disagrees` reads `composition/fused.sqlc`, which answers `'demand' AS quantity`
+#    as a literal, and `window_lost_or_summed` covers the calendar. Demonstrated 2026-09-06:
+#    `merge-group-composition/compute-us` had its composed nameplate moved from 8 GPU to 40 GPU
+#    -- five times the one part it is composed from -- and no composition rule noticed.
+#    ⚠️ THIS DOES NOT CLOSE THAT HOLE, it only closes the case where the arithmetic is trivial.
+#    A MULTI-part fusion can still move its nameplate freely, and the corpus files SIX SIZED
+#    `nameplate` eliminations and TWO `draw` ones that no relation reads.
+#
+# ⛔ IT COMPARES FIGURES AND NOT UNITS, deliberately. A single part may be converted into the
+#   composed layer's unit, so a unit that differs is what `asrt:factor` is FOR. The figure is
+#   compared after conversion; `quantum_unit_mismatch` and `slack_unit_mismatch` own the units.
+#
+# ⭐ SUSPENSION IS INHERITED RATHER THAN RESTATED. composition/carried.sqlc excludes anything
+#   suspended and anything with an elimination filed, so this rule never has to decide what is
+#   owed: it examines only the fusions where the answer is forced.
+-- composition/carried.sqlc: the part's figure against the composed layer's, per quantity.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.layer,
+           abs(c.part_low  - c.filed_low)  > 1e-9
+        OR abs(c.part_mode - c.filed_mode) > 1e-9
+        OR abs(c.part_high - c.filed_high) > 1e-9                    AS violates,
+           format('%s carried as [%s, %s, %s] against a part of [%s, %s, %s]',
+                  c.quantity, c.filed_low, c.filed_mode, c.filed_high,
+                  c.part_low, c.part_mode, c.part_high)              AS detail
+    FROM (
+        :compose(composition/carried.sqlc)
+    ) c
+) p ON true
+WHERE r.slug = 'one_part_fusion_alters_its_part'

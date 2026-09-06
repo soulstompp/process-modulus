@@ -1,0 +1,50 @@
+# THE FUSIONS OF ONE PART THAT ELIMINATE NOTHING, BESIDE THE PART THEY CARRY. One row per such
+# fusion per quantity, with the part's figure and the composed figure side by side.
+#
+# ⭐⭐⭐ IDENTITY IS THE ONE CASE WHERE COMPOSITION NEEDS NO ARITHMETIC AT ALL, which is what
+#    makes it the sharpest test in the file. A fusion of one part that eliminates nothing must
+#    reproduce that part: there is nothing to sum, nothing to subtract, and no judgement to
+#    make. So any difference is a defect with no defence, and it can be asked of EVERY quantity
+#    rather than only the one the sum rule composes.
+#
+# ⛔⛔ AND THAT IS FIVE QUANTITIES AGAINST THE SUM RULE'S ONE. `checks/fusion_sum_disagrees`
+#    reads `composition/fused.sqlc`, which answers `'demand' AS quantity` as a literal;
+#    `checks/window_lost_or_summed` covers the calendar. Nothing composes a nameplate or any of
+#    the three buffer slacks, and the corpus files SIX SIZED `nameplate` eliminations and TWO
+#    `draw` ones that no relation reads. A composer did the work and nothing consumed it.
+#
+# ⚠️ A ONE-PART FUSION IS NOT DEGENERATE, and `every-local-part` says so in its own words:
+#    "A one-part fusion is not degenerate: it says this reviewer read that layer and carried
+#    it." Carrying is an assertion, so it is a thing that can be got wrong.
+#
+# ⭐ THE FACTOR STILL APPLIES. A single part may be converted into the composed layer's unit,
+#   so identity is "the part, converted" rather than "the part, copied".
+-- asrt:Fusion with one asrt:Part and no asrt:elimination, against layers/quantities.sqlc.
+SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
+       part.low  * coalesce(p.factor_low,  1) AS part_low,
+       part.mode * coalesce(p.factor_mode, 1) AS part_mode,
+       part.high * coalesce(p.factor_high, 1) AS part_high,
+       part.unit AS part_unit,
+       filed.low AS filed_low, filed.mode AS filed_mode, filed.high AS filed_high,
+       filed.unit AS filed_unit
+FROM      (
+    :compose(composition/parts.sqlc)
+) p
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
+       AND filed.quantity = part.quantity
+WHERE (p.composition, p.composed_layer) IN (
+        SELECT composition, composed_layer
+        FROM ( :compose(composition/parts.sqlc) ) one
+        GROUP BY composition, composed_layer
+        HAVING count(*) = 1)
+  AND NOT EXISTS (
+        SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
+        WHERE e.composition = p.composition AND e.composed_layer = p.composed_layer)
+  AND NOT EXISTS (
+        SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
+        WHERE s.composition = p.composition AND s.composed_layer = p.composed_layer)

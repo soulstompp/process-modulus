@@ -12,6 +12,25 @@
 #   draw by the demand would fire on a correct document, which is the defect
 #   share_exceeds_slack was carrying.
 #
+# ⭐⭐⭐ THREE ANSWERS AND NOT TWO, BORROWED FROM `pm:Fit` RATHER THAN INVENTED HERE. This
+#    compared `draw_mode > n_mode + capacity_slack`: two POINTS, in a model whose thesis is
+#    that a quantity is a range. `Fit`'s own annotation settles the shape and ends the argument
+#    -- "clearance: nameplate.low ≥ demand.high, the WHOLE range clears; transition: the ranges
+#    overlap; interference: nameplate.high ≤ demand.low, the WHOLE range interferes. Total and
+#    exhaustive ... `mostLikely` DECIDES NOTHING HERE." A rule deciding on the mode was
+#    deciding on the one number the schema had already ruled out for this shape of question.
+#
+# ⛔⛔ SO "DID IT EXCEED" AND "COULD IT HAVE" ARE SEPARATE ANSWERS AND ONLY THE FIRST IS A
+#    VIOLATION. The whole draw range above the whole available range is a filing error with no
+#    defence. Ranges that OVERLAP are a document that cannot settle its own question, and
+#    reporting that as a breach would accuse a filer of something their figures do not say --
+#    which is the fault this file already names twice, above and below.
+#
+# ⚠️ THE MIDDLE ANSWER HAS NO POPULATION TODAY, and that is worth knowing rather than hiding.
+#    Of twelve examined rows only three carry a ranged draw or rating at all, and two of those
+#    arrived with `support-cover`; all three clear outright. `examples/witnesses.rs` is where
+#    the other two states are exercised.
+#
 # ⛔ AN UNMEASURED CAPACITY BUFFER SUSPENDS THE RULE rather than passing it. Six layers do not
 #   know how far they can stretch; coalescing that to zero would turn "nobody looked" into
 #   "there is no headroom" and manufacture violations out of a gap. A nameplate becomes a
@@ -23,9 +42,20 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           d.draw_mode > d.n_mode + d.capacity_slack + 1e-9 AS violates,
-           format('served %s against a rating of %s and %s of headroom',
-                  d.draw_mode, d.n_mode, d.capacity_slack) AS detail
+           -- the WHOLE draw above the WHOLE of what the supply could make
+           d.draw_low > d.n_high + d.capacity_high + 1e-9              AS violates,
+           CASE WHEN d.draw_low  > d.n_high + d.capacity_high + 1e-9
+                THEN format('served [%s, %s] against at most %s: the whole range is over the '
+                            'line', d.draw_low, d.draw_high,
+                            d.n_high + d.capacity_high)
+                WHEN d.draw_high <= d.n_low + d.capacity_low + 1e-9
+                THEN format('served [%s, %s] against at least %s: the whole range clears',
+                            d.draw_low, d.draw_high, d.n_low + d.capacity_low)
+                ELSE format('served [%s, %s] against [%s, %s]: the ranges overlap, so this '
+                            'document does not settle whether the supply was overrun',
+                            d.draw_low, d.draw_high,
+                            d.n_low + d.capacity_low, d.n_high + d.capacity_high)
+           END                                                        AS detail
     FROM (
         :compose(layers/drawn.sqlc)
     ) d

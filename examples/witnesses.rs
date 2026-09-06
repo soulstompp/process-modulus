@@ -79,10 +79,15 @@ const WITNESSES: &[Witness] = &[
     Witness {
         rule: "shares_do_not_sum",
         doc: "assets/corpus/enterprise-contract.xml",
-        from_: "<pm:mostLikely>50</pm:mostLikely>",
-        to: "<pm:mostLikely>55</pm:mostLikely>",
+        from_: "<pm:high>76</pm:high>",
+        to: "<pm:high>300</pm:high>",
         nth: 1,
-        says: "the one holder's share no longer equals the magnitude it is the whole of",
+        // ⭐ THE ENDPOINT AND NOT THE MODE, DELIBERATELY. This exact edit was accepted by all
+        //   24 rules until `shares_do_not_sum` learned to read the whole interval: 300
+        //   engineer-hours a week of holder share on a layer rated 168, hidden behind a mode
+        //   that did not move. A mode-only comparison cannot witness this, so the witness
+        //   fails if the rule ever narrows back.
+        says: "the share reaches 300 on a layer whose largest possible remainder is 76",
     },
     Witness {
         rule: "quantum_unit_mismatch",
@@ -219,6 +224,21 @@ const WITNESSES: &[Witness] = &[
         to: "<pm:id>both-views</pm:id>",
         nth: 1,
         says: "a layer is composed from itself",
+    },
+    Witness {
+        rule: "one_part_fusion_alters_its_part",
+        doc: "assets/corpus/merge-group-composition.xml",
+        from_: "<pm:low>8</pm:low>
+                <pm:mostLikely>8</pm:mostLikely>
+                <pm:high>8</pm:high>",
+        to: "<pm:low>40</pm:low>
+                <pm:mostLikely>40</pm:mostLikely>
+                <pm:high>40</pm:high>",
+        nth: 1,
+        // ⭐ THIS EXACT EDIT WENT UNNOTICED BY EVERY COMPOSITION RULE until the identity check
+        //   existed. `compute-us` is a one-part fusion with nothing eliminated, so its
+        //   composed nameplate IS its part's, and five times the part is not a judgement call.
+        says: "a one-part fusion carries 8 GPU as 40, five times the part it is composed from",
     },
     Witness {
         rule: "elimination_not_applicable_with_parts",
