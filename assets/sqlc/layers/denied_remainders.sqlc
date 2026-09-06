@@ -4,9 +4,15 @@
 #
 # ⭐⭐⭐ THIS IS THE MODEL BEING CONTRADICTED IN ITS OWN FORMAT, WHICH IS WHAT THE WRAPPER IS
 #    FOR. The model claims every layer has a remainder. Requiring the wrapper forces a sender
-#    who disagrees to say so explicitly: `absent reason="none"` reads "somebody looked at this
-#    layer and there is no remainder", which is a filed counter-example rather than an empty
-#    field. Every row here is somebody exercising that right.
+#    who disagrees to say so explicitly rather than leaving a field empty. Every row here is
+#    somebody exercising that right.
+#
+# ⛔⛔ AND THE RIGHT IS NARROWER THAN IT LOOKS, WHICH IS WHY THIS ARM IS A `ClaimAbsence`.
+#    "There is no remainder" reads two ways: nothing to subtract from, or the difference is
+#    zero. Only the first is an absence. A difference of zero is a CLEARANCE -- `Fit` settles
+#    the line-to-line case in prose, "minimum clearance is zero" -- carrying a quantity of
+#    [0, 0, 0] and a sign, and an absence throws the sign away. So `none` is not spellable
+#    here, and a layer that means "the two coincide exactly" files the clearance.
 #
 # ⛔⛔ AND FOR TWO REVISIONS THESE ROWS WERE INVISIBLE. `ingest.sql` read only the first branch,
 #    so a denial arrived as five NULLs -- sign, absorber and quantity all blank -- which is
@@ -15,9 +21,13 @@
 #    stored. The note is carried here because keeping only the reason keeps the fact and loses
 #    the argument.
 #
-# ⭐ RUN THIS ALONE AND READ THE NOTES. Two rows, and both say the same thing in different
-#   words: a supply with no quantum divides exactly, so there is nothing left over. That is a
-#   claim about the world which the model's central assertion has to survive.
+# ⭐ RUN THIS ALONE AND READ THE NOTES. Two rows, and both now say the same thing in different
+#   words: this layer states no nameplate, so `r = n - d` has no `n` and the question is
+#   malformed rather than answered with nothing. ⚠️ BOTH USED TO SAY SOMETHING ELSE -- "a supply
+#   with no quantum divides exactly" -- which is a different claim and a false one: no quantum
+#   kills the RESIDUE term of `r = m*q - (demand mod q)` and leaves `n - d` standing. The notes
+#   disagreed with the structure, and the rule downstream had been printing the right reason
+#   ("no nameplate is stated") beside the wrong one for two revisions.
 -- pm:Layer/pm:remainder taking the pm:absent branch of pm:StatedRemainder.
 SELECT l.filing, l.layer,
        l.remainder_absent      AS reason,

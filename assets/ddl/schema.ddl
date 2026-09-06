@@ -43,15 +43,25 @@ CREATE TYPE constraint_origin AS ENUM ('intrinsic', 'contractual', 'policy');
 --    the two is populated. The CHECK constraints make that a checked property.
 CREATE TYPE absence_reason AS ENUM ('none', 'unmeasured', 'notApplicable', 'derived');
 
--- ⭐⭐⭐ AND THE XSD NARROWS IT AT EVERY `pm:StatedClaim`. The absent arm there is a
---    `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`: "three members, `AbsenceReason`
---    without `none`". A measured zero has a unit, an observer, an author for its exactness and
---    a provenance, and the absence arm has a home for none of the four, so a zero is a CLAIM of
---    [0,0,0] and never an absence.
--- ⛔ Nine columns carried the four-member enum at those positions until 2026-09-06, so Postgres
---    would accept a `'none'` no valid document can produce. Each now carries its own
---    `a_..._absence_has_no_none`. Zero rows ever violated it; the CHECK makes that structural
---    rather than lucky.
+-- ⭐⭐⭐ AND THE XSD NARROWS IT WHEREVER THE VALUE ARM ALREADY NAMES THE DEGENERATE CASE.
+--    The absent arm at every `pm:StatedClaim` is a `pm:ClaimAbsence` carrying
+--    `pm:ClaimAbsenceReason`: "three members, `AbsenceReason` without `none`". A measured zero
+--    has a unit, an observer, an author for its exactness and a provenance, and the absence arm
+--    has a home for none of the four, so a zero is a CLAIM of [0,0,0] and never an absence.
+-- ⭐⭐ AND THE SAME TEST REACHES TWO WRAPPERS THAT ARE NOT CLAIMS. `none` is honest only where
+--    the value arm has nothing to say; where the value arm has a NAMED STATE for the degenerate
+--    case, `none` is a second door to it. `pm:StatedRemainder`: "there is no remainder" reads
+--    either "nothing to subtract from" or "the difference is zero", and a zero difference is a
+--    CLEARANCE fit carrying [0,0,0] and a sign. `pm:StatedLumpyQuantum` at `window`: "it runs
+--    continuously" is a duty fraction of ONE, with a size and an origin saying who could change
+--    it. Both take a `pm:ClaimAbsence` now.
+-- ⛔ Every column below that carries one of these wrappers has its own
+--    `a_..._absence_has_no_none`, so Postgres cannot accept a `'none'` no valid document can
+--    produce. Zero rows ever violated it; the CHECK makes that structural rather than lucky.
+-- ⭐ `boundOrigin`, `couplings`, `absorber`, `notation` and `framework` keep the whole
+--    four-member enum, and the test says why: nothing sets this bound, somebody looked and the
+--    layers move independently, no buffer took it, published under no identifier. Those are
+--    nothings. A duty fraction of one is a number.
 -- ⚠️ `CREATE DOMAIN ... CHECK (VALUE <> 'none')` is the tidier spelling and was tried first. It
 --    does not work here: a domain over an enum loses the enum's comparison against an unknown
 --    literal, so `WHERE absent = 'derived'` stops resolving at eighteen call sites. A CHECK
@@ -186,11 +196,19 @@ CREATE TABLE layer (
     --     said nothing at all.
     --
     --  ⛔⛔ AND ONE OF THEM SAYS SO IN THE NOTE, WHICH IS WHY THE NOTE IS STORED.
-    --     `refutation/object-storage` files `reason=none` with: "a supply with no quantum
-    --     divides exactly. Filed as a counter-example to the claim that every layer carries
-    --     a remainder, NOT AS A GAP IN THIS DOCUMENT." A gap is exactly what was stored.
-    --     Keeping only the reason keeps the fact and loses the argument, and the argument
-    --     is what the document was written to make.
+    --     `refutation/object-storage` files a counter-example "to the claim that every layer
+    --     carries a remainder, NOT AS A GAP IN THIS DOCUMENT." A gap is exactly what was
+    --     stored. Keeping only the reason keeps the fact and loses the argument, and the
+    --     argument is what the document was written to make.
+    --
+    -- ⛔ A REMAINDER OF ZERO ARRIVES AS A FILED CLEARANCE, NOT AS `remainder_absent = 'none'`.
+    --    "There is no remainder" reads two ways: nothing to subtract from, or the difference
+    --    is zero. The second is a CLEARANCE FIT -- `Fit` settles the line-to-line case in
+    --    prose, "minimum clearance is zero", with a quantity of [0, 0, 0] and a sign -- and an
+    --    absence throws that sign away. So `pm:StatedRemainder`'s absent arm is a
+    --    `pm:ClaimAbsence`, the three remaining reasons are what this column can honestly
+    --    hold, and both corpus denials say `notApplicable`: their nameplate is `notApplicable`
+    --    too, so `r = n - d` has no `n` and the question is malformed rather than answered.
     remainder_absent      absence_reason,
     remainder_absent_note text,
 
@@ -218,6 +236,9 @@ CREATE TABLE layer (
     qty_absent    absence_reason,
 
     CONSTRAINT a_patience_absence_has_no_none CHECK (patience_absent <> 'none'),
+    -- ⛔ `StatedRemainder` takes a `ClaimAbsence` for the reason above: an ingested `'none'`
+    --    here is a document that did not validate.
+    CONSTRAINT a_remainder_absence_has_no_none CHECK (remainder_absent <> 'none'),
     CONSTRAINT a_remainder_quantity_absence_has_no_none CHECK (qty_absent <> 'none'),
     PRIMARY KEY (filing, layer),
     CONSTRAINT patience_is_stated_or_typed_absent
@@ -303,11 +324,20 @@ CREATE TABLE nameplate (
     --    THREE-VALUED FACT, AFTER `lumpy` ABOVE AND THE THREE SLACKS BEFORE IT. A NULL
     --    window used to mean three things at once and the schema's own annotation
     --    described all three in prose it could not file: `notApplicable` on a unit with
-    --    no denominator (twenty of this corpus's layers), `none` for a supply that runs
-    --    continuously, `unmeasured` for one nobody asked about. The last of those is the
-    --    one that matters arithmetically — it is the state in which a time slack CANNOT
+    --    no denominator (sixteen of this corpus's layers), `unmeasured` for one nobody
+    --    asked about, and a supply that runs continuously. The second of those is the one
+    --    that matters arithmetically — it is the state in which a time slack CANNOT
     --    be derived from a clearance, because nobody knows whether the spare is spread
     --    evenly across the period.
+    --
+    -- ⛔ AND THE THIRD IS NOT AN ABSENCE AT ALL. "The supply runs continuously" is a DUTY
+    --    FRACTION OF ONE: it has a size, and in `window_origin` it has an author who could
+    --    change it. Filed as `none` it lost both, and a line that cannot be stopped
+    --    (`intrinsic`) read identically to one somebody staffed round the clock (`policy`)
+    --    or promised in a contract (`contractual`) — three levers collapsed into a blank.
+    --    A whole duty cycle is filed as ONE WHOLE PERIOD in the period's own unit, `1 week`
+    --    against a period of `week`, which is a duty fraction you can read without dividing
+    --    anything. `assets/sql/layers/derivation_licensed.sql` is where that is read.
     window_low     numeric,
     window_mode    numeric,
     window_high    numeric,
@@ -332,6 +362,9 @@ CREATE TABLE nameplate (
         CHECK ((lumpy IS NULL) = (divisibility_absent IS NOT NULL)),
     -- A window is a size or a typed reason there is none -- never a blank, and never
     -- both. Enforced here because XSD enforces it there.
+    -- ⛔ `Divisibility/window` takes a `ClaimAbsence` for the reason above: an ingested
+    --    `'none'` here is a document that did not validate.
+    CONSTRAINT a_window_absence_has_no_none CHECK (window_absent <> 'none'),
     CONSTRAINT a_window_is_stated_or_typed_absent
         CHECK (divisibility_absent IS NOT NULL
                OR (window_low IS NOT NULL) <> (window_absent IS NOT NULL)),

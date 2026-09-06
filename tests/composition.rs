@@ -1676,16 +1676,18 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
     );
 }
 
-/// The window a layer files, and the typed reason it files none — one or the other, never
-/// both, because `Divisibility/window` is a `StatedLumpyQuantum`.
-fn duty(l: &LayerType) -> Result<Triple, AbsenceReasonType> {
+/// The window a layer files, and the typed reason it declines to — one or the other, never
+/// both, because `Divisibility/window` is a `StatedLumpyQuantum`. Its absence arm is a
+/// `ClaimAbsence`, so "the duty fraction is one" is not among the reasons: that is a value,
+/// and it is filed as one whole period.
+fn duty(l: &LayerType) -> Result<Triple, ClaimAbsenceReasonType> {
     let pm::StatedDivisibilityType::Divisibility(d) = &l.supply.nameplate.divisibility else {
-        return Err(AbsenceReasonType::NotApplicable);
+        return Err(ClaimAbsenceReasonType::NotApplicable);
     };
     for c in &d.content {
         match c {
             pm::DivisibilityTypeContent::Window(pm::StatedLumpyQuantumType::Quantum(w)) => {
-                return triple(&w.size).ok_or(AbsenceReasonType::Unmeasured)
+                return triple(&w.size).ok_or(ClaimAbsenceReasonType::Unmeasured)
             }
             pm::DivisibilityTypeContent::Window(pm::StatedLumpyQuantumType::Absent(a)) => {
                 return Err(a.reason.clone())
@@ -1693,7 +1695,7 @@ fn duty(l: &LayerType) -> Result<Triple, AbsenceReasonType> {
             _ => {}
         }
     }
-    Err(AbsenceReasonType::NotApplicable)
+    Err(ClaimAbsenceReasonType::NotApplicable)
 }
 
 /// ⭐⭐⭐ A WINDOW IS CARRIED THROUGH A FUSION AND NEVER SUMMED, AND UNTIL THE ELEMENT BECAME

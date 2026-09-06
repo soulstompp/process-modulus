@@ -260,9 +260,10 @@
 
       <pm:remainder>
         <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>a supply with no quantum divides exactly. Filed as a
-                   counter-example to the claim that every layer carries a
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>this layer states no nameplate, so `r = n - d` has nothing to subtract
+                   from and the question is malformed rather than answered with nothing.
+                   Filed as a counter-example to the claim that every layer carries a
                    remainder, not as a gap in this document.</pm:note>
           <pm:provenance><pm:party>platform</pm:party>
             <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>

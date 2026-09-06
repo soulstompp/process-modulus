@@ -377,9 +377,12 @@ fn a_continuous_supply_files_a_remainder_of_none() {
     );
 
     let StatedRemainderType::Absent(r) = &l.remainder else {
-        panic!("a continuous supply divides exactly");
+        panic!("this layer states no nameplate, so it can carry no remainder");
     };
-    assert_eq!(r.reason, AbsenceReasonType::None);
+    // ⛔ `notApplicable` AND NOT `none`. `r = n - d` has no `n` here, so the question is
+    // malformed rather than answered with nothing — and `none` is not spellable on a
+    // `StatedRemainder` anyway, because a remainder of zero is a filed clearance.
+    assert_eq!(r.reason, ClaimAbsenceReasonType::NotApplicable);
 }
 
 /// The falsifier is expressible, and it carries its evidence.
@@ -833,10 +836,13 @@ fn window(l: &pm::LayerType) -> Option<&pm::LumpyQuantumType> {
 ///
 /// ⭐ THE TWO HALVES ARE ASKED SEPARATELY ON PURPOSE. `window` above answers "how much of
 /// each period is this supply live for"; this answers "and if you did not say, why not" —
-/// and the four reasons are not interchangeable. `notApplicable` is a unit with no
-/// denominator, `none` is a supply that runs continuously, `unmeasured` is the one state
-/// that leaves a derived `timeSlack` unjustified.
-fn window_absence(l: &pm::LayerType) -> Option<&pm::AbsenceType> {
+/// and the three reasons are not interchangeable. `notApplicable` is a unit with no
+/// denominator; `unmeasured` is the one state that leaves a derived `timeSlack` unjustified.
+///
+/// ⛔ THERE IS NO FOURTH. "The supply runs continuously" used to be `none` here, and it is a
+/// VALUE wearing an absence: a duty fraction of one, with an origin saying who could change
+/// it. It is filed as one whole period now, and the absence arm is a `ClaimAbsence`.
+fn window_absence(l: &pm::LayerType) -> Option<&pm::ClaimAbsenceType> {
     let StatedDivisibilityType::Divisibility(d) = &l.supply.nameplate.divisibility else {
         return None;
     };
@@ -844,6 +850,28 @@ fn window_absence(l: &pm::LayerType) -> Option<&pm::AbsenceType> {
         pm::DivisibilityTypeContent::Window(StatedLumpyQuantumType::Absent(a)) => Some(a),
         _ => None,
     })
+}
+
+/// Whether the supply is live for the WHOLE of its period, which is a duty fraction of one.
+///
+/// ⭐⭐ A WHOLE PERIOD IS QUOTED AS `1` IN THE PERIOD'S OWN UNIT, and that is what makes this
+/// readable without converting anything: `1 week` against a period of `week` is a duty
+/// fraction you can see, and `5 days` against the same period is a proper part. The same
+/// test is `assets/sqlc/layers/derivation_licensed.sqlc`, which deliberately does no unit
+/// arithmetic either — `window_not_applicable_on_a_rate` records what happened the last time
+/// a rule here guessed at units.
+fn runs_the_whole_period(l: &pm::LayerType) -> bool {
+    let Some(w) = window(l) else { return false };
+    let StatedClaimType::Claim(size) = &w.size else {
+        return false;
+    };
+    let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount else {
+        return false;
+    };
+    let pm::StatedDenominatorType::Period(p) = &amount.denominator else {
+        return false;
+    };
+    size.low == 1.0 && size.high == 1.0 && size.unit == *p
 }
 
 /// The lumpy quantum of a layer's supply, if it has one and it is stated.
@@ -1083,11 +1111,24 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
 ///
 /// ⚠️ The two members file it in different languages — `days` and `dias` — so the check is on
 /// the figure. Two parties describing one machine is the case this corpus exists for.
+///
+/// ⛔⛔ AND A WINDOW OF ONE WHOLE PERIOD IS SKIPPED, WHICH IS NOT AN EXEMPTION BUT THE RULE'S
+/// OWN SCOPE. This check compares figures across documents because, in this corpus, a CALENDAR
+/// that carves a period up belongs to exactly one machine: the shared packing line, filed four
+/// times in two languages. A duty fraction of one carves nothing. It says "always on", every
+/// document that files it says the same thing, and there is no calendar to lose in a fusion —
+/// so including them would compare a support desk against a packing line and call the
+/// disagreement a defect. ⚠️ THIS USED TO BE FREE, because "always on" was spelled
+/// `absent reason="none"` and `window()` therefore returned nothing for it. The scope was
+/// always this narrow; the old spelling just hid the fact that anybody had chosen it.
 #[test]
 fn a_window_is_carried_through_a_fusion_and_never_summed() {
     let mut sizes: Vec<(String, f64)> = Vec::new();
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
+            if runs_the_whole_period(l) {
+                continue;
+            }
             if let Some(w) = window(l) {
                 let (_, ml, _, _) = stated(&w.size)
                     .unwrap_or_else(|| panic!("{name} `{}`: a window with no size", l.name));
@@ -1844,7 +1885,7 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
             // merely exists, `GPU-hour per GPU` files `each`, and a duty cycle is still
             // malformed there.
             if let Some(a) = absence {
-                if a.reason == AbsenceReasonType::NotApplicable {
+                if a.reason == ClaimAbsenceReasonType::NotApplicable {
                     if let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount {
                         assert!(
                             !matches!(&amount.denominator, pm::StatedDenominatorType::Period(_)),
@@ -1859,12 +1900,14 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 reasons.push(format!("{:?}", a.reason));
             }
 
-            let derivable = absence.is_some_and(|a| {
-                matches!(
-                    a.reason,
-                    AbsenceReasonType::None | AbsenceReasonType::NotApplicable
-                )
-            });
+            // ⭐⭐⭐ TWO LICENCES, AND ONE OF THEM USED TO BE READ OUT OF AN ABSENCE.
+            // `q / clearance` spreads the spare evenly across the denominator, so it needs
+            // either no denominator at all (`notApplicable`) or a supply that is live for
+            // the whole of one (a window of one whole period). The second used to be spelled
+            // `absent reason="none"`, which is how a number came to be filed as a nothing.
+            let derivable = absence
+                .is_some_and(|a| a.reason == ClaimAbsenceReasonType::NotApplicable)
+                || runs_the_whole_period(l);
             if !derivable {
                 if let StatedClaimType::Absent(a) = &l.time_slack {
                     assert_ne!(

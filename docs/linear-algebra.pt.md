@@ -512,6 +512,31 @@ que é o que atravessa unidades, e um fator de conversão multiplica também um 
 o outro caso degenerado, onde a granularidade se dissolve e a oferta composta é, para todos os
 efeitos, contínua.
 
+### Elementos neutros, e onde uma ausência se pode fazer passar por um
+
+Todas as quantidades deste modelo entram numa soma ou num produto. As três margens de
+amortecedor são substitutas e somam-se: `inventory + capacity + time`, elemento neutro 0. Um
+ciclo de serviço multiplica: `entregue = taxa × janela ÷ período`, elemento neutro 1. Um fator de
+conversão e um quantum também multiplicam.
+
+Onde uma gramática admite ao mesmo tempo um valor e uma ausência tipada na mesma posição, e a
+ausência se pode ler como o elemento neutro dessa operação, as duas são duas grafias de um só
+facto. A ausência é a grafia que perde. Não transporta unidade, nem autor da exatidão, nem
+origem, portanto quem recebe não a consegue comparar aritmeticamente com quem escreveu um número.
+
+**A regra que daí decorre: onde o ramo do valor nomeia o caso degenerado, o ramo da ausência não
+pode poder dizer o mesmo.** Uma folga de zero é a menor folga e declara-se `[0, 0, 0]` na unidade
+em que é zero. Uma oferta que corre continuamente tem uma fração de serviço de um e declara-se
+como um período inteiro, cotado na unidade do próprio período, com a origem que diz quem a
+poderia encurtar. Um resto de zero é uma folga, declarada com um sinal e uma quantidade de
+`[0, 0, 0]`, porque o caso linha a linha da ISO 286 é uma folga cuja folga mínima é zero.
+
+O resíduo é o caso honesto, e é uma terceira operação e não uma exceção. Uma seleção de um
+conjunto fechado tem elemento neutro ∅: nenhum amortecedor absorveu o resto, nada fixa este
+limite, alguém procurou acoplamentos e as camadas movem-se independentemente. Nada aí tem
+tamanho, unidade nem autor, portanto nada se perde ao recusar o elemento, e essas posições
+mantêm o vocabulário de ausência com os quatro membros.
+
 ### As leis são afirmadas, não presumidas
 
 O `algebra/roster.sqlc` transporta uma linha por cada lei de álgebra de conjuntos que esta árvore

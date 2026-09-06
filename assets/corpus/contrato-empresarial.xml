@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  A versao portuguesa do exemplo de referência: as mesmas três camadas e as mesmas duas
+  A versao portuguesa do exemplo de referência: as mesmas quatro camadas e as mesmas duas
   operações, declaradas por uma microentidade ao abrigo do AnexoASNC da IES. Números
   ilustrativos, não sao de ninguém.
 
@@ -16,6 +16,15 @@
     * as três MARGENS DE AMORTECEDOR declaradas e diferentes por camada: só a
       capacidade entregável pode ser adiantada, e o pessoal é a única oferta que corre
       acima da sua capacidade nominal
+    * ⭐ UMA OFERTA CONTINUAMENTE DISPONÍVEL, o único tipo cuja janela é o período
+      inteiro. A `cobertura-de-suporte` declara uma fração de serviço de UM como o
+      valor que é, `1 semana` para um período de `semana` com `origin` `contractual`,
+      porque uma obrigação permanente é uma cláusula que alguém assinou e poderia
+      renegociar. Escrita como ausência não diria nada sobre qual das três origens a
+      pôs lá
+    * uma FOLGA cujo resto continua a ser pago: cobertura comprometida, faturada e não
+      chamada, detida por `booked`, com `absorber` `none` porque nenhum amortecedor
+      esticou, pôs em fila ou guardou o que quer que fosse
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
@@ -902,6 +911,344 @@
             <pm:absent>
               <pm:reason>derived</pm:reason>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
+            </pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         COBERTURA DE SUPORTE: A PRIMEIRA OFERTA CONTINUAMENTE DISPONÍVEL DESTE
+         CORPUS, e está aqui pelo ciclo de serviço e não pelos números.
+
+         ⭐⭐⭐ A JANELA É O PERÍODO INTEIRO E AINDA ASSIM É UMA JANELA DECLARADA. A
+         cobertura corre todas as horas de todos os dias, portanto a fração de serviço
+         é um — e um é um valor, não uma ausência. O `pm:Divisibility/window`
+         transporta [1, 1, 1] semana para uma placa cotada por semana, e o
+         `LumpyQuantum/origin` transporta a única coisa que importa a seu respeito:
+         ALGUÉM PROMETEU ISTO. Passe a doze horas em dias úteis e a placa cai para
+         menos de metade. Isso é uma alavanca, e é legível aqui porque a janela foi
+         declarada em vez de recusada.
+
+         ⛔ UM `notApplicable` SERIA FALSO AQUI e o `window_not_applicable_on_a_rate`
+         diz porquê: `horas-engenheiro por semana` tem período debaixo do traço,
+         portanto a pergunta do ciclo de serviço é perfeitamente respondível e
+         recusá-la é uma recusa vestida de erro de categoria.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>cobertura-de-suporte</pm:name>
+
+      <pm:demand>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>92</pm:low>
+            <pm:mostLikely>118</pm:mostLikely>
+            <pm:high>147</pm:high>
+            <pm:unit>horas-engenheiro por semana</pm:unit>
+            <pm:denominator>
+              <pm:period>semana</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>o tempo de tratamento do incidente é lido do relógio do bilhete em vez de estimado ao fechar</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nada fixa este limite. O intervalo é onde caiu a carga de incidentes de vinte e seis semanas</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>padaria-do-largo</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+
+        <!-- ⭐⭐ A SEGUNDA PACIÊNCIA DECLARADA DESTE CORPUS, E A SUA ARESTA É O SLA.
+             Quanto tempo um incidente sem resposta continua a ser um incidente antes de
+             o cliente escalar por cima de nós. `contractual` porque o objetivo de
+             resposta está escrito no contrato: os três números são a distribuição que
+             esses termos limitam, e é por isso que a aresta e o intervalo são dois
+             elementos.
+             ⛔ A UNIDADE É `horas` E NÃO `horas-engenheiro por semana`: uma paciência é
+             um lapso de tempo e não limita quotas nenhumas. -->
+        <pm:patience>
+          <pm:claim>
+            <pm:low>0.25</pm:low>
+            <pm:mostLikely>1.0</pm:mostLikely>
+            <pm:high>4.0</pm:high>
+            <pm:unit>horas</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>uma duração não tem nada debaixo do traço</pm:note>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:origin>contractual</pm:origin>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:patience>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:claim>
+          <pm:low>0</pm:low>
+          <pm:mostLikely>6</pm:mostLikely>
+          <pm:high>18</pm:high>
+          <pm:unit>horas-engenheiro por semana</pm:unit>
+          <pm:denominator>
+            <pm:period>semana</pm:period>
+          </pm:denominator>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>ninguém disse o que estreitaria este intervalo</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:origin>contractual</pm:origin>
+          </pm:boundOrigin>
+          <pm:provenance><pm:party>padaria-do-largo</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>trabalho que pode ficar em fila sem quebrar o objetivo de resposta</pm:note>
+          </pm:provenance>
+        </pm:claim>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>o balcão de apoio permanente ao abrigo do contrato de prestação de serviços</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>168</pm:low>
+              <pm:mostLikely>168</pm:mostLikely>
+              <pm:high>168</pm:high>
+              <pm:unit>horas-engenheiro por semana</pm:unit>
+              <pm:denominator>
+                <pm:period>semana</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>não há aqui intervalo para estreitar</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>derived</pm:reason>
+                  <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter tido um número diferente destes, um elemento ao lado</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+
+          <!-- ⭐ UM ENGENHEIRO, SEMPRE. 168 horas-engenheiro por semana é uma pessoa de
+               cobertura sem falha nenhuma, que é o que o contrato compromete e nada mais. -->
+          <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+
+          <pm:divisibility>
+            <pm:divisibility>
+              <!-- A cobertura é escalada em semanas inteiras de um engenheiro; meia pessoa
+                   de prevenção não é coisa que se possa comprar. -->
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>168</pm:low>
+                    <pm:mostLikely>168</pm:mostLikely>
+                    <pm:high>168</pm:high>
+                    <pm:unit>horas-engenheiro por semana</pm:unit>
+                    <pm:denominator>
+                      <pm:period>semana</pm:period>
+                    </pm:denominator>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>não há aqui intervalo para estreitar</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason><pm:note>o `LumpyQuantum/origin` diz quem fixa este tamanho, neste mesmo elemento</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>contractual</pm:origin>
+              </pm:lumpy>
+
+              <!-- ⭐⭐⭐ A FRAÇÃO DE SERVIÇO É UM, DECLARADA COMO O VALOR QUE É.
+                   Uma semana inteira de um período de uma semana, que é o aspeto de uma
+                   fração de serviço de um quando cotada na unidade do próprio período.
+                   `contractual` e não `policy`: a obrigação permanente é uma cláusula do
+                   contrato, e quem a poderia mudar é quem a poderia renegociar. -->
+              <pm:window>
+                <pm:quantum>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>1</pm:low>
+                      <pm:mostLikely>1</pm:mostLikely>
+                      <pm:high>1</pm:high>
+                      <pm:unit>semana</pm:unit>
+                      <pm:denominator>
+                        <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+                      </pm:denominator>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>não há aqui intervalo para estreitar</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason><pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>contractual</pm:origin>
+                </pm:quantum>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+
+          <pm:capacitySlack>
+            <pm:claim>
+              <pm:low>0</pm:low>
+              <pm:mostLikely>16</pm:mostLikely>
+              <pm:high>40</pm:high>
+              <pm:unit>horas-engenheiro por semana</pm:unit>
+              <pm:denominator>
+                <pm:period>semana</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>ninguém disse o que estreitaria este intervalo</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>
+              <pm:provenance><pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>um segundo engenheiro pode ser chamado num incidente grave, e já foi</pm:note>
+              </pm:provenance>
+            </pm:claim>
+          </pm:capacitySlack>
+
+          <!-- ⛔⛔ ZERO, E intrinsic, E É O FACTO QUE DEFINE A CAMADA.
+               A cobertura não se pode construir de antemão. Uma hora parada às 03:00 de
+               domingo não se guarda para o incidente de segunda, e é por isso que se tem
+               de comprar o ciclo de serviço inteiro em vez da parte movimentada dele.
+               ⭐ Uma folga de zero é a MENOR FOLGA e não a ausência de uma: [0, 0, 0] na
+               unidade em que é zero, conforme o `ClaimAbsenceReason`. -->
+          <pm:inventorySlack>
+            <pm:claim>
+              <pm:low>0</pm:low>
+              <pm:mostLikely>0</pm:mostLikely>
+              <pm:high>0</pm:high>
+              <pm:unit>horas-engenheiro por semana</pm:unit>
+              <pm:denominator>
+                <pm:period>semana</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>um ponto não tem largura para estreitar</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance><pm:party>padaria-do-largo</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>uma hora de cobertura não usada não se guarda</pm:note>
+              </pm:provenance>
+            </pm:claim>
+          </pm:inventorySlack>
+        </pm:nameplate>
+
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>92</pm:low>
+              <pm:mostLikely>118</pm:mostLikely>
+              <pm:high>147</pm:high>
+              <pm:unit>horas-engenheiro por semana</pm:unit>
+              <pm:denominator>
+                <pm:period>semana</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>ninguém disse o que estreitaria este intervalo</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>none</pm:reason>
+                  <pm:note>nothing sets this bound. It is what the ticket clock recorded</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>horas de um relógio de bilhetes não têm base de mensuração contabilística</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <!-- ⭐⭐ UMA FOLGA, E A COBERTURA QUE FICOU POR USAR É PAGA NA MESMA.
+           placa.low 168 ≥ procura.high 147, portanto o intervalo INTEIRO folga e nada
+           ficou por servir: o `customer` e o `unrealised` estão excluídos aqui
+           exatamente como o `clearance_with_unserved` exige. O que sobra é
+           168 − [92, 118, 147] = [21, 50, 76] horas-engenheiro por semana de cobertura
+           comprometida, faturada e não consumida, e assenta em `booked` porque um
+           contrato é precisamente o instrumento que a regista. -->
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+
+          <!-- ⭐ E NADA O ABSORVEU, O QUE É UM `none` LEGÍTIMO. Nenhum amortecedor
+               esticou, pôs em fila nem guardou o que quer que fosse: a cobertura estava
+               simplesmente lá e não se quis toda. Contraste com o INVÓLUCRO acima, onde
+               `none` já não se escreve, porque «não há resto» seria afirmar que o resto é
+               zero, e um resto de zero é uma folga declarada. -->
+          <pm:absorber>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>nenhum amortecedor levou isto. O balcão estava guarnecido e os incidentes não vieram</pm:note>
+            </pm:absent>
+          </pm:absorber>
+
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>booked</pm:kind>
+              <pm:share>
+                <pm:claim>
+                  <pm:low>21</pm:low>
+                  <pm:mostLikely>50</pm:mostLikely>
+                  <pm:high>76</pm:high>
+                  <pm:unit>horas-engenheiro por semana</pm:unit>
+                  <pm:denominator>
+                    <pm:period>semana</pm:period>
+                  </pm:denominator>
+                  <pm:narrowsWhen>
+                    <!-- ⭐ E A NOTA AQUI DIZIA `notApplicable` ENQUANTO DESCREVIA UM
+                         ESTREITAMENTO, o que o `range_says_no_range` apanhou. Um vão de 21 a
+                         76 tem largura, e o que a aperta está nomeado um elemento ao lado. -->
+                    <pm:narrowing>
+                      <pm:condition>o intervalo da procura estreita; esta quota é esse intervalo subtraído a uma placa fixa, portanto estreita exatamente o mesmo</pm:condition>
+                      <pm:kind>instrument</pm:kind>
+                    </pm:narrowing>
+                  </pm:narrowsWhen>
+                  <pm:boundOrigin>
+                    <pm:absent><pm:reason>derived</pm:reason><pm:note>o limite é o limite da procura, subtraído a uma placa fixa</pm:note></pm:absent>
+                  </pm:boundOrigin>
+                  <pm:provenance><pm:party>padaria-do-largo</pm:party>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                    <pm:note>faturado mensalmente ao abrigo do contrato, seja ou não chamado</pm:note>
+                  </pm:provenance>
+                  <pm:asOf>2026-08-30</pm:asOf>
+                </pm:claim>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+
+          <pm:quantity>
+            <pm:absent>
+              <pm:reason>derived</pm:reason>
+              <pm:note>calculável a partir da procura e da placa desta camada; quem recebe calcula-o</pm:note>
             </pm:absent>
           </pm:quantity>
         </pm:remainder>

@@ -8,7 +8,7 @@
 #
 # ⭐ THE CHECK IS AN ANTI-JOIN AGAINST layers/derivation_licensed.sqlc, which is the positive
 #   statement of the same thing and the one worth reading: exactly two REASONS license it,
-#   "the supply runs continuously" and "the question has no denominator". Two answers, not
+#   "it runs the whole period" and "the question has no denominator". Two answers, not
 #   two documents -- most layers in this corpus file one of them.
 -- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail

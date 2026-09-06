@@ -5,8 +5,12 @@
 #    in whole units AND be intermittent in time at once -- a truck that comes twice a week is
 #    both -- so the amount question and the calendar question are separate columns.
 #
-# ⛔⛔ AND A BLANK WOULD MEAN THREE THINGS AT ONCE, WHICH IS WHY IT IS TYPED.
-#      `none`          -- the supply runs continuously.
+# ⛔⛔ AND A BLANK WOULD MEAN THREE THINGS AT ONCE, WHICH IS WHY IT IS TYPED. ⚠️ ONLY TWO OF
+#    THE THREE ARE ABSENCES. The first is a VALUE, and it spent two revisions filed as
+#    `absent reason="none"`, which cost it both its size and its origin.
+#      one whole period -- the supply runs continuously. A DUTY FRACTION OF ONE, filed as a
+#                         value because that is what it is: `1 week` against a period of
+#                         `week`, carrying an origin saying who could shorten it.
 #      `notApplicable` -- the unit has no denominator, so "five days of what?" is malformed.
 #      `unmeasured`    -- nobody asked.
 #    Only the last is arithmetically dangerous, and only because a time slack cannot be

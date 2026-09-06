@@ -8,7 +8,7 @@
 #    ⛔ `lumpy` IS NULLABLE AND THE THIRD STATE IS THE POINT: neither lumpy nor continuous,
 #      because nobody said which. A boolean has two states and this question has three.
 #
-# ⛔ AN ABSENT WINDOW IS NOT A BLANK. `none` = runs continuously. `notApplicable` = the unit
+# ⛔ AN ABSENT WINDOW IS NOT A BLANK, AND THERE ARE ONLY TWO OF THEM. `notApplicable` = the unit
 #   has no denominator, so "five days of what?" has no answer. `unmeasured` = nobody asked,
 #   and that is the state in which a time slack CANNOT be derived from a clearance.
 -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.

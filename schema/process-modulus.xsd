@@ -1218,10 +1218,24 @@
 
       WHAT IT REFUSES
 
-      ⛔ `none`, which is the whole reason this type exists. It stays correct on every
-      wrapper whose value is not a quantity -- `boundOrigin` (nothing sets this bound),
-      `window` (the duty fraction is one), `couplings` (somebody looked for couplings and
-      found none) -- and those keep `AbsenceReason` whole.
+      ⛔ `none`, which is the whole reason this type exists. It stays correct wherever the
+      value arm has NOTHING TO SAY about the degenerate case -- `boundOrigin` (nothing sets
+      this bound), `couplings` (somebody looked for couplings and found none), `absorber` (no
+      buffer took it), `notation` (published under no identifier) -- and those keep
+      `AbsenceReason` whole.
+
+      ⭐⭐⭐ AND THE TEST IS SHARPER THAN "IS THIS A QUANTITY". `none` is honest only where the
+      value arm has no NAMED STATE for the degenerate case; where it has one, `none` is a
+      second door to it and the two spellings cannot be compared as arithmetic. That reaches
+      two wrappers which are not claims at all. `StatedRemainder`: "there is no remainder"
+      reads either "nothing to subtract from" or "the difference is zero", and `Fit` already
+      settled the second in prose -- a point nameplate equal to a point demand "IS A CLEARANCE
+      FIT ... where minimum clearance is zero", a filing with a sign and a quantity of
+      [0, 0, 0]. `StatedLumpyQuantum` at `window`: "it runs continuously" is a duty fraction of
+      ONE, and one is a value. It has a size, and in `LumpyQuantum/origin` it has an author,
+      so `intrinsic` (the line cannot be stopped), `contractual` (somebody promised cover) and
+      `policy` (somebody staffed three shifts) collapsed into a blank that named none of them.
+      Both take this type now, and a whole duty cycle is filed as one whole period.
 
       ⛔ Leaving it to a rule. It WAS a rule: `zero_stated_as_a_claim` examined 120 slacks,
       and a relation existed only to name the violations. A narrower simpleType reaches it in
@@ -1406,9 +1420,17 @@
       WHAT IT OBLIGES
 
       The model claims every layer has a remainder. Requiring the element forces a sender who
-      disagrees to say so EXPLICITLY. `absent reason="none"` reads "somebody looked at this
-      layer and there is no remainder", which is a filed counter-example rather than an empty
-      field. `unmeasured` is the honest and commonest answer on a labour layer.
+      disagrees to say so EXPLICITLY rather than leaving a field empty. `unmeasured` is the
+      honest and commonest answer on a labour layer; `notApplicable` is the answer where
+      `r = n - d` has no `n`, which is what `unstated/margin-ratio` and
+      `refutation/object-storage` file.
+
+      ⛔ AND THE ABSENT ARM IS A `ClaimAbsence`, SO "THERE IS NO REMAINDER" CANNOT BE SPELLED
+      `none`. The phrase reads two ways -- nothing to subtract from, or the difference is zero
+      -- and only the first is an absence. A difference of zero is a CLEARANCE: `Fit` settles
+      the line-to-line case in prose, "minimum clearance is zero", and it is filed with a sign
+      and a quantity of [0, 0, 0]. An absence throws the sign away, and no rule can recover it
+      because nothing is left to compare.
 
       WHAT IT REFUSES
 
@@ -1432,9 +1454,17 @@
       O QUE OBRIGA
 
       O modelo afirma que todas as camadas têm um resto. Exigir o elemento obriga quem declare e
-      discorde a dizê-lo EXPLICITAMENTE. O `absent reason="none"` lê-se «alguém olhou para esta
-      camada e não há resto nenhum», que é um contraexemplo declarado e não um campo vazio. O
-      `unmeasured` é a resposta honesta e a mais frequente numa camada de mão de obra.
+      discorde a dizê-lo EXPLICITAMENTE, em vez de deixar um campo vazio. O `unmeasured` é a
+      resposta honesta e a mais frequente numa camada de mão de obra; o `notApplicable` é a
+      resposta onde o `r = n - d` não tem `n`, que é o que o `unstated/margin-ratio` e o
+      `refutation/object-storage` declaram.
+
+      ⛔ E O RAMO DE AUSÊNCIA É UM `ClaimAbsence`, PORTANTO «NÃO HÁ RESTO» NÃO SE ESCREVE `none`.
+      A frase lê-se de duas maneiras -- não há de que subtrair, ou a diferença é zero -- e só a
+      primeira é uma ausência. Uma diferença de zero é uma FOLGA: o `Fit` resolve em prosa o caso
+      linha a linha, «a folga mínima é zero», e declara-se com um sinal e uma quantidade de
+      [0, 0, 0]. Uma ausência deita fora o sinal, e nenhuma regra o recupera porque não sobra
+      nada com que comparar.
 
       O QUE RECUSA
 
@@ -1448,7 +1478,7 @@
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="remainder" type="pm:Remainder"/>
-      <xs:element name="absent"    type="pm:Absence"/>
+      <xs:element name="absent"    type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -2207,19 +2237,28 @@
     <xs:annotation><xs:documentation xml:lang="en">
       WHAT IT IS
 
-      The wrapper for `Divisibility/window`, carrying four states that an omitted element
+      The wrapper for `Divisibility/window`, carrying three states that an omitted element
       renders identically.
 
       WHAT IT CONTAINS
 
-        quantum                     the supply is live for this much of each period
-        absent reason="none"        somebody looked; the supply is always on. Duty fraction
-                                    1, and a `derived` timeSlack stays legal
+        quantum                     the supply is live for this much of each period. ⭐ ONE
+                                    WHOLE PERIOD IS A DUTY FRACTION OF ONE, quoted in the
+                                    period's own unit -- `1 week` against a period of `week`
+                                    -- and a `derived` timeSlack stays legal there
         absent reason="unmeasured"  the unit HAS a period and nobody has measured the live
                                     part of it. The one state that disables the timeSlack
                                     rule below
         absent reason="notApplicable"  the unit has no denominator, so there is no cycle to
                                     be live in part of. A stock, not a rate
+
+      ⛔⛔ THERE IS NO FOURTH, AND ITS DELETION IS WHY THIS ARM IS A `ClaimAbsence`. "The
+      supply is always on" was `absent reason="none"` for two revisions, and it is a VALUE
+      wearing an absence: a duty fraction of one, with a size and an `origin` naming who could
+      shorten it. A line that cannot be stopped, a desk somebody promised round the clock and
+      a plant staffed three shifts filed identically, and only the last two are levers. Worse,
+      `assets/sql/layers/derivation_licensed.sql` READ that absence as its licence, so a rule
+      was taking a number out of a blank.
 
       WHAT IT OBLIGES
 
@@ -2252,18 +2291,26 @@
 
       O QUE É
 
-      O invólucro do `Divisibility/window`, a transportar quatro estados que um elemento omitido
+      O invólucro do `Divisibility/window`, a transportar três estados que um elemento omitido
       representa da mesma maneira.
 
       O QUE CONTÉM
 
-        quantum                     a oferta está viva durante esta parte de cada período
-        absent reason="none"        alguém foi ver; a oferta está sempre ligada. Fração de serviço
-                                    1, e um `timeSlack` `derived` continua legal
+        quantum                     a oferta está viva durante esta parte de cada período. ⭐ UM
+                                    PERÍODO INTEIRO É UMA FRAÇÃO DE SERVIÇO DE UM, cotado na
+                                    unidade do próprio período -- `1 week` para um período de
+                                    `week` -- e aí um `timeSlack` `derived` continua legal
         absent reason="unmeasured"  a unidade TEM um período e ninguém mediu a parte viva dele. O
                                     único estado que desativa a regra do `timeSlack` abaixo
         absent reason="notApplicable"  a unidade não tem denominador, portanto não há ciclo nenhum
                                     em parte do qual estar vivo. Um stock, não uma taxa
+
+      ⛔⛔ NÃO HÁ UM QUARTO, E A SUA ELIMINAÇÃO É A RAZÃO DE ESTE RAMO SER UM `ClaimAbsence`. «A
+      oferta está sempre ligada» era `absent reason="none"` durante duas revisões, e é um VALOR
+      vestido de ausência: uma fração de serviço de um, com um tamanho e um `origin` a dizer quem
+      a poderia encurtar. Uma linha que não se pode parar, um balcão que alguém prometeu 24 horas
+      e uma fábrica com três turnos declaravam-se de forma idêntica, e só os dois últimos são
+      alavancas.
 
       O QUE OBRIGA
 
@@ -2291,7 +2338,7 @@
     </xs:documentation></xs:annotation>
     <xs:choice>
       <xs:element name="quantum" type="pm:LumpyQuantum"/>
-      <xs:element name="absent"  type="pm:Absence"/>
+      <xs:element name="absent"  type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
 

@@ -79,7 +79,13 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
              diligence. No arrangement of figures implies it, and a receiver that computed it \
              would be computing a claim about a person",
         )),
-        ("window", RNone, Exercised),
+        // ⛔⛔⛔ THERE IS NO `window` / `RNone` CELL, AND ITS DELETION IS THE POINT.
+        // `absent reason="none"` here meant "the duty fraction is one", which is a VALUE and
+        // not a nothing: it has a size and, in `LumpyQuantum/origin`, an author who could
+        // change it. A line that cannot be stopped and a line somebody staffed round the
+        // clock filed identically and neither said which it was. `window` is a
+        // `StatedLumpyQuantum` whose absent arm is now a `ClaimAbsence`, so the state is not
+        // spellable, and a whole duty cycle is filed as one whole period instead.
         ("window", Unmeasured, Exercised),
         ("window", NotApplicable, Exercised),
         ("window", Derived, Incoherent(
@@ -91,26 +97,38 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("boundOrigin", Unmeasured, Exercised),
         ("boundOrigin", NotApplicable, Exercised),
         ("boundOrigin", Derived, Exercised),
+        // ⭐⭐⭐ AND THIS CELL IS NEW, BECAUSE UNTIL `support-cover` NO DOCUMENT HAD EVER
+        // DECLINED AN ABSORBER. `Remainder` argues for it in as many words: "a remainder may
+        // genuinely have been absorbed by NOTHING. A shop at capacity that turns people away
+        // with no waiting list has a real remainder ... and nothing queued, stretched or
+        // waited." ⛔ AND IT IS THE `none` THAT SURVIVES THE SWEEP THAT DELETED TWO OTHERS.
+        // The test is whether the value arm has a NAMED STATE for the degenerate case:
+        // `Fit` names the zero remainder (`clearance`), and a window of one whole period
+        // names the duty fraction of one, so `none` was a second door at both. An absorber
+        // names WHICH of three buffers took it, and choosing none of three is a genuine empty
+        // selection with no size and no origin to lose.
+        ("absorber", RNone, Exercised),
         // ---- the wrappers that were already here, and were never measured ----
-        ("StatedRemainder", RNone, Exercised),
+        // ⛔ NO `RNone` CELL HERE EITHER, FOR THE SAME REASON ONE LEVEL UP. "There is no
+        // remainder" reads either "nothing to subtract from" or "the remainder is zero", and
+        // a remainder of zero is a CLEARANCE FIT carrying [0, 0, 0] and a sign, which `Fit`
+        // settles in prose. Two spellings of one fact, and the absence arm is the one that
+        // throws the sign away.
         ("StatedRemainder", Unmeasured, Open(
             "the schema's own annotation calls it \"the honest and commonest answer on a labour \
              layer\" — nobody has looked at whether this layer has a remainder. Coherent and \
              permitted; no document in this corpus needs it, because every layer here either \
-             files a remainder or has looked and found none",
+             files a remainder or has none to file",
         )),
-        ("StatedRemainder", NotApplicable, Incoherent(
-            "⛔ THE MALFORMED QUESTION IS ONE LEVEL IN, NOT HERE. `notApplicable` says a \
-             question PRESUPPOSES something false. \"Which side of zero is this remainder on?\" \
-             presupposes a remainder, so where there is none that question really is malformed \
-             — and `StatedFit` carries `notApplicable` for exactly that, exercised. \"Does this \
-             layer have a remainder?\" presupposes only that it is a layer, which it is, and it \
-             has an answer: no. That answer is `none`. `unstated/margin-ratio` is the case — \
-             demand and nameplate both `notApplicable`, a ratio with nothing that queues and \
-             nothing that is consumed — and it files `none` with the note \"no quantum, so \
-             nothing is left over\". A layer where the question is genuinely malformed would \
-             refute this argument, and none has been filed",
-        )),
+        // ⭐⭐⭐ AND THIS CELL USED TO SAY `Incoherent`, WITH AN ARGUMENT THAT INVITED ITS
+        // OWN REFUTATION IN ITS LAST LINE: "a layer where the question is genuinely malformed
+        // would refute this argument, and none has been filed." One had been. The old
+        // reasoning ran "'does this layer have a remainder?' presupposes only that it is a
+        // layer, and it has an answer: no" — but the remainder is `r = n - d`, and
+        // `unstated/margin-ratio` states no nameplate at all. There is no `n`, so there is no
+        // subtraction to have an answer, which is what `notApplicable` says. That document
+        // numbers seven malformed questions about a ratio and this is the eighth.
+        ("StatedRemainder", NotApplicable, Exercised),
         ("StatedRemainder", Derived, Incoherent(
             "⛔ IT WOULD DENY THREE THINGS TO CLAIM ONE. `derived` says the answer is stated \
              elsewhere and repeating it here would be a restatement — true of the remainder's \
@@ -400,7 +418,7 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
                         match c {
                             pm::DivisibilityTypeContent::Window(
                                 StatedLumpyQuantumType::Absent(a),
-                            ) => bump("window", reason(a)),
+                            ) => bump("window", claim_reason(a)),
                             pm::DivisibilityTypeContent::Lumpy(q) => claims.push(("size", &q.size)),
                             pm::DivisibilityTypeContent::Continuous(c) => {
                                 claims.push(("premium", &c.premium))
@@ -417,7 +435,7 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
             // arm carrying the disagreement was counted nowhere. `assets/ddl/schema.ddl` was
             // dropping it at the same time and for the same reason.
             match &l.remainder {
-                pm::StatedRemainderType::Absent(a) => bump("StatedRemainder", reason(a)),
+                pm::StatedRemainderType::Absent(a) => bump("StatedRemainder", claim_reason(a)),
                 pm::StatedRemainderType::Remainder(r) => {
                     if let StatedFitType::Absent(a) = &r.sign {
                         bump("StatedFit", reason(a));
@@ -642,7 +660,11 @@ enum Measured {
 }
 use Measured::{At, NotYet};
 
-/// Every wrapper in either schema that admits a `pm:Absence`, and where its states are counted.
+/// Every wrapper in either schema that admits an absence, and where its states are counted.
+///
+/// ⚠️ `StatedLumpyQuantum` and `StatedRemainder` take a `pm:ClaimAbsence` rather than a
+/// `pm:Absence`, so `none` is not among their states. They are listed here because the site is
+/// still measured; the missing cell in the table above is the whole record of the narrowing.
 const MEASURED_AT: [(&str, Measured); 16] = [
     ("StatedConstraintOrigin", At(&["amountOrigin", "boundOrigin"])),
     ("StatedLumpyQuantum", At(&["window"])),
@@ -659,7 +681,7 @@ const MEASURED_AT: [(&str, Measured); 16] = [
     // ---- the four that were never in frame ----
     ("StatedClaim", At(&["amount", "patience", "timeSlack", "capacitySlack", "inventorySlack",
         "draw", "operation draw", "share", "remainder quantity", "premium"])),
-    ("StatedBorrowedTerm", At(&["standing", "framework", "chart"])),
+    ("StatedBorrowedTerm", At(&["standing", "framework", "chart", "absorber"])),
     ("StatedBasis", At(&["measurementBasis"])),
     ("StatedHolder", NotYet(
         "no document files one. That may be a real dark state worth an `Open` argument or an \

@@ -427,6 +427,31 @@ cannot eliminate half a machine.** It holds in every corpus case where it is che
 what crosses units, and a conversion factor multiplies a quantum too. `g = 1` is the other
 degenerate case, where lumpiness dissolves and the composed supply is effectively continuous.
 
+### Identity elements, and where an absence can impersonate one
+
+Every quantity in this model enters either a sum or a product. The three buffer slacks are
+substitutes and they add: `inventory + capacity + time`, identity 0. A duty cycle multiplies:
+`delivered = rate × window ÷ period`, identity 1. A conversion factor and a quantum multiply too.
+
+Where a grammar admits both a value and a typed absence at one position, and the absence can be
+read as that operation's identity, the two are two spellings of one fact. The absence is the
+lossy spelling. It carries no unit, no author for the exactness, and no origin, so a receiver
+cannot compare it as arithmetic with the filers who reached for a number.
+
+**The rule that follows: wherever the value arm names the degenerate case, the absence arm must
+not be able to say the same thing.** A slack of zero is the smallest slack and is filed
+`[0, 0, 0]` in the unit it is zero in. A supply that runs continuously has a duty fraction of
+one and is filed as one whole period, quoted in the period's own unit, carrying the origin that
+says who could shorten it. A remainder of zero is a clearance fit, filed with a sign and a
+quantity of `[0, 0, 0]`, because ISO 286's line-to-line case is a clearance whose minimum
+clearance is zero.
+
+The residue is the honest case, and it is a third operation rather than an exception. A
+selection from a closed set has identity ∅: no buffer absorbed the remainder, nobody sets this
+bound, somebody looked for couplings and the layers move independently. Nothing there has a
+size, a unit or an author, so nothing is lost by declining the element, and those positions keep
+the whole four-member absence vocabulary.
+
 ### The laws are asserted, not assumed
 
 `algebra/roster.sqlc` carries one row per set-algebraic law this tree claims, and

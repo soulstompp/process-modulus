@@ -205,11 +205,15 @@
         </pm:jagged>
       </pm:supply>
 
-      <!-- somebody looked: a subject with no quantum has no remainder -->
+      <!-- 8. malformed for the same reason as 3, 4, 5 and 7, and this one is easy to get
+              wrong. `r = n - d` has no `n` here, so the subtraction has no answer rather
+              than an answer of nothing. ⛔ NOT `none`: that would say the remainder IS
+              zero, and a remainder of zero is a clearance fit carrying a quantity of
+              [0, 0, 0] and a sign, which is a filing rather than an absence. -->
       <pm:remainder>
         <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>no quantum, so nothing is left over</pm:note>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>a ratio commits no nameplate, so there is nothing for a demand to be subtracted from</pm:note>
         </pm:absent>
       </pm:remainder>
     </pm:layer>

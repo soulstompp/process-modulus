@@ -120,8 +120,25 @@
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
               <pm:window>
-                <pm:absent><pm:reason>none</pm:reason>
-                  <pm:note>stipulated: the line runs continuously</pm:note></pm:absent>
+                <pm:quantum>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
+                      <pm:unit>shift</pm:unit>
+                      <pm:denominator>
+                        <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+                      </pm:denominator>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <pm:origin>policy</pm:origin>
+                </pm:quantum>
               </pm:window>
             </pm:divisibility>
           </pm:divisibility>

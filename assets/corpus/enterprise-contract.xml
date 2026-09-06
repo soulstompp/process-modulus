@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Three layers and two operations. Illustrative figures, not anybody's numbers.
+  Four layers and two operations. Illustrative figures, not anybody's numbers.
 
   What it is here to show:
     * the labour layer's remainder split across `people` and `unrealised` with both
@@ -13,6 +13,15 @@
     * a measurement basis filed `notApplicable` because the quantity is physical
     * all three BUFFER SLACKS filed and differing per layer: only `capability`
       can be built ahead, and labour is the only supply that runs above its rating
+    * ⭐ A CONTINUOUSLY AVAILABLE SUPPLY, which is the only kind whose window is its
+      whole period. `support-cover` files a duty fraction of ONE as the value it is,
+      `1 week` against a period of `week` with `origin` `contractual`, because a
+      round-the-clock obligation is a term somebody signed and could renegotiate.
+      Spelled as an absence it would say nothing about which of the three origins
+      put it there
+    * a CLEARANCE whose remainder is still paid for: cover committed, invoiced and
+      not called on, held by `booked`, with `absorber` `none` because no buffer
+      stretched, queued or held anything
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
@@ -897,6 +906,344 @@
                number of them, so the residue is zero and every unit of this remainder
                is a commitment somebody could have made differently. The layer with the
                largest remainder in this document has nothing irreducible in it. -->
+          <pm:quantity>
+            <pm:absent>
+              <pm:reason>derived</pm:reason>
+              <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
+            </pm:absent>
+          </pm:quantity>
+        </pm:remainder>
+      </pm:remainder>
+    </pm:layer>
+
+    <!-- ============================================================
+         SUPPORT COVER: THE FIRST CONTINUOUSLY AVAILABLE SUPPLY IN THIS CORPUS,
+         and the reason it is here is the duty cycle rather than the numbers.
+
+         ⭐⭐⭐ THE WINDOW IS THE WHOLE PERIOD AND IT IS STILL A FILED WINDOW. Cover
+         runs every hour of every day, so the duty fraction is one — and one is a
+         value, not an absence. `pm:Divisibility/window` carries [1, 1, 1] week
+         against a nameplate quoted per week, and `LumpyQuantum/origin` carries the
+         only thing that matters about it: SOMEBODY PROMISED THIS. Drop to twelve
+         hours on weekdays and the nameplate falls by more than half. That is a
+         lever, and it is legible here because the window was filed rather than
+         declined.
+
+         ⛔ A `notApplicable` WOULD BE FALSE HERE and `window_not_applicable_on_a_rate`
+         says why: `engineer-hours per week` has a period under the line, so the
+         duty-cycle question is perfectly answerable and declining it is a refusal
+         dressed as a category error.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>support-cover</pm:name>
+
+      <pm:demand>
+        <pm:amount>
+          <pm:claim>
+            <pm:low>92</pm:low>
+            <pm:mostLikely>118</pm:mostLikely>
+            <pm:high>147</pm:high>
+            <pm:unit>engineer-hours per week</pm:unit>
+            <pm:denominator>
+              <pm:period>week</pm:period>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:narrowing>
+                <pm:condition>incident handling time is taken from the ticket clock rather than estimated at close</pm:condition>
+                <pm:kind>instrument</pm:kind>
+              </pm:narrowing>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:absent>
+                <pm:reason>none</pm:reason>
+                <pm:note>nothing sets this bound. The range is where twenty-six weeks of incident load fell</pm:note>
+              </pm:absent>
+            </pm:boundOrigin>
+            <pm:provenance><pm:party>platform</pm:party>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
+            </pm:provenance>
+            <pm:asOf>2026-08-30</pm:asOf>
+          </pm:claim>
+        </pm:amount>
+
+        <!-- ⭐⭐ THE SECOND FILED PATIENCE IN THIS CORPUS, AND ITS EDGE IS THE SLA.
+             How long an unanswered incident stays an incident before the customer
+             escalates past us. `contractual` because the response target is written
+             into the agreement: the three numbers are the distribution those terms
+             bound, which is why the edge and the range are two elements.
+             ⛔ THE UNIT IS `hours` AND NOT `engineer-hours per week`: a patience is a
+             span of time and bounds no shares. -->
+        <pm:patience>
+          <pm:claim>
+            <pm:low>0.25</pm:low>
+            <pm:mostLikely>1.0</pm:mostLikely>
+            <pm:high>4.0</pm:high>
+            <pm:unit>hours</pm:unit>
+            <pm:denominator>
+              <pm:absent>
+                <pm:reason>notApplicable</pm:reason>
+                <pm:note>a duration has nothing under the line</pm:note>
+              </pm:absent>
+            </pm:denominator>
+            <pm:narrowsWhen>
+              <pm:absent>
+                <pm:reason>unmeasured</pm:reason>
+                <pm:note>nobody has said what would tighten this range</pm:note>
+              </pm:absent>
+            </pm:narrowsWhen>
+            <pm:boundOrigin>
+              <pm:origin>contractual</pm:origin>
+            </pm:boundOrigin>
+          </pm:claim>
+        </pm:patience>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:claim>
+          <pm:low>0</pm:low>
+          <pm:mostLikely>6</pm:mostLikely>
+          <pm:high>18</pm:high>
+          <pm:unit>engineer-hours per week</pm:unit>
+          <pm:denominator>
+            <pm:period>week</pm:period>
+          </pm:denominator>
+          <pm:narrowsWhen>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>nobody has said what would tighten this range</pm:note>
+            </pm:absent>
+          </pm:narrowsWhen>
+          <pm:boundOrigin>
+            <pm:origin>contractual</pm:origin>
+          </pm:boundOrigin>
+          <pm:provenance><pm:party>platform</pm:party>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+            <pm:note>work that can sit in the queue without breaching the response target</pm:note>
+          </pm:provenance>
+        </pm:claim>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the round-the-clock support desk under the master services agreement</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>168</pm:low>
+              <pm:mostLikely>168</pm:mostLikely>
+              <pm:high>168</pm:high>
+              <pm:unit>engineer-hours per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent>
+                  <pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note>
+                </pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>derived</pm:reason>
+                  <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+
+          <!-- ⭐ ONE ENGINEER, ALWAYS. 168 engineer-hours a week is one person of cover
+               with no gap in it, which is what the agreement commits and nothing more. -->
+          <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+
+          <pm:divisibility>
+            <pm:divisibility>
+              <!-- Cover is rostered in whole weeks of one engineer; half a person on
+                   call is not a thing that can be bought. -->
+              <pm:lumpy>
+                <pm:size>
+                  <pm:claim>
+                    <pm:low>168</pm:low>
+                    <pm:mostLikely>168</pm:mostLikely>
+                    <pm:high>168</pm:high>
+                    <pm:unit>engineer-hours per week</pm:unit>
+                    <pm:denominator>
+                      <pm:period>week</pm:period>
+                    </pm:denominator>
+                    <pm:narrowsWhen>
+                      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+                    </pm:narrowsWhen>
+                    <pm:boundOrigin>
+                      <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this size, in this same element</pm:note></pm:absent>
+                    </pm:boundOrigin>
+                  </pm:claim>
+                </pm:size>
+                <pm:origin>contractual</pm:origin>
+              </pm:lumpy>
+
+              <!-- ⭐⭐⭐ THE DUTY FRACTION IS ONE, FILED AS THE VALUE IT IS.
+                   One whole week of a week-long period, which is what a duty fraction
+                   of one looks like when it is quoted in the period's own unit.
+                   `contractual` and not `policy`: the round-the-clock obligation is a
+                   term of the agreement, and the party who could change it is the one
+                   who could renegotiate it. -->
+              <pm:window>
+                <pm:quantum>
+                  <pm:size>
+                    <pm:claim>
+                      <pm:low>1</pm:low>
+                      <pm:mostLikely>1</pm:mostLikely>
+                      <pm:high>1</pm:high>
+                      <pm:unit>week</pm:unit>
+                      <pm:denominator>
+                        <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
+                      </pm:denominator>
+                      <pm:narrowsWhen>
+                        <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
+                      </pm:narrowsWhen>
+                      <pm:boundOrigin>
+                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                      </pm:boundOrigin>
+                    </pm:claim>
+                  </pm:size>
+                  <pm:origin>contractual</pm:origin>
+                </pm:quantum>
+              </pm:window>
+            </pm:divisibility>
+          </pm:divisibility>
+
+          <pm:capacitySlack>
+            <pm:claim>
+              <pm:low>0</pm:low>
+              <pm:mostLikely>16</pm:mostLikely>
+              <pm:high>40</pm:high>
+              <pm:unit>engineer-hours per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>nobody has said what would tighten this range</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>
+              <pm:provenance><pm:party>platform</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>a second engineer can be pulled in on a major incident, and has been</pm:note>
+              </pm:provenance>
+            </pm:claim>
+          </pm:capacitySlack>
+
+          <!-- ⛔⛔ ZERO, AND intrinsic, AND IT IS THE DEFINING FACT OF THE LAYER.
+               Cover cannot be built ahead. An idle hour at 03:00 on Sunday does not
+               keep until Monday's incident, which is why the whole duty cycle has to
+               be bought instead of the busy part of it. ⭐ A slack of zero is the
+               SMALLEST SLACK and not the absence of one: [0, 0, 0] in the unit it is
+               zero in, per `ClaimAbsenceReason`. -->
+          <pm:inventorySlack>
+            <pm:claim>
+              <pm:low>0</pm:low>
+              <pm:mostLikely>0</pm:mostLikely>
+              <pm:high>0</pm:high>
+              <pm:unit>engineer-hours per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a point has no width to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              <pm:provenance><pm:party>platform</pm:party>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                <pm:note>an unused hour of cover does not keep</pm:note>
+              </pm:provenance>
+            </pm:claim>
+          </pm:inventorySlack>
+        </pm:nameplate>
+
+        <pm:jagged>
+          <pm:draw>
+            <pm:claim>
+              <pm:low>92</pm:low>
+              <pm:mostLikely>118</pm:mostLikely>
+              <pm:high>147</pm:high>
+              <pm:unit>engineer-hours per week</pm:unit>
+              <pm:denominator>
+                <pm:period>week</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>nobody has said what would tighten this range</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin>
+                <pm:absent>
+                  <pm:reason>none</pm:reason>
+                  <pm:note>nothing sets this bound. It is what the ticket clock recorded</pm:note>
+                </pm:absent>
+              </pm:boundOrigin>
+            </pm:claim>
+          </pm:draw>
+          <pm:measurementBasis>
+            <pm:absent>
+              <pm:reason>notApplicable</pm:reason>
+              <pm:note>hours off a ticket clock have no accounting measurement basis</pm:note>
+            </pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <!-- ⭐⭐ A CLEARANCE, AND THE COVER THAT WENT UNUSED IS STILL PAID FOR.
+           nameplate.low 168 ≥ demand.high 147, so the WHOLE range clears and nothing
+           went unserved: `customer` and `unrealised` are ruled out here exactly as
+           `clearance_with_unserved` requires. What is left is 168 − [92, 118, 147] =
+           [21, 50, 76] engineer-hours a week of committed, invoiced, unconsumed cover,
+           and it sits on `booked` because a contract is precisely the instrument that
+           records it. -->
+      <pm:remainder>
+        <pm:remainder>
+          <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+
+          <!-- ⭐ AND NOTHING ABSORBED IT, WHICH IS A LEGITIMATE `none`. No buffer
+               stretched, queued or held anything: the cover was simply there and not
+               all of it was wanted. Contrast the WRAPPER above, where `none` is no
+               longer spellable, because "there is no remainder" would be a claim that
+               the remainder is zero and a zero remainder is a filed clearance. -->
+          <pm:absorber>
+            <pm:absent>
+              <pm:reason>none</pm:reason>
+              <pm:note>no buffer took this. The desk was staffed and the incidents did not come</pm:note>
+            </pm:absent>
+          </pm:absorber>
+
+          <pm:holder>
+            <pm:holder>
+              <pm:kind>booked</pm:kind>
+              <pm:share>
+                <pm:claim>
+                  <pm:low>21</pm:low>
+                  <pm:mostLikely>50</pm:mostLikely>
+                  <pm:high>76</pm:high>
+                  <pm:unit>engineer-hours per week</pm:unit>
+                  <pm:denominator>
+                    <pm:period>week</pm:period>
+                  </pm:denominator>
+                  <pm:narrowsWhen>
+                    <!-- ⭐ AND THE NOTE HERE USED TO SAY `notApplicable` WHILE DESCRIBING A
+                         NARROWING, WHICH `range_says_no_range` CAUGHT. A span of 21 to 76 has
+                         width, and what tightens it is named one element over. -->
+                    <pm:narrowing>
+                      <pm:condition>the demand range narrows; this share is that range subtracted from a fixed nameplate, so it narrows exactly as far</pm:condition>
+                      <pm:kind>instrument</pm:kind>
+                    </pm:narrowing>
+                  </pm:narrowsWhen>
+                  <pm:boundOrigin>
+                    <pm:absent><pm:reason>derived</pm:reason><pm:note>the bound is the demand's bound, subtracted from a fixed nameplate</pm:note></pm:absent>
+                  </pm:boundOrigin>
+                  <pm:provenance><pm:party>platform</pm:party>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
+                    <pm:note>invoiced monthly against the agreement whether or not it is called on</pm:note>
+                  </pm:provenance>
+                  <pm:asOf>2026-08-30</pm:asOf>
+                </pm:claim>
+              </pm:share>
+            </pm:holder>
+          </pm:holder>
+
           <pm:quantity>
             <pm:absent>
               <pm:reason>derived</pm:reason>

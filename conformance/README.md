@@ -267,7 +267,7 @@ permitted.
 | a slack is expressed in the unit of the shares it bounds | `Nameplate`, `Layer` |
 | a slack measured as a duration is converted before filing, by `quantity = duration x rate` | `Nameplate`, `Layer` |
 | a unit's denominator covers at least one whole duty cycle of the supply it measures | `Claim` |
-| `timeSlack` is `derived` only where the layer runs continuously | `Layer` |
+| `timeSlack` is `derived` only where the layer runs the WHOLE of its period, filed as a window of one whole period in the period's own unit | `Layer` |
 | a claim filing `boundOrigin` as `derived` sits beside a sibling element that states the author — `Nameplate/amountOrigin` or `LumpyQuantum/origin` — so the pointer resolves | `Claim` |
 | a `window` is the ON-duration, one per period of the nameplate's unit, and never the gap | `Divisibility` |
 | a `window` requires the nameplate's unit to name a period, since it is the live part of that denominator | `Divisibility` |

@@ -1,19 +1,53 @@
 # THE LAYERS WHOSE WINDOW PERMITS DERIVING A TIME SLACK FROM A CLEARANCE. One row per
-# nameplate filing its window as `none` or `notApplicable`.
+# nameplate whose duty cycle leaves the spare spread evenly across the denominator.
 #
 # ⭐⭐ THIS IS THE POSITIVE FORM OF A RULE USUALLY WRITTEN AS A NEGATION, and the positive
 #    form is the one that reads. `timeSlack = q / clearance` assumes the spare is spread
-#    evenly across the denominator. A stated window says it is NOT -- the machine runs 02:00
-#    to 05:00 -- so the division is over a base that does not exist. `unmeasured` says nobody
-#    knows whether it is, which is an assumption wearing a computation's clothes.
-#    ⛔ So exactly two REASONS license the derivation -- "it runs continuously" and "the
+#    evenly across the denominator. A window that is a PROPER PART of the period says it is
+#    not -- the machine runs 02:00 to 05:00 -- so the division is over a base that does not
+#    exist. `unmeasured` says nobody knows whether it is, which is an assumption wearing a
+#    computation's clothes.
+#    ⛔ So exactly two REASONS license the derivation -- "it runs the whole period" and "the
 #      question has no denominator" -- across however many layers file one of them. Two
-#      answers, not two documents. The check downstream is an ANTI-JOIN against this
-#      relation rather than a list of things to reject, because the licensing set is small,
-#      closed, and the thing a reader actually needs to know.
--- pm:Divisibility/window absent for a licensing reason.
-SELECT w.filing, w.layer, w.window_absent AS licensed_because
+#      answers, not two documents.
+#
+# ⛔⛔ AND THE FIRST OF THE TWO USED TO BE READ OUT OF AN ABSENCE, WHICH IS WHY THIS FILE
+#    CHANGED. It was `window_absent IN ('none', 'notApplicable')`, and `none` there MEANT
+#    "the duty fraction is one" -- a number, filed as though it were a nothing. The absence
+#    arm carries no size and no origin, so a line that cannot be stopped and a line somebody
+#    staffed round the clock licensed this derivation identically and neither said so. Now
+#    the licence is read off a FILED window, and the two spellings collapse into one.
+#
+# ⚠️⚠️ THE PERIOD ARRIVES BY A SEMI-JOIN AND NOT A JOIN, AND THAT IS A LATENT DEFECT ONE
+#    DIRECTORY OVER RATHER THAN A STYLE CHOICE. `units/with_a_period.sqlc` says it reads
+#    `pm:Nameplate/amount`, but `pm.claim.owns` records an ELEMENT NAME and not a PATH, so
+#    `Demand/amount` and `Nameplate/amount` are the same `pm:amount` to it and it returns two
+#    rows per layer. A plain join fans out. Today the two always agree on whether they carry a
+#    period -- checked, zero layers differ -- so nothing is wrong yet; the day one disagrees,
+#    a window would be measured against the DEMAND's period, which is not what a duty cycle is
+#    a fraction of. `window_not_applicable_on_a_rate` rests on the same relation and hides the
+#    same fan-out behind an `EXISTS`.
+#
+# ⭐⭐⭐ A WHOLE PERIOD IS QUOTED AS `1` IN THE PERIOD'S OWN UNIT, AND THAT IS THE WHOLE
+#    TRICK. `1 week` against a period of `week` is a duty fraction of one you can read
+#    without dividing anything; `5 days` against the same period is a proper part. No unit
+#    conversion happens here on purpose -- `window_not_applicable_on_a_rate` records what
+#    happened the last time this directory guessed at units in SQL, and a licence decided by
+#    a `LIKE` is a reader's judgement wearing a query's clothes.
+-- pm:Divisibility/window: absent notApplicable, or filed as one whole period.
+SELECT w.filing, w.layer,
+       CASE WHEN w.window_absent IS NOT NULL THEN 'the question has no denominator'
+            ELSE 'it runs the whole period' END AS licensed_because
 FROM (
     :compose(layers/windows.sqlc)
 ) w
-WHERE w.window_absent IN ('none', 'notApplicable')
+WHERE w.window_absent = 'notApplicable'
+   OR (w.window_low = 1 AND w.window_low = w.window_high
+       AND EXISTS (
+           SELECT 1
+           FROM (
+               :compose(units/with_a_period.sqlc)
+           ) p
+           WHERE p.filing = w.filing AND p.layer = w.layer
+             AND p.period = w.window_unit
+       ))
