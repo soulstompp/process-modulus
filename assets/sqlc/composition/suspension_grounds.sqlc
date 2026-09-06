@@ -26,12 +26,11 @@
 #    almost always wants is the first three, and `composition/suspended_fusions.sqlc` is that
 #    projection.
 #
-# ⚠️ IT WENT WRONG EXACTLY ONCE AND EXACTLY WHERE THE ALGEBRA SAYS IT WOULD. Every consumer
-#    reached this through `EXISTS`, `NOT EXISTS` or `EXCEPT`, where a duplicate row is
-#    invisible -- and `arithmetic/fusion_sum.sqlc` reached it through a `LEFT JOIN`, where it
-#    is not. Adding a third ground turned fourteen fusions into seventeen rows and the
-#    soundness law that counts them failed on the spot. A relation nobody has joined on is a
-#    multiplicity nobody has checked.
+# ⚠️ AND THE DIFFERENCE IS INVISIBLE TO ALMOST EVERY CALLER, WHICH IS WHY IT NEEDS SAYING.
+#    `EXISTS`, `NOT EXISTS` and `EXCEPT` are blind to multiplicity: a duplicate row changes
+#    nothing they compute. A `LEFT JOIN` is not, and a law that COUNTS fusions is not. So the
+#    projection is what a counter or a joiner reads, and this file is what a reader who needs
+#    the reason reads. A relation nobody has joined on is a multiplicity nobody has checked.
 -- the three filings that lift the sum rule, one row per GROUND, carrying the quantity it lifts.
 :union(ALL eliminations/unsearched.sqlc, eliminations/unsized.sqlc,
            composition/unsized_conversions.sqlc)

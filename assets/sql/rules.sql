@@ -8199,10 +8199,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -16459,10 +16459,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -17358,10 +17358,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -18337,10 +18337,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -23092,10 +23092,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -31352,10 +31352,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -32251,10 +32251,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -33230,10 +33230,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -38049,10 +38049,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -46310,10 +46310,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -47209,10 +47209,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
@@ -48188,10 +48188,10 @@ WHERE p.factor_absent IS NOT NULL
 WHERE s.quantity IS NULL OR s.quantity = 'demand'
 
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join.
-    --   Joining the bag directly turned fourteen fusions into seventeen rows the day a third
-    --   ground was added; `composition/suspended_fusions.sqlc` is the set, and this needs the
-    --   REASONS as well, so it aggregates them rather than reaching for the projection.
+    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
+    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
+    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
+    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
                string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)

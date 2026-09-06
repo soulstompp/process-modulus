@@ -493,8 +493,8 @@ ORDER BY 1, 2;
 \echo '  the overlap and could not size it, and so is one whose CONVERSION nobody sized. All'
 \echo '  three grounds are in composition/suspension_grounds.sqlc; this anti-joins'
 \echo '  composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
-\echo '  fusion suspended on two grounds is suspended ONCE, and the day a third ground arrived'
-\echo '  the difference turned fourteen fusions into seventeen rows.'
+\echo '  fusion suspended on two grounds is suspended ONCE, so a caller that COUNTS reads the'
+\echo '  projection and a caller that needs the reason reads the bag.'
 \echo '  That is the composition rule checked against real filings, and XSD 1.0 cannot state'
 \echo '  it, let alone check it: it spans two documents.'
 

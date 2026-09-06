@@ -103,10 +103,10 @@ fn every_dependency_is_on_the_permitted_list() {
 /// it is a decision recorded as taken when nobody took it, and the file's own doc says adding a
 /// name IS the decision.
 ///
-/// ⚠️ IT HAPPENED ON 2026-09-06 AND A BROAD `git add` IS HOW. Two names arrived on the list from
-/// an unrelated working thread, in a commit whose message did not mention them, and every test
-/// passed because the gate only looked one way. The push would have shipped an allowlist
-/// pre-authorising a dependency the crate does not take.
+/// ⚠️ AND THE ONE-WAY GATE CANNOT SEE IT. `contains` asks whether a dependency is on the list;
+/// nothing asks the converse, so a name can sit here with no manifest entry behind it and every
+/// test still passes. What ships is an allowlist pre-authorising a crate this one does not take,
+/// in a file whose entire purpose is that the list and the manifest agree.
 #[test]
 fn every_permitted_name_is_a_dependency_the_manifest_takes() {
     let taken: Vec<String> = dependency_lines()
