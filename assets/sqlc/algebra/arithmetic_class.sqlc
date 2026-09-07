@@ -5,9 +5,19 @@
 #    The classes must be pairwise disjoint AND jointly exhaustive, which is a statement about each
 #    candidate, not about the totals. So: group by (site, filing, layer) and require exactly one.
 #
-# ⛔ NOT EXHAUSTIVE IS THE SILENT ONE. A candidate falling through every CASE branch vanishes from
-#   the denominator, and the site then reports a smaller population and a cleaner verdict than it
-#   earned -- the same failure `violates IS NULL` is guarded against in checks/.
+# ⛔ NOT EXHAUSTIVE IS THE SILENT ONE. A candidate falling through every CASE branch takes a NULL
+#   verdict, and the site then reports a smaller population and a cleaner verdict than it earned
+#   -- the same failure `violates IS NULL` is guarded against in checks/.
+#
+# ⛔⛔⛔ SO THE NULL FILTER MUST SIT INSIDE THE COUNT AND NEVER BESIDE IT. As a `WHERE` it removes
+#    the whole GROUP, and a candidate in no class stops being a candidate; as a `FILTER` it
+#    leaves the group with ZERO classes and `classes <> 1` catches it. The two spellings are one
+#    keyword apart and they make opposite claims about exhaustiveness.
+#
+#    ⭐ Demonstrated by dropping one `ELSE` from arithmetic/remainder.sqlc and recomposing:
+#    `x_composed = F.Phi.x - e` falls from 16 candidates to 3, and with the filter beside the
+#    count the law still returns `t` reading "3 candidates, 3 in exactly one class". With it
+#    inside, eight of the nine sites go `f`. Restore the `ELSE` afterwards.
 -- arithmetic/all.sqlc, one candidate to exactly one verdict.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -18,9 +28,9 @@ LEFT JOIN (
            count(*) FILTER (WHERE z.classes <> 1) = 0 AS holds,
            format('%s candidates, %s in exactly one class', count(*),
                   count(*) FILTER (WHERE z.classes = 1)) AS detail
-    FROM ( SELECT site, filing, layer, count(*) AS classes
+    FROM ( SELECT site, filing, layer,
+                  count(*) FILTER (WHERE w.verdict IS NOT NULL) AS classes
            FROM ( :compose(arithmetic/all.sqlc) ) w
-           WHERE w.verdict IS NOT NULL
            GROUP BY site, filing, layer ) z
     GROUP BY z.site
 ) p ON true

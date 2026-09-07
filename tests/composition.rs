@@ -193,10 +193,10 @@ fn both_members_parse_and_declare_what_they_report_under() {
 /// value. No mapping, no authority, no negotiation. That is the entire return on refusing
 /// to borrow these.
 ///
-/// ⚠️ THE THREE BUFFER SLACKS USED TO BE ON THIS LIST AND NO LONGER BELONG ON IT. They
-/// were booleans, which compare for free because there are only two of them; they are now
-/// quantities in each layer's own unit, and two filings agree about a slack only when they
-/// agree about a unit. That is a real loss and it buys the ability to say `barely`.
+/// ⚠️ THE THREE BUFFER SLACKS DO NOT BELONG ON THIS LIST. As booleans they would compare for
+/// free, because there are only two of them; as quantities in each layer's own unit, two
+/// filings agree about a slack only when they agree about a unit. That is a real loss and it
+/// buys the ability to say `barely`.
 ///
 /// ⚠️ NOTE WHAT THIS TEST HAD TO DO TO RUN AT ALL: it pairs `labour` with `pessoal`
 /// BY HAND, because I read both documents and know they are one layer. Nothing in
@@ -544,10 +544,10 @@ fn fusion<'a>(c: &'a CompositionType, name: &str) -> &'a FusionType {
 /// The eliminations a fusion filed, or an empty slice where it filed a typed reason instead.
 ///
 /// ⛔⛔ AN EMPTY SLICE IS NOT `absent reason="none"`, AND `expected` BELOW IS WHERE THAT COSTS
-/// SOMETHING. `Fusion/eliminations` used to be `minOccurs="0" maxOccurs="unbounded"`, so a
-/// composer who checked for double counting and found none produced the same bytes as one who
-/// never looked — and the sum rule the `Elimination` type exists to make EXACT quietly went
-/// back to being a warning for every fusion that filed nothing. Three of this corpus's eight
+/// SOMETHING. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Fusion/eliminations` makes a
+/// composer who checked for double counting and found none produce the same bytes as one who
+/// never looked, and the sum rule the `Elimination` type exists to make EXACT falls back to a
+/// warning for every fusion that files nothing. Three of this corpus's eight
 /// fusions are in that state.
 fn eliminations(f: &FusionType) -> Vec<&EliminationType> {
     f.eliminations
@@ -630,7 +630,7 @@ fn the_composition_parses_and_is_signed_by_a_party_that_filed_neither_member() {
     );
 }
 
-/// ⭐⭐⭐ THE FALSE NEGATIVE, REPAIRED. The fingerprint join could not see that `labour`
+/// ⭐⭐⭐ THE FALSE NEGATIVE, AND WHAT ANSWERS IT. A fingerprint join cannot see that `labour`
 /// and `pessoal` are one layer. The composer says so, by name, in a document the
 /// composer attests to — and the reason is prose, because a fungibility judgement is a
 /// claim a reader is entitled to disagree with rather than a fact a validator can settle.
@@ -659,7 +659,7 @@ fn the_composition_says_which_filed_layers_are_one_layer() {
     );
 }
 
-/// ⭐⭐⭐ THE FALSE POSITIVE, REPAIRED, AND NOT BY A HEURISTIC. Two one-part fusions
+/// ⭐⭐⭐ THE FALSE POSITIVE, AND NOT ANSWERED BY A HEURISTIC EITHER. Two one-part fusions
 /// under two names. A fusion of one part is not degenerate: it is the composer saying
 /// "I read this layer, it fuses with nothing, I carried it through" — and `observed` is
 /// required, so they had to say why.
@@ -979,8 +979,8 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
     let (labour, line) = (fusion(&c, "labour"), fusion(&c, "shift-line"));
 
     // ⭐⭐ THE ASYMMETRY IS A VALUE NOW AND NOT A PRESENCE, AND THAT IS THE STRONGER FORM.
-    // These four used to be `sized` / `!sized`: the two zero axes filed
-    // `absent reason="none"` and the test read which SLOT was empty. But an unsized
+    // These four are values and not slots. As `sized` / `!sized`, the two zero axes file
+    // `absent reason="none"` and the test reads which SLOT is empty. But an unsized
     // elimination in this corpus means the reconciliation is UNCOMPUTABLE -- this file says
     // so itself -- and both zeros here are reconciliations that were RUN: "payroll registers
     // checked against each other for shared national identifiers; no person appears on both",
@@ -999,10 +999,10 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
     assert!(eliminated(line, EliminationAgainstType::Nameplate) > 0.0);
     assert_eq!(eliminated(line, EliminationAgainstType::Demand), 0.0);
 
-    // ⚠️ AND THE TWO ZEROS SAY WHO LOOKED. This used to assert they were `none` and not
-    // `unmeasured` -- the composer looked and there was nothing to remove -- which is the
-    // distinction a stated zero carries BETTER than the absence did: `none` said somebody
-    // looked, and provenance says who. Filing no elimination at all still says neither.
+    // ⚠️ AND THE TWO ZEROS SAY WHO LOOKED. Asserting they are `none` and not `unmeasured`
+    // makes the same distinction -- the composer looked and there was nothing to remove --
+    // but a stated zero carries it BETTER: `none` says somebody looked, and provenance says
+    // who. Filing no elimination at all says neither.
     for (f, a) in [
         (labour, EliminationAgainstType::Nameplate),
         (line, EliminationAgainstType::Demand),
@@ -1327,8 +1327,8 @@ fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
     let slack = |l: &LayerType| match &l.time_slack {
         StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high)),
         // ⛔ AN ABSENT SLACK IS NOT A ZERO ONE. Collapsing them is the defect `Absence`
-        // exists to prevent, and it used to be reachable here because a zero could be
-        // spelled `none`. `pm:ClaimAbsence` has no `none`, so a zero arrives as a claim.
+        // exists to prevent, and it is reachable wherever a zero can be spelled `none`.
+        // `pm:ClaimAbsence` has no `none`, so a zero arrives here as a claim.
         StatedClaimType::Absent(_) => None,
     };
 

@@ -6,8 +6,8 @@
 #    question. Making the population "both stated" rather than "all pairs" is the difference
 #    between a rule that examines something and a rule that reports on rows it cannot read.
 # ⛔⛔⛔ IT IS THE ABSORBING BUFFER'S SLACK, NOT EVERY SLACK IN THE LAYER, AND THAT NARROWING IS
-#    THE POINT OF THE FILE. This used to join entries/slacks.sqlc on (filing, layer) alone, so
-#    every holder was compared against all three of its layer's buffers. Two thirds of the pairs
+#    THE POINT OF THE FILE. Join entries/slacks.sqlc on (filing, layer) alone and every holder
+#    is compared against all three of its layer's buffers. Two thirds of the pairs
 #    were a holder against a buffer that absorbs nothing of theirs, where a differing unit is no
 #    defect at all -- and checks/slack_unit_mismatch.sqlc, whose sentence is 'the unit of the
 #    shares IT BOUNDS', reported all of them as its examined population.

@@ -14,9 +14,9 @@
 #    passing it. assertion.xsd:1934 states the verdict table this follows.
 #
 # ⛔ THE VERDICT COMES FROM composition/owed_equality.sqlc AND THE REASON FROM ITS COMPLEMENT.
-#   This file used to re-derive the anti-join while its own `--` line cited the relation that
-#   already held it -- a header documenting the dependency it declined to compose. Taking the
-#   verdict from the named relation is what makes a change to `owed_equality` reach here.
+#   Re-deriving the anti-join here while the `--` line cites the relation that already holds it
+#   is a header documenting a dependency the SQL declines to compose. Taking the verdict from
+#   the named relation is what makes a change to `owed_equality` reach here.
 # ⚠️ THE REASON JOIN IS NARROWED TO THE DEMAND GRAIN, AND IT HAS TO BE. This site computes the
 #   demand sum, and composition/suspension_grounds.sqlc is one row per (composed layer, ground)
 #   carrying the quantity it lifts -- a BAG. composition/suspended_fusions.sqlc is its

@@ -12,9 +12,9 @@
 #   share_exceeds_slack examines nothing. The law still holds -- the sum balances at zero -- which
 #   is exactly the point: the vacuum is a finding about the evidence, not a broken operator.
 # ⛔⛔ THE LAW COMPOSES BOTH SIDES RATHER THAN RE-DERIVING THE SPLIT, WHICH IS WHAT MAKES IT A
-#    LAW ABOUT THEM. It used to compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over its
-#    own anti-join, so it asserted that ITS COPY of the split was exhaustive and would have gone
-#    on passing if entries/served_holders.sqlc changed underneath it. A law that re-derives its
+#    LAW ABOUT THEM. Compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over an anti-join
+#    written here and the law asserts that ITS COPY of the split is exhaustive, and goes on
+#    passing when entries/served_holders.sqlc changes underneath it. A law that re-derives its
 #    subject is the one failure a soundness contract cannot afford, because it is invisible.
 -- entries/served_holders.sqlc and entries/unserved_holders.sqlc against pm:Remainder/pm:holder.
 SELECT a.law, p.subject, p.holds, p.detail

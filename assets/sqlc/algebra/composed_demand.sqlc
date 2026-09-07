@@ -2,9 +2,10 @@
 # PARTITION OF EVERY STATED DEMAND. One row: whether |demand| = |3b| + |demand ⋉ suspended|.
 #
 # ⛔⛔ `kept` COMPOSES THE SUBJECT RATHER THAN RE-DERIVING IT, AND THAT IS THE WHOLE POINT OF THE
-#    LAW. It used to spell the anti-join out inline, so it governed a COPY of
-#    queries/matrices/3b-composed-demand.sqlc: change that file's WHERE and this law still passed,
-#    which is the one failure a soundness contract cannot afford because it is invisible.
+#    LAW. Spell the anti-join out inline and it governs a COPY of
+#    queries/matrices/3b-composed-demand.sqlc: change that file's WHERE and this law still
+#    passes, which is the one failure a soundness contract cannot afford because it is
+#    invisible.
 #    algebra/owed_equality.sqlc composes composition/owed_equality.sqlc for the same reason.
 #
 # ⭐ THE LEFT OPERAND IS A SET HERE, SO THIS ONE COULD CONVERT TO `EXCEPT` -- AND MUST NOT. The

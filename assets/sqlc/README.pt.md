@@ -45,7 +45,10 @@ reports/       achados que uma pessoa decide, e as duas vistas de checks/
 ⭐⭐ **A árvore é a ordem de derivação do próprio modelo.** `layers/remainder.sqlc` compõe
 `layers/demand.sqlc` e `layers/nameplate.sqlc`, porque um resto É uma diferença de dois
 vetores. `composition/leaves.sqlc` faz anti-junção com `composition/fusions.sqlc`, porque uma
-folha É uma camada alcançada que não é uma fusão. Ler as arestas `:compose()` de cima para
+folha É uma camada alcançada que não é uma fusão. ⭐ E `composition/unsettled.sqlc` é o outro
+fundo: a descida de um resto para mais cedo do que a de uma soma, na primeira camada cuja
+procura e capacidade nominal não foram ambas escaladas por um mesmo fator com largura, porque
+subtraí-las é aí legítimo. Ler as arestas `:compose()` de cima para
 baixo é ler o que este modelo considera construído a partir de quê — que é aquilo que os
 esquemas afirmam em prosa e que, até agora, não se podia verificar nem sequer percorrer.
 
@@ -483,60 +486,6 @@ membros ao mesmo tempo. Nada avisa — os totais saem plausíveis e errados.
 
 ---
 
-## O que construir isto encontrou
-
-Três coisas, nenhuma visível a partir do XSD nem do Rust.
-
-### O absorvedor é um termo emprestado, e o meu primeiro DDL bifurcou-o
-
-Declarei `absorber buffer` como uma enumeração de três valores. O conjunto de documentos recusou-se
-a carregar:
-
-```
-ERROR:  invalid input value for enum buffer: "capacidade"
-```
-
-A declaração portuguesa cita uma **edição traduzida** do *Factory Physics*; o seu absorvedor é
-`capacidade`. Essa declaração está correta. A minha enumeração é que era a bifurcação, e o README
-di-lo por estas palavras: *«um conjunto de valores reescrito é uma bifurcação, e uma bifurcação
-afasta-se sem que nada aqui o consiga notar.»* Portanto o valor viaja com a autoridade que o define,
-e decidir que `capacidade` significa o mesmo amortecedor que `capacity` é um passo que um **leitor**
-dá de propósito — a `buffer_term` guarda esse juízo à vista.
-
-Aconteceu mais duas vezes. Um `boolean NOT NULL` para discreto-ou-contínuo encontrou um documento
-que declara a divisibilidade como ausência tipificada: três estados, coluna de dois valores.
-**Sempre que uma coluna aqui teve menos estados do que o facto que continha, o conjunto encontrou-o
-à primeira execução.**
-
-### Um facto, duas grafias, e uma regra que via uma delas
-
-O idiomatismo para um zero medido é `absent reason="none"` — *«alguém foi ver e é zero.»* Nada
-proíbe declará-lo como uma afirmação de `[0, 0, 0]`, que afirma o mesmo. As regras de presença e de
-exposição ancoravam-se apenas na ausência, portanto quem declarasse escolhendo a outra grafia era
-**silenciosamente saltado pelas duas** — e uma regra que salta é indistinguível de uma que passa.
-
-Ambas as grafias são aceites agora, e uma décima segunda verificação reporta a própria ambiguidade,
-porque quem receba e compare duas declarações não pode tratar as duas formas como um só campo.
-Reportado, e não legislado: o esquema não o enuncia como regra e se deve fazê-lo é uma questão em
-aberto.
-
-### Nada no conjunto diz para que documento aponta uma referência de parte
-
-Uma composição nomeia as suas partes por uma notação e um id —
-`urn:example:filing:us-member:2026-08-31` / `compute`. **Documento nenhum declara a sua própria
-notação.** A `Composition` transporta witness, observedAt, provenance, regime, citation e fusion, e
-nada que diga *«eu sou esse URN.»* O `pm:processModulus` também não.
-
-Portanto uma referência de parte não pode ser resolvida a partir do conjunto de todo, e a regra de
-conformidade que diz *«a declaração de uma ponta de dependência existe, e a camada nomeada está
-lá»* pressupõe uma consulta que o modelo não fornece. O `ingest.sql` preenche a `filing_identity` a
-partir dos **nomes dos ficheiros**, o que é um palpite, escrito como tal.
-
-Escrever uma chave externa foi o que o encontrou. Uma chave precisa de algo para onde apontar, e não
-havia lá nada.
-
----
-
 ## O que as consultas podem e não podem dizer
 
 O `rules.sql` imprime três GÉNEROS de tabela, e a diferença entre os géneros é a maior parte do
@@ -670,6 +619,39 @@ Isso é prosa contra dados.
 
 O que consegue fazer é a metade entre elementos e entre documentos do modelo, que é a metade de que
 o XSD 1.0 desistiu. Essa metade acaba por ser a maior parte dele.
+
+### E onde começa um desenho, que é para onde o perigo se muda
+
+O `assets/sqlc/diagrams/` representa o modelo em BPMN 2.0, um documento por declaração, mais um SVG
+de cada. Três programas o fazem e nenhum deles decide seja o que for: o `examples/diagramming.rs`
+emite as declarações, o `examples/graphs.rs` emite os grafos do próprio modelo como os lane sets de
+uma pool, e o `examples/rendering.rs` desenha o que o BPMN diz sem ler modelo nenhum.
+
+⛔⛔ **Quem lê um diagrama é o SGBD desta cadeia.** O Postgres executa uma diferença mal escrita e
+devolve uma tabela plausível; uma analista brilhante lê um diagrama bem formado, chega a uma
+conclusão segura, e não volta para dizer que estava errada. Uma tabela errada é reconferida. Um
+diagrama errado é citado. Todas as relações abaixo existem por causa dessa assimetria.
+
+| o que quer saber | onde está decidido |
+|---|---|
+| o que uma tradução correta DEVE, como identidades de cardinalidade | [`diagrams/roster.sqlc`](diagrams/roster.sqlc) |
+| em que elemento cada tabela `pm.*` é representada, ou a razão tipada para não haver nenhum | [`diagrams/domain_objects.sqlc`](diagrams/domain_objects.sqlc) |
+| quais dos glifos do BPMN estão gastos, e porque é que cada um dos restantes é retido | [`diagrams/notation.sqlc`](diagrams/notation.sqlc) |
+| o que um documento deve na sua própria CARA, onde a leitura por omissão está errada | [`diagrams/legends.sqlc`](diagrams/legends.sqlc) |
+| o que afirma cada frase que o artefacto carrega | [`diagrams/annotated.sqlc`](diagrams/annotated.sqlc) |
+
+⭐⭐⭐ **A última linha é aquilo de que esta secção trata mesmo, e não é uma contagem.** Todas as
+leis do roster perguntam quantos elementos de uma espécie o artefacto carrega, e uma frase não é
+um facto dessa natureza: um documento pode carregar exatamente o número certo de elementos
+`documentation` e cada um deles dizer algo que relação nenhuma afirma, com a contagem exata do
+princípio ao fim. Por isso cada frase nomeia a relação que a afirma, tal como um ficheiro `.sql`
+gerado nomeia o seu modelo numa linha `--`, e o `examples/diagramming.rs` volta a lê-las dos
+ficheiros depois de os escrever. Uma frase sem origem, uma origem que não é uma relação desta
+árvore, e uma origem que o emissor nunca consultou fazem cada uma delas falhar a execução.
+
+⚠️ E o ponteiro é desenhado tal como é registado. Um elemento `documentation` é lido por uma
+ferramenta que sempre podia ter aberto a base de dados; um `textAnnotation` é lido por uma pessoa
+com uma imagem na mão, que não tem outro caminho de volta.
 
 ---
 
@@ -835,9 +817,10 @@ o que é quem declara a dizer que a oferta não pode ser levada ao esforço a pr
 limite mais apertado possível, não um limite em falta**, e é um facto diferente das quinze que
 declaram `unmeasured`.
 
-⚠️ **Este parágrafo dizia o contrário até 2026-09-06, e vale a pena saber porquê.** Os zeros eram
-declarados como `absent reason="none"` e contados como ausências; quando o `pm:StatedClaim` se
-estreitou e um zero medido passou a ser uma afirmação, a coluna mudou e a frase não. O que continua
+⚠️ **Uma frase sobre esta coluna apodrece sempre que a grafia de um zero se move, e ela move-se.**
+Declarem-se os zeros como `absent reason="none"` e contam como ausências; estreite-se o
+`pm:StatedClaim` de modo que um zero medido seja uma afirmação e a coluna muda por baixo de
+qualquer prosa que tenha nomeado uma figura. Imprima-se em vez de se escrever. O que continua
 por exercitar é uma margem de capacidade NÃO nula: nenhuma declaração enunciou ainda uma, pelo que
 a desigualdade nunca teve de limitar contra um número real. Corra-se
 `cargo run --example matrices` para o censo atual em vez de confiar neste bloco.

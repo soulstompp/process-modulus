@@ -1,10 +1,10 @@
 # EVERY EXPOSURE THAT HAD NOWHERE TO GO. One row per layer where every buffer is accounted for
 # and none of them has room, beside the exposure its own two measurements imply.
 #
-# ⭐⭐⭐ THE ARGUMENT IS THE WHOLE ROW AND IT USED TO BE ONE COLUMN. This read "the capacity
-#    buffer is a stated zero", and that is one route closed rather than nowhere to go: the same
-#    layer could still have drawn on stock or made the demand wait. Two rules rest on this
-#    population, and both concluded that somebody went without from a premise that did not
+# ⭐⭐⭐ THE ARGUMENT IS THE WHOLE ROW AND NEVER ONE COLUMN. Read as "the capacity buffer is a
+#    stated zero" this is one route closed rather than nowhere to go: the same layer could
+#    still have drawn on stock or made the demand wait. Two rules rest on this
+#    population, and from that premise both conclude that somebody went without, which does not
 #    carry it. `S` is an L x 3 matrix and the three buffers are substitutes; the index belongs
 #    in a column, which is where assets/ddl/schema.ddl has always kept it.
 #

@@ -8,14 +8,14 @@
 #    converts a PART LAYER into its COMPOSED LAYER, and both of those layers file their own
 #    unit. The edge is the two layers, and the label is only a label.
 #
-# ✅⛔⛔ THREE EDGES USED TO CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL, and finding them is
-#    what this relation was built for. `pessoas` to `people`, and `turnos por semana` to
-#    `shifts per week` twice. Those compositions asserted that a Portuguese unit and an English
-#    one are the same thing, and asserted it by OMITTING the element -- which
+# ✅⛔⛔ AN EDGE CAN CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL, AND FINDING THOSE IS WHAT THIS
+#    RELATION IS FOR. `pessoas` to `people`, and `turnos por semana` to `shifts per week`, are
+#    three such crossings in this corpus. A composition like that asserts that a Portuguese unit
+#    and an English one are the same thing, and asserts it by OMITTING the element -- which
 #    `composition/converted.sqlc` reads as a factor of one. Two editions of one word is a
-#    judgement this repository has twice refused to make in SQL, and it was arriving as an
-#    absence instead.
-#    ⭐ Two now file `[1, 1, 1]` with a `boundOrigin` and a provenance, so the assertion has an
+#    judgement this repository has twice refused to make in SQL, and an omission lets it arrive
+#    as an absence instead.
+#    ⭐ Two file `[1, 1, 1]` with a `boundOrigin` and a provenance, so the assertion has an
 #    author and a note saying what would make it false; the third files `unmeasured`, which is
 #    a composer saying they looked at a real crossing and could not size it.
 #    `checks/unit_crossing_without_a_factor` is what keeps it that way, and the count of
@@ -28,7 +28,18 @@
 #
 # ⚠️ A TYPED-ABSENT FACTOR IS NOT AN EDGE EITHER, and for a different reason: `unmeasured` says
 #    nobody sized the conversion, so there is no number to put on the arrow.
--- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+# ⛔ THE `quantity = 'nameplate'` PIN IS A SLICE AND IT IS DECLARED HERE BECAUSE IT DOES NOT
+#   SHOW IN THE KEY. A unit is a property of a CLAIM, not of a layer: `pm.claim.unit` is per
+#   position, and arithmetic/remainder.sqlc carries a `not comparable` verdict for exactly the
+#   layer whose demand and nameplate disagree. So reading the edge off one quantity is a σπ,
+#   and the aggregate over all three would be a different relation. It is sound today because
+#   no corpus layer files two units across its quantities, which is one query:
+#
+#     SELECT filing, layer FROM ( layers/quantities ) GROUP BY 1,2 HAVING count(DISTINCT unit) > 1
+#
+#   ⚠️ The day that returns a row, this graph and checks/conversion_cycle_does_not_close are
+#   reading one third of the evidence and saying nothing about it.
+-- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        part.unit AS from_unit,
        comp.unit AS to_unit,

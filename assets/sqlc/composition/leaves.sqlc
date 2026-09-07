@@ -1,5 +1,14 @@
-# THE BOTTOM OF EVERY DESCENT. One row per reached layer that is not itself built from parts,
+# THE BOTTOM OF A SUM'S DESCENT. One row per reached layer that is not itself built from parts,
 # with the route that reached it -- so a leaf on two branches appears twice.
+#
+# ⛔⛔ IT IS NOT THE BOTTOM OF EVERY DESCENT, AND WHICH BOTTOM APPLIES DEPENDS ON THE QUANTITY
+#    RATHER THAN ON THE GRAPH. A sum over parts bottoms out here, because below an F-terminal
+#    layer there is nothing left to add. A REMAINDER bottoms out EARLIER, at the first node
+#    whose own `n` and `d` were not both scaled by one factor with width, because differencing
+#    them is legitimate there and the filed figure is a claim its composer stands behind.
+#    composition/unsettled.sqlc is that predicate and composition/settled_remainders.sqlc is
+#    that walk. A leaf satisfies it trivially, which is why this relation looks like the
+#    general case and is not.
 #
 # ⭐⭐ A LEAF IS DEFINED BY WHAT IT IS NOT, WHICH IS WHY THIS IS AN ANTI-JOIN AGAINST A NAMED
 #    RELATION RATHER THAN A `NOT EXISTS` INSIDE A PREDICATE. composition/fusions.sqlc is

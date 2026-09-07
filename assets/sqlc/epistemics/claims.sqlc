@@ -9,11 +9,11 @@
 #    right shape for asking about a demand and the wrong shape for asking about a claim.
 #    Twelve different parents in this corpus, across two schemas.
 #
-# ⭐⭐ AND IT CARRIES `layer` NOW, WHICH IS WHAT LETS A CLAIM-GRAINED RELATION JOIN BACK. The
+# ⭐⭐ AND IT CARRIES `layer`, WHICH IS WHAT LETS A CLAIM-GRAINED RELATION JOIN BACK. The
 #    ancestor axis supplies it at ingest; NULL means the claim is about a RELATION between
 #    layers -- a coupling strength, an elimination quantity, a part factor -- rather than
-#    about one. Before this column a rule that needed both grains had to read the per-table
-#    copy and reach one parent of twelve.
+#    about one. Without it a rule needing both grains has to read the per-table copy and
+#    reach one parent of twelve.
 #
 # ⛔⛔ WHAT COULD NOT BE ASKED BEFORE, AND IT IS THE HALF OF THE PAIR NOBODY HAD. `narrowsWhen`
 #    and `boundOrigin` were two tables keyed on a bare document ordinal with no way back to

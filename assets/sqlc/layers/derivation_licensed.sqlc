@@ -11,8 +11,8 @@
 #      question has no denominator" -- across however many layers file one of them. Two
 #      answers, not two documents.
 #
-# ⛔⛔ AND THE FIRST OF THE TWO USED TO BE READ OUT OF AN ABSENCE, WHICH IS WHY THIS FILE
-#    CHANGED. It was `window_absent IN ('none', 'notApplicable')`, and `none` there MEANT
+# ⛔⛔ AND THE FIRST OF THE TWO MUST NOT BE READ OUT OF AN ABSENCE, WHICH IS WHY THIS FILE
+#    EXISTS. `window_absent IN ('none', 'notApplicable')` reads `none` as
 #    "the duty fraction is one" -- a number, filed as though it were a nothing. The absence
 #    arm carries no size and no origin, so a line that cannot be stopped and a line somebody
 #    staffed round the clock licensed this derivation identically and neither said so. Now

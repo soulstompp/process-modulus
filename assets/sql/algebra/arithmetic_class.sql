@@ -25,7 +25,8 @@ LEFT JOIN (
            count(*) FILTER (WHERE z.classes <> 1) = 0 AS holds,
            format('%s candidates, %s in exactly one class', count(*),
                   count(*) FILTER (WHERE z.classes = 1)) AS detail
-    FROM ( SELECT site, filing, layer, count(*) AS classes
+    FROM ( SELECT site, filing, layer,
+                  count(*) FILTER (WHERE w.verdict IS NOT NULL) AS classes
            FROM ( -- arithmetic/roster.sqlc joined to each site's own population.
 -- pm:Demand/pm:claim against pm:Nameplate/pm:amount, before layers/remainder.sqlc drops either.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
@@ -3346,7 +3347,6 @@ WHERE p.factor_absent IS NOT NULL
 WHERE a.slug = 'fusion_sum'
 
  ) w
-           WHERE w.verdict IS NOT NULL
            GROUP BY site, filing, layer ) z
     GROUP BY z.site
 ) p ON true

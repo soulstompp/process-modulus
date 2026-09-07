@@ -11,8 +11,8 @@
 #    worth having.
 #
 # ⭐ THIS IS WHY THE ABSORBER IS NOT AN ENUM. A restated value set is a fork, and a fork
-#   drifts with nothing able to notice. The first draft of the schema declared it as one and
-#   the corpus refused to load.
+#   drifts with nothing able to notice. Declared as an enum, this schema does not load the
+#   corpus at all: `capacidade` is not one of its members.
 -- pm:Remainder/absorber, resolved through pm.buffer_term.
 SELECT l.filing, l.layer,
        l.absorber_taxonomy AS taxonomy,

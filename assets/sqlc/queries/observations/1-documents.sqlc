@@ -6,8 +6,8 @@
 # been read by nothing; this is where somebody looks at it.
 # ⭐ AND THE STANDARD A COMPOSITION WORKS UNDER, which is a different question from the regime.
 # The regime says what the MEMBERS reported under; the citation says which instrument governs the
-# act of combining them. It had no home in this database until 2026-09-06 and is empty for every
-# root but `composition`, which is correct rather than thin.
+# act of combining them. It is empty for every root but `composition`, which is correct rather
+# than thin.
 -- epistemics/documents.sqlc, with the citation a composition works under.
 SELECT d.filing                       AS "filing!",
        d.root                         AS "root!",

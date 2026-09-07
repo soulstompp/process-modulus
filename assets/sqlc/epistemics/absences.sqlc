@@ -26,7 +26,7 @@
 #    member does not carry the question, does not carry its own name, and does not need to spell
 #    its key the way its neighbours do -- `eliminations/filed.sqlc` says `composition` where
 #    `entries/slacks.sqlc` says `filing`, and the union reconciles them. Thirteen arms compose;
-#    they used to read their base tables directly.
+#    reading their base tables directly would answer a different question.
 #
 # ⛔⛔ FIVE ARMS STILL READ `pm.*` RAW, AND THAT IS CORRECT RATHER THAN UNFINISHED. `demand`,
 #    `demand narrowsWhen`, `nameplate amount`, `divisibility` and `draw` want the rows their

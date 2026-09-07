@@ -42,8 +42,10 @@ reports/       findings a person settles, and the two views of checks/
 ⭐⭐ **The tree is the model's own derivation order.** `layers/remainder.sqlc` composes
 `layers/demand.sqlc` and `layers/nameplate.sqlc`, because a remainder IS a difference of two
 vectors. `composition/leaves.sqlc` anti-joins `composition/fusions.sqlc`, because a leaf IS a
-reached layer that is not a fusion. Reading the `:compose()` edges top-down is reading what
-this model thinks is built out of what — which is the thing the schemas state in prose and
+reached layer that is not a fusion. ⭐ And `composition/unsettled.sqlc` is the other bottom:
+a remainder's descent stops earlier than a sum's, at the first layer whose demand and nameplate
+were not both scaled by one factor with width, because differencing them is legitimate there.
+Reading the `:compose()` edges top-down is reading what this model thinks is built out of what — which is the thing the schemas state in prose and
 could not, until now, be checked or even browsed.
 
 **The claim:** forty-four rules in this model are written in the schemas' prose and checked by
@@ -468,56 +470,6 @@ Nothing warns you — the totals come out plausible and wrong.
 
 ---
 
-## What building this found
-
-Three things, none visible from the XSD or from the Rust.
-
-### The absorber is a borrowed term, and my first DDL forked it
-
-I declared `absorber buffer` as an enum with three values. The corpus refused to load:
-
-```
-ERROR:  invalid input value for enum buffer: "capacidade"
-```
-
-The Portuguese filing cites a **translated edition** of *Factory Physics*; its absorber is
-`capacidade`. That filing is correct. My enum was the fork, and the README says so in as many
-words: *"a restated value set is a fork, and a fork drifts with nothing here able to notice that
-it has."* So the value travels with the authority that defines it, and deciding `capacidade`
-means the same buffer as `capacity` is a step a **reader** takes on purpose — `buffer_term` holds
-that judgement in the open.
-
-It happened twice more. A `boolean NOT NULL` for lumpy-or-continuous met a document that files
-divisibility as a typed absence: three states, two-valued column. **Every time a column here had
-fewer states than the fact it held, the corpus found it on the first run.**
-
-### One fact, two spellings, and a rule that saw one of them
-
-The idiom for a measured zero is `absent reason="none"` — *"somebody looked and it is zero."*
-Nothing forbids stating it as a claim of `[0, 0, 0]`, which asserts the same thing. The presence
-and exposure rules keyed on the absence alone, so a filer choosing the other spelling was
-**silently skipped by both** — and a rule that skips is indistinguishable from one that passes.
-
-Both spellings are accepted now, and a twelfth check reports the ambiguity itself, because a
-receiver comparing two filings cannot treat the two forms as one field. Reported, not
-legislated: the schema does not state it as a rule and whether it should is a live question.
-
-### Nothing in the corpus says which document a part reference points at
-
-A composition names its parts by a notation and an id — `urn:example:filing:us-member:2026-08-31`
-/ `compute`. **No document declares its own notation.** `Composition` carries witness, observedAt,
-provenance, regime, citation and fusion, and nothing saying *"I am that URN."* Neither does
-`pm:processModulus`.
-
-So a part reference cannot be resolved from the corpus at all, and the conformance rule that says
-*"a dependence end's filing exists, and the layer named is in it"* assumes a lookup the model does
-not provide. `ingest.sql` fills `filing_identity` from **filenames**, which is a guess, written
-down as one.
-
-Writing a foreign key found it. A key needs something to point at, and there was nothing there.
-
----
-
 ## What the queries can and cannot say
 
 `rules.sql` prints three KINDS of table, and the difference between the kinds is most of the
@@ -595,11 +547,11 @@ The thin ones are thin for the same reason the Rust tests are: almost nothing in
 files a numeric slack, only three filings state any coupling at all, and exactly two layers
 deny having a remainder.
 
-⭐⭐ **That last one is the model's own falsifier, and until this pass the database threw it
-away.** `StatedRemainder` is a choice — a remainder, or a typed reason there is none — and every
+⭐⭐ **That last one is the model's own falsifier, and an ingest that reads one branch throws it
+away.** `StatedRemainder` is a choice, a remainder or a typed reason there is none, and every
 layer is required to carry one *precisely* so that a sender who disagrees with "every layer has
-a remainder" must say so explicitly. `ingest.sql` read only the first branch, so the two layers
-that take the second arrived as five NULLs and read as documents that had said nothing. One of
+a remainder" must say so explicitly. Read only the first branch and the layers taking the second
+arrive as five NULLs, indistinguishable from documents that said nothing. One of
 them says otherwise in its own note: *"filed as a counter-example to the claim that every layer
 carries a remainder, **not as a gap in this document**."* A gap is exactly what was stored.
 
@@ -645,6 +597,40 @@ Those are prose against data.
 
 What it can do is the whole cross-element and cross-document half of the model, which is the
 half XSD 1.0 gave up on. That half turns out to be most of it.
+
+### And where a picture starts, which is where the danger moves
+
+`assets/sqlc/diagrams/` renders the model into BPMN 2.0, one document per filing, plus an SVG of
+each. Three programs do it and none of them decides anything: `examples/diagramming.rs` emits the
+filings, `examples/graphs.rs` emits the model's own graphs as the lane sets of one pool, and
+`examples/rendering.rs` draws what the BPMN says while reading no model at all.
+
+⛔⛔ **The reader of a diagram is the RDBMS of this pipeline.** Postgres executes a broken
+difference and returns a plausible table; a brilliant analyst reads a well-formed diagram, reaches
+a confident conclusion, and does not come back to tell you it was wrong. A wrong table gets
+re-checked. A wrong diagram gets quoted. Every relation below exists because of that one
+asymmetry.
+
+| what you want to know | where it is decided |
+|---|---|
+| what a correct translation OWES, as cardinality identities | [`diagrams/roster.sqlc`](diagrams/roster.sqlc) |
+| what each `pm.*` table renders as, or the typed reason there is none | [`diagrams/domain_objects.sqlc`](diagrams/domain_objects.sqlc) |
+| which of BPMN's glyphs are spent, and why each of the rest is withheld | [`diagrams/notation.sqlc`](diagrams/notation.sqlc) |
+| what a document owes on its own FACE, where the default reading is wrong | [`diagrams/legends.sqlc`](diagrams/legends.sqlc) |
+| what states each sentence the artifact carries | [`diagrams/annotated.sqlc`](diagrams/annotated.sqlc) |
+
+⭐⭐⭐ **The last row is the one this section is really about, and it is not a count.** Every law
+on the roster asks how many of an element the artifact carries, and a sentence is not that kind of
+fact: a document can carry exactly the right number of `documentation` elements and have each of
+them say something no relation states, with the count exact the whole way. So every sentence names
+the relation that states it, the way a generated `.sql` file names its template on one `--` line,
+and `examples/diagramming.rs` reads them back out of the files afterwards. A sentence with no
+source, a source that is not a relation in this tree, and a source the emitter never queried each
+fail the run.
+
+⚠️ And the pointer is drawn as well as filed. A `documentation` element is read by a tool that
+could have opened the database anyway; a `textAnnotation` is read by a person holding a picture,
+who has no other route back.
 
 ---
 
@@ -725,8 +711,8 @@ expression** — [from the financial side](#from-the-financial-side).*
    Equal at the mode, apart at both bounds, by 322.0 and 113.2.
 ```
 
-**The assertion here used to be `> 1.0`, and that was wrong** — a threshold cannot tell a
-small real disagreement from *no* disagreement. No disagreement would mean `Φ` has no spread,
+**A threshold like `> 1.0` cannot carry this assertion**, because it cannot tell a small real
+disagreement from *no* disagreement. No disagreement would mean `Φ` has no spread,
 which would make the whole section vacuous while still printing green. It is now two assertions:
 first that some factor actually spreads, then that the bounds differ at all.
 ↑ *settles [`Φ` is correlated with itself](#φ-is-correlated-with-itself-and-the-corpus-proves-it)
@@ -757,7 +743,7 @@ That is why the tables are sparse rather than dense, and it is the bad zero in o
 ↑ *settles [why the tables are shaped as they are](#why-the-tables-are-shaped-as-they-are) and
 [§8](#8-the-zero-that-turned-out-to-be-two).*
 
-### 6. The residue census, and the figure that used to be counted by hand
+### 6. The residue census, and why the figure is counted by a program
 
 `r = mq − (d mod q)` splits a remainder into the half a procurement decision moves and the half
 no decision removes. The second half is a **sawtooth** in `d`, so at an interval's three points it
@@ -806,11 +792,11 @@ corpus layers size it and every one of them sizes it at zero, which is a filer s
 cannot be run hot at any price. **That is the tightest possible bound, not a missing one**, and it
 is a different fact from the fifteen that file `unmeasured`.
 
-⚠️ **This paragraph said the opposite until 2026-09-06, and the reason is worth knowing.** The
-zeroes used to be filed as `absent reason="none"` and were counted as absences; when
-`pm:StatedClaim` narrowed and a measured zero became a claim, the column moved and the sentence
-did not. What is still unexercised is a **non-zero** capacity slack: no filing has yet stated one,
-so the inequality has never had to bind against a real number. Run
+⚠️ **A sentence about this column rots whenever the spelling of a zero moves, and it has.** File
+the zeroes as `absent reason="none"` and they count as absences; narrow `pm:StatedClaim` so a
+measured zero becomes a claim and the column moves under any prose that named a figure. Print
+it rather than writing it down. What is still unexercised is a **non-zero** capacity slack: no
+filing has yet stated one, so the inequality has never had to bind against a real number. Run
 `cargo run --example matrices` for the current census rather than trusting this block.
 
 **Nothing asserts it stays zero**, and that is deliberate. An equality here would make the first

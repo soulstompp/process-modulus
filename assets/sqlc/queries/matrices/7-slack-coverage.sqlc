@@ -14,11 +14,11 @@
 # saying the supply cannot be run above its rating at any price. That is the TIGHTEST possible
 # bound rather than a missing one, so the shortfall inequality is exercised, not silent.
 #
-# ⚠️ THIS PARAGRAPH SAID THE OPPOSITE UNTIL 2026-09-05, AND THAT IS THE POINT OF SAYING SO. It
-# read "no layer in this corpus sizes its capacity slack" and was true when written; then the
-# `absent reason="none"` slacks became claimed zeros and the sentence did not move, because
-# nothing printed the number beside it. examples/observations.rs prints it now. A bound with
-# nothing to bound still passes loudest, the trap is real, it is just not this column today.
+# ⚠️ A SENTENCE LIKE "NO LAYER IN THIS CORPUS SIZES ITS CAPACITY SLACK" IS TRUE UNTIL A
+# SPELLING MOVES, AND THIS ONE MOVES: turn the `absent reason="none"` slacks into claimed zeros
+# and the column fills while any prose beside it stands still, because nothing printed the
+# number. examples/observations.rs prints it. A bound with nothing to bound passes loudest, so
+# the trap is real; it is just not this column today.
 #
 # ⚠️ A NULL `absent` BESIDE AN UNSIZED ROW IS NOT THE SAME AS `unmeasured`. The schema's CHECK
 # constraints decide which combinations are legal; this query only reports what is there.

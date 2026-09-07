@@ -206,8 +206,7 @@ fn bounds(c: &StatedClaimType, what: &str) -> (f64, f64, f64) {
     (c.low, c.most_likely, c.high)
 }
 
-/// The fourth-buffer argument, filed — and it is SHARPER than the shape that used to
-/// carry it.
+/// The fourth-buffer argument, filed, and sharper than a shape assertion can carry it.
 ///
 /// ⭐ The magnitude was never the unmeasured thing. `|4 - [4.5, 5.2, 6.0]|` is
 /// `[0.5, 1.2, 2.0]` people and this document already determines it, so `quantity` is
@@ -218,12 +217,12 @@ fn bounds(c: &StatedClaimType, what: &str) -> (f64, f64, f64) {
 /// nothing, when in fact we know the size and not the bearer, which is the more
 /// damaging of the two things to be able to say.
 ///
-/// ⭐⭐ AND THE BEARER IS TWO THINGS, WHICH THIS TEST USED TO ASSERT IT WAS NOT. It read
+/// ⭐⭐ AND THE BEARER IS TWO THINGS, WHICH A SHAPE ASSERTION HERE WOULD DENY.
 /// `let [one_holder] = &r.holder[..]` with the message "labour has one holder, and nobody
-/// has split it" — a shape assertion that made the document's own `timeSlack` note
-/// unfileable. That note says work queues, waits and quietly ages out, and that the portion
-/// which ages out is `unrealised` and NOT `people`. With a single `people` holder the
-/// document asserted the team absorbed all of it and contradicted itself in the same layer.
+/// has split it" makes the document's own `timeSlack` note unfileable. That note says work
+/// queues, waits and quietly ages out, and that the portion which ages out is `unrealised` and
+/// NOT `people`. With a single `people` holder the document would assert the team absorbed all
+/// of it and contradict itself in the same layer.
 ///
 /// ⚠️ BOTH SHARES ARE STILL `unmeasured`, so nothing was invented to make an arithmetic
 /// check pass — per Holder, one unstated share suspends the sum rather than breaking it.
@@ -365,8 +364,9 @@ fn a_continuous_supply_files_a_remainder_of_none() {
         panic!("object storage is bought continuously in this example, and states so");
     };
     // ⭐ THE ZERO PREMIUM IS THE COUNTER-EXAMPLE, AND IT IS A CLAIM. `Continuous` reads
-    // above 0 / at 0 / below 0, and the middle used to be spelled `absent reason="none"`
-    // while the ends were claims -- a three-point scale nobody could compare as arithmetic.
+    // above 0 / at 0 / below 0, and the middle is a claim of zero rather than
+    // `absent reason="none"`. Spell it as an absence while the ends stay claims and the
+    // three-point scale stops being comparable as arithmetic.
     let StatedClaimType::Claim(premium) = &q.premium else {
         panic!("the premium should be stated, and a zero premium is a claim of zero");
     };
@@ -680,9 +680,9 @@ fn a_capacity_slack_can_be_left_unmeasured_instead_of_guessed() {
     assert_eq!(a.reason, ClaimAbsenceReasonType::Unmeasured);
 }
 
-/// S-3 and S-7, which turned out to be one repair. Three parties that used to
-/// flatten into one string are separately joinable, and `standing` is where
-/// `unverified` belongs -- on the assertion, never as a fifth AbsenceReason.
+/// S-3 and S-7, which are one repair. Three parties that a single string would flatten
+/// into one are separately joinable here, and `standing` is where `unverified` belongs,
+/// on the assertion and never as a fifth AbsenceReason.
 #[test]
 fn provenance_separates_the_three_parties_and_carries_standing() {
     let doc = load("unstated.xml");
@@ -713,11 +713,11 @@ fn provenance_separates_the_three_parties_and_carries_standing() {
 /// S-5. What BOUNDS a range is a different question from what would NARROW it,
 /// and a sender with both facts can now file both.
 ///
-/// ⛔⛔ AND `narrowsWhen` NO LONGER ANSWERS `is_some()`, WHICH IS THE POINT OF S-29. It was
-/// an optional bare string, so its absence meant "nobody said" and "nothing would narrow
-/// this" and "there is no range to narrow" all at once — the boolean anti-pattern, in the
-/// one field carrying the model's falsifiability claim. It is a required `StatedNarrowing`
-/// now, so the question this test asks is no longer "is it there" but WHAT IT SAYS.
+/// ⛔⛔ AND `narrowsWhen` DOES NOT ANSWER `is_some()`, WHICH IS THE POINT OF S-29. As an
+/// optional bare string its absence means "nobody said" and "nothing would narrow this" and
+/// "there is no range to narrow" all at once — the boolean anti-pattern, in the one field
+/// carrying the model's falsifiability claim. It is a required `StatedNarrowing`, so the
+/// question this test asks is not "is it there" but WHAT IT SAYS.
 ///
 /// ⭐ The `kind` is where the fact lives. `instrument` means the width is IGNORANCE and a
 /// better measurement reveals it; `intervention` means the width is VARIATION and only
@@ -757,10 +757,10 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
 /// The couplings a stack filed, or an empty slice where it filed a typed reason instead.
 ///
 /// ⛔⛔ THE EMPTY SLICE AND `absent reason="none"` ARE NOT THE SAME DOCUMENT, and no caller
-/// may treat them as one. `Stack/couplings` used to be `minOccurs="0" maxOccurs="unbounded"`,
-/// so a stack that had been tested for independence and a stack nobody had looked at were
-/// byte-identical — the boolean anti-pattern wearing a plural. Use `coupling_absence` when
-/// the question is which.
+/// may treat them as one. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Stack/couplings`
+/// makes a stack tested for independence and a stack nobody looked at byte-identical, which is
+/// the boolean anti-pattern wearing a plural. Use `coupling_absence` when the question is
+/// which.
 ///
 /// ⚠️ THE XSD GUARANTEE IS NOT VISIBLE IN THE TYPE. The choice is "one or more couplings, OR
 /// one absence", and the generator flattens that to a `Vec` that could in principle hold
@@ -839,9 +839,9 @@ fn window(l: &pm::LayerType) -> Option<&pm::LumpyQuantumType> {
 /// and the three reasons are not interchangeable. `notApplicable` is a unit with no
 /// denominator; `unmeasured` is the one state that leaves a derived `timeSlack` unjustified.
 ///
-/// ⛔ THERE IS NO FOURTH. "The supply runs continuously" used to be `none` here, and it is a
-/// VALUE wearing an absence: a duty fraction of one, with an origin saying who could change
-/// it. It is filed as one whole period now, and the absence arm is a `ClaimAbsence`.
+/// ⛔ THERE IS NO FOURTH. "The supply runs continuously" is a VALUE and not an absence: a duty
+/// fraction of one, with an origin saying who could change it. It is filed as one whole
+/// period, and the absence arm is a `ClaimAbsence` so `none` cannot spell it.
 fn window_absence(l: &pm::LayerType) -> Option<&pm::ClaimAbsenceType> {
     let StatedDivisibilityType::Divisibility(d) = &l.supply.nameplate.divisibility else {
         return None;
@@ -1011,10 +1011,10 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
 
 /// The slack of the buffer a remainder's `absorber` names, if that buffer has one sized.
 ///
-/// ⚠️ THE UNIT IS RETURNED AND IT USED TO BE DROPPED HERE — `.map(|(lo, ml, hi, _)| ...)`,
-/// discarded on the last field. That made the bound below a comparison between two bare
-/// floats, and the whole reason the comparison is legitimate is that both sides are in the
-/// layer's unit. See `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`.
+/// ⚠️ THE UNIT IS RETURNED AND MUST NOT BE DROPPED. `.map(|(lo, ml, hi, _)| ...)` discards it
+/// on the last field, which makes the bound below a comparison between two bare floats, and
+/// the whole reason that comparison is legitimate is that both sides are in the layer's
+/// unit. See `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`.
 fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
     let StatedRemainderType::Remainder(r) = &l.remainder else {
         return None;
@@ -1118,9 +1118,9 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
 /// times in two languages. A duty fraction of one carves nothing. It says "always on", every
 /// document that files it says the same thing, and there is no calendar to lose in a fusion —
 /// so including them would compare a support desk against a packing line and call the
-/// disagreement a defect. ⚠️ THIS USED TO BE FREE, because "always on" was spelled
-/// `absent reason="none"` and `window()` therefore returned nothing for it. The scope was
-/// always this narrow; the old spelling just hid the fact that anybody had chosen it.
+/// disagreement a defect. ⚠️ THE NARROWNESS IS A CHOICE AND HAS TO BE VISIBLE AS ONE. Spell
+/// "always on" as `absent reason="none"` and `window()` returns nothing for it, so the same
+/// scope arrives free and nothing shows that anybody chose it.
 #[test]
 fn a_window_is_carried_through_a_fusion_and_never_summed() {
     let mut sizes: Vec<(String, f64)> = Vec::new();
@@ -1481,8 +1481,9 @@ fn exposure(d: Range, n: Range) -> f64 {
 /// the element can make, the supply cannot be run hot at any price, and the `boundOrigin`
 /// says by whose authority: a shelf life, a reserved block, or somebody's own ceiling.
 ///
-/// ✅ ONE SPELLING NOW. This used to union a claim of zero with `absent reason="none"`,
-/// because both were legal and filers reached for either. `pm:ClaimAbsence` has no `none`.
+/// ✅ ONE SPELLING. A claim of zero is the only way to say this, and it does not need
+/// unioning with `absent reason="none"`, because `pm:ClaimAbsence` has no `none` to reach
+/// for.
 fn cannot_run_hot(l: &pm::LayerType) -> bool {
     match &l.supply.nameplate.capacity_slack {
         StatedClaimType::Absent(_) => false,
@@ -1699,11 +1700,11 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
 
 /// ⛔⛔ S-29. ALL THREE NARROWING KINDS ARE EXERCISED, AND WITHOUT THIS THEY WOULD NOT BE.
 ///
-/// `narrowsWhen` was an optional bare string until this pass, which made its absence mean
-/// three things at once — nobody said, nothing would narrow it, or there is no range. That
-/// is the boolean anti-pattern in the one field carrying the model's falsifiability claim,
-/// and it is the fourth time this shape has turned up: the three buffer slacks were
-/// booleans, `Fit` was two members where ISO 286 has three, and a `lumpy boolean NOT NULL`
+/// `narrowsWhen` as an optional bare string makes its absence mean three things at once:
+/// nobody said, nothing would narrow it, or there is no range. That is the boolean
+/// anti-pattern in the one field carrying the model's falsifiability claim, and it is the
+/// fourth position to take this shape, beside the three buffer slacks as booleans, `Fit` as
+/// two members where ISO 286 has three, and a `lumpy boolean NOT NULL`
 /// in the DDL met a document filing divisibility as a typed absence.
 ///
 /// ⭐ The `kind` is what makes the width's COMPOSITION statable:
@@ -1852,14 +1853,15 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
 
 /// ⭐⭐ A WINDOW'S ABSENCE IS FOUR DIFFERENT FACTS AND `Divisibility` ALREADY DESCRIBED THREE
 /// OF THEM IN PROSE IT COULD NOT FILE. It says a window is MALFORMED on a unit with no
-/// denominator, and it used to say a supply that is always on "does not need saying so" —
-/// `notApplicable` and `none`, encoded identically as a missing element, and indistinguishable
-/// from nobody having asked.
+/// denominator, and it calls a supply that is always on one that "does not need saying so".
+/// Those are `notApplicable` and `none`, which a missing element encodes identically and
+/// which are both indistinguishable from nobody having asked.
 ///
 /// ⛔ THE RULE THE DISTINCTION BUYS BACK IS THE ONE THE ELEMENT ASKS FOR. `q / clearance`
 /// assumes the spare is spread evenly across the denominator; a window denies it. So a filed
 /// window forbids a `derived` time slack — and so does `unmeasured`, because nobody knows
-/// whether the spare is spread evenly, which is the case the old rule could not reach.
+/// whether the spare is spread evenly, which is the case a rule reading presence alone cannot
+/// reach.
 #[test]
 fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived() {
     let mut reasons = Vec::new();
@@ -1900,11 +1902,11 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 reasons.push(format!("{:?}", a.reason));
             }
 
-            // ⭐⭐⭐ TWO LICENCES, AND ONE OF THEM USED TO BE READ OUT OF AN ABSENCE.
+            // ⭐⭐⭐ TWO LICENCES, AND NEITHER MAY BE READ OUT OF AN ABSENCE.
             // `q / clearance` spreads the spare evenly across the denominator, so it needs
             // either no denominator at all (`notApplicable`) or a supply that is live for
-            // the whole of one (a window of one whole period). The second used to be spelled
-            // `absent reason="none"`, which is how a number came to be filed as a nothing.
+            // the whole of one (a window of one whole period). Spelling the second as
+            // `absent reason="none"` files a number as a nothing.
             let derivable = absence
                 .is_some_and(|a| a.reason == ClaimAbsenceReasonType::NotApplicable)
                 || runs_the_whole_period(l);

@@ -8205,7 +8205,7 @@ SELECT * FROM (VALUES
 ) r
 LEFT JOIN (
     WITH RECURSIVE e AS (
-        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+        -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        part.unit AS from_unit,
        comp.unit AS to_unit,
@@ -16940,7 +16940,7 @@ SELECT * FROM (VALUES
 ) r
 LEFT JOIN (
     WITH RECURSIVE e AS (
-        -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+        -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        part.unit AS from_unit,
        comp.unit AS to_unit,

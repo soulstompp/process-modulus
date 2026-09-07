@@ -6,10 +6,10 @@
 //!    forty-seven rules and the Portuguese one grouped them into seven, the two readers were
 //!    not owed the same thing, and every test in this repository passed.
 //!
-//! ⛔ THE RULE TABLE IS THE ONE PLACE A COUNT LIVES. Its own paragraph used to state how many
-//!    rules there are, how many carry the `NOT REACHABLE BY A VALIDATOR` marker, and how many
-//!    do not, and all three had drifted. A number in prose is a number nobody recounts, so the
-//!    prose names this file instead and this file counts the table.
+//! ⛔ THE RULE TABLE IS THE ONE PLACE A COUNT LIVES. State in prose how many rules there are,
+//!    how many carry the `NOT REACHABLE BY A VALIDATOR` marker and how many do not, and all
+//!    three drift, because a number in prose is a number nobody recounts. The prose names this
+//!    file instead and this file counts the table.
 //!
 //! ⚠️ IT CHECKS SHAPE AND NEVER MEANING. That row forty in one language says what row forty
 //!    says in the other is a thing only a reader can know. What a test can hold is that there

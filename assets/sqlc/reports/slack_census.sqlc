@@ -13,7 +13,7 @@
 #    `pm:StatedClaim`, so its absent branch is a `pm:ClaimAbsence` carrying
 #    `pm:ClaimAbsenceReason` -- {unmeasured, notApplicable, derived}. `none` IS NOT IN THE TYPE.
 #    The column the surrounding prose called "the count that matters" could only ever read zero,
-#    and it did, in every run, for as long as it existed. A sized zero is how this model says
+#    and it does, in every run. A sized zero is how this model says
 #    "checked, and it cannot stretch", and `entries/slacks.sqlc` carries it as `sized AND mode = 0`.
 #
 # ⛔⛔⛔ THE `@scope` IS REQUIRED AND THAT IS THE POINT. The census it replaces joined no scope at

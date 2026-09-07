@@ -2,7 +2,7 @@
 WITH RECURSIVE
 edges AS (
     SELECT 'units'  AS graph, c.from_unit AS a, c.to_unit AS b
-    FROM ( -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.
+    FROM ( -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        part.unit AS from_unit,
        comp.unit AS to_unit,

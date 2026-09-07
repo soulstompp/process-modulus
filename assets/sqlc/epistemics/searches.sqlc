@@ -15,10 +15,10 @@
 # ⛔ A NULL `answer` IS NOT AN ABSENCE HERE. It means the document actually filed the thing --
 #   real couplings, real eliminations -- so the search question is answered by the content.
 #
-# ⭐⭐ THE TWO MEMBERS ARE FILES NOW, AND THAT IS WHAT MAKES THIS UNION HONEST. It used to build
-#    both arms inline against their base tables, so every caller wanting one KIND of search
-#    filtered on the `looked_for` string this file had just invented -- a union taken back apart
-#    by string comparison at five call sites, two of which gave up and read the base table. A
+# ⭐⭐ THE TWO MEMBERS ARE FILES, AND THAT IS WHAT MAKES THIS UNION HONEST. Build both arms
+#    inline against their base tables and every caller wanting one KIND of search filters on the
+#    `looked_for` string this file invented: a union taken back apart by string comparison at
+#    every call site, and callers that give up and read the base table instead. A
 #    `:union` whose members are not files is a union nobody can compose half of.
 -- pm:Stack/pm:Couplings and pm:Fusion/pm:Eliminations, each with its pm:Absent.
 SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,

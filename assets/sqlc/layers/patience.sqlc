@@ -5,7 +5,7 @@
 #    `Nameplate`, so `window` is the SUPPLY's duty cycle, and its own annotation says the
 #    mirror -- demand with a lifetime -- is a fact about DEMAND and names `Layer/timeSlack` as
 #    where it would go "if demand ever gains structure". `pm:Demand/patience` is that
-#    structure, and this relation is the half that was previously unaskable.
+#    structure, and this relation is the half of the axis it makes askable.
 #
 # ⛔⛔ A PATIENCE IS NOT A TIME SLACK AND THE UNITS ARE HOW YOU TELL. A slack is quoted in the
 #    unit of the shares it bounds -- `slack_unit_mismatch` requires it -- and a patience is a

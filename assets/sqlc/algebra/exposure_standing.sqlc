@@ -1,11 +1,14 @@
 # EVERY EXPOSED LAYER LANDS IN EXACTLY ONE STANDING. One row: how many layers carry an exposure,
 # how many were classified, and how many were classified twice.
 #
-# ⭐⭐⭐ A PARTITION FAILS TO A SMALLER POPULATION, NEVER TO AN ERROR. A layer falling through all
-#    three arms vanishes from the census and from the rules that read the third one, and the
-#    coverage table then reports a cleaner verdict than it earned. `CASE` has an `ELSE`, so the
-#    arms cannot all miss today, and that is exactly the kind of guarantee an edit removes
-#    silently. Counting both sides is what catches it.
+# ⭐⭐⭐ A PARTITION FAILS TWO WAYS AND THE COUNTS ONLY SEE ONE OF THEM, SO THE THIRD TERM IS NOT
+#    DECORATION. If the JOIN inside layers/exposure_scope drops or fans out a layer, the two
+#    cardinalities disagree and that is caught. But the `CASE` sits in the SELECT LIST, so a
+#    layer matching no arm does NOT vanish: it keeps its row and takes `standing = NULL`.
+#    Cardinality is unchanged, and a law built on cardinality is blind to it. Measured with the
+#    `ELSE` removed: 24 exposed, 24 classified, 0 doubled, ONE standing NULL, law still `t`.
+#    `unclassified` is the term that sees it. The general form:
+#    every law on this roster is a cardinality identity, and this is not a cardinality property.
 #
 # ⛔ THE JOIN INSIDE layers/exposure_scope IS THE RISK. layers/absorption.sqlc groups the slack
 #   matrix by layer, so it is one row per layer by construction. If it ever stops being one, the
@@ -18,16 +21,18 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT 'layers/exposure_scope' AS subject,
-           x.exposed = x.classified AND x.doubled = 0 AS holds,
-           format('%s exposed layers, %s classified, %s classified twice',
-                  x.exposed, x.classified, x.doubled) AS detail
+           x.exposed = x.classified AND x.doubled = 0 AND x.unclassified = 0 AS holds,
+           format('%s exposed layers, %s classified, %s classified twice, %s with no standing',
+                  x.exposed, x.classified, x.doubled, x.unclassified) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(layers/remainder.sqlc) ) r
                WHERE r.exposure > 1e-9)                                          AS exposed,
              (SELECT count(*) FROM ( :compose(layers/exposure_scope.sqlc) ) z)   AS classified,
              (SELECT count(*) FROM ( SELECT filing, layer
                                      FROM ( :compose(layers/exposure_scope.sqlc) ) z
-                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled,
+             (SELECT count(*) FROM ( :compose(layers/exposure_scope.sqlc) ) z
+               WHERE z.standing IS NULL)                                         AS unclassified
          ) x
 ) p ON true
 WHERE a.slug = 'exposure_standing'

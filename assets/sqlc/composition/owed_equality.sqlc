@@ -6,10 +6,10 @@
 #    relation answers one quantity's question, because composition/suspended_fusions.sqlc is
 #    per-quantity and this file chooses which grain it wants. ⭐ It reads the SET rather than
 #    composition/suspension_grounds.sqlc, and the `EXCEPT` would have been immune either way --
-#    which is exactly how a bag went unnoticed here for revisions. It used to take the whole
-#    suspension set with no such choice, which was correct only for as long as demand was the
-#    only sum anybody computed. A nameplate sibling filters the same union on `'nameplate'`, and
-#    the point of the column is that whoever writes it cannot forget to.
+#    which is exactly how a bag goes unnoticed for revisions. Take the whole suspension set with
+#    no such choice and that is correct only while demand is the only sum anybody computes. A
+#    nameplate sibling filters the same union on `'nameplate'`, and the point of the column is
+#    that whoever writes it cannot forget to.
 #
 # ⭐⭐ AN ANTI-JOIN IS A FILTER, AND THIS ONE IS THE FILTER THE WHOLE COMPOSITION ARGUMENT
 #    TURNS ON. `x_composed = F Φ x_parts − e` is not a law of the model; it is an obligation

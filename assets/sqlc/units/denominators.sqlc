@@ -2,16 +2,17 @@
 # denominator, with the kind its filer gave it and the elements it was filed under.
 #
 # ⭐⭐⭐ IT ASKS THE QUESTION OF EVERY CLAIM, WHICH IS THE POINT. `Claim` is the most reused type
-#    in the schema and 94 of the corpus's 186 claims carry a denominator. Before
-#    `pm:StatedDenominator` the question was asked of `pm.nameplate` alone and reached 20 of
-#    them: demands, quanta, draws, shares and slacks all state a unit and nothing asked any of
-#    them.
+#    in the schema and under half the corpus's claims carry a denominator. Before
+#    `pm:StatedDenominator` the question was asked of `pm.nameplate` alone and reached a small
+#    fraction of them: demands, quanta, draws, shares and slacks all state a unit and nothing
+#    asked any of them. ⛔ `SELECT count(*) FILTER (WHERE denominator IS NOT NULL), count(*)
+#    FROM pm.claim` is the pair; it was written here once and was wrong in both halves.
 #
 # ⭐⭐ THE `kind` COLUMN IS THE FILER'S ANSWER AND NOT A READER'S. `period` says the supply
 #    cycles through it, so the duty-cycle question has an answer; `each` says there is a
-#    denominator and it is still not a cycle. This census used to derive both by splitting the
-#    unit string on a preposition, which could find the denominator and could never classify
-#    it -- and which quietly asserted that `por` and `per` are one word.
+#    denominator and it is still not a cycle. Derive both by splitting the unit string on a
+#    preposition and you can find the denominator but never classify it, while quietly
+#    asserting that `por` and `per` are one word.
 #
 # ⛔ THE TWO EDITIONS STILL SIT AS SEPARATE ROWS, and now that is a finding rather than an
 #   evasion: `week` and `semana` are two filers' words for one cycle, nothing in the corpus

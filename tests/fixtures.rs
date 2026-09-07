@@ -121,10 +121,10 @@ fn elimination_absence(f: &FusionType) -> Option<&AbsenceType> {
 /// outcome, and one an empty `elimination` list could not produce because it was
 /// byte-identical to a clean search.
 ///
-/// ⛔⛔ `against` IS NOT DECORATION AND THIS FUNCTION SHIPPED WITHOUT IT. The first draft
-/// subtracted EVERY elimination from whichever quantity it was computing, which was invisible
-/// while the only fixture filed no eliminations at all — and produced a demand of `-360` the
-/// moment one did. `EliminationAgainst`'s own annotation says why: *"an elimination that does
+/// ⛔⛔ `against` IS NOT DECORATION, AND WITHOUT IT THIS FUNCTION IS WRONG IN A WAY NO FIXTURE
+/// SEES UNTIL ONE FILES AN ELIMINATION. Subtract EVERY elimination from whichever quantity is
+/// being computed and a corpus filing none agrees exactly; the first one that files one gives a
+/// demand of `-360`. `EliminationAgainst`'s own annotation says why: *"an elimination that does
 /// not say which one it hits is an adjustment applied to whichever number the reader happened
 /// to be holding."* The reader here was this function.
 fn expected(
@@ -152,8 +152,8 @@ fn expected(
                 StatedClaimType::Claim(q) => {
                     total = (total.0 - q.low, total.1 - q.most_likely, total.2 - q.high)
                 }
-                // A zero elimination is `[0, 0, 0]` and lands in the arm above; the
-                // `none` spelling it used to take is not in `ClaimAbsenceReason`.
+                // A zero elimination is `[0, 0, 0]` and lands in the arm above. There is no
+                // `none` spelling for it: `ClaimAbsenceReason` does not carry one.
                 StatedClaimType::Absent(_) => return None,
             }
         }
@@ -366,8 +366,8 @@ fn every_fixture_declares_that_it_is_a_stipulation() {
 /// with all three still separable afterwards.
 ///
 /// ⛔⛔ ONE THING HAD TO CHANGE TO ALLOW IT AND IT WAS NOT A NEW RELATION. `Part/layer`
-/// addresses a layer as `{notation, id}` where the notation is a FILING's URN, and until S-28
-/// was repaired no document could say which filing it was. A part whose notation matches its
+/// addresses a layer as `{notation, id}` where the notation is a FILING's URN, and without
+/// S-28 no document can say which filing it is. A part whose notation matches its
 /// own composition's is a LOCAL part — there is no second kind of part, no new element, and
 /// the distinction is a string comparison against the filing's own name.
 ///

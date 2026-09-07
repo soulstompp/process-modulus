@@ -16,7 +16,7 @@
 #    observed. The sub-part overlap is the ONLY unreachable case, and `e` is the element that
 #    carries it.
 #
-# ⛔ checks/leaf_reached_twice.sqlc IS THE ONE-ROOT CASE AND THIS IS THE TWO-ROOT CASE. That rule
+# ⛔ checks/jagged_layer.sqlc IS THE ONE-ROOT CASE AND THIS IS THE TWO-ROOT CASE. That rule
 #   walks (root, leaf) pairs inside a single descent, and scopes itself on purpose: "only a
 #   nested composition can do this, so a single-level fusion is not examined however many parts
 #   it names". A holding composing a group AND naming a member directly is two paths from ONE

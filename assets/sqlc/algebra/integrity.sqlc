@@ -2,7 +2,7 @@
 # One row per contract: whether |roster| = |declared but unproduced| + |roster ⋉ population|.
 #
 # ⭐⭐ THE DEDUP IS INTENDED ON ONE SIDE AND THE LAW IS WRITTEN AROUND IT. `checks/all.sqlc`
-#    carries 663 rows over 23 distinct rule names; `EXCEPT` collapses them, and that collapse IS
+#    carries many rows over far fewer distinct rule names; `EXCEPT` collapses them, and that IS
 #    the question -- which rule NAMES appear that nothing declares. So the law is stated over
 #    distinct subjects on both sides, not over rows.
 #

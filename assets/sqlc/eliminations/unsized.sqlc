@@ -17,9 +17,9 @@
 #
 # ⭐⭐⭐ IT CARRIES `quantity` RATHER THAN PINNING IT, WHICH IS WHAT MAKES IT COMPOSABLE. An
 #    elimination is filed PER QUANTITY (pm.elimination's key is composition, composed layer,
-#    quantity) and this relation used to filter `quantity = 'demand'` and drop the column. Its
-#    union then wore the name "the composed layers that owe no sum AT ALL" while suspending only
-#    the demand sum, so the first nameplate rule to compose it would have been wrong in BOTH
+#    quantity), so filtering `quantity = 'demand'` here and dropping the column makes the union
+#    above wear the name "the composed layers that owe no sum AT ALL" while suspending only the
+#    demand sum, and the first nameplate rule to compose it is then wrong in BOTH
 #    directions: suspended because the DEMAND elimination was unsized, and letting a nameplate
 #    elimination filed `unmeasured` through into a `coalesce(..., 0)`. A caller now says which
 #    grain it means.

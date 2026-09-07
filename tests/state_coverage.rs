@@ -62,7 +62,7 @@ use Verdict::{Exercised, Incoherent, Open};
 fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
     use AbsenceReasonType::{Derived, None as RNone, NotApplicable, Unmeasured};
     vec![
-        // ---- the five repaired in the Pattern 1 cleanup ----
+        // ---- the five that carry a coupling's own absence ----
         ("StatedCouplings", RNone, Exercised),
         ("StatedCouplings", Unmeasured, Exercised),
         ("StatedCouplings", NotApplicable, Exercised),
@@ -120,10 +120,10 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
              permitted; no document in this corpus needs it, because every layer here either \
              files a remainder or has none to file",
         )),
-        // ⭐⭐⭐ AND THIS CELL USED TO SAY `Incoherent`, WITH AN ARGUMENT THAT INVITED ITS
-        // OWN REFUTATION IN ITS LAST LINE: "a layer where the question is genuinely malformed
-        // would refute this argument, and none has been filed." One had been. The old
-        // reasoning ran "'does this layer have a remainder?' presupposes only that it is a
+        // ⭐⭐⭐ AND `Incoherent` HERE WOULD REST ON AN ARGUMENT THAT INVITES ITS OWN
+        // REFUTATION IN ITS LAST LINE: "a layer where the question is genuinely malformed
+        // would refute this argument, and none has been filed." One is filed. That
+        // reasoning runs "'does this layer have a remainder?' presupposes only that it is a
         // layer, and it has an answer: no" — but the remainder is `r = n - d`, and
         // `unstated/margin-ratio` states no nameplate at all. There is no `n`, so there is no
         // subtraction to have an answer, which is what `notApplicable` says. That document
@@ -277,9 +277,9 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
             "nothing in a document implies how much of the system lies outside it. That is \
              precisely the fact no filing could state before 0.3.0",
         )),
-        // ⭐⭐⭐ AND THIS CELL SAID `Incoherent` UNTIL 2026-09-06, on the argument that "what
-        // would tighten a range is a claim about instruments and interventions that do not
-        // exist yet. There is nothing in the document to derive it from." There is, whenever a
+        // ⭐⭐⭐ AND `Incoherent` HERE WOULD REST ON THE ARGUMENT THAT "what would tighten a
+        // range is a claim about instruments and interventions that do not exist yet. There is
+        // nothing in the document to derive it from." There is, whenever a
         // claim is COMPUTED from its siblings. A `booked` share under a clearance is
         // `nameplate − demand`, so what would tighten it is the demand's own narrowing, one
         // element over and already filed. ⛔ Five claims were saying exactly that in prose and
