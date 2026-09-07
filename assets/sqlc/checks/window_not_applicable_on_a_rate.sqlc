@@ -8,19 +8,19 @@
 #
 # ⛔⛔ A NAMEPLATE WITH NO UNIT IS NOT EXAMINED, AND THAT IS THE REPAIR. `refutation`'s
 #    `object-storage` files its amount `notApplicable` -- there is no unit at all -- and its
-#    window `notApplicable` too. It is absent from units/with_denominator.sqlc because a NULL
-#    matches no `LIKE`, so the semi-join passed it, on the grounds that a unit which does not
-#    exist has no denominator. That is an unknown answered as a no. layers/absorber.sqlc
-#    states the principle: a question nobody can answer gets NO ROW rather than a pass.
+#    window `notApplicable` too. A NULL unit matches no `LIKE`, so a semi-join against a parsed
+#    denominator passes it, on the grounds that a unit which does not exist has no denominator.
+#    That is an unknown answered as a no. layers/absorber.sqlc states the principle: a question
+#    nobody can answer gets NO ROW rather than a pass.
 #
-# ✅⭐⭐⭐ THE SEMI-JOIN NOW READS A FILED FACT. It used to hit units/with_denominator.sqlc,
-#    where `LIKE '% per %' OR LIKE '% por %'` both guessed the denominator out of free text and
-#    silently decided that `semana` IS `week` -- a reader's judgement written in SQL, which the
-#    old comment here called out and could not fix from the query side.
+# ⭐⭐⭐ THE SEMI-JOIN READS A FILED FACT AND NEVER A PARSED ONE. Against free text,
+#    `LIKE '% per %' OR LIKE '% por %'` guesses the denominator out of the unit string and
+#    silently decides that `semana` IS `week`: a reader's judgement written in SQL, which no
+#    comment on the query side can fix.
 #
-#    It also tested the wrong predicate: a `LIKE` finds a DENOMINATOR, and this rule needs a
+#    It is also the wrong predicate: a `LIKE` finds a DENOMINATOR, and this rule needs a
 #    PERIOD. `pm:StatedDenominator` separates them, so the semi-join is against
-#    units/with_a_period.sqlc and `GPU-hour per GPU` no longer counts as a rate.
+#    units/with_a_period.sqlc and `GPU-hour per GPU` does not count as a rate.
 -- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

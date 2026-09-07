@@ -5,7 +5,7 @@
 #
 # ⭐⭐⭐ THE MODEL'S HEADLINE EQUATION HAD NO CONFORMANCE RULE UNTIL NOW, AND THAT IS THE GAP
 #    THIS FILLS. composition/fused.sqlc has computed the sum, the filed figure and an `agrees`
-#    verdict for as long as it has existed, and exactly one caller read it: matrices.sqlc, a
+#    verdict, and exactly one caller reads it: matrices.sqlc, a
 #    psql tour that PRINTS it. examples/matrices.rs recomputes the product in Rust instead. So
 #    the one equation the whole repository is built to check was asserted by an example and a
 #    test, and by nothing that reports/violations.sqlc or reports/coverage.sqlc could see.

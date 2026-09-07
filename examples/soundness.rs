@@ -1,8 +1,8 @@
 //! Does the machinery do what it claims?
 //!
-//! The other three examples ask about the arithmetic, the data, and the corpus.
-//! This one asks about the **queries themselves**, whether each relation computes the operation
-//! it says it does. It is the only one of the four that can accuse nobody's filing.
+//! The other examples ask about the arithmetic, the data, the corpus, and what a generated run
+//! can be made to say. This one asks about the **queries themselves**, whether each relation
+//! computes the operation it says it does. It is the only one that can accuse nobody's filing.
 //!
 //! ⭐⭐⭐ IT EXISTS BECAUSE A SET DIFFERENCE FAILS TO A PLAUSIBLE TABLE, NEVER TO AN ERROR.
 //! `EXCEPT` and `LEFT JOIN … IS NULL` return the right shape, the right column names and a
@@ -11,9 +11,9 @@
 //! not a thing anybody reads twice.
 //!
 //! ⭐⭐ AND THE LAW IS CHECKABLE WITHOUT TOUCHING A FILE. |A ∖ B| = |A| − |A ⋉ B|, so a difference
-//! and its semijoin must partition the left operand. That used to be a manual probe, edit the
-//! template, recompose, observe, revert, a procedure nothing repeats, and one that produced a
-//! false finding when a `sed` silently matched nothing. Each law is now a query.
+//! and its semijoin must partition the left operand. As a manual probe that is edit the
+//! template, recompose, observe, revert: a procedure nothing repeats, and one where a `sed`
+//! silently matching nothing reports a false finding. Each law is a query instead.
 //!
 //! ⛔ THE SECOND ASSERTION IS THE ONE THAT MATTERS MOST. Every set difference in `assets/sqlc/`
 //! must appear on `algebra/roster.sqlc`. A difference nobody declared a law for is
@@ -38,6 +38,7 @@ use std::path::Path;
 const NOT_GOVERNED: &[(&str, &str)] = &[
     ("algebra/", "the laws themselves; each one counts a difference rather than taking one"),
     ("reports/integrity.sqlc", "governed as `integrity`, whose subjects are the contracts not the file"),
+    ("invariance.sqlc", "a perturbation script, not a relation; its anti-joins scope a rewrite that is rolled back"),
 ];
 
 /// Every `.sqlc` under a directory, with its body, named the way `:compose()` names it.
@@ -63,11 +64,17 @@ fn sql_only(body: &str) -> String {
         .join("\n")
 }
 
-/// Does this template take a set difference? `EXCEPT`, or a `LEFT JOIN` whose result is filtered
-/// on `IS NULL`, as opposed to the roster cross (`ON true`), an outer join proper, or the form
-/// where the NULL *is* the verdict (`x IS NULL AS violates`).
+/// Does this template take a set difference? `EXCEPT`, `NOT EXISTS`, or a `LEFT JOIN` whose
+/// result is filtered on `IS NULL`, as opposed to the roster cross (`ON true`), an outer join
+/// proper, or the form where the NULL *is* the verdict (`x IS NULL AS violates`).
+///
+/// ⛔ THREE SPELLINGS, NOT TWO, AND A MISSING ONE IS SILENT. `NOT EXISTS` is an anti-semijoin
+/// and therefore a difference; `composition/carried.sqlc` takes two. A spelling this function
+/// does not know is a difference the `unclaimed` guard never examines, so the guard prints
+/// `All checks passed` and proves nothing about it. `EXISTS` alone is a semijoin and is NOT a
+/// difference. Add a spelling here before adding one to the tree.
 fn takes_a_difference(sql: &str) -> bool {
-    if sql.contains("EXCEPT") {
+    if sql.contains("EXCEPT") || sql.contains("NOT EXISTS") {
         return true;
     }
     sql.split("LEFT JOIN").skip(1).any(|seg| {
@@ -183,7 +190,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // ------------------------------------------------------------------
-    // 3. The rosters and their populations agree, all three contracts.
+    // 3. The rosters and their populations agree, every contract this repository declares.
     // ------------------------------------------------------------------
     let drift = sqlx::query_file!("assets/sql/queries/soundness/2-integrity.sql")
         .fetch_all(&pool)
@@ -194,6 +201,57 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   ⛔ [{}] {}: {}", d.contract, d.problem, d.subject);
     }
     assert!(drift.is_empty(), "a roster and its population disagree");
+
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ WHAT ONE EXAMINED ROW OF EACH RULE IS, DECLARED, AGAINST WHAT ITS ROWS ACTUALLY ARE.
+    //    `checks/all.sqlc` returns `(rule, filing, layer, violates, detail)` and its header reads
+    //    *which layer of which filing it is*. That is FALSE for seven of the rules: their subject
+    //    is a PART or a SLACK, so `(filing, layer)` is not a key and the item's identity survives
+    //    only inside the prose `detail`.
+    //
+    // ⭐⭐ AND IT SPLITS A BAG THAT WAS BEING CALLED ONE THING. `invariance.sqlc` says the
+    //    relation is a bag because *several items per layer produce the same sentence*; that is
+    //    true of TWO rules, and for the other five every row says something DIFFERENT. The bag is
+    //    mostly a GRAIN artifact. ⭐ That file's count-don't-subtract repair is correct for both,
+    //    which means it was more general than the reason given for it.
+    //
+    // ⛔ ONE DIRECTION ONLY. A rule declaring `layer` owes exactly one row per `(filing, layer)`;
+    //   a second means it silently changed what it examines and the count moves with nothing
+    //   saying what the count is OF. The converse is not assertable: a part-grained rule may see
+    //   one part per layer in a corpus that files one, and accusing it reads luck as a claim.
+    // ------------------------------------------------------------------
+    let grain = sqlx::query_file!("assets/sql/checks/grain.sql").fetch_all(&pool).await?;
+    let misdeclared: Vec<&str> = grain
+        .iter()
+        .filter(|g| g.finer_than_declared == Some(true))
+        .map(|g| g.slug.as_deref().unwrap_or("?"))
+        .collect();
+    let mut by_subject: std::collections::BTreeMap<&str, (usize, i64, i64)> = Default::default();
+    for g in &grain {
+        let e = by_subject.entry(g.declares.as_deref().unwrap_or("?")).or_default();
+        e.0 += 1;
+        e.1 += g.rows.unwrap_or(0);
+        e.2 += g.layers.unwrap_or(0);
+    }
+    println!("\n4. what one examined row IS, per rule");
+    for (subject, (rules, rows, layers)) in &by_subject {
+        println!("   {subject:<7} {rules:>2} rules   {rows:>4} rows over {layers:>4} layers{}",
+                 if rows == layers { "   one row per layer" } else { "   FINER than a layer" });
+    }
+    assert!(!grain.is_empty(), "no rule was examined, so the grain law examined nothing");
+    assert!(
+        by_subject.len() > 1,
+        "every rule declares the same subject, so this law cannot discriminate and the column \
+         is decoration"
+    );
+    assert!(
+        misdeclared.is_empty(),
+        "a rule declares its subject is a layer and emits more than one row per layer, so it \
+         examines something finer than it says and the coverage number counts the wrong unit: \
+         {misdeclared:?}"
+    );
+    println!("   ⭐ The coverage number has a UNIT now. `examined 20` is twenty PARTS for one rule");
+    println!("      and twenty LAYERS for another, and the `< 3 is thin` threshold ran across both.");
 
     println!("\nAll checks passed.");
     Ok(())

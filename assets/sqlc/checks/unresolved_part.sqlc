@@ -6,9 +6,9 @@
 #    cannot follow a cross-document reference, so it never had to resolve one.
 #
 # ⛔⛔ AND IT IS ONLY CHECKABLE BECAUSE A READER ASSERTED THE NOTATION-TO-DOCUMENT MAPPING.
-#    No filing used to declare its own notation at all, so a part reference could not be
-#    resolved from the corpus even in principle, and the conformance rule presupposed a lookup
-#    the model did not provide. Writing this query is what surfaced that.
+#    Without a filing declaring its own notation, a part reference cannot be resolved from the
+#    corpus even in principle, and this conformance rule would presuppose a lookup the model
+#    does not provide. Writing the query is what makes that visible.
 #
 # ⭐ THE VIOLATION IS THE DIFFERENCE BETWEEN TWO NAMED RELATIONS -- every part, minus the parts
 #   that resolve. An anti-join, not a NOT EXISTS, because "the parts that resolve" is the

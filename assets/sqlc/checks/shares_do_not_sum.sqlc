@@ -8,10 +8,10 @@
 #    the whole discipline. If a filer says one party's share is `unmeasured`, the sum is
 #    UNKNOWN -- not wrong. Treating the absence as a zero would manufacture a shortfall and
 #    report the document for a defect the checker introduced.
-# ⛔⛔⛔ THE UNIT GUARD IS THE HALF THIS RULE USED TO BE MISSING, AND ITS OWN SITE HAD IT.
+# ⛔⛔⛔ THE UNIT GUARD IS HALF OF THIS RULE, AND ITS OWN SITE CARRIES THE OTHER.
 #    arithmetic/shares_sum.sqlc reports `not comparable` where a holder's share is quoted in a
-#    unit other than its layer's; this rule had no such branch and would have summed across
-#    units and compared the total to |r|. H is a distribution over the magnitude of `r`, so a
+#    unit other than its layer's; without that branch here the rule sums across units and
+#    compares the total to |r|. H is a distribution over the magnitude of `r`, so a
 #    share in a foreign unit is not a smaller share, it is not a share of this at all.
 #    arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule stands there,
 #    which left this check as the only thing between it and a wrong number. It agreed with the

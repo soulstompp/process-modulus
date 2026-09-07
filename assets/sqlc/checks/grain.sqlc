@@ -1,0 +1,34 @@
+# EVERY RULE BESIDE THE GRAIN IT DECLARES AND THE GRAIN ITS ROWS ACTUALLY HAVE. One row per rule.
+#
+# ⭐⭐⭐ THE CONTRACT'S COLUMNS NAME A SUBJECT SEVEN RULES DO NOT EXAMINE. `checks/all.sqlc`
+#    returns `(rule, filing, layer, ...)` and says *which layer of which filing it is*. For a
+#    quarter of the roster the examined item is a PART or a SLACK, so `(filing, layer)` is not a
+#    key and the item's identity survives only inside the prose `detail`.
+#
+# ⭐⭐ WHICH SPLITS THE BAG INTO TWO THINGS THAT WERE BEING CALLED ONE. `invariance.sqlc` says
+#    `checks/all.sqlc` IS A BAG because *several items per layer produce the same sentence*, and
+#    that is true of TWO rules. For the other five every row says something DIFFERENT, and the
+#    bag is a GRAIN artifact rather than a repetition one. ⭐ Its count-don't-subtract repair is
+#    right for both, which is worth knowing: the repair was more general than its stated reason.
+#
+# ⛔⛔ THE LAW IS ONE-DIRECTIONAL AND THAT IS NOT A WEAKNESS. A rule declaring `layer` must have
+#   exactly one row per `(filing, layer)`; a second row means it silently changed what it
+#   examines and no other law here would see it, because the count moves and nothing says what
+#   the count is OF. ⛔ The converse cannot be asserted: a part-grained rule may legitimately see
+#   one part per layer in a corpus that happens to file one, and accusing it would be reading
+#   luck as a declaration.
+-- checks/roster.sqlc's declared subject against checks/all.sqlc's actual multiplicity.
+SELECT r.slug,
+       r.subject                                     AS declares,
+       count(c.rule)                                 AS rows,
+       count(DISTINCT (c.filing, c.layer))           AS layers,
+       count(DISTINCT (c.filing, c.layer, c.detail)) AS sentences,
+       r.subject = 'layer'
+         AND count(c.rule) <> count(DISTINCT (c.filing, c.layer)) AS finer_than_declared
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    :compose(checks/all.sqlc)
+) c ON c.rule = r.rule
+GROUP BY r.slug, r.subject

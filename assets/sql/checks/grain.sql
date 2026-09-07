@@ -1,13 +1,47 @@
--- checks/all.sqlc, grouped by rule.
-SELECT c.rule,
-       count(*) FILTER (WHERE c.violates IS NOT NULL) AS examined,
-       count(*) FILTER (WHERE c.violates)             AS violations,
-       CASE WHEN count(*) FILTER (WHERE c.violates IS NOT NULL) = 0
-                 THEN '⛔ VACUOUS - proves nothing'
-            WHEN count(*) FILTER (WHERE c.violates IS NOT NULL) < 3
-                 THEN '⚠️  thin'
-            ELSE 'ok' END                             AS verdict
-FROM (
+-- checks/roster.sqlc's declared subject against checks/all.sqlc's actual multiplicity.
+SELECT r.slug,
+       r.subject                                     AS declares,
+       count(c.rule)                                 AS rows,
+       count(DISTINCT (c.filing, c.layer))           AS layers,
+       count(DISTINCT (c.filing, c.layer, c.detail)) AS sentences,
+       r.subject = 'layer'
+         AND count(c.rule) <> count(DISTINCT (c.filing, c.layer)) AS finer_than_declared
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees', 'layer', 'sign agrees with the range comparison'),
+  ('shares_do_not_sum', 'layer', 'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved', 'layer', 'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted', 'layer', 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack', 'layer', 'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch', 'slack', 'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch', 'layer', 'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple', 'layer', 'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
+  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('layers_move_together', 'layer', 'layers that always move together are one layer'),
+  ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value', 'layer', 'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range', 'layer', 'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range', 'layer', 'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed', 'part', 'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window', 'layer', 'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate', 'layer', 'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts', 'layer', 'a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees', 'layer', 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles', 'part', 'a local part names a layer in its own stack'),
+  ('unit_crossing_without_a_factor', 'layer', 'a part crossing a unit boundary files what converts it'),
+  ('regime_crossing_without_a_citation', 'part', 'a part crossing a regime boundary files what reconciles it'),
+  ('part_regime_disagrees', 'part', 'a composer''s regime for a part is one that part''s own filing declares'),
+  ('conversion_cycle_does_not_close', 'layer', 'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part', 'part', 'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted', 'layer', 'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, subject, rule)
+
+) r
+LEFT JOIN (
     -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
 -- pm:Remainder/sign against pm:Demand and pm:Nameplate; conformance rule "sign agrees".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -8710,6 +8744,5 @@ JOIN pm.composition_regime cr
 WHERE r.slug = 'part_regime_disagrees'
 
 
-) c
-GROUP BY c.rule
-ORDER BY examined DESC, rule
+) c ON c.rule = r.rule
+GROUP BY r.slug, r.subject
