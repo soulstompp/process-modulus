@@ -1,7 +1,7 @@
 -- arithmetic/all.sqlc, one candidate to exactly one verdict.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),

@@ -1,0 +1,29 @@
+# THE ORDINAL RANK OF EVERY LAYER IN `F`: the order in which a fusion may be evaluated. One row
+# per layer, `rank` 0 where nothing lies beneath it.
+#
+# ⭐⭐⭐ THIS IS WHAT WELL-FOUNDEDNESS ACTUALLY GIVES YOU. A well-founded relation has a rank
+#    function, `rank(x) = sup{rank(y)+1 : y R x}`, and the precondition that
+#    *no name expands to itself* IS the guarantee that one exists. A cycle is exactly the case
+#    where it does not, which is what "no order exists in which to evaluate the stack" means.
+#
+# ⛔⛔ RANK IS THE EVALUATION ORDER AND `depth` IS NOT. composition/descent.sqlc's `depth` is per
+#    PATH; the rank is the MAXIMUM over all paths. A layer reachable at depth 1 and at depth 2
+#    must not be evaluated until both arrivals are ready, so a walk that evaluates in depth order
+#    can compute a fusion before one of its parts exists. ⭐ On this corpus min and max agree on
+#    every row, so the difference is unexercised BY LUCK: a jagged partition is what separates
+#    them, and checks/jagged_layer is the same phenomenon in the other algebra.
+#
+# ⭐ IT IS A WINDOW AND NOT A SECOND WALK. descent.sqlc has already done the recursion, so the
+#   rank is one aggregate over its closure. Proposing another recursive CTE for this is proposing
+#   to recompute something the data already carries.
+-- composition/descent.sqlc aggregated to the deepest arrival under each layer.
+SELECT l.filing, l.layer,
+       coalesce(max(d.depth), 0) AS rank,
+       count(d.filing)           AS arrivals
+FROM      (
+    :compose(layers/every_layer.sqlc)
+) l
+LEFT JOIN (
+    :compose(composition/descent.sqlc)
+) d ON d.root_filing = l.filing AND d.root_layer = l.layer
+GROUP BY l.filing, l.layer

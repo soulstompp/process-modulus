@@ -9,28 +9,30 @@
 #    reads twice. These laws are what turn "it looked fine" into an assertion.
 #
 # ⭐⭐ AND THE LAW IS CHECKABLE WITHOUT TOUCHING A FILE. |A ∖ B| = |A| − |A ⋉ B|, so the
-#    difference and the semijoin must partition the left operand. That was previously a manual
-#    probe: edit the template, recompose, observe, revert -- a procedure nothing repeats, and one
-#    that produced a false finding when a `sed` silently matched nothing. Every law below is a
-#    query instead.
+#    difference and the semijoin must partition the left operand. As a manual probe that is
+#    edit the template, recompose, observe, revert -- a procedure nothing repeats, and one where
+#    a `sed` silently matching nothing reports a false finding. Every law below is a query
+#    instead.
 #
 # ⛔⛔ `multiplicity` IS NOT DECORATION, AND IT IS THE COLUMN THAT COST THE MOST TO LEARN.
 #    |A| = |A∖B| + |A⋉B| is a SET identity. `EXCEPT` deduplicates; the anti-join preserves the
 #    left side's multiplicity. So the law's FORM depends on whether the left operand is a set on
 #    the compared attributes -- and two of the differences here have a bag on the left:
-#      composition/descent   28 rows, 20 keys. Its duplicates ARE the subject of
-#                            checks/leaf_reached_twice -- a layer reachable by two paths appears
+#      composition/descent   more rows than keys. Its duplicates ARE the subject of
+#                            checks/jagged_layer -- a layer reachable by two paths appears
 #                            twice -- so rewriting leaves.sqlc as EXCEPT would erase exactly what
 #                            that rule detects. ⛔ dedup would be a defect.
-#      checks/all            663 rows, 23 keys on `rule`. Here the collapse is the POINT: the
+#      checks/all            more rows than keys on `rule`. Here the collapse is the POINT: the
 #                            question is which rule NAMES appear undeclared. ✅ dedup intended.
+#    ⛔ Counts are not written here; `cargo run --example soundness` prints both pairs live, and
+#    the pair that stood in this block was stale by five rows and four keys when checked.
 #    The SQL looks identical in both cases. Only this column tells them apart.
 #
 # ⛔ A ROW HERE WITH NO RELATION BEHIND IT IS A LAW NOBODY CHECKS, and a difference in the tree
 #   with no row here is a guard nobody declared -- `asrt:Verdict`'s `unclaimed`. Both directions
 #   are caught: the first by reports/integrity.sqlc, the second by examples/soundness.rs, which
 #   walks the tree for set-difference syntax and requires every one to appear below.
--- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+-- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),

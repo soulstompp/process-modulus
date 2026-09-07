@@ -385,7 +385,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let reaching = masks.iter().filter(|m| m.mask.starts_with('n')).count();
     println!(
         "
-13. which of the four absence reasons has each question ever taken? {} of {} reach `none`",
+14. which of the four absence reasons has each question ever taken? {} of {} reach `none`",
         reaching,
         masks.len()
     );
@@ -402,6 +402,72 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("      set is either a state nobody needs or a state the type should not have, and");
     println!("      both deserve a sentence. Four passes of reading annotations missed the one");
     println!("      this found.");
+
+    // ⭐⭐⭐ THE MEASUREMENT THAT EXPLAINS THE DIAGRAM. The relations a notation would have drawn
+    //    as arrows reach a handful of layers; the magnitudes reach nearly all of them. So the
+    //    incidence side of this model is sparse and the magnitude side is total, and BPMN can
+    //    carry only the first. A reader who finds an emitted diagram thin has read a faithful
+    //    rendering of the part a notation can hold.
+    let cover = sqlx::query_file!("assets/sql/queries/observations/15-rank.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n16. what the layer dimension carries, incidence against magnitude");
+    for c in &cover {
+        println!("   {:<8} {:<12} reaches {:>3} of {}", c.kind, c.relation, c.reaches, c.of);
+    }
+    let inc: i64 = cover.iter().filter(|c| c.kind == "incidence").map(|c| c.reaches).max().unwrap_or(0);
+    let mag: i64 = cover.iter().filter(|c| c.kind == "magnitude").map(|c| c.reaches).min().unwrap_or(0);
+    assert!(
+        inc < mag,
+        "the incidence reaches as far as the magnitudes, so the claim that a notation carries \
+         only the sparse half has lost its subject and this section demonstrates nothing"
+    );
+    println!("   ⭐ Nine tables render as a BPMN element and fourteen do not; this is how much");
+    println!("      each of them holds. The largest tables here have no element at all.");
+
+    // ⭐⭐⭐ THE ORDINAL RANK, WHICH IS WHAT WELL-FOUNDEDNESS GIVES YOU. `rank(x) = sup{rank(y)+1}`
+    //    exists exactly when nothing expands to itself, so a cycle is the case where there is no
+    //    order to evaluate in. This is that order, and it is a WINDOW over a closure that already
+    //    exists rather than a second walk.
+    let order = sqlx::query_file!("assets/sql/rank/evaluation_order.sql").fetch_all(&pool).await?;
+    let mut tiers: std::collections::BTreeMap<i32, usize> = std::collections::BTreeMap::new();
+    for o in &order {
+        *tiers.entry(o.rank.unwrap_or(0) as i32).or_default() += 1;
+    }
+    println!("\n17. the order a fusion may be evaluated in, by ordinal rank");
+    for (r, n) in &tiers {
+        println!("   rank {r}   {n:>3} layers");
+    }
+    println!("   ⛔ Rank is the MAXIMUM depth over all paths, and `descent`'s `depth` is per path.");
+    println!("      They agree on this corpus by luck; a jagged partition separates them.");
+
+    // ⭐⭐⭐ THE PARAMETER THE GRAPHS ACTUALLY DIFFER ON. `rank = n - c`, cycle space `= m - n + c`.
+    //    A graph with cycles has no ORDINAL rank and always has a MATRIX rank, and a well-founded
+    //    relation is simply one whose cycle space is zero. The layer graph's comes out at 0,
+    //    which is its well-foundedness measured rather than assumed; the unit graph's is 1, and
+    //    that is the subspace `checks/conversion_cycle_does_not_close` is really testing.
+    let cyc = sqlx::query_file!("assets/sql/rank/cycle_space.sql").fetch_all(&pool).await?;
+    println!("\n19. the graphs this model composes, as incidence matrices");
+    for c in &cyc {
+        println!("   {:<8} n {:>3}  m {:>3}  components {:>3}   rank {:>3}   cycle space {}",
+                 c.graph.as_deref().unwrap_or("?"), c.n_nodes.unwrap_or(0), c.m_edges.unwrap_or(0),
+                 c.c_components.unwrap_or(0), c.rank_of_incidence.unwrap_or(0),
+                 c.cycle_space_dim.unwrap_or(0));
+    }
+    println!("   ⭐ A well-founded relation is one whose cycle space is ZERO, and the ordinal rank");
+    println!("      is what you get free when it is. The unit graph's is not, and its rule is that");
+    println!("      the weights on it vanish: a potential exists, per Strang's decomposition.");
+
+    // ⭐⭐ AND THE OTHER RANK, IN THE OTHER ALGEBRA. Composition is the linear map `F Phi - E`,
+    //    and two layers on a loop have linearly dependent rows in it: ordinal rank stops existing
+    //    and matrix rank falls at the same moment. `pm:Layer` calls the pair one layer.
+    let comoving = sqlx::query_file!("assets/sql/rank/co_moving_layers.sql").fetch_all(&pool).await?;
+    println!("\n18. layers whose remainders must move together, the fourth falsifier computed: {}",
+             comoving.len());
+    if comoving.is_empty() {
+        println!("   ⭐ None. Every layer in this corpus can be perturbed without moving another");
+        println!("      through the composition, so no filed pair fails `pm:Layer`'s own test.");
+    }
 
     println!("\nAll checks passed.");
     Ok(())

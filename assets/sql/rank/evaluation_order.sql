@@ -1,4 +1,15 @@
--- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+-- composition/descent.sqlc aggregated to the deepest arrival under each layer.
+SELECT l.filing, l.layer,
+       coalesce(max(d.depth), 0) AS rank,
+       count(d.filing)           AS arrivals
+FROM      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l
+LEFT JOIN (
+    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -47,3 +58,6 @@ walk(root_filing, root_layer, filing, layer, depth, path,
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
+
+) d ON d.root_filing = l.filing AND d.root_layer = l.layer
+GROUP BY l.filing, l.layer

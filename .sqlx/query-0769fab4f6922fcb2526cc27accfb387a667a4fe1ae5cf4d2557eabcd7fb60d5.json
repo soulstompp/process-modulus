@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  Which relations a law governs, the roster, as the example reads it.\n-- algebra/roster.sqlc, projected to what the tree-walk needs.\nSELECT r.governs      AS \"governs!\",\n       r.form         AS \"form!\",\n       r.multiplicity AS \"multiplicity!\"\nFROM (\n    -- the set-algebraic laws this tree's relations claim to obey.\nSELECT * FROM (VALUES\n  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),\n  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),\n  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),\n  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),\n  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),\n  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),\n  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),\n  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),\n  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')\n) AS a(slug, law, governs, form, multiplicity)\n\n) r\nORDER BY r.governs\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "governs!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "form!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "multiplicity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "0769fab4f6922fcb2526cc27accfb387a667a4fe1ae5cf4d2557eabcd7fb60d5"
+}

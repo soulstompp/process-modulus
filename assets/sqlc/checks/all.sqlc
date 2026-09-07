@@ -6,10 +6,9 @@
 #    AND THAT IS THE ENTIRE POINT OF ASSEMBLING IT. A violations table is
 #    `WHERE violates`; a coverage table is `GROUP BY rule`. Because they read ONE relation,
 #    a coverage number cannot be about a different population than the rule it reports on --
-#    which is exactly what used to happen: each population was written twice, in two dialects
-#    of itself, and three of the twenty-two restatements disagreed. One of them counted four
-#    rows where the rule examined one, crossing a threshold and reporting a thin rule as well
-#    covered.
+#    which is what happens when each population is written twice, in two dialects of itself:
+#    the restatements disagree, and one counting four rows where its rule examines one crosses
+#    a threshold and reports a thin rule as well covered.
 #
 # ⭐⭐ AND IT IS THE MOST USEFUL THING HERE TO RUN ON ITS OWN. An empty violations table is
 #    the good outcome and tells a reader nothing at all. THIS shows every rule working on real
@@ -41,6 +40,7 @@
            checks/clearance_with_unserved.sqlc,
            checks/unresolved_part.sqlc,
            checks/leaf_reached_twice.sqlc,
+           checks/local_cycle.sqlc,
            checks/coupling_does_not_attenuate.sqlc,
            checks/narrows_a_point_value.sqlc,
            checks/range_says_no_range.sqlc,
@@ -51,7 +51,6 @@
            checks/elimination_not_applicable_with_parts.sqlc,
            checks/fusion_sum_disagrees.sqlc,
            checks/local_part_dangles.sqlc,
-           checks/local_cycle.sqlc,
            checks/denied_remainder_is_not_contradicted.sqlc,
            checks/one_part_fusion_alters_its_part.sqlc,
            checks/conversion_cycle_does_not_close.sqlc,

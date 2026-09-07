@@ -2,7 +2,7 @@
 -- composition/fusions.sqlc partitioned by composition/suspended_fusions.sqlc.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -208,7 +208,7 @@ UNION ALL
 -- composition/descent.sqlc partitioned by composition/fusions.sqlc, multiplicity preserved.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -258,14 +258,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -301,14 +308,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -347,14 +361,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -406,14 +427,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -437,7 +465,7 @@ UNION ALL
 -- layers/demand.sqlc partitioned by the query the roster names as this law's subject.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -670,7 +698,7 @@ UNION ALL
 -- checks/ and arithmetic/ rosters partitioned by the populations they declare.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -2064,14 +2092,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -2115,6 +2150,102 @@ FROM pm.filing_identity fi
     GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
 ) p ON true
 WHERE r.slug = 'leaf_reached_twice'
+UNION ALL
+-- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    SELECT p.composition AS filing, p.composed_layer AS layer,
+           c.filing IS NOT NULL AS violates,
+           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
+                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+    FROM      (
+        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+
+    ) p
+    LEFT JOIN (
+        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+WITH RECURSIVE
+local AS (
+    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+
+),
+walk(filing, root, layer) AS (
+        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+    UNION ALL
+        SELECT w.filing, w.root, p.part_layer
+        FROM walk w
+        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT DISTINCT filing, root, route
+FROM walk
+WHERE is_cycle
+
+    ) c
+           ON c.filing = p.composition AND c.root = p.composed_layer
+) p ON true
+WHERE r.slug = 'local_cycle'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -3146,102 +3277,6 @@ FROM pm.layer l
     ) l ON l.filing = p.composition AND l.layer = p.part_layer
 ) p ON true
 WHERE r.slug = 'local_part_dangles'
-UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
-SELECT r.rule, p.filing, p.layer, p.violates, p.detail
-FROM      (
-    -- the conformance rules stated in the schemas' prose and gated by no grammar.
-SELECT * FROM (VALUES
-  ('fit_disagrees',                        'sign agrees with the range comparison'),
-  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
-  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
-  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
-  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
-  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
-  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
-  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
-  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
-  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
-  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
-  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
-  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
-  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
-  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
-  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
-  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
-  ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
-  ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
-  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
-  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
-  ('denied_remainder_is_not_contradicted',
-                                          'a denied remainder is not contradicted by the layer''s own figures')
-) AS r(slug, rule)
-
-) r
-LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
-           c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
-    FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
-    LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
-WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
-    UNION ALL
-        SELECT w.filing, w.root, p.part_layer
-        FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
-) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
-
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
-) p ON true
-WHERE r.slug = 'local_cycle'
 UNION ALL
 --
 -- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate.
@@ -5373,14 +5408,21 @@ FROM pm.layer l
 ) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
@@ -5424,6 +5466,102 @@ FROM pm.filing_identity fi
     GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
 ) p ON true
 WHERE r.slug = 'leaf_reached_twice'
+UNION ALL
+-- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    -- the conformance rules stated in the schemas' prose and gated by no grammar.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'sign agrees with the range comparison'),
+  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
+  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
+  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
+  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
+  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
+  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
+  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
+  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
+  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
+  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
+  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
+  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
+  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
+  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
+  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
+  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
+  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('local_part_dangles',                   'a local part names a layer in its own stack'),
+  ('local_cycle',                          'local parts do not cycle'),
+  ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
+  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
+  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
+  ('denied_remainder_is_not_contradicted',
+                                          'a denied remainder is not contradicted by the layer''s own figures')
+) AS r(slug, rule)
+
+) r
+LEFT JOIN (
+    SELECT p.composition AS filing, p.composed_layer AS layer,
+           c.filing IS NOT NULL AS violates,
+           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
+                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+    FROM      (
+        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+
+    ) p
+    LEFT JOIN (
+        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+WITH RECURSIVE
+local AS (
+    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
+SELECT p.*
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+
+),
+walk(filing, root, layer) AS (
+        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+    UNION ALL
+        SELECT w.filing, w.root, p.part_layer
+        FROM walk w
+        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT DISTINCT filing, root, route
+FROM walk
+WHERE is_cycle
+
+    ) c
+           ON c.filing = p.composition AND c.root = p.composed_layer
+) p ON true
+WHERE r.slug = 'local_cycle'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -6455,102 +6593,6 @@ FROM pm.layer l
     ) l ON l.filing = p.composition AND l.layer = p.part_layer
 ) p ON true
 WHERE r.slug = 'local_part_dangles'
-UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
-SELECT r.rule, p.filing, p.layer, p.violates, p.detail
-FROM      (
-    -- the conformance rules stated in the schemas' prose and gated by no grammar.
-SELECT * FROM (VALUES
-  ('fit_disagrees',                        'sign agrees with the range comparison'),
-  ('shares_do_not_sum',                    'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved',             'a supply with nowhere to put its excess names who went unserved'),
-  ('exposure_unaccounted',                 'exposure does not exceed slack plus unserved shares'),
-  ('share_exceeds_slack',                  'a share does not exceed the slack of the buffer that absorbed it'),
-  ('slack_unit_mismatch',                  'a slack is expressed in the unit of the shares it bounds'),
-  ('quantum_unit_mismatch',                'a quantum is expressed in the unit of the nameplate it divides'),
-  ('nameplate_not_a_multiple',             'the nameplate is a whole multiple of the quantum'),
-  ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
-  ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
-  ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
-  ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
-  ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
-  ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
-  ('bound_fell_with_no_range',             'a point value does not say its bound is where the measurements fell'),
-  ('window_lost_or_summed',                'a window is carried through a fusion and never summed'),
-  ('derived_slack_over_a_window',          'a derived time slack needs a window that permits the derivation'),
-  ('window_not_applicable_on_a_rate',      'a window is notApplicable only where the unit has no period under the line'),
-  ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
-  ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
-  ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
-  ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
-  ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
-  ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
-  ('denied_remainder_is_not_contradicted',
-                                          'a denied remainder is not contradicted by the layer''s own figures')
-) AS r(slug, rule)
-
-) r
-LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
-           c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
-    FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
-    LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
-WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
-    UNION ALL
-        SELECT w.filing, w.root, p.part_layer
-        FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
-) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
-
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
-) p ON true
-WHERE r.slug = 'local_cycle'
 UNION ALL
 --
 -- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate.
@@ -9163,7 +9205,7 @@ UNION ALL
 -- entries/served_holders.sqlc and entries/unserved_holders.sqlc against pm:Remainder/pm:holder.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -9229,7 +9271,7 @@ UNION ALL
 -- arithmetic/all.sqlc, one candidate to exactly one verdict.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -10144,7 +10186,7 @@ UNION ALL
 -- layers/remainder.sqlc against layers/remainder_scope.sqlc.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -10444,7 +10486,7 @@ UNION ALL
 -- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
@@ -10668,7 +10710,7 @@ UNION ALL
 -- epistemics/searches.sqlc against the two relations it unions.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
-    -- the set-algebraic laws this tree's relations claim to obey; see the sql skill's set-algebra.md.
+    -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),

@@ -1,0 +1,34 @@
+# HOW MUCH OF THE LAYER DIMENSION EACH RELATION ACTUALLY REACHES. One row per relation: the layers
+# it touches, against every layer there is.
+#
+# ⭐⭐⭐ A ZERO COLUMN IS A LAYER OUTSIDE THE IMAGE, AND THE MEASUREMENT IS THE BOUNDARY ITSELF.
+#    The three relations a process notation would have drawn as arrows reach almost nothing: D, N
+#    and C touch a handful of layers each, F reaches more, and `nameplate` and `slack` reach every
+#    single one. ⛔ So the INCIDENCE side of this model is sparse and the MAGNITUDE side is total,
+#    and BPMN can carry only the first. `diagrams/domain_objects.sqlc` files nine tables as
+#    elements and fourteen as `none` or `notApplicable`; this says how much each of them holds.
+#
+# ⭐⭐ IT IS WHY A DIAGRAM OF THIS CORPUS LOOKS EMPTY AND IS NOT WRONG. The three largest tables
+#    here are `claim`, `narrowing` and `bound_origin`, one row per filed value, and not one of
+#    them has a BPMN element. A reader who concludes "there is nothing here" has read a faithful
+#    rendering of the part a notation can hold.
+#
+# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER. Run it; the corpus moves and a sentence does not.
+-- each incidence and each magnitude, counted against layers/every_layer.sqlc.
+SELECT 'D draw'      AS relation, 'incidence' AS kind, count(DISTINCT (d.filing, d.layer)) AS reaches
+FROM ( :compose(entries/draws.sqlc) ) d
+UNION ALL
+SELECT 'N induction', 'incidence', count(DISTINCT (n.filing, n.layer))
+FROM ( :compose(entries/inductions.sqlc) ) n
+UNION ALL
+SELECT 'C coupling',  'incidence', count(DISTINCT (c.filing, c.from_layer))
+FROM ( :compose(entries/couplings.sqlc) ) c
+UNION ALL
+SELECT 'F part',      'incidence', count(DISTINCT (p.composition, p.composed_layer))
+FROM ( :compose(composition/parts.sqlc) ) p
+UNION ALL
+SELECT 'nameplate',   'magnitude', count(DISTINCT (n.filing, n.layer))
+FROM ( :compose(layers/nameplate.sqlc) ) n
+UNION ALL
+SELECT 'slack',       'magnitude', count(DISTINCT (s.filing, s.layer))
+FROM ( :compose(entries/slacks.sqlc) ) s

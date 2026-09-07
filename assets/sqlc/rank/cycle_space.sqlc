@@ -1,0 +1,46 @@
+# THE INCIDENCE RANK AND CYCLE SPACE OF EVERY GRAPH THIS MODEL COMPOSES. One row per graph: nodes,
+# edges, components, and the two dimensions that follow.
+#
+# ⭐⭐⭐ `rank = n - c` AND `cycle space = m - n + c`, WHICH IS THE PARAMETER THE THREE GRAPHS
+#    DIFFER ON. A graph with cycles has NO ORDINAL rank and ALWAYS has a MATRIX rank, and
+#    confusing the two produces a wrong claim: that a cyclic graph has no rank
+#    at all. It has one. **A well-founded relation is simply one whose cycle space is ZERO**, and
+#    the ordinal rank is what you get for free when it is.
+#
+# ⭐⭐ AND THE CYCLE SPACE IS WHERE A WEIGHTED GRAPH'S RULE LIVES. An edge vector decomposes into
+#    the ROW SPACE, a gradient, plus the LEFT NULLSPACE, the cycle part.
+#    `checks/conversion_cycle_does_not_close` asks that the cycle component of `log phi` vanish,
+#    which says `log phi` is a gradient, which says a POTENTIAL exists: an absolute log-size per
+#    unit whose differences are the filed factors. A rule written as a walk round a loop was a
+#    subspace condition the whole time. Gilbert Strang's graph chapter is the reference.
+#
+# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER, AND PROSE CARRIED THEM BEFORE THIS RELATION EXISTED. Run it. The corpus moves and a sentence does not.
+#
+# ⚠️ COMPONENTS ARE UNDIRECTED, because `n - c` and `m - n + c` are facts about the underlying
+#   undirected graph. Reading them off the directed edges gives a different and wrong `c`.
+-- the unit graph and the layer graph as incidence matrices; rank and cycle space per Strang.
+WITH RECURSIVE
+edges AS (
+    SELECT 'units'  AS graph, c.from_unit AS a, c.to_unit AS b
+    FROM ( :compose(units/conversions.sqlc) ) c
+  UNION
+    SELECT 'layers', p.composition || '/' || p.composed_layer, p.part_filing || '/' || p.part_layer
+    FROM ( :compose(composition/parts.sqlc) ) p
+),
+nodes AS (SELECT graph, a AS u FROM edges UNION SELECT graph, b FROM edges),
+sym   AS (SELECT graph, a, b FROM edges UNION SELECT graph, b, a FROM edges),
+reach(graph, root, at) AS (
+      SELECT graph, u, u FROM nodes
+    UNION
+      SELECT r.graph, r.root, s.b FROM reach r JOIN sym s ON s.graph = r.graph AND s.a = r.at
+),
+comp AS (SELECT graph, root, min(at) AS component FROM reach GROUP BY graph, root)
+SELECT n.graph,
+       count(DISTINCT n.u)                                        AS n_nodes,
+       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)     AS m_edges,
+       count(DISTINCT c.component)                                AS c_components,
+       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)
+         - count(DISTINCT n.u) + count(DISTINCT c.component)      AS cycle_space_dim,
+       count(DISTINCT n.u) - count(DISTINCT c.component)          AS rank_of_incidence
+FROM nodes n JOIN comp c ON c.graph = n.graph AND c.root = n.u
+GROUP BY n.graph

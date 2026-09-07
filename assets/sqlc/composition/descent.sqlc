@@ -15,19 +15,36 @@
 #      repeat within a path, so it still comes back twice, which is what the leaf rule needs.
 #      The two walks that preceded this one disagreed about that: one truncated at depth ten
 #      and the other did not return at all on a document that closed a loop.
+#
+# ⭐⭐⭐ IT CARRIES THE PRODUCT OF THE FACTORS ALONG EACH PATH, WHICH IS WHAT TURNS A RECURSION
+#    INTO A JOIN. A composed layer's remainder is defined by recursion on `F`, and the natural
+#    form needs a SUM in the recursive term, which SQL forbids outright. A running PRODUCT is a
+#    scalar per row and is allowed, so the closure can accumulate `Π φ` on the way down and one
+#    `GROUP BY` at the end replaces the recursion entirely.
+#
+# ⛔ `factor_absent` IS CARRIED AS A DISJUNCTION AND NOT COALESCED AWAY. A part whose conversion
+#   nobody sized poisons every path through it: the product is unknown rather than one, and a
+#   caller that reads the number without the flag has asserted the units already agree.
 -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     :compose(composition/parts.sqlc)
 ),
-walk(root_filing, root_layer, filing, layer, depth, path) AS (
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                ARRAY[p.composition  || '/' || p.composed_layer,
-                     p.part_filing  || '/' || p.part_layer]
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
-               w.path || (p.part_filing || '/' || p.part_layer)
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route

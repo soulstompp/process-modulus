@@ -10,6 +10,7 @@ AGENTS.md
 CLAUDE.md
 .claude/
 .cursor/
+.idea/
 .aider*
 .github/copilot-instructions.md
 

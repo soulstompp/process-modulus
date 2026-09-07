@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the unit graph and the layer graph as incidence matrices; rank and cycle space per Strang.\nWITH RECURSIVE\nedges AS (\n    SELECT 'units'  AS graph, c.from_unit AS a, c.to_unit AS b\n    FROM ( -- asrt:Part/asrt:factor, as part-layer-unit to composed-layer-unit.\nSELECT DISTINCT\n       part.unit AS from_unit,\n       comp.unit AS to_unit,\n       p.factor_low, p.factor_mode, p.factor_high,\n       p.composition AS filing, p.composed_layer AS layer\nFROM      (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n) p\nJOIN      (\n    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.\nSELECT d.filing, d.layer, 'demand' AS quantity,\n       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit\nFROM (\n    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.\nSELECT l.filing, l.layer,\n       l.demand_low  AS d_low,\n       l.demand_mode AS d_mode,\n       l.demand_high AS d_high,\n       l.demand_unit AS d_unit,\n       l.demand_low = l.demand_high AS is_a_point,\n       l.demand_narrows,\n       l.demand_narrows_kind,\n       l.demand_narrows_absent\nFROM pm.layer l\nWHERE l.demand_low IS NOT NULL\n\n) d\nUNION ALL\nSELECT n.filing, n.layer, 'nameplate',\n       n.n_low, n.n_mode, n.n_high, n.n_unit\nFROM (\n    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.\nSELECT n.filing, n.layer,\n       n.amount_low  AS n_low,\n       n.amount_mode AS n_mode,\n       n.amount_high AS n_high,\n       n.amount_unit AS n_unit,\n       n.amount_origin,\n       n.lumpy, n.divisibility_absent,\n       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,\n       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent\nFROM pm.nameplate n\nWHERE n.amount_low IS NOT NULL\n\n) n\nUNION ALL\nSELECT s.filing, s.layer, s.buffer || 'Slack',\n       s.low, s.mode, s.high, s.unit\nFROM (\n    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.bound_origin, s.bound_origin_absent\nFROM pm.slack s\n\n) s\nWHERE s.low IS NOT NULL\n\n) part ON part.filing = p.part_filing AND part.layer = p.part_layer\n      AND part.quantity = 'nameplate'\nJOIN      (\n    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.\nSELECT d.filing, d.layer, 'demand' AS quantity,\n       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit\nFROM (\n    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.\nSELECT l.filing, l.layer,\n       l.demand_low  AS d_low,\n       l.demand_mode AS d_mode,\n       l.demand_high AS d_high,\n       l.demand_unit AS d_unit,\n       l.demand_low = l.demand_high AS is_a_point,\n       l.demand_narrows,\n       l.demand_narrows_kind,\n       l.demand_narrows_absent\nFROM pm.layer l\nWHERE l.demand_low IS NOT NULL\n\n) d\nUNION ALL\nSELECT n.filing, n.layer, 'nameplate',\n       n.n_low, n.n_mode, n.n_high, n.n_unit\nFROM (\n    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.\nSELECT n.filing, n.layer,\n       n.amount_low  AS n_low,\n       n.amount_mode AS n_mode,\n       n.amount_high AS n_high,\n       n.amount_unit AS n_unit,\n       n.amount_origin,\n       n.lumpy, n.divisibility_absent,\n       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,\n       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent\nFROM pm.nameplate n\nWHERE n.amount_low IS NOT NULL\n\n) n\nUNION ALL\nSELECT s.filing, s.layer, s.buffer || 'Slack',\n       s.low, s.mode, s.high, s.unit\nFROM (\n    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.bound_origin, s.bound_origin_absent\nFROM pm.slack s\n\n) s\nWHERE s.low IS NOT NULL\n\n) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer\n      AND comp.quantity = 'nameplate'\nWHERE p.factor_low IS NOT NULL\n ) c\n  UNION\n    SELECT 'layers', p.composition || '/' || p.composed_layer, p.part_filing || '/' || p.part_layer\n    FROM ( -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = p.part_layer\n ) p\n),\nnodes AS (SELECT graph, a AS u FROM edges UNION SELECT graph, b FROM edges),\nsym   AS (SELECT graph, a, b FROM edges UNION SELECT graph, b, a FROM edges),\nreach(graph, root, at) AS (\n      SELECT graph, u, u FROM nodes\n    UNION\n      SELECT r.graph, r.root, s.b FROM reach r JOIN sym s ON s.graph = r.graph AND s.a = r.at\n),\ncomp AS (SELECT graph, root, min(at) AS component FROM reach GROUP BY graph, root)\nSELECT n.graph,\n       count(DISTINCT n.u)                                        AS n_nodes,\n       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)     AS m_edges,\n       count(DISTINCT c.component)                                AS c_components,\n       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)\n         - count(DISTINCT n.u) + count(DISTINCT c.component)      AS cycle_space_dim,\n       count(DISTINCT n.u) - count(DISTINCT c.component)          AS rank_of_incidence\nFROM nodes n JOIN comp c ON c.graph = n.graph AND c.root = n.u\nGROUP BY n.graph\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "n_nodes",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "m_edges",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "c_components",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "cycle_space_dim",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "rank_of_incidence",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "18e72f131da9c96de66e6c7f4adcb344240800df35013b2bfb371190b8021cfa"
+}
