@@ -1,0 +1,37 @@
+-- §10b Every `between` as a cross-document REFERENCE, beside whether it lands on a layer here.
+#
+# ONE ROW PER FILED REFERENCE, with the filing its notation resolves to, or the typed reason it
+# resolves to nothing.
+#
+# ⭐⭐⭐ REPORTED AND NOT ASSERTED, AND THAT IS THE WHOLE DESIGN. A part reference that dangles is
+# a VIOLATION and `checks/unresolved_part.sqlc` says so, because a fusion sum cannot be computed
+# without it. A `between` that dangles is ORDINARY, and the schema says so in the element's own
+# refusals: *a group eliminating against a member that files nothing, or against a layer folded
+# into a different composed layer, is ordinary, and a keyref forcing the subset would make the
+# honest case unfileable*. Writing the part rule's shape here would accuse a filing the model
+# names as correct.
+#
+# ⛔⛔ AND THAT LICENCE IS WHY THIS RELATION DID NOT EXIST FOR SO LONG. This tree's pressure is
+# *a rule reads only what it needs*, so the thing that normally forces a reference into being a
+# named object is the check that reads it. `between` is the ONE cross-document reference no rule
+# MAY check, so nothing pulled it into view, and it stayed a raw table read as EVIDENCE for a
+# number rather than as a POINTER at another document.
+#
+# ⭐⭐ WHICH IS A GENERAL HOLE IN THE PRESSURE MODEL, not a fact about eliminations: anything the
+# model licenses but no rule may judge is invisible to a tree that grows by rules. §7's
+# observations are the answer, and this is one.
+-- eliminations/references.sqlc against eliminations/resolved.sqlc, the whole beside the half.
+SELECT a.composition                        AS "composition!",
+       a.composed_layer                     AS "composed_layer!",
+       a.quantity                           AS "quantity!",
+       a.party                              AS "party!",
+       a.layer                              AS "layer!",
+       coalesce(r.resolved_filing, '(outside this corpus)') AS "lands_on!",
+       (r.resolved_filing IS NOT NULL)      AS "resolves!"
+FROM      (
+    :compose(eliminations/references.sqlc)
+) a
+LEFT JOIN (
+    :compose(eliminations/resolved.sqlc)
+) r USING (composition, composed_layer, quantity, seq)
+ORDER BY (r.resolved_filing IS NOT NULL), 1, 2, 3, a.seq

@@ -349,6 +349,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⛔ `(none named)` is not a defect. `between` is minOccurs=0, and a composer");
     println!("      eliminating against a member that files nothing has nothing to name.");
 
+    // ⭐⭐⭐ THE SAME EIGHT ROWS AS A POINTER RATHER THAN AS EVIDENCE, WHICH IS THE DIFFERENCE
+    //    THAT HID THEM. §11 above reads `between` as what an elimination is ABOUT; this reads it
+    //    as what the document POINTS AT. The model has two `pm:ForeignId` references and only the
+    //    part had a relation naming it as one, so enumerating what this model reaches in other
+    //    documents returned half the answer for as long as nobody asked twice.
+    //
+    // ⛔⛔ REPORTED, NEVER ASSERTED. A dangling PART is a violation because the fusion sum needs
+    //    it; a dangling `between` is ORDINARY and the schema says so. That licence is exactly why
+    //    the relation went unwritten: this tree grows by rules, and `between` is the one
+    //    cross-document reference no rule MAY check.
+    let refs =
+        sqlx::query_file!("assets/sql/queries/observations/10b-elimination-references.sql")
+            .fetch_all(&pool)
+            .await?;
+    let lands = refs.iter().filter(|r| r.resolves).count();
+    println!(
+        "\n11b. what each elimination POINTS AT: {} of {} land on a layer this corpus holds",
+        lands,
+        refs.len()
+    );
+    for r in &refs {
+        println!(
+            "   {:<26} {:<15} {:<10} {} / {:<18} {}",
+            r.composition, r.composed_layer, r.quantity, r.party, r.layer, r.lands_on
+        );
+    }
+    println!("   ⛔ `(outside this corpus)` is not a defect either, and for a sharper reason than");
+    println!("      `(none named)` above: the schema REFUSES a keyref that would force the subset,");
+    println!("      because a group eliminating against a member that files nothing is ordinary.");
+
     // ⭐ The greatest element of the intersection of the parts' divisor sets, where the parts
     //   share a unit. Where they do not, divisibility is a relation on one ordered set and there
     //   is nothing to intersect, so the row reports `notApplicable` rather than a number the fold

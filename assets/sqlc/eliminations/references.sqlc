@@ -1,0 +1,30 @@
+# EVERY `between` AS FILED, AS A CROSS-DOCUMENT REFERENCE. One row per reference: which layer of
+# which OTHER document a composer says the double counting runs against.
+#
+# ⭐⭐⭐ THE MODEL HAS TWO `pm:ForeignId` REFERENCES AND ONLY ONE OF THEM WAS NAMED AS ONE. A
+#    `pm:Part` has `composition/part_references.sqlc`; `asrt:Elimination/between` had only the
+#    raw table, read by a single observation, filed under EVIDENCE. So anyone enumerating what
+#    this model points at in other documents composed the parts and got half the answer, and the
+#    BPMN mapping did exactly that: it reasoned from `elimination`, a magnitude BPMN genuinely
+#    does not need, and `between` inherited a refusal that was never about it.
+#
+# ⛔⛔ AND THE REASON IT WAS NEVER WRITTEN IS STRUCTURAL, NOT AN OVERSIGHT. This tree's pressure
+#   is *a rule reads only what it needs, so a field no rule reads is under no pressure to exist*.
+#   `between` is the ONE cross-document reference that no rule MAY check: the schema licenses an
+#   unresolvable one outright, because *a group eliminating against a member that files nothing,
+#   or against a layer folded into a different composed layer, is ordinary*. So no rule could pull
+#   it into view, and nothing else did.
+#
+# ⭐⭐ SO ITS COMPANION IS AN OBSERVATION AND NOT A CHECK. `eliminations/resolved.sqlc` is the
+#    half that lands and this is the whole, and their difference is REPORTED rather than asserted,
+#    the way `coupling_search` reports. Writing `checks/unresolved_part.sqlc`'s shape here would
+#    accuse the filing the schema names as ordinary.
+#
+# ⛔ NO FOREIGN KEY, exactly as `composition/part_references.sqlc` has none: a notation may name a
+#   document nobody in this corpus filed, and that is a state and not an error.
+-- asrt:Elimination/asrt:between, typed asrt:FiledLayer, whose filing is a pm:ForeignId.
+SELECT b.composition, b.composed_layer, b.quantity, b.seq,
+       b.party, b.notation, b.layer, b.regime
+FROM (
+    :compose(eliminations/between.sqlc)
+) b

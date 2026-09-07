@@ -4,9 +4,10 @@
 # An elimination without its `between` is a number with no subject: the composer removed 90
 # GPU-hours and nothing says from what.
 #
-# ⭐⭐⭐ THESE ROWS DID NOT EXIST IN THE DATABASE UNTIL 2026-09-06. `asrt:Elimination/between` is
-# repeating and no rule read it, so it had no column, no table and no ingest, and eight of them
-# were parsed out of the corpus and discarded on every load. The query side could not find that:
+# ⭐⭐⭐ THESE ROWS EXIST ONLY BECAUSE SOMEBODY ASKED THE WRITE QUESTION.
+# `asrt:Elimination/between` is repeating and no rule reads it, so nothing forces it to have a
+# column, a table or an ingest, and without them the corpus's eight are parsed out and discarded
+# on every load. The query side cannot find that:
 # a rule reads what it needs, so a field nothing reads is under no pressure to exist. The
 # question that finds it is "could I write this document back out from the database".
 #

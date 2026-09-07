@@ -1,0 +1,23 @@
+# THE `between` REFERENCES THAT LAND ON A LAYER THIS CORPUS HOLDS. One row per resolved reference,
+# carrying the filing the notation resolves to.
+#
+# ⭐⭐ THE POSITIVE SET, AND ITS COMPLEMENT IS THE INTERESTING ONE. Name the union
+#    and take its complement, because in a model about typed absence the positive set is always
+#    the meaningful one. `eliminations/references.sqlc` minus this is *the references that point
+#    outside what is here*, which the schema calls ORDINARY rather than wrong.
+#
+# ⛔ RESOLUTION IS A READER'S ASSERTION ONE STEP REMOVED, exactly as it is for a part:
+#    `filing_identity` is what a document says about itself, and without it a cross-document
+#    reference cannot be resolved from the corpus even in principle.
+-- eliminations/references.sqlc joined through pm.filing_identity to pm.layer.
+SELECT b.composition, b.composed_layer, b.quantity, b.seq,
+       b.party, b.notation, fi.filing AS resolved_filing, b.layer, b.regime
+FROM      (
+    :compose(eliminations/references.sqlc)
+) b
+JOIN      (
+    :compose(composition/notations.sqlc)
+) fi ON fi.notation = b.notation
+JOIN      (
+    :compose(layers/every_layer.sqlc)
+) l  ON l.filing = fi.filing AND l.layer = b.layer
