@@ -14,13 +14,14 @@
 #
 # ⛔⛔ AND THE RESOLUTION IS A READER'S ASSERTION ONE STEP REMOVED. `filing_identity` says
 #    which document claims which notation, and `asserted_by` records who said it. Three of
-#    those rows used to read "the reader, from the filename" -- a guess dressed as data,
-#    written down so the guess stayed visible. They are read out of the documents now.
+#    "the reader, from the filename" would be a guess dressed as data. These are read out of
+#    the documents.
 -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     :compose(composition/part_references.sqlc)

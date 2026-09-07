@@ -100,9 +100,9 @@ CREATE TABLE filing (
     -- ⭐ THE RULES MUST RUN ON FIXTURES -- that is what a fixture is for. THE REPORTS MUST
     -- NOT: "no stack in this corpus asserts independence" is a fact about the evidence, and a
     -- stipulation that asserts it would make the finding a lie. See assets/fixtures/README.md.
-    -- ⭐⭐ IN THE DOCUMENT'S OWN WORDS, NOT THE READER'S. This column used to read
-    -- `corpus`/`fixture` -- which directory the file sits in -- and was derived by matching an
-    -- English sentence in an XML comment. `pm:StatedEvidence` made it a filed fact, so the
+    -- ⭐⭐ IN THE DOCUMENT'S OWN WORDS, NOT THE READER'S. Read as `corpus`/`fixture`, which
+    -- directory the file sits in, this is the reader's classification, and matching an English
+    -- sentence in an XML comment for it is a guess. `pm:StatedEvidence` makes it a filed fact, so the
     -- values are the document's: `observation` (somebody looked at a real system) and
     -- `stipulation` (nothing here was observed).
     --
@@ -121,14 +121,98 @@ CREATE TABLE filing (
 --    another, the two published code lists do not line up, and neither declaration
 --    says what the pair says. A `jurisdiction` column on `filing` would have forced
 --    the sender to pick one and thrown away the disagreement, which is the document's
---    entire subject. The first draft of this file had that column. It lasted one run.
+--    entire subject. That is why the column is not here and the table is.
+-- ⛔⛔⛔ THE FRAMEWORK IS A BORROWED TERM AND A COLUMN HOLDING ITS VALUE ALONE STORES THE
+--    AMBIGUOUS HALF. `pm:Regime`'s own annotation says why, and it is Portugal: SAF-T PT
+--    publishes `S · M · N · O`, IES AnexoASNC publishes `NIC · NCRF · NCRF-PE · NC-ME`, and the
+--    lists do not line up. "`S` does not identify a framework and `NCRF-PE` is not a SAF-T
+--    value. A code without its authority is genuinely ambiguous rather than merely
+--    unattributed." A single `framework text` column was exactly that code without its
+--    authority, so `refutation`'s two regimes read as `NC-ME` and `M` with nothing saying they
+--    are two authorities' codings of one entity, which is that document's whole subject.
+--
+-- ⛔⛔ AND `framework` AND `chart` ARE `pm:StatedBorrowedTerm`, A CHOICE OF `term` OR `absent`,
+--    SO A COLUMN WITHOUT A TYPED ABSENCE FLATTENS TWO DIFFERENT FACTS INTO NULL. The fixture
+--    named `unstated` files both branches on purpose: `r1` is `unmeasured` because the entity's
+--    size tier is unassigned so the framework it selects is not yet known, and `r2` is `none`
+--    because it is an internal management view answerable to no external framework. Both landed
+--    in the database as NULL, which is the flattening this schema exists to refuse, on the
+--    fixture written to exercise it.
+--
+-- ⛔ `chart` IS REQUIRED BY THE XSD AND HAD NO COLUMN AT ALL. Its annotation argues the point at
+--    length, including that a self-authored chart names the entity as its own authority, and
+--    every one of those was discarded on load.
+--
+-- ⚠️ `jurisdiction` STAYS A BARE NULLABLE TOKEN AND GETS NO TYPED ABSENCE, because the XSD
+--    already derives its absence from a sibling: "Absent for a framework that is not a country's
+--    -- IFRS has no jurisdiction, and forcing one invents a fact." Asking a filer to restate that
+--    is boilerplate with no author. ⛔ And nothing may key on it: "a receiver joining on this
+--    field is using it for the one purpose it was deliberately made too weak to serve."
 CREATE TABLE regime (
     filing       text NOT NULL REFERENCES filing(name),
     seq          int  NOT NULL,
-    id           text,
+    -- ⛔⛔⛔ REQUIRED AND UNIQUE BECAUSE BOTH SCHEMAS SAY SO, AND THE OMISSION MANUFACTURED
+    --    FALSE VIOLATIONS. `pm:Regime/id` has no `minOccurs`, so it is required, and `xs:key
+    --    regimeId` keys it in `process-modulus.xsd` and again in `assertion.xsd`; the annotation
+    --    states the point outright, "two declarations cannot silently be the same". Left nullable
+    --    and unkeyed here, two declarations sharing an id fan out every join through the handle:
+    --    measured, 27 parts became 30 and `checks/part_regime_disagrees` reported THREE
+    --    violations against a corpus with none. A claim proved against this schema is meant to be
+    --    a claim about the MODEL rather than about a translation, and that was the translation.
+    id           text NOT NULL,
     jurisdiction text,
-    framework    text,
-    PRIMARY KEY (filing, seq)
+    framework_taxonomy text,
+    framework_value    text,
+    framework_absent   absence_reason,
+    chart_taxonomy     text,
+    chart_value        text,
+    chart_absent       absence_reason,
+    PRIMARY KEY (filing, seq),
+    CONSTRAINT a_regime_handle_is_unique_in_a_filing UNIQUE (filing, id),
+    CONSTRAINT a_framework_is_stated_or_typed_absent
+        CHECK ((num_nonnulls(framework_taxonomy, framework_value) = 2)
+               <> (framework_absent IS NOT NULL)),
+    CONSTRAINT a_chart_is_stated_or_typed_absent
+        CHECK ((num_nonnulls(chart_taxonomy, chart_value) = 2)
+               <> (chart_absent IS NOT NULL))
+);
+
+-- ⭐⭐⭐ WHAT A COMPOSER SAYS ABOUT ANOTHER DOCUMENT'S REGIME, WHICH IS NOT WHAT THAT DOCUMENT
+--    SAYS ABOUT ITSELF. `asrt:composition` declares `asrt:regime` of type `pm:Regime`, the same
+--    shape as the table above and a DIFFERENT FACT with a different author, so it is a second
+--    table and not a discriminator column. The same refusal guards `draw` against `induction`.
+--
+-- ⭐⭐ EACH PART THEN NAMES WHICH OF THESE IT COMES UNDER, and XSD 1.0 checks that the handle
+--    resolves: `compositionRegimeId` is the key and `partRegime` the keyref. What a keyref
+--    CANNOT reach is the other document, so whether the composer's claim agrees with the part
+--    filing's own declaration is exactly the question the grammar hands to a rule.
+CREATE TABLE composition_regime (
+    composition  text NOT NULL REFERENCES filing(name),
+    seq          int  NOT NULL,
+    -- ⛔⛔⛔ REQUIRED AND UNIQUE BECAUSE BOTH SCHEMAS SAY SO, AND THE OMISSION MANUFACTURED
+    --    FALSE VIOLATIONS. `pm:Regime/id` has no `minOccurs`, so it is required, and `xs:key
+    --    regimeId` keys it in `process-modulus.xsd` and again in `assertion.xsd`; the annotation
+    --    states the point outright, "two declarations cannot silently be the same". Left nullable
+    --    and unkeyed here, two declarations sharing an id fan out every join through the handle:
+    --    measured, 27 parts became 30 and `checks/part_regime_disagrees` reported THREE
+    --    violations against a corpus with none. A claim proved against this schema is meant to be
+    --    a claim about the MODEL rather than about a translation, and that was the translation.
+    id           text NOT NULL,
+    jurisdiction text,
+    framework_taxonomy text,
+    framework_value    text,
+    framework_absent   absence_reason,
+    chart_taxonomy     text,
+    chart_value        text,
+    chart_absent       absence_reason,
+    PRIMARY KEY (composition, seq),
+    CONSTRAINT a_regime_handle_is_unique_in_a_composition UNIQUE (composition, id),
+    CONSTRAINT a_composed_framework_is_stated_or_typed_absent
+        CHECK ((num_nonnulls(framework_taxonomy, framework_value) = 2)
+               <> (framework_absent IS NOT NULL)),
+    CONSTRAINT a_composed_chart_is_stated_or_typed_absent
+        CHECK ((num_nonnulls(chart_taxonomy, chart_value) = 2)
+               <> (chart_absent IS NOT NULL))
 );
 
 -- ---------------------------------------------------------------------------
@@ -186,12 +270,12 @@ CREATE TABLE layer (
     patience_origin constraint_origin,
     patience_absent absence_reason,
 
-    -- ⭐⭐⭐ THE WRAPPER THAT LETS THE MODEL BE CONTRADICTED, AND THIS DATABASE USED TO
-    --     THROW IT AWAY. `StatedRemainder` is a CHOICE -- a remainder, or a typed reason
-    --     there is none -- and EVERY layer is required to carry one, precisely so that a
+    -- ⭐⭐⭐ THE WRAPPER THAT LETS THE MODEL BE CONTRADICTED, AND AN INGEST READING ONE
+    --     BRANCH THROWS IT AWAY. `StatedRemainder` is a CHOICE -- a remainder, or a typed
+    --     reason there is none -- and EVERY layer is required to carry one, precisely so that a
     --     sender who disagrees with "every layer has a remainder" has to say so EXPLICITLY
-    --     rather than leaving a field empty. `ingest.sql` read only the first branch, so
-    --     the two corpus layers that take the second landed here as five NULLs: sign,
+    --     rather than leaving a field empty. Read only the first branch and
+    --     the two corpus layers that take the second land here as five NULLs: sign,
     --     absorber and quantity all blank, which is indistinguishable from a document that
     --     said nothing at all.
     --
@@ -216,9 +300,9 @@ CREATE TABLE layer (
     sign          fit,
     sign_absent   absence_reason,
 
-    -- ⛔⛔ THE ABSORBER IS A BORROWED TERM AND NOT AN ENUM, AND THE FIRST DRAFT OF THIS
-    --     FILE GOT IT WRONG IN THE MOST INSTRUCTIVE WAY AVAILABLE. It declared
-    --     `absorber buffer` and the corpus refused to load: `invalid input value for
+    -- ⛔⛔ THE ABSORBER IS A BORROWED TERM AND NOT AN ENUM, AND AN ENUM IS WRONG HERE IN
+    --     THE MOST INSTRUCTIVE WAY AVAILABLE. Declare
+    --     `absorber buffer` and the corpus refuses to load: `invalid input value for
     --     enum buffer: "capacidade"`. The Portuguese filing cites a TRANSLATED EDITION
     --     of Factory Physics, `urn:example:pt:fisica-da-fabrica:amortecedores`, and its
     --     absorber is `capacidade`. That filing is correct. The enum was the fork, and
@@ -255,9 +339,9 @@ CREATE TABLE layer (
     CONSTRAINT demand_is_stated_or_typed_absent
         CHECK ((demand_low IS NOT NULL) <> (demand_absent IS NOT NULL)),
     -- ⛔⛔⛔ A THREE-POINT CLAIM IS WHOLE OR IT IS ABSENT, AND `num_nonnulls` IS WHY THIS FORM
-    --   RATHER THAN THE OBVIOUS ONE. This constraint used to read
+    --   RATHER THAN THE OBVIOUS ONE. The obvious one,
     --       CHECK (demand_low IS NULL OR (demand_low <= demand_mode AND demand_mode <= demand_high))
-    --   which READS correctly and ENFORCES nothing: with `demand_mode` NULL the comparison is
+    --   READS correctly and ENFORCES nothing: with `demand_mode` NULL the comparison is
     --   NULL, and a CHECK passes on NULL. Half a claim could be filed, and what it became
     --   downstream was not a blank -- `greatest(NULL, 0)` ignores the NULL and returns a zero
     --   exposure, and the fit CASE falls through to `transition`. A typed absence flattened
@@ -307,12 +391,12 @@ CREATE TABLE nameplate (
     -- divisibility, axis one: AMOUNT. lumpy carries a quantum; continuous has none,
     -- and that is a different thing from a quantum of zero.
     --
-    -- ⛔ NULLABLE, AND THE CORPUS IS WHY. A first draft declared this `boolean NOT NULL`
-    --    and `unstated` refused to load: it files `divisibility` as a TYPED ABSENCE, so
+    -- ⛔ NULLABLE, AND THE CORPUS IS WHY. Declared `boolean NOT NULL`, this column refuses
+    --    `unstated`, which files `divisibility` as a TYPED ABSENCE, so
     --    the supply is neither lumpy nor continuous — nobody said which. A boolean has
-    --    two states and this question has three, which is the same mistake the three
-    --    buffer slacks were before they stopped being booleans. Twice now, in this file,
-    --    a two-valued column has met a three-valued fact.
+    --    two states and this question has three, which is the same shape as the three
+    --    buffer slacks as booleans. Twice in this file a two-valued column meets a
+    --    three-valued fact.
     lumpy          boolean,
     divisibility_absent absence_reason,
     quantum_low    numeric,
@@ -327,8 +411,8 @@ CREATE TABLE nameplate (
     --
     -- ⛔⛔ AND `window_absent` IS THE THIRD TWO-VALUED COLUMN IN THIS FILE TO MEET A
     --    THREE-VALUED FACT, AFTER `lumpy` ABOVE AND THE THREE SLACKS BEFORE IT. A NULL
-    --    window used to mean three things at once and the schema's own annotation
-    --    described all three in prose it could not file: `notApplicable` on a unit with
+    --    window means three things at once, and the schema's own annotation
+    --    describes all three in prose it cannot file: `notApplicable` on a unit with
     --    no denominator (sixteen of this corpus's layers), `unmeasured` for one nobody
     --    asked about, and a supply that runs continuously. The second of those is the one
     --    that matters arithmetically — it is the state in which a time slack CANNOT
@@ -418,34 +502,34 @@ CREATE TABLE claim (
     seq    int  NOT NULL,          -- document order; the Nth pm:claim in the document
     -- ⭐⭐ THE POSITION THE CLAIM IS THE VALUE OF, as `parent/element`:
     -- `pm:nameplate/pm:amount`, `pm:holder/pm:share`, `pm:quantum/pm:size`.
-    -- ⛔ ONE SEGMENT WAS NOT ENOUGH, AND THE COLUMN SPENT SEVERAL REVISIONS SAYING SO
-    -- WITHOUT ANYBODY READING IT. It carried the parent's NAME, and three names are filed at
-    -- two positions each: `pm:amount` is `Demand/amount` AND `Nameplate/amount` (86 claims),
-    -- `pm:size` is the amount quantum AND the window's (61), `pm:quantity` is a draw's AND a
-    -- remainder's (4). A filter on this column therefore answered for a position nobody
-    -- asked about. `units/with_a_period.sqlc` is the one relation that filters on it, and it
-    -- did exactly that: a duty cycle is a fraction of the NAMEPLATE's period and the relation
-    -- was returning the demand's too, two rows per layer. `every-absence/delivery` is the
-    -- filing that disagrees, quoting its demand `per day` with no nameplate amount at all,
-    -- and it cost nothing only because that layer's window is `unmeasured`.
+    -- ⛔ ONE SEGMENT IS NOT ENOUGH, AND THE REASON IS COUNTABLE. Carrying the parent's NAME
+    -- alone, three names are filed at two positions each: `pm:amount` is `Demand/amount` AND
+    -- `Nameplate/amount` (86 claims), `pm:size` is the amount quantum AND the window's (61),
+    -- `pm:quantity` is a draw's AND a remainder's (4). A filter on a name therefore answers
+    -- for a position nobody asked about. `units/with_a_period.sqlc` is the one relation that
+    -- filters on this column, and a duty cycle is a fraction of the NAMEPLATE's period, so a
+    -- name would hand it the demand's too and return two rows per layer.
+    -- `every-absence/delivery` is the filing that disagrees, quoting its demand `per day`
+    -- with no nameplate amount at all, and it would cost nothing only because that layer's
+    -- window is `unmeasured`.
     owns   text NOT NULL,
     -- ⭐⭐ THE LAYER THIS CLAIM SITS IN, read with `ancestor::pm:layer/pm:name`. NULL is a real
     -- answer and not a gap: a coupling strength, an elimination quantity and a part factor
     -- are claims about a RELATION between layers rather than about one, and there is no
     -- ancestor to find. Without this column `pm.claim` could answer questions about claims
-    -- and never join back to the layer relations, which is why units/with_denominator.sqlc
-    -- had to read `pm.nameplate` and reach 20 of the corpus's 92 rate-shaped claims.
+    -- and never join back to the layer relations, and a relation needing both grains would
+    -- have to read `pm.nameplate` instead and reach a fraction of the rate-shaped claims.
     layer  text,
     low    numeric NOT NULL,
     mode   numeric NOT NULL,
     high   numeric NOT NULL,
     unit   text    NOT NULL,
 
-    -- ⭐⭐⭐ WHAT SITS UNDER THE LINE, FILED RATHER THAN INFERRED. `pm:StatedDenominator`. Until
-    -- 0.4 this was `LIKE '% per %' OR LIKE '% por %'` over `unit`, which asked a reader to
-    -- decide that `semana` IS `week` -- a judgement no filing makes -- and could not tell a
-    -- PERIOD from a denominator that merely exists. `GPU-hour per GPU` has one and it is not a
-    -- cycle, so `kind` carries that difference rather than the query guessing at it.
+    -- ⭐⭐⭐ WHAT SITS UNDER THE LINE, FILED RATHER THAN INFERRED. `pm:StatedDenominator`.
+    -- Inferred instead, `LIKE '% per %' OR LIKE '% por %'` over `unit` asks a reader to decide
+    -- that `semana` IS `week` -- a judgement no filing makes -- and cannot tell a PERIOD from a
+    -- denominator that merely exists. `GPU-hour per GPU` has one and it is not a cycle, so
+    -- `kind` carries that difference rather than the query guessing at it.
     denominator      text,
     denominator_kind text CHECK (denominator_kind IN ('period', 'each')),
     denominator_absent absence_reason,
@@ -743,7 +827,7 @@ INSERT INTO buffer_term VALUES
    'a translated edition. The reader asserts the translation; no filing does');
 
 -- ---------------------------------------------------------------------------
--- ✅⭐⭐⭐ THIS WAS THE SECOND READER'S MAPPING AND IT IS NOW DATA. S-28, REPAIRED.
+-- ✅⭐⭐⭐ THE SECOND READER'S MAPPING, AS DATA RATHER THAN AS A READER. S-28.
 --
 -- A composition names its parts by a `ForeignId`: a notation plus an id, e.g.
 -- `urn:example:filing:us-member:2026-08-31` / `compute`. Until 0.3.0 NO DOCUMENT
@@ -758,10 +842,10 @@ INSERT INTO buffer_term VALUES
 -- follow a cross-document reference so it never had to resolve one, and the Rust tests
 -- load by FILENAME and pass the name in themselves.
 --
--- ⛔ WHAT THE ROWS USED TO SAY, kept because the change is the point: three of them read
--- `'the reader, from the filename'`. A guess dressed as data, written down so the guess
--- was visible. They are now read out of `pm:processModulus/pm:notation` by XMLTABLE like
--- every other fact, and `asserted_by` records which filing said it about itself.
+-- ⛔ THE VALUE IS THE DOCUMENT'S AND NEVER THE READER'S. `'the reader, from the filename'`
+-- is a guess dressed as data. These are read out of `pm:processModulus/pm:notation` by
+-- XMLTABLE like every other fact, and `asserted_by` records which filing said it about
+-- itself.
 --
 -- ⭐⭐ AND IT IS WHAT MAKES A LOCAL PART RESOLVABLE. A part whose notation equals its own
 -- composition's is local: it names a layer that composition built. Nothing else changed
@@ -786,6 +870,15 @@ CREATE TABLE part (
     composed_layer text NOT NULL,
     part_filing   text NOT NULL,
     part_layer    text NOT NULL,
+    -- ⭐⭐ WHICH OF THE COMPOSITION'S OWN DECLARED REGIMES THIS PART COMES UNDER, a document-local
+    --    handle into `composition_regime`. XSD 1.0 checks that it resolves (`compositionRegimeId`
+    --    keyed, `partRegime` referring), which is the strongest thing a grammar can do here, and
+    --    it stops at the document edge. ⛔ Whether the composer's claim AGREES with what that
+    --    part's own filing declares is cross-document and is a rule's job, not a keyref's.
+    --    ⚠️ Nullable, and a NULL means the composer named no regime for this part. It gets no
+    --    typed absence: `asrt:regime` is `minOccurs="0"` on a part, and a composition that
+    --    declares no regimes at all has nothing for a handle to point at.
+    part_regime   text,
     -- ⭐⭐⭐ THREE STATES, NOT TWO, BECAUSE THE WRAPPER IS OPTIONAL. `asrt:Part/factor` is
     --   `minOccurs="0"` over `pm:StatedClaim`, so a part may (a) omit it, meaning the part is
     --   ALREADY in the composed unit at phi = 1, or (b) state a conversion, or (c) file a typed
@@ -869,11 +962,11 @@ CREATE TABLE elimination (
 );
 
 -- ⭐⭐⭐ THE LAYERS A DOUBLE COUNT RUNS BETWEEN, WHICH IS THE EVIDENCE FOR AN ELIMINATION.
--- Repeating, `minOccurs="0" maxOccurs="unbounded"` on `asrt:Elimination`. It had no home here
--- at all until 2026-09-06, and the corpus files eight of them: load
--- `merge-holding-composition.xml`, write the XML back out, and every one was lost. Nothing
--- noticed because no rule reads them, which is the shape of defect only the WRITE direction
--- finds. A rule reads what it needs; a document must be storable whole.
+-- Repeating, `minOccurs="0" maxOccurs="unbounded"` on `asrt:Elimination`. Without a home here
+-- the corpus's eight are lost on a round trip: load `merge-holding-composition.xml`, write the
+-- XML back out, and every one is gone. Nothing notices, because no rule reads them, which is
+-- the shape of defect only the WRITE direction finds. A rule reads what it needs; a document
+-- must be storable whole.
 --
 -- ⛔ `notation` gets NO foreign key, for the same reason `part.part_filing` gets none: it is a
 -- foreign reference that may legitimately dangle. `asrt:Elimination` argues the point directly,

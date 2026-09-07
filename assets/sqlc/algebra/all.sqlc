@@ -21,4 +21,5 @@
            algebra/arithmetic_class.sqlc,
            algebra/remainder_standing.sqlc,
            algebra/exposure_standing.sqlc,
-           algebra/searches.sqlc)
+           algebra/searches.sqlc,
+           algebra/part_regimes.sqlc)

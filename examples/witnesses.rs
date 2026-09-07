@@ -217,6 +217,39 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         says: "a local part names a layer this document's own stack does not contain",
     },
+    // ⭐⭐ THIS WITNESS OUTLIVED THE RULE IT WAS WRITTEN FOR. It aimed at `local_cycle`, which
+    //   retired into `layers_move_together`: the same mutation, the same document, and a rule
+    //   that now states the repair the schema actually asks for. ⛔ It could not have been
+    //   repointed while both were live, because a mutation tripping two rules shows that
+    //   something is checked and not that THIS is, and that coupling is the argument for the
+    //   retirement rather than a consequence of it.
+    // ⭐⭐⭐ THE ONE THE GRAMMAR CANNOT REACH, AND THE MUTANT STILL VALIDATES BECAUSE OF IT.
+    //   `partRegime` keyrefs the handle against `compositionRegimeId`, so flipping a part from
+    //   the composer's `us` regime to its `pt` one resolves perfectly and XSD 1.0 is content.
+    //   What it now claims is that `merge-us-member` reports under NCRF-PE, which that filing
+    //   does not declare, and no identity constraint can look: an XSD key is scoped to one
+    //   document. This is the boundary handed from the grammar to a rule, with a witness.
+    Witness {
+        rule: "part_regime_disagrees",
+        doc: "assets/corpus/merge-group-composition.xml",
+        from_: "<asrt:regime>us</asrt:regime>",
+        to: "<asrt:regime>pt</asrt:regime>",
+        nth: 1,
+        says: "the composer puts a us-gaap member's layer under the Portuguese regime, and that member declares no such framework",
+    },
+    // ⭐⭐ THE ONLY WITNESS HERE THAT REMOVES RATHER THAN ALTERS, and it is legitimate because
+    //   `asrt:citation` is `minOccurs="0"`: a composition with no instrument is a document the
+    //   grammar accepts, which is exactly why a RULE has to refuse it. The group consolidates
+    //   `us-gaap` and `NCRF-PE` into IFRS-2026 and this is it withdrawing the standard it did
+    //   that under.
+    Witness {
+        rule: "regime_crossing_without_a_citation",
+        doc: "assets/corpus/merge-group-composition.xml",
+        from_: "  <asrt:citation>\n    <asrt:instrument>\n      <pm:taxonomy>urn:example:ifrs:standards</pm:taxonomy>\n      <pm:value>IFRS-10</pm:value>\n    </asrt:instrument>\n    <asrt:clause>B86</asrt:clause>\n    <asrt:version>2026</asrt:version>\n  </asrt:citation>",
+        to: "",
+        nth: 1,
+        says: "a consolidation crosses two frameworks into a third and cites no instrument for it",
+    },
     Witness {
         rule: "layers_move_together",
         doc: "assets/fixtures/every-local-part.xml",
@@ -247,8 +280,8 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         // ⭐ THE WITNESS IS A DELETION, which is the only mutation that reaches this rule: it
         //   fires on an element that is NOT there. Removing it puts the corpus back in the
-        //   state it was in before 2026-09-06, where `pessoas` became `people` on the
-        //   authority of a `coalesce` in a query.
+        //   state where `pessoas` becomes `people` on the authority of a `coalesce` in a
+        //   query rather than a filed factor.
         says: "a part quoted in `pessoas` is composed into a layer quoted in `people` and says nothing about the conversion",
     },
     Witness {
@@ -304,6 +337,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⭐ ONE SCRIPT, ONE TRANSACTION PER WITNESS, EACH ROLLED BACK. A loaded corpus survives
     //   the run untouched, and the whole battery is a single psql invocation.
     let mut script = String::new();
+    // ⭐⭐ THE BASELINE POPULATION OF EVERY RULE, ON THE UNTOUCHED CORPUS. It is what separates
+    //   "no witness because nothing could ever falsify it" from "no witness because nobody wrote
+    //   one", and the closing paragraph of this file asserted the first about both for as long
+    //   as it took somebody to add a rule with rows.
+    writeln!(
+        script,
+        "WITH v AS (\n{checks}\n) SELECT '__examined', rr.slug, count(*) FILTER (WHERE          v.violates IS NOT NULL)::text FROM v JOIN ({roster}) rr ON rr.rule = v.rule          GROUP BY rr.slug;"
+    )?;
     for w in WITNESSES {
         let src = fs::read_to_string(w.doc)?;
         let found = src.matches(w.from_).count();
@@ -375,14 +416,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let stdout = String::from_utf8_lossy(&psql.stdout);
     let mut fired: BTreeMap<&str, Vec<String>> = BTreeMap::new();
+    let mut examined: BTreeMap<String, i64> = BTreeMap::new();
     for w in WITNESSES {
         fired.insert(w.rule, Vec::new());
     }
     for line in stdout.lines() {
-        if let Some((target, slug)) = line.split_once('|') {
-            if let Some(v) = fired.get_mut(target) {
-                v.push(slug.to_string());
+        let mut f = line.split('|');
+        match (f.next(), f.next(), f.next()) {
+            (Some("__examined"), Some(slug), Some(n)) => {
+                examined.insert(slug.to_string(), n.parse().unwrap_or(0));
             }
+            (Some(target), Some(slug), _) => {
+                if let Some(v) = fired.get_mut(target) {
+                    v.push(slug.to_string());
+                }
+            }
+            _ => {}
         }
     }
 
@@ -423,10 +472,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     // ⚠️ THREE COLUMNS AND NOT TWO, BECAUSE A RULE CAN BE SEEN TO FIRE WITHOUT BEING AIMED AT.
-    //    `leaf_reached_twice` has no witness of its own and fires under the `local_cycle` one:
-    //    a layer composed from itself is reachable by two paths, so the two rules cannot be
+    //    `jagged_layer` has no witness of its own and fires under the `layers_move_together` one:
+    //    a layer composed from itself is also reachable by two paths, so the two rules cannot be
     //    separated by a single edit. That is evidence about the rule set rather than about
-    //    this file, and folding it into either column would hide it.
+    //    this file, and folding it into either column would hide it. ⚠️ It was `leaf_reached_twice`
+    //    under `local_cycle` before both retired, and the pairing survived the rename because the
+    //    entanglement is between the QUESTIONS and not between the files.
     let collateral_only: Vec<&&str> = all
         .iter()
         .filter(|r| !WITNESSES.iter().any(|w| w.rule == **r))
@@ -461,11 +512,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for r in &unwitnessed {
             println!("  {r}");
         }
+        // ⛔⛔⛔ THIS PARAGRAPH USED TO SAY "Both are the rules that examine NOTHING", AND IT WAS
+        //    PRINTED ON EVERY RUN LONG AFTER IT STOPPED BEING TRUE. Two rules were added whose
+        //    populations are real, so the list grew to four and the sentence went on asserting
+        //    two, and a claim in prose beside the data that contradicts it is worse than no claim
+        //    at all. ⭐ It is DERIVED now: a rule with no witness because nothing can falsify it
+        //    and a rule with no witness because nobody wrote one are DIFFERENT FACTS, and
+        //    collapsing them is the flattening this repository exists to refuse.
+        let empty: Vec<&&&str> =
+            unwitnessed.iter().filter(|r| examined.get(***r).copied().unwrap_or(0) == 0).collect();
+        let unwritten: Vec<&&&str> =
+            unwitnessed.iter().filter(|r| examined.get(***r).copied().unwrap_or(0) > 0).collect();
         println!(
-            "\n⛔ Both are the rules that examine NOTHING. A rule can only be falsified where it \n\
-             has rows, so an empty population and an unfalsifiable rule are one fact from two \n\
-             sides. No edit to a document these rules do not look at will ever witness them."
+            "\n⛔ {} of them examine NOTHING, and for those the two facts are one: a rule can only \n\
+             be falsified where it has rows, so no edit to a document they do not look at will \n\
+             ever witness them.",
+            empty.len()
         );
+        if !unwritten.is_empty() {
+            println!(
+                "⛔⛔ {} examine rows and simply have no witness, which is a debt in \n\
+                 this file rather than a fact about the rule: {}",
+                unwritten.len(),
+                unwritten.iter().map(|r| ***r).collect::<Vec<_>>().join(", ")
+            );
+        }
     }
 
     if !failed.is_empty() {

@@ -1,0 +1,51 @@
+# EVERY CROSS-DOCUMENT PART WHOSE FRAMEWORK IS KNOWN ON BOTH SIDES, BESIDE WHETHER THE COMPOSITION
+# CITES AN INSTRUMENT. One row per such part, `violates` where the frameworks differ and nothing
+# is cited.
+#
+# ⭐⭐⭐ THE RULE: cross a regime boundary and you must say what reconciles it. It is the exact
+#    analogue of checks/unit_crossing_without_a_factor, and for the same reason in its words:
+#    somebody is asserting two things are interchangeable, and an assertion needs a filer. There
+#    the assertion is that two UNITS may be added and `asrt:factor` carries it; here it is that
+#    two FRAMEWORKS' figures may be added, and `asrt:Composition/citation` carries the instrument
+#    and the clause. `merge-group-composition` composes IFRS-2026 out of `us-gaap` and `NCRF-PE`,
+#    which is what consolidation is, and it cites IFRS-10 B86.
+#
+# ⛔⛔ THE POPULATION EXCLUDES A PAIR THAT NAMED NO FRAMEWORK, AND THAT IS NOT A TECHNICALITY.
+#    `IS DISTINCT FROM` calls two NULLs equal, so a fixture that never stated a regime would read
+#    as "no crossing" and pass silently. It is not passing; it was never asked. ⚠️ `pm.regime` is
+#    the one fact table with no typed absence column, so *nobody looked* and *no regime applies*
+#    are stored identically and this rule cannot tell them apart either.
+#
+# ⭐ THE TABLE THIS READS HELD TEN FILED ROWS THAT NO RELATION IN THE TREE HAD EVER READ. Writing
+#   the query needed no schema change: the crossing was already in the corpus, unasked.
+#
+# ⛔⛔⛔ AND WRITING IT FOUND A SECOND, LARGER SILENCE. `asrt:part/asrt:layer/asrt:regime` names
+#    which of the composition's OWN regimes each part comes under, thirty of them are filed, and
+#    the ingest reads `//pm:regime` only so none of them is loaded. This rule therefore compares
+#    two documents' SELF-DECLARED frameworks, not the composer's assignment. Read
+#    `composition/regime_crossings.sqlc`'s header before quoting this rule as being about the
+#    composer's claim, because it is not.
+-- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files
+-- what reconciles it".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT x.composition AS filing, x.composed_layer AS layer,
+           (x.crosses AND x.instrument IS NULL) AS violates,
+           CASE WHEN NOT x.crosses
+                THEN format('`%s` composes `%s/%s` inside %s', x.composed_layer,
+                            x.part_filing, x.part_layer, x.composed_framework)
+                WHEN x.instrument IS NOT NULL
+                THEN format('`%s` crosses %s to %s, reconciled by %s %s', x.composed_layer,
+                            x.part_framework, x.composed_framework, x.instrument, x.clause)
+                ELSE format('`%s` crosses %s to %s and cites no instrument', x.composed_layer,
+                            x.part_framework, x.composed_framework)
+           END AS detail
+    FROM (
+        :compose(composition/regime_crossings.sqlc)
+    ) x
+    WHERE x.crossing_known
+) p ON true
+WHERE r.slug = 'regime_crossing_without_a_citation'

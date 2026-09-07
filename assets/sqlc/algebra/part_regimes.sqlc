@@ -1,0 +1,31 @@
+# THE PARTS WHOSE REGIMES CAN BE COMPARED, AGAINST THE ONES THAT CANNOT, CHECKED AS A PARTITION.
+# One row: whether |part_regimes| = |askable| + |part_regimes ⋉ unaskable|.
+#
+# ⭐⭐⭐ THE DIFFERENCE IS THE POPULATION OF A RULE AND GETTING IT BACKWARDS INVERTS THE VERDICT.
+#    `checks/part_regime_disagrees` asks only where BOTH sides stated a framework. Six fixtures
+#    declare a `stipulated` regime whose framework is `notApplicable` because a fixture reports
+#    under no framework, and their parts point at it. Those have not agreed and have not
+#    disagreed; the question does not arise. Read the other way, every one of them becomes a
+#    silent pass and the rule's denominator doubles with rows it never asked about.
+#
+# ⛔ THE LEFT OPERAND IS A SET ON THE COMPARED ATTRIBUTES: `composition/part_regimes.sqlc` is one
+#   row per resolved part carrying a handle, and `pm.part`'s primary key makes that a key.
+-- composition/part_regimes.sqlc partitioned by whether both sides state a framework.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/part_regimes' AS subject,
+           x.total = x.askable + x.unaskable AS holds,
+           format('%s parts with a regime handle = %s askable + %s where a typed absence or an unstated filing makes the question not arise',
+                  x.total, x.askable, x.unaskable) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/part_regimes.sqlc) ) r) AS total,
+             (SELECT count(*) FROM ( :compose(composition/part_regimes.sqlc) ) r
+               WHERE r.composer_absent IS NULL AND r.frameworks_the_filing_states > 0) AS askable,
+             (SELECT count(*) FROM ( :compose(composition/part_regimes.sqlc) ) r
+               WHERE r.composer_absent IS NOT NULL OR r.frameworks_the_filing_states = 0) AS unaskable
+         ) x
+) p ON true
+WHERE a.slug = 'part_regimes'

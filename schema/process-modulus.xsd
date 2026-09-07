@@ -1367,8 +1367,8 @@
        one branch is the list with at least one member, the other is an Absence, and the
        empty document is no longer writable.
 
-       ⛔ AND FOR BorrowedTerm THE RULE IS NOT "OPTIONAL VERSUS REQUIRED". THIS BLOCK
-       SAID THAT, AND THE SCHEMA CONTRADICTS IT: `Remainder/absorber` and
+       ⛔ AND FOR BorrowedTerm THE RULE IS NOT "OPTIONAL VERSUS REQUIRED". Read that
+       way, the schema contradicts it at once: `Remainder/absorber` and
        `Citation/instrument` are both REQUIRED and both unwrapped. The rule that
        actually predicts every site:
 
@@ -2765,8 +2765,8 @@
 
       WHAT IT CONTAINS
 
-        amount    the three-point claim this element used to BE. `Layer/demand` was a bare
-                  `StatedClaim`; it is now this wrapper, and the claim moved down one level
+        amount    the three-point claim. `Layer/demand` is this wrapper rather than a bare
+                  `StatedClaim`, so the claim sits one level down
                   without changing
         patience  how long a queued order stays an order. A DURATION -- `10 minutes`,
                   `2.5 shifts` -- and not a rate
@@ -4110,12 +4110,11 @@
   <!-- ==================================================================
        FACILITY: one supply, with BOTH faces at once.
 
-       ⛔ RESTRUCTURED WHEN THE FLOW HALF LANDED. The first draft had a `face`
-       discriminator and one `amount`, so a document carried two elements for one
-       supply with nothing linking them, while the annotation next to it said the
-       two faces are a PRODUCT, NOT A CHOICE. The structure now says what the prose
-       said, and the `Face` enum is gone: a discriminator naming which of two
-       positions you are in is redundant once there are two positions.
+       ⛔ THE TWO FACES ARE A PRODUCT AND NOT A CHOICE, AND THE STRUCTURE SAYS SO
+       RATHER THAN THE PROSE. A `face` discriminator over one `amount` puts two
+       elements in a document for one supply with nothing linking them, which is
+       the opposite claim. There is no `Face` enum: a discriminator naming which of
+       two positions you are in is redundant once there are two positions.
        ================================================================== -->
   <xs:complexType name="Nameplate">
     <xs:annotation><xs:documentation xml:lang="en">

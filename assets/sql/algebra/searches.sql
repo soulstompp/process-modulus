@@ -12,7 +12,8 @@ SELECT * FROM (VALUES
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
   ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
-  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL'),
+  ('part_regimes',     '|A| = |A∖B| + |A⋉B|',        'checks/part_regime_disagrees',     'difference', 'set: pm.part''s key')
 ) AS a(slug, law, governs, form, multiplicity)
 
 ) a

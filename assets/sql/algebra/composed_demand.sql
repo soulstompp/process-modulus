@@ -12,7 +12,8 @@ SELECT * FROM (VALUES
   ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
   ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
   ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
-  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL'),
+  ('part_regimes',     '|A| = |A∖B| + |A⋉B|',        'checks/part_regime_disagrees',     'difference', 'set: pm.part''s key')
 ) AS a(slug, law, governs, form, multiplicity)
 
 ) a
@@ -102,10 +103,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
@@ -199,10 +201,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 

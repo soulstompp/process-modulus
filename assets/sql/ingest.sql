@@ -50,12 +50,13 @@ INSERT INTO filing (name, kind, evidence, evidence_absent)
 SELECT s.name,
        -- ⭐ THE DOCUMENT'S OWN ROOT ELEMENT, and not a substring match on a namespace PREFIX.
        -- A prefix is the sender's lexical choice -- `asrt:` is a habit, not a fact -- so a
-       -- composition that bound the assertion namespace to any other letter used to land here
-       -- as a plain filing, silently. `local-name()` reads what the document declares. Five
+       -- composition that bound the assertion namespace to any other letter would land here
+       -- as a plain filing, silently, if this read a prefix. `local-name()` reads what the document declares. Five
        -- roots are declared across the two schemas; epistemics/documents.sqlc lists them.
        x.root,
-       -- ✅⭐⭐⭐ THE SECOND `LIKE` IS GONE. This used to match `A STIPULATION, NOT A FILING`
-       -- as a substring over the whole serialised body, because no element carried the fact:
+       -- ✅⭐⭐⭐ THERE IS NO SECOND `LIKE`. Matching `A STIPULATION, NOT A FILING` as a
+       -- substring over the whole serialised body is what you write when no element carries
+       -- the fact, and it is wrong twice over:
        -- English-only in a repository with a Portuguese edition, and true of any corpus
        -- document that merely QUOTED the phrase. `pm:StatedEvidence` is the element, and this
        -- reads it on the descendant axis for the same reason `notation` is read that way --
@@ -72,24 +73,55 @@ FROM source s,
 
 -- ⭐ `FOR ORDINALITY` is what makes the two regimes in `refutation` two ROWS rather
 --    than a collision. Document order is the only thing distinguishing them.
+-- ⛔⛔ BOTH HALVES OF EACH BORROWED TERM, AND BOTH BRANCHES OF EACH `StatedBorrowedTerm`. The
+--    value alone is the ambiguous half, `S` is not a framework, and reading only `pm:term`
+--    turned `unmeasured` and `none` into the same NULL on the fixture named `unstated`.
 INSERT INTO regime
-SELECT s.name, x.seq, x.id, x.jurisdiction, x.framework
+SELECT s.name, x.seq, x.id, x.jurisdiction,
+       x.f_taxonomy, x.f_value, x.f_absent::absence_reason,
+       x.c_taxonomy, x.c_value, x.c_absent::absence_reason
 FROM source s,
      XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0' AS pm),
        '//pm:regime' PASSING s.body
        COLUMNS seq          FOR ORDINALITY,
                id           text PATH 'pm:id',
                jurisdiction text PATH 'pm:jurisdiction',
-               framework    text PATH 'pm:framework/pm:term/pm:value') x;
+               f_taxonomy   text PATH 'pm:framework/pm:term/pm:taxonomy',
+               f_value      text PATH 'pm:framework/pm:term/pm:value',
+               f_absent     text PATH 'pm:framework/pm:absent/pm:reason',
+               c_taxonomy   text PATH 'pm:chart/pm:term/pm:taxonomy',
+               c_value      text PATH 'pm:chart/pm:term/pm:value',
+               c_absent     text PATH 'pm:chart/pm:absent/pm:reason') x;
+
+-- ⭐⭐⭐ THE COMPOSER'S OWN DECLARATIONS ABOUT ITS PARTS' REGIMES. `asrt:regime` at the root of a
+--    composition, the same `pm:Regime` shape as above and a DIFFERENT FACT with a different
+--    author. Twenty-two part handles pointed into these and not one declaration was loaded.
+INSERT INTO composition_regime
+SELECT s.name, x.seq, x.id, x.jurisdiction,
+       x.f_taxonomy, x.f_value, x.f_absent::absence_reason,
+       x.c_taxonomy, x.c_value, x.c_absent::absence_reason
+FROM source s,
+     XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0'      AS pm,
+                            'https://example.invalid/assertion/1.0' AS asrt),
+       '/asrt:composition/asrt:regime' PASSING s.body
+       COLUMNS seq          FOR ORDINALITY,
+               id           text PATH 'pm:id',
+               jurisdiction text PATH 'pm:jurisdiction',
+               f_taxonomy   text PATH 'pm:framework/pm:term/pm:taxonomy',
+               f_value      text PATH 'pm:framework/pm:term/pm:value',
+               f_absent     text PATH 'pm:framework/pm:absent/pm:reason',
+               c_taxonomy   text PATH 'pm:chart/pm:term/pm:taxonomy',
+               c_value      text PATH 'pm:chart/pm:term/pm:value',
+               c_absent     text PATH 'pm:chart/pm:absent/pm:reason') x;
 
 -- ⛔ THE READER'S GUESS, WRITTEN DOWN. No document declares its own notation, so
 --    nothing in the corpus says which file `urn:example:filing:us-member:2026-08-31`
 --    denotes. These three rows are asserted from FILENAMES and are the only reason
 --    the composition queries resolve at all. Delete them and every part reference
 --    dangles, which is the honest state of the corpus without a reader in the loop.
--- ✅⭐⭐⭐ S-28 REPAIRED. These three rows used to read `'the reader, from the filename'`
---    and they are read out of the document now, like every other fact in this file. A filing
---    says which filing it is; nothing here guesses.
+-- ✅⭐⭐⭐ S-28. These three rows are read out of the document, like every other fact in this
+--    file, and never as `'the reader, from the filename'`. A filing says which filing it is;
+--    nothing here guesses.
 INSERT INTO filing_identity
 SELECT x.uri, s.name, 'the filing, about itself', x.absent::absence_reason
 FROM source s,
@@ -455,7 +487,7 @@ WHERE s.name IN (SELECT name FROM filing);
 --   no join, so this is where relational algebra starts earning its keep.
 -- ---------------------------------------------------------------------------
 INSERT INTO part
-SELECT s.name, f.composed, p.pf, p.pl, p.f_low, p.f_mode, p.f_high,
+SELECT s.name, f.composed, p.pf, p.pl, p.p_regime, p.f_low, p.f_mode, p.f_high,
        p.f_absent::absence_reason
 FROM source s,
      XMLTABLE(XMLNAMESPACES('https://example.invalid/assertion/1.0' AS asrt),
@@ -466,6 +498,10 @@ FROM source s,
        '/asrt:fusion/asrt:part' PASSING f.frag
        COLUMNS pf text PATH 'asrt:layer/asrt:filing/pm:notation',
                pl text PATH 'asrt:layer/asrt:filing/pm:id',
+               -- ⭐ The composer's handle for which of ITS OWN regimes this part comes under.
+               --   `partRegime` keyrefs it inside the document; nothing could compare it with
+               --   the part filing's own declaration until it was loaded.
+               p_regime text PATH 'asrt:layer/asrt:regime',
                f_low  numeric PATH 'asrt:factor/pm:claim/pm:low',
                f_mode numeric PATH 'asrt:factor/pm:claim/pm:mostLikely',
                f_high numeric PATH 'asrt:factor/pm:claim/pm:high',
@@ -512,11 +548,11 @@ FROM source s,
                note   text PATH 'asrt:absent/pm:note') e;
 
 -- ⭐⭐⭐ THE LAYERS THE DOUBLE COUNT RUNS BETWEEN, WHICH IS THE EVIDENCE FOR THE ELIMINATION.
---    `asrt:Elimination/between` is `maxOccurs="unbounded"` and had no home in this database at
---    all until 2026-09-06, so eight of them in `merge-holding-composition` and
---    `merge-group-composition` were read from the XML and dropped on the floor. Nothing noticed
---    because no rule reads them: a rule reads only what it needs, and a field no rule reads is
---    under no pressure to exist. Only asking "could I WRITE this document back out" finds it.
+--    `asrt:Elimination/between` is `maxOccurs="unbounded"`, and without a home in this database
+--    the eight in `merge-holding-composition` and `merge-group-composition` are read from the
+--    XML and dropped on the floor. Nothing notices, because no rule reads them: a rule reads
+--    only what it needs, and a field no rule reads is under no pressure to exist. Only asking
+--    "could I WRITE this document back out" finds it.
 -- ⭐ `FOR ORDINALITY` keeps two `between` elements two rows rather than one, the same reason
 --   `regime` uses it above.
 INSERT INTO elimination_between

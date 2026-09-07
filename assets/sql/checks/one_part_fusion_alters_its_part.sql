@@ -27,6 +27,8 @@ SELECT * FROM (VALUES
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
+  ('regime_crossing_without_a_citation', 'a part crossing a regime boundary files what reconciles it'),
+  ('part_regime_disagrees',              'a composer''s regime for a part is one that part''s own filing declares'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
   ('denied_remainder_is_not_contradicted',
@@ -57,10 +59,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
@@ -192,10 +195,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
@@ -266,10 +270,11 @@ SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
+       p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 

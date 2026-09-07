@@ -54,4 +54,6 @@
            checks/denied_remainder_is_not_contradicted.sqlc,
            checks/one_part_fusion_alters_its_part.sqlc,
            checks/conversion_cycle_does_not_close.sqlc,
-           checks/unit_crossing_without_a_factor.sqlc)
+           checks/unit_crossing_without_a_factor.sqlc,
+           checks/regime_crossing_without_a_citation.sqlc,
+           checks/part_regime_disagrees.sqlc)
