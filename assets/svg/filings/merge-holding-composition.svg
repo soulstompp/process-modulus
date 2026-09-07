@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/merge-holding-composition.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 322" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="merge-holding-composition" id="pool-merge-holding-composition"><title>pool: merge-holding-composition</title>
+    <rect id="pool-merge-holding-composition-box" x="8" y="36" width="744" height="174" class="poolBox"/>
+    <path id="pool-merge-holding-composition-band" d="M36 36 v174" class="poolBox"/>
+    <text id="pool-merge-holding-composition-name" transform="translate(26,123) rotate(-90)" text-anchor="middle" class="poolName">merge-holding-composition</text>
+  </g>
+  <g class="lane" data-layer="compute" data-rank="2" id="lane_merge-holding-composition_compute"><title>lane: compute</title>
+    <rect id="lane_merge-holding-composition_compute-box" x="120" y="46" width="620" height="56" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-holding-composition_compute"><text id="lane_merge-holding-composition_compute-name" x="128" y="62" class="laneName">compute</text></a>
+    <text id="lane_merge-holding-composition_compute-rank" x="732" y="62" class="rankName" text-anchor="end">rank 2</text>
+    <g class="node" data-id="call_merge-holding-composition_compute_merge-group-composition_compute-pt" data-kind="callActivity" id="call_merge-holding-composition_compute_merge-group-composition_compute-pt"><title>callActivity compute &lt;- merge-group-composition/compute-pt</title>
+      <rect id="call_merge-holding-composition_compute_merge-group-composition_compute-pt-box" x="290" y="52" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-group-composition.svg#lane_merge-group-composition_compute-pt"><text id="call_merge-holding-composition_compute_merge-group-composition_compute-pt-name" x="296" y="65" class="nodeName">compute &lt;- merge-group-composition/compute-pt</text></a>
+    </g>
+    <g class="node" data-id="call_merge-holding-composition_compute_merge-group-composition_compute-us" data-kind="callActivity" id="call_merge-holding-composition_compute_merge-group-composition_compute-us"><title>callActivity compute &lt;- merge-group-composition/compute-us</title>
+      <rect id="call_merge-holding-composition_compute_merge-group-composition_compute-us-box" x="290" y="74" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-group-composition.svg#lane_merge-group-composition_compute-us"><text id="call_merge-holding-composition_compute_merge-group-composition_compute-us-name" x="296" y="87" class="nodeName">compute &lt;- merge-group-composition/compute-us</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="shift-line" data-rank="2" id="lane_merge-holding-composition_shift-line"><title>lane: shift-line</title>
+    <rect id="lane_merge-holding-composition_shift-line-box" x="120" y="108" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-holding-composition_shift-line"><text id="lane_merge-holding-composition_shift-line-name" x="128" y="124" class="laneName">shift-line</text></a>
+    <text id="lane_merge-holding-composition_shift-line-rank" x="732" y="124" class="rankName" text-anchor="end">rank 2</text>
+    <g class="node" data-id="call_merge-holding-composition_shift-line_merge-group-composition_shift-line" data-kind="callActivity" id="call_merge-holding-composition_shift-line_merge-group-composition_shift-line"><title>callActivity shift-line &lt;- merge-group-composition/shift-line</title>
+      <rect id="call_merge-holding-composition_shift-line_merge-group-composition_shift-line-box" x="290" y="114" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-group-composition.svg#lane_merge-group-composition_shift-line"><text id="call_merge-holding-composition_shift-line_merge-group-composition_shift-line-name" x="296" y="127" class="nodeName">shift-line &lt;- merge-group-composition/shift-line</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="staff" data-rank="2" id="lane_merge-holding-composition_staff"><title>lane: staff</title>
+    <rect id="lane_merge-holding-composition_staff-box" x="120" y="148" width="620" height="56" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-holding-composition_staff"><text id="lane_merge-holding-composition_staff-name" x="128" y="164" class="laneName">staff</text></a>
+    <text id="lane_merge-holding-composition_staff-rank" x="732" y="164" class="rankName" text-anchor="end">rank 2</text>
+    <g class="node" data-id="call_merge-holding-composition_staff_merge-group-composition_labour" data-kind="callActivity" id="call_merge-holding-composition_staff_merge-group-composition_labour"><title>callActivity staff &lt;- merge-group-composition/labour</title>
+      <rect id="call_merge-holding-composition_staff_merge-group-composition_labour-box" x="290" y="154" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-group-composition.svg#lane_merge-group-composition_labour"><text id="call_merge-holding-composition_staff_merge-group-composition_labour-name" x="296" y="167" class="nodeName">staff &lt;- merge-group-composition/labour</text></a>
+    </g>
+    <g class="node" data-id="call_merge-holding-composition_staff_merge-group-composition_on-call" data-kind="callActivity" id="call_merge-holding-composition_staff_merge-group-composition_on-call"><title>callActivity staff &lt;- merge-group-composition/on-call</title>
+      <rect id="call_merge-holding-composition_staff_merge-group-composition_on-call-box" x="290" y="176" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-group-composition.svg#lane_merge-group-composition_on-call"><text id="call_merge-holding-composition_staff_merge-group-composition_on-call-name" x="296" y="189" class="nodeName">staff &lt;- merge-group-composition/on-call</text></a>
+    </g>
+  </g>
+  <g class="dependence" data-from="lane_merge-holding-composition_staff" data-to="lane_merge-holding-composition_shift-line" id="dep-lane_merge-holding-composition_staff-lane_merge-holding-composition_shift-line"><title>dependence: staff moves shift-line</title>
+    <path id="dep-lane_merge-holding-composition_staff-lane_merge-holding-composition_shift-line-line" d="M120 176 H94 V125 H120" class="depLine" marker-end="url(#depArrow)"/>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 218 h-8 v96 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="230" class="noteText">A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion.</text>
+    <text id="legend-0-source" x="26" y="242" class="noteCite">assets/sqlc/diagrams/dependences.sqlc</text>
+    <text id="legend-1-says" x="26" y="260" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="272" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="290" class="noteText">COUPLING SEARCH: stated. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="302" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

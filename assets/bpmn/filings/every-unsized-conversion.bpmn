@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `every-unsized-conversion`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:fixture:group:every-unsized-conversion"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:fixture:group:every-unsized-conversion"
+             id="defs_every-unsized-conversion">
+  <collaboration id="collab_every-unsized-conversion">
+    <participant id="pool_every-unsized-conversion" name="every-unsized-conversion" processRef="proc_every-unsized-conversion"/>
+  </collaboration>
+  <process id="proc_every-unsized-conversion" isExecutable="false">
+    <documentation>pm:Stack of `every-unsized-conversion`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_every-unsized-conversion" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: stipulated: two teams and the layer they are parts of. The group runs more
+                    than this and this document does not carry it [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: notApplicable. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_every-unsized-conversion_shift-capacity" name="shift-capacity">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <childLaneSet id="kids_every-unsized-conversion_shift-capacity" name="parts">
+          <lane id="lane_every-unsized-conversion_team-a" name="team-a">
+            <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+          </lane>
+          <lane id="lane_every-unsized-conversion_team-b" name="team-b">
+            <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+          </lane>
+        </childLaneSet>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_every-unsized-conversion_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-unsized-conversion_search">
+      <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_every-unsized-conversion">
+    <bpmndi:BPMNPlane id="plane_every-unsized-conversion" bpmnElement="tns:collab_every-unsized-conversion">
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_pool" bpmnElement="tns:pool_every-unsized-conversion" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_lane_every-unsized-conversion_shift-capacity" bpmnElement="tns:lane_every-unsized-conversion_shift-capacity">
+        <dc:Bounds x="120" y="46" width="620" height="104"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_lane_every-unsized-conversion_team-a" bpmnElement="tns:lane_every-unsized-conversion_team-a">
+        <dc:Bounds x="134" y="68" width="600" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_lane_every-unsized-conversion_team-b" bpmnElement="tns:lane_every-unsized-conversion_team-b">
+        <dc:Bounds x="134" y="106" width="600" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

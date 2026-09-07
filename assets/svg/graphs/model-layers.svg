@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/graphs/model-layers.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 1732" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="layers" id="pool-layers"><title>pool: layers</title>
+    <rect id="pool-layers-box" x="8" y="36" width="744" height="1688" class="poolBox"/>
+    <path id="pool-layers-band" d="M36 36 v1688" class="poolBox"/>
+    <text id="pool-layers-name" transform="translate(26,880) rotate(-90)" text-anchor="middle" class="poolName">layers</text>
+  </g>
+  <g class="lane" data-layer="every-absence/mixer" data-rank="-1" id="lane_every-absence_mixer"><title>lane: every-absence/mixer</title>
+    <rect id="lane_every-absence_mixer-box" x="120" y="46" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-absence_mixer-name" x="128" y="62" class="laneName">every-absence/mixer</text>
+    <text id="lane_every-absence_mixer-rank" x="732" y="62" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-absence/mixer-b" data-rank="-1" id="lane_every-absence_mixer-b"><title>lane: every-absence/mixer-b</title>
+    <rect id="lane_every-absence_mixer-b-box" x="120" y="86" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-absence_mixer-b-name" x="128" y="102" class="laneName">every-absence/mixer-b</text>
+    <text id="lane_every-absence_mixer-b-rank" x="732" y="102" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-absence/oven" data-rank="-1" id="lane_every-absence_oven"><title>lane: every-absence/oven</title>
+    <rect id="lane_every-absence_oven-box" x="120" y="126" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-absence_oven-name" x="128" y="142" class="laneName">every-absence/oven</text>
+    <text id="lane_every-absence_oven-rank" x="732" y="142" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-absence/oven-b" data-rank="-1" id="lane_every-absence_oven-b"><title>lane: every-absence/oven-b</title>
+    <rect id="lane_every-absence_oven-b-box" x="120" y="166" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-absence_oven-b-name" x="128" y="182" class="laneName">every-absence/oven-b</text>
+    <text id="lane_every-absence_oven-b-rank" x="732" y="182" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-elimination/baking" data-rank="-1" id="lane_every-elimination_baking"><title>lane: every-elimination/baking</title>
+    <rect id="lane_every-elimination_baking-box" x="120" y="206" width="620" height="56" class="laneBox"/>
+    <text id="lane_every-elimination_baking-name" x="128" y="222" class="laneName">every-elimination/baking</text>
+    <text id="lane_every-elimination_baking-rank" x="732" y="222" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-elimination_baking__every-absence_oven" data-kind="task" id="edge_every-elimination_baking__every-absence_oven"><title>task every-elimination/baking &lt;- every-absence/oven</title>
+      <rect id="edge_every-elimination_baking__every-absence_oven-box" x="290" y="212" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-elimination_baking__every-absence_oven-name" x="296" y="225" class="nodeName">every-elimination/baking &lt;- every-absence/oven</text>
+    </g>
+    <g class="node" data-id="edge_every-elimination_baking__every-absence_oven-b" data-kind="task" id="edge_every-elimination_baking__every-absence_oven-b"><title>task every-elimination/baking &lt;- every-absence/oven-b</title>
+      <rect id="edge_every-elimination_baking__every-absence_oven-b-box" x="290" y="234" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-elimination_baking__every-absence_oven-b-name" x="296" y="247" class="nodeName">every-elimination/baking &lt;- every-absence/oven-b</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-elimination/mixing" data-rank="-1" id="lane_every-elimination_mixing"><title>lane: every-elimination/mixing</title>
+    <rect id="lane_every-elimination_mixing-box" x="120" y="268" width="620" height="56" class="laneBox"/>
+    <text id="lane_every-elimination_mixing-name" x="128" y="284" class="laneName">every-elimination/mixing</text>
+    <text id="lane_every-elimination_mixing-rank" x="732" y="284" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-elimination_mixing__every-absence_mixer" data-kind="task" id="edge_every-elimination_mixing__every-absence_mixer"><title>task every-elimination/mixing &lt;- every-absence/mixer</title>
+      <rect id="edge_every-elimination_mixing__every-absence_mixer-box" x="290" y="274" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-elimination_mixing__every-absence_mixer-name" x="296" y="287" class="nodeName">every-elimination/mixing &lt;- every-absence/mixer</text>
+    </g>
+    <g class="node" data-id="edge_every-elimination_mixing__every-absence_mixer-b" data-kind="task" id="edge_every-elimination_mixing__every-absence_mixer-b"><title>task every-elimination/mixing &lt;- every-absence/mixer-b</title>
+      <rect id="edge_every-elimination_mixing__every-absence_mixer-b-box" x="290" y="296" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-elimination_mixing__every-absence_mixer-b-name" x="296" y="309" class="nodeName">every-elimination/mixing &lt;- every-absence/mixer-b</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-local-part/as-contracted" data-rank="-1" id="lane_every-local-part_as-contracted"><title>lane: every-local-part/as-contracted</title>
+    <rect id="lane_every-local-part_as-contracted-box" x="120" y="330" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-local-part_as-contracted-name" x="128" y="346" class="laneName">every-local-part/as-contracted</text>
+    <text id="lane_every-local-part_as-contracted-rank" x="732" y="346" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-local-part/as-filed" data-rank="-1" id="lane_every-local-part_as-filed"><title>lane: every-local-part/as-filed</title>
+    <rect id="lane_every-local-part_as-filed-box" x="120" y="370" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-local-part_as-filed-name" x="128" y="386" class="laneName">every-local-part/as-filed</text>
+    <text id="lane_every-local-part_as-filed-rank" x="732" y="386" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-local-part_as-filed__every-absence_oven" data-kind="task" id="edge_every-local-part_as-filed__every-absence_oven"><title>task every-local-part/as-filed &lt;- every-absence/oven</title>
+      <rect id="edge_every-local-part_as-filed__every-absence_oven-box" x="290" y="376" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-local-part_as-filed__every-absence_oven-name" x="296" y="389" class="nodeName">every-local-part/as-filed &lt;- every-absence/oven</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-local-part/both-views" data-rank="-1" id="lane_every-local-part_both-views"><title>lane: every-local-part/both-views</title>
+    <rect id="lane_every-local-part_both-views-box" x="120" y="410" width="620" height="56" class="laneBox"/>
+    <text id="lane_every-local-part_both-views-name" x="128" y="426" class="laneName">every-local-part/both-views</text>
+    <text id="lane_every-local-part_both-views-rank" x="732" y="426" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-local-part_both-views__every-local-part_as-contracted" data-kind="task" id="edge_every-local-part_both-views__every-local-part_as-contracted"><title>task every-local-part/both-views &lt;- every-local-part/as-contracted</title>
+      <rect id="edge_every-local-part_both-views__every-local-part_as-contracted-box" x="290" y="416" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-local-part_both-views__every-local-part_as-contracted-name" x="296" y="429" class="nodeName">every-local-part/both-views &lt;- every-local-part/as-contracted</text>
+    </g>
+    <g class="node" data-id="edge_every-local-part_both-views__every-local-part_as-filed" data-kind="task" id="edge_every-local-part_both-views__every-local-part_as-filed"><title>task every-local-part/both-views &lt;- every-local-part/as-filed</title>
+      <rect id="edge_every-local-part_both-views__every-local-part_as-filed-box" x="290" y="438" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-local-part_both-views__every-local-part_as-filed-name" x="296" y="451" class="nodeName">every-local-part/both-views &lt;- every-local-part/as-filed</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-nested-conversion/line-batches" data-rank="-1" id="lane_every-nested-conversion_line-batches"><title>lane: every-nested-conversion/line-batches</title>
+    <rect id="lane_every-nested-conversion_line-batches-box" x="120" y="472" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-nested-conversion_line-batches-name" x="128" y="488" class="laneName">every-nested-conversion/line-batches</text>
+    <text id="lane_every-nested-conversion_line-batches-rank" x="732" y="488" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-nested-conversion_line-batches__every-nested-conversion_line-hours" data-kind="task" id="edge_every-nested-conversion_line-batches__every-nested-conversion_line-hours"><title>task every-nested-conversion/line-batches &lt;- every-nested-conversion/line-hours</title>
+      <rect id="edge_every-nested-conversion_line-batches__every-nested-conversion_line-hours-box" x="290" y="478" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-nested-conversion_line-batches__every-nested-conversion_line-hours-name" x="296" y="491" class="nodeName">every-nested-conversion/line-batches &lt;- every-nested-conversion/line-hours</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-nested-conversion/line-hours" data-rank="-1" id="lane_every-nested-conversion_line-hours"><title>lane: every-nested-conversion/line-hours</title>
+    <rect id="lane_every-nested-conversion_line-hours-box" x="120" y="512" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-nested-conversion_line-hours-name" x="128" y="528" class="laneName">every-nested-conversion/line-hours</text>
+    <text id="lane_every-nested-conversion_line-hours-rank" x="732" y="528" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-nested-conversion_line-hours__every-nested-conversion_line-runs" data-kind="task" id="edge_every-nested-conversion_line-hours__every-nested-conversion_line-runs"><title>task every-nested-conversion/line-hours &lt;- every-nested-conversion/line-runs</title>
+      <rect id="edge_every-nested-conversion_line-hours__every-nested-conversion_line-runs-box" x="290" y="518" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-nested-conversion_line-hours__every-nested-conversion_line-runs-name" x="296" y="531" class="nodeName">every-nested-conversion/line-hours &lt;- every-nested-conversion/line-runs</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-nested-conversion/line-runs" data-rank="-1" id="lane_every-nested-conversion_line-runs"><title>lane: every-nested-conversion/line-runs</title>
+    <rect id="lane_every-nested-conversion_line-runs-box" x="120" y="552" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-nested-conversion_line-runs-name" x="128" y="568" class="laneName">every-nested-conversion/line-runs</text>
+    <text id="lane_every-nested-conversion_line-runs-rank" x="732" y="568" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-partial-elimination/shift-capacity" data-rank="-1" id="lane_every-partial-elimination_shift-capacity"><title>lane: every-partial-elimination/shift-capacity</title>
+    <rect id="lane_every-partial-elimination_shift-capacity-box" x="120" y="592" width="620" height="56" class="laneBox"/>
+    <text id="lane_every-partial-elimination_shift-capacity-name" x="128" y="608" class="laneName">every-partial-elimination/shift-capacity</text>
+    <text id="lane_every-partial-elimination_shift-capacity-rank" x="732" y="608" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-a" data-kind="task" id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-a"><title>task every-partial-elimination/shift-capacity &lt;- every-partial-elimination/team-a</title>
+      <rect id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-a-box" x="290" y="598" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-a-name" x="296" y="611" class="nodeName">every-partial-elimination/shift-capacity &lt;- every-partial-elimination/team-a</text>
+    </g>
+    <g class="node" data-id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-b" data-kind="task" id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-b"><title>task every-partial-elimination/shift-capacity &lt;- every-partial-elimination/team-b</title>
+      <rect id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-b-box" x="290" y="620" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-b-name" x="296" y="633" class="nodeName">every-partial-elimination/shift-capacity &lt;- every-partial-elimination/team-b</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-partial-elimination/team-a" data-rank="-1" id="lane_every-partial-elimination_team-a"><title>lane: every-partial-elimination/team-a</title>
+    <rect id="lane_every-partial-elimination_team-a-box" x="120" y="654" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-partial-elimination_team-a-name" x="128" y="670" class="laneName">every-partial-elimination/team-a</text>
+    <text id="lane_every-partial-elimination_team-a-rank" x="732" y="670" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-partial-elimination/team-b" data-rank="-1" id="lane_every-partial-elimination_team-b"><title>lane: every-partial-elimination/team-b</title>
+    <rect id="lane_every-partial-elimination_team-b-box" x="120" y="694" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-partial-elimination_team-b-name" x="128" y="710" class="laneName">every-partial-elimination/team-b</text>
+    <text id="lane_every-partial-elimination_team-b-rank" x="732" y="710" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-unit-cycle/cards" data-rank="-1" id="lane_every-unit-cycle_cards"><title>lane: every-unit-cycle/cards</title>
+    <rect id="lane_every-unit-cycle_cards-box" x="120" y="734" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-unit-cycle_cards-name" x="128" y="750" class="laneName">every-unit-cycle/cards</text>
+    <text id="lane_every-unit-cycle_cards-rank" x="732" y="750" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-unit-cycle_cards__every-unit-cycle_node-capacity" data-kind="task" id="edge_every-unit-cycle_cards__every-unit-cycle_node-capacity"><title>task every-unit-cycle/cards &lt;- every-unit-cycle/node-capacity</title>
+      <rect id="edge_every-unit-cycle_cards__every-unit-cycle_node-capacity-box" x="290" y="740" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-unit-cycle_cards__every-unit-cycle_node-capacity-name" x="296" y="753" class="nodeName">every-unit-cycle/cards &lt;- every-unit-cycle/node-capacity</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-unit-cycle/node-capacity" data-rank="-1" id="lane_every-unit-cycle_node-capacity"><title>lane: every-unit-cycle/node-capacity</title>
+    <rect id="lane_every-unit-cycle_node-capacity-box" x="120" y="774" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-unit-cycle_node-capacity-name" x="128" y="790" class="laneName">every-unit-cycle/node-capacity</text>
+    <text id="lane_every-unit-cycle_node-capacity-rank" x="732" y="790" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-unit-cycle_node-capacity__every-unit-cycle_reserved-hours" data-kind="task" id="edge_every-unit-cycle_node-capacity__every-unit-cycle_reserved-hours"><title>task every-unit-cycle/node-capacity &lt;- every-unit-cycle/reserved-hours</title>
+      <rect id="edge_every-unit-cycle_node-capacity__every-unit-cycle_reserved-hours-box" x="290" y="780" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-unit-cycle_node-capacity__every-unit-cycle_reserved-hours-name" x="296" y="793" class="nodeName">every-unit-cycle/node-capacity &lt;- every-unit-cycle/reserved-hours</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-unit-cycle/reserved-hours" data-rank="-1" id="lane_every-unit-cycle_reserved-hours"><title>lane: every-unit-cycle/reserved-hours</title>
+    <rect id="lane_every-unit-cycle_reserved-hours-box" x="120" y="814" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-unit-cycle_reserved-hours-name" x="128" y="830" class="laneName">every-unit-cycle/reserved-hours</text>
+    <text id="lane_every-unit-cycle_reserved-hours-rank" x="732" y="830" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-unsized-conversion/shift-capacity" data-rank="-1" id="lane_every-unsized-conversion_shift-capacity"><title>lane: every-unsized-conversion/shift-capacity</title>
+    <rect id="lane_every-unsized-conversion_shift-capacity-box" x="120" y="854" width="620" height="56" class="laneBox"/>
+    <text id="lane_every-unsized-conversion_shift-capacity-name" x="128" y="870" class="laneName">every-unsized-conversion/shift-capacity</text>
+    <text id="lane_every-unsized-conversion_shift-capacity-rank" x="732" y="870" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-a" data-kind="task" id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-a"><title>task every-unsized-conversion/shift-capacity &lt;- every-unsized-conversion/team-a</title>
+      <rect id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-a-box" x="290" y="860" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-a-name" x="296" y="873" class="nodeName">every-unsized-conversion/shift-capacity &lt;- every-unsized-conversion/team-a</text>
+    </g>
+    <g class="node" data-id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-b" data-kind="task" id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-b"><title>task every-unsized-conversion/shift-capacity &lt;- every-unsized-conversion/team-b</title>
+      <rect id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-b-box" x="290" y="882" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-b-name" x="296" y="895" class="nodeName">every-unsized-conversion/shift-capacity &lt;- every-unsized-conversion/team-b</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="every-unsized-conversion/team-a" data-rank="-1" id="lane_every-unsized-conversion_team-a"><title>lane: every-unsized-conversion/team-a</title>
+    <rect id="lane_every-unsized-conversion_team-a-box" x="120" y="916" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-unsized-conversion_team-a-name" x="128" y="932" class="laneName">every-unsized-conversion/team-a</text>
+    <text id="lane_every-unsized-conversion_team-a-rank" x="732" y="932" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="every-unsized-conversion/team-b" data-rank="-1" id="lane_every-unsized-conversion_team-b"><title>lane: every-unsized-conversion/team-b</title>
+    <rect id="lane_every-unsized-conversion_team-b-box" x="120" y="956" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-unsized-conversion_team-b-name" x="128" y="972" class="laneName">every-unsized-conversion/team-b</text>
+    <text id="lane_every-unsized-conversion_team-b-rank" x="732" y="972" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/capacidade-instalada" data-rank="-1" id="lane_merge-group-composition_capacidade-instalada"><title>lane: merge-group-composition/capacidade-instalada</title>
+    <rect id="lane_merge-group-composition_capacidade-instalada-box" x="120" y="996" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-group-composition_capacidade-instalada-name" x="128" y="1012" class="laneName">merge-group-composition/capacidade-instalada</text>
+    <text id="lane_merge-group-composition_capacidade-instalada-rank" x="732" y="1012" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-group-composition_capacidade-instalada__merge-pt-member_capacidade-instalada" data-kind="task" id="edge_merge-group-composition_capacidade-instalada__merge-pt-member_capacidade-instalada"><title>task merge-group-composition/capacidade-instalada &lt;- merge-pt-member/capacidade-instalada</title>
+      <rect id="edge_merge-group-composition_capacidade-instalada__merge-pt-member_capacidade-instalada-box" x="290" y="1002" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_capacidade-instalada__merge-pt-member_capacidade-instalada-name" x="296" y="1015" class="nodeName">merge-group-composition/capacidade-instalada &lt;- merge-pt-member/capacidade-instalada</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/compute-pt" data-rank="-1" id="lane_merge-group-composition_compute-pt"><title>lane: merge-group-composition/compute-pt</title>
+    <rect id="lane_merge-group-composition_compute-pt-box" x="120" y="1036" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-group-composition_compute-pt-name" x="128" y="1052" class="laneName">merge-group-composition/compute-pt</text>
+    <text id="lane_merge-group-composition_compute-pt-rank" x="732" y="1052" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-group-composition_compute-pt__merge-pt-member_compute" data-kind="task" id="edge_merge-group-composition_compute-pt__merge-pt-member_compute"><title>task merge-group-composition/compute-pt &lt;- merge-pt-member/compute</title>
+      <rect id="edge_merge-group-composition_compute-pt__merge-pt-member_compute-box" x="290" y="1042" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_compute-pt__merge-pt-member_compute-name" x="296" y="1055" class="nodeName">merge-group-composition/compute-pt &lt;- merge-pt-member/compute</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/compute-us" data-rank="-1" id="lane_merge-group-composition_compute-us"><title>lane: merge-group-composition/compute-us</title>
+    <rect id="lane_merge-group-composition_compute-us-box" x="120" y="1076" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-group-composition_compute-us-name" x="128" y="1092" class="laneName">merge-group-composition/compute-us</text>
+    <text id="lane_merge-group-composition_compute-us-rank" x="732" y="1092" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-group-composition_compute-us__merge-us-member_compute" data-kind="task" id="edge_merge-group-composition_compute-us__merge-us-member_compute"><title>task merge-group-composition/compute-us &lt;- merge-us-member/compute</title>
+      <rect id="edge_merge-group-composition_compute-us__merge-us-member_compute-box" x="290" y="1082" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_compute-us__merge-us-member_compute-name" x="296" y="1095" class="nodeName">merge-group-composition/compute-us &lt;- merge-us-member/compute</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/labour" data-rank="-1" id="lane_merge-group-composition_labour"><title>lane: merge-group-composition/labour</title>
+    <rect id="lane_merge-group-composition_labour-box" x="120" y="1116" width="620" height="56" class="laneBox"/>
+    <text id="lane_merge-group-composition_labour-name" x="128" y="1132" class="laneName">merge-group-composition/labour</text>
+    <text id="lane_merge-group-composition_labour-rank" x="732" y="1132" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-group-composition_labour__merge-pt-member_pessoal" data-kind="task" id="edge_merge-group-composition_labour__merge-pt-member_pessoal"><title>task merge-group-composition/labour &lt;- merge-pt-member/pessoal</title>
+      <rect id="edge_merge-group-composition_labour__merge-pt-member_pessoal-box" x="290" y="1122" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_labour__merge-pt-member_pessoal-name" x="296" y="1135" class="nodeName">merge-group-composition/labour &lt;- merge-pt-member/pessoal</text>
+    </g>
+    <g class="node" data-id="edge_merge-group-composition_labour__merge-us-member_labour" data-kind="task" id="edge_merge-group-composition_labour__merge-us-member_labour"><title>task merge-group-composition/labour &lt;- merge-us-member/labour</title>
+      <rect id="edge_merge-group-composition_labour__merge-us-member_labour-box" x="290" y="1144" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_labour__merge-us-member_labour-name" x="296" y="1157" class="nodeName">merge-group-composition/labour &lt;- merge-us-member/labour</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/on-call" data-rank="-1" id="lane_merge-group-composition_on-call"><title>lane: merge-group-composition/on-call</title>
+    <rect id="lane_merge-group-composition_on-call-box" x="120" y="1178" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-group-composition_on-call-name" x="128" y="1194" class="laneName">merge-group-composition/on-call</text>
+    <text id="lane_merge-group-composition_on-call-rank" x="732" y="1194" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-group-composition/shift-line" data-rank="-1" id="lane_merge-group-composition_shift-line"><title>lane: merge-group-composition/shift-line</title>
+    <rect id="lane_merge-group-composition_shift-line-box" x="120" y="1218" width="620" height="56" class="laneBox"/>
+    <text id="lane_merge-group-composition_shift-line-name" x="128" y="1234" class="laneName">merge-group-composition/shift-line</text>
+    <text id="lane_merge-group-composition_shift-line-rank" x="732" y="1234" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-group-composition_shift-line__merge-pt-member_linha-partilhada" data-kind="task" id="edge_merge-group-composition_shift-line__merge-pt-member_linha-partilhada"><title>task merge-group-composition/shift-line &lt;- merge-pt-member/linha-partilhada</title>
+      <rect id="edge_merge-group-composition_shift-line__merge-pt-member_linha-partilhada-box" x="290" y="1224" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_shift-line__merge-pt-member_linha-partilhada-name" x="296" y="1237" class="nodeName">merge-group-composition/shift-line &lt;- merge-pt-member/linha-partilhada</text>
+    </g>
+    <g class="node" data-id="edge_merge-group-composition_shift-line__merge-us-member_shift-line" data-kind="task" id="edge_merge-group-composition_shift-line__merge-us-member_shift-line"><title>task merge-group-composition/shift-line &lt;- merge-us-member/shift-line</title>
+      <rect id="edge_merge-group-composition_shift-line__merge-us-member_shift-line-box" x="290" y="1246" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-group-composition_shift-line__merge-us-member_shift-line-name" x="296" y="1259" class="nodeName">merge-group-composition/shift-line &lt;- merge-us-member/shift-line</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-holding-composition/compute" data-rank="-1" id="lane_merge-holding-composition_compute"><title>lane: merge-holding-composition/compute</title>
+    <rect id="lane_merge-holding-composition_compute-box" x="120" y="1280" width="620" height="56" class="laneBox"/>
+    <text id="lane_merge-holding-composition_compute-name" x="128" y="1296" class="laneName">merge-holding-composition/compute</text>
+    <text id="lane_merge-holding-composition_compute-rank" x="732" y="1296" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-holding-composition_compute__merge-group-composition_compute-pt" data-kind="task" id="edge_merge-holding-composition_compute__merge-group-composition_compute-pt"><title>task merge-holding-composition/compute &lt;- merge-group-composition/compute-pt</title>
+      <rect id="edge_merge-holding-composition_compute__merge-group-composition_compute-pt-box" x="290" y="1286" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-holding-composition_compute__merge-group-composition_compute-pt-name" x="296" y="1299" class="nodeName">merge-holding-composition/compute &lt;- merge-group-composition/compute-pt</text>
+    </g>
+    <g class="node" data-id="edge_merge-holding-composition_compute__merge-group-composition_compute-us" data-kind="task" id="edge_merge-holding-composition_compute__merge-group-composition_compute-us"><title>task merge-holding-composition/compute &lt;- merge-group-composition/compute-us</title>
+      <rect id="edge_merge-holding-composition_compute__merge-group-composition_compute-us-box" x="290" y="1308" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-holding-composition_compute__merge-group-composition_compute-us-name" x="296" y="1321" class="nodeName">merge-holding-composition/compute &lt;- merge-group-composition/compute-us</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-holding-composition/shift-line" data-rank="-1" id="lane_merge-holding-composition_shift-line"><title>lane: merge-holding-composition/shift-line</title>
+    <rect id="lane_merge-holding-composition_shift-line-box" x="120" y="1342" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-holding-composition_shift-line-name" x="128" y="1358" class="laneName">merge-holding-composition/shift-line</text>
+    <text id="lane_merge-holding-composition_shift-line-rank" x="732" y="1358" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-holding-composition_shift-line__merge-group-composition_shift-line" data-kind="task" id="edge_merge-holding-composition_shift-line__merge-group-composition_shift-line"><title>task merge-holding-composition/shift-line &lt;- merge-group-composition/shift-line</title>
+      <rect id="edge_merge-holding-composition_shift-line__merge-group-composition_shift-line-box" x="290" y="1348" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-holding-composition_shift-line__merge-group-composition_shift-line-name" x="296" y="1361" class="nodeName">merge-holding-composition/shift-line &lt;- merge-group-composition/shift-line</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-holding-composition/staff" data-rank="-1" id="lane_merge-holding-composition_staff"><title>lane: merge-holding-composition/staff</title>
+    <rect id="lane_merge-holding-composition_staff-box" x="120" y="1382" width="620" height="56" class="laneBox"/>
+    <text id="lane_merge-holding-composition_staff-name" x="128" y="1398" class="laneName">merge-holding-composition/staff</text>
+    <text id="lane_merge-holding-composition_staff-rank" x="732" y="1398" class="rankName" text-anchor="end">rank -1</text>
+    <g class="node" data-id="edge_merge-holding-composition_staff__merge-group-composition_labour" data-kind="task" id="edge_merge-holding-composition_staff__merge-group-composition_labour"><title>task merge-holding-composition/staff &lt;- merge-group-composition/labour</title>
+      <rect id="edge_merge-holding-composition_staff__merge-group-composition_labour-box" x="290" y="1388" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-holding-composition_staff__merge-group-composition_labour-name" x="296" y="1401" class="nodeName">merge-holding-composition/staff &lt;- merge-group-composition/labour</text>
+    </g>
+    <g class="node" data-id="edge_merge-holding-composition_staff__merge-group-composition_on-call" data-kind="task" id="edge_merge-holding-composition_staff__merge-group-composition_on-call"><title>task merge-holding-composition/staff &lt;- merge-group-composition/on-call</title>
+      <rect id="edge_merge-holding-composition_staff__merge-group-composition_on-call-box" x="290" y="1410" width="450" height="18" rx="4" class="activity task"/>
+      <text id="edge_merge-holding-composition_staff__merge-group-composition_on-call-name" x="296" y="1423" class="nodeName">merge-holding-composition/staff &lt;- merge-group-composition/on-call</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="merge-pt-member/capacidade-instalada" data-rank="-1" id="lane_merge-pt-member_capacidade-instalada"><title>lane: merge-pt-member/capacidade-instalada</title>
+    <rect id="lane_merge-pt-member_capacidade-instalada-box" x="120" y="1444" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-pt-member_capacidade-instalada-name" x="128" y="1460" class="laneName">merge-pt-member/capacidade-instalada</text>
+    <text id="lane_merge-pt-member_capacidade-instalada-rank" x="732" y="1460" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-pt-member/compute" data-rank="-1" id="lane_merge-pt-member_compute"><title>lane: merge-pt-member/compute</title>
+    <rect id="lane_merge-pt-member_compute-box" x="120" y="1484" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-pt-member_compute-name" x="128" y="1500" class="laneName">merge-pt-member/compute</text>
+    <text id="lane_merge-pt-member_compute-rank" x="732" y="1500" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-pt-member/linha-partilhada" data-rank="-1" id="lane_merge-pt-member_linha-partilhada"><title>lane: merge-pt-member/linha-partilhada</title>
+    <rect id="lane_merge-pt-member_linha-partilhada-box" x="120" y="1524" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-pt-member_linha-partilhada-name" x="128" y="1540" class="laneName">merge-pt-member/linha-partilhada</text>
+    <text id="lane_merge-pt-member_linha-partilhada-rank" x="732" y="1540" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-pt-member/pessoal" data-rank="-1" id="lane_merge-pt-member_pessoal"><title>lane: merge-pt-member/pessoal</title>
+    <rect id="lane_merge-pt-member_pessoal-box" x="120" y="1564" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-pt-member_pessoal-name" x="128" y="1580" class="laneName">merge-pt-member/pessoal</text>
+    <text id="lane_merge-pt-member_pessoal-rank" x="732" y="1580" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-us-member/compute" data-rank="-1" id="lane_merge-us-member_compute"><title>lane: merge-us-member/compute</title>
+    <rect id="lane_merge-us-member_compute-box" x="120" y="1604" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-us-member_compute-name" x="128" y="1620" class="laneName">merge-us-member/compute</text>
+    <text id="lane_merge-us-member_compute-rank" x="732" y="1620" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-us-member/labour" data-rank="-1" id="lane_merge-us-member_labour"><title>lane: merge-us-member/labour</title>
+    <rect id="lane_merge-us-member_labour-box" x="120" y="1644" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-us-member_labour-name" x="128" y="1660" class="laneName">merge-us-member/labour</text>
+    <text id="lane_merge-us-member_labour-rank" x="732" y="1660" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+  <g class="lane" data-layer="merge-us-member/shift-line" data-rank="-1" id="lane_merge-us-member_shift-line"><title>lane: merge-us-member/shift-line</title>
+    <rect id="lane_merge-us-member_shift-line-box" x="120" y="1684" width="620" height="34" class="laneBox"/>
+    <text id="lane_merge-us-member_shift-line-name" x="128" y="1700" class="laneName">merge-us-member/shift-line</text>
+    <text id="lane_merge-us-member_shift-line-rank" x="732" y="1700" class="rankName" text-anchor="end">rank -1</text>
+  </g>
+</svg>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `merge-pt-member`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:pt-member:2026-08-31"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:filing:pt-member:2026-08-31"
+             id="defs_merge-pt-member">
+  <collaboration id="collab_merge-pt-member">
+    <participant id="pool_merge-pt-member" name="merge-pt-member" processRef="proc_merge-pt-member"/>
+  </collaboration>
+  <process id="proc_merge-pt-member" isExecutable="false">
+    <documentation>pm:Stack of `merge-pt-member`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_merge-pt-member" name="draw">
+      <documentation>scope: unbounded. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: o que este membro reporta ao abrigo da instrução do grupo, e ninguém perguntou o que fica fora disso [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: unmeasured. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_merge-pt-member_capacidade-instalada" name="capacidade-instalada">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_merge-pt-member_compute" name="compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_merge-pt-member_linha-partilhada" name="linha-partilhada">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_merge-pt-member_pessoal" name="pessoal">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_merge-pt-member_scope">
+      <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_merge-pt-member_search">
+      <text>COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_merge-pt-member">
+    <bpmndi:BPMNPlane id="plane_merge-pt-member" bpmnElement="tns:collab_merge-pt-member">
+      <bpmndi:BPMNShape id="shape_merge-pt-member_pool" bpmnElement="tns:pool_merge-pt-member" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="170"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_lane_merge-pt-member_capacidade-instalada" bpmnElement="tns:lane_merge-pt-member_capacidade-instalada">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_lane_merge-pt-member_compute" bpmnElement="tns:lane_merge-pt-member_compute">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_lane_merge-pt-member_linha-partilhada" bpmnElement="tns:lane_merge-pt-member_linha-partilhada">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_lane_merge-pt-member_pessoal" bpmnElement="tns:lane_merge-pt-member_pessoal">
+        <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

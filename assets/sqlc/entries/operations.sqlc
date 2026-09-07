@@ -1,0 +1,16 @@
+# P, THE OPERATION INDEX, AS A RELATION OF ITS OWN. One row per operation a filing declares.
+#
+# ⭐⭐⭐ THE OTHER CONFORMED DIMENSION, AND IT WAS THE ONLY ONE WITHOUT A FILE. `draw` and
+#    `induction` are both P x L fact tables, `layer` has layers/every_layer.sqlc, and `operation`
+#    had nothing. So every question about operations reached through an ENTRY table and got the
+#    operations that happen to have entries, rather than the operations that exist. The two
+#    coincide today only because `pm:Operation` requires at least one draw or induction, which is
+#    a fact about the grammar that no query stated.
+#
+# ⛔ A DIMENSION WITHOUT A FILE CANNOT BE A LEFT OPERAND, so no law in algebra/ could ever have
+#   governed a count of operations, and diagrams/roster.sqlc's `tasks` law would have had nothing
+#   to count against. Same repair as composition/carriable.sqlc and
+#   composition/remainder_frontier.sqlc: the difference needs a named left operand.
+-- pm:Operation, keyed (filing, label).
+SELECT o.filing, o.label
+FROM pm.operation o

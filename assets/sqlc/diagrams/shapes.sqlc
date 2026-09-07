@@ -1,0 +1,24 @@
+# EVERYTHING THE DIAGRAM INTERCHANGE OWES A BOX. One row per pool, per lane and per flow node.
+#
+# ⭐⭐⭐ THE PRIMITIVES ONLY, AND THE OMISSIONS ARE THE ARGUMENT. A `group`, an `association` and
+#    a `textAnnotation` are all DRAWN, and none of them is here, because each is DERIVED from
+#    these boxes: a group is the union of its members', a coupling line is a route between two
+#    lanes', a legend hangs under the pool. Filing a box for a derived shape would file a value
+#    that can disagree with the thing that computes it, which is this repository's own definition
+#    of a stale cache.
+#
+# ⛔ AND IT IS THE SAME TEST `eliminations/derived.sqlc` PASSES. A magnitude that can be derived
+#   must not be filed; a coordinate that can be derived must not be filed either. The difference
+#   is only that one of them is arithmetic and the other is geometry.
+-- BPMN 2.0 DI: one bpmndi:BPMNShape per pool, lane and flow node.
+SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject
+FROM ( :compose(diagrams/pools.sqlc) ) p
+UNION ALL
+SELECT l.filing, 'lane', l.layer
+FROM ( :compose(layers/every_layer.sqlc) ) l
+UNION ALL
+SELECT o.filing, 'task', o.label
+FROM ( :compose(entries/operations.sqlc) ) o
+UNION ALL
+SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer
+FROM ( :compose(diagrams/foreign_calls.sqlc) ) c

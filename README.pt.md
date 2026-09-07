@@ -96,7 +96,7 @@ atravessar uma fronteira organizacional, que é o único sítio onde algo disto 
   procurou e não há; ninguém mediu; a pergunta não se aplica aqui; ou é calculado a partir de
   outra coisa. Isso também vale para as listas — uma pilha sem acoplamentos declarados diz se
   alguém foi procurar, porque «testámos as camadas e são independentes» e «ninguém verificou» são
-  afirmações opostas e costumavam ser o mesmo documento.
+  afirmações opostas que uma lista opcional simples grafa da mesma maneira.
 
 ## Porquê o process-modulus
 
@@ -506,7 +506,7 @@ uma bifurcação, e uma bifurcação afasta-se sem que nada aqui o consiga notar
 
 | emprestado de | o quê, e como se liga |
 |---|---|
-| BPMN 2.0 | sequência, gateways e eventos. O `ForeignId` aponta para a mesma operação num modelo BPMN, portanto uma notação de processo e este modelo viajam juntos |
+| BPMN 2.0 | sequência, gateways e eventos. O `ForeignId` aponta para a mesma operação num modelo BPMN, portanto uma notação de processo e este modelo viajam juntos, e a travessia é desenhada em vez de descrita: [abaixo](#a-travessia-é-desenhada-e-cada-frase-nela-diz-o-que-a-afirma) |
 | *Factory Physics* (Hopp e Spearman) | o conjunto de amortecedores de existências, capacidade e tempo, adotado fechado e como está publicado |
 | ISO 286 | as três classes de ajustamento — `clearance`, `transition` e `interference` — no sentido mecânico, adotadas fechadas e como estão publicadas |
 | normativos contabilísticos | todas as bases de mensuração exceto `nameplate`, que descreve capacidade comprometida e não valor, e por isso não tem definição normativa que citar |
@@ -514,6 +514,34 @@ uma bifurcação, e uma bifurcação afasta-se sem que nada aqui o consiga notar
 Aquilo por que este modelo responde é a lista curta: `Remainder`, `Holder` e `HolderKind`,
 `Divisibility` e `ConstraintOrigin`, as três margens, `Layer` e `Coupling`, `Induction`, `Claim`,
 `Absence`, `Provenance`, e `nameplate`.
+
+## A travessia é desenhada, e cada frase nela diz o que a afirma
+
+O `ForeignId` aponta *para* um modelo BPMN. Este repositório também percorre o caminho
+inverso: representa cada declaração **como** um documento BPMN, para que quem modela processos
+possa pôr as duas notações lado a lado em vez de aceitar por confiança a descrição de uma delas.
+
+```bash
+cargo run --example diagramming   # um .bpmn por declaração, para assets/bpmn/filings/
+cargo run --example graphs        # os grafos do próprio modelo, como os lane sets de uma pool
+cargo run --example rendering     # o assets/svg/ a partir do assets/bpmn/, sem ler modelo nenhum
+```
+
+O que uma tradução correta deve está escrito e não pressuposto.
+O [`assets/sqlc/diagrams/roster.sqlc`](assets/sqlc/diagrams/roster.sqlc) carrega uma lei por
+espécie de elemento, e cada lei nomeia a relação que fornece a contagem com que tem de bater
+certo. O [`assets/sqlc/diagrams/domain_objects.sqlc`](assets/sqlc/diagrams/domain_objects.sqlc)
+diz, para cada tabela do modelo, em que elemento BPMN ela é representada ou a razão tipada para
+não haver nenhum, e um mapeamento que perde alguma coisa diz como: `demoted` quer dizer que uma
+pessoa ainda consegue ler o facto e uma ferramenta já não o consegue resolver, `absent` quer
+dizer que ele não está no artefacto sob forma nenhuma.
+
+⛔ **Um desenho é acreditado de uma maneira que uma tabela não é.** Uma tabela errada é
+reconferida; um diagrama errado é citado numa apresentação. Por isso cada frase que um documento
+emitido carrega nomeia a relação que a afirma, no ficheiro e na página desenhada, e o
+`examples/diagramming.rs` volta a lê-las do artefacto depois de o escrever: uma frase sem
+origem, uma origem que não é uma relação desta árvore, e uma origem que o emissor nunca
+consultou fazem cada uma delas falhar a execução.
 
 ## Regimes
 

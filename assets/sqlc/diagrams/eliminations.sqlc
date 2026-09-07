@@ -1,0 +1,30 @@
+# THE THREE PLACES A TRANSLATION COUNTS SOMETHING ONCE THAT THE MODEL MENTIONS TWICE. One row per
+# elimination: the sum before, the overlap, and what names the overlap.
+#
+# ⭐⭐⭐ EVERY ONE OF THEM IS INCLUSION-EXCLUSION, AND IN EVERY ONE THE CORRECTION IS DERIVED.
+#    `x = Σ parts − e`, and `e` is a filed number nowhere here: the overlap of two lane sets IS
+#    the layer set, the overlap of many part references IS the document, and the overlap of three
+#    buffers IS the layer they are substitutes within. Each is a relation with a name, which is
+#    exactly the test that made `eliminations/derived.sqlc` possible. A translation that could not
+#    name its overlap would have to file one, and nothing in BPMN could hold it.
+#
+# ⛔⛔ THE FIRST IS NOT THE EMITTER'S AND IT IS THE ONE WORTH KNOWING. `pm.draw` has no `buffer`
+#    column, so a draw is against a LAYER and never against one of its three engines. The model
+#    already made that elimination, on the ground that the buffers are SUBSTITUTES
+#    (`layers/absorption.sqlc`), and every diagram inherits it. The engine missing from D's key
+#    IS the elimination.
+#
+# ⛔ AND A FOURTH COLLAPSE IS NOT ON THIS LIST BECAUSE IT IS UNSOUND. Dropping a part's lane
+#   membership would count 27 nodes once instead of 27 nodes and 27 placements, but the overlap
+#   there is NOT derivable: a call outside a lane has lost which layer it feeds, so what remains
+#   says only that there is nesting here, which is what a subProcess already is. That is an
+#   elimination of F's HEAD, and `diagrams/lane_membership.sqlc` refuses it.
+-- the derived overlaps a BPMN emission takes, each against the relation that names it.
+SELECT * FROM (VALUES
+  ('the buffer',   'D would be P x L x 3',        'the layer, within which the three engines are substitutes',
+                   'layers/absorption.sqlc'),
+  ('the lane set', 'D lanes + N lanes',            'the layer set, enumerated twice over one conformed dimension',
+                   'diagrams/lane_grain.sqlc'),
+  ('the import',   'one per cross-document part',  'the document, referenced many times from one filing',
+                   'diagrams/cross_document.sqlc')
+) AS e(elimination, the_sum, the_overlap, named_by)

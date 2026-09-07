@@ -1,0 +1,29 @@
+# EVERY FLOW NODE THAT BELONGS IN A LANE, WITH THE LAYER WHOSE LANE IT IS. One row per
+# (filing, layer, node), over both kinds of node a translation emits.
+#
+# ⭐⭐⭐ IT EXISTS BECAUSE A COUNT OF NODES DOES NOT CATCH AN ORPHAN. The first emission wrote 27
+#    call activities, passed `|callActivity| = |part|` exactly, and put every one of them OUTSIDE
+#    every lane. A BPMN reader saw 27 nodes floating in a process and could not tell which layer
+#    any of them fed, so F's incidence was gone from the rendering while the cardinality law was
+#    perfectly satisfied. That is a diagram returning the right shape and a believable count,
+#    which is the whole failure mode `diagrams/roster.sqlc` exists to catch.
+#
+# ⭐⭐ TWO KINDS OF NODE LAND IN A LANE FOR TWO DIFFERENT REASONS, AND THE CALLER LABELS THEM.
+#      a draw   an operation sits in the lane of the layer it DRAWS from. D's incidence.
+#      a part   a call sits in the lane of the layer it is composed INTO. F's incidence.
+#    Neither arm knows which law it serves; the caller is the thing holding both.
+#
+# ⛔ AN OPERATION THAT ONLY INDUCES HAS NO LANE HERE, and that is not an omission. A draw lane
+#   set can only place what draws, so a notation cannot site an operation that merely commits
+#   something on another layer. Every operation in this corpus draws, so the case is unexercised;
+#   the relation binds it anyway, because a future filing may not.
+-- entries/draws.sqlc and diagrams/foreign_calls.sqlc, each projected onto the lane it belongs to.
+SELECT 'draw' AS node_kind, d.filing, d.layer
+FROM (
+    :compose(diagrams/lane_members.sqlc)
+) d
+UNION ALL
+SELECT 'part', c.composition, c.composed_layer
+FROM (
+    :compose(diagrams/foreign_calls.sqlc)
+) c

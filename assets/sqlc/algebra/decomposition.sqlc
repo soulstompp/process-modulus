@@ -1,0 +1,45 @@
+# THE LAW `rank/decomposition.sqlc` OWES: CUTTING A GRAPH BY FILING LOSES NO EDGE.
+#
+# ⭐⭐⭐ WITHOUT IT THE MEASUREMENT IS UNREADABLE. That relation reports the unit graph's cycle
+#    space as 1 corpus-wide and 0 summed per filing, and concludes that the cut destroys a cycle.
+#    ⛔ It would report exactly the same numbers if the cut had simply DROPPED the edges, and the
+#    conclusion would then be about a bug rather than about the graph. **This law is what makes
+#    the difference structural**: every edge appears once corpus-wide and once under its own
+#    filing, so whatever the cut loses is CONNECTIVITY and never population.
+#
+# ⭐⭐ AND IT IS THE MULTIPLICITY THAT MATTERS, WHICH IS WHY THE UNION IS `ALL`. The corpus-wide
+#    arm and the per-filing arms are one edge counted twice ON PURPOSE, so a `UNION` that
+#    deduplicated would make the identity read `n = n` and prove nothing. `algebra/roster.sqlc`
+#    carries that distinction in its own `multiplicity` column and this row is `bag`.
+-- rank/decomposition.sqlc's two scopes, counted: the whole against the sum of the parts.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/decomposition' AS subject,
+           x.whole = x.per_filing AS holds,
+           format('%s edges corpus-wide = %s summed over %s filings, across %s graphs',
+                  x.whole, x.per_filing, x.filings, x.graphs) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM (
+                 SELECT c.from_unit AS a, c.to_unit AS b FROM ( :compose(units/conversions.sqlc) ) c
+                 UNION
+                 SELECT p.composition || '/' || p.composed_layer,
+                        p.part_filing || '/' || p.part_layer
+                 FROM ( :compose(composition/parts.sqlc) ) p) e)                     AS whole,
+             (SELECT count(*) FROM (
+                 SELECT c.filing, c.from_unit AS a, c.to_unit AS b
+                 FROM ( :compose(units/conversions.sqlc) ) c
+                 UNION
+                 SELECT p.composition, p.composition || '/' || p.composed_layer,
+                        p.part_filing || '/' || p.part_layer
+                 FROM ( :compose(composition/parts.sqlc) ) p) e)                     AS per_filing,
+             (SELECT count(DISTINCT f) FROM (
+                 SELECT c.filing AS f FROM ( :compose(units/conversions.sqlc) ) c
+                 UNION
+                 SELECT p.composition FROM ( :compose(composition/parts.sqlc) ) p) g) AS filings,
+             2                                                                        AS graphs
+         ) x
+) p ON true
+WHERE a.slug = 'decomposition'

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `unstated`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:acme-platform:2026-08-30-margin"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:filing:acme-platform:2026-08-30-margin"
+             id="defs_unstated">
+  <collaboration id="collab_unstated">
+    <participant id="pool_unstated" name="unstated" processRef="proc_unstated"/>
+  </collaboration>
+  <process id="proc_unstated" isExecutable="false">
+    <documentation>pm:Stack of `unstated`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_unstated" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: one layer, on purpose: this filing exists to show a subject that is not a supply, and the entity plainly has others [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: notApplicable. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_unstated_margin-ratio" name="margin-ratio">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_unstated_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_unstated_search">
+      <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_unstated">
+    <bpmndi:BPMNPlane id="plane_unstated" bpmnElement="tns:collab_unstated">
+      <bpmndi:BPMNShape id="shape_unstated_pool" bpmnElement="tns:pool_unstated" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_unstated_lane_unstated_margin-ratio" bpmnElement="tns:lane_unstated_margin-ratio">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,25 @@
+# WHETHER ANYBODY LOOKED FOR A DEPENDENCE, ONE ROW PER FILING, WHICH IS THE OTHER HALF OF C.
+#
+# ⭐⭐⭐ A MATRIX AND ITS SEARCH ARE FILED AS A PAIR, AND EMITTING ONE OF THEM IS THE FAILURE THIS
+#    MODEL EXISTS TO REFUSE. `entries/couplings.sqlc` says it in its own header: a filing with no
+#    couplings has either a stack of independent layers or nobody who looked, and those are
+#    OPPOSITE claims. In this corpus 12 of 15 documents state no coupling, so a diagram drawing
+#    only the matrix is silent about 12 filings in a way a reader will resolve as independence.
+#
+# ⭐⭐ AND A DIAGRAM IS THE WORST PLACE FOR THAT, because an absence is invisible on a page in a
+#    way it is not in a table. A missing row can be counted; a missing line cannot be seen. That
+#    is `examples/diagramming.rs`'s own demand, *what could NOT be drawn must be enumerated*,
+#    applied to the corpus instead of to the notation.
+#
+# ⛔ THE TYPED ANSWER AND NOT THE NOTE. The four reasons ARE the fact: `unmeasured` is nobody
+#   looked, `none` is somebody looked and found nothing, `notApplicable` is there is no pair to
+#   couple, and a NULL is somebody looked and the couplings are the ones drawn. The note is the
+#   ARGUMENT for the answer, it is free prose, and diagrams/dependences.sqlc says why prose does
+#   not travel into an artifact with no unit on it.
+-- pm:Stack/pm:Couplings/pm:Absent; carried as the laneSet's own documentation, because the
+-- laneSet IS the partition the search is about.
+SELECT s.filing,
+       coalesce(s.answer::text, 'stated') AS answer
+FROM (
+    :compose(epistemics/coupling_searches.sqlc)
+) s

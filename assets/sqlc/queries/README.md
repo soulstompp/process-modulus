@@ -21,8 +21,7 @@ relations whose product is knowledge rather than a verdict, and `soundness/` is 
 
 ⭐⭐ **`soundness/` is the only one that can accuse nobody's filing.** The other three ask about
 the arithmetic, the data and the corpus; that one asks whether the QUERIES compute what they say.
-It is where a difference that fails to a plausible table gets caught. See the sql skill's
-`set-algebra.md`.
+It is where a difference that fails to a plausible table gets caught.
 
 ⭐ **Each one composes the same relations the rules do**, rather than restating the joins.
 `1-fit-from-ranges` composes `layers/signed.sqlc`, which is also the population the sign rule

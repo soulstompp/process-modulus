@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `enterprise-contract`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:acme-platform:2026-08-30"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:filing:acme-platform:2026-08-30"
+             id="defs_enterprise-contract">
+  <category id="cat_enterprise-contract" name="induction">
+    <documentation>pm:Induction: which layers each operation induces demand into. A COVER and not a partition, so an operation may appear in several of these and in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</documentation>
+    <categoryValue id="cv_enterprise-contract_capability" value="capability"/>
+  </category>
+  <collaboration id="collab_enterprise-contract">
+    <participant id="pool_enterprise-contract" name="enterprise-contract" processRef="proc_enterprise-contract"/>
+  </collaboration>
+  <process id="proc_enterprise-contract" isExecutable="false">
+    <documentation>pm:Stack of `enterprise-contract`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_enterprise-contract" name="draw">
+      <documentation>scope: unbounded. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: the three layers this filing was written to argue about. Nobody has asked what else the platform runs that would be a layer [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: unmeasured. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_enterprise-contract_capability" name="capability">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_enterprise-contract_compute" name="compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_enterprise-contract_Serve_an_inference_request</flowNodeRef>
+      </lane>
+      <lane id="lane_enterprise-contract_labour" name="labour">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_enterprise-contract_Close_an_enterprise_contract</flowNodeRef>
+      </lane>
+      <lane id="lane_enterprise-contract_support-cover" name="support-cover">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <task id="task_enterprise-contract_Close_an_enterprise_contract" name="Close an enterprise contract">
+      <categoryValueRef>cv_enterprise-contract_capability</categoryValueRef>
+    </task>
+    <task id="task_enterprise-contract_Serve_an_inference_request" name="Serve an inference request"/>
+    <textAnnotation id="note_enterprise-contract_cover">
+      <text>A DASHED BOX is a COVER, not a container: an operation may be in several and is in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_enterprise-contract_scope">
+      <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_enterprise-contract_search">
+      <text>COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+    <group id="grp_enterprise-contract_capability" categoryValueRef="cv_enterprise-contract_capability"/>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_enterprise-contract">
+    <bpmndi:BPMNPlane id="plane_enterprise-contract" bpmnElement="tns:collab_enterprise-contract">
+      <bpmndi:BPMNShape id="shape_enterprise-contract_pool" bpmnElement="tns:pool_enterprise-contract" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="170"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_lane_enterprise-contract_capability" bpmnElement="tns:lane_enterprise-contract_capability">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_lane_enterprise-contract_compute" bpmnElement="tns:lane_enterprise-contract_compute">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_task_enterprise-contract_Serve_an_inference_request" bpmnElement="tns:task_enterprise-contract_Serve_an_inference_request">
+        <dc:Bounds x="290" y="92" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_lane_enterprise-contract_labour" bpmnElement="tns:lane_enterprise-contract_labour">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_task_enterprise-contract_Close_an_enterprise_contract" bpmnElement="tns:task_enterprise-contract_Close_an_enterprise_contract">
+        <dc:Bounds x="290" y="132" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_lane_enterprise-contract_support-cover" bpmnElement="tns:lane_enterprise-contract_support-cover">
+        <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

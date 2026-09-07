@@ -1,0 +1,28 @@
+# EVERY LAYER SOME OPERATION INDUCES INTO, WHICH IS THE `categoryValue` POPULATION. One row per
+# (filing, layer) that N reaches, and nothing else.
+#
+# ⭐⭐⭐ THIS IS N GETTING A NOTATION AFTER BEING FILED AS TOTALLY LOST. `induction` mapped to
+#    `laneSet`, the same element as `draw`, and was deliberately not emitted: a SECOND lane set
+#    gives every layer two `lane` elements with nothing but a matching name to say they are one
+#    layer, so the conformed key `(filing, layer)` does not survive. That reasoning was right about
+#    lane sets and wrong about BPMN, which has a second mechanism entirely.
+#
+# ⭐⭐ A CATEGORY IS NOT A PARTITION, AND THAT IS EXACTLY WHY IT FITS. `tFlowElement` carries
+#    `categoryValueRef` with `maxOccurs="unbounded"`, so a flow element may be in MANY categories,
+#    where `flowNodeRef` puts it in one lane. D is a containment and N is a cover, and BPMN has one
+#    element for each. Emitting N as a second lane set would have added 2 lanes to a corpus of 51
+#    and broken `|lane| = |layer|`; this adds none.
+#
+# ⛔ AND IT LOSES SOMETHING, WHICH IS WHY THIS FILE IS NOT THE END OF THE ARGUMENT.
+#   `tCategoryValue` carries a `value` of type `xs:string` and no reference attribute of any kind,
+#   so the layer arrives as TEXT beside a `lane` of the same name and nothing in the document ties
+#   the two. It is the weaker cousin of the `callActivity` defect: a call loses the layer outright,
+#   a category keeps its name and loses the pointer.
+#
+# ⚠️ ONE ROW PER LAYER AND NOT PER INDUCTION, because a categoryValue is one element however many
+#   operations reference it. diagrams/category_members.sqlc is the per-edge population.
+-- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    :compose(entries/inductions.sqlc)
+) i

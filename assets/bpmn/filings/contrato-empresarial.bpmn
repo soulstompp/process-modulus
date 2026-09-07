@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `contrato-empresarial`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:declaracao:padaria-do-largo:2026-08-30"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:declaracao:padaria-do-largo:2026-08-30"
+             id="defs_contrato-empresarial">
+  <category id="cat_contrato-empresarial" name="induction">
+    <documentation>pm:Induction: which layers each operation induces demand into. A COVER and not a partition, so an operation may appear in several of these and in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</documentation>
+    <categoryValue id="cv_contrato-empresarial_capacidade-entregavel" value="capacidade-entregavel"/>
+  </category>
+  <collaboration id="collab_contrato-empresarial">
+    <participant id="pool_contrato-empresarial" name="contrato-empresarial" processRef="proc_contrato-empresarial"/>
+  </collaboration>
+  <process id="proc_contrato-empresarial" isExecutable="false">
+    <documentation>pm:Stack of `contrato-empresarial`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_contrato-empresarial" name="draw">
+      <documentation>scope: unbounded. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: as três camadas sobre as quais esta declaração foi escrita para argumentar. Ninguém perguntou que mais a casa opera que fosse uma camada [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: unmeasured. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_contrato-empresarial_capacidade-entregavel" name="capacidade-entregavel">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_contrato-empresarial_cobertura-de-suporte" name="cobertura-de-suporte">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_contrato-empresarial_computacao" name="computacao">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_contrato-empresarial_Servir_um_pedido_de_infer_ncia</flowNodeRef>
+      </lane>
+      <lane id="lane_contrato-empresarial_pessoal" name="pessoal">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_contrato-empresarial_Fechar_um_contrato_empresarial</flowNodeRef>
+      </lane>
+    </laneSet>
+    <task id="task_contrato-empresarial_Fechar_um_contrato_empresarial" name="Fechar um contrato empresarial">
+      <categoryValueRef>cv_contrato-empresarial_capacidade-entregavel</categoryValueRef>
+    </task>
+    <task id="task_contrato-empresarial_Servir_um_pedido_de_infer_ncia" name="Servir um pedido de inferência"/>
+    <textAnnotation id="note_contrato-empresarial_cover">
+      <text>A DASHED BOX is a COVER, not a container: an operation may be in several and is in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_contrato-empresarial_scope">
+      <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_contrato-empresarial_search">
+      <text>COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+    <group id="grp_contrato-empresarial_capacidade-entregavel" categoryValueRef="cv_contrato-empresarial_capacidade-entregavel"/>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_contrato-empresarial">
+    <bpmndi:BPMNPlane id="plane_contrato-empresarial" bpmnElement="tns:collab_contrato-empresarial">
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_pool" bpmnElement="tns:pool_contrato-empresarial" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="170"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_lane_contrato-empresarial_capacidade-entregavel" bpmnElement="tns:lane_contrato-empresarial_capacidade-entregavel">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_lane_contrato-empresarial_cobertura-de-suporte" bpmnElement="tns:lane_contrato-empresarial_cobertura-de-suporte">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_lane_contrato-empresarial_computacao" bpmnElement="tns:lane_contrato-empresarial_computacao">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_task_contrato-empresarial_Servir_um_pedido_de_infer_ncia" bpmnElement="tns:task_contrato-empresarial_Servir_um_pedido_de_infer_ncia">
+        <dc:Bounds x="290" y="132" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_lane_contrato-empresarial_pessoal" bpmnElement="tns:lane_contrato-empresarial_pessoal">
+        <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_task_contrato-empresarial_Fechar_um_contrato_empresarial" bpmnElement="tns:task_contrato-empresarial_Fechar_um_contrato_empresarial">
+        <dc:Bounds x="290" y="172" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/enterprise-contract.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 318" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="enterprise-contract" id="pool-enterprise-contract"><title>pool: enterprise-contract</title>
+    <rect id="pool-enterprise-contract-box" x="8" y="36" width="744" height="170" class="poolBox"/>
+    <path id="pool-enterprise-contract-band" d="M36 36 v170" class="poolBox"/>
+    <text id="pool-enterprise-contract-name" transform="translate(26,121) rotate(-90)" text-anchor="middle" class="poolName">enterprise-contract</text>
+  </g>
+  <g class="lane" data-layer="capability" data-rank="0" id="lane_enterprise-contract_capability"><title>lane: capability</title>
+    <rect id="lane_enterprise-contract_capability-box" x="120" y="46" width="620" height="34" class="laneBox"/>
+    <text id="lane_enterprise-contract_capability-name" x="128" y="62" class="laneName">capability</text>
+    <text id="lane_enterprise-contract_capability-rank" x="732" y="62" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="compute" data-rank="0" id="lane_enterprise-contract_compute"><title>lane: compute</title>
+    <rect id="lane_enterprise-contract_compute-box" x="120" y="86" width="620" height="34" class="laneBox"/>
+    <text id="lane_enterprise-contract_compute-name" x="128" y="102" class="laneName">compute</text>
+    <text id="lane_enterprise-contract_compute-rank" x="732" y="102" class="rankName" text-anchor="end">rank 0</text>
+    <g class="node" data-id="task_enterprise-contract_Serve_an_inference_request" data-kind="task" id="task_enterprise-contract_Serve_an_inference_request"><title>task Serve an inference request</title>
+      <rect id="task_enterprise-contract_Serve_an_inference_request-box" x="290" y="92" width="440" height="18" rx="4" class="activity task"/>
+      <text id="task_enterprise-contract_Serve_an_inference_request-name" x="296" y="105" class="nodeName">Serve an inference request</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="labour" data-rank="0" id="lane_enterprise-contract_labour"><title>lane: labour</title>
+    <rect id="lane_enterprise-contract_labour-box" x="120" y="126" width="620" height="34" class="laneBox"/>
+    <text id="lane_enterprise-contract_labour-name" x="128" y="142" class="laneName">labour</text>
+    <text id="lane_enterprise-contract_labour-rank" x="732" y="142" class="rankName" text-anchor="end">rank 0</text>
+    <g class="node" data-id="task_enterprise-contract_Close_an_enterprise_contract" data-kind="task" id="task_enterprise-contract_Close_an_enterprise_contract"><title>task Close an enterprise contract</title>
+      <rect id="task_enterprise-contract_Close_an_enterprise_contract-box" x="290" y="132" width="440" height="18" rx="4" class="activity task"/>
+      <text id="task_enterprise-contract_Close_an_enterprise_contract-name" x="296" y="145" class="nodeName">Close an enterprise contract</text>
+    </g>
+  </g>
+  <g class="lane" data-layer="support-cover" data-rank="0" id="lane_enterprise-contract_support-cover"><title>lane: support-cover</title>
+    <rect id="lane_enterprise-contract_support-cover-box" x="120" y="166" width="620" height="34" class="laneBox"/>
+    <text id="lane_enterprise-contract_support-cover-name" x="128" y="182" class="laneName">support-cover</text>
+    <text id="lane_enterprise-contract_support-cover-rank" x="732" y="182" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="group" data-category="capability" id="cover-capability"><title>cover: induces into capability</title>
+    <rect id="cover-capability-box" x="284" y="126" width="452" height="30" rx="6" class="groupBox"/>
+    <text id="cover-capability-name" x="288" y="123" class="groupName">induces into capability</text>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 214 h-8 v96 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="226" class="noteText">A DASHED BOX is a COVER, not a container: an operation may be in several and is in exactly one lane.</text>
+    <text id="legend-0-source" x="26" y="238" class="noteCite">assets/sqlc/diagrams/categories.sqlc</text>
+    <text id="legend-1-says" x="26" y="256" class="noteText">SCOPE: unbounded. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="268" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="286" class="noteText">COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="298" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

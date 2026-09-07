@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the derived overlaps a BPMN emission takes, each against the relation that names it.\nSELECT * FROM (VALUES\n  ('the buffer',   'D would be P x L x 3',        'the layer, within which the three engines are substitutes',\n                   'layers/absorption.sqlc'),\n  ('the lane set', 'D lanes + N lanes',            'the layer set, enumerated twice over one conformed dimension',\n                   'diagrams/lane_grain.sqlc'),\n  ('the import',   'one per cross-document part',  'the document, referenced many times from one filing',\n                   'diagrams/cross_document.sqlc')\n) AS e(elimination, the_sum, the_overlap, named_by)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "elimination",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "the_sum",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "the_overlap",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "named_by",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "4d57379f89ee805ee2c981de7cdfd613f7286a0da6218888f10190b06f552295"
+}

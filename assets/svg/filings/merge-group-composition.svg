@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/merge-group-composition.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 442" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="merge-group-composition" id="pool-merge-group-composition"><title>pool: merge-group-composition</title>
+    <rect id="pool-merge-group-composition-box" x="8" y="36" width="744" height="294" class="poolBox"/>
+    <path id="pool-merge-group-composition-band" d="M36 36 v294" class="poolBox"/>
+    <text id="pool-merge-group-composition-name" transform="translate(26,183) rotate(-90)" text-anchor="middle" class="poolName">merge-group-composition</text>
+  </g>
+  <g class="lane" data-layer="capacidade-instalada" data-rank="1" id="lane_merge-group-composition_capacidade-instalada"><title>lane: capacidade-instalada</title>
+    <rect id="lane_merge-group-composition_capacidade-instalada-box" x="120" y="46" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_capacidade-instalada"><text id="lane_merge-group-composition_capacidade-instalada-name" x="128" y="62" class="laneName">capacidade-instalada</text></a>
+    <text id="lane_merge-group-composition_capacidade-instalada-rank" x="732" y="62" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_merge-group-composition_capacidade-instalada_merge-pt-member_capacidade-instalada" data-kind="callActivity" id="call_merge-group-composition_capacidade-instalada_merge-pt-member_capacidade-instalada"><title>callActivity capacidade-instalada &lt;- merge-pt-member/capacidade-instalada</title>
+      <rect id="call_merge-group-composition_capacidade-instalada_merge-pt-member_capacidade-instalada-box" x="290" y="52" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-pt-member.svg#lane_merge-pt-member_capacidade-instalada"><text id="call_merge-group-composition_capacidade-instalada_merge-pt-member_capacidade-instalada-name" x="296" y="65" class="nodeName">capacidade-instalada &lt;- merge-pt-member/capacidade-instalada</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="compute-pt" data-rank="1" id="lane_merge-group-composition_compute-pt"><title>lane: compute-pt</title>
+    <rect id="lane_merge-group-composition_compute-pt-box" x="120" y="86" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_compute-pt"><text id="lane_merge-group-composition_compute-pt-name" x="128" y="102" class="laneName">compute-pt</text></a>
+    <text id="lane_merge-group-composition_compute-pt-rank" x="732" y="102" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_merge-group-composition_compute-pt_merge-pt-member_compute" data-kind="callActivity" id="call_merge-group-composition_compute-pt_merge-pt-member_compute"><title>callActivity compute-pt &lt;- merge-pt-member/compute</title>
+      <rect id="call_merge-group-composition_compute-pt_merge-pt-member_compute-box" x="290" y="92" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-pt-member.svg#lane_merge-pt-member_compute"><text id="call_merge-group-composition_compute-pt_merge-pt-member_compute-name" x="296" y="105" class="nodeName">compute-pt &lt;- merge-pt-member/compute</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="compute-us" data-rank="1" id="lane_merge-group-composition_compute-us"><title>lane: compute-us</title>
+    <rect id="lane_merge-group-composition_compute-us-box" x="120" y="126" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_compute-us"><text id="lane_merge-group-composition_compute-us-name" x="128" y="142" class="laneName">compute-us</text></a>
+    <text id="lane_merge-group-composition_compute-us-rank" x="732" y="142" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_merge-group-composition_compute-us_merge-us-member_compute" data-kind="callActivity" id="call_merge-group-composition_compute-us_merge-us-member_compute"><title>callActivity compute-us &lt;- merge-us-member/compute</title>
+      <rect id="call_merge-group-composition_compute-us_merge-us-member_compute-box" x="290" y="132" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-us-member.svg#lane_merge-us-member_compute"><text id="call_merge-group-composition_compute-us_merge-us-member_compute-name" x="296" y="145" class="nodeName">compute-us &lt;- merge-us-member/compute</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="labour" data-rank="1" id="lane_merge-group-composition_labour"><title>lane: labour</title>
+    <rect id="lane_merge-group-composition_labour-box" x="120" y="166" width="620" height="56" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_labour"><text id="lane_merge-group-composition_labour-name" x="128" y="182" class="laneName">labour</text></a>
+    <text id="lane_merge-group-composition_labour-rank" x="732" y="182" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_merge-group-composition_labour_merge-pt-member_pessoal" data-kind="callActivity" id="call_merge-group-composition_labour_merge-pt-member_pessoal"><title>callActivity labour &lt;- merge-pt-member/pessoal</title>
+      <rect id="call_merge-group-composition_labour_merge-pt-member_pessoal-box" x="290" y="172" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-pt-member.svg#lane_merge-pt-member_pessoal"><text id="call_merge-group-composition_labour_merge-pt-member_pessoal-name" x="296" y="185" class="nodeName">labour &lt;- merge-pt-member/pessoal</text></a>
+    </g>
+    <g class="node" data-id="call_merge-group-composition_labour_merge-us-member_labour" data-kind="callActivity" id="call_merge-group-composition_labour_merge-us-member_labour"><title>callActivity labour &lt;- merge-us-member/labour</title>
+      <rect id="call_merge-group-composition_labour_merge-us-member_labour-box" x="290" y="194" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-us-member.svg#lane_merge-us-member_labour"><text id="call_merge-group-composition_labour_merge-us-member_labour-name" x="296" y="207" class="nodeName">labour &lt;- merge-us-member/labour</text></a>
+    </g>
+  </g>
+  <g class="lane" data-layer="on-call" data-rank="0" id="lane_merge-group-composition_on-call"><title>lane: on-call</title>
+    <rect id="lane_merge-group-composition_on-call-box" x="120" y="228" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_on-call"><text id="lane_merge-group-composition_on-call-name" x="128" y="244" class="laneName">on-call</text></a>
+    <text id="lane_merge-group-composition_on-call-rank" x="732" y="244" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="shift-line" data-rank="1" id="lane_merge-group-composition_shift-line"><title>lane: shift-line</title>
+    <rect id="lane_merge-group-composition_shift-line-box" x="120" y="268" width="620" height="56" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-group-composition_shift-line"><text id="lane_merge-group-composition_shift-line-name" x="128" y="284" class="laneName">shift-line</text></a>
+    <text id="lane_merge-group-composition_shift-line-rank" x="732" y="284" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_merge-group-composition_shift-line_merge-pt-member_linha-partilhada" data-kind="callActivity" id="call_merge-group-composition_shift-line_merge-pt-member_linha-partilhada"><title>callActivity shift-line &lt;- merge-pt-member/linha-partilhada</title>
+      <rect id="call_merge-group-composition_shift-line_merge-pt-member_linha-partilhada-box" x="290" y="274" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-pt-member.svg#lane_merge-pt-member_linha-partilhada"><text id="call_merge-group-composition_shift-line_merge-pt-member_linha-partilhada-name" x="296" y="287" class="nodeName">shift-line &lt;- merge-pt-member/linha-partilhada</text></a>
+    </g>
+    <g class="node" data-id="call_merge-group-composition_shift-line_merge-us-member_shift-line" data-kind="callActivity" id="call_merge-group-composition_shift-line_merge-us-member_shift-line"><title>callActivity shift-line &lt;- merge-us-member/shift-line</title>
+      <rect id="call_merge-group-composition_shift-line_merge-us-member_shift-line-box" x="290" y="296" width="440" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/merge-us-member.svg#lane_merge-us-member_shift-line"><text id="call_merge-group-composition_shift-line_merge-us-member_shift-line-name" x="296" y="309" class="nodeName">shift-line &lt;- merge-us-member/shift-line</text></a>
+    </g>
+  </g>
+  <g class="dependence" data-from="lane_merge-group-composition_compute-us" data-to="lane_merge-group-composition_compute-pt" id="dep-lane_merge-group-composition_compute-us-lane_merge-group-composition_compute-pt"><title>dependence: compute-us moves compute-pt</title>
+    <path id="dep-lane_merge-group-composition_compute-us-lane_merge-group-composition_compute-pt-line" d="M120 143 H94 V103 H120" class="depLine" marker-end="url(#depArrow)"/>
+  </g>
+  <g class="dependence" data-from="lane_merge-group-composition_labour" data-to="lane_merge-group-composition_on-call" id="dep-lane_merge-group-composition_labour-lane_merge-group-composition_on-call"><title>dependence: labour moves on-call</title>
+    <path id="dep-lane_merge-group-composition_labour-lane_merge-group-composition_on-call-line" d="M120 194 H94 V245 H120" class="depLine" marker-end="url(#depArrow)"/>
+  </g>
+  <g class="dependence" data-from="lane_merge-group-composition_labour" data-to="lane_merge-group-composition_shift-line" id="dep-lane_merge-group-composition_labour-lane_merge-group-composition_shift-line"><title>dependence: labour moves shift-line</title>
+    <path id="dep-lane_merge-group-composition_labour-lane_merge-group-composition_shift-line-line" d="M120 194 H94 V296 H120" class="depLine" marker-end="url(#depArrow)"/>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 338 h-8 v96 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="350" class="noteText">A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion.</text>
+    <text id="legend-0-source" x="26" y="362" class="noteCite">assets/sqlc/diagrams/dependences.sqlc</text>
+    <text id="legend-1-says" x="26" y="380" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="392" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="410" class="noteText">COUPLING SEARCH: stated. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="422" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

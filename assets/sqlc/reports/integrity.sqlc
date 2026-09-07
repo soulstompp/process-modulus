@@ -37,8 +37,10 @@
 -- ⚠️ PROBE BEFORE TRUSTING AN EMPTY RESULT. Add a row to checks/roster.sqlc naming a check that
 --    does not exist, recompose, and this must report it against `rules`. Do the same in
 --    arithmetic/roster.sqlc and it must report against `arithmetic`. Revert both.
---    algebra/roster.sqlc likewise, reporting against `algebra`.
--- checks/, arithmetic/ and algebra/: each roster against the population it declares.
+--    algebra/roster.sqlc likewise, reporting against `algebra`. Add a row to
+--    diagrams/domain_objects.sqlc naming a table that does not exist and it must report against
+--    `diagrams`; drop one and it must report the table as undeclared.
+-- checks/, arithmetic/, algebra/ and both diagrams/ contracts: each roster against its population.
 SELECT x.contract, 'declared, but nothing produces it' AS problem, x.subject
 FROM (
     (
@@ -47,6 +49,10 @@ FROM (
         SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
         UNION ALL
         SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
+        UNION ALL
+        SELECT 'diagrams', d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d
+        UNION ALL
+        SELECT 'diagram laws', l.slug FROM ( :compose(diagrams/roster.sqlc) ) l
     )
     EXCEPT
     (
@@ -55,6 +61,10 @@ FROM (
         SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
         UNION ALL
         SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
+        UNION ALL
+        SELECT 'diagrams', k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k
+        UNION ALL
+        SELECT 'diagram laws', e.slug FROM ( :compose(diagrams/expected.sqlc) ) e
     )
 ) x
 UNION ALL
@@ -66,6 +76,10 @@ FROM (
         SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
         UNION ALL
         SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
+        UNION ALL
+        SELECT 'diagrams', k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k
+        UNION ALL
+        SELECT 'diagram laws', e.slug FROM ( :compose(diagrams/expected.sqlc) ) e
     )
     EXCEPT
     (
@@ -74,6 +88,10 @@ FROM (
         SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
         UNION ALL
         SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
+        UNION ALL
+        SELECT 'diagrams', d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d
+        UNION ALL
+        SELECT 'diagram laws', l.slug FROM ( :compose(diagrams/roster.sqlc) ) l
     )
 ) x
 UNION ALL

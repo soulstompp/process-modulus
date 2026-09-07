@@ -1,0 +1,28 @@
+# HOW MUCH OF THE SYSTEM EACH FILING'S STACK HOLDS, AND WHAT DECIDED IT. One row per filing:
+# the typed extent, and the basis prose that is required beside it.
+#
+# ⛔⛔⛔ IT EXISTS BECAUSE THE EMITTER ASSERTED THE ANSWER. Every document carried the sentence
+#    *a partition of layers claimed exhaustive*, hardcoded, in all 15 documents, and exactly ONE
+#    filing claims `complete`. That is not a `loses`: the artifact SAID something 14 filings
+#    declined to say, which is the `invents` state in the emitter's own prose. ⭐ And no law could
+#    reach it, because it was a string literal in a `writeln!` rather than a count of anything.
+#
+# ⭐⭐⭐ THREE STATES, AND BPMN RENDERS ONE. `complete` asserts a boundary, `scoped` says somebody
+#    established what lies outside and excluded it, `unbounded` says nobody looked. `tLaneSet` has
+#    no extent attribute of any kind, and the schema's own gloss is the accusation already
+#    written: *a model that renders them identically cannot tell a bounded selection from an
+#    unexamined one*. Corpus: 9 scoped, 5 unbounded, 1 complete.
+#
+# ⭐⭐ THE BASIS TRAVELS AND THE COUPLING OBSERVATION DOES NOT, AND THAT WAS MEASURED RATHER THAN
+#    ASSUMED. `diagrams/dependences.sqlc` refuses its prose because two of five observations carry
+#    a numeral onto a page with no unit. ⛔ 0 of 15 bases carry one, so the same refusal does not
+#    apply here and applying it anyway would be a rule remembered rather than run.
+#
+# ⚠️ BPMN IS THE FINER OF THE TWO ON THE BASIS AND HAS NOTHING ON THE EXTENT. `tLane` carries
+#   `partitionElement` and `partitionElementRef` for what a partition is BY, per LANE, where this
+#   model files one basis per STACK. That is the grain axis running backwards for once.
+-- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
+SELECT s.filing, s.extent, s.basis
+FROM (
+    :compose(epistemics/scopes.sqlc)
+) s

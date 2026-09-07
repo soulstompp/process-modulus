@@ -124,7 +124,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .fetch_all(&pool)
         .await?;
 
-    println!("\n3. roster integrity, all three contracts: {} disagreement(s)", drift.len());
+    println!("\n3. roster integrity, every declared contract: {} disagreement(s)", drift.len());
     for d in &drift {
         println!("   ⛔ [{}] {}: {}", d.contract, d.problem, d.subject);
     }
@@ -135,7 +135,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     roster row, or a roster row added without a relation, now fails here.
     //
     // ⭐ It covers the conformance and algebra rosters too, because reports/integrity.sqlc
-    //   checks all three contracts in one pass. A readiness report that passed while the rule
+    //   checks every contract in one pass. A readiness report that passed while the rule
     //   roster was broken would be reporting on a checker it has no reason to trust.
     //
     // ⭐ AND IT READS THE SOUNDNESS EXAMPLE'S QUERY FILE ON PURPOSE. Both examples want the same

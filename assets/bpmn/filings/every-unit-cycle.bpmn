@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `every-unit-cycle`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:fixture:capacity-desk:every-unit-cycle"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:fixture:capacity-desk:every-unit-cycle"
+             id="defs_every-unit-cycle">
+  <collaboration id="collab_every-unit-cycle">
+    <participant id="pool_every-unit-cycle" name="every-unit-cycle" processRef="proc_every-unit-cycle"/>
+  </collaboration>
+  <process id="proc_every-unit-cycle" isExecutable="false">
+    <documentation>pm:Stack of `every-unit-cycle`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_every-unit-cycle" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: stipulated: one reserved pool counted three ways, so that the conversions between the three units form a closed cycle [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: notApplicable. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_every-unit-cycle_cards" name="cards">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <childLaneSet id="kids_every-unit-cycle_cards" name="parts">
+          <lane id="lane_every-unit-cycle_node-capacity" name="node-capacity">
+            <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+            <childLaneSet id="kids_every-unit-cycle_node-capacity" name="parts">
+              <lane id="lane_every-unit-cycle_reserved-hours" name="reserved-hours">
+                <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+              </lane>
+            </childLaneSet>
+          </lane>
+        </childLaneSet>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_every-unit-cycle_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-unit-cycle_search">
+      <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_every-unit-cycle">
+    <bpmndi:BPMNPlane id="plane_every-unit-cycle" bpmnElement="tns:collab_every-unit-cycle">
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_pool" bpmnElement="tns:pool_every-unit-cycle" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="114"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_lane_every-unit-cycle_cards" bpmnElement="tns:lane_every-unit-cycle_cards">
+        <dc:Bounds x="120" y="46" width="620" height="98"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_lane_every-unit-cycle_node-capacity" bpmnElement="tns:lane_every-unit-cycle_node-capacity">
+        <dc:Bounds x="134" y="68" width="600" height="66"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_lane_every-unit-cycle_reserved-hours" bpmnElement="tns:lane_every-unit-cycle_reserved-hours">
+        <dc:Bounds x="148" y="90" width="580" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

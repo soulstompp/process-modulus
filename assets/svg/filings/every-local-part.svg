@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/every-local-part.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 238" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="every-local-part" id="pool-every-local-part"><title>pool: every-local-part</title>
+    <rect id="pool-every-local-part-box" x="8" y="36" width="744" height="120" class="poolBox"/>
+    <path id="pool-every-local-part-band" d="M36 36 v120" class="poolBox"/>
+    <text id="pool-every-local-part-name" transform="translate(26,96) rotate(-90)" text-anchor="middle" class="poolName">every-local-part</text>
+  </g>
+  <g class="lane" data-layer="both-views" data-rank="2" id="lane_every-local-part_both-views"><title>lane: both-views</title>
+    <rect id="lane_every-local-part_both-views-box" x="120" y="46" width="620" height="104" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-local-part_both-views"><text id="lane_every-local-part_both-views-name" x="128" y="62" class="laneName">both-views</text></a>
+    <text id="lane_every-local-part_both-views-rank" x="732" y="62" class="rankName" text-anchor="end">rank 2</text>
+  <g class="lane" data-layer="as-contracted" data-rank="0" id="lane_every-local-part_as-contracted"><title>lane: as-contracted</title>
+    <rect id="lane_every-local-part_as-contracted-box" x="134" y="68" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-local-part_as-contracted"><text id="lane_every-local-part_as-contracted-name" x="142" y="84" class="laneName">as-contracted</text></a>
+    <text id="lane_every-local-part_as-contracted-rank" x="726" y="84" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="as-filed" data-rank="1" id="lane_every-local-part_as-filed"><title>lane: as-filed</title>
+    <rect id="lane_every-local-part_as-filed-box" x="134" y="106" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-local-part_as-filed"><text id="lane_every-local-part_as-filed-name" x="142" y="122" class="laneName">as-filed</text></a>
+    <text id="lane_every-local-part_as-filed-rank" x="726" y="122" class="rankName" text-anchor="end">rank 1</text>
+    <g class="node" data-id="call_every-local-part_as-filed_every-absence_oven" data-kind="callActivity" id="call_every-local-part_as-filed_every-absence_oven"><title>callActivity as-filed &lt;- every-absence/oven</title>
+      <rect id="call_every-local-part_as-filed_every-absence_oven-box" x="304" y="112" width="420" height="18" rx="4" class="activity callActivity"/>
+      <a href="../filings/every-absence.svg#lane_every-absence_oven"><text id="call_every-local-part_as-filed_every-absence_oven-name" x="310" y="125" class="nodeName">as-filed &lt;- every-absence/oven</text></a>
+    </g>
+  </g>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 164 h-8 v66 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="176" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-0-source" x="26" y="188" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-1-says" x="26" y="206" class="noteText">COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence.</text>
+    <text id="legend-1-source" x="26" y="218" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

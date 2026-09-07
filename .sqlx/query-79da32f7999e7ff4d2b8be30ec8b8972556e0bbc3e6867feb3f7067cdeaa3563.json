@@ -1,0 +1,63 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the levels of process this corpus holds, and which of them a BPMN emission carries.\nSELECT * FROM (VALUES\n  (0, 'supply',   'an operation, in the lane it draws from', 'a layer''s supply',\n      'a draw, and a commitment INDUCED on another layer',   'pm.operation, pm.draw, pm.induction', true),\n  (1, 'filing',   'a party, an enterer, an approver, a searcher',\n      'the figures level 0 leaves behind',\n      'a claim with a standing, a search with an outcome, a scope with an extent',\n      'pm.claim provenance, pm.coupling_search, pm.stack_scope, pm.bound_origin, pm.narrowing', false),\n  (2, 'checking', 'a rule on checks/roster.sqlc', 'the claims level 1 filed',\n      'violates, or NULL for a rule that examined nothing',  'checks/all.sqlc', false),\n  (3, 'proving',  'a law on algebra/roster.sqlc, a site on arithmetic/roster.sqlc',\n      'the relations level 2 rests on', 'holds, or a verdict',\n      'algebra/all.sqlc, arithmetic/all.sqlc', false),\n  (4, 'contract', 'a roster, against the population it declares', 'the laws level 3 states',\n      '⛔ NOTHING. An empty result is the end condition, which is why there is no level 5',\n      'reports/integrity.sqlc', false)\n) AS l(level, process, actor, subject, outcome, where_it_lives, emitted)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "level",
+        "type_info": "Int4",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "process",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "actor",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "subject",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "outcome",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "where_it_lives",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "emitted",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "79da32f7999e7ff4d2b8be30ec8b8972556e0bbc3e6867feb3f7067cdeaa3563"
+}

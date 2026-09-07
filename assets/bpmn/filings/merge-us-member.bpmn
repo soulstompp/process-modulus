@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `merge-us-member`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:us-member:2026-08-31"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:filing:us-member:2026-08-31"
+             id="defs_merge-us-member">
+  <collaboration id="collab_merge-us-member">
+    <participant id="pool_merge-us-member" name="merge-us-member" processRef="proc_merge-us-member"/>
+  </collaboration>
+  <process id="proc_merge-us-member" isExecutable="false">
+    <documentation>pm:Stack of `merge-us-member`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_merge-us-member" name="draw">
+      <documentation>scope: unbounded. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: what this member files under the group instruction. Whether the member runs layers the instruction does not name was not asked [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: unmeasured. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_merge-us-member_compute" name="compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_merge-us-member_labour" name="labour">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_merge-us-member_shift-line" name="shift-line">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_merge-us-member_scope">
+      <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_merge-us-member_search">
+      <text>COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_merge-us-member">
+    <bpmndi:BPMNPlane id="plane_merge-us-member" bpmnElement="tns:collab_merge-us-member">
+      <bpmndi:BPMNShape id="shape_merge-us-member_pool" bpmnElement="tns:pool_merge-us-member" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-us-member_lane_merge-us-member_compute" bpmnElement="tns:lane_merge-us-member_compute">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-us-member_lane_merge-us-member_labour" bpmnElement="tns:lane_merge-us-member_labour">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-us-member_lane_merge-us-member_shift-line" bpmnElement="tns:lane_merge-us-member_shift-line">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

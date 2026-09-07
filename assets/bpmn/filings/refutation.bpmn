@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `refutation`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:acme-platform:2026-Q2-refutation"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:filing:acme-platform:2026-Q2-refutation"
+             id="defs_refutation">
+  <collaboration id="collab_refutation">
+    <participant id="pool_refutation" name="refutation" processRef="proc_refutation"/>
+  </collaboration>
+  <process id="proc_refutation" isExecutable="false">
+    <documentation>pm:Stack of `refutation`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_refutation" name="draw">
+      <documentation>scope: unbounded. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: the three layers the coupling observation runs between. What else exists was not the question this filing put [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: stated. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_refutation_compute" name="compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_refutation_labour" name="labour">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_refutation_object-storage" name="object-storage">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_refutation_dependence">
+      <text>A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion. [assets/sqlc/diagrams/dependences.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_refutation_scope">
+      <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_refutation_search">
+      <text>COUPLING SEARCH: stated. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+    <association id="dep_refutation_compute_labour" sourceRef="tns:lane_refutation_compute" targetRef="tns:lane_refutation_labour" associationDirection="One">
+      <documentation>an observed dependence: relieving `compute` moved `labour`. NOT a supply edge and never evidence for a fusion. ⛔ What was observed, and how strongly, is not here. [assets/sqlc/diagrams/dependences.sqlc]</documentation>
+    </association>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_refutation">
+    <bpmndi:BPMNPlane id="plane_refutation" bpmnElement="tns:collab_refutation">
+      <bpmndi:BPMNShape id="shape_refutation_pool" bpmnElement="tns:pool_refutation" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_lane_refutation_compute" bpmnElement="tns:lane_refutation_compute">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_lane_refutation_labour" bpmnElement="tns:lane_refutation_labour">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_lane_refutation_object-storage" bpmnElement="tns:lane_refutation_object-storage">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

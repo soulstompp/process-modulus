@@ -1,0 +1,29 @@
+# THE GRAPHS THIS MODEL COMPOSES, AS THE LANE SETS OF ONE POOL. One row per graph: what its nodes
+# are, what its edges are, and what a cycle in it means.
+#
+# ⭐⭐⭐ A `VALUES` LITERAL, BECAUSE IT IS A CONTRACT. Derived from the tree it could never report
+#    that a graph has nothing behind it, and the claimant row is exactly that case: it is declared
+#    here and supplies no edges at all, which is the finding rather than an omission.
+#
+# ⭐⭐ THEY ARE THREE LANE SETS AND NOT THREE LANES, AND THE DIFFERENCE IS MEASURED. A `laneSet` is
+#    a partition claimed exhaustive, so three LANES would put every composition in exactly one.
+#    169 of 220 compositions touch more than one graph: a relation reading a part AND its factor is
+#    in the layer graph and the unit graph, and that is what a factor IS. BPMN permits several lane
+#    sets over one process for exactly this reason.
+#
+# ⛔ AND THREE LANE SETS CANNOT ALL BE THE CONTAINMENT. An inclusion tree gives each node ONE
+#   parent, so only one of these can be the nesting a diagram draws; the others need showing some
+#   other way. That is why `examples/diagramming.rs` takes the graph as a SLOT rather than picking
+#   one silently, and why a caller that names none does not run.
+-- the three graphs this model composes, as data an emitter chooses between.
+SELECT * FROM (VALUES
+  ('layers',    'a layer, keyed (filing, layer)', 'a part: F : layer -> layer',
+                'a MISFILED PARTITION. The cells were one cell',              'checks/layers_move_together'),
+  ('units',     'a unit',                          'a conversion: phi : unit -> unit',
+                'EXPECTED, and required to CLOSE: the weights on it must vanish, so a potential exists',
+                                                                              'checks/conversion_cycle_does_not_close'),
+  ('claimants', 'a claimant: software, an agent, a role, a person',
+                '⛔ delegation, and NOTHING FILES IT',
+                'unknown. Not "nobody is accountable": mutual signing authority is a legitimate cycle',
+                                                                              NULL)
+) AS g(graph, node_is, edge_is, a_cycle_is, governed_by)

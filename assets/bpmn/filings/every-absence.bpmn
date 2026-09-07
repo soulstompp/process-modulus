@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `every-absence`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:fixture:bakery:every-absence"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             targetNamespace="urn:example:fixture:bakery:every-absence"
+             id="defs_every-absence">
+  <collaboration id="collab_every-absence">
+    <participant id="pool_every-absence" name="every-absence" processRef="proc_every-absence"/>
+  </collaboration>
+  <process id="proc_every-absence" isExecutable="false">
+    <documentation>pm:Stack of `every-absence`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_every-absence" name="draw">
+      <documentation>scope: complete. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: stipulated: this fixture IS its system, and there is nothing outside it to bring into scope. ⭐ The only place `complete` is honest, because the system is invented [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: none. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_every-absence_counter" name="counter">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_every-absence_delivery" name="delivery">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_every-absence_mixer" name="mixer">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_every-absence_mixer-b" name="mixer-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_every-absence_oven" name="oven">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+      <lane id="lane_every-absence_oven-b" name="oven-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_every-absence_scope">
+      <text>SCOPE: complete. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-absence_search">
+      <text>COUPLING SEARCH: none. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_every-absence">
+    <bpmndi:BPMNPlane id="plane_every-absence" bpmnElement="tns:collab_every-absence">
+      <bpmndi:BPMNShape id="shape_every-absence_pool" bpmnElement="tns:pool_every-absence" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="250"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_counter" bpmnElement="tns:lane_every-absence_counter">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_delivery" bpmnElement="tns:lane_every-absence_delivery">
+        <dc:Bounds x="120" y="86" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_mixer" bpmnElement="tns:lane_every-absence_mixer">
+        <dc:Bounds x="120" y="126" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_mixer-b" bpmnElement="tns:lane_every-absence_mixer-b">
+        <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_oven" bpmnElement="tns:lane_every-absence_oven">
+        <dc:Bounds x="120" y="206" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_oven-b" bpmnElement="tns:lane_every-absence_oven-b">
+        <dc:Bounds x="120" y="246" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

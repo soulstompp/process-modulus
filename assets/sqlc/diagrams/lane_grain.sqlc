@@ -1,0 +1,28 @@
+# EVERY REFERENCE INTO THE LAYER DIMENSION, WITH WHAT THE REFERRING KEY ADDS TO IT. One row per
+# foreign key into `pm.layer`, and `whole` where it names the layer entire.
+#
+# ⭐⭐⭐ THIS IS WHAT A PARTITION ACTUALLY LOOKS LIKE, AND IT IS THE PRECONDITION OF "A LAYER IS A
+#    LANE". `(filing, layer)` is a partition cell because it is the COARSEST KEY THAT NOTHING
+#    REFINES: every table mentioning a layer either EXTENDS it with a second dimension
+#    (`slack` + buffer, `holder` + kind, `draw`/`induction` + operation) or RELATES two whole
+#    layers (`coupling`, `part`). Not one of them names a PIECE of a layer. If any did, a lane
+#    would have to be that finer thing and the whole mapping would move down a level.
+#
+# ⭐⭐ AND IT IS WHY EMITTING ONE LANE SET IS A SOUND ELIMINATION RATHER THAN A SIMPLIFICATION.
+#    D and N are two fact tables on ONE conformed dimension, so their lane sets are two
+#    enumerations of the same 51 cells. `|D lanes ∪ N lanes| = |D| + |N| - e` with `e` the cells
+#    themselves, which is the fold with the overlap DERIVED rather than filed: the overlap
+#    of two lane sets IS the layer set, and the layer set is a relation with a name.
+#
+# ⛔ THE ENGINES DO NOT SUBDIVIDE THE PARTITION, AND THAT IS THE THIRD ELIMINATION, ALREADY MADE
+#   BY THE MODEL. `pm.draw` has no `buffer` column: a draw is against a LAYER, never against one
+#   of its three engines, because `layers/absorption.sqlc` states they are SUBSTITUTES. So D is
+#   P x L and not P x L x 3, and the buffer attribution nobody can make is eliminated before any
+#   diagram exists. ⚠️ What the engines DO explain is why a lane is EMPTY: `pm.slack` holds three
+#   rows per layer and every one of them renders as `none`.
+-- pg_constraint, for the foreign keys into pm.layer; the grain the lane mapping rests on.
+SELECT c.conrelid::regclass::text                       AS referrer,
+       pg_get_constraintdef(c.oid)                      AS reference,
+       cardinality(c.confkey) = 2                       AS whole
+FROM pg_constraint c
+WHERE c.contype = 'f' AND c.confrelid = 'pm.layer'::regclass

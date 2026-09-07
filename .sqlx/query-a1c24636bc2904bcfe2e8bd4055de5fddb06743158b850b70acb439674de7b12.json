@@ -1,0 +1,33 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- asrt:Composition/asrt:citation, flattened to the one string a documentation element can hold.\nSELECT c.composition,\n       c.instrument\n         || coalesce(' clause ' || c.clause, '')\n         || coalesce(' (' || c.version || ')', '')\n         || ' under ' || c.taxonomy AS cited\nFROM (\n    -- asrt:composition/asrt:citation, one row each.\nSELECT c.composition, c.seq, c.taxonomy, c.instrument, c.clause, c.version\nFROM pm.composition_citation c\n\n) c\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.composition_citation",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "cited",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "a1c24636bc2904bcfe2e8bd4055de5fddb06743158b850b70acb439674de7b12"
+}

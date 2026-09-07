@@ -1,0 +1,66 @@
+# THE MODEL SIDE OF EVERY DIAGRAM LAW, COUNTED. One row per law on diagrams/roster.sqlc, with the
+# number a correct emission must produce.
+#
+# ⭐⭐⭐ THIS IS THE SPECIFICATION OF A CORRECT TRANSLATION, AND IT IS COMPUTABLE BEFORE ANY
+#    TRANSLATION EXISTS. The emitter is then judged against a number it did not produce, which is
+#    the only arrangement worth having: an emitter that computed its own expectation would agree
+#    with itself no matter what it did: a slice wearing an aggregate's shape, in a new place.
+#
+# ⭐ THE CALLER SUPPLIES THE LABEL. Each arm counts a different relation and none of them knows
+#   which law it serves, and a member that carried its own label would
+#   be answering a question about the set it happens to be in.
+#
+# ⛔ A LAW HERE WITH NO ROW ON THE ROSTER IS A COUNT NOBODY DECLARED, and a roster row with no arm
+#   here is a law nothing computes. reports/integrity.sqlc anti-joins both directions.
+-- diagrams/roster.sqlc's model_side relations, each counted.
+SELECT 'pools'   AS slug, count(*) AS expected FROM ( :compose(epistemics/documents.sqlc) )  x
+UNION ALL
+SELECT 'lanes',   count(*) FROM ( :compose(layers/every_layer.sqlc) )    x
+UNION ALL
+SELECT 'tasks',   count(*) FROM ( :compose(entries/operations.sqlc) )    x
+UNION ALL
+SELECT 'calls',   count(*) FROM ( :compose(diagrams/foreign_calls.sqlc) ) x
+UNION ALL
+SELECT 'nestings', count(*) FROM ( :compose(diagrams/nestings.sqlc) )    x
+UNION ALL
+SELECT 'categories', count(DISTINCT x.filing) FROM ( :compose(diagrams/categories.sqlc) ) x
+UNION ALL
+SELECT 'category_values', count(*) FROM ( :compose(diagrams/categories.sqlc) ) x
+UNION ALL
+SELECT 'groups',     count(*) FROM ( :compose(diagrams/categories.sqlc) ) x
+UNION ALL
+SELECT 'induced_into', count(*) FROM ( :compose(diagrams/category_members.sqlc) ) x
+UNION ALL
+SELECT 'diagrams', count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'planes',   count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'shapes',   count(*) FROM ( :compose(diagrams/shapes.sqlc) ) x
+UNION ALL
+SELECT 'legends', count(*) FROM ( :compose(diagrams/legends.sqlc) ) x
+UNION ALL
+SELECT 'descents', count(*) FROM ( :compose(diagrams/descents.sqlc) ) x
+UNION ALL
+SELECT 'attributions', count(*) FROM ( :compose(eliminations/resolved.sqlc) ) x
+UNION ALL
+SELECT 'citations', count(*) FROM ( :compose(diagrams/citations.sqlc) ) x
+UNION ALL
+SELECT 'scopes', count(*) FROM ( :compose(diagrams/scopes.sqlc) ) x
+UNION ALL
+SELECT 'dependences', count(*) FROM ( :compose(diagrams/dependences.sqlc) ) x
+UNION ALL
+SELECT 'namespaces', count(*) FROM ( :compose(composition/notations.sqlc) ) x
+UNION ALL
+SELECT 'imports', count(*) FROM ( :compose(diagrams/cross_document.sqlc) ) x
+UNION ALL
+SELECT 'in_a_lane', count(*) FROM ( :compose(diagrams/lane_membership.sqlc) ) x
+UNION ALL
+SELECT 'definitions',   count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'collaboration', count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'process',       count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'lane_set',      count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
+UNION ALL
+SELECT 'documentation', count(*) FROM ( :compose(diagrams/annotated.sqlc) ) x

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/merge-pt-member.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="merge-pt-member" id="pool-merge-pt-member"><title>pool: merge-pt-member</title>
+    <rect id="pool-merge-pt-member-box" x="8" y="36" width="744" height="170" class="poolBox"/>
+    <path id="pool-merge-pt-member-band" d="M36 36 v170" class="poolBox"/>
+    <text id="pool-merge-pt-member-name" transform="translate(26,121) rotate(-90)" text-anchor="middle" class="poolName">merge-pt-member</text>
+  </g>
+  <g class="lane" data-layer="capacidade-instalada" data-rank="0" id="lane_merge-pt-member_capacidade-instalada"><title>lane: capacidade-instalada</title>
+    <rect id="lane_merge-pt-member_capacidade-instalada-box" x="120" y="46" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-pt-member_capacidade-instalada"><text id="lane_merge-pt-member_capacidade-instalada-name" x="128" y="62" class="laneName">capacidade-instalada</text></a>
+    <text id="lane_merge-pt-member_capacidade-instalada-rank" x="732" y="62" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="compute" data-rank="0" id="lane_merge-pt-member_compute"><title>lane: compute</title>
+    <rect id="lane_merge-pt-member_compute-box" x="120" y="86" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-pt-member_compute"><text id="lane_merge-pt-member_compute-name" x="128" y="102" class="laneName">compute</text></a>
+    <text id="lane_merge-pt-member_compute-rank" x="732" y="102" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="linha-partilhada" data-rank="0" id="lane_merge-pt-member_linha-partilhada"><title>lane: linha-partilhada</title>
+    <rect id="lane_merge-pt-member_linha-partilhada-box" x="120" y="126" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-pt-member_linha-partilhada"><text id="lane_merge-pt-member_linha-partilhada-name" x="128" y="142" class="laneName">linha-partilhada</text></a>
+    <text id="lane_merge-pt-member_linha-partilhada-rank" x="732" y="142" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="pessoal" data-rank="0" id="lane_merge-pt-member_pessoal"><title>lane: pessoal</title>
+    <rect id="lane_merge-pt-member_pessoal-box" x="120" y="166" width="620" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_merge-pt-member_pessoal"><text id="lane_merge-pt-member_pessoal-name" x="128" y="182" class="laneName">pessoal</text></a>
+    <text id="lane_merge-pt-member_pessoal-rank" x="732" y="182" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 214 h-8 v66 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="226" class="noteText">SCOPE: unbounded. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-0-source" x="26" y="238" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-1-says" x="26" y="256" class="noteText">COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence.</text>
+    <text id="legend-1-source" x="26" y="268" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

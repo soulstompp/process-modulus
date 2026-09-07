@@ -1,0 +1,81 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.\nSELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,\n       (p.part_filing = p.composition) AS is_local\nFROM (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n) p\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.part",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.part",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "part_notation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.part",
+            "name": "part_filing"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "part_filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing_identity",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "part_layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.part",
+            "name": "part_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "is_local",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "41792b8b5af4c3d4321880daf0fa9bac4819f644afe946f5f830819ea9a1c448"
+}

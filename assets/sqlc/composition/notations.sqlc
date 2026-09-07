@@ -8,7 +8,8 @@
 #    that decision is signed. A model that resolved silently would be inventing a fact about the
 #    world in the middle of a join.
 #
-# ⛔⛔ IT WAS THE JOIN WRITTEN FIVE TIMES. `composition/parts.sqlc`, `used_as_a_part.sqlc`,
+# ⛔⛔ IT WAS THE JOIN WRITTEN FIVE TIMES. `composition/parts.sqlc`, `used_as_a_part.sqlc` (since
+#    retired with `leaf_reached_twice`, the rule it existed to restrict),
 #    `local_parts.sqlc`, `epistemics/documents.sqlc` and `epistemics/absences.sqlc` each reached
 #    into `pm.filing_identity` on their own. `composition/parts.sqlc`'s own header claims the
 #    resolution was "written ten times" and is now written once -- true of the resolved PART, and

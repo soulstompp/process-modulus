@@ -91,7 +91,8 @@ boundary, which is the only place any of this matters.
   somebody looked and there is none, nobody has measured it, the question does not apply here,
   or it is computed from something else. That applies to lists too — a stack with no couplings
   filed says whether anybody went looking, because "we tested the layers and they are
-  independent" and "nobody checked" are opposite claims and used to be the same document.
+  independent" and "nobody checked" are opposite claims that a bare optional list spells the
+  same way.
 
 ## Why process-modulus
 
@@ -496,7 +497,7 @@ a fork, and a fork drifts with nothing here able to notice that it has.
 
 | borrowed from | what, and how it connects |
 |---|---|
-| BPMN 2.0 | sequence, gateways and events. `ForeignId` points at the same operation in a BPMN model, so a process notation and this model travel together |
+| BPMN 2.0 | sequence, gateways and events. `ForeignId` points at the same operation in a BPMN model, so a process notation and this model travel together, and the crossing is rendered rather than described: [below](#the-crossing-is-drawn-and-every-sentence-on-it-says-what-states-it) |
 | *Factory Physics* (Hopp and Spearman) | the buffer set of inventory, capacity and time, adopted closed and as published |
 | ISO 286 | the three fit classes — `clearance`, `transition` and `interference` — in the mechanical sense, adopted closed and as published |
 | accounting frameworks | every measurement basis except `nameplate`, which describes committed capacity rather than value and so has no framework definition to cite |
@@ -504,6 +505,32 @@ a fork, and a fork drifts with nothing here able to notice that it has.
 What this model is answerable for is the short list: `Remainder`, `Holder` and `HolderKind`,
 `Divisibility` and `ConstraintOrigin`, the three slacks, `Layer` and `Coupling`, `Induction`,
 `Claim`, `Absence`, `Provenance`, and `nameplate`.
+
+## The crossing is drawn, and every sentence on it says what states it
+
+`ForeignId` points *at* a BPMN model. This repository also goes the other way: it renders each
+filing **as** a BPMN document, so a process modeller can lay the two notations side by side
+instead of taking a description of one on trust.
+
+```bash
+cargo run --example diagramming   # one .bpmn per filing, into assets/bpmn/filings/
+cargo run --example graphs        # the model's own graphs, as the lane sets of one pool
+cargo run --example rendering     # assets/svg/ from assets/bpmn/, reading no model at all
+```
+
+What a correct translation owes is written down rather than assumed.
+[`assets/sqlc/diagrams/roster.sqlc`](assets/sqlc/diagrams/roster.sqlc) carries one law per
+element kind, and each law names the relation that supplies the count it has to match.
+[`assets/sqlc/diagrams/domain_objects.sqlc`](assets/sqlc/diagrams/domain_objects.sqlc) says, for
+every table in the model, which BPMN element it renders as or the typed reason there is none, and
+a mapping that loses something says how: `demoted` means a person can still read the fact and a
+tool can no longer resolve it, `absent` means it is not in the artifact in any form.
+
+⛔ **A drawing is believed in a way a table is not.** A wrong table gets re-checked; a wrong
+diagram gets quoted in a deck. So every sentence an emitted document carries names the relation
+that states it, in the file and on the drawn page, and `examples/diagramming.rs` reads them back
+out of the artifact afterwards: a sentence with no source, a source that is not a relation in this
+tree, and a source the emitter never queried each fail the run.
 
 ## Regimes
 

@@ -1,0 +1,30 @@
+# `F` AT LAYER GRAIN, FOR THE PARTS THAT CROSS A DOCUMENT. One row per foreign part edge:
+# which composed layer, and which layer of which other filing it is composed from.
+#
+# ⭐⭐⭐ THIS IS THE MAPPING'S WIDEST `demoted` BEING PROMOTED BACK TO A REFERENCE. A
+#    `callActivity` names a PROCESS, so 17 layer-grain edges collapse to 5 document pairs, and
+#    the layer survives only inside `@name` as `labour <- merge-us-member/labour`: readable by a
+#    person, unresolvable by a tool. `tRelationship` carries `source` and `target` as QNames,
+#    `minOccurs 1 maxOccurs unbounded`, plus a REQUIRED `type` string.
+#
+# ⭐⭐ THE `type` ATTRIBUTE IS THE WHOLE REASON THIS AND NOT AN `association`. An association has
+#    no name and no type, so its only discriminators are its endpoints, and a second use makes two
+#    facts indistinguishable. Measured, and exercised rather than feared: `merge-group-composition`
+#    would carry 3 coupling lines and 7 part lines and `merge-holding-composition` 1 and 5, in the
+#    two documents where *a coupling is never evidence for a fusion* matters most. A relationship
+#    says which relation it is, in a required field.
+#
+# ⛔⛔ AND THE BOUNDARY ARGUMENT THAT REFUSES `extensionElements` DOES NOT REACH THIS ONE. That
+#   refusal is *ForeignId crosses by NAMING a position in the other document and never by
+#   importing any of it, and an extension element is importing all of it*. A relationship carries
+#   two QNames and a type string: it names positions and imports nothing. The refusal was about a
+#   content model, not about a chapter of the standard.
+#
+# ⚠️ FOREIGN PARTS ONLY. A local part is a `childLaneSet` and already keyed `(filing, layer)`, so
+#   it never lost the grain and owes no repair.
+-- pm:Fusion/pm:Part crossing a document; BPMN 2.0 tRelationship source/target.
+SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
+FROM (
+    :compose(diagrams/calls.sqlc)
+) c
+WHERE NOT c.is_local

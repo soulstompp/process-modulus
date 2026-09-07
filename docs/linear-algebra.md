@@ -17,11 +17,11 @@ unit: a demand `d`, a committed supply `n` (the nameplate), and a quantum `q`, t
 indivisible unit supply arrives in. Supply comes in whole units, so `n = kq` for integer
 `k`; demand does not. The **remainder** is `r = n − d`. Every quantity is a three-point
 interval, so this is interval arithmetic throughout, and both the remainder's magnitude and
-its **sign** are evaluated across the demand range. ⭐ That uniformity is one pass old. The sign
-used to be read at the mode alone, because `Fit` was a two-member enumeration — `clearance |
-interference` — and a type taking one value has to be read at one point. ISO 286, which the
-vocabulary is borrowed from, defines **three** classes, and the missing one is exactly the
-overlap case:
+its **sign** are evaluated across the demand range. ⭐ Both are read across the range because
+the classification has three members rather than two. A two-valued `Fit`, `clearance |
+interference`, has nowhere to put the overlap, so it can only be read at a single point. ISO
+286, which the vocabulary is borrowed from, defines **three** classes, and the missing one is
+exactly the overlap case:
 
 ```
 clearance     n_low  ≥ d_high     the whole range clears
@@ -123,12 +123,13 @@ one buffer as its `absorber`, so there is a selection `A: L → {1,2,3}`, and th
 Σ_{j ∉ {customer, unrealised}} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]   wherever r[ℓ] < 0 and S[ℓ,A(ℓ)] is stated
 ```
 
-⭐ Three things are worth flagging to a reader who will look for structure here. **These were
-booleans until this pass**, which made the inequality unstatable — a bit says a buffer exists,
-not how much it holds, so any share fitted. **BOTH unserved holders are exempt, because both are
-the overflow**: `customer` and `unrealised` each name demand nobody met, which is not a load the
-buffer held. Exempting `unrealised` alone summed a customer's borne degradation into the buffer's
-load, and `Fit` calls the same pair a violation under a clearance. And the constraint is
+⭐ Three things are worth flagging to a reader who will look for structure here. **The slacks
+are quantities and not flags, and this inequality is the reason**: a bit says a buffer exists,
+not how much it holds, so against a bit every share fits and nothing is bounded. **BOTH
+unserved holders are exempt, because both are the overflow**: `customer` and `unrealised`
+each name demand nobody met, which is not a load the buffer held. Exempting `unrealised` alone
+sums a customer's borne degradation into the buffer's load, and `Fit` calls the same pair a
+violation under a clearance. And the constraint is
 one-sided — the slacks bound the interference side only, since under clearance the spare *is* the
 remainder and there is nothing to absorb.
 
@@ -208,19 +209,20 @@ matters because two operations quietly depend on it:
   five seconds has a nameplate of 2160/day; against 2000/day of demand the clearance is 160/day
   whatever the schedule. But the *duration* that clearance corresponds to does not survive: the
   naive `q / clearance` gives 9 minutes, while the real wait is 68 seconds inside the window or
-  21 hours outside it. Nine minutes occurs nowhere. So a slack must be filed as a quantity, and
-  the model's own worked example filed the duration until this pass.
-⛔ **A second consequence was claimed here and is withdrawn, and the withdrawal is worth more
-than the claim was.** It ran: a queue absorbs a transient and never a standing excess, so at
-`ρ > 1` the backlog grows without bound, so `shift-line`'s demand of `[11.0, 12.7, 14.4]` against
-a 10-shift line needs the variation reading to be coherent. **`ρ > 1` gives an unbounded backlog
-only with infinite patience**, and `timeSlack` IS a patience — *"before the caller goes
-elsewhere"*, filed `contractual`. A reneging queue is stable at any `ρ`: the backlog grows until
-the wait reaches the patience, then demand departs at the rate the excess arrives. Nothing here
+  21 hours outside it. Nine minutes occurs nowhere. So a slack is filed as a quantity in the
+  layer's unit, never as the duration it was observed as, and the filer owes the conversion.
+⛔ **A second consequence looks to follow here and does not, and why it fails is worth more
+than the claim would have been.** It runs: a queue absorbs a transient and never a standing
+excess, so at `ρ > 1` the backlog grows without bound, so `shift-line`'s demand of
+`[11.0, 12.7, 14.4]` against a 10-shift line needs the variation reading to be coherent.
+**`ρ > 1` gives an unbounded backlog only with infinite patience**, and `timeSlack` IS a
+patience — *"before the caller goes elsewhere"*, filed `contractual`. A reneging queue is
+stable at any `ρ`: the backlog grows until the wait reaches the patience, then demand departs
+at the rate the excess arrives. Nothing here
 needs the variation reading.
 
 ⭐ And the arithmetic is exact, which is the part to check: patience `2.5 shifts = 0.25 week` at
-`μ = 10/week` puts the equilibrium depth at `μW = 2.5` shifts — the queue sits AT the patience —
+`μ = 10/week` puts the equilibrium depth at `μW = 2.5` items — the wait sits AT the patience —
 while the departure rate is `λ − μ = 2.7/week` and the filed holders are `customer 1.7 +
 unrealised 1.0 = 2.7`. The sum rule and the queueing equilibrium agree.
 
@@ -267,18 +269,45 @@ makes a filer say which, and that is the difference between an exact rule and a 
 notes:
 
 - `Φ`'s entries are themselves three-point intervals ("a month is `[672, 720, 744]` hours"),
-  and the product is component-wise, which is sound **only** because a conversion is strictly
-  positive. The general four-corner interval product is not implemented and not owed.
+  and the product is component-wise wherever the quantity converted is non-negative, which
+  covers a demand and a nameplate. It does not cover a remainder: `r` carries a sign, and under
+  interference the larger factor gives the smaller product, so component-wise would return an
+  interval whose low exceeded its high. `composition/settled_remainders.sqlc` therefore takes
+  the corner on each side, `least(φ_low·r_low, φ_high·r_low)` and the matching `greatest`. The
+  general four-corner product, where BOTH operands straddle zero, is not implemented and not
+  owed: a conversion is strictly positive.
 - ⛔ `r_composed ≠ n_composed − d_composed` when `Φ ≠ I`, and this is not a defect in either
   figure. One `φ_p` multiplies both `n_p` and `d_p`, so those converted intervals are
   correlated; differencing them with the bound reversal independent quantities require counts
-  `φ`'s spread twice. `r` must be converted directly: `r_composed = F Φ r_parts + e_d`. In the
+  `φ`'s spread twice. `r` must be converted directly: `r_composed = F Φ r_parts − e_n + e_d`,
+  and BOTH eliminations appear because they act on `r` in opposite directions: removing
+  double-counted demand raises the remainder, removing double-counted nameplate lowers it.
+  ⛔ An identity stated in prose and evaluated nowhere can lose a whole term without anything
+  noticing. `composition/fused_remainders.sqlc` evaluates this one, and observation 13 in
+  `cargo run --example observations` prints it beside the figure `layers/remainder` derives
+  from the composed totals: they agree on every composed layer whose parts convert at a point
+  value, and differ on exactly the two carrying a factor with spread. In the
   corpus this reads `(1092.0, 2857.0, 4198.8)` re-derived against `(1414.0, 2857.0, 4085.6)`
   converted, agreeing only at the mode.
 - Compositions nest, so `F` composes — and the document-scoped uniqueness constraint does not.
   At one level "no part used twice" is a key; at two it must become "no leaf reachable by two
   paths", which no validator can see because the second path runs through a document the first
   does not contain.
+- ⭐ **And a nested composition has two different bottoms, one per quantity, on the same graph.**
+  A SUM over parts bottoms out at the layers `F` cannot descend from, because below those there
+  is nothing left to add. A REMAINDER bottoms out earlier: at the first layer whose own demand
+  and nameplate were not both scaled by one conversion factor with width. There `n − d` is
+  legitimate and the filed pair is a claim its composer stands behind, so descending past it
+  discards that claim and every correction the composer already applied, which must then be
+  rebuilt from below and can fail for reasons the filed figure had settled. A layer with no
+  parts satisfies the second condition trivially, which is why the two bottoms are easy to
+  mistake for one.
+
+  ⛔ **The terminal of the graph therefore moves with the quantity being folded**, which is not
+  true of the two composition systems this model is otherwise analogous to. A call graph's
+  terminals are its terminals; a query's leaves are its leaves whatever you select. Here an
+  intermediate node carries a figure somebody signed, and that is what makes it a place to
+  stop.
 
 `F` is also where fungibility is asserted: two parts are one composed layer exactly when supply
 in one can serve demand in the other. That is a judgement, it is required to carry prose, and
@@ -320,19 +349,26 @@ between the two, it is the dictionary and the rest of the file is one side of it
 
 ### The dictionary
 
-Every object above has a named relation. Cardinalities are live; recount them with
-`SELECT count(*)` over the composed `.sql`, and `cargo sqlc compose` regenerates all of them.
+Every object above has a named relation. ⛔ Row counts are deliberately not written here: a
+count in prose is right until the corpus next moves and silent about it afterwards. Run any
+relation and read the count off psql's own footer:
 
-| in the note | relation | rows |
-|---|---|---|
-| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` | 43, 39, 16 |
-| `r = n − d` | `layers/remainder` | 39 |
-| `F` (incidence) | `composition/parts` | 23 |
-| `Φ x` (converted parts) | `composition/converted` | 23 |
-| `F Φ x − e` | `composition/fused` | 11 |
-| `e` | `eliminations/filed` | 15 |
-| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` | 54, 129, 5 |
-| `D`, `N` | `entries/draws`, `entries/inductions` | 4, 2 |
+```
+psql -d process_modulus_proof -c 'SET search_path TO pm, public' -f assets/sql/layers/remainder.sql
+```
+
+`cargo sqlc compose` regenerates every one of them from `assets/sqlc/`.
+
+| in the note | relation |
+|---|---|
+| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` |
+| `r = n − d` | `layers/remainder` |
+| `F` (incidence) | `composition/parts` |
+| `Φ x` (converted parts) | `composition/converted` |
+| `F Φ x − e` | `composition/fused` |
+| `e` | `eliminations/filed` |
+| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` |
+| `D`, `N` | `entries/draws`, `entries/inductions` |
 
 ### The operations, which are the part worth the reviewer's attention
 
@@ -410,10 +446,16 @@ Supply arrives in whole units, so `n mod q = 0`. Two consequences the matrix for
 way to state.
 
 **A composed quantum exists, and it is the greatest common divisor.** If parts carry `q₁` and `q₂`
-in the same unit then `n₁ = a q₁` and `n₂ = b q₂`, and `{a q₁ + b q₂}` is exactly the set of
-multiples of `g = gcd(q₁, q₂)` by Bézout. So `g` divides every achievable sum and is the largest
-number that does. Asking for a "best" `q` within a single layer is the wrong question: there the
-quantum is observed, and choosing the largest divisor of `n` would infer the physics from the
+in the same unit then `n₁ = a q₁` and `n₂ = b q₂`, and every achievable sum `a q₁ + b q₂` is
+divisible by `g = gcd(q₁, q₂)`, which is the largest number of which that is true. ⚠️ Not every
+multiple of `g` is achievable: Bézout's identity is a statement about ℤ, and `a` and `b` here are
+counts of whole units. Over ℕ the reachable set is the numerical semigroup, so `q₁ = 3, q₂ = 5`
+gives `g = 1` while 1, 2, 4 and 7 cannot be made at all. Only the forward direction is used
+below, and only the forward direction holds. `gcd` also needs the two quanta commensurable,
+which is a live condition because they are reals.
+
+Asking for a "best" `q` within a single layer is the wrong question: there the quantum is
+observed, and choosing the largest divisor of `n` would infer the physics from the
 number.
 
 ⭐⭐⭐ **And therefore the elimination must itself be a whole multiple of the composed quantum.**
@@ -482,7 +524,7 @@ before they were written down:
 - `π` does **not** distribute over `∖`. Project first and you subtract on fewer attributes, so a
   difference must be taken on the key.
 - Bags are not sets. `composition/descent` is a bag on purpose; deduplicating it would destroy the
-  very fact `leaf_reached_twice` exists to find.
+  very fact `jagged_layer` exists to find.
 - ⛔ **`γ` and `σ` followed by `π` are indistinguishable by cardinality, and they answer opposite
   questions.** `S` is keyed `(filing, layer, buffer)` and every rule's subject is keyed
   `(filing, layer)`, so the buffer index has to be collapsed. Aggregating it reads the whole row;

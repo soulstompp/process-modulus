@@ -1,0 +1,63 @@
+# WHAT EACH GRAPH LOSES WHEN IT IS CUT UP BY FILING. One row per graph: its cycle space taken
+# corpus-wide, and the sum of its cycle spaces taken one filing at a time.
+#
+# ⭐⭐⭐ IT ANSWERS AN ACCUSATION RATHER THAN RAISING ONE. `examples/diagramming.rs` emits one
+#    document per FILING and draws the LAYER graph, and that is not a silent pick
+#    among three equals. **It is the only one of the three whose per-filing projection
+#    preserves the graph's cycle space**, and this relation is the measurement that says so.
+#
+# ⛔⛔ THE UNIT GRAPH'S ONLY CYCLE SPANS TWO FILINGS, SO CUTTING BY FILING DESTROYS IT. Corpus-wide
+#    the unit graph carries one independent cycle; summed per filing it carries none, because
+#    `GPU-hour -> node-hour` and `node-hour -> GPU` are filed in `every-unit-cycle` and the edge
+#    that closes them, `GPU -> GPU-hour`, is filed in `merge-holding-composition`. ⭐ **The fixture
+#    named `every-unit-cycle` contains no unit cycle on its own.**
+#
+# ⛔ AND THE CYCLE IS THE WHOLE SUBJECT. `checks/conversion_cycle_does_not_close` exists to ask
+#   whether the factors close round a loop, so a per-filing unit diagram would show two edges, no
+#   loop, and nothing to check: a picture that is well formed, validates, and has quietly removed
+#   the one property it was drawn to show. That is this repository's stated failure mode, and it
+#   would have been produced by making the graph a slot without measuring first.
+#
+# ⚠️ A GRAPH THAT SURVIVES IS NOT THEREBY WORTH DRAWING. `claimants` survives trivially, with no
+#   edges at all. Survival is a precondition on an honest per-filing emission and never a reason.
+-- rank/cycle_space.sqlc's arithmetic, taken corpus-wide and again per filing, and compared.
+WITH RECURSIVE edges AS (
+    SELECT 'units'::text AS graph, c.filing, c.from_unit AS a, c.to_unit AS b
+    FROM ( :compose(units/conversions.sqlc) ) c
+  UNION
+    SELECT 'layers', p.composition, p.composition || '/' || p.composed_layer,
+           p.part_filing || '/' || p.part_layer
+    FROM ( :compose(composition/parts.sqlc) ) p
+),
+whole AS (
+    SELECT graph, NULL::text AS filing, a, b FROM edges
+  UNION ALL
+    SELECT graph, filing, a, b FROM edges
+),
+nodes AS (SELECT graph, filing, a AS u FROM whole UNION SELECT graph, filing, b FROM whole),
+sym   AS (SELECT graph, filing, a, b FROM whole UNION SELECT graph, filing, b, a FROM whole),
+reach(graph, filing, root, at) AS (
+      SELECT graph, filing, u, u FROM nodes
+    UNION
+      SELECT r.graph, r.filing, r.root, s.b
+      FROM reach r JOIN sym s ON s.graph = r.graph AND s.filing IS NOT DISTINCT FROM r.filing
+                              AND s.a = r.at
+),
+comp AS (SELECT graph, filing, root, min(at) AS component FROM reach GROUP BY graph, filing, root),
+dim AS (
+    SELECT n.graph, n.filing,
+           (SELECT count(*) FROM whole w
+             WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing)
+             - count(DISTINCT n.u) + count(DISTINCT c.component) AS cycle_space_dim
+    FROM nodes n
+    JOIN comp c ON c.graph = n.graph AND c.filing IS NOT DISTINCT FROM n.filing AND c.root = n.u
+    GROUP BY n.graph, n.filing
+)
+SELECT w.graph,
+       w.cycle_space_dim                        AS corpus_wide,
+       coalesce(sum(p.cycle_space_dim), 0)::bigint AS summed_per_filing,
+       w.cycle_space_dim = coalesce(sum(p.cycle_space_dim), 0)::bigint AS survives_the_cut
+FROM      dim w
+LEFT JOIN dim p ON p.graph = w.graph AND p.filing IS NOT NULL
+WHERE w.filing IS NULL
+GROUP BY w.graph, w.cycle_space_dim

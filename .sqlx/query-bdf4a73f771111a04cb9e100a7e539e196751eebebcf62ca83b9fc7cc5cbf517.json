@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.\nSELECT 'layers' AS graph,\n       p.composition || '/' || p.composed_layer AS from_node,\n       p.part_filing || '/' || p.part_layer     AS to_node\nFROM (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n) p\nUNION ALL\nSELECT 'units', c.from_unit, c.to_unit\nFROM (\n    -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.\nSELECT DISTINCT\n       part.unit AS from_unit,\n       comp.unit AS to_unit,\n       p.factor_low, p.factor_mode, p.factor_high,\n       p.composition AS filing, p.composed_layer AS layer\nFROM      (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n) p\nJOIN      (\n    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.\nSELECT d.filing, d.layer, 'demand' AS quantity,\n       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit\nFROM (\n    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.\nSELECT l.filing, l.layer,\n       l.demand_low  AS d_low,\n       l.demand_mode AS d_mode,\n       l.demand_high AS d_high,\n       l.demand_unit AS d_unit,\n       l.demand_low = l.demand_high AS is_a_point,\n       l.demand_narrows,\n       l.demand_narrows_kind,\n       l.demand_narrows_absent\nFROM pm.layer l\nWHERE l.demand_low IS NOT NULL\n\n) d\nUNION ALL\nSELECT n.filing, n.layer, 'nameplate',\n       n.n_low, n.n_mode, n.n_high, n.n_unit\nFROM (\n    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.\nSELECT n.filing, n.layer,\n       n.amount_low  AS n_low,\n       n.amount_mode AS n_mode,\n       n.amount_high AS n_high,\n       n.amount_unit AS n_unit,\n       n.amount_origin,\n       n.lumpy, n.divisibility_absent,\n       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,\n       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent\nFROM pm.nameplate n\nWHERE n.amount_low IS NOT NULL\n\n) n\nUNION ALL\nSELECT s.filing, s.layer, s.buffer || 'Slack',\n       s.low, s.mode, s.high, s.unit\nFROM (\n    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.bound_origin, s.bound_origin_absent\nFROM pm.slack s\n\n) s\nWHERE s.low IS NOT NULL\n\n) part ON part.filing = p.part_filing AND part.layer = p.part_layer\n      AND part.quantity = 'nameplate'\nJOIN      (\n    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.\nSELECT d.filing, d.layer, 'demand' AS quantity,\n       d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit\nFROM (\n    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.\nSELECT l.filing, l.layer,\n       l.demand_low  AS d_low,\n       l.demand_mode AS d_mode,\n       l.demand_high AS d_high,\n       l.demand_unit AS d_unit,\n       l.demand_low = l.demand_high AS is_a_point,\n       l.demand_narrows,\n       l.demand_narrows_kind,\n       l.demand_narrows_absent\nFROM pm.layer l\nWHERE l.demand_low IS NOT NULL\n\n) d\nUNION ALL\nSELECT n.filing, n.layer, 'nameplate',\n       n.n_low, n.n_mode, n.n_high, n.n_unit\nFROM (\n    -- from pm.nameplate; pm:Layer/pm:Nameplate, its Divisibility and its window.\nSELECT n.filing, n.layer,\n       n.amount_low  AS n_low,\n       n.amount_mode AS n_mode,\n       n.amount_high AS n_high,\n       n.amount_unit AS n_unit,\n       n.amount_origin,\n       n.lumpy, n.divisibility_absent,\n       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit,\n       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent\nFROM pm.nameplate n\nWHERE n.amount_low IS NOT NULL\n\n) n\nUNION ALL\nSELECT s.filing, s.layer, s.buffer || 'Slack',\n       s.low, s.mode, s.high, s.unit\nFROM (\n    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.bound_origin, s.bound_origin_absent\nFROM pm.slack s\n\n) s\nWHERE s.low IS NOT NULL\n\n) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer\n      AND comp.quantity = 'nameplate'\nWHERE p.factor_low IS NOT NULL\n\n) c\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "from_node",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "to_node",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "bdf4a73f771111a04cb9e100a7e539e196751eebebcf62ca83b9fc7cc5cbf517"
+}

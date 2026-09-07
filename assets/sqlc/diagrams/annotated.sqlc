@@ -1,0 +1,73 @@
+# EVERYTHING A BPMN EMISSION OWES A `documentation` ELEMENT. One row per document, one per lane,
+# one per category, one per lane SET, and one per dependence.
+#
+# ⭐⭐⭐ IT EXISTS BECAUSE `documentation` WAS FILED AS A CONTAINER AND IS NOT ONE.
+#    `definitions`, `collaboration`, `process` and `laneSet` frame a document and must appear
+#    exactly once in it. `documentation` is an ANNOTATION: BPMN admits it on any base element, so
+#    counting it as one-per-document is a law that happens to be true and is wrong about the
+#    kind of thing it governs: it fires the instant a lane is annotated.
+#
+# ⭐⭐ PROVENANCE IS OWED BY BOTH, AND FOR THE SAME REASON THE `--` LINE IS OWED BY GENERATED SQL.
+#    A document says which filing it came from; a lane says its rank, which is not recoverable
+#    from anything else in the artifact because `calledElement` names a PROCESS and `F` links
+#    LAYERS. ⛔ A lane with no documentation is a lane whose evaluation order nobody can read.
+#
+# ⭐⭐⭐ AND A CATEGORY OWES ONE FOR THE REASON THIS WHOLE FILE TREE EXISTS. The only visual
+#    difference between a `group` and a `lane` is a DASHED border, and the reader of a diagram is
+#    the brilliant analyst who reads a box as a container. BPMN's semantics do say a group implies
+#    no containment, and semantics are not what somebody reads off a picture in a deck. ⛔ A
+#    category with no documentation is a cover that will be read as a partition, which is the
+#    falsifier of pm:Layer drawn by accident.
+#
+# ⭐⭐⭐ AND THE `laneSet` ROW IS THE ONE THAT CARRIES A FACT NOTHING ELSE COULD. A matrix and the
+#    search beside it are filed as a PAIR, and 12 of 15 filings here state no coupling, so a
+#    diagram drawing only the matrix is silent about them in a way a reader resolves as
+#    independence. The laneSet IS the partition the search is about, `tLaneSet` extends
+#    `tBaseElement`, and so the answer fits an element already spent. ⛔ An absent line is not
+#    independence, and this is the only place the artifact can say so.
+#
+# ⭐⭐⭐ AND `states` IS THE `--` LINE, CARRIED INTO THE ARTIFACT. A generated `.sql` file names
+#    the template it came from on one line, because a reader of seven thousand generated lines
+#    otherwise cannot get back to the argument. A `documentation` element is in exactly that
+#    position and was in exactly that state: the sentence is on the page, the relation that
+#    states it is not, and no reader of a `.bpmn` had a route back. ⛔ A sentence about a filing
+#    with nothing naming its source is a claim the EMITTER made, which is the `invents` state
+#    this roster already caught once in a hardcoded scope.
+#
+# ⛔⛔ AND THE `lane` ROW POINTS SOMEWHERE ELSE THAN ITS OWN ARM, WHICH IS THE INTERESTING ONE.
+#   `layers/every_layer.sqlc` says a lane is OWED one; the sentence it carries states a RANK, and
+#   that comes from `rank/evaluation_order.sqlc`. Owed by and stated by are two different
+#   questions and only one of them is what a reader chasing a number needs. Every other row here
+#   answers both with the same relation, which is why writing it down was easy to skip.
+-- the pools, the lanes and the categories, which are the three places provenance is owed.
+SELECT 'document' AS annotated, d.filing AS subject,
+       'diagrams/pools.sqlc' AS states
+FROM ( :compose(diagrams/pools.sqlc) ) d
+UNION ALL
+SELECT 'lane', l.filing || '/' || l.layer, 'rank/evaluation_order.sqlc'
+FROM ( :compose(layers/every_layer.sqlc) ) l
+UNION ALL
+SELECT 'category', c.filing, 'diagrams/categories.sqlc'
+FROM ( SELECT DISTINCT k.filing FROM ( :compose(diagrams/categories.sqlc) ) k ) c
+UNION ALL
+SELECT 'lane set, the coupling search', s.filing, 'diagrams/searches.sqlc'
+FROM ( :compose(diagrams/searches.sqlc) ) s
+UNION ALL
+SELECT 'lane set, the scope', s.filing, 'diagrams/scopes.sqlc'
+FROM ( :compose(diagrams/scopes.sqlc) ) s
+UNION ALL
+SELECT 'process, the citation', c.composition, 'diagrams/citations.sqlc'
+FROM ( :compose(diagrams/citations.sqlc) ) c
+UNION ALL
+SELECT 'relationship', d.composition || '/' || d.composed_layer || '<-' || d.part_filing || '/' || d.part_layer,
+       'diagrams/descents.sqlc'
+FROM ( :compose(diagrams/descents.sqlc) ) d
+UNION ALL
+SELECT 'relationship, an attribution',
+       b.composition || '/' || b.composed_layer || '<>' || b.resolved_filing || '/' || b.layer,
+       'eliminations/resolved.sqlc'
+FROM ( :compose(eliminations/resolved.sqlc) ) b
+UNION ALL
+SELECT 'dependence', d.filing || '/' || d.from_layer || '->' || d.to_layer,
+       'diagrams/dependences.sqlc'
+FROM ( :compose(diagrams/dependences.sqlc) ) d

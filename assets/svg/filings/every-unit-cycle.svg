@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/every-unit-cycle.bpmn by examples/rendering.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 232" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="every-unit-cycle" id="pool-every-unit-cycle"><title>pool: every-unit-cycle</title>
+    <rect id="pool-every-unit-cycle-box" x="8" y="36" width="744" height="114" class="poolBox"/>
+    <path id="pool-every-unit-cycle-band" d="M36 36 v114" class="poolBox"/>
+    <text id="pool-every-unit-cycle-name" transform="translate(26,93) rotate(-90)" text-anchor="middle" class="poolName">every-unit-cycle</text>
+  </g>
+  <g class="lane" data-layer="cards" data-rank="2" id="lane_every-unit-cycle_cards"><title>lane: cards</title>
+    <rect id="lane_every-unit-cycle_cards-box" x="120" y="46" width="620" height="98" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-unit-cycle_cards"><text id="lane_every-unit-cycle_cards-name" x="128" y="62" class="laneName">cards</text></a>
+    <text id="lane_every-unit-cycle_cards-rank" x="732" y="62" class="rankName" text-anchor="end">rank 2</text>
+  <g class="lane" data-layer="node-capacity" data-rank="1" id="lane_every-unit-cycle_node-capacity"><title>lane: node-capacity</title>
+    <rect id="lane_every-unit-cycle_node-capacity-box" x="134" y="68" width="600" height="66" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-unit-cycle_node-capacity"><text id="lane_every-unit-cycle_node-capacity-name" x="142" y="84" class="laneName">node-capacity</text></a>
+    <text id="lane_every-unit-cycle_node-capacity-rank" x="726" y="84" class="rankName" text-anchor="end">rank 1</text>
+  <g class="lane" data-layer="reserved-hours" data-rank="0" id="lane_every-unit-cycle_reserved-hours"><title>lane: reserved-hours</title>
+    <rect id="lane_every-unit-cycle_reserved-hours-box" x="148" y="90" width="580" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-unit-cycle_reserved-hours"><text id="lane_every-unit-cycle_reserved-hours-name" x="156" y="106" class="laneName">reserved-hours</text></a>
+    <text id="lane_every-unit-cycle_reserved-hours-rank" x="720" y="106" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  </g>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 158 h-8 v66 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="170" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-0-source" x="26" y="182" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-1-says" x="26" y="200" class="noteText">COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence.</text>
+    <text id="legend-1-source" x="26" y="212" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

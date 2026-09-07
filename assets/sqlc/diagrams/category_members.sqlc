@@ -1,0 +1,21 @@
+# N, THE INDUCTION INCIDENCE, PROJECTED TO WHAT A `categoryValueRef` CARRIES. One row per
+# (filing, operation, layer): this operation induces into this layer, and the flow node says so
+# itself rather than being collected by a container.
+#
+# ⭐⭐⭐ THE DIRECTION IS THE WHOLE DIFFERENCE. A `lane` collects its members and a flow node can
+#    be collected once. A `categoryValue` collects nobody: the MEMBER declares which categories it
+#    is in, unbounded, so the cover may overlap and no container has to be enlarged to say so.
+#    That is why this relation can be many-to-many where diagrams/lane_membership.sqlc cannot.
+#
+# ⭐⭐ MEASURED, AND EXERCISED RATHER THAN HYPOTHETICAL. In this corpus one operation both draws
+#    from `labour` and induces into `capability`, so it belongs to two layers, and a lane set can
+#    hold it in one. Before this relation existed the emitter put it in the draw lane and the
+#    induction was absent from the artifact entirely.
+#
+# ⛔ INCIDENCE ONLY. The wider relation carries three points, a unit, a typed absence and
+#   `decider`; none of it composes here, for the reason diagrams/lane_members.sqlc gives.
+-- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
+SELECT i.filing, i.operation, i.layer
+FROM (
+    :compose(entries/inductions.sqlc)
+) i

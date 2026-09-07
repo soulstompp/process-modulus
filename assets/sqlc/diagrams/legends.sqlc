@@ -1,0 +1,48 @@
+# EVERY NOTE A DOCUMENT OWES ON ITS OWN FACE. One row per (filing, note) that must be VISIBLE,
+# not merely present.
+#
+# ⭐⭐⭐ THE RULE THAT DECIDES MEMBERSHIP: A NOTE IS OWED WHEREVER THE NOTATION'S OWN DEFAULT
+#    READING IS WRONG. Not everything true about a filing belongs on its face. These four do,
+#    because without each one a reader reaches a specific false conclusion from a correct drawing:
+#      scope       a pool with three lanes reads as *this is the system*. It is a PROJECTION, and
+#                  14 of 15 filings here decline to claim otherwise.
+#      search      an absent dependence line reads as INDEPENDENCE. 12 of 15 state no coupling and
+#                  the four typed answers are the only thing separating *nobody looked* from
+#                  *somebody looked and found none*.
+#      dependence  a dotted arrow between two lanes reads as FLOW. A coupling is a dependence and
+#                  is NEVER evidence for a fusion, which the schema says in capitals.
+#      cover       a dashed box around nodes reads as a CONTAINER. A group is a cover: an
+#                  operation may be in several and is in exactly one lane.
+#
+# ⛔⛔ AND EVERY ONE OF THEM WAS ALREADY IN THE ARTIFACT AND ON NO PAGE. They sit in
+#   `documentation`, which is an ANNOTATION admitted on any base element and INVISIBLE in every
+#   rendering. `textAnnotation` is the only element in BPMN that puts words on the canvas, and it
+#   was withheld on the reason *documentation is spent instead* -- true, and about the wrong
+#   property. Two readers need two carriers: a tool reads the documentation where it is attached,
+#   a person reads the note where it is drawn.
+#
+# ⭐⭐ FLOATING, WITH NO `association`. An artifact may stand alone, and attaching these would
+#    spend `association` a second way, which is exactly the collision that ruled it out for `F`:
+#    the two consolidation filings already carry coupling lines and would carry note lines beside
+#    them, and a reader could not tell which dotted line was which.
+#
+# ⚠️ CONDITIONAL ON PAGE THREE AND FOUR. A document with no coupling owes no note about arrows,
+#   and one with no cover owes none about dashed boxes. A legend for a glyph that is not there is
+#   noise, and noise is how a legend stops being read.
+#
+# ⭐⭐ AND EACH NOTE NAMES THE RELATION IT STATES, FOR THE REASON THE `--` LINE EXISTS. These
+#    four are the only sentences in this pipeline a person reads off a PICTURE, so they are the
+#    ones furthest from the model and the ones with no other route back to it.
+#    `diagrams/annotated.sqlc` carries the same column for the sentences a tool reads.
+-- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
+SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
+FROM ( :compose(diagrams/scopes.sqlc) ) s
+UNION ALL
+SELECT s.filing, 'search', 'diagrams/searches.sqlc'
+FROM ( :compose(diagrams/searches.sqlc) ) s
+UNION ALL
+SELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'
+FROM ( :compose(diagrams/dependences.sqlc) ) d
+UNION ALL
+SELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'
+FROM ( :compose(diagrams/categories.sqlc) ) c

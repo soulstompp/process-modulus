@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `merge-holding-composition`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:filing:holding-company:2026-08-31"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:f0="urn:example:filing:group-parent:2026-08-31"
+             targetNamespace="urn:example:filing:holding-company:2026-08-31"
+             id="defs_merge-holding-composition">
+  <import importType="http://www.omg.org/spec/BPMN/20100524/MODEL" namespace="urn:example:filing:group-parent:2026-08-31" location="merge-group-composition.bpmn"/>
+  <collaboration id="collab_merge-holding-composition">
+    <participant id="pool_merge-holding-composition" name="merge-holding-composition" processRef="proc_merge-holding-composition"/>
+  </collaboration>
+  <process id="proc_merge-holding-composition" isExecutable="false">
+    <documentation>pm:Stack of `merge-holding-composition`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <documentation>filed under: IFRS-10 clause B86 (2026) under urn:example:ifrs:standards. ⛔ Four typed fields (taxonomy, instrument, clause, version) arrive here as one string, so a reader can follow the citation and a tool cannot resolve it. [assets/sqlc/diagrams/citations.sqlc]</documentation>
+    <laneSet id="lanes_merge-holding-composition" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: what the holding company consolidates at the second level. The group filing below holds layers this level does not carry forward [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: stated. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_merge-holding-composition_compute" name="compute">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>call_merge-holding-composition_compute_merge-group-composition_compute-pt</flowNodeRef>
+        <flowNodeRef>call_merge-holding-composition_compute_merge-group-composition_compute-us</flowNodeRef>
+      </lane>
+      <lane id="lane_merge-holding-composition_shift-line" name="shift-line">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>call_merge-holding-composition_shift-line_merge-group-composition_shift-line</flowNodeRef>
+      </lane>
+      <lane id="lane_merge-holding-composition_staff" name="staff">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>call_merge-holding-composition_staff_merge-group-composition_labour</flowNodeRef>
+        <flowNodeRef>call_merge-holding-composition_staff_merge-group-composition_on-call</flowNodeRef>
+      </lane>
+    </laneSet>
+    <callActivity id="call_merge-holding-composition_compute_merge-group-composition_compute-pt" name="compute &lt;- merge-group-composition/compute-pt" calledElement="f0:proc_merge-group-composition"/>
+    <callActivity id="call_merge-holding-composition_compute_merge-group-composition_compute-us" name="compute &lt;- merge-group-composition/compute-us" calledElement="f0:proc_merge-group-composition"/>
+    <callActivity id="call_merge-holding-composition_shift-line_merge-group-composition_shift-line" name="shift-line &lt;- merge-group-composition/shift-line" calledElement="f0:proc_merge-group-composition"/>
+    <callActivity id="call_merge-holding-composition_staff_merge-group-composition_labour" name="staff &lt;- merge-group-composition/labour" calledElement="f0:proc_merge-group-composition"/>
+    <callActivity id="call_merge-holding-composition_staff_merge-group-composition_on-call" name="staff &lt;- merge-group-composition/on-call" calledElement="f0:proc_merge-group-composition"/>
+    <textAnnotation id="note_merge-holding-composition_dependence">
+      <text>A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion. [assets/sqlc/diagrams/dependences.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_merge-holding-composition_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_merge-holding-composition_search">
+      <text>COUPLING SEARCH: stated. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+    <association id="dep_merge-holding-composition_staff_shift-line" sourceRef="tns:lane_merge-holding-composition_staff" targetRef="tns:lane_merge-holding-composition_shift-line" associationDirection="One">
+      <documentation>an observed dependence: relieving `staff` moved `shift-line`. NOT a supply edge and never evidence for a fusion. ⛔ What was observed, and how strongly, is not here. [assets/sqlc/diagrams/dependences.sqlc]</documentation>
+    </association>
+  </process>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_compute</source>
+    <target>f0:lane_merge-group-composition_compute-pt</target>
+  </relationship>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_compute</source>
+    <target>f0:lane_merge-group-composition_compute-us</target>
+  </relationship>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_shift-line</source>
+    <target>f0:lane_merge-group-composition_shift-line</target>
+  </relationship>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_staff</source>
+    <target>f0:lane_merge-group-composition_labour</target>
+  </relationship>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_staff</source>
+    <target>f0:lane_merge-group-composition_on-call</target>
+  </relationship>
+  <relationship type="process-modulus:elimination-between" direction="Forward">
+      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/eliminations/resolved.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_compute</source>
+    <target>f0:lane_merge-group-composition_compute-us</target>
+  </relationship>
+  <relationship type="process-modulus:elimination-between" direction="Forward">
+      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/eliminations/resolved.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_compute</source>
+    <target>f0:lane_merge-group-composition_compute-pt</target>
+  </relationship>
+  <bpmndi:BPMNDiagram id="diagram_merge-holding-composition">
+    <bpmndi:BPMNPlane id="plane_merge-holding-composition" bpmnElement="tns:collab_merge-holding-composition">
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_pool" bpmnElement="tns:pool_merge-holding-composition" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="174"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_compute" bpmnElement="tns:lane_merge-holding-composition_compute">
+        <dc:Bounds x="120" y="46" width="620" height="56"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-pt" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-pt">
+        <dc:Bounds x="290" y="52" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-us" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-us">
+        <dc:Bounds x="290" y="74" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_shift-line" bpmnElement="tns:lane_merge-holding-composition_shift-line">
+        <dc:Bounds x="120" y="108" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_shift-line_merge-group-composition_shift-line" bpmnElement="tns:call_merge-holding-composition_shift-line_merge-group-composition_shift-line">
+        <dc:Bounds x="290" y="114" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_staff" bpmnElement="tns:lane_merge-holding-composition_staff">
+        <dc:Bounds x="120" y="148" width="620" height="56"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_labour" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_labour">
+        <dc:Bounds x="290" y="154" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_on-call" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_on-call">
+        <dc:Bounds x="290" y="176" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,15 @@
+# ⭐⭐⭐ INCIDENCE ONLY, AND THE OMISSION IS THE POINT. examples/diagramming.rs composes this and
+#    nothing wider, so the emitter is STRUCTURALLY UNABLE to read a magnitude. The
+#    incidence composes and the quantities do not, and a diagram carries incidence. An emitter
+#    that could see a figure could render one, and a rendered figure in a notation with no unit
+#    is the nonsense product that file already names `the_product_nobody_should_use`.
+#
+# ⛔ IT WAS NOT A DESIGN DECISION, IT WAS A TYPE ERROR. Reading the wider relation failed to
+#   compile: sqlx has no mapping for `pm.absence_reason` and needs a feature for NUMERIC. The
+#   schema refused to hand a magnitude to a program with no use for one, which is the DDL's typed
+#   absences paying out in a second language.
+-- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
+SELECT d.filing, d.operation, d.layer
+FROM (
+    :compose(entries/draws.sqlc)
+) d

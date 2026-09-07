@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+     source: the filing `every-local-part`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:fixture:audit-firm:every-local-part"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:f0="urn:example:fixture:bakery:every-absence"
+             targetNamespace="urn:example:fixture:audit-firm:every-local-part"
+             id="defs_every-local-part">
+  <import importType="http://www.omg.org/spec/BPMN/20100524/MODEL" namespace="urn:example:fixture:bakery:every-absence" location="every-absence.bpmn"/>
+  <collaboration id="collab_every-local-part">
+    <participant id="pool_every-local-part" name="every-local-part" processRef="proc_every-local-part"/>
+  </collaboration>
+  <process id="proc_every-local-part" isExecutable="false">
+    <documentation>pm:Stack of `every-local-part`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_every-local-part" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: stipulated: one line of the bakery's system, held three ways. The bakery
+                    runs more than this and this document does not carry it [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: notApplicable. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_every-local-part_both-views" name="both-views">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <childLaneSet id="kids_every-local-part_both-views" name="parts">
+          <lane id="lane_every-local-part_as-contracted" name="as-contracted">
+            <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+          </lane>
+          <lane id="lane_every-local-part_as-filed" name="as-filed">
+            <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+            <flowNodeRef>call_every-local-part_as-filed_every-absence_oven</flowNodeRef>
+          </lane>
+        </childLaneSet>
+      </lane>
+    </laneSet>
+    <callActivity id="call_every-local-part_as-filed_every-absence_oven" name="as-filed &lt;- every-absence/oven" calledElement="f0:proc_every-absence"/>
+    <textAnnotation id="note_every-local-part_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-local-part_search">
+      <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_every-local-part_as-filed</source>
+    <target>f0:lane_every-absence_oven</target>
+  </relationship>
+  <bpmndi:BPMNDiagram id="diagram_every-local-part">
+    <bpmndi:BPMNPlane id="plane_every-local-part" bpmnElement="tns:collab_every-local-part">
+      <bpmndi:BPMNShape id="shape_every-local-part_pool" bpmnElement="tns:pool_every-local-part" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_lane_every-local-part_both-views" bpmnElement="tns:lane_every-local-part_both-views">
+        <dc:Bounds x="120" y="46" width="620" height="104"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_lane_every-local-part_as-contracted" bpmnElement="tns:lane_every-local-part_as-contracted">
+        <dc:Bounds x="134" y="68" width="600" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_lane_every-local-part_as-filed" bpmnElement="tns:lane_every-local-part_as-filed">
+        <dc:Bounds x="134" y="106" width="600" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_call_every-local-part_as-filed_every-absence_oven" bpmnElement="tns:call_every-local-part_as-filed_every-absence_oven">
+        <dc:Bounds x="304" y="112" width="420" height="18"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

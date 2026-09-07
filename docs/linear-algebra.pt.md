@@ -79,9 +79,9 @@ comprometida «nameplate» `n` (capacidade nominal) e um «quantum» `q`, a unid
 em que a oferta chega. A oferta vem em unidades inteiras, portanto `n = kq` com `k` inteiro;
 a procura não. O «remainder» (resto) é `r = n − d`. Todas as quantidades são intervalos de
 três pontos, pelo que isto é aritmética intervalar do princípio ao fim, e tanto a grandeza do
-resto como o seu **sinal** são avaliados ao longo de todo o intervalo da procura. ⭐ Essa
-uniformidade tem um passo de idade. O sinal era antes lido só na moda, porque `Fit` era uma
-enumeração de dois membros e um tipo que toma um valor tem de ser lido num ponto. A ISO 286,
+resto como o seu **sinal** são avaliados ao longo de todo o intervalo da procura. ⭐ Ambos são
+lidos ao longo do intervalo porque a classificação tem três membros e não dois. Um `Fit` de dois
+valores não tem onde pôr a sobreposição, pelo que só pode ser lido num ponto. A ISO 286,
 de onde o vocabulário é emprestado, define **três** classes, e a que faltava é exatamente o
 caso da sobreposição:
 
@@ -193,9 +193,10 @@ Chamemos-lhe `S`, L×3. Cada resto nomeia um amortecedor como «absorber», o qu
 Σ_{j ∉ {customer, unrealised}} H[ℓ,j]  ≤  S[ℓ, A(ℓ)]   onde r[ℓ] < 0 e S[ℓ,A(ℓ)] está declarado
 ```
 
-⭐ Três pontos merecem ser assinalados a quem vier à procura de estrutura. **Isto eram valores
-booleanos até este passo**, o que tornava a desigualdade indizível — um bit diz que um
-amortecedor existe, não quanto ele leva, pelo que qualquer parcela cabia. **OS DOIS detentores
+⭐ Três pontos merecem ser assinalados a quem vier à procura de estrutura. **As folgas são
+quantidades e não sinalizadores, e esta desigualdade é a razão**: um bit diz que um amortecedor
+existe, não quanto ele leva, pelo que contra um bit cabe qualquer parcela e nada fica
+limitado. **OS DOIS detentores
 por servir estão isentos, por serem ambos o transbordo**: o «customer» e o «unrealised» nomeiam
 ambos procura que ninguém satisfez, e isso não é carga que o amortecedor tenha levado. Isentar só
 o «unrealised» somava à carga do amortecedor a degradação suportada por um cliente, e o `Fit`
@@ -246,8 +247,8 @@ o documento admite ter recusado. **A diferença é a quantidade interessante** �
 aconteceu e que nada registou, que é o assunto deste modelo dito como aritmética em vez de como
 argumento. Avaliado num só canto, pela razão da anti-correlação acima.
 
-⛔⛔ **O limite é sobre a LINHA inteira de `S`, e até este passo lia apenas a coluna da
-capacidade.** Os três amortecedores são substitutos: um excesso acima da capacidade nominal pode
+⛔⛔ **O limite é sobre a LINHA inteira de `S`, e lido apenas na coluna da capacidade diz outra
+coisa.** Os três amortecedores são substitutos: um excesso acima da capacidade nominal pode
 ser absorvido correndo acima do regime, recorrendo ao stock, ou pondo a procura à espera. Uma
 coluna fechada é UM CAMINHO fechado, o que não implica que alguma coisa tenha ficado por servir, e
 duas regras tiravam daí essa conclusão. ⭐ Uma margem não declarada SUSPENDE a desigualdade em vez
@@ -283,10 +284,11 @@ terceiro importa porque duas operações dependem dele em silêncio:
   contra uma procura de 2000/dia, a folga é de 160/dia seja qual for o horário. Mas a *duração*
   correspondente não sobrevive: o ingénuo `q / folga` dá 9 minutos, enquanto a espera real é de
   68 segundos dentro da janela ou de 21 horas fora dela. Nove minutos não ocorre em lado nenhum.
-  Daí que uma margem tenha de ser declarada como quantidade — e o exemplo trabalhado do próprio
-  modelo declarava a duração até a este passo.
-⛔ **Uma segunda consequência foi aqui afirmada e está RETIRADA, e a retirada vale mais do que
-valia a afirmação.** Dizia: uma fila absorve um excesso transitório e nunca um permanente, logo
+  Daí que uma margem seja declarada como quantidade na unidade da camada, nunca como a duração
+  em que foi observada, e quem declara deve a conversão.
+⛔ **Uma segunda consequência parece seguir-se aqui e não se segue, e a razão por que falha vale
+mais do que valeria a afirmação.** Diz: uma fila absorve um excesso transitório e nunca um
+permanente, logo
 com `ρ > 1` a acumulação cresce sem limite, logo a procura de `[11,0, 12,7, 14,4]` da
 «shift-line» contra uma linha de 10 turnos só é coerente sob a leitura de variação. **`ρ > 1` só
 dá acumulação sem limite com paciência infinita**, e `timeSlack` É uma paciência — «antes de o
@@ -295,7 +297,7 @@ qualquer `ρ`: a acumulação cresce até a espera atingir a paciência e depois
 a que o excesso entra. Nada aqui precisa da leitura de variação.
 
 ⭐ E a aritmética é exata, que é a parte a conferir: uma paciência de `2,5 turnos = 0,25 semana`
-com `μ = 10/semana` põe a profundidade de equilíbrio em `μW = 2,5` turnos — a fila assenta NA
+com `μ = 10/semana` põe a profundidade de equilíbrio em `μW = 2,5` itens — a espera assenta NA
 paciência — enquanto a taxa de saída é `λ − μ = 2,7/semana` e os detentores declarados são
 `cliente 1,7 + não realizado 1,0 = 2,7`. A regra da soma e o equilíbrio da fila concordam.
 
@@ -347,14 +349,24 @@ vazio **não** é `e_x = 0`: um vetor ausente não distingue *«procurámos dupl
 por isso a declarar qual das duas, e é a diferença entre uma regra exata e um aviso. Três notas:
 
 - As entradas de `Φ` são elas próprias intervalos de três pontos («um mês são `[672, 720, 744]`
-  horas»), e o produto é componente a componente, o que só é correto **porque** uma conversão é
-  estritamente positiva. O produto intervalar geral, com os quatro cantos, não está implementado
-  nem é devido aqui.
+  horas»), e o produto é componente a componente sempre que a quantidade convertida é não
+  negativa, o que cobre uma procura e uma capacidade nominal. Não cobre um resto: `r` tem sinal,
+  e sob interferência o fator maior dá o produto menor, pelo que componente a componente
+  devolveria um intervalo cujo mínimo excede o máximo.
+  `composition/settled_remainders.sqlc` toma por isso o canto de cada lado. O produto
+  intervalar geral, com os quatro cantos, onde AMBOS os operandos atravessam o zero, não está
+  implementado nem é devido: uma conversão é estritamente positiva.
 - ⛔ `r_composta ≠ n_composta − d_composta` quando `Φ ≠ I`, e isso não é defeito de nenhuma das
   duas figuras. Um mesmo `φ_p` multiplica `n_p` e `d_p`, pelo que esses intervalos convertidos
   ficam correlacionados; subtraí-los com a inversão de extremos que as quantidades
   *independentes* exigem conta duas vezes a dispersão de `φ`. `r` tem de ser convertido
-  diretamente: `r_composta = F Φ r_partes + e_d`. No corpus isto lê-se
+  diretamente: `r_composta = F Φ r_partes − e_n + e_d`, e AMBAS as eliminações aparecem porque
+  agem sobre `r` em sentidos opostos: retirar procura contada duas vezes sobe o resto, retirar
+  capacidade nominal contada duas vezes baixa-o. ⛔ Uma identidade escrita em prosa e avaliada em
+  lado nenhum pode perder um termo inteiro sem que nada dê por isso.
+  `composition/fused_remainders.sqlc` avalia esta, e a observação 13 de
+  `cargo run --example observations` imprime-a ao lado da figura que `layers/remainder` deriva
+  dos totais compostos. No corpus isto lê-se
   `(1092,0; 2857,0; 4198,8)` na versão rederivada contra `(1414,0; 2857,0; 4085,6)` na versão
   convertida, coincidindo apenas na moda.
 - As composições encaixam uma na outra, pelo que `F` compõe — e a restrição de unicidade, que
@@ -362,6 +374,21 @@ por isso a declarar qual das duas, e é a diferença entre uma regra exata e um 
   chave; a dois níveis tem de passar a «nenhuma folha alcançável por dois caminhos», que
   validador nenhum vê, porque o segundo caminho atravessa um documento que o primeiro não
   contém.
+- ⭐ **E uma composição encaixada tem dois fundos diferentes, um por quantidade, no mesmo
+  grafo.** Uma SOMA sobre as partes acaba nas camadas de que `F` já não desce, porque abaixo
+  delas não há nada para somar. Um RESTO acaba mais cedo: na primeira camada cuja procura e
+  capacidade nominal não foram ambas escaladas por um mesmo fator de conversão com largura. Aí
+  `n − d` é legítimo e o par declarado é uma afirmação que o seu compositor assina, pelo que
+  descer para lá dela deita fora essa afirmação e todas as correções que esse compositor já
+  aplicou, que têm depois de ser reconstruídas de baixo e podem falhar por razões que a figura
+  declarada já tinha resolvido. Uma camada sem partes satisfaz a segunda condição
+  trivialmente, e é por isso que os dois fundos se confundem com um só.
+
+  ⛔ **O terminal do grafo desloca-se portanto com a quantidade que se dobra**, o que não é
+  verdade nos dois sistemas de composição a que este modelo é de resto análogo. Os terminais de
+  um grafo de chamadas são os seus terminais; as folhas de uma consulta são as suas folhas, seja
+  o que for que se selecione. Aqui um nó intermédio carrega uma figura que alguém assinou, e é
+  isso que faz dele um sítio onde parar.
 
 `F` é também onde a fungibilidade é afirmada: duas partes são uma só camada composta exatamente
 quando a oferta de uma pode servir a procura da outra. É um juízo, é obrigatório transportar
@@ -403,19 +430,26 @@ lados.
 
 ### O dicionário
 
-Cada objeto acima tem uma relação com nome. As cardinalidades são vivas; voltem a contar-se com
-`SELECT count(*)` sobre o `.sql` composto, e o `cargo sqlc compose` regenera-os a todos.
+Cada objeto acima tem uma relação com nome. ⛔ As contagens de linhas não se escrevem aqui de
+propósito: uma contagem em prosa é certa até o corpus voltar a mexer-se, e depois é silenciosa a
+esse respeito. Execute-se qualquer relação e leia-se a contagem no rodapé do próprio psql:
 
-| na nota | relação | linhas |
-|---|---|---|
-| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` | 43, 39, 16 |
-| `r = n − d` | `layers/remainder` | 39 |
-| `F` (incidência) | `composition/parts` | 23 |
-| `Φ x` (partes convertidas) | `composition/converted` | 23 |
-| `F Φ x − e` | `composition/fused` | 11 |
-| `e` | `eliminations/filed` | 15 |
-| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` | 54, 129, 5 |
-| `D`, `N` | `entries/draws`, `entries/inductions` | 4, 2 |
+```
+psql -d process_modulus_proof -c 'SET search_path TO pm, public' -f assets/sql/layers/remainder.sql
+```
+
+O `cargo sqlc compose` regenera-as todas a partir de `assets/sqlc/`.
+
+| na nota | relação |
+|---|---|
+| `d`, `n`, `draw` | `layers/demand`, `layers/nameplate`, `layers/drawn` |
+| `r = n − d` | `layers/remainder` |
+| `F` (incidência) | `composition/parts` |
+| `Φ x` (partes convertidas) | `composition/converted` |
+| `F Φ x − e` | `composition/fused` |
+| `e` | `eliminations/filed` |
+| `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` |
+| `D`, `N` | `entries/draws`, `entries/inductions` |
 
 ### As operações, que são a parte que merece a atenção de quem revê
 
@@ -495,9 +529,14 @@ A oferta chega em unidades inteiras, portanto `n mod q = 0`. Duas consequências
 matricial não tem maneira de enunciar.
 
 **Existe um quantum composto, e é o máximo divisor comum.** Se as partes transportam `q₁` e `q₂` na
-mesma unidade, então `n₁ = a q₁` e `n₂ = b q₂`, e `{a q₁ + b q₂}` é exatamente o conjunto dos
-múltiplos de `g = mdc(q₁, q₂)`, por Bézout. Portanto o `g` divide todas as somas atingíveis e é o
-maior número que o faz. Pedir um quantum "melhor" dentro de uma só camada é a pergunta errada: ali
+mesma unidade, então `n₁ = a q₁` e `n₂ = b q₂`, e toda a soma atingível `a q₁ + b q₂` é divisível
+por `g = mdc(q₁, q₂)`, que é o maior número de que isso é verdade. ⚠️ Nem todo o múltiplo de `g`
+é atingível: a identidade de Bézout é um enunciado sobre ℤ, e aqui `a` e `b` são contagens de
+unidades inteiras. Sobre ℕ o conjunto atingível é o semigrupo numérico, pelo que `q₁ = 3, q₂ = 5`
+dá `g = 1` enquanto 1, 2, 4 e 7 não se conseguem formar. Só o sentido direto é usado abaixo, e só
+o sentido direto se verifica. O `mdc` exige ainda que os dois quanta sejam comensuráveis, o que é
+uma condição viva porque são reais. Pedir um quantum "melhor" dentro de uma só camada é a
+pergunta errada: ali
 o quantum é OBSERVADO, e escolher o maior divisor de `n` seria inferir o facto a partir da figura.
 
 ⭐⭐⭐ **E por isso a eliminação tem de ser ela própria um múltiplo inteiro do quantum composto.**
@@ -568,7 +607,7 @@ alguém antes de terem sido escritos:
 - O `π` **não** distribui sobre o `∖`. Projete-se primeiro e subtrai-se sobre menos atributos,
   portanto uma diferença tem de ser tomada sobre a chave.
 - Sacos não são conjuntos. O `composition/descent` é um saco de propósito; desduplicá-lo destruiria
-  exatamente o facto que o `leaf_reached_twice` existe para encontrar.
+  exatamente o facto que o `jagged_layer` existe para encontrar.
 - ⛔ **O `γ` e um `σ` seguido de `π` são indistinguíveis pela cardinalidade, e respondem a perguntas
   opostas.** O `S` tem chave `(filing, layer, buffer)` e o assunto de qualquer regra tem chave
   `(filing, layer)`, portanto o índice do amortecedor tem de ser colapsado. Agregá-lo lê a linha

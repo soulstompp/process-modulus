@@ -183,11 +183,11 @@ VALIDATOR` at the annotation that states them, so a reader can tell a binding ru
 unenforced one; the rows marked with an asterisk do not, which is a gap in the marking rather
 than in the reasoning.
 
-⛔ **This paragraph used to count them, and the count was wrong three times over.** A number
-here is a number nobody recounts, and the table is the only thing that knows how many rows it
-has. `tests/conformance.rs` holds this table and its Portuguese twin to the same length and the
-same asterisks, because the two drifted to forty-seven rules against seven summarised groups
-before anything noticed.
+⛔ **This paragraph does not count them, and a count here has been wrong three times over.** A
+number here is a number nobody recounts, and the table is the only thing that knows how many
+rows it has. `tests/conformance.rs` holds this table and its Portuguese twin to the same length
+and the same asterisks, because unheld they drift: forty-seven rules against seven summarised
+groups, with nothing noticing.
 
 ⭐⭐⭐ **THREE ROWS ARE NEW AND NONE OF THEM IS A NEW IDEA.** Each was already stated in the
 schemas' prose and was UNCHECKABLE, because in each case the state it turns on was encoded as a
@@ -223,12 +223,12 @@ real observation, whether a `narrowsWhen` names something that would actually na
 whether a note claiming a portion is `unrealised` agrees with the holder list beside it. Those
 remain owed by a person.
 
-⛔ **Two rows in this table used to disagree about what `clearance` means, and the third `Fit`
-member is what settled it.** One row read *"under an interference fit"* — the `sign` value, a
-comparison at `mostLikely`. Four rows down, another read *"clearance **across the whole demand
-range**"* — a comparison of two ranges, spelled out in prose because a two-member enumeration had
-no name for its answer. That prose WAS ISO 286's own criterion, already load-bearing here. With
-`transition` filed the qualifier is redundant, so the row above got shorter rather than longer.
+⛔ **Two rows in this table can disagree about what `clearance` means, and the third `Fit`
+member is what settles it.** Read as *"under an interference fit"* it is the `sign` value, a
+comparison at `mostLikely`. Read as *"clearance **across the whole demand range**"* it is a
+comparison of two ranges, which a two-member enumeration has to spell out in prose because it
+has no name for its answer. That prose IS ISO 286's own criterion, already load-bearing here.
+With `transition` filed the qualifier is redundant, so the row is shorter rather than longer.
 
 **Two rows left this table by being subsumed rather than dropped.** *`absorber = inventory`
 requires `admitsInventory = true`* and its `time` twin were availability gates on a boolean;
@@ -370,8 +370,8 @@ residue = demand mod q
 r       = m*q - residue           and, always,  r ≡ -demand  (mod q)
 ```
 
-⛔⛔ **THE TOTAL IS AN IDENTITY AND THE SPLIT IS NOT, AND THIS BLOCK USED TO IMPLY OTHERWISE.**
-Substituting `k = nameplate/q` shows the floors cancel outright:
+⛔⛔ **THE TOTAL IS AN IDENTITY AND THE SPLIT IS NOT, AND THE BLOCK ABOVE READS AS THOUGH BOTH
+WERE.** Substituting `k = nameplate/q` shows the floors cancel outright:
 
 ```
 r = (n/q − ⌊d/q⌋)·q − (d − ⌊d/q⌋·q) = n − d

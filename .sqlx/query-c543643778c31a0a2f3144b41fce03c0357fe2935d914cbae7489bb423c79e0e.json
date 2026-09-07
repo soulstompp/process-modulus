@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the mapping's own history: what was tried, what replaced it, and where BPMN is simply wider.\nSELECT * FROM (VALUES\n  ('subProcess'::text, 'childLaneSet'::text, NULL::boolean,\n   '⭐ A LOCAL FUSION IS A PARTITION, NOT AN ACTIVITY. `subProcess` is a flow node, so it collapses layer to document exactly as `calledElement` does; a nested lane keeps the key `(filing, layer)`. Measured: 10 of 27 parts are local, and every one of them left the flattening when this changed'::text),\n  ('partitionElementRef', NULL, true,\n   '⭐⭐⭐ THE ONLY PLACE BPMN IS THE FINER OF THE TWO, AND IT WAS TESTED BEFORE IT WAS FILED. `tLane` carries this for WHAT the partition is BY, per lane. The nearest filler is the absorber BUFFER and it fails: 14 filings here have two or more layers sharing one buffer, up to FOUR lanes on `capacity` in one process, so pointing at it would assert a partition the model does not make. A layer''s identity is its NAME and nothing else, so there is no element to point at')\n) AS s(element, superseded_by, no_such_fact, why)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "element",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "superseded_by",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "no_such_fact",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "c543643778c31a0a2f3144b41fce03c0357fe2935d914cbae7489bb423c79e0e"
+}
