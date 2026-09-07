@@ -349,6 +349,75 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⛔ `(none named)` is not a defect. `between` is minOccurs=0, and a composer");
     println!("      eliminating against a member that files nothing has nothing to name.");
 
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ THE CORPUS DIRECTORY AGAINST WHAT INGEST LOADED, WHICH NO RELATION HERE CAN ASK.
+    //    Everything in this file is DERIVED FROM WHAT LOADED, so it can report a document that
+    //    arrived and was never decided about and it can NEVER report one that is on disk and did
+    //    not arrive: an unloaded file leaves no row to read. That is `diagrams/notation.sqlc`'s
+    //    argument one stage earlier in the pipeline, and it wants the same repair: declare it.
+    //
+    // ⭐⭐ IT WAS STATED, IN PROSE, IN `assets/ddl/schema.ddl` BESIDE THE `kind` CHECK, and the
+    //    comment is correct and no program read it. So a fourth kind added tomorrow loads nothing
+    //    and says nothing, and the day ingest learns to load one the sentence goes quietly stale.
+    //    ⛔ THE LAW RUNS BOTH WAYS on purpose: a row saying `loaded` whose filing is absent is an
+    //    ingest that broke, and a row saying `not loaded` whose filing is PRESENT is this roster
+    //    gone stale. A comment can only ever fail in the first direction.
+    // ------------------------------------------------------------------
+    let on_disk = sqlx::query_file!("assets/sql/scope/documents_on_disk.sql")
+        .fetch_all(&pool)
+        .await?;
+    let mut files: Vec<String> = fs::read_dir("assets/corpus")?
+        .flatten()
+        .map(|e| e.path())
+        .filter(|p| p.extension().is_some_and(|x| x == "xml"))
+        .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
+        .collect();
+    files.sort();
+    let mut declared: Vec<String> =
+        on_disk.iter().filter_map(|d| d.document.clone()).collect();
+    declared.sort();
+    assert_eq!(
+        files, declared,
+        "the corpus directory and scope/documents_on_disk.sqlc disagree about which documents \
+         exist, so a file could be added and load nothing with nothing to say so"
+    );
+    let loaded_now: std::collections::BTreeSet<&str> =
+        docs.iter().map(|d| d.filing.as_str()).collect();
+    let mut wrong = Vec::new();
+    for d in &on_disk {
+        let name = d.document.as_deref().unwrap_or("?");
+        let says = d.loaded == Some(true);
+        let is = loaded_now.contains(name);
+        assert_eq!(
+            says, d.not_loaded_because.is_none(),
+            "{name}: a document that does not load owes a typed reason, and one that loads may \
+             not carry an excuse"
+        );
+        if says != is {
+            wrong.push(format!(
+                "{name}: the roster says {} and the database says {}",
+                if says { "loaded" } else { "not loaded" },
+                if is { "loaded" } else { "not loaded" }
+            ));
+        }
+    }
+    let unloaded = on_disk.iter().filter(|d| d.loaded != Some(true)).count();
+    println!(
+        "\n10b. the corpus directory against ingest: {} documents, {} loaded, {} not",
+        on_disk.len(),
+        on_disk.len() - unloaded,
+        unloaded
+    );
+    for d in on_disk.iter().filter(|d| d.loaded != Some(true)) {
+        println!("   ⛔ {:<32} [{}] {}", d.document.as_deref().unwrap_or("?"),
+                 d.kind.as_deref().unwrap_or("?"),
+                 d.not_loaded_because.as_deref().unwrap_or(""));
+    }
+    assert!(wrong.is_empty(), "the corpus roster disagrees with the database: {wrong:?}");
+    println!("   ⭐ Three document KINDS the schema admits and ingest does not read yet. The");
+    println!("      `filing.kind` CHECK holds all five so the domain closes where the SCHEMA");
+    println!("      closes; this is the same boundary, in a form a program can fail on.");
+
     // ⭐⭐⭐ THE SAME EIGHT ROWS AS A POINTER RATHER THAN AS EVIDENCE, WHICH IS THE DIFFERENCE
     //    THAT HID THEM. §11 above reads `between` as what an elimination is ABOUT; this reads it
     //    as what the document POINTS AT. The model has two `pm:ForeignId` references and only the

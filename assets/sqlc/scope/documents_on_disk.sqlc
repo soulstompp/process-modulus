@@ -1,0 +1,38 @@
+# EVERY DOCUMENT IN `assets/corpus/`, AND WHETHER INGEST LOADS IT. One row per file, with a typed
+# reason where it does not.
+#
+# ⭐⭐⭐ A `VALUES` LITERAL, AND THE ARGUMENT IS `diagrams/notation.sqlc`'s ARGUMENT ONE STAGE
+#    EARLIER. Every relation in this tree is DERIVED FROM WHAT LOADED, so it can report a document
+#    that arrived and was never decided about, and it can NEVER report a document that is on disk
+#    and did not arrive: an unloaded file leaves no row to read. The unloaded half of the corpus is
+#    unreachable from the database by construction, so it has to be declared.
+#
+# ⛔⛔ AND IT WAS ONLY EVER STATED IN PROSE. `assets/ddl/schema.ddl` says it, beside the `kind`
+#   CHECK: *documents rooted at `coverage`, `dependence` and `run` that ingest does not yet load*.
+#   That comment is correct and no program reads it, so a fourth kind added tomorrow loads nothing
+#   and says nothing, and the day ingest learns to load one the sentence goes quietly stale. A
+#   claim in prose is ungoverned wherever it sits, and a DDL comment is prose.
+#
+# ⭐⭐ THE `not_loaded_because` COLUMN IS A TYPED REASON AND NOT AN APOLOGY. `ingest` is a state of
+#    this repository's work; `kind` is a property of the document. They are different facts and a
+#    single boolean would flatten them, which is the schema's own `<>` discipline in a roster.
+#
+# ⛔ THE LAW IS TWO-WAY, WHICH IS THE POINT. A row saying `loaded` whose filing is absent is an
+#   ingest that broke; a row saying `not loaded` whose filing is PRESENT is this roster gone
+#   stale, and that is the direction a comment can never fail in. The day `coverage` loads, this
+#   file fails the build until somebody updates it.
+-- the corpus directory as data; assets/ddl/schema.ddl's `filing.kind` CHECK is the domain.
+SELECT * FROM (VALUES
+  ('contrato-empresarial'::text,        'processModulus'::text, true,  NULL::text),
+  ('coverage-pt-ncrf-pe',               'coverage',       false, 'ingest does not read a document rooted at `coverage`. `tests/coverage_parse.rs` asserts the property it exists to prove, at the XML level, so the document is checked and not stored'),
+  ('coverage-us-gaap',                  'coverage',       false, 'the same, in the other regime. The PAIR is the subject: two regimes stay comparable exactly where the two witnesses cite one taxonomy'),
+  ('dependence-group-consolidation',    'dependence',     false, 'ingest does not read a document rooted at `dependence`. ⚠️ It carries the only `asrt:DependenceEntry` in the corpus, so `from` and `to` are the two uses of `asrt:FiledLayer` with no apparatus, where `Part/layer` and `Elimination/between` both have one'),
+  ('enterprise-contract',               'processModulus', true,  NULL),
+  ('merge-group-composition',           'composition',    true,  NULL),
+  ('merge-holding-composition',         'composition',    true,  NULL),
+  ('merge-pt-member',                   'processModulus', true,  NULL),
+  ('merge-us-member',                   'processModulus', true,  NULL),
+  ('refutation',                        'processModulus', true,  NULL),
+  ('run-2026-08-30',                    'run',            false, 'ingest does not read a document rooted at `run`. It is the observed side the coverage documents are asked about'),
+  ('unstated',                          'processModulus', true,  NULL)
+) AS d(document, kind, loaded, not_loaded_because)
