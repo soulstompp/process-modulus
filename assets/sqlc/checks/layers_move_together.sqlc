@@ -1,0 +1,67 @@
+# EVERY FUSION, BESIDE WHETHER ITS LAYER MUST MOVE WITH ANOTHER. One row per fusion, `violates`
+# where the layer sits in a co-movement class of more than one.
+#
+# ⭐⭐⭐ THE RULE IS `pm:Layer`'s OWN DEFINITION, WHICH IS ALSO THE MODEL'S FOURTH FALSIFIER:
+#    *a layer is a place where a remainder can be held INDEPENDENTLY of every other layer*, and
+#    *if two candidate layers' remainders always move together, they were never two layers*. If A
+#    is composed from B while B is composed from A, no perturbation of one leaves the other fixed.
+#    The pair fails the definition, and the two cells were one cell.
+#
+# ⛔⛔ THE REPAIR IS A WRAP, NOT A DELETED EDGE, AND THE DETAIL SAYS SO. A rule that reports
+#    *break the loop* points at falsifying a real supply relation. What the schema asks for is
+#    merging the layers, or one filer withdrawing a part. `checks/local_cycle`, which this rule
+#    replaced, named the first repair; this one names the second.
+#
+# ⭐⭐ IT SEES WHAT NO OTHER RULE HERE SEES. Measured on three probes: a LOCAL loop, which
+#    the retired `local_cycle` also caught, but reported three times and with the wrong repair;
+#    and a CROSS-DOCUMENT loop whose factors close round it, which that rule could not reach
+#    because it was local by design, and which `conversion_cycle_does_not_close` correctly ignores
+#    because the units DO close.
+#    That third case is two layers co-moving with no arithmetic error anywhere, and it was
+#    invisible.
+#
+# ⭐ THE POPULATION IS THE FUSIONS AND THAT IS EXACT, not a convenience: to sit on a cycle a layer
+#   must have an outgoing edge in `F`, which is to say it must be composed from something.
+#
+# ⛔⛔⛔ THE REFLEXIVE PAIR IS THE SIMPLEST VIOLATION AND THIS RULE ONCE EXCLUDED IT. Written with
+#    `AND NOT (co_moves_with = self)` so the detail would not read *`compute` moves with
+#    `compute`*, it fired ZERO on a layer composed from ITSELF, which is the purest case of a
+#    thing that is not a layer. `composition/descent.sqlc` emits `(A, A)` only when A genuinely
+#    reaches A, so a reflexive pair here is never trivial. ⭐ A cosmetic choice in a detail string
+#    made a hole at the easiest case; the detail branches on it now instead of dropping it.
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT f.filing, f.layer,
+           c.filing IS NOT NULL AS violates,
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
+    FROM      (
+        :compose(composition/fusions.sqlc)
+    ) f
+    LEFT JOIN (
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            :compose(rank/co_moving_layers.sqlc)
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
+) p ON true
+WHERE r.slug = 'layers_move_together'

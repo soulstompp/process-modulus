@@ -218,12 +218,12 @@ const WITNESSES: &[Witness] = &[
         says: "a local part names a layer this document's own stack does not contain",
     },
     Witness {
-        rule: "local_cycle",
+        rule: "layers_move_together",
         doc: "assets/fixtures/every-local-part.xml",
         from_: "<pm:id>as-contracted</pm:id>",
         to: "<pm:id>both-views</pm:id>",
         nth: 1,
-        says: "a layer is composed from itself",
+        says: "a layer is composed from itself, so its figure depends on its own value",
     },
     Witness {
         rule: "unit_crossing_without_a_factor",

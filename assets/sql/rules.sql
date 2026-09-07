@@ -26,7 +26,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -37,7 +38,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -123,7 +123,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -134,7 +135,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -253,7 +253,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -264,7 +265,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -397,7 +397,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -408,7 +409,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -552,7 +552,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -563,7 +564,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -695,7 +695,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -706,7 +707,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -781,7 +781,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -792,7 +793,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -878,7 +878,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -889,7 +890,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -981,7 +981,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -992,7 +993,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1063,7 +1063,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1074,7 +1075,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1177,7 +1177,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1188,7 +1189,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1243,7 +1243,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -1259,7 +1259,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1270,7 +1271,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1280,14 +1280,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -1337,26 +1423,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -1370,13 +1446,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -1392,7 +1563,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1403,7 +1575,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1413,34 +1584,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -1453,24 +1650,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -1488,7 +1758,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1499,7 +1770,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1652,7 +1922,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1663,7 +1934,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1719,7 +1989,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1730,7 +2001,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1786,7 +2056,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1797,7 +2068,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1852,7 +2122,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1863,7 +2134,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -1957,7 +2227,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -1968,7 +2239,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2071,7 +2341,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2082,7 +2353,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2153,7 +2423,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2164,7 +2435,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2217,7 +2487,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2228,7 +2499,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2452,7 +2722,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2463,7 +2734,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2520,7 +2790,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2531,7 +2802,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2615,7 +2885,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2626,7 +2897,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -2916,7 +3186,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -2927,7 +3198,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -3091,8 +3361,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -3123,7 +3392,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -3134,7 +3404,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4073,7 +4342,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4084,7 +4354,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4111,6 +4380,7 @@ SELECT * FROM (VALUES
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -4140,7 +4410,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4151,7 +4422,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4237,7 +4507,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4248,7 +4519,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4367,7 +4637,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4378,7 +4649,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4511,7 +4781,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4522,7 +4793,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4666,7 +4936,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4677,7 +4948,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4809,7 +5079,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4820,7 +5091,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4895,7 +5165,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -4906,7 +5177,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -4992,7 +5262,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5003,7 +5274,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5095,7 +5365,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5106,7 +5377,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5177,7 +5447,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5188,7 +5459,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5291,7 +5561,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5302,7 +5573,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5357,7 +5627,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -5373,7 +5643,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5384,7 +5655,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5394,14 +5664,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -5451,26 +5807,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -5484,13 +5830,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -5506,7 +5947,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5517,7 +5959,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5527,34 +5968,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -5567,24 +6034,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -5602,7 +6142,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5613,7 +6154,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5766,7 +6306,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5777,7 +6318,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5833,7 +6373,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5844,7 +6385,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5900,7 +6440,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5911,7 +6452,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -5966,7 +6506,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -5977,7 +6518,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6071,7 +6611,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6082,7 +6623,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6185,7 +6725,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6196,7 +6737,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6267,7 +6807,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6278,7 +6819,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6331,7 +6871,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6342,7 +6883,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6566,7 +7106,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6577,7 +7118,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6634,7 +7174,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6645,7 +7186,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -6729,7 +7269,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -6740,7 +7281,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -7030,7 +7570,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -7041,7 +7582,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -7205,8 +7745,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -7237,7 +7776,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -7248,7 +7788,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -8303,6 +8842,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -8509,6 +9049,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -8759,6 +9300,773 @@ FROM pm.part p
 ) p ON true
 WHERE a.slug = 'leaves'
 UNION ALL
+-- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'composition/jagged_layers' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s jagged rows = %s nobody admitted + %s on a fusion that filed one', 
+                  x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j) AS total,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE NOT EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                                  WHERE e.composition = j.filing
+                                    AND e.composed_layer = j.layer))            AS kept,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                              WHERE e.composition = j.filing
+                                AND e.composed_layer = j.layer))                AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'jagged_layers'
+UNION ALL
 -- layers/demand.sqlc partitioned by the query the roster names as this law's subject.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -8766,6 +10074,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -8999,6 +10308,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -9029,7 +10339,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9040,7 +10351,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9061,7 +10371,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9072,7 +10383,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9098,7 +10408,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9109,7 +10420,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9195,7 +10505,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9206,7 +10517,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9325,7 +10635,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9336,7 +10647,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9469,7 +10779,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9480,7 +10791,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9624,7 +10934,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9635,7 +10946,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9767,7 +11077,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9778,7 +11089,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9853,7 +11163,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9864,7 +11175,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -9950,7 +11260,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -9961,7 +11272,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10053,7 +11363,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10064,7 +11375,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10135,7 +11445,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10146,7 +11457,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10249,7 +11559,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10260,7 +11571,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10315,7 +11625,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -10331,7 +11641,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10342,7 +11653,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10352,14 +11662,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -10409,26 +11805,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -10442,13 +11828,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -10464,7 +11945,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10475,7 +11957,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10485,34 +11966,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -10525,24 +12032,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -10560,7 +12140,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10571,7 +12152,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10724,7 +12304,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10735,7 +12316,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10791,7 +12371,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10802,7 +12383,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10858,7 +12438,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10869,7 +12450,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -10924,7 +12504,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -10935,7 +12516,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11029,7 +12609,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11040,7 +12621,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11143,7 +12723,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11154,7 +12735,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11225,7 +12805,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11236,7 +12817,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11289,7 +12869,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11300,7 +12881,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11524,7 +13104,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11535,7 +13116,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11592,7 +13172,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11603,7 +13184,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11687,7 +13267,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11698,7 +13279,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -11988,7 +13568,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -11999,7 +13580,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12163,8 +13743,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -12195,7 +13774,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12206,7 +13786,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12378,7 +13957,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12389,7 +13969,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12414,7 +13993,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12425,7 +14005,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12511,7 +14090,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12522,7 +14102,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12641,7 +14220,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12652,7 +14232,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12785,7 +14364,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12796,7 +14376,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -12940,7 +14519,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -12951,7 +14531,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13083,7 +14662,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13094,7 +14674,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13169,7 +14748,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13180,7 +14760,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13266,7 +14845,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13277,7 +14857,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13369,7 +14948,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13380,7 +14960,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13451,7 +15030,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13462,7 +15042,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13565,7 +15144,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13576,7 +15156,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13631,7 +15210,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -13647,7 +15226,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13658,7 +15238,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13668,14 +15247,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -13725,26 +15390,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -13758,13 +15413,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -13780,7 +15530,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13791,7 +15542,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -13801,34 +15551,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -13841,24 +15617,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -13876,7 +15725,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -13887,7 +15737,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14040,7 +15889,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14051,7 +15901,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14107,7 +15956,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14118,7 +15968,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14174,7 +16023,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14185,7 +16035,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14240,7 +16089,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14251,7 +16101,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14345,7 +16194,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14356,7 +16206,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14459,7 +16308,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14470,7 +16320,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14541,7 +16390,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14552,7 +16402,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14605,7 +16454,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14616,7 +16466,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14840,7 +16689,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14851,7 +16701,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -14908,7 +16757,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -14919,7 +16769,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -15003,7 +16852,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -15014,7 +16864,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -15304,7 +17153,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -15315,7 +17165,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -15479,8 +17328,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -15511,7 +17359,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -15522,7 +17371,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -17506,6 +19354,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -17572,6 +19421,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -18487,6 +20337,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -18787,6 +20638,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -19011,6 +20863,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -19082,7 +20935,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19093,7 +20947,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19179,7 +21032,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19190,7 +21044,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19309,7 +21162,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19320,7 +21174,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19453,7 +21306,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19464,7 +21318,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19608,7 +21461,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19619,7 +21473,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19751,7 +21604,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19762,7 +21616,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19837,7 +21690,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19848,7 +21702,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -19934,7 +21787,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -19945,7 +21799,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20037,7 +21890,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20048,7 +21902,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20119,7 +21972,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20130,7 +21984,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20233,7 +22086,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20244,7 +22098,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20299,7 +22152,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -20315,7 +22168,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20326,7 +22180,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20336,14 +22189,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -20393,26 +22332,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -20426,13 +22355,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -20448,7 +22472,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20459,7 +22484,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20469,34 +22493,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -20509,24 +22559,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -20544,7 +22667,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20555,7 +22679,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20708,7 +22831,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20719,7 +22843,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20775,7 +22898,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20786,7 +22910,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20842,7 +22965,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20853,7 +22977,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -20908,7 +23031,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -20919,7 +23043,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21013,7 +23136,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21024,7 +23148,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21127,7 +23250,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21138,7 +23262,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21209,7 +23332,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21220,7 +23344,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21273,7 +23396,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21284,7 +23408,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21508,7 +23631,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21519,7 +23643,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21576,7 +23699,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21587,7 +23711,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21671,7 +23794,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21682,7 +23806,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -21972,7 +24095,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -21983,7 +24107,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -22147,8 +24270,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -22179,7 +24301,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -22190,7 +24313,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -23245,6 +25367,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -23451,6 +25574,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -23701,6 +25825,773 @@ FROM pm.part p
 ) p ON true
 WHERE a.slug = 'leaves'
 UNION ALL
+-- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'composition/jagged_layers' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s jagged rows = %s nobody admitted + %s on a fusion that filed one', 
+                  x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j) AS total,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE NOT EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                                  WHERE e.composition = j.filing
+                                    AND e.composed_layer = j.layer))            AS kept,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                              WHERE e.composition = j.filing
+                                AND e.composed_layer = j.layer))                AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'jagged_layers'
+UNION ALL
 -- layers/demand.sqlc partitioned by the query the roster names as this law's subject.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -23708,6 +26599,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -23941,6 +26833,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -23971,7 +26864,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -23982,7 +26876,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24003,7 +26896,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24014,7 +26908,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24040,7 +26933,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24051,7 +26945,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24137,7 +27030,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24148,7 +27042,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24267,7 +27160,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24278,7 +27172,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24411,7 +27304,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24422,7 +27316,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24566,7 +27459,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24577,7 +27471,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24709,7 +27602,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24720,7 +27614,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24795,7 +27688,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24806,7 +27700,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24892,7 +27785,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -24903,7 +27797,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -24995,7 +27888,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25006,7 +27900,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25077,7 +27970,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25088,7 +27982,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25191,7 +28084,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25202,7 +28096,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25257,7 +28150,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25273,7 +28166,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25284,7 +28178,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25294,14 +28187,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -25351,26 +28330,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -25384,13 +28353,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25406,7 +28470,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25417,7 +28482,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25427,34 +28491,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -25467,24 +28557,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -25502,7 +28665,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25513,7 +28677,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25666,7 +28829,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25677,7 +28841,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25733,7 +28896,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25744,7 +28908,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25800,7 +28963,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25811,7 +28975,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25866,7 +29029,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25877,7 +29041,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -25971,7 +29134,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25982,7 +29146,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26085,7 +29248,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26096,7 +29260,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26167,7 +29330,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26178,7 +29342,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26231,7 +29394,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26242,7 +29406,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26466,7 +29629,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26477,7 +29641,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26534,7 +29697,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26545,7 +29709,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26629,7 +29792,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26640,7 +29804,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -26930,7 +30093,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -26941,7 +30105,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27105,8 +30268,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -27137,7 +30299,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27148,7 +30311,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27320,7 +30482,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27331,7 +30494,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27356,7 +30518,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27367,7 +30530,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27453,7 +30615,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27464,7 +30627,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27583,7 +30745,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27594,7 +30757,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27727,7 +30889,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27738,7 +30901,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -27882,7 +31044,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -27893,7 +31056,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28025,7 +31187,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28036,7 +31199,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28111,7 +31273,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28122,7 +31285,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28208,7 +31370,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28219,7 +31382,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28311,7 +31473,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28322,7 +31485,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28393,7 +31555,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28404,7 +31567,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28507,7 +31669,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28518,7 +31681,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28573,7 +31735,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -28589,7 +31751,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28600,7 +31763,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28610,14 +31772,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -28667,26 +31915,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -28700,13 +31938,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -28722,7 +32055,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28733,7 +32067,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28743,34 +32076,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -28783,24 +32142,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -28818,7 +32250,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28829,7 +32262,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -28982,7 +32414,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -28993,7 +32426,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29049,7 +32481,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29060,7 +32493,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29116,7 +32548,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29127,7 +32560,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29182,7 +32614,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29193,7 +32626,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29287,7 +32719,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29298,7 +32731,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29401,7 +32833,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29412,7 +32845,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29483,7 +32915,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29494,7 +32927,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29547,7 +32979,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29558,7 +32991,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29782,7 +33214,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29793,7 +33226,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29850,7 +33282,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29861,7 +33294,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -29945,7 +33377,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -29956,7 +33389,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -30246,7 +33678,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -30257,7 +33690,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -30421,8 +33853,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -30453,7 +33884,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -30464,7 +33896,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -32448,6 +35879,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -32514,6 +35946,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -33429,6 +36862,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -33729,6 +37163,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -33953,6 +37388,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -34017,7 +37453,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34028,7 +37465,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34055,6 +37491,7 @@ SELECT * FROM (VALUES
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -34087,7 +37524,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34098,7 +37536,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34184,7 +37621,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34195,7 +37633,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34314,7 +37751,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34325,7 +37763,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34458,7 +37895,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34469,7 +37907,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34613,7 +38050,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34624,7 +38062,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34756,7 +38193,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34767,7 +38205,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34842,7 +38279,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34853,7 +38291,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -34939,7 +38376,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -34950,7 +38388,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35042,7 +38479,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35053,7 +38491,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35124,7 +38561,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35135,7 +38573,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35238,7 +38675,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35249,7 +38687,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35304,7 +38741,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -35320,7 +38757,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35331,7 +38769,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35341,14 +38778,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -35398,26 +38921,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -35431,13 +38944,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -35453,7 +39061,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35464,7 +39073,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35474,34 +39082,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -35514,24 +39148,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -35549,7 +39256,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35560,7 +39268,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35713,7 +39420,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35724,7 +39432,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35780,7 +39487,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35791,7 +39499,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35847,7 +39554,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35858,7 +39566,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -35913,7 +39620,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -35924,7 +39632,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36018,7 +39725,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36029,7 +39737,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36132,7 +39839,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36143,7 +39851,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36214,7 +39921,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36225,7 +39933,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36278,7 +39985,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36289,7 +39997,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36513,7 +40220,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36524,7 +40232,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36581,7 +40288,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36592,7 +40300,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36676,7 +40383,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36687,7 +40395,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -36977,7 +40684,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -36988,7 +40696,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -37152,8 +40859,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -37184,7 +40890,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -37195,7 +40902,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -38252,6 +41958,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -38458,6 +42165,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -38708,6 +42416,773 @@ FROM pm.part p
 ) p ON true
 WHERE a.slug = 'leaves'
 UNION ALL
+-- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    -- the set-algebraic laws this tree's relations claim to obey.
+SELECT * FROM (VALUES
+  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
+  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
+  ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
+  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
+  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
+  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
+  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
+  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
+  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL')
+) AS a(slug, law, governs, form, multiplicity)
+
+) a
+LEFT JOIN (
+    SELECT 'composition/jagged_layers' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s jagged rows = %s nobody admitted + %s on a fusion that filed one', 
+                  x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j) AS total,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE NOT EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                                  WHERE e.composition = j.filing
+                                    AND e.composed_layer = j.layer))            AS kept,
+             (SELECT count(*) FROM ( -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+ ) j
+               WHERE EXISTS (SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.reason
+FROM pm.elimination e
+ ) e
+                              WHERE e.composition = j.filing
+                                AND e.composed_layer = j.layer))                AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'jagged_layers'
+UNION ALL
 -- layers/demand.sqlc partitioned by the query the roster names as this law's subject.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -38715,6 +43190,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -38948,6 +43424,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -38978,7 +43455,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -38989,7 +43467,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39010,7 +43487,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39021,7 +43499,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39047,7 +43524,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39058,7 +43536,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39144,7 +43621,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39155,7 +43633,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39274,7 +43751,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39285,7 +43763,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39418,7 +43895,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39429,7 +43907,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39573,7 +44050,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39584,7 +44062,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39716,7 +44193,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39727,7 +44205,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39802,7 +44279,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39813,7 +44291,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -39899,7 +44376,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -39910,7 +44388,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40002,7 +44479,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40013,7 +44491,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40084,7 +44561,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40095,7 +44573,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40198,7 +44675,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40209,7 +44687,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40264,7 +44741,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -40280,7 +44757,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40291,7 +44769,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40301,14 +44778,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -40358,26 +44921,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -40391,13 +44944,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -40413,7 +45061,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40424,7 +45073,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40434,34 +45082,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -40474,24 +45148,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -40509,7 +45256,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40520,7 +45268,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40673,7 +45420,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40684,7 +45432,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40740,7 +45487,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40751,7 +45499,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40807,7 +45554,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40818,7 +45566,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40873,7 +45620,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40884,7 +45632,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -40978,7 +45725,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -40989,7 +45737,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41092,7 +45839,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41103,7 +45851,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41174,7 +45921,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41185,7 +45933,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41238,7 +45985,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41249,7 +45997,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41473,7 +46220,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41484,7 +46232,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41541,7 +46288,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41552,7 +46300,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41636,7 +46383,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41647,7 +46395,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -41937,7 +46684,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -41948,7 +46696,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42112,8 +46859,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -42144,7 +46890,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42155,7 +46902,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42327,7 +47073,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42338,7 +47085,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42363,7 +47109,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42374,7 +47121,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42460,7 +47206,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42471,7 +47218,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42590,7 +47336,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42601,7 +47348,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42734,7 +47480,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42745,7 +47492,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -42889,7 +47635,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -42900,7 +47647,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43032,7 +47778,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43043,7 +47790,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43118,7 +47864,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43129,7 +47876,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43215,7 +47961,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43226,7 +47973,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43318,7 +48064,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43329,7 +48076,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43400,7 +48146,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43411,7 +48158,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43514,7 +48260,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43525,7 +48272,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43580,7 +48326,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -43596,7 +48342,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43607,7 +48354,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43617,14 +48363,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -43674,26 +48506,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -43707,13 +48529,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -43729,7 +48646,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43740,7 +48658,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43750,34 +48667,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -43790,24 +48733,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -43825,7 +48841,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -43836,7 +48853,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -43989,7 +49005,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44000,7 +49017,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44056,7 +49072,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44067,7 +49084,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44123,7 +49139,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44134,7 +49151,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44189,7 +49205,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44200,7 +49217,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44294,7 +49310,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44305,7 +49322,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44408,7 +49424,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44419,7 +49436,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44490,7 +49506,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44501,7 +49518,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44554,7 +49570,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44565,7 +49582,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44789,7 +49805,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44800,7 +49817,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44857,7 +49873,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44868,7 +49885,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -44952,7 +49968,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -44963,7 +49980,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -45253,7 +50269,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -45264,7 +50281,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -45428,8 +50444,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -45460,7 +50475,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -45471,7 +50487,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -47455,6 +52470,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -47521,6 +52537,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -48436,6 +53453,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -48736,6 +53754,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -48960,6 +53979,7 @@ FROM      (
 SELECT * FROM (VALUES
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
+  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
   ('composed_demand',  '|A| = |A∖B| + |A⋉B|',        'queries/matrices/3b-composed-demand','difference','set'),
   ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
   ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
@@ -49043,7 +54063,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49054,7 +54075,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49140,7 +54160,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49151,7 +54172,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49270,7 +54290,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49281,7 +54302,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49414,7 +54434,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49425,7 +54446,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49569,7 +54589,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49580,7 +54601,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49712,7 +54732,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49723,7 +54744,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49798,7 +54818,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49809,7 +54830,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49895,7 +54915,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -49906,7 +54927,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -49998,7 +55018,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50009,7 +55030,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50080,7 +55100,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50091,7 +55112,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50194,7 +55214,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50205,7 +55226,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50260,7 +55280,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- the transitive closure of pm:Fusion/pm:Part, grouped by the layer it lands on.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -50276,7 +55296,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50287,7 +55308,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50297,14 +55317,100 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT l.root_filing AS filing, l.root_layer AS layer,
-           count(*) > 1 AS violates,
-           format('%s/%s reached %s times', l.filing, l.layer, count(*)) AS detail
-    FROM (
-        -- pm:Part followed to a layer that names no parts of its own.
-SELECT d.*
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+
+    ) f
+    LEFT JOIN (
+        -- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) a
+JOIN      (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -50354,26 +55460,16 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
 
-) d
-LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-       ON f.filing = d.filing AND f.layer = d.layer
-WHERE f.filing IS NULL
-
-    ) l
-    JOIN (
-        -- pm.filing_identity resolved from pm:Part/pm:ForeignId/notation.
-SELECT DISTINCT fi.filing
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -50387,13 +55483,108 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
 
-    ) n ON n.filing = l.root_filing
-    GROUP BY l.root_filing, l.root_layer, l.filing, l.layer
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
+
+    ) j ON j.filing = f.filing AND j.layer = f.layer
 ) p ON true
-WHERE r.slug = 'leaf_reached_twice'
+WHERE r.slug = 'jagged_layer'
 UNION ALL
--- pm:Part with a local pm:ForeignId; conformance rule "local parts do not cycle".
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
+-- move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -50409,7 +55600,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50420,7 +55612,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50430,34 +55621,60 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT p.composition AS filing, p.composed_layer AS layer,
+    SELECT f.filing, f.layer,
            c.filing IS NOT NULL AS violates,
-           coalesce(format('`%s` closes a loop through local parts: %s', c.root, c.route),
-                    format('`%s` reaches only downward', p.composed_layer)) AS detail
+           CASE WHEN c.filing IS NULL
+                THEN format('`%s` holds its remainder independently', f.layer)
+                WHEN c.partner IS NULL
+                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                            f.layer, c.partner, c.members)
+           END AS detail
     FROM      (
-        -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
-FROM      (
+        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
 
 ) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
-
-    ) p
+    ) f
     LEFT JOIN (
-        -- pm:Part with a local pm:ForeignId, followed transitively; SQL:2016 CYCLE, Postgres 14+.
+        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
+        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
+        --   its subject's grain, and the subject here is the LAYER.
+        SELECT m.filing, m.layer, m.class, m.members,
+               bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
+                 AS reaches_itself,
+               min(m.co_moves_with_filing || '/' || m.co_moves_with_layer)
+                 FILTER (WHERE NOT (m.co_moves_with_filing = m.filing
+                                AND m.co_moves_with_layer = m.layer)) AS partner
+        FROM (
+            -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+--
+-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
+--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
+--   two reported five and the rule's detail said so in words. The dedup has to happen in a
+--   subquery and the window has to sit outside it.
+SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
+       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
+       count(*) OVER w                                                    AS members
+FROM (
+    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
+           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
+    FROM      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
-local AS (
-    -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
-SELECT p.*
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
     -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
@@ -50470,24 +55687,97 @@ JOIN      (
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
-) fi ON fi.filing = p.composition AND fi.notation = p.part_filing
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
-walk(filing, root, layer) AS (
-        SELECT p.composition, p.composed_layer, p.part_layer FROM local p
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
     UNION ALL
-        SELECT w.filing, w.root, p.part_layer
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
         FROM walk w
-        JOIN local p ON p.composition = w.filing AND p.composed_layer = w.layer
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT DISTINCT filing, root, route
-FROM walk
-WHERE is_cycle
+SELECT * FROM walk
 
-    ) c
-           ON c.filing = p.composition AND c.root = p.composed_layer
+    ) a
+    JOIN      (
+        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+WITH RECURSIVE
+resolved AS (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+JOIN      (
+    -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+
+) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+),
+walk(root_filing, root_layer, filing, layer, depth, path,
+     factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               ARRAY[p.composition  || '/' || p.composed_layer,
+                     p.part_filing  || '/' || p.part_layer],
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.path || (p.part_filing || '/' || p.part_layer),
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM walk w
+        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM walk
+
+    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer
+        AND b.filing      = a.root_filing AND b.layer      = a.root_layer
+) p
+WINDOW w AS (PARTITION BY p.filing, p.layer)
+
+        ) m
+        GROUP BY m.filing, m.layer, m.class, m.members
+    ) c ON c.filing = f.filing AND c.layer = f.layer
 ) p ON true
-WHERE r.slug = 'local_cycle'
+WHERE r.slug = 'layers_move_together'
 UNION ALL
 -- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
@@ -50505,7 +55795,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50516,7 +55807,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50669,7 +55959,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50680,7 +55971,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50736,7 +56026,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50747,7 +56038,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50803,7 +56093,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50814,7 +56105,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50869,7 +56159,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50880,7 +56171,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -50974,7 +56264,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -50985,7 +56276,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51088,7 +56378,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51099,7 +56390,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51170,7 +56460,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51181,7 +56472,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51234,7 +56524,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51245,7 +56536,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51469,7 +56759,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51480,7 +56771,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51537,7 +56827,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51548,7 +56839,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51632,7 +56922,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51643,7 +56934,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -51933,7 +57223,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -51944,7 +57235,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -52108,8 +57398,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,
@@ -52140,7 +57429,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -52151,7 +57441,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),

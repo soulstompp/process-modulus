@@ -30,6 +30,20 @@
 # ⭐ ONE ROW PER CYCLE AND NOT PER ROTATION. A three-edge cycle is found three times, once from
 #   each unit; the walk keeps the rotation that starts at the smallest unit so a reader counts
 #   cycles rather than starting points.
+# ⛔⛔ THERE IS NO DEPTH BOUND HERE AND THERE WAS ONE. `WHERE w.depth < 6` stood beside the path
+#    guard below, and composition/descent.sqlc's own header says why that is wrong: *a depth bound
+#    is a guess about how deep a legitimate composition goes*. It was also REDUNDANT: the guard
+#    already refuses to revisit a non-start unit, so the walk terminates on its own, bounded by
+#    the number of units there are.
+#
+# ⭐ MEASURED THREE WAYS BEFORE REMOVING IT, AND IT CHANGED NOTHING. The verdict is identical with
+#   the bound, without it, and with it tightened BELOW the graph's own depth. The walk produces
+#   the same rows at bound 6 and at bound 20, reaching the same depth either way, in the same two
+#   milliseconds. It pruned nothing.
+#
+# ⛔ WHAT IT ADDED WAS A SILENT BLIND SPOT. The unit count bounds any acyclic path, and a cycle
+#   longer than the bound would have been missed with NO vacuum verdict and a clean pass, which is
+#   worse than ⛔ VACUOUS: coverage would still show a row examined and passing.
 -- units/conversions.sqlc walked until a unit repeats; the product against one.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -49,8 +63,7 @@ LEFT JOIN (
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,

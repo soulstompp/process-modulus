@@ -1,0 +1,40 @@
+# THE JAGGED FUSIONS SPLIT BY WHETHER ANYBODY FILED AN ELIMINATION, CHECKED AS A PARTITION. One
+# row: whether |jagged| = |unadmitted| + |jagged ⋉ filed eliminations|.
+#
+# ⭐⭐⭐ THE OBSERVATION IS A DIFFERENCE AND THE DIFFERENCE IS THE ARGUMENT. §14 reports the
+#    overlap nobody admitted, which is composition/jagged_layers.sqlc MINUS the fusions that
+#    filed an elimination. Get the anti-join backwards and it reports the filings that DID
+#    their own cleanup as though they had not, which is the opposite accusation with the same
+#    column names and a believable count.
+#
+# ⛔⛔ THE LEFT OPERAND IS A BAG ON THE COMPARED ATTRIBUTES. One fusion can double count more
+#    than one layer, and each is its own row and its own repair, so `EXCEPT` would collapse a
+#    fusion with three overlaps into one and the observation would under-report the work by two.
+#    The anti-join preserves the multiplicity; this law is what says so.
+#
+# ⚠️ IT IS VACUOUS ON A CLEAN CORPUS AND THAT IS CORRECT. No fusion here is jagged, so the law
+#   reads 0 = 0 + 0. It binds the moment one is, and examples/soundness.rs runs it either way.
+#   ⭐ PROBE: file a part that a sibling already reaches and this law must still hold.
+-- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/jagged_layers' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s jagged rows = %s nobody admitted + %s on a fusion that filed one', 
+                  x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j) AS total,
+             (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j
+               WHERE NOT EXISTS (SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
+                                  WHERE e.composition = j.filing
+                                    AND e.composed_layer = j.layer))            AS kept,
+             (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j
+               WHERE EXISTS (SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
+                              WHERE e.composition = j.filing
+                                AND e.composed_layer = j.layer))                AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'jagged_layers'

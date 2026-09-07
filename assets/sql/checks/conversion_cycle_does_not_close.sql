@@ -14,7 +14,8 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply',              'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved',              'a clearance fit rules out customer and unrealised'),
   ('unresolved_part',                      'a part reference resolves to a filing that is here'),
-  ('leaf_reached_twice',                   'no leaf layer is reachable through two paths'),
+  ('jagged_layer',                       'a fusion''s parts partition what they compose'),
+  ('layers_move_together',               'layers that always move together are one layer'),
   ('coupling_does_not_attenuate',          'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value',                'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range',                  'a ranged claim does not file narrowsWhen as notApplicable'),
@@ -25,7 +26,6 @@ SELECT * FROM (VALUES
   ('elimination_not_applicable_with_parts','a fusion calls double counting malformed only when it has one part'),
   ('fusion_sum_disagrees',                 'a composed demand equals the sum of its converted parts less its eliminations'),
   ('local_part_dangles',                   'a local part names a layer in its own stack'),
-  ('local_cycle',                          'local parts do not cycle'),
   ('unit_crossing_without_a_factor',      'a part crossing a unit boundary files what converts it'),
   ('conversion_cycle_does_not_close',     'converting round a cycle of units returns what it started with'),
   ('one_part_fusion_alters_its_part',    'a fusion of one part carries that part unchanged'),
@@ -189,8 +189,7 @@ WHERE p.factor_low IS NOT NULL
                w.path || e.to_unit, w.filing, w.layer
         FROM walk w
         JOIN e ON e.from_unit = w.at
-        WHERE w.depth < 6
-          AND NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
+        WHERE NOT (e.to_unit = ANY (w.path[2:array_length(w.path, 1)]))
     )
     SELECT w.filing, w.layer,
            NOT (w.p_low <= 1 AND w.p_high >= 1) AS violates,

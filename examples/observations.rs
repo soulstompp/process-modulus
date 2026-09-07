@@ -403,6 +403,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("      both deserve a sentence. Four passes of reading annotations missed the one");
     println!("      this found.");
 
+    // ⭐⭐⭐ THE ONLY SECTION HERE THAT MEASURES WORK RATHER THAN CONTENT. checks/jagged_layer
+    //    reports that a fusion's parts overlap; this asks how much supply is in the total
+    //    twice, and only where the composer filed no elimination at all. A filing that found
+    //    its own double counting and sized it never appears, however large the overlap was,
+    //    because that is the party who can actually see it doing the job.
+    let jagged = sqlx::query_file!("assets/sql/queries/observations/14-jagged-layers.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!(
+        "\n15. overlap nobody admitted, and what somebody downstream has to zero out: {}",
+        jagged.len()
+    );
+    for j in &jagged {
+        println!(
+            "   {}/{} counts {} twice, through {} and {}  [{}, {}] {}",
+            j.filing, j.layer, j.doubled, j.via, j.also_via,
+            j.twice_demand.map(|d| d.to_string()).unwrap_or_else(|| "?".into()),
+            j.twice_nameplate.map(|n| n.to_string()).unwrap_or_else(|| "?".into()),
+            j.unit
+        );
+    }
+    if jagged.is_empty() {
+        println!("   ⭐ None. Every fusion in this corpus draws each part once, so nobody");
+        println!("      downstream is correcting an overlap a filer could have wrapped.");
+    }
+
     // ⭐⭐⭐ THE MEASUREMENT THAT EXPLAINS THE DIAGRAM. The relations a notation would have drawn
     //    as arrows reach a handful of layers; the magnitudes reach nearly all of them. So the
     //    incidence side of this model is sparse and the magnitude side is total, and BPMN can

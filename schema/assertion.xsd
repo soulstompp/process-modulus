@@ -969,7 +969,8 @@
 
       `regime` is the one reference in this type a validator can check, and it is checked —
       see the keyrefs on the `composition` and `dependence` elements. `assets/sql/rules.sql`
-      walks local parts with a depth guard, as `local_part_dangles` and `local_cycle`.
+      walks local parts, stopping on SQL:2016's `CYCLE` clause rather than on a depth guard, as
+      `local_part_dangles` and `layers_move_together`.
 
       ⛔ NOT REACHABLE BY A VALIDATOR: that the filing exists, that the URI resolves, that
       the layer is in it, that `version` names the edition actually read, and that a local
@@ -1055,7 +1056,8 @@
 
       O `regime` é a única referência deste tipo que um validador consegue verificar, e é verificada
       — ver os keyrefs nos elementos `composition` e `dependence`. O `assets/sql/rules.sql` percorre
-      as partes locais com um limite de profundidade, como `local_part_dangles` e `local_cycle`.
+      as partes locais, parando na cláusula `CYCLE` do SQL:2016 e não num limite de profundidade,
+      como `local_part_dangles` e `layers_move_together`.
 
       ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR: que a declaração exista, que o URI resolva, que a camada lá
       esteja, que a `version` nomeie a edição efetivamente lida, e que o id de uma parte local
@@ -2293,6 +2295,16 @@
       next level up would have to re-derive from the leaves every time and would have no
       edition to pin.
 
+      ⭐⭐ THAT REFUSAL IS WHAT LETS A DESCENT STOP EARLY, AND THE TWO ARE ONE FACT FROM
+      OPPOSITE ENDS. Because every composition carries figures, a reader folding a quantity
+      upward can stop at any level whose own figures are usable and read what that composer
+      signed, instead of rebuilding from the bottom. Which level qualifies depends on the
+      quantity: a SUM must reach the layers nothing is composed from, since below those there
+      is nothing left to add, while a REMAINDER stops at the first level whose demand and
+      nameplate were not both scaled by one conversion factor with width, because differencing
+      them is legitimate there. Running past such a level discards the edition this refusal
+      exists to guarantee, along with every correction that composer already applied.
+
       ⚠️ Where a mapping-only document WOULD be right, recorded so it is not mistaken for an
       oversight: a CROSSWALK, published by somebody with standing to observe that two layers
       are the same and NO standing to state anybody's group figures — a trade body across its
@@ -2462,7 +2474,7 @@
 
       `fusionName`, `fusionTarget`, `partIdentity`, `compositionRegimeId`, `partRegime` and
       `eliminationBetweenRegime` are enforced by any validator. `assets/sql/rules.sql` walks
-      the descent for `leaf_reached_twice`, `local_part_dangles` and `local_cycle`, and
+      the descent for `jagged_layer`, `local_part_dangles` and `layers_move_together`, and
       `tests/composition.rs` re-implements `partIdentity` in Rust against the corpus.
 
       ⛔ NOT REACHABLE BY A VALIDATOR, and the reason is not squeamishness: the second path
@@ -2535,7 +2547,7 @@
 
       O `fusionName`, o `fusionTarget`, o `partIdentity`, o `compositionRegimeId`, o `partRegime` e o
       `eliminationBetweenRegime` são impostos por qualquer validador. O `assets/sql/rules.sql`
-      percorre a descida para `leaf_reached_twice`, `local_part_dangles` e `local_cycle`, e o
+      percorre a descida para `jagged_layer`, `local_part_dangles` e `layers_move_together`, e o
       `tests/composition.rs` reimplementa o `partIdentity` em Rust contra o corpus.
 
       ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR, e a razão não é melindre: o segundo caminho atravessa um

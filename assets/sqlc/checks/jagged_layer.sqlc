@@ -1,0 +1,39 @@
+# EVERY FUSION, BESIDE WHETHER ITS OWN PARTS OVERLAP. One row per fusion, `violates` where two
+# of its parts both reach one layer.
+#
+# ⭐⭐⭐ THE RULE: a fusion's parts partition what they compose. A layer named at one level
+#    while a sibling part already carries it enters the total twice, and every figure above it
+#    is inflated by exactly one supply nobody can see. XSD 1.0 cannot reach this: the primary
+#    key on `pm.part` settles it at one level, and at two the second path runs through a
+#    document the first does not contain.
+#
+# ⭐⭐ THE DETAIL NAMES BOTH ROUTES, because the repair depends on which one the composer meant.
+#    Either the sibling that already carries it is the whole of what they wanted, or the fusion
+#    owes an `asrt:Elimination` sizing the part it double counts. Reporting only that a layer
+#    arrived twice leaves a filer with no way to tell those apart.
+#
+# ⛔ IT ACCUSES THE FUSION AND NOT THE ROOT ABOVE IT. See composition/jagged_layers.sqlc: every
+#   ancestor also reaches the doubled layer twice, and keying the rule on the root reports one
+#   defect once per ancestor while naming composers who did nothing wrong.
+-- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT f.filing, f.layer,
+           j.filing IS NOT NULL AS violates,
+           CASE WHEN j.filing IS NULL
+                THEN format('`%s` draws each part once', f.layer)
+                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',
+                            j.doubled_filing, j.doubled_layer,
+                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
+           END AS detail
+    FROM      (
+        :compose(composition/fusions.sqlc)
+    ) f
+    LEFT JOIN (
+        :compose(composition/jagged_layers.sqlc)
+    ) j ON j.filing = f.filing AND j.layer = f.layer
+) p ON true
+WHERE r.slug = 'jagged_layer'

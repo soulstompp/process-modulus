@@ -1,0 +1,41 @@
+-- §14  Supply that enters one total twice through two of a fusion's own parts, with nobody
+#
+# ⭐⭐⭐ THE WARNING IS THE WORK, NOT THE STRUCTURE. checks/jagged_layer.sqlc already reports
+# that a fusion's parts overlap. This asks the question a checker cannot: how much supply is
+# in there twice, and did the composer admit any of it. Where they did not, somebody
+# downstream has to zero out an overlap the filing left in, and the size of that job is filed
+# nowhere. It is the pivot to the part incidence, used as a measurement rather than as a
+# correction: the doubled thing IS a layer, so it carries its own demand and nameplate, and
+# the magnitude that would enter twice is readable without anybody filing it.
+#
+# ⛔ AN ADMITTED OVERLAP IS NOT THIS. `asrt:Elimination` is a composer finding the double
+# counting and sizing it, which is the work being done by the party who can actually see it.
+# The `WHERE` here keeps only the fusions where no elimination was filed at all, so a filing
+# that did its own cleanup never appears, however large its overlap was.
+#
+# ⚠️ EMPTY IS THE GOOD OUTCOME AND IT IS ALSO WHAT AN UNREACHED RELATION RETURNS. This prints
+# nothing on a clean corpus. checks/jagged_layer.sqlc is what proves the question was asked.
+-- composition/jagged_layers.sqlc restricted to fusions with no filed elimination, against the
+-- doubled layer's own figures.
+SELECT j.filing                                   AS "filing!",
+       j.layer                                    AS "layer!",
+       j.doubled_filing || '/' || j.doubled_layer AS "doubled!",
+       j.via_layer                                AS "via!",
+       j.also_via_layer                           AS "also_via!",
+       d.d_mode::float8                           AS "twice_demand",
+       n.n_mode::float8                           AS "twice_nameplate",
+       coalesce(d.d_unit, n.n_unit, '')           AS "unit!"
+FROM      (
+    :compose(composition/jagged_layers.sqlc)
+) j
+LEFT JOIN (
+    :compose(eliminations/filed.sqlc)
+) e ON e.composition = j.filing AND e.composed_layer = j.layer
+LEFT JOIN (
+    :compose(layers/demand.sqlc)
+) d ON d.filing = j.doubled_filing AND d.layer = j.doubled_layer
+LEFT JOIN (
+    :compose(layers/nameplate.sqlc)
+) n ON n.filing = j.doubled_filing AND n.layer = j.doubled_layer
+WHERE e.composition IS NULL
+ORDER BY j.filing, j.layer, j.doubled_filing, j.doubled_layer

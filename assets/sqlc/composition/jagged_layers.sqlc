@@ -1,0 +1,73 @@
+# THE FUSIONS WHOSE PARTS ARE NOT DISJOINT, WITH THE LAYER THEY BOTH REACH. One row per
+# (fusion, layer reached through two of its own parts), carrying which two parts got there.
+#
+# ⭐⭐⭐ A FUSION'S PARTS CLAIM TO PARTITION THE COMPOSED LAYER, AND THIS IS WHERE THAT CLAIM
+#    IS FALSE. Not a duplicate: a layer somebody referred to at one level while a sibling part
+#    already carried it, so the partition has an overlap nobody wrapped. `asrt:Elimination` is
+#    the filer ADMITTING an overlap and sizing it. This is an overlap that is structural,
+#    visible in the incidence, and unadmitted.
+#
+# ⭐⭐ THE SUBJECT IS THE FUSION, NOT THE ROOT ABOVE IT. Every layer above the fusion also
+#    reaches the doubled layer twice, so a rule keyed on the root reports one defect once per
+#    ancestor and names a composer who did nothing wrong. The composer at fault is the one
+#    holding both parts, which is exactly the key here. Measured on a three-level probe: keyed
+#    on the root this returns two rows against two filings, keyed on the fusion it returns one.
+#
+# ⛔ THE REACH IS REFLEXIVE ON PURPOSE. Naming a layer directly while a sibling composes it is
+#   the canonical case, so a part must count as reaching ITSELF or the commonest form of this
+#   escapes. `merge-holding-composition/compute` naming `merge-us-member/compute` beside
+#   `merge-group-composition/compute-us` is that case, and it is in this corpus: the holding
+#   reaches one member's layer directly and reaches it again through the group that composes it.
+#   ⛔ A population written as the parts a fusion does NOT name cannot see it, because the
+#   reflexive reach is a part the fusion DOES name.
+#
+# ⛔⛔ AT ONE LEVEL THE PRIMARY KEY ON `pm.part` ALREADY REFUSES THIS AND NOTHING CAN AT TWO,
+#    because the second path runs through a document the first does not contain. That is the
+#    whole reason this is a query. ⚠️ It is NOT conditioned on a filed elimination: the key
+#    governs the redeclaration and `e` governs the number, and folding an answer about a
+#    magnitude into a structural population is how a rule stops being able to see the structure.
+#
+# ⭐ THE PAIR COMPARISON KEEPS IT A SET OF UNORDERED PAIRS and drops the reflexive one, so a
+#   part is never reported against itself.
+-- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
+-- composition/descent.sqlc, for the layer two sibling parts both reach.
+SELECT DISTINCT
+       a.composition    AS filing,
+       a.composed_layer AS layer,
+       r1.filing        AS doubled_filing,
+       r1.layer         AS doubled_layer,
+       a.part_filing    AS via_filing,
+       a.part_layer     AS via_layer,
+       b.part_filing    AS also_via_filing,
+       b.part_layer     AS also_via_layer
+FROM      (
+    :compose(composition/parts.sqlc)
+) a
+JOIN      (
+    :compose(composition/parts.sqlc)
+) b ON  b.composition    = a.composition
+    AND b.composed_layer = a.composed_layer
+    AND (a.part_filing, a.part_layer) < (b.part_filing, b.part_layer)
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        :compose(composition/descent.sqlc)
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        :compose(composition/parts.sqlc)
+    ) p
+) r1 ON r1.root_filing = a.part_filing AND r1.root_layer = a.part_layer
+JOIN      (
+    SELECT DISTINCT root_filing, root_layer, filing, layer
+    FROM (
+        :compose(composition/descent.sqlc)
+    ) w
+  UNION
+    SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+    FROM (
+        :compose(composition/parts.sqlc)
+    ) p
+) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
+     AND r2.filing = r1.filing AND r2.layer = r1.layer
