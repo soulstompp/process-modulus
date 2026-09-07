@@ -48,3 +48,16 @@ anyhow = "1"
 sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "postgres", "macros"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 nalgebra = "0.34"
+
+# ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
+# `examples/simulation/` builds a bench on NeXosim, which is a bare discrete-event
+# scheduler: mailboxes, an event queue and a clock. It carries no stocks, no flows,
+# no processes and no opinion about what a shortfall is. Taking the stock-and-flow
+# layer above it would be taking somebody's model, and corroboration between two
+# models is only worth something while they are two, so that layer is written here
+# instead and NeXosim only says what happens next.
+#
+# ⚠️ NeXosim is edition 2024 and needs rustc 1.88. The LIBRARY still builds at the
+# declared 1.75; it is `cargo test` and `cargo run --example` that now need 1.88.
+nexosim = "1.0"
+serde   = { version = "1", features = ["derive"] }

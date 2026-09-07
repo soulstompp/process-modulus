@@ -37,6 +37,12 @@ const PERMITTED: &[&str] = &[
     "sqlx",
     "tokio",
     "nalgebra",
+    // ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
+    // NeXosim is a bare discrete-event scheduler: mailboxes, an event queue and a clock. Two
+    // answers only corroborate while they are two. `serde` rides along because the scheduler
+    // requires it on every model type.
+    "nexosim",
+    "serde",
     // ⭐⭐ dev only, for examples/simulation/. THE ADMISSION TEST IS WHETHER IT CARRIES
     // A MODEL, and NeXosim does not: it is mailboxes, an event queue and a clock, with
     // no stock, no flow and no opinion about what a shortfall is. The stock-and-flow
