@@ -1,0 +1,31 @@
+# EVERY ELIMINATION A REMAINDER DESCENT PASSED THROUGH, CARRIED INTO THE ROOT'S UNIT. One row
+# per (composed layer, quantity), summed over every intermediate the descent ran through.
+#
+# ⭐⭐ IT IS EMPTY WHENEVER EVERY DESCENT STOPS AT DEPTH ONE, WHICH IS ALMOST ALWAYS. A settled
+#    node's filed totals already carry every correction its own composer applied, so stopping
+#    there needs nothing from this relation. Rows appear only where a descent ran PAST a node,
+#    which happens exactly where that node's own conversions have width, and the corrections it
+#    applied were bypassed with its filed figures.
+#
+# ⛔ SO ITS EMPTINESS IS A FACT ABOUT THE CORPUS AND NOT ABOUT THE MODEL. A document nesting one
+#   spread conversion under another puts rows here, and a sum that omitted them would be short
+#   by exactly the corrections the intermediate composer made.
+-- eliminations/filed.sqlc at the unsettled nodes composition/descent.sqlc runs through, times
+-- that path's factor product.
+SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
+       count(*)                                                     AS through_layers,
+       sum(least(   e.low  * w.factor_low, e.low  * w.factor_high)) AS e_low,
+       sum(e.mode * w.factor_mode)                                  AS e_mode,
+       sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
+FROM      (
+    :compose(composition/descent.sqlc)
+) w
+JOIN      (
+    :compose(composition/unsettled.sqlc)
+) o ON o.filing = w.filing AND o.layer = w.layer
+JOIN      (
+    :compose(eliminations/filed.sqlc)
+) e ON e.composition = w.filing AND e.composed_layer = w.layer
+WHERE w.factor_absent = false
+  AND NOT w.is_cycle
+GROUP BY w.root_filing, w.root_layer, e.quantity

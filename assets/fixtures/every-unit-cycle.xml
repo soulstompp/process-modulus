@@ -342,7 +342,7 @@
                 <pm:kind>booked</pm:kind>
                 <pm:share>
                   <pm:claim>
-                    <pm:low>0.68</pm:low><pm:mostLikely>2.24</pm:mostLikely><pm:high>3.72</pm:high>
+                    <pm:low>1.08</pm:low><pm:mostLikely>2.24</pm:mostLikely><pm:high>3.48</pm:high>
                     <pm:unit>GPU</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
                     <pm:narrowsWhen>

@@ -1,0 +1,40 @@
+# THE ONE-PART FUSIONS THAT COULD CARRY, AGAINST THE ONES THAT DO. One row: whether
+# |carriable| = |carried| + |carriable ⋉ (eliminated ∪ suspended)|.
+#
+# ⛔⛔ A DIFFERENCE NEEDS TWO THINGS BEFORE ANY LAW CAN GOVERN IT, AND THIS ONE NEEDED BOTH.
+#    Its operator must be one examples/soundness.rs recognises, which for an anti-semijoin means
+#    `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`; and its left operand must be a FILE, so
+#    there is an A to count. Miss either and the `unclaimed` guard reports nothing, because it
+#    walks for syntax and cannot see an operand that was never named.
+#    composition/carriable.sqlc is the A here.
+#
+# ⭐ THE `OR` IS DE MORGAN AND NOT A DISJUNCTION SOMEBODY SHOULD HAVE UNIONED. `carried` keeps
+#   ¬eliminated ∧ ¬suspended; the complement it is being checked against is therefore
+#   eliminated ∨ suspended, the same two named relations read from the other side.
+#
+# ⭐ THE LEFT OPERAND IS A BAG ON THE COMPARED ATTRIBUTES and the identity still holds, because
+#   both terms are anti-joins rather than `EXCEPT`. `carriable` is keyed (filing, layer,
+#   quantity) and the exclusions compare (filing, layer), so a fusion contributes one row per
+#   quantity to whichever side it lands on. Rewriting either term as `EXCEPT` would deduplicate
+#   one side and not the other, and the two would stop adding up.
+-- composition/carriable.sqlc partitioned by eliminations/filed.sqlc and composition/suspended_fusions.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/carried' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s carriable = %s carried + %s eliminated or suspended',
+                  x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/carriable.sqlc) ) c) AS total,
+             (SELECT count(*) FROM ( :compose(composition/carried.sqlc) ) k)   AS kept,
+             (SELECT count(*) FROM ( :compose(composition/carriable.sqlc) ) c
+               WHERE EXISTS (SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
+                              WHERE e.composition = c.filing AND e.composed_layer = c.layer)
+                  OR EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
+                              WHERE s.composition = c.filing AND s.composed_layer = c.layer)) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'carried'

@@ -1,4 +1,7 @@
--- asrt:Fusion with one asrt:Part and no asrt:elimination, against layers/quantities.sqlc.
+-- composition/carriable.sqlc less the fusions that eliminate or owe no sum.
+SELECT c.*
+FROM      (
+    -- asrt:Fusion with one asrt:Part and a stated factor, against layers/quantities.sqlc.
 SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
        part.low  * coalesce(p.factor_low,  1) AS part_low,
        part.mode * coalesce(p.factor_mode, 1) AS part_mode,
@@ -172,14 +175,16 @@ FROM pm.layer l
  ) one
         GROUP BY composition, composed_layer
         HAVING count(*) = 1)
-  AND NOT EXISTS (
+
+) c
+WHERE NOT EXISTS (
         SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
 FROM pm.elimination e
  ) e
-        WHERE e.composition = p.composition AND e.composed_layer = p.composed_layer)
+        WHERE e.composition = c.filing AND e.composed_layer = c.layer)
   AND NOT EXISTS (
         SELECT 1 FROM ( -- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
@@ -251,4 +256,4 @@ WHERE p.factor_absent IS NOT NULL
 
 ) g
  ) s
-        WHERE s.composition = p.composition AND s.composed_layer = p.composed_layer)
+        WHERE s.composition = c.filing AND s.composed_layer = c.layer)

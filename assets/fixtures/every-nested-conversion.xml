@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md. Nothing here was observed
+  and nothing here may be cited as evidence about any business.
+
+  ⭐⭐⭐ THE STATE THIS EXISTS FOR IS A SPREAD CONVERSION BENEATH A SPREAD CONVERSION. A
+  composed layer's remainder is `F Phi r_parts`, each part's own remainder converted once, and
+  a part that is ITSELF composed has a remainder of the same kind. So the definition recurses,
+  and it bottoms out at a leaf where `n` and `d` are independently filed.
+
+  ⛔⛔ EVERY OTHER NESTED CHAIN IN THIS REPOSITORY BOTTOMS OUT AT DEPTH ONE BY ACCIDENT, because
+  no part that is itself composed also carries a factor with WIDTH. Where the factor is a point
+  the two readings of a part's remainder coincide, so reading the part's own `n - d` in place of
+  its converted remainder costs nothing and the recursion is invisible. This document is the one
+  where it is not.
+
+  ⭐⭐ THE CHAIN, AND BOTH EDGES HAVE WIDTH:
+
+      line-runs  =[0.8, 1.0, 1.25]=>  line-hours  =[0.5, 1.0, 2.0]=>  line-batches
+
+  A run does not take a fixed time and a batch does not take a fixed number of hours, so
+  neither factor can be filed as a point without asserting a precision the line does not have.
+
+  ⭐⭐⭐ THE THREE ANSWERS, AND ONLY ONE IS THE REMAINDER:
+
+      line-runs        n = 10, d = 8            r = [2, 2, 2]
+
+      line-hours       n - d differenced        [-2.0, 2, 6.1]
+                       0.8 . r_runs converted   [ 1.6, 2, 2.5]     <- the remainder
+
+      line-batches     n - d differenced        [-16.0, 2, 21.8]
+                       converted from the       [ -4.0, 2, 12.2]   <- reads line-hours WRONG
+                         DIFFERENCED line-hours
+                       converted from the       [  0.8, 2,  5.0]   <- the remainder
+                         CONVERTED line-hours
+
+  ⛔ The middle figure is what a one-level pivot returns. It is not a rounding difference from
+  the third: `line-hours` differenced straddles zero and converted does not, so the corner rule
+  reads opposite ends of the factor and the two answers are five units apart at the low bound.
+
+  ⚠️ THE FILED SHARES ARE THE THIRD FIGURE, WHICH IS WHAT MAKES THIS DOCUMENT A TEST RATHER
+  THAN AN ILLUSTRATION. `checks/shares_do_not_sum` compares a holder's share against the
+  magnitude of `r`, so a reader computing `line-batches` one level deep accuses this filing,
+  and a reader computing it by recursion does not. The document is correct either way; only one
+  of the two readings agrees with it.
+-->
+<asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
+                  xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>line-desk</asrt:witness>
+  <asrt:observedAt>2026-09-07</asrt:observedAt>
+  <asrt:provenance>
+    <pm:party>line-desk</pm:party>
+    <pm:standing>
+      <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+    </pm:standing>
+    <pm:note>stipulated for the nested-conversion state; nothing here was observed</pm:note>
+  </asrt:provenance>
+
+  <asrt:regime>
+    <pm:id>stipulated</pm:id>
+    <pm:framework>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a fixture reports under no framework, and inventing one would file a fact
+                 nobody established</pm:note>
+      </pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>no positions are coded here, so there is no chart to code them in</pm:note>
+      </pm:absent>
+    </pm:chart>
+  </asrt:regime>
+
+  <pm:processModulus>
+
+    <pm:notation>
+      <pm:uri>urn:example:fixture:line-desk:every-nested-conversion</pm:uri>
+    </pm:notation>
+    <pm:evidence>
+      <pm:attests>stipulation</pm:attests>
+    </pm:evidence>
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>stipulated: one line counted three ways, so that a converted remainder sits beneath another converted remainder</pm:basis>
+        </pm:scope>
+      </pm:scope>
+      <pm:layer>
+        <pm:name>line-runs</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+              <pm:claim>
+                <pm:low>8</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>8</pm:high>
+                <pm:unit>run</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the line's own run pool</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
+                <pm:unit>run</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>run</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>line-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>8</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>8</pm:high>
+                <pm:unit>run</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the spare capacity simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>2</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>2</pm:high>
+                    <pm:unit>run</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <pm:layer>
+        <pm:name>line-hours</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+              <pm:claim>
+                <pm:low>6.4</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>10</pm:high>
+                <pm:unit>hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the same pool counted in hours</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>8</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>12.5</pm:high>
+                <pm:unit>hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>hour</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>line-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>6.4</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>10</pm:high>
+                <pm:unit>hour</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the spare capacity simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>1.6</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>2.5</pm:high>
+                    <pm:unit>hour</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:absent></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+
+      <pm:layer>
+        <pm:name>line-batches</pm:name>
+
+        <pm:demand>
+          <pm:amount>
+              <pm:claim>
+                <pm:low>3.2</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>20</pm:high>
+                <pm:unit>batch</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+
+        <pm:timeSlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:timeSlack>
+
+        <pm:supply>
+          <pm:label>stipulated: the same pool counted in batches</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>4</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>25</pm:high>
+                <pm:unit>batch</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:divisibility>
+                <pm:continuous>
+                  <pm:premium>
+                    <pm:claim>
+                      <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
+                      <pm:unit>batch</pm:unit>
+                      <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                      <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                      <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+                      <pm:provenance><pm:party>line-desk</pm:party><pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing><pm:note>stipulated: nothing is charged for leaving the whole-unit type</pm:note></pm:provenance>
+                    </pm:claim>
+                  </pm:premium>
+                </pm:continuous>
+                <pm:window><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>this unit has no period under the line</pm:note></pm:absent></pm:window>
+              </pm:divisibility>
+            </pm:divisibility>
+            <pm:capacitySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:capacitySlack>
+            <pm:inventorySlack><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:inventorySlack>
+          </pm:nameplate>
+
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>3.2</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>20</pm:high>
+                <pm:unit>batch</pm:unit>
+                <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+                <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a metered quantity has no accounting basis</pm:note></pm:absent></pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber><pm:absent><pm:reason>none</pm:reason><pm:note>nothing absorbed it; the spare capacity simply went uncalled</pm:note></pm:absent></pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share>
+                  <pm:claim>
+                    <pm:low>0.8</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>5</pm:high>
+                    <pm:unit>batch</pm:unit>
+                    <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
+                    <pm:narrowsWhen><pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:absent></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                  </pm:claim>
+                </pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:couplings>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>these three layers are one line counted three ways rather than three layers that could move against each other</pm:note>
+        </pm:absent>
+      </pm:couplings>
+    </pm:stack>
+  </pm:processModulus>
+
+  <asrt:fusion>
+    <asrt:name>line-hours</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>line-desk</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:line-desk:every-nested-conversion</pm:notation>
+          <pm:id>line-runs</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-07</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>0.8</pm:low><pm:mostLikely>1.0</pm:mostLikely><pm:high>1.25</pm:high>
+          <pm:unit>hour per run</pm:unit>
+          <pm:denominator><pm:each>run</pm:each></pm:denominator>
+          <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+        </pm:claim>
+      </asrt:factor>
+    </asrt:part>
+    <asrt:observed>The same line counted in hours rather than runs. A run does not take a fixed time, so the conversion has width and filing a point here would assert a precision the line does not have.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>line-batches</asrt:name>
+
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>line-desk</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:line-desk:every-nested-conversion</pm:notation>
+          <pm:id>line-hours</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-07</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+      <asrt:factor>
+        <pm:claim>
+          <pm:low>0.5</pm:low><pm:mostLikely>1.0</pm:mostLikely><pm:high>2.0</pm:high>
+          <pm:unit>batch per hour</pm:unit>
+          <pm:denominator><pm:each>hour</pm:each></pm:denominator>
+          <pm:narrowsWhen><pm:narrowing><pm:condition>the run log and the batch log are reconciled against one shift rather than each against its own</pm:condition><pm:kind>instrument</pm:kind></pm:narrowing></pm:narrowsWhen>
+          <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+        </pm:claim>
+      </asrt:factor>
+    </asrt:part>
+    <asrt:observed>The same line counted in batches rather than hours. Batch size varies with what is being made, so this conversion has width for its own reason and not for the one below it.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note>
+      </asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+</asrt:composition>

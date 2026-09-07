@@ -29,5 +29,5 @@ FROM      (
     :compose(layers/filed_remainders.sqlc)
 ) l
 JOIN      (
-    :compose(layers/remainder.sqlc)
+    :compose(layers/differenced_remainder.sqlc)
 ) r USING (filing, layer)

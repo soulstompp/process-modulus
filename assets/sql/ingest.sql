@@ -42,6 +42,8 @@ INSERT INTO source VALUES ('every-partial-elimination', XMLPARSE(DOCUMENT :'d'))
 INSERT INTO source VALUES ('every-unsized-conversion', XMLPARSE(DOCUMENT :'d'));
 \set d `cat assets/fixtures/every-unit-cycle.xml`
 INSERT INTO source VALUES ('every-unit-cycle', XMLPARSE(DOCUMENT :'d'));
+\set d `cat assets/fixtures/every-nested-conversion.xml`
+INSERT INTO source VALUES ('every-nested-conversion', XMLPARSE(DOCUMENT :'d'));
 
 -- ---------------------------------------------------------------------------
 -- Filings.

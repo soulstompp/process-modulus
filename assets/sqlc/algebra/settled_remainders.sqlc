@@ -1,0 +1,28 @@
+# THE NODES A REMAINDER DESCENT REACHES, AGAINST THE ONES IT STOPS ON. One row: whether
+# |frontier| = |settled| + |frontier ⋉ unsettled|.
+#
+# ⭐ THE DESCENT PRUNES AND THE DIFFERENCE SELECTS, AND THIS COUNTS THE SECOND. Every row the
+#   walk emits is either a stopping point, which carries a remainder up, or an unsettled node
+#   the walk continued through, which carries nothing and is corrected by
+#   composition/carried_eliminations.sqlc instead. A row in neither would be a subtree silently
+#   dropped from a sum, and the two figures would still look like quantities.
+-- composition/remainder_frontier.sqlc partitioned by composition/unsettled.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/settled_remainders' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s frontier rows = %s settled + %s walked through', x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/remainder_frontier.sqlc) ) w
+               WHERE w.factor_absent = false AND NOT w.is_cycle)                       AS total,
+             (SELECT count(*) FROM ( :compose(composition/settled_remainders.sqlc) ) s) AS kept,
+             (SELECT count(*) FROM ( :compose(composition/remainder_frontier.sqlc) ) w
+               WHERE w.factor_absent = false AND NOT w.is_cycle
+                 AND EXISTS (SELECT 1 FROM ( :compose(composition/unsettled.sqlc) ) o
+                              WHERE o.filing = w.filing AND o.layer = w.layer))        AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'settled_remainders'

@@ -1,0 +1,20 @@
+# THE COMPOSED LAYERS WHOSE OWN FILED TOTALS CANNOT BE DIFFERENCED. One row per composed layer
+# carrying at least one part whose conversion factor has WIDTH.
+#
+# ⭐⭐⭐ THIS IS THE BASE CASE OF THE REMAINDER RECURSION, STATED PROPERLY. `composition/
+#    leaves.sqlc` is where the PART graph bottoms out, and it is the base case for a sum over
+#    parts. A remainder bottoms out earlier: it stops wherever `n - d` is legitimate, and that
+#    is wherever the two were not scaled by one factor with width. A leaf qualifies trivially,
+#    having nothing above it that could have correlated anything, but so does every composed
+#    layer whose conversions are point values, and the corpus is almost entirely those.
+#
+# ⛔ SO A DESCENT FOR A REMAINDER MUST STOP AT THE FIRST SETTLED NODE AND NOT RUN TO THE LEAVES.
+#   Running past one throws away a filed figure its composer stands behind, and with it every
+#   correction that composer already applied, which then has to be rebuilt from below and can
+#   fail for reasons the filed figure had already settled.
+-- composition/parts.sqlc, restricted to the parts whose factor has width.
+SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+WHERE p.factor_low IS DISTINCT FROM p.factor_high

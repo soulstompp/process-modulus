@@ -1,0 +1,40 @@
+# THE FUSIONS THAT OWE NO EXACT COMPOSED REMAINDER. One row per (composition, composed layer)
+# where the demand elimination OR the nameplate elimination is suspended.
+#
+# ⭐⭐ THE RESTRICTION TO TWO QUANTITIES IS THE ARGUMENT AND IT IS DECLARED IN THE FILE NAME.
+#    `r = n - d` is a function of exactly two of the five quantities composition/suspended_
+#    fusions.sqlc ranges over. A suspended DRAW or a suspended SLACK says nothing about the
+#    remainder and must not suspend it; a suspended demand or nameplate suspends it entirely,
+#    because the correction `- e_n + e_d` then has a term nobody sized.
+#
+# ⛔ SO THIS COLLAPSES `quantity` AND THAT IS A SLICE, NOT AN AGGREGATE. The source is keyed
+#   (composition, composed_layer, quantity) and this is keyed without it, which is exactly the
+#   shape to watch: a σπ and a γ have the same type and make opposite
+#   claims. The claim here is the σπ one and it is the right one -- "either of these two is
+#   suspended" -- rather than "the row as a whole is suspended". Reading it as the second would
+#   let a suspended slack veto a remainder that is perfectly computable.
+#
+# ⛔⛔⛔ AND A NULL `quantity` IS THE LIST-LEVEL SUSPENSION, WHICH SUSPENDS EVERY QUANTITY. This
+#    is suspension's two levels arriving in the filter itself. `eliminations/unsized`
+#    names the ITEM and carries a quantity; `eliminations/unsearched` names the LIST -- nobody
+#    looked for double counting at all -- and has no per-quantity grain, so its rows come
+#    through with `quantity` NULL. An `IN` list does not match NULL, so restricting to two
+#    values silently drops the suspension that is BROADER than either of them.
+#
+#    ⭐ The arithmetic caught it and no law would have. Written with the `IN` alone this
+#    relation returned one row and its complement returned FIFTEEN owed against
+#    composition/owed_equality.sqlc's thirteen, which is impossible: a condition needing BOTH
+#    quantities answered cannot own more fusions than one needing demand alone. Two of the
+#    corpus's three suspensions are list-level.
+#
+#    ⚠️ composition/owed_equality.sqlc reaches the same rows by `coalesce(s.quantity, 'demand')
+#    = 'demand'`, which is right for a demand rule and right by accident: it reads "suspended at
+#    every quantity" as "suspended at demand". That fill would be wrong for any other single
+#    quantity, and it is why this file tests the NULL rather than filling it.
+-- composition/suspended_fusions.sqlc restricted to the two quantities r is built from.
+SELECT DISTINCT s.composition, s.composed_layer
+FROM (
+    :compose(composition/suspended_fusions.sqlc)
+) s
+WHERE s.quantity IS NULL
+   OR s.quantity IN ('demand', 'nameplate')

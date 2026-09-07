@@ -37,7 +37,7 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 const BUILD_RS: &str = include_str!("../build.rs");
 
 /// Every instance, and the prefix whose namespace it must match.
-const INSTANCES: [(&str, &str, &str); 20] = [
+const INSTANCES: [(&str, &str, &str); 21] = [
     // The same filing in European Portuguese: same three layers, same argument, declared
     // by a microentity under IES's AnexoASNC instead of US-GAAP.
     (
@@ -149,6 +149,11 @@ const INSTANCES: [(&str, &str, &str); 20] = [
         "assets/fixtures/every-unit-cycle.xml",
         "asrt",
         include_str!("../assets/fixtures/every-unit-cycle.xml"),
+    ),
+    (
+        "assets/fixtures/every-nested-conversion.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-nested-conversion.xml"),
     ),
 ];
 

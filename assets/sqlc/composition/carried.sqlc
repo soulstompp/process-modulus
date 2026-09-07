@@ -9,9 +9,11 @@
 #
 # ⛔⛔ AND THAT IS FIVE QUANTITIES AGAINST THE SUM RULE'S ONE. `checks/fusion_sum_disagrees`
 #    reads `composition/fused.sqlc`, which answers `'demand' AS quantity` as a literal;
-#    `checks/window_lost_or_summed` covers the calendar. Nothing composes a nameplate or any of
-#    the three buffer slacks, and the corpus files SIX SIZED `nameplate` eliminations and TWO
-#    `draw` ones that no relation reads. A composer did the work and nothing consumed it.
+#    `checks/window_lost_or_summed` covers the calendar. Nothing composes a nameplate TOTAL or
+#    any of the three buffer slacks. The nameplate ELIMINATIONS are read, by
+#    composition/fused_remainders.sqlc, which needs both `e_n` and `e_d` to correct a composed
+#    remainder; the draw eliminations are read by nothing, so a composer did that work and
+#    nothing consumes it.
 #
 # ⚠️ A ONE-PART FUSION IS NOT DEGENERATE, and `every-local-part` says so in its own words:
 #    "A one-part fusion is not degenerate: it says this reviewer read that layer and carried
@@ -32,33 +34,20 @@
 # ⚠️ THE OMITTED ELEMENT IS A DIFFERENT STATE AND IT STAYS. `minOccurs="0"` and no factor means
 #    no conversion is needed, which is the sender asserting the units already agree. That is a
 #    filing; `unmeasured` is a gap.
--- asrt:Fusion with one asrt:Part and no asrt:elimination, against layers/quantities.sqlc.
-SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
-       part.low  * coalesce(p.factor_low,  1) AS part_low,
-       part.mode * coalesce(p.factor_mode, 1) AS part_mode,
-       part.high * coalesce(p.factor_high, 1) AS part_high,
-       part.unit AS part_unit,
-       filed.low AS filed_low, filed.mode AS filed_mode, filed.high AS filed_high,
-       filed.unit AS filed_unit
+#
+# ⭐⭐ THE CANDIDATE SET IS NOW A FILE, composition/carriable.sqlc, AND THIS IS THE DIFFERENCE
+#    TAKEN AGAINST IT. Both operands are named, so algebra/carried.sqlc can count them. ⛔ Fold
+#    the two `NOT EXISTS` back into a `WHERE` over an inline candidate set and the law loses its
+#    A: the SQL still runs, the rows are identical, and nothing on algebra/roster.sqlc can be
+#    written about it.
+-- composition/carriable.sqlc less the fusions that eliminate or owe no sum.
+SELECT c.*
 FROM      (
-    :compose(composition/parts.sqlc)
-) p
-JOIN      (
-    :compose(layers/quantities.sqlc)
-) part ON part.filing = p.part_filing AND part.layer = p.part_layer
-JOIN      (
-    :compose(layers/quantities.sqlc)
-) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
-       AND filed.quantity = part.quantity
-WHERE p.factor_absent IS NULL
-  AND (p.composition, p.composed_layer) IN (
-        SELECT composition, composed_layer
-        FROM ( :compose(composition/parts.sqlc) ) one
-        GROUP BY composition, composed_layer
-        HAVING count(*) = 1)
-  AND NOT EXISTS (
+    :compose(composition/carriable.sqlc)
+) c
+WHERE NOT EXISTS (
         SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
-        WHERE e.composition = p.composition AND e.composed_layer = p.composed_layer)
+        WHERE e.composition = c.filing AND e.composed_layer = c.layer)
   AND NOT EXISTS (
         SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
-        WHERE s.composition = p.composition AND s.composed_layer = p.composed_layer)
+        WHERE s.composition = c.filing AND s.composed_layer = c.layer)

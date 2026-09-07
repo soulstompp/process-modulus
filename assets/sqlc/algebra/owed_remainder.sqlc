@@ -1,0 +1,32 @@
+# THE FUSIONS THAT OWE AN EXACT COMPOSED REMAINDER, AGAINST THE ONES THAT DO NOT, CHECKED AS A
+# PARTITION OF ALL OF THEM. One row: whether |fusions| = |owed_remainder| + |fusions ⋉ suspended|.
+#
+# ⭐ IT IS composition/owed_equality.sqlc's LAW AT A SECOND POPULATION. That one partitions on a
+#   demand suspension; a remainder needs BOTH the demand and the nameplate answered, so the two
+#   populations differ and each needs its own count.
+#
+# ⛔ THE `IS NULL` ARM IS NOT DECORATION. Two of this corpus's three suspensions are list-level
+#   and carry no quantity at all, so a membership test written with `IN` alone silently misses
+#   the suspension that is BROADER than either named one. The left side would then come out
+#   larger than composition/owed_equality's. ⭐ THAT IS THE INVARIANT TO CHECK AFTER ANY EDIT
+#   HERE: a condition needing BOTH quantities answered cannot own more fusions than one needing
+#   demand alone, so |owed_remainder| <= |owed_equality| always, and a violation of that is a
+#   dropped suspension rather than a disagreement about the corpus.
+-- composition/fusions.sqlc partitioned by composition/suspended_remainders.sqlc.
+SELECT a.law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/owed_remainder' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s fusions = %s owing a remainder + %s suspended', x.total, x.kept, x.removed) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f)        AS total,
+             (SELECT count(*) FROM ( :compose(composition/owed_remainder.sqlc) ) o) AS kept,
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
+               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/suspended_remainders.sqlc) ) s
+                              WHERE s.composition = f.filing AND s.composed_layer = f.layer)) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'owed_remainder'

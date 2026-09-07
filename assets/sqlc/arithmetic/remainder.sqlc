@@ -9,8 +9,9 @@
 #
 # ⛔⛔ AND THE UNIT COMPARISON IS THE ONE NOTHING ELSE MAKES. layers/remainder.sqlc:28-29
 #    carries `d_unit` and `n_unit` as two separate columns and subtracts across them with no
-#    predicate. All 36 computable layers agree today, so the guard would bind 36 rows rather
-#    than none -- a rule worth having, not a bound with nothing to bound.
+#    predicate. Every computable layer agrees today, so the guard would BIND every one of them
+#    and fire on none -- a rule worth having, not a bound with nothing to bound. The population
+#    is this relation's own `computable` verdict; soundness prints its size.
 -- pm:Demand/pm:claim against pm:Nameplate/pm:amount, before layers/remainder.sqlc drops either.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (

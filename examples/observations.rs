@@ -470,6 +470,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⛔ `(notApplicable)` is the question being malformed, not unanswered: two quanta");
     println!("      in different units have no common divisor to find.");
 
+    // ⭐⭐⭐ TWO WAYS TO THE SAME NUMBER, AND THE CONTROLS ARE WHAT MAKE THE DIFFERENCE MEAN
+    //    ANYTHING. Every composed layer whose parts convert at one must agree exactly; only a
+    //    spread factor can separate the two figures, because only then is one factor
+    //    multiplying both the nameplate and the demand that get differenced.
+    let rem = sqlx::query_file!("assets/sql/queries/observations/13-composed-remainder.sql")
+        .fetch_all(&pool)
+        .await?;
+    let apart = rem.iter().filter(|r| !r.agrees).count();
+    println!(
+        "\n13. the composed remainder, pivoted through the parts against differenced totals: \
+         {} of {} disagree",
+        apart,
+        rem.len()
+    );
+    for r in &rem {
+        println!(
+            "   {} {:<26} {:<22} {} part(s)  pivot [{}, {}, {}]  differenced [{}, {}, {}] {}",
+            if r.agrees { "  " } else { "⛔" },
+            r.composition, r.composed_layer, r.parts,
+            r.pivoted_low, r.pivoted_mode, r.pivoted_high,
+            r.derived_low, r.derived_mode, r.derived_high,
+            r.unit
+        );
+    }
+    assert!(
+        rem.len() - apart > 0,
+        "every composed layer disagrees, so there is no control here and the difference \
+         demonstrates nothing. A layer whose parts convert at one MUST agree exactly."
+    );
+    println!("   ⭐ The agreeing rows are the control: their parts convert at one, so nothing");
+    println!("      could separate the two figures. Only a spread factor can, and it does.");
+
     // ⭐⭐⭐ THE ONE OBSERVATION THAT IS ABOUT THE SCHEMA RATHER THAN THE BUSINESS. Every other
     //    section here asks what the filings say; this asks which STATES they have ever reached.
     //    `AbsenceReason` is four members, so the answer per question is a four-bit word, and

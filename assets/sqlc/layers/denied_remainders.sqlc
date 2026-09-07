@@ -23,10 +23,10 @@
 #
 # ⭐ RUN THIS ALONE AND READ THE NOTES. Two rows, and both now say the same thing in different
 #   words: this layer states no nameplate, so `r = n - d` has no `n` and the question is
-#   malformed rather than answered with nothing. ⚠️ BOTH USED TO SAY SOMETHING ELSE -- "a supply
-#   with no quantum divides exactly" -- which is a different claim and a false one: no quantum
-#   kills the RESIDUE term of `r = m*q - (demand mod q)` and leaves `n - d` standing. The notes
-#   disagreed with the structure, and the rule downstream had been printing the right reason
+#   malformed rather than answered with nothing. ⚠️ NEITHER MAY SAY "a supply with no quantum
+#   divides exactly", which is a different claim and a false one: no quantum kills the RESIDUE
+#   term of `r = m*q - (demand mod q)` and leaves `n - d` standing. Let the notes disagree with
+#   the structure and the rule downstream prints the right reason
 #   ("no nameplate is stated") beside the wrong one for two revisions.
 -- pm:Layer/pm:remainder taking the pm:absent branch of pm:StatedRemainder.
 SELECT l.filing, l.layer,

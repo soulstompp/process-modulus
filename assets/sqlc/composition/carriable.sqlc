@@ -1,0 +1,37 @@
+# THE ONE-PART FUSIONS WHOSE CONVERSION IS STATED, BESIDE THE PART AND THE FIGURE FILED AGAINST
+# IT. One row per such fusion per quantity. This is the population the identity test applies to,
+# BEFORE the fusions that eliminate something, or that owe no sum, are taken out.
+#
+# ⭐⭐⭐ IT EXISTS BECAUSE A DIFFERENCE NEEDS A NAMED LEFT OPERAND. |A ∖ B| = |A| - |A ⋉ B| is
+#    checkable only where somebody can count A, so a difference taken against a candidate set
+#    spelled inline cannot carry a law however plainly it is written. That is the second way a
+#    difference goes ungoverned, and examples/soundness.rs looks for the first: it walks the
+#    tree for difference SYNTAX, and an unnamed OPERAND is invisible to it.
+#
+# ⛔ THE TWO RESTRICTIONS HERE ARE NOT THE DIFFERENCE AND BELONG ON THIS SIDE OF IT. A stated
+#   factor and a single part are what make identity ASKABLE at all; a filed elimination and a
+#   suspension are answers to it. Folding all four into one WHERE is what hid the operator.
+-- asrt:Fusion with one asrt:Part and a stated factor, against layers/quantities.sqlc.
+SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
+       part.low  * coalesce(p.factor_low,  1) AS part_low,
+       part.mode * coalesce(p.factor_mode, 1) AS part_mode,
+       part.high * coalesce(p.factor_high, 1) AS part_high,
+       part.unit AS part_unit,
+       filed.low AS filed_low, filed.mode AS filed_mode, filed.high AS filed_high,
+       filed.unit AS filed_unit
+FROM      (
+    :compose(composition/parts.sqlc)
+) p
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
+       AND filed.quantity = part.quantity
+WHERE p.factor_absent IS NULL
+  AND (p.composition, p.composed_layer) IN (
+        SELECT composition, composed_layer
+        FROM ( :compose(composition/parts.sqlc) ) one
+        GROUP BY composition, composed_layer
+        HAVING count(*) = 1)

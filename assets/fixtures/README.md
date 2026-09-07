@@ -40,6 +40,7 @@ different axes, which is the split the schema itself draws between `Verdict` and
 | `every-unsized-conversion.xml` | `Part/factor`'s absent arm: a conversion nobody measured, which is not a part that needs none |
 | `every-draft.xml` | `StatedNotation/unmeasured`, `StatedScope/unmeasured` and `StatedEvidence/unmeasured` — the document a first-time adopter actually has, including the one state where it will not even say whether it observed anything |
 | `every-unit-cycle.xml` | a CYCLE IN THE UNIT GRAPH: three layers whose conversions run GPU to GPU-hour to node-hour and back, so a round trip can be asked about at all. The part graph stays a chain and nothing is composed from itself — it is the UNITS that come round |
+| `every-nested-conversion.xml` | a SPREAD CONVERSION BENEATH A SPREAD CONVERSION, which is the state where a composed remainder stops being computable one level at a time. Three layers chained, both edges carrying a factor with width, and the filed holder shares agreeing with the recursive figure rather than the one-level one, so a reader that stops too early accuses a correct filing |
 
 **A fixture proves reachability, never correctness.** That a document filing
 `claimed = partial` validates says the state exists; it says nothing about whether a runner

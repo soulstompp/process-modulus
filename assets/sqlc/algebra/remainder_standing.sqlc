@@ -5,9 +5,14 @@
 #    partition of layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic
 #    unasked, and disjoint, so no remainder is counted under two standings.
 #
-# ⛔ THE LEFT JOINS INSIDE remainder_scope ARE THE RISK. A layer whose filing declared two stack
+# ⛔ THE LEFT JOINS INSIDE remainder_scope ARE ONE RISK. A layer whose filing declared two stack
 #   scopes, or two coupling searches, would fan out and be classified twice -- and the standing
-#   counts would still look reasonable. Cardinality on both sides is what catches it.
+#   counts would still look reasonable. Cardinality on both sides is what catches that one.
+#
+# ⛔⛔ AND THE ARMS ARE THE OTHER, WHICH CARDINALITY CANNOT SEE. The `CASE` is in the SELECT
+#    LIST, so a remainder matching no arm keeps its row and takes `standing = NULL` rather than
+#    vanishing. Measured with the `ELSE` removed: 44 computable, 44 classified, 0 doubled,
+#    TWENTY-FIVE standing NULL, law still `t`. `unclassified` is the term that sees it.
 -- layers/remainder.sqlc against layers/remainder_scope.sqlc.
 SELECT a.law, p.subject, p.holds, p.detail
 FROM      (
@@ -15,14 +20,16 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT 'layers/remainder_scope' AS subject,
-           x.computable = x.classified AND x.doubled = 0 AS holds,
-           format('%s computable remainders, %s classified, %s classified twice',
-                  x.computable, x.classified, x.doubled) AS detail
+           x.computable = x.classified AND x.doubled = 0 AND x.unclassified = 0 AS holds,
+           format('%s computable remainders, %s classified, %s classified twice, %s with no standing',
+                  x.computable, x.classified, x.doubled, x.unclassified) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(layers/remainder.sqlc) ) r)       AS computable,
              (SELECT count(*) FROM ( :compose(layers/remainder_scope.sqlc) ) z) AS classified,
              (SELECT count(*) FROM ( SELECT filing, layer FROM ( :compose(layers/remainder_scope.sqlc) ) z
-                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled
+                                     GROUP BY filing, layer HAVING count(*) > 1 ) d) AS doubled,
+             (SELECT count(*) FROM ( :compose(layers/remainder_scope.sqlc) ) z
+               WHERE z.standing IS NULL)                                             AS unclassified
          ) x
 ) p ON true
 WHERE a.slug = 'remainder_standing'

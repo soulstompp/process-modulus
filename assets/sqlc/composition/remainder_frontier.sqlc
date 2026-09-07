@@ -1,0 +1,38 @@
+# THE WALK A REMAINDER DESCENT MAKES, EVERY ROW OF IT. One row per (composed layer, node
+# reached), with the product of the conversion factors along the path.
+#
+# ⭐⭐⭐ IT EXISTS SO THAT composition/settled_remainders.sqlc HAS A NAMED LEFT OPERAND. That
+#    relation keeps the rows whose node is settled and drops the rest, which is a difference,
+#    and |A| = |A∖B| + |A⋉B| is checkable only where somebody can count A. Spelled inside the
+#    recursive CTE there was no A, so no law on algebra/roster.sqlc could govern it.
+#
+# ⛔ THE WALK PRUNES AND THE DIFFERENCE DOES NOT. It descends only THROUGH an unsettled node,
+#   so a settled node is a stopping point rather than a filter: its own subtree is never
+#   entered. The difference then selects those stopping points. Two different uses of
+#   composition/unsettled.sqlc, and collapsing them into one would either walk the whole tree
+#   or stop at the first node.
+-- composition/parts.sqlc walked while composition/unsettled.sqlc holds, carrying the product.
+WITH RECURSIVE
+resolved AS (
+    :compose(composition/parts.sqlc)
+),
+open_node AS (
+    :compose(composition/unsettled.sqlc)
+),
+frontier(root_filing, root_layer, filing, layer, depth,
+         factor_low, factor_mode, factor_high, factor_absent) AS (
+        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               (p.factor_absent IS NOT NULL)
+        FROM resolved p
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR (p.factor_absent IS NOT NULL)
+        FROM frontier w
+        JOIN open_node o ON o.filing = w.filing AND o.layer = w.layer
+        JOIN resolved p  ON p.composition = w.filing AND p.composed_layer = w.layer
+) CYCLE filing, layer SET is_cycle USING route
+SELECT * FROM frontier

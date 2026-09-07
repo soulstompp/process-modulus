@@ -45,6 +45,10 @@ struct Layer {
     /// fixture layer reaching this query is a `transition`, written to exercise the state
     /// real filings almost never reach, so a pooled census reports the rare case as ordinary.
     evidence: String,
+    /// ⛔ Whether `n - d` on this layer's own filed totals IS its remainder. False where its
+    /// parts convert through a factor with width, because one factor then scaled both operands
+    /// and differencing them counts its spread twice.
+    differenceable: bool,
 }
 
 /// ⭐⭐ EVERY MATRIX HERE IS REALLY THREE, and there is no interval type in `nalgebra` to
@@ -102,8 +106,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _r_mode = &np.mode - &d.mode;
     let r_high = &np.high - &d.low;
 
+    // ⛔⛔ THE ASSERTION RANGES OVER THE DIFFERENCEABLE LAYERS ONLY, AND THAT IS NOT A
+    //    NARROWING FOR CONVENIENCE. On a layer whose parts carry a conversion factor with
+    //    width, `n` and `d` were both scaled by that one factor, so differencing them counts
+    //    its spread twice and the range says `transition` about a filing that clears. The
+    //    remainder there is `F Phi r_parts`, which composition/fused_remainders.sqlc computes
+    //    and observation 13 prints. Asserting over those rows accuses a correct document.
     let mut disagreements = 0;
+    let mut not_differenceable = 0;
     for (i, row) in rows.iter().enumerate() {
+        if !row.differenceable {
+            not_differenceable += 1;
+            continue;
+        }
         let computed = classify(r_low[i], r_high[i]);
         if computed != row.sign {
             eprintln!(
@@ -113,7 +128,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             disagreements += 1;
         }
     }
-    println!("1. fits recomputed from the ranges: {n} layers, {disagreements} disagreements");
+    println!(
+        "1. fits recomputed from the ranges: {} of {n} layers, {disagreements} disagreements",
+        n - not_differenceable
+    );
+    println!(
+        "   ⛔ {not_differenceable} layer(s) excluded: their parts convert through a factor with \
+         width, so n and d are correlated and the difference is a bound rather than the \
+         remainder. composition/fused_remainders.sqlc carries theirs."
+    );
+    assert!(
+        not_differenceable > 0,
+        "no layer in the corpus has a spread conversion factor, so this exclusion is a bound \
+         with nothing to bound and the section demonstrates nothing"
+    );
     assert_eq!(
         disagreements, 0,
         "a filed fit disagrees with its own ranges"
@@ -282,9 +310,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let values = DMatrix::<f64>::zeros(l, l);
 
     // ⭐⭐⭐ THE MASK NOW HAS THREE STATES, AND THAT IS THE WHOLE POINT OF THIS SECTION.
-    // It used to be a bit: a filing either stated a coupling or it did not. `2` is the
-    // state that had no encoding — somebody looked and reported independence — and no
-    // filing in this corpus is in it, which is itself the finding.
+    // As a bit this says only whether a filing stated a coupling. `2` is the state a bit
+    // cannot encode, somebody looked and reported independence, and no filing in this corpus
+    // is in it, which is itself the finding.
     let mut present = DMatrix::<u8>::zeros(l, l);
     for (i, c) in couplings.iter().enumerate() {
         present[(i, i)] = match (c.n > 0, c.why.as_deref()) {
@@ -343,12 +371,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         (filed[1] - rederived[1]).abs() < 1e-9,
         "the two must agree at the mode: that is the point where phi is a single number"
     );
-    // ⛔⛔ EXACTLY ZERO IS ITS OWN CASE AND A THRESHOLD CANNOT SEE IT. An earlier version of
-    //     this assertion read `> 1.0`, which conflated two different failures: a real but
-    //     small disagreement, and NO disagreement at all. The second one means phi has no
-    //     spread — every factor is a point value — and then this section demonstrates
-    //     nothing while still passing. So the two are separated, and the vacuous case gets
-    //     its own message.
+    // ⛔⛔ EXACTLY ZERO IS ITS OWN CASE AND A THRESHOLD CANNOT SEE IT. Written `> 1.0` this
+    //     assertion conflates two different failures: a real but small disagreement, and NO
+    //     disagreement at all. The second one means phi has no spread — every factor is a
+    //     point value — and then this section demonstrates nothing while still passing. So the
+    //     two are separated, and the vacuous case gets its own message.
     let spread: f64 = parts
         .iter()
         .map(|p| (p.f_high - p.f_low).abs())

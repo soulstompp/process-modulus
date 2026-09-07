@@ -1,17 +1,28 @@
-# r = n − d, THE REMAINDER VECTOR, WITH ITS SIGN DERIVED AND ITS EXPOSURE MEASURED.
-# One row per layer that states BOTH a demand and a nameplate, so both operands exist.
-# The key is (filing, layer) and every downstream fit question reads this relation.
+# r, THE REMAINDER VECTOR, WITH ITS SIGN DERIVED AND ITS EXPOSURE MEASURED. One row per layer
+# that states both a demand and a nameplate. The key is (filing, layer) and every downstream fit
+# question reads this relation.
 #
-# ⛔⛔ SUBTRACTING TWO INTERVALS REVERSES THE BOUNDS. The low of n − d pairs n's LOW
-#    against d's HIGH, because the smallest remainder is the smallest supply meeting the
-#    largest demand. Get it backwards and every remainder in the corpus comes out inside
-#    out while every individual number still looks plausible.
+# ⭐⭐⭐ IT CHOOSES BETWEEN TWO ARITHMETICS AND THE CHOICE IS THE WHOLE FILE. On a layer built
+#    from parts, `r` is `F Φ r_parts - e_n + e_d`, each part's own remainder converted once, so
+#    a shared conversion factor appears once per term. Everywhere else `r` is `n - d` from the
+#    two filed totals with the bounds crossed. The two agree on every layer whose factors are
+#    point values, which is all but the composed layers carrying a factor with spread, and there
+#    the crossed difference counts that factor's spread twice and comes out wider.
+#
+# ⛔ SO THE CROSSED DIFFERENCE IS A BOUND ON THOSE LAYERS AND NOT THEIR REMAINDER, and taking it
+#   as the remainder makes `derived_fit` read `transition` on a filing that is correctly
+#   `clearance`. checks/fit_disagrees compares the filed sign against `derived_fit`, so the
+#   flagship rule is what would have reported a document that is right.
+#
+# ⭐⭐ `derived_fit` AND `exposure` ARE RECOMPUTED FROM WHICHEVER `r` IS IN FORCE, never carried
+#    across from the other. `exposure` is `greatest(-r_low, 0)`, which is `d_high - n_low` on the
+#    differenced reading and generalises to the pivoted one without a second expression.
 #
 # ⭐⭐ `derived_fit` IS A COMPARISON OF TWO RANGES AND NOT OF TWO POINTS -- ISO 286's own
 #    criterion, borrowed intact. `clearance` = supply exceeds demand ACROSS THE WHOLE RANGE.
-#    `interference` = demand exceeds supply across the whole range. `transition` = the
-#    ranges overlap, so which one wins depends on where in the range you land. That third
-#    case is the one a two-valued encoding cannot name, and the corpus contains it.
+#    `interference` = demand exceeds supply across the whole range. `transition` = the ranges
+#    overlap, so which one wins depends on where in the range you land. That third case is the
+#    one a two-valued encoding cannot name, and the corpus contains it.
 #
 # ⛔⛔ THE ARM ORDER IN `derived_fit` IS A DECISION AND NOT AN ARTEFACT. The three criteria are
 #    disjoint everywhere except at one pair, a POINT nameplate equal to a POINT demand, where
@@ -20,34 +31,31 @@
 #    `clearance`, which is ISO 286's answer for the line-to-line case and the only one of the
 #    three whose downstream reading is right: nothing went unmet, so checks/clearance_with_unserved
 #    rules out the two holders that cannot be there. ⚠️ Swapping these two arms would silently
-#    reclassify that pair, and `Fit`'s annotation now says so in prose rather than leaving it here.
+#    reclassify that pair, and `Fit`'s annotation says so in prose rather than leaving it here.
 #
 # ⭐ `exposure` IS WHAT THE FILING'S OWN NUMBERS SAY COULD HAVE GONE UNSERVED: the largest
-#   demand against the smallest supply, floored at zero. It is not a measurement anybody
-#   made; it is the ceiling their two measurements imply, which is why the rule built on
-#   it compares against what they ADMIT went unserved rather than against a reading.
-#
-# ⛔ THIS RELATION WAS ONCE WRITTEN THREE TIMES AND DRIFTED -- twice inside one file, under
-#   one name, with different column lists, so a coverage table reported on a `base` that
-#   was not the `base` the rules ran against. It is one file now and both readings compose it.
--- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
-SELECT d.filing, d.layer,
-       l.sign, l.sign_absent,
-       l.absorber_taxonomy, l.absorber_value,
-       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
-       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
-       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
-       n.n_mode - d.d_mode AS r_mode,
-       n.n_high - d.d_low  AS r_high,
-       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
-            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
+#   demand against the smallest supply, floored at zero. It is not a measurement anybody made;
+#   it is the ceiling their two measurements imply, which is why the rule built on it compares
+#   against what they ADMIT went unserved rather than against a reading.
+-- layers/differenced_remainder.sqlc, overridden by composition/fused_remainders.sqlc where a
+-- composed layer owes an exact remainder.
+SELECT b.filing, b.layer,
+       b.sign, b.sign_absent,
+       b.absorber_taxonomy, b.absorber_value,
+       b.d_low, b.d_mode, b.d_high, b.unit,
+       b.n_low, b.n_mode, b.n_high, b.amount_unit,
+       coalesce(f.pivoted_low,  b.r_low)  AS r_low,
+       coalesce(f.pivoted_mode, b.r_mode) AS r_mode,
+       coalesce(f.pivoted_high, b.r_high) AS r_high,
+       CASE WHEN coalesce(f.pivoted_low,  b.r_low)  >= 0 THEN 'clearance'
+            WHEN coalesce(f.pivoted_high, b.r_high) <= 0 THEN 'interference'
             ELSE 'transition' END AS derived_fit,
-       greatest(d.d_high - n.n_low, 0) AS exposure,
-       n.lumpy, n.quantum_mode, n.quantum_unit
+       greatest(-coalesce(f.pivoted_low, b.r_low), 0) AS exposure,
+       b.lumpy, b.quantum_mode, b.quantum_unit,
+       (f.pivoted_low IS NOT NULL) AS pivoted
 FROM      (
-    :compose(layers/demand.sqlc)
-) d
-JOIN      (
-    :compose(layers/nameplate.sqlc)
-) n USING (filing, layer)
-JOIN pm.layer l USING (filing, layer)
+    :compose(layers/differenced_remainder.sqlc)
+) b
+LEFT JOIN (
+    :compose(composition/fused_remainders.sqlc)
+) f ON f.composition = b.filing AND f.composed_layer = b.layer
