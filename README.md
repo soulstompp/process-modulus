@@ -81,16 +81,16 @@ boundary, which is the only place any of this matters.
   two counter-examples to the model.
 - **A generated Rust crate.** Every type and every doc comment comes from the schemas, so
   `cargo doc` shows the schema's own annotations.
-- **The unreachable rules, made runnable.** Forty-four rules are stated in the schemas' prose
-  and gated by nothing, because XSD 1.0 cannot compare one element against another. Most of
-  them are joins and comparisons. [`assets/sql/`](assets/sql/) expresses them as SQL — including
+- **The unreachable rules, made runnable.** The schemas state rules in prose that no grammar
+  gates, because XSD 1.0 cannot compare one element against another. Most of them are joins and
+  comparisons. [`assets/sql/`](assets/sql/) expresses them as SQL — including
   the one no validator can see, that no leaf layer is reachable through two paths once
   compositions nest — and reports how many rows each rule actually examined, because a rule
   with nothing to check passes loudest.
 - **Every blank has a reason attached.** Not "the field is empty" but *which* kind of empty:
   somebody looked and there is none, nobody has measured it, the question does not apply here,
   or it is computed from something else. That applies to lists too — a stack with no couplings
-  filed says whether anybody went looking, because "we tested the layers and they are
+  filed says whether anybody went looking, because "these layers have been tested and they are
   independent" and "nobody checked" are opposite claims that a bare optional list spells the
   same way.
 
@@ -138,13 +138,13 @@ valid documents.
   about sequence, control flow and events is BPMN's job, and this model points at BPMN
   rather than restating it.
 
-* Forty-four rules across the two schemas are stated in prose and no validator can reach
-  them, because XSD 1.0 has no `xs:assert` and cannot compare across elements. Forty-one
-  are marked `NOT REACHABLE BY A VALIDATOR` at the annotation that states them, so a reader
-  can tell a binding rule from an unenforced one. [`conformance/README.md`](conformance/README.md)
-  lists all forty-four and says what an implementer still owes. Most of them are joins and
-  comparisons across elements, which is a shape XSD has no way to express and a query
-  language has nothing else.
+* The two schemas state rules in prose that no validator can reach, because XSD 1.0 has no
+  `xs:assert` and cannot compare across elements. Nearly all of them carry the marker
+  `NOT REACHABLE BY A VALIDATOR` at the annotation that states them, so a reader can tell a
+  binding rule from an unenforced one. [`conformance/README.md`](conformance/README.md) lists
+  them, names the query that runs each one that runs, and says what an implementer still owes.
+  Most are joins and comparisons across elements, which is a shape XSD has no way to express
+  and a query language has nothing else.
 
 * Deserialization is not validation, and there is one concrete case where they differ.
   `Operation` is a sequence with a repeated choice in it, which the code generator
@@ -179,9 +179,9 @@ any number of operations that draw on them.
 
 ⭐ `couplings` is required, and it is the one element in the schema that asks a filer whether
 they **tested** the model rather than what they measured. A stack claims its layers are separate
-places where a shortfall can land; this is where a filer says whether anybody checked. "We
-relieved one layer and the others did not move" and "nobody looked" are opposite claims, and
-without this they were the same empty document.
+places where a shortfall can land; this is where a filer says whether anybody checked. "One
+layer was relieved and the others did not move" and "nobody looked" are opposite claims, and
+without this element they are the same empty document.
 
 A layer is a demand, a supply and the remainder between them. Here is the labour layer from
 [`assets/corpus/enterprise-contract.xml`](assets/corpus/enterprise-contract.xml), which is the case
@@ -231,8 +231,8 @@ The supply has two faces. `nameplate` is what was committed, and it is where div
 lives. Two different constraints are recorded, and keeping them apart is the point:
 `origin` is who you would have to talk to in order to change the **size of one unit**, and
 `intrinsic` means nobody, because one person is one person. `amountOrigin` is who you would
-have to talk to in order to hold a **different number of them**, and `policy` means us,
-because the establishment is ours to set.
+have to talk to in order to hold a **different number of them**, and `policy` means the filer,
+because the establishment is theirs to set.
 
 ⭐ Those two are why the claims above answer `boundOrigin` with `derived` rather than repeating
 themselves. The question *who owns this edge* is already answered one element over, and a
@@ -486,7 +486,7 @@ them. The first is the **quantum** — the size of the unit supply arrives in. T
 the **denominator** of the unit, the period a rate is quoted over: `per quarter`, `per week`,
 and it is what a `window` is a fraction of. The third is the timescale on which a quantity
 actually moves, and it has no element. ⭐ That matters because a range in this model reads as
-*what we do not know* — `narrowsWhen` says what would tighten it — while a range that is
+*what nobody knows* — `narrowsWhen` says what would tighten it — while a range that is
 genuine week-to-week variation does not narrow when you measure harder. The two are not
 distinguished, and saying so is more useful than pretending the question does not arise.
 
@@ -641,8 +641,8 @@ the composer supplies the mapping in its own document and signs it, and three th
 | `Part` | one filed layer going in, with the `factor` that puts it in the composed layer's unit. `4.4 GPU + 545 GPU-hour` is not a sum, and a composer who quietly multiplies by 720 has done exactly the unaudited arithmetic this document exists to expose. A factor is itself a three-point claim, because a month is `[672, 720, 744]` hours |
 | `Elimination` | what was removed, and why the fused figure is therefore **not** the sum of its parts. When one member commissions work from another, both file it as their own demand, honestly, and the group's demand is the sum minus the commission. It names which of the three quantities it hits, since an adjustment that does not say is applied to whichever number the reader happened to be holding |
 
-**Whether anybody looked for double counting is itself a filed fact.** An empty list said "we
-checked and the parts are disjoint" and "nobody checked" in the same bytes, and the two owe
+**Whether anybody looked for double counting is itself a filed fact.** An empty list says "the
+parts were checked and are disjoint" and "nobody checked" in the same bytes, and the two owe
 opposite arithmetic: under a checked-clean search the composed figure must equal the sum of its
 converted parts exactly, and under `unmeasured` no equality is owed at all. That is the
 difference between an exact rule and a warning, and it is why the search has a typed absence of

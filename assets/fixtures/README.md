@@ -10,7 +10,7 @@ evidence about one.
 ## Why they cannot live in one directory
 
 The corpus's dark states are EVIDENCE. No stack in `assets/corpus/` files `couplings` as
-`absent reason="none"`, because nobody filing into that corpus tested whether their layers move
+`absent/reason = none`, because nobody filing into that corpus tested whether their layers move
 independently — **and that is a finding about the state of the evidence**, reported by
 `rules.sql` and asserted by `tests/corpus_parse.rs`.
 

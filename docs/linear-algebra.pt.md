@@ -186,7 +186,7 @@ gera instrumento algum e, por isso, nenhum sistema contabilístico o vê.
 Cada camada transporta ainda três **margens**, uma por amortecedor, na unidade da camada:
 «capacitySlack» (quanto a oferta corre acima da sua capacidade nominal), «inventorySlack»
 (quanto produto se mantém adiantado) e «timeSlack» (quanta procura sobrevive à espera).
-Chamemos-lhe `S`, L×3. Cada resto nomeia um amortecedor como «absorber», o que dá uma seleção
+Chame-se a isso `S`, L×3. Cada resto nomeia um amortecedor como «absorber», o que dá uma seleção
 `A: L → {1,2,3}`, e a regra é
 
 ```
@@ -302,8 +302,8 @@ paciência — enquanto a taxa de saída é `λ − μ = 2,7/semana` e os detent
 `cliente 1,7 + não realizado 1,0 = 2,7`. A regra da soma e o equilíbrio da fila concordam.
 
 ⭐ `Claim` lê-se como epistémico do princípio ao fim — «mais provável», «o valor que um estimador
-pode afirmar honestamente» e `narrowsWhen`, que quer dizer *este intervalo é aquilo que não
-sabemos*. Variação genuína não estreita por se medir melhor, e as duas leituras não são
+pode afirmar honestamente» e `narrowsWhen`, que quer dizer *este intervalo é aquilo que ninguém
+sabe*. Variação genuína não estreita por se medir melhor, e as duas leituras não são
 distinguidas. Essa ambiguidade é real; o que ela **não** é é aquilo que faz um amortecedor de
 tempo funcionar.
 
@@ -343,7 +343,7 @@ x_composta = F Φ x_partes − e_x
 
 onde `e_x` é um vetor de **eliminações** «elimination» — quantidades contadas em duplicado entre
 partes, declaradas uma a uma, com prosa e com o par de ficheiros entre os quais assentam. ⛔ E `e_x`
-vazio **não** é `e_x = 0`: um vetor ausente não distingue *«procurámos duplicações e não há»* de
+vazio **não** é `e_x = 0`: um vetor ausente não distingue *«alguém procurou duplicações e não há»* de
 *«ninguém procurou»*, e as duas obrigam a aritméticas opostas — a primeira exige
 `x_composta = F Φ x_partes` exatamente, a segunda não exige igualdade nenhuma. O esquema obriga
 por isso a declarar qual das duas, e é a diferença entre uma regra exata e um aviso. Três notas:

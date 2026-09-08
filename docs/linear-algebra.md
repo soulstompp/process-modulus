@@ -29,7 +29,7 @@ transition    the ranges overlap  partly each way
 interference  n_high ≤ d_low      the whole range interferes
 ```
 
-Where `n − d` crosses zero the magnitude's low bound is legitimately 0, and the sign now says so
+Where `n − d` crosses zero the magnitude's low bound is legitimately 0, and the sign says so
 rather than leaving a reader to infer it.
 
 ⛔ **One consequence is worth your attention, because it is an interval-arithmetic trap rather
@@ -137,9 +137,9 @@ remainder and there is nothing to absorb.
 reading (worst share against smallest slack) is available and is deliberately left to a
 conformance profile, because choosing between them is a policy rather than a fact. On
 `shift-line` the two readings diverge sharply, `1.7 ≤ 2.5` at the mode against `2.9 ≤ 1.0`
-strictly. ⚠️ Note what that example now is: `shift-line` does not reach this inequality at all,
+strictly. ⚠️ Note what that example is: `shift-line` does not reach this inequality at all,
 because both its holders are `customer` and `unrealised` and the left side is therefore empty.
-The policy question is real; the corpus has stopped illustrating it.
+The policy question is real; no document here illustrates it.
 
 ⛔⛔ **And the left side is empty on EVERY corpus layer that reaches the rule, which is a finding
 about the evidence rather than a gap in it.** On every interference layer that sizes its
@@ -227,16 +227,16 @@ while the departure rate is `λ − μ = 2.7/week` and the filed holders are `cu
 unrealised 1.0 = 2.7`. The sum rule and the queueing equilibrium agree.
 
 ⭐ `Claim` still reads as epistemic throughout — "most likely", "the value an estimator can
-honestly state", and `narrowsWhen`, which means *this range is what we do not know*. Genuine
+honestly state", and `narrowsWhen`, which means *this range is what nobody knows*. Genuine
 variation does not narrow when you measure harder, and the two readings are not distinguished.
 That ambiguity is real; what it is NOT is the thing that makes a time buffer work.
 
-⭐⭐ **The duty cycle half of this now has a home, and it arrived as a second axis rather than a
-third value.** `Divisibility` was `lumpy | continuous` — a choice, and read as functions of the
-amount asked for, `continuous` is a line and `lumpy` is a staircase `q·floor(x/q)`. A duty cycle
-is the same staircase on the *time* axis, a square wave. It is not a third member of the choice,
-because eight-GPU nodes available only 02:00–05:00 are lumpy in amount **and** intermittent in
-time, so the type became a sequence: the choice, then an optional `window`. Its size is a
+⭐⭐ **The duty cycle half of this is a second axis and not a third value.** `Divisibility`'s
+choice is `lumpy | continuous`, and read as functions of the amount asked for, `continuous` is a
+line and `lumpy` is a staircase `q·floor(x/q)`. A duty cycle is the same staircase on the *time*
+axis, a square wave. It is not a third member of the choice, because eight-GPU nodes available
+only 02:00–05:00 are lumpy in amount **and** intermittent in time, so the type is a sequence:
+the choice, then an optional `window`. Its size is a
 `LumpyQuantum`, and the *period* comes free from the denominator rule above.
 
 `window` obeys one rule nothing else here obeys: **it is carried through a fusion and never
@@ -262,7 +262,7 @@ x_composed = F Φ x_parts − e_x
 
 where `e_x` is a vector of **eliminations** — quantities double-counted across parts, filed
 individually with prose and the pair of filings they sit between. ⛔ And an absent `e_x` is **not**
-`e_x = 0`: a missing vector cannot tell *"we looked for double counting and there is none"* from
+`e_x = 0`: a missing vector cannot tell *"somebody looked for double counting and there is none"* from
 *"nobody looked"*, and the two owe opposite arithmetic — the first requires
 `x_composed = F Φ x_parts` exactly, the second requires no equality at all. The schema therefore
 makes a filer say which, and that is the difference between an exact rule and a warning. Three

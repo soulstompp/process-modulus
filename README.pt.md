@@ -86,16 +86,16 @@ atravessar uma fronteira organizacional, que é o único sítio onde algo disto 
 - **Uma biblioteca Rust gerada.** Todos os tipos e todos os comentários de documentação vêm dos
   esquemas, portanto o `cargo doc` mostra as anotações do próprio esquema, em inglês e em
   português.
-- **As regras inalcançáveis, tornadas executáveis.** Quarenta e quatro regras estão enunciadas na
-  prosa dos esquemas e não têm porta nenhuma a guardá-las, porque o XSD 1.0 não consegue comparar
-  um elemento com outro. A maior parte são junções e comparações. O [`assets/sql/`](assets/sql/)
+- **As regras inalcançáveis, tornadas executáveis.** Os esquemas enunciam em prosa regras que
+  gramática nenhuma guarda, porque o XSD 1.0 não consegue comparar um elemento com outro. A
+  maior parte são junções e comparações. O [`assets/sql/`](assets/sql/)
   exprime-as como SQL — incluindo aquela que validador nenhum vê, a de que nenhuma camada-folha é
   alcançável por dois caminhos quando as composições encaixam — e reporta quantas linhas cada
   regra examinou, porque uma regra sem nada para verificar é a que passa mais alto.
 - **Todo o branco traz uma razão.** Não «o campo está vazio», mas *qual* espécie de vazio: alguém
   procurou e não há; ninguém mediu; a pergunta não se aplica aqui; ou é calculado a partir de
   outra coisa. Isso também vale para as listas — uma pilha sem acoplamentos declarados diz se
-  alguém foi procurar, porque «testámos as camadas e são independentes» e «ninguém verificou» são
+  alguém foi procurar, porque «estas camadas foram testadas e são independentes» e «ninguém verificou» são
   afirmações opostas que uma lista opcional simples grafa da mesma maneira.
 
 ## Porquê o process-modulus
@@ -143,12 +143,12 @@ são documentos válidos.
   controlo de fluxo e eventos é trabalho do BPMN, e este modelo aponta para o BPMN em vez de o
   reescrever.
 
-* Quarenta e quatro regras ao longo dos dois esquemas estão enunciadas em prosa e nenhum validador
-  lhes chega, porque o XSD 1.0 não tem `xs:assert` e não consegue comparar entre elementos.
-  Quarenta e uma estão marcadas com `NOT REACHABLE BY A VALIDATOR` na anotação que as enuncia, de
-  forma que um leitor consiga distinguir uma regra vinculativa de uma não verificada. O
-  [`conformance/README.pt.md`](conformance/README.pt.md) lista as quarenta e quatro e diz o que um
-  implementador continua a dever.
+* Os dois esquemas enunciam em prosa regras a que validador nenhum chega, porque o XSD 1.0 não
+  tem `xs:assert` e não consegue comparar entre elementos. Quase todas estão marcadas com
+  `NOT REACHABLE BY A VALIDATOR` na anotação que as enuncia, de forma que um leitor consiga
+  distinguir uma regra vinculativa de uma não verificada. O
+  [`conformance/README.pt.md`](conformance/README.pt.md) lista-as, nomeia a consulta que corre
+  cada uma das que correm, e diz o que um implementador continua a dever.
 
 * Desserializar não é validar, e há um caso concreto onde as duas diferem. O `Operation` é uma
   sequência com uma escolha repetida lá dentro, que o gerador de código achata num único `Vec`,
@@ -184,7 +184,7 @@ quantas operações se quiser a consumir delas.
 O `couplings` é obrigatório, e é o único elemento do esquema que pergunta a quem declara se
 **testou** o modelo em vez de perguntar o que mediu. Uma pilha afirma que as suas camadas são
 sítios separados onde uma falta pode assentar; é aqui que quem declara diz se alguém verificou.
-«Aliviámos uma camada e as outras não se mexeram» e «ninguém foi ver» são afirmações opostas, e
+«Aliviou-se uma camada e as outras não se mexeram» e «ninguém foi ver» são afirmações opostas, e
 sem isto eram o mesmo documento vazio.
 
 Uma camada é uma procura, uma oferta e o resto entre as duas. Eis a camada de mão de obra do
@@ -235,7 +235,7 @@ A oferta tem duas faces. A `nameplate` é o que foi comprometido, e é onde vive
 Ficam registadas duas restrições diferentes, e mantê-las separadas é o essencial: `origin` é com
 quem se teria de falar para alterar o **tamanho de uma unidade**, e `intrinsic` quer dizer
 ninguém, porque uma pessoa é uma pessoa. O `amountOrigin` é com quem se teria de falar para deter
-um **número diferente delas**, e `policy` quer dizer nós, porque o quadro de pessoal é nosso.
+um **número diferente delas**, e `policy` quer dizer quem declara, porque o quadro de pessoal é seu.
 
 São esses dois que fazem com que as afirmações acima respondam `derived` ao `boundOrigin` em vez
 de se repetirem. A pergunta *de quem é este limite* já está respondida um elemento ao lado, e um
@@ -445,7 +445,7 @@ A metade de existências descreve uma oferta e o que sobra dela.
 | `Facility` | uma oferta com as duas faces ao mesmo tempo: a `Nameplate` que foi comprometida, e o registo `Jagged` do que aconteceu |
 | `Divisibility` | como uma oferta se divide, em dois eixos. Em QUANTIDADE é `lumpy` (discreta) ou `continuous` — uma escolha entre duas formas, não um tamanho que possa ser zero, portanto uma oferta contínua não tem quantum em vez de ter um quantum de zero. No TEMPO pode transportar uma `window`: a máquina que corre das 02:00 às 05:00, o regime de turnos, as duas horas por dia de manutenção. Uma oferta pode ser as duas coisas, e a escolha não o conseguia dizer |
 | `LumpyQuantum` | a unidade indivisível que dá o nome ao projeto. Em `a mod n`, `n` é o módulo, e `a mod n` é o resto que ele deixa |
-| `ConstraintOrigin` | com quem é preciso falar para alterar alguma coisa: `intrinsic` (ninguém), `contractual` (a contraparte), `policy` (nós, unilateralmente). É perguntado duas vezes, sobre duas coisas diferentes: o tamanho de uma unidade, e quantas unidades se detêm |
+| `ConstraintOrigin` | com quem é preciso falar para alterar alguma coisa: `intrinsic` (ninguém), `contractual` (a contraparte), `policy` (quem declara, unilateralmente). É perguntado duas vezes, sobre duas coisas diferentes: o tamanho de uma unidade, e quantas unidades se detêm |
 | `Remainder` | o que a divisão deixa, e separa-se em quanta inteiros que alguém escolheu mais um resíduo que ninguém consegue remover. O `absorber` nomeia o conjunto de amortecedores de outrem; o `holder`, quem o suporta, é deste modelo |
 | `Holder` | quem suporta um resto, e quanto dele. Um resto assenta com frequência em vários intervenientes ao mesmo tempo, portanto cada um transporta uma `share` e as parcelas somam o todo. Um detentor único obrigava o declarante a escolher o maior e deitar fora o resto, e a metade deitada fora costuma ser a interessante |
 | as três **margens** | uma quantidade medida por amortecedor, e os três factos sobre uma camada que aritmética nenhuma recupera. `capacitySlack`: até onde a oferta pode ser levada acima da sua capacidade nominal — não capacidade sobrante, a folga ACIMA da nominal. `inventorySlack`: quanto produto se pode manter adiantado. `timeSlack`: quanto tempo a procura sobrevive à espera. Foram três valores booleanos, e um bit diz que um amortecedor existe e não quanto ele leva, portanto qualquer parcela cabia |
@@ -494,7 +494,7 @@ declara duas delas. A primeira é o **quantum** — o tamanho da unidade em que 
 segunda é o **denominador** da unidade, o período sobre o qual uma taxa é cotada: `por trimestre`,
 `por semana`, e é aquilo de que uma `window` é uma fração. A terceira é a escala temporal a que
 uma quantidade de facto se move, e não tem elemento nenhum. Isso importa porque um intervalo neste
-modelo lê-se como *aquilo que não sabemos* — o `narrowsWhen` diz o que o estreitaria — ao passo
+modelo lê-se como *aquilo que ninguém sabe* — o `narrowsWhen` diz o que o estreitaria — ao passo
 que um intervalo que seja variação genuína de semana para semana não estreita por se medir com
 mais cuidado. As duas coisas não são distinguidas, e dizê-lo é mais útil do que fingir que a
 pergunta não se põe.
@@ -657,8 +657,8 @@ coisas o transportam:
 | `Part` | uma camada declarada a entrar, com o `factor` que a põe na unidade da camada composta. `4,4 GPU + 545 GPU-hora` não é uma soma, e quem compõe e multiplica por 720 em silêncio fez exatamente a aritmética não auditada que este documento existe para expor. Um fator é ele próprio uma afirmação de três pontos, porque um mês são `[672, 720, 744]` horas |
 | `Elimination` | o que foi retirado, e porque é que a figura fundida **não** é a soma das suas partes. Quando um membro encomenda trabalho a outro, ambos o declaram como procura própria, honestamente, e a procura do grupo é a soma menos a encomenda. Nomeia qual das três quantidades atinge, já que um ajustamento que não o diga é aplicado ao número que o leitor tiver por acaso na mão |
 
-**Se alguém procurou duplicações é ele próprio um facto declarado.** Uma lista vazia dizia
-«verificámos e as partes são disjuntas» e «ninguém verificou» nos mesmos bytes, e as duas devem
+**Se alguém procurou duplicações é ele próprio um facto declarado.** Uma lista vazia diz
+«as partes foram verificadas e são disjuntas» e «ninguém verificou» nos mesmos bytes, e as duas devem
 aritméticas opostas: sob uma procura verificada e limpa a figura composta tem de igualar
 exatamente a soma das partes convertidas, e sob `unmeasured` não é devida igualdade nenhuma. É a
 diferença entre uma regra exata e um aviso, e é por isso que a procura tem uma ausência tipificada
