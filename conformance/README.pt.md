@@ -77,10 +77,10 @@ de um grupo de substituição se a extensão tiver de ser possível sem editar e
 ### Onde o regime só publica prosa
 
 Um perfil para um regime cujo vocabulário viva em texto normativo não tem nada que
-`xs:import`ar. Autorar a lista continua a ser legítimo, desde que seja rotulada como nossa. Um
+`xs:import`ar. Autorar a lista continua a ser legítimo, desde que seja rotulada como deste projeto. Um
 perfil desses publica a leitura que este projeto faz dessa norma, no espaço de nomes deste
 projeto, citando o dela. Isso é falsificável, e um contabilista pode apontar para um valor que
-errámos.
+ele erra.
 
 O que nunca pode fazer é apresentar essa lista como sendo a do próprio regime. Onde um regime
 publica de facto uma lista, importa-se e nunca se reescreve.
@@ -112,8 +112,8 @@ Essa pergunta tem quatro respostas, e não tinha antes de o `Regime/framework` s
 | o documento | está na população do perfil? |
 |---|---|
 | `framework/term` cujo `(taxonomy, value)` corresponde ao perfil | **Sim.** Corre-se |
-| `framework/absent reason="none"` | **Não, positivamente.** Alguém foi ver, e a entidade não reporta ao abrigo de normativo nenhum. O perfil não se aplica, e dizê-lo é um resultado acerca de nada |
-| `framework/absent reason="unmeasured"` | **Desconhecido.** A entidade reporta ao abrigo de alguma coisa e não a nomeou. Pode ser ou não ser a deste perfil |
+| `framework/absent/reason = none` | **Não, positivamente.** Alguém foi ver, e a entidade não reporta ao abrigo de normativo nenhum. O perfil não se aplica, e dizê-lo é um resultado acerca de nada |
+| `framework/absent/reason = unmeasured` | **Desconhecido.** A entidade reporta ao abrigo de alguma coisa e não a nomeou. Pode ser ou não ser a deste perfil |
 | nenhum elemento `regime` | **Desconhecido, e de outra maneira.** Ninguém disse nada. O `regime` é opcional e a sua ausência é um estado real, já que uma testemunha que não seja um modelo contabilístico não reporta ao abrigo de normativo nenhum e não deve ser obrigada a inventar um |
 
 As quatro são documentos legítimos e as quatro validam, o que é o essencial e não um problema. A
@@ -187,11 +187,18 @@ todas transportam a marca `NOT REACHABLE BY A VALIDATOR` na anotação que as en
 que um leitor consiga distinguir uma regra vinculativa de uma não verificada; as linhas marcadas
 com asterisco não a transportam, o que é uma lacuna na marcação e não no raciocínio.
 
-⛔ **Este parágrafo contava-as, e a conta estava errada de três maneiras.** Um número aqui é um
-número que ninguém volta a contar, e a tabela é a única coisa que sabe quantas linhas tem. O
-`tests/conformance.rs` obriga esta tabela e a sua gémea inglesa ao mesmo comprimento e aos
-mesmos asteriscos, porque as duas chegaram a quarenta e sete regras contra sete grupos
-resumidos antes de alguém dar por isso.
+⛔ **Este parágrafo não as conta, e um número aqui é um número que ninguém volta a contar.** A
+tabela é a única coisa que sabe quantas linhas tem. O `tests/conformance.rs` obriga esta tabela
+e a sua gémea inglesa ao mesmo comprimento, aos mesmos asteriscos e à mesma terceira coluna,
+porque sem isso afastam-se, e quem leia um dos documentos é devedor do que o outro deve.
+
+⭐⭐ **A TERCEIRA COLUNA NOMEIA A VERIFICAÇÃO QUE CORRE A REGRA, E VAZIA QUER DIZER QUE A REGRA
+CONTINUA APENAS DEVIDA.** ⛔ O `tests/conformance.rs` cruza-a com o
+[`assets/sqlc/checks/roster.sqlc`](../assets/sqlc/checks/roster.sqlc) NOS DOIS SENTIDOS, pelo
+que uma regra que passe a correr sem ficar escrita aqui parte a construção, e um identificador
+aqui que já não nomeie uma verificação também. Uma regra pode estar imposta e por documentar, ou
+documentada e desaparecida, e este cruzamento é a única coisa que lê uma tabela em prosa contra
+uma relação.
 
 **As que já não são apenas devidas, mas correm, são o roster.** O
 [`assets/sqlc/checks/roster.sqlc`](../assets/sqlc/checks/roster.sqlc) tem uma linha por cada
@@ -255,67 +262,76 @@ geral.
 
 ### As regras, e onde estão enunciadas
 
-A tabela completa das quarenta e quatro, com o tipo em cuja anotação cada uma vive, está na
-[versão inglesa](README.md).
-Estão aqui agrupadas por aquilo que um implementador tem de fazer para as cumprir.
+A tabela completa, com o tipo em cuja anotação cada regra vive e a verificação que a corre,
+está aqui e na [versão inglesa](README.md), com as mesmas linhas pela mesma ordem.
 
 | a regra | onde |
-|---|---|
-| os limites de uma `Claim` satisfazem `low` <= `mostLikely` <= `high` | `Claim` |
-| o valor esperado é derivado e não pode ser transportado | `Claim` |
-| o `size` de um quantum exprime-se na unidade da capacidade nominal que divide | `LumpyQuantum` |
-| uma oferta cujo `capacitySlack` seja um zero medido, sob um ajuste de interferência, tem de o deter como `customer` ou `unrealised`, em todos os detentores | `Fit` |
-| a mesma oferta sob um ajuste de TRANSIÇÃO nomeia pelo menos um detentor `customer` ou `unrealised`, presença e não universalidade, porque parte do intervalo é legitimamente folga | `Fit` |
-| `max(0, procura.high - placa.low)` não excede `capacitySlack.high` mais os máximos das quotas não servidas, avaliado nesse único canto | `Nameplate` |
-| a capacidade nominal é um múltiplo inteiro do quantum, para uma oferta em unidades | `Remainder` |
-| a `quantity` é `derived` sempre que a procura, a capacidade nominal e o quantum estejam todos declarados | `Remainder` |
-| um ajuste de `clearance` exclui `customer` e `unrealised`, valendo agora ao longo de todo o intervalo | `Remainder` |
-| o `sign` concorda com a comparação de INTERVALOS — `clearance` quando `placa.low` >= `procura.high`, `interference` quando `placa.high` <= `procura.low`, `transition` quando se sobrepõem | `Fit` |
-| as `share` declaradas somam `\ | placa - procura\|`, sempre que todas estejam declaradas|`Holder` |
-| um `kind` de detentor aparece no máximo uma vez por resto | `Holder` |
-| a declaração de uma ponta de `dependence` existe, e a camada nomeada está lá dentro | `FiledLayer` (`assertion.xsd`) |
-| a `version` de uma ponta de `dependence` nomeia a edição efetivamente lida \* | `FiledLayer` (`assertion.xsd`) |
-| as duas pontas de uma entrada de `dependence` não são a mesma declaração *e* a mesma camada | `DependenceEntry` (`assertion.xsd`) |
-| quem testemunha uma `dependence` não é quem declarou ambas as pontas, porque se for, a observação pertence ao `pm:Coupling` \* | `Dependence` (`assertion.xsd`) |
-| a `claim` de uma camada composta iguala `Σ partes - Σ eliminações`, por quantidade | `Fusion` (`assertion.xsd`) |
-| uma eliminação subtrai componente a componente e NÃO inverte os limites | `Elimination` (`assertion.xsd`) |
-| as partes de uma fusão são fungíveis, portanto os seus restos podem compensar-se | `Fusion` (`assertion.xsd`) |
-| `party` e `asOf` aparecem só num detentor `counterparty` | `Holder` |
-| um detentor `counterparty` nomeia a sua `party`, e deve transportar `asOf` | `Holder` |
-| um acoplamento propaga-se através de uma fusão e ATENUA-SE, limitado pela quota da parte na camada em que foi fundida | `Coupling` |
-| uma fusão que absorve um acoplamento entre as suas próprias partes di-lo, e nunca o cita como prova | `Coupling` |
-| nenhuma camada folha é alcançável por dois caminhos, quando as composições encaixam | `composition` (`assertion.xsd`) |
-| a quota de um detentor não excede a margem do amortecedor que o seu `absorber` nomeia, do lado da interferência, com `unrealised` isento | `Nameplate`, `Layer` |
-| a margem de uma camada fundida é limitada pela SOMA das das suas partes, e uma parte sem dimensão torna esse limite sem dimensão | `Nameplate`, `Layer` |
-| o `factor` de uma parte converte para a unidade da camada composta, e está ausente exatamente quando já concordam | `Part` (`assertion.xsd`) |
-| um `factor` é estritamente positivo, portanto o produto de intervalos é componente a componente | `Part` (`assertion.xsd`) |
-| uma eliminação é declarada na unidade composta, DEPOIS da conversão | `Part` (`assertion.xsd`) |
-| o resto de uma parte convertida é convertido diretamente e nunca re-derivado da sua capacidade nominal e procura convertidas | `Part` (`assertion.xsd`) |
-| uma `composition` e uma `dependence` declaradas por um consolidador sobre uma consolidação concordam quanto a testemunha, data e normativo | `Dependence` (`assertion.xsd`) |
-| uma margem exprime-se na unidade das quotas que limita | `Nameplate`, `Layer` |
-| uma margem medida como duração converte-se antes de ser declarada, por `quantidade = duração x taxa` | `Nameplate`, `Layer` |
-| o denominador de uma unidade cobre pelo menos um ciclo de serviço inteiro da oferta que mede | `Claim` |
-| o `timeSlack` é `derived` só onde a camada corre a TOTALIDADE do seu período, declarada como uma janela de um período inteiro na unidade do próprio período | `Layer` |
-| uma `claim` que declare `boundOrigin` como `derived` fica ao lado de um elemento irmão que nomeia o autor — `Nameplate/amountOrigin` ou `LumpyQuantum/origin` — de forma que o ponteiro resolva | `Claim` |
-| uma `window` é a duração ATIVA, uma por período da unidade da capacidade nominal, e nunca o intervalo entre elas | `Divisibility` |
-| uma `window` exige que a unidade da capacidade nominal nomeie um período, já que é a parte viva desse denominador | `Divisibility` |
-| uma `window` é TRANSPORTADA através de uma fusão e nunca somada: é uma propriedade da máquina, não uma quantidade | `Divisibility` |
-| uma camada que declare uma `window`, OU que declare a sua ausência como `unmeasured`, não pode declarar o `timeSlack` como `derived`, porque em nenhum dos casos se sabe que a folga esteja repartida por igual pelo período | `Divisibility`, `Layer` |
-| uma `window` declarada como `notApplicable` assenta numa unidade sem denominador, já que uma unidade que nomeia um período tem resposta | `Divisibility` |
-| uma fusão que declare as `eliminations` como `none` ou `notApplicable` deve uma soma EXATA: a figura composta iguala `Σ` das partes convertidas. Declará-las como `unmeasured` suspende a verificação em vez de a dar por passada | `Fusion` (`assertion.xsd`) |
-| uma fusão que declare as `eliminations` como `notApplicable` tem exatamente uma parte, já que entre um conjunto de um nada pode ser contado duas vezes | `Fusion` (`assertion.xsd`) |
-| uma fusão de UMA parte que não elimine nada transporta essa parte inalterada, em todas as quantidades que a camada declara e não só na sua procura | `Fusion` (`assertion.xsd`) |
-| uma parte cuja unidade difira da camada em que é composta declara o que a converte, mesmo quando a conversão é um, porque então alguém está a afirmar que as duas unidades se trocam | `Part` (`assertion.xsd`) |
-| converter uma quantidade à volta de um ciclo de unidades devolve aquilo de que partiu: o um fica dentro do produto dos fatores à volta do ciclo | `Part` (`assertion.xsd`) |
-| uma camada reafirmada por uma segunda declaração que diz transportá-la inalterada concorda com a primeira, `absorber` incluído \* | `composition` (`assertion.xsd`) |
+|---|---|---|
+| os limites de uma `Claim` satisfazem `low` <= `mostLikely` <= `high` | `Claim` | |
+| o valor esperado é derivado e não pode ser transportado | `Claim` | |
+| o `size` de um quantum exprime-se na unidade da capacidade nominal que divide | `LumpyQuantum` | `quantum_unit_mismatch` |
+| uma oferta cujo `capacitySlack` seja um zero medido, sob um ajuste de interferência, tem de o deter como `customer` ou `unrealised`, em todos os detentores | `Fit` | `nobody_named_as_unserved` |
+| a mesma oferta sob um ajuste de TRANSIÇÃO nomeia pelo menos um detentor `customer` ou `unrealised`, presença e não universalidade, porque parte do intervalo é legitimamente folga | `Fit` | `nobody_named_as_unserved` |
+| `max(0, procura.high - placa.low)` não excede `capacitySlack.high` mais os máximos das quotas não servidas, avaliado nesse único canto | `Nameplate` | `exposure_unaccounted` |
+| um `draw` não excede a capacidade nominal mais o `capacitySlack` que a oferta declarou, já que uma oferta não pode servir mais do que consegue fazer | `Jagged`, `Nameplate` | `draw_exceeds_the_supply` |
+| a capacidade nominal é um múltiplo inteiro do quantum, para uma oferta em unidades | `Remainder` | `nameplate_not_a_multiple` |
+| a `quantity` é `derived` sempre que a procura, a capacidade nominal e o quantum estejam todos declarados | `Remainder` | |
+| um ajuste de `clearance` exclui `customer` e `unrealised`, valendo agora ao longo de todo o intervalo | `Remainder` | `clearance_with_unserved` |
+| uma camada que negue ter resto não é contradita pela sua própria procura e capacidade nominal, que entre as duas derivam um | `StatedRemainder` | `denied_remainder_is_not_contradicted` |
+| o `sign` concorda com a comparação de INTERVALOS — `clearance` quando `placa.low` >= `procura.high`, `interference` quando `placa.high` <= `procura.low`, `transition` quando se sobrepõem | `Fit` | `fit_disagrees` |
+| as `share` declaradas somam `\ | placa - procura\|`, sempre que todas estejam declaradas|`Holder` | `shares_do_not_sum` |
+| um `kind` de detentor aparece no máximo uma vez por resto | `Holder` | |
+| a declaração de uma ponta de `dependence` existe, e a camada nomeada está lá dentro | `FiledLayer` (`assertion.xsd`) | |
+| a `version` de uma ponta de `dependence` nomeia a edição efetivamente lida \* | `FiledLayer` (`assertion.xsd`) | |
+| as duas pontas de uma entrada de `dependence` não são a mesma declaração *e* a mesma camada | `DependenceEntry` (`assertion.xsd`) | |
+| quem testemunha uma `dependence` não é quem declarou ambas as pontas, porque se for, a observação pertence ao `pm:Coupling` \* | `Dependence` (`assertion.xsd`) | |
+| a `filing` de uma parte resolve para uma declaração que está no conjunto de documentos, e para uma camada dentro dela | `FiledLayer` (`assertion.xsd`) | `unresolved_part` |
+| uma parte LOCAL, cuja notação é a da sua própria composição, nomeia uma camada da pilha desse mesmo documento | `FiledLayer` (`assertion.xsd`) | `local_part_dangles` |
+| camadas que se movem sempre juntas são uma só camada, pelo que um ciclo de partes entre elas falha a definição de camada em vez de nomear uma aresta a cortar | `Layer`, `FiledLayer` (`assertion.xsd`) | `layers_move_together` |
+| a `claim` de uma camada composta iguala `Σ partes - Σ eliminações`, por quantidade | `Fusion` (`assertion.xsd`) | `fusion_sum_disagrees` |
+| uma eliminação subtrai componente a componente e NÃO inverte os limites | `Elimination` (`assertion.xsd`) | |
+| as partes de uma fusão são fungíveis, portanto os seus restos podem compensar-se | `Fusion` (`assertion.xsd`) | |
+| `party` e `asOf` aparecem só num detentor `counterparty` | `Holder` | |
+| um detentor `counterparty` nomeia a sua `party`, e deve transportar `asOf` | `Holder` | |
+| um acoplamento propaga-se através de uma fusão e ATENUA-SE, limitado pela quota da parte na camada em que foi fundida | `Coupling` | `coupling_does_not_attenuate` |
+| uma fusão que absorve um acoplamento entre as suas próprias partes di-lo, e nunca o cita como prova | `Coupling` | |
+| nenhuma camada folha é alcançável por dois caminhos, quando as composições encaixam | `composition` (`assertion.xsd`) | `jagged_layer` |
+| a quota de um detentor não excede a margem do amortecedor que o seu `absorber` nomeia, do lado da interferência, com `unrealised` isento | `Nameplate`, `Layer` | `share_exceeds_slack` |
+| a margem de uma camada fundida é limitada pela SOMA das das suas partes, e uma parte sem dimensão torna esse limite sem dimensão | `Nameplate`, `Layer` | |
+| o `factor` de uma parte converte para a unidade da camada composta, e está ausente exatamente quando já concordam | `Part` (`assertion.xsd`) | `unit_crossing_without_a_factor` |
+| um `factor` é estritamente positivo, portanto o produto de intervalos é componente a componente | `Part` (`assertion.xsd`) | |
+| uma eliminação é declarada na unidade composta, DEPOIS da conversão | `Part` (`assertion.xsd`) | |
+| o resto de uma parte convertida é convertido diretamente e nunca re-derivado da sua capacidade nominal e procura convertidas | `Part` (`assertion.xsd`) | |
+| uma `composition` e uma `dependence` declaradas por um consolidador sobre uma consolidação concordam quanto a testemunha, data e normativo | `Dependence` (`assertion.xsd`) | |
+| uma parte que atravessa uma fronteira de regime declara o instrumento que a reconcilia, tal como uma parte que atravessa uma fronteira de unidade declara o fator | `Composition` (`assertion.xsd`) | `regime_crossing_without_a_citation` |
+| o `regime` que um compositor atribui a uma parte é um que a declaração dessa parte declara, o que é uma afirmação sobre o outro documento e fora do alcance de qualquer keyref | `FiledLayer` (`assertion.xsd`) | `part_regime_disagrees` |
+| uma margem exprime-se na unidade das quotas que limita | `Nameplate`, `Layer` | `slack_unit_mismatch` |
+| uma margem medida como duração converte-se antes de ser declarada, por `quantidade = duração x taxa` | `Nameplate`, `Layer` | |
+| o denominador de uma unidade cobre pelo menos um ciclo de serviço inteiro da oferta que mede | `Claim` | |
+| o `timeSlack` é `derived` só onde a camada corre a TOTALIDADE do seu período, declarada como uma janela de um período inteiro na unidade do próprio período | `Layer` | `derived_slack_over_a_window` |
+| uma `claim` que declare `boundOrigin` como `derived` fica ao lado de um elemento irmão que nomeia o autor — `Nameplate/amountOrigin` ou `LumpyQuantum/origin` — de forma que o ponteiro resolva | `Claim` | |
+| um valor pontual declara o `narrowsWhen` como `notApplicable`, não tendo largura nenhuma para apertar | `Claim` | `narrows_a_point_value` |
+| uma afirmação que ocupa uma largura não declara o `narrowsWhen` como `notApplicable` | `Claim` | `range_says_no_range` |
+| um valor pontual não declara o `boundOrigin` ausente como `none`, já que essa razão diz que o limite está onde as medições caíram e nada caiu em lado nenhum | `Claim` | `bound_fell_with_no_range` |
+| uma `window` é a duração ATIVA, uma por período da unidade da capacidade nominal, e nunca o intervalo entre elas | `Divisibility` | |
+| uma `window` exige que a unidade da capacidade nominal nomeie um período, já que é a parte viva desse denominador | `Divisibility` | |
+| uma `window` é TRANSPORTADA através de uma fusão e nunca somada: é uma propriedade da máquina, não uma quantidade | `Divisibility` | `window_lost_or_summed` |
+| uma camada que declare uma `window`, OU que declare a sua ausência como `unmeasured`, não pode declarar o `timeSlack` como `derived`, porque em nenhum dos casos se sabe que a folga esteja repartida por igual pelo período | `Divisibility`, `Layer` | `derived_slack_over_a_window` |
+| uma `window` declarada como `notApplicable` assenta numa unidade sem denominador, já que uma unidade que nomeia um período tem resposta | `Divisibility` | `window_not_applicable_on_a_rate` |
+| uma fusão que declare as `eliminations` como `none` ou `notApplicable` deve uma soma EXATA: a figura composta iguala `Σ` das partes convertidas. Declará-las como `unmeasured` suspende a verificação em vez de a dar por passada | `Fusion` (`assertion.xsd`) | `fusion_sum_disagrees` |
+| uma fusão que declare as `eliminations` como `notApplicable` tem exatamente uma parte, já que entre um conjunto de um nada pode ser contado duas vezes | `Fusion` (`assertion.xsd`) | `elimination_not_applicable_with_parts` |
+| uma fusão de UMA parte que não elimine nada transporta essa parte inalterada, em todas as quantidades que a camada declara e não só na sua procura | `Fusion` (`assertion.xsd`) | `one_part_fusion_alters_its_part` |
+| uma parte cuja unidade difira da camada em que é composta declara o que a converte, mesmo quando a conversão é um, porque então alguém está a afirmar que as duas unidades se trocam | `Part` (`assertion.xsd`) | `unit_crossing_without_a_factor` |
+| converter uma quantidade à volta de um ciclo de unidades devolve aquilo de que partiu: o um fica dentro do produto dos fatores à volta do ciclo | `Part` (`assertion.xsd`) | `conversion_cycle_does_not_close` |
+| uma camada reafirmada por uma segunda declaração que diz transportá-la inalterada concorda com a primeira, `absorber` incluído \* | `composition` (`assertion.xsd`) | |
 
-⚠️ **Esta é uma vista agrupada e não uma segunda lista.** A versão inglesa é a autoritativa e
-transporta as quarenta e quatro linhas com o tipo exato em que cada regra está enunciada. Se as
-duas divergirem, a inglesa está certa e isto é o defeito.
+⚠️ **Isto é uma tradução e não uma segunda lista.** A versão inglesa é a autoritativa. Se as
+duas divergirem, a inglesa está certa e isto é o defeito, e o `tests/conformance.rs` obriga-as
+linha a linha.
 
 ### ⛔ Acoplamento e fungibilidade são eixos independentes
 
-Isto não está na vista agrupada acima porque não é uma regra a cumprir. É a leitura errada que dois
+Isto não está na tabela acima porque não é uma regra a cumprir. É a leitura errada que dois
 leitores já fizeram, e fica aqui para que o terceiro não a faça.
 
 Nenhuma das duas linhas de `Coupling` diz que um acoplamento é prova a favor de uma fusão, e isso é

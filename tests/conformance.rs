@@ -13,8 +13,8 @@
 //!
 //! ⚠️ IT CHECKS SHAPE AND NEVER MEANING. That row forty in one language says what row forty
 //!    says in the other is a thing only a reader can know. What a test can hold is that there
-//!    IS a row forty in both, and that the two agree about which rows are marked — which is
-//!    exactly the drift that happened.
+//!    IS a row forty in both, that the two agree about which rows are marked, and that they
+//!    name the same checks.
 
 use std::fs;
 
@@ -75,5 +75,69 @@ fn both_conformance_documents_mark_the_same_rules_as_unenforced() {
         "the asterisk says a rule is stated in prose WITHOUT the `NOT REACHABLE BY A VALIDATOR` \
          marker, which is a fact about the schema rather than about a language. English marks \
          rows {en:?} and Portuguese marks {pt:?}."
+    );
+}
+
+/// The roster slug in a row's third column, where the rule is one that runs.
+fn slug(row: &str) -> Option<String> {
+    let cell = row.rsplit('|').nth(1)?.trim();
+    cell.strip_prefix('`')?.strip_suffix('`').map(str::to_string)
+}
+
+/// Every rule `assets/sqlc/checks/` actually runs, named as `checks/roster.sqlc` names it.
+fn roster_slugs() -> Vec<String> {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/assets/sqlc/checks/roster.sqlc");
+    let body = fs::read_to_string(path).unwrap_or_else(|e| panic!("{path}: {e}"));
+    let slugs: Vec<String> = body
+        .lines()
+        .filter_map(|l| l.trim_start().strip_prefix("('"))
+        .filter_map(|l| l.split('\'').next())
+        .map(str::to_string)
+        .collect();
+    assert!(
+        slugs.len() > 20,
+        "only {} rules were read out of the roster, so its shape moved and this file is now \
+         holding the conformance table against nothing",
+        slugs.len()
+    );
+    slugs
+}
+
+#[test]
+fn every_rule_that_runs_is_written_down_for_an_implementer() {
+    let listed: Vec<String> = rule_rows(EN).iter().filter_map(|r| slug(r)).collect();
+    let missing: Vec<String> = roster_slugs().into_iter().filter(|s| !listed.contains(s)).collect();
+    assert!(
+        missing.is_empty(),
+        "{missing:?} run against every filing this repository loads and appear in no row of \
+         {EN}. An implementer reads that table to learn what a validator leaves them, so a rule \
+         enforced here and absent there is a rule they are never told they owe."
+    );
+}
+
+#[test]
+fn every_check_the_table_names_is_a_check_that_exists() {
+    let roster = roster_slugs();
+    let dangling: Vec<String> = rule_rows(EN)
+        .iter()
+        .filter_map(|r| slug(r))
+        .filter(|s| !roster.contains(s))
+        .collect();
+    assert!(
+        dangling.is_empty(),
+        "{dangling:?} are named in {EN} as rules that run, and `checks/roster.sqlc` has no such \
+         rule. The column then promises an implementer a gate that is not there."
+    );
+}
+
+#[test]
+fn both_conformance_documents_name_the_same_checks() {
+    let en: Vec<Option<String>> = rule_rows(EN).iter().map(|r| slug(r)).collect();
+    let pt: Vec<Option<String>> = rule_rows(PT).iter().map(|r| slug(r)).collect();
+    assert_eq!(
+        en, pt,
+        "the third column is a slug rather than a sentence, so it is the same in both languages \
+         and it pins row N in one document to row N in the other. Where the two disagree, one \
+         of them has a row the other does not."
     );
 }
