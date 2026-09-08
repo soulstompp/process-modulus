@@ -1,0 +1,91 @@
+# HOW MUCH OF EACH CONTRACT'S ROSTER THE POPULATION REACHES ON ITS OWN. One row per contract
+# in reports/integrity.sqlc: the subjects it declares, and the subjects some row other than the
+# roster's own puts into the produced side.
+#
+# ⭐⭐⭐ diagrams/domain_objects.sqlc STATES THE PRINCIPLE FOR ONE SIDE AND THIS MEASURES THE
+#    OTHER. "A contract must not be derived from what it governs", and examples/compositions.rs
+#    asserts it: every roster here is a bare VALUES literal. Nothing says the converse, and some
+#    of the populations below take their subject's NAME from the very roster they are compared
+#    against: `checks/all.sqlc` reads `r.rule`, `arithmetic/all.sqlc` reads `a.site`,
+#    `algebra/all.sqlc` reads `a.law`. examples/soundness.rs §5 prints which, and gates it.
+#
+# ⭐⭐ AND THAT IS A TRADE RATHER THAN A DEFECT, WHICH IS WHY IT WANTS A NUMBER. The roster join
+#    is what buys ⛔ VACUOUS: a rule with nothing to examine still emits a row, so the verdict
+#    that matters most is a row a reader can see rather than a silence. The price is that the
+#    subject is then on both sides of the difference by construction. `diagrams/catalogue.sqlc`
+#    pays no such price and could not: its population is `information_schema`, written by
+#    Postgres, and `diagrams/expected.sqlc` names each law in its own arm as a literal.
+#
+# ⛔⛔ WHAT THE SHORTFALL IS AND IS NOT. A subject counted short is one the population reached
+#    with nothing of its own, so every branch of the difference sees it only through the roster.
+#    ⛔ It is NOT a count of failures a guard would miss; read that way it imports a perturbation
+#    this relation never names. Delete an arm from a population outright and branch one reports
+#    that subject whether it was short here or not.
+#
+# ⛔ SQL CANNOT SEE WHICH POPULATIONS TAKE THEIR KEY FROM THEIR ROSTER, only where a corpus
+#   happens to make it visible. A contract built exactly like `rules` shows no shortfall here
+#   while its population is complete, so a full column is not evidence of a second witness.
+#   That property is a fact about the TEMPLATE and examples/soundness.rs §5 is where it lives.
+#
+# ⛔ THE SUBJECT COUNT IS DISTINCT ON THE KEY BECAUSE `EXCEPT` IS. algebra/roster.sqlc files
+#   more rows than it has law strings, its own `multiplicity` column calls that collapse
+#   intended, and the difference sees the strings. Counting roster ROWS here would report a
+#   denominator the guard does not have; `cargo run --example soundness` prints both live.
+#
+# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER. Run it; the corpus moves and a sentence does not.
+-- every contract reports/integrity.sqlc differences, each population counted back against its roster.
+SELECT 'rules' AS contract,
+       count(DISTINCT r.rule)                            AS subjects,
+       count(DISTINCT r.rule) FILTER (WHERE p.reaches)   AS witnessed
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.rule, bool_or(c.violates IS NOT NULL) AS reaches
+    FROM ( :compose(checks/all.sqlc) ) c
+    GROUP BY c.rule
+) p ON p.rule = r.rule
+UNION ALL
+SELECT 'arithmetic',
+       count(DISTINCT a.site),
+       count(DISTINCT a.site) FILTER (WHERE q.reaches)
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT z.site, bool_or(z.verdict IS NOT NULL) AS reaches
+    FROM ( :compose(arithmetic/all.sqlc) ) z
+    GROUP BY z.site
+) q ON q.site = a.site
+UNION ALL
+SELECT 'algebra',
+       count(DISTINCT g.law),
+       count(DISTINCT g.law) FILTER (WHERE v.reaches)
+FROM      (
+    :compose(algebra/roster.sqlc)
+) g
+LEFT JOIN (
+    SELECT w.law, bool_or(w.holds IS NOT NULL) AS reaches
+    FROM ( :compose(algebra/all.sqlc) ) w
+    GROUP BY w.law
+) v ON v.law = g.law
+UNION ALL
+SELECT 'diagrams',
+       count(DISTINCT d.object),
+       count(DISTINCT d.object) FILTER (WHERE k.object IS NOT NULL)
+FROM      (
+    :compose(diagrams/domain_objects.sqlc)
+) d
+LEFT JOIN (
+    :compose(diagrams/catalogue.sqlc)
+) k ON k.object = d.object
+UNION ALL
+SELECT 'diagram laws',
+       count(DISTINCT l.slug),
+       count(DISTINCT l.slug) FILTER (WHERE e.slug IS NOT NULL)
+FROM      (
+    :compose(diagrams/roster.sqlc)
+) l
+LEFT JOIN (
+    :compose(diagrams/expected.sqlc)
+) e ON e.slug = l.slug

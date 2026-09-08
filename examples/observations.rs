@@ -29,6 +29,9 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+mod tree;
+use tree::{emitted, references, templates};
+
 /// Documents that are parsed only by Rust tests and never reach the database, each with the
 /// reason. ⛔ Adding a name here is the whole decision: it removes a document from every SQL
 /// query, every check and every report at once, and the only thing that says so is this list.
@@ -40,48 +43,6 @@ const RUST_ONLY: &[(&str, &str)] = &[
     ("every-claimed", "a draft-state fixture; tests/fixtures.rs"),
     ("every-draft", "a draft-state fixture; tests/fixtures.rs"),
 ];
-
-/// Every `.sqlc` under `assets/sqlc`, named the way a `:compose()` directive names it.
-fn templates(dir: &Path, root: &Path, out: &mut Vec<(String, String)>) {
-    for e in fs::read_dir(dir).expect("assets/sqlc is readable").flatten() {
-        let p = e.path();
-        if p.is_dir() {
-            templates(&p, root, out);
-        } else if p.extension().is_some_and(|x| x == "sqlc") {
-            let name = p
-                .strip_prefix(root)
-                .expect("under assets/sqlc")
-                .to_string_lossy()
-                .into_owned();
-            out.push((name, fs::read_to_string(&p).expect("readable")));
-        }
-    }
-}
-
-/// The `.sqlc` paths a template names, from either directive. Three forms occur:
-/// `:compose(path)`, `:union(ALL a, b)`, and a slot fill, `:compose(shape, @scope = path)`.
-/// ⛔ The third is the one worth being careful about: the filler is the only reference a
-/// `scope/` relation ever gets, so a parser that stopped at the `@` would report every scope
-/// as an orphan. A bare `@scope` inside a shape names no file and drops out on its own.
-fn references(body: &str) -> Vec<String> {
-    let mut out = Vec::new();
-    for (open, close) in [(":compose(", ')'), (":union(", ')')] {
-        let mut rest = body;
-        while let Some(i) = rest.find(open) {
-            rest = &rest[i + open.len()..];
-            let Some(j) = rest.find(close) else { break };
-            for token in rest[..j].split(',') {
-                let t = token.trim().trim_start_matches("ALL").trim();
-                let t = t.split_once('=').map_or(t, |(_, filler)| filler.trim());
-                if t.ends_with(".sqlc") {
-                    out.push(t.to_string());
-                }
-            }
-            rest = &rest[j..];
-        }
-    }
-    out
-}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -98,7 +59,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut files = Vec::new();
     templates(sqlc, sqlc, &mut files);
 
-    let composed: BTreeSet<String> = files.iter().flat_map(|(_, b)| references(b)).collect();
+    let composed: BTreeSet<String> = files.iter().flat_map(|(_, b)| references(&emitted(b))).collect();
 
     // A root is reached by no other template. It earns its place by being run: as a psql entry
     // point, or by an example naming its composed output.
@@ -625,6 +586,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   ⭐ None. Every layer in this corpus can be perturbed without moving another");
         println!("      through the composition, so no filed pair fails `pm:Layer`'s own test.");
     }
+
+    // ⭐⭐⭐ AND THE SAME MEASUREMENT TURNED ON THE THING DOING THE CHECKING. Branch one of
+    //    `reports/integrity.sqlc` takes a roster away from a population, and every check joins the
+    //    roster so that a rule examining nothing still emits a row carrying its NAME. Where that
+    //    row is the only one, the difference has the roster on both ends and cannot report.
+    //
+    // ⛔ SO THE SUBJECTS SHORT HERE ARE EXACTLY THE RULES `reports/coverage.sqlc` CALLS VACUOUS,
+    //    and the two tables move in opposite directions on one event: the day a filing sizes a
+    //    buffer and attributes a share to it, coverage improves and this shortfall goes to zero.
+    //
+    // ⚠️ `ok` IS TWO DIFFERENT FACTS. `diagrams` earns it from a population the contract did not
+    //    write, `information_schema`; `arithmetic` and `algebra` are built exactly like `rules`
+    //    and are merely populated everywhere on this corpus.
+    let guards = sqlx::query_file!("assets/sql/queries/observations/16-guard-cover.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n20. what each contract's own guard can be about");
+    for g in &guards {
+        println!("   {:<11} {:>2} of {:>2} witnessed by the population, {:>2} by the roster alone   {}",
+                 g.contract, g.witnessed, g.subjects, g.roster_only, g.verdict);
+    }
+    println!("   ⭐ `witnessed` is where the two sides of the difference are different rows.");
+    println!("      The rest is the roster agreeing with itself, which is what tests/independence.rs");
+    println!("      refuses to count as corroboration anywhere else. `diagrams/domain_objects.sqlc`");
+    println!("      states the rule for the contract side; this is the side nothing states.");
+    assert!(
+        guards.iter().all(|g| g.subjects > 0),
+        "a contract declares no subjects, so this measurement has no denominator and the \
+         grades printed above are about nothing"
+    );
 
     println!("\nAll checks passed.");
     Ok(())
