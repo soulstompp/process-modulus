@@ -28,55 +28,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
+mod tree;
+use tree::{emitted, references, templates};
+
 /// The one composition that is reached by nothing and reaches nothing, with the reason. ⛔ It is
 /// named here rather than tolerated by a count, so that a SECOND orphan fails the build.
 const ISOLATED: &[(&str, &str)] =
     &[("ingest.sqlc", "the XMLTABLE loader; psql runs it before anything composes")];
-
-/// Every `.sqlc` under `assets/sqlc`, named the way a `:compose()` directive names it.
-fn templates(dir: &Path, root: &Path, out: &mut Vec<(String, String)>) {
-    for e in fs::read_dir(dir).expect("assets/sqlc is readable").flatten() {
-        let p = e.path();
-        if p.is_dir() {
-            templates(&p, root, out);
-        } else if p.extension().is_some_and(|x| x == "sqlc") {
-            let name = p.strip_prefix(root).expect("under assets/sqlc").to_string_lossy().into_owned();
-            out.push((name, fs::read_to_string(&p).expect("readable")));
-        }
-    }
-}
-
-/// The `.sqlc` paths a template names, from either directive. Three forms occur:
-/// `:compose(path)`, `:union(ALL a, b)`, and a slot fill, `:compose(shape, @scope = path)`.
-/// ⛔ The third is the one worth being careful about: the filler is the only reference a
-/// `scope/` relation ever gets, so a parser that stopped at the `@` would report every scope
-/// as an orphan. A bare `@scope` inside a shape names no file and drops out on its own.
-fn references(body: &str) -> Vec<String> {
-    let mut out = Vec::new();
-    for (open, close) in [(":compose(", ')'), (":union(", ')')] {
-        let mut rest = body;
-        while let Some(i) = rest.find(open) {
-            rest = &rest[i + open.len()..];
-            let Some(j) = rest.find(close) else { break };
-            for token in rest[..j].split(',') {
-                let t = token.trim().trim_start_matches("ALL").trim();
-                let t = t.split_once('=').map_or(t, |(_, filler)| filler.trim());
-                if t.ends_with(".sqlc") {
-                    out.push(t.to_string());
-                }
-            }
-            rest = &rest[j..];
-        }
-    }
-    out
-}
-
-/// A template's body with the `#` argument stripped, which is what compose emits. ⛔ The `#`
-/// lines are prose and they NAME other templates constantly; counting a reference out of one
-/// would make the call graph disagree with the composed SQL.
-fn emitted(body: &str) -> String {
-    body.lines().filter(|l| !l.trim_start().starts_with('#')).collect::<Vec<_>>().join("\n")
-}
 
 fn main() {
     let sqlc = Path::new("assets/sqlc");
