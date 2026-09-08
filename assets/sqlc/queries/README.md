@@ -16,8 +16,9 @@ query added to `readiness/` and never read by `readiness.rs` shows up as an orph
 
 ⚠️ `matrices/` answers the numbered sections of [`../README.md`](../README.md). The other three
 do not map onto it: `readiness/` is a view of `arithmetic/all.sqlc`, `observations/` is a tour of
-relations whose product is knowledge rather than a verdict, and `soundness/` is a view of
-`algebra/all.sqlc`, the set-algebraic laws each relation claims to obey.
+relations whose product is knowledge rather than a verdict, and `soundness/` is the one that
+reads several: the set-algebraic laws in `algebra/all.sqlc`, the roster contracts in
+`reports/integrity.sqlc`, and what each roster's population emits when the corpus is empty.
 
 ⭐⭐ **`soundness/` is the only one that can accuse nobody's filing.** The other three ask about
 the arithmetic, the data and the corpus; that one asks whether the QUERIES compute what they say.
