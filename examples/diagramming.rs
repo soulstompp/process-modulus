@@ -31,10 +31,11 @@ use std::fs;
 use std::path::Path;
 
 /// ⛔⛔⛔ THIS PROGRAM OWNS THIS DIRECTORY AND WIPES IT, WHICH IS WHY IT IS A SUBDIRECTORY.
-/// `assets/bpmn/` used to be shared with `examples/graphs.rs`, and the wipe below deleted that
-/// program's three documents whenever it happened to run first. Both orders passed every law:
-/// `rendering` covered 18 documents or 15 depending on which example was invoked last, silently,
-/// and the battery only worked because `d` sorts before `g`.
+/// Sharing `assets/bpmn/` with `examples/graphs.rs` puts the wipe below over that program's
+/// three documents whenever this one runs second. Both orders pass every law: `rendering` then
+/// covers 18 documents or 15 depending on which example was invoked last, silently, and the
+/// battery holds only because `d` sorts before `g`. A per-owner subdirectory is what makes the
+/// order stop mattering.
 ///
 /// ⭐ AND THE SPLIT SAYS WHAT WAS ALREADY TRUE. These are one document per FILING, at layer
 /// grain; `graphs` emits one per GRAPH FILLING, corpus-wide. §8 already says the two do not nest,
@@ -134,13 +135,13 @@ fn id(prefix: &str, parts: &[&str]) -> String {
 
 /// One lane and everything under it. ⭐⭐⭐ THE PARTITION RECURSES, WHICH IS WHY THIS FUNCTION
 /// DOES. `Lane` carries an optional `childLaneSet` for sub-partitions, and *a fusion's parts
-/// partition what they compose* is that sentence in BPMN's own words. A local fusion used to be
-/// written as a `subProcess`, which said it was an ACTIVITY inside a lane rather than a PARTITION
-/// of one, and which left layer grain on the way out.
+/// partition what they compose* is that sentence in BPMN's own words. ⛔ A local fusion written
+/// as a `subProcess` says it is an ACTIVITY inside a lane rather than a PARTITION of one, and
+/// loses layer grain on the way out.
 ///
-/// ⛔ A LANE HOLDING A `childLaneSet` WRITES NO `flowNodeRef` OF ITS OWN. Measured before this was
-///   built: no local fusion in this corpus carries a draw or a foreign part, so no parent owes
-///   both. `diagrams/nestings.sqlc` says what to do on the day one does.
+/// ⛔ A LANE HOLDING A `childLaneSet` WRITES NO `flowNodeRef` OF ITS OWN. Measured: no local
+///   fusion in this corpus carries a draw or a foreign part, so no parent owes both.
+///   `diagrams/nestings.sqlc` says what to do on the day one does.
 fn lane(
     x: &mut String,
     ind: usize,
@@ -195,7 +196,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let draws = ordered(sqlx::query_file!("assets/sql/diagrams/lane_members.sql").fetch_all(&pool).await?);
     let parts = ordered(sqlx::query_file!("assets/sql/diagrams/calls.sql").fetch_all(&pool).await?);
     let notations = ordered(sqlx::query_file!("assets/sql/diagrams/imports.sql").fetch_all(&pool).await?);
-    // ⭐⭐⭐ N, WHICH USED TO FALL OFF. A `categoryValue` per induced-into layer, a
+    // ⭐⭐⭐ N, WHICH NOTHING ELSE HERE CARRIES. A `categoryValue` per induced-into layer, a
     //   `categoryValueRef` per induction, and a `group` to draw each. `tFlowElement` carries
     //   `categoryValueRef` with `maxOccurs="unbounded"`, so this cover may overlap where a lane
     //   set may not, and it adds NO lane: a second `laneSet` would have given every induced layer
@@ -204,37 +205,39 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cat_members =
         ordered(sqlx::query_file!("assets/sql/diagrams/category_members.sql").fetch_all(&pool).await?);
     // ⭐⭐⭐ C AND ITS SEARCH, WHICH ARE ONE FACT FILED AS TWO RELATIONS. A coupling is the
-    //   model's own falsifier and no emitted document could state it; and drawing the matrix
-    //   alone would be worse than drawing neither, because 12 of 15 filings state no coupling
+    //   model's own falsifier, so a document that cannot state it cannot carry the refutation;
+    //   and drawing the matrix alone is worse than drawing neither, because 12 of 15 filings state no coupling
     //   and a reader resolves a blank page as independence. The search says which blank it is.
     let deps = ordered(sqlx::query_file!("assets/sql/diagrams/dependences.sql").fetch_all(&pool).await?);
     let searches = ordered(sqlx::query_file!("assets/sql/diagrams/searches.sql").fetch_all(&pool).await?);
-    // ⛔⛔⛔ THE EXTENT, WHICH THE EMITTER USED TO ASSERT INSTEAD OF READ. Every document carried
-    //   the hardcoded sentence *a partition of layers claimed exhaustive* and exactly one filing
-    //   claims `complete`. A string literal about a filing is a claim this program made up, and
-    //   no cardinality law can reach one. If a sentence here says something ABOUT a filing, it
-    //   comes from a relation.
+    // ⛔⛔⛔ THE EXTENT IS READ AND NEVER ASSERTED. Hardcoding *a partition of layers claimed
+    //   exhaustive* onto every document says `complete` of fourteen filings that do not claim
+    //   it. A string literal about a filing is a claim this program made up, and no cardinality
+    //   law can reach one. If a sentence here says something ABOUT a filing, it comes from a
+    //   relation.
     let scopes = ordered(sqlx::query_file!("assets/sql/diagrams/scopes.sql").fetch_all(&pool).await?);
-    // ⛔ THE LAST DECLARED MAPPING THAT RENDERED NOTHING. It named `documentation`, emitted none,
-    //   and no law saw it because that element was already spent by the pools and the lanes.
+    // ⛔ A MAPPING THAT NAMES AN ALREADY-SPENT ELEMENT RENDERS NOTHING AND NO LAW SEES IT.
+    //   Declaring this one against `documentation`, which the pools and the lanes already use,
+    //   emits none and counts as covered.
     let citations = ordered(sqlx::query_file!("assets/sql/diagrams/citations.sql").fetch_all(&pool).await?);
     // ⭐⭐⭐ `F` AT LAYER GRAIN. `calledElement` names a PROCESS, so 17 edges collapse to 5
     //   document pairs and the layer survives only inside `@name`. `tRelationship` takes QNames
     //   at both ends and a REQUIRED `type`, which is exactly what an `association` lacks.
     let descents = ordered(sqlx::query_file!("assets/sql/diagrams/descents.sql").fetch_all(&pool).await?);
     // ⭐⭐⭐ WHICH RELATION EACH SENTENCE STATES, WHICH IS THE `--` LINE OWED BY AN ARTIFACT.
-    //   Every `documentation` element below carried a sentence and no route back to the relation
-    //   that produced it, which is the state a generated `.sql` file would be in without its one
-    //   `--` line. ⛔ Read from here rather than written as a literal beside each `writeln!`: a
-    //   pointer this program made up is a claim about the model that no law can reach, which is
-    //   the `invents` state `diagrams/domain_objects.sqlc` names.
+    //   A `documentation` element carrying a sentence and no route back to the relation that
+    //   produced it is a generated `.sql` file without its one `--` line. ⛔ Read from here
+    //   rather than written as a literal beside each `writeln!`: a pointer this program made up
+    //   is a claim about the model that no law can reach, which is the `invents` state
+    //   `diagrams/domain_objects.sqlc` names.
     let annotated = ordered(sqlx::query_file!("assets/sql/diagrams/annotated.sql").fetch_all(&pool).await?);
     // ⭐⭐⭐ THE NOTES A DOCUMENT OWES ON ITS OWN FACE. `documentation` is INVISIBLE in every
-    //   rendering, so 71 facts were in the artifact and on no page. `textAnnotation` is the only
-    //   element in BPMN that puts words on the canvas, and it was withheld on *documentation is
-    //   spent instead*: true, and about the wrong property.
+    //   rendering, so a fact filed there alone is in the artifact and on no page.
+    //   `textAnnotation` is the only element in BPMN that puts words on the canvas, and
+    //   *documentation is spent instead* withholds it on a true statement about the wrong
+    //   property.
     let legends = ordered(sqlx::query_file!("assets/sql/diagrams/legends.sql").fetch_all(&pool).await?);
-    // ⭐⭐⭐ THE SECOND `pm:ForeignId`, WHICH NOTHING NAMED AS A REFERENCE UNTIL NOW. A `between`
+    // ⭐⭐⭐ THE SECOND `pm:ForeignId`, AND THE ONLY PLACE IT IS DRAWN AS A REFERENCE. A `between`
     //   says which layer of which OTHER document the double counting runs against, and it is the
     //   same reference shape as a part. ⛔ Only the RESOLVED ones can be emitted: a QName needs a
     //   prefix and a prefix needs an import, so a `between` naming a document nobody filed is
@@ -343,8 +346,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // ⛔ A QName WITH NO PREFIX RESOLVES TO THE DEFAULT NAMESPACE, WHICH HERE IS BPMN'S OWN.
         //   `association/@sourceRef` is a QName, so a same-document reference to a lane needs a
         //   prefix bound to THIS document's targetNamespace or it names a BPMN element instead.
-        //   The foreign prefixes f0..fN already did this for `calledElement`; local references
-        //   were simply never made until a coupling had to point at two lanes.
+        //   The foreign prefixes f0..fN do this for `calledElement`; `tns` is the same binding
+        //   for a reference that stays inside the document, which is what a coupling needs.
         write!(x, "\n             xmlns:tns=\"{}\"", esc(target))?;
         write!(x, "\n             xmlns:bpmndi=\"{DI_NS}\"\n             xmlns:dc=\"{DC_NS}\"")?;
         for (i, n) in imports.iter().enumerate() {
@@ -488,7 +491,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // ⭐ A local part is an embedded subProcess and a foreign one is a call. Both are
             //   substitution; only the second crosses a document, which is why only it needs an
             //   import. The QName prefix is what makes `calledElement` resolvable at all.
-            // ⛔⛔ A LOCAL PART IS NO LONGER A FLOW NODE AT ALL. It is a nested LANE, written
+            // ⛔⛔ A LOCAL PART IS NOT A FLOW NODE AT ALL. It is a nested LANE, written
             //   by `lane()` above, because a fusion's parts PARTITION the composed layer rather
             //   than sitting inside it as activities. That is what keeps it at layer grain.
             if pf == filing {
@@ -960,11 +963,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // ⛔⛔⛔ THE OTHER HALF OF THE CLOSURE, AND IT CANNOT BE DERIVED FROM THE ARTIFACT. Everything
-    //    above reads the element kinds off disk, so it can report an element we DREW and never
-    //    decided about, and it can never report an element BPMN HAS and we ignored: an unused
-    //    glyph leaves no trace to read. `diagrams/notation.sqlc` is the icon set as a literal, so
-    //    the unused half of the notation becomes countable, and *we do not draw gateways* stops
-    //    being the same sentence as *we forgot gateways*.
+    //    above reads the element kinds off disk, so it can report an element this program DREW
+    //    and never decided about, and it can never report an element BPMN HAS that this program
+    //    ignored: an unused glyph leaves no trace to read. `diagrams/notation.sqlc` is the icon
+    //    set as a literal, so the unused half of the notation becomes countable, and *gateways
+    //    are not drawn here* stops being the same sentence as *gateways were forgotten*.
     // ------------------------------------------------------------------
     let notation = ordered(sqlx::query_file!("assets/sql/diagrams/notation.sql").fetch_all(&pool).await?);
 
@@ -1096,15 +1099,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let path = e.path();
         if path.extension().is_none_or(|x| x != "bpmn") { continue; }
         let doc = fs::read_to_string(&path)?;
-        let me = path.file_stem().unwrap().to_string_lossy().to_string();
+        let own = path.file_stem().unwrap().to_string_lossy().to_string();
         let mut rest = doc.as_str();
         while let Some(i) = rest.find("calledElement=\"") {
             rest = &rest[i + 15..];
             let end = rest.find('"').unwrap_or(0);
             let target = rest[..end].rsplit(':').next().unwrap_or("").to_string();
             let target = target.strip_prefix("proc_").unwrap_or(&target).to_string();
-            if target != me {
-                call_edges.insert((me.clone(), target), ());
+            if target != own {
+                call_edges.insert((own.clone(), target), ());
             }
         }
     }
@@ -1168,8 +1171,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                  if *w == 0 { "   ⭐ the whole axis" } else { "" });
     }
     // ⛔⛔⛔ THE SUMMARY IS COMPUTED, BECAUSE THE HARDCODED ONE ROTTED EXACTLY LIKE A NUMBER.
-    //    It read *BPMN is withheld whole on every axis but one*, which was true when the roster
-    //    had one mixed axis and false by the time it had four, and no rule noticed because a
+    //    A hardcoded *BPMN is withheld whole on every axis but one* is true of a roster with
+    //    one mixed axis and false of a roster with four, and no rule notices, because a
     //    SENTENCE is not a count. `a number in prose rots` is not about numbers: it is about any
     //    claim a program could print and does not.
     let whole: Vec<&str> = by_axis.iter().filter(|(_, a)| a.0 == 0).map(|(k, _)| *k).collect();
@@ -1239,11 +1242,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ));
         }
     }
-    // ⛔⛔ AND THE SWEEP THAT FOUND TWO MORE OF THE SAME, BOTH WRITTEN IN THE TWO PASSES BEFORE
-    //   THIS ONE. Once *a claim in prose is unreachable by every law here* was stated, the
-    //   question stopped being about scope and became: which OTHER model value does a document
-    //   state that only a count checks? The coupling SEARCH answer, and the two lanes an
-    //   association joins. Each could be wrong in every document with its count still exact.
+    // ⛔⛔ AND THE SWEEP THAT REACHES TWO MORE OF THE SAME SHAPE. *A claim in prose is
+    //   unreachable by every law here* generalises past scope: which OTHER model value does a
+    //   document state that only a count checks? The coupling SEARCH answer, and the two lanes
+    //   an association joins. Each can be wrong in every document with its count still exact.
     for f in &filings {
         let doc = fs::read_to_string(format!("{OUT}/{}.bpmn", f.filing))?;
         let said = doc
@@ -1363,7 +1365,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    `F` ITSELF. This is the strongest law in this file and it is the only one that is an
     //    ISOMORPHISM rather than a count or a dimension. The cycle-space law above compares the
     //    CONTRACTED call graph's dimension to F's, which is a shadow of a shadow: equal
-    //    dimensions do not mean equal graphs, and contraction was the whole defect.
+    //    dimensions do not mean equal graphs, and the contraction is where the defect hides.
     //
     // ⛔⛔ 17 RELATIONSHIPS JOINING THE WRONG 17 PAIRS PASSES `|relationship| = |part|` EXACTLY,
     //    which is the same blind spot that let a reversed coupling through. The endpoints are the
@@ -1555,7 +1557,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   weaker than the claim it was checking: `id("call", ...)` already embeds the layer, so
     //   deleting it from the NAME left it in the id and the search still found it. An id is a
     //   mangled NCName that nobody reads, and `demoted` claims a READER can recover the fact. ⭐
-    //   Probed by dropping the layer from the name: silent before this, fires now.
+    //   Probed by dropping the layer from the name, which this fires on and a search does not.
     let mut names_in: BTreeMap<String, String> = BTreeMap::new();
     for f in &filings {
         let doc = fs::read_to_string(format!("{OUT}/{}.bpmn", f.filing))?;

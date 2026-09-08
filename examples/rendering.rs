@@ -142,9 +142,9 @@ struct Lane {
     ///    ONE format where nesting is native. `<g>` contains `<g>` for free.
     kids: Vec<usize>,
     parent: Option<usize>,
-    /// ⭐ THE BPMN `id`, WHICH ONLY A CROSS-LANE EDGE EVER NEEDED. Every earlier law here reached
-    /// a lane by NAME, because nothing pointed AT one. An `association` does: its `sourceRef` is
-    /// a QName whose local part is this id, so the name stopped being enough.
+    /// ⭐ THE BPMN `id`, WHICH ONLY A CROSS-LANE EDGE NEEDS. A law that reaches a lane by NAME
+    /// needs no id, because nothing points AT one. An `association` does: its `sourceRef` is a
+    /// QName whose local part is this id, and a name cannot stand in for it.
     id: String,
 }
 
@@ -371,11 +371,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut in_ref = false;
         let mut in_doc = false;
         // node id -> display name, so a lane's flowNodeRef can be shown as what it IS.
-        // ⛔⛔ THE KIND TRAVELS WITH THE NAME. It used to be matched and dropped, so a
-        //   `callActivity` and a `task` arrived here indistinguishable and left as one rectangle.
+        // ⛔⛔ THE KIND TRAVELS WITH THE NAME. Match it and drop it, and a `callActivity` and a
+        //   `task` arrive here indistinguishable and leave as one rectangle.
         let mut names: std::collections::BTreeMap<String, (String, String)> =
             std::collections::BTreeMap::new();
-        // ⭐⭐⭐ THE COVER, WHICH THE BPMN CARRIES AND THIS STAGE USED TO DROP IN SILENCE. A
+        // ⭐⭐⭐ THE COVER, WHICH THE BPMN CARRIES AND THIS STAGE MUST NOT DROP IN SILENCE. A
         //    `categoryValue` is a label, a `categoryValueRef` on a flow node is a membership, and
         //    a `group` is the glyph. Nothing here is a container: the MEMBER declares the tie, so
         //    an operation may be in several of these and is in exactly one lane.
@@ -387,10 +387,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //    the arrowhead is safe: BPMN glosses it as a direction of flow and a coupling is a
         //    DEPENDENCE. ⚠️ Draw `F` as an edge one day and that argument expires.
         let mut deps: Vec<(String, String)> = Vec::new();
-        // ⭐⭐⭐ THE GEOMETRY THE DOCUMENT DECLARES. This program used to INVENT coordinates, so
-        //    the SVG's layout was derived from nothing and its own header's claim -- a cache
-        //    extracted from the GENERATED artifact -- was false of the one thing a picture is
-        //    mostly made of. `bpmndi:BPMNShape` is where BPMN puts a box, and now it is read.
+        // ⭐⭐⭐ THE GEOMETRY THE DOCUMENT DECLARES, READ AND NEVER INVENTED. A program that
+        //    invents coordinates derives the SVG's layout from nothing, and its own header's
+        //    claim -- a cache extracted from the GENERATED artifact -- is then false of the one
+        //    thing a picture is mostly made of. `bpmndi:BPMNShape` is where BPMN puts a box.
         let mut bounds: BTreeMap<String, (usize, usize, usize, usize)> = Default::default();
         let mut last_shape = String::new();
         // ⭐⭐⭐ THE LEGEND. `documentation` is invisible in every rendering and a `textAnnotation`
@@ -420,7 +420,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     match tag.as_str() {
                         "participant" => pool = attr("name").unwrap_or_default(),
                         "lane" => {
-                            let me = lanes.len();
+                            let this = lanes.len();
                             let parent = open.last().copied();
                             lanes.push(Lane {
                                 id: attr("id").unwrap_or_default(),
@@ -430,8 +430,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 kids: Vec::new(),
                                 parent,
                             });
-                            if let Some(p) = parent { lanes[p].kids.push(me); }
-                            open.push(me);
+                            if let Some(p) = parent { lanes[p].kids.push(this); }
+                            open.push(this);
                             bpmn_lanes += 1;
                         }
                         "documentation" => in_doc = true,
@@ -534,10 +534,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   never do here. `planner.md` transfers: do not pre-digest the diagram.
         let mut y = 46;
         let mut body = String::new();
-        // ⭐⭐⭐ THE OUTERMOST GROUP IS THE CONTAINMENT, AND IT USED TO BE THE RANK. That was right
-        //    while the BPMN was flat, and it stopped being right the moment a local fusion became
-        //    a `childLaneSet`: the two compete for the same slot and only one can be the nesting,
-        //    which is §8's inclusion-tree constraint arriving at the SVG stage.
+        // ⭐⭐⭐ THE OUTERMOST GROUP IS THE CONTAINMENT AND NEVER THE RANK. The rank can hold
+        //    that slot only while the BPMN is flat: once a local fusion is a `childLaneSet` the
+        //    two compete for one slot and only one can be the nesting, which is §8's
+        //    inclusion-tree constraint arriving at the SVG stage.
         //
         // ⛔⛔ CONTAINMENT WINS BECAUSE IT IS A TREE AND RANK IS AN ORDER. A lane really does sit
         //    inside its parent, and `<g>` nests for free, so drawing it costs nothing and losing
@@ -875,14 +875,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   BPMN: a sub-process is a thin border plus the ⊞ marker, so its discriminator is an
     //   ELEMENT and not a declaration, and `distinct > 1` above is satisfied by the call activity
     //   alone. Drop the marker and that assertion would still pass. This is the one that fires.
-    // ⛔⛔⛔ AND THIS LAW IS NOW VACUOUS, WHICH IT MUST SAY RATHER THAN PASS. `subProcess` was
-    //    withdrawn when a local fusion became a `childLaneSet`, so the kind it guards no longer
-    //    appears and `0 == 0` is true for the wrong reason. A rule that examines nothing reporting
-    //    a pass is the single failure `checks/all.sqlc` was assembled to prevent, and a law in an
-    //    example owes the same verdict a rule in the corpus does.
+    // ⛔⛔⛔ AND THIS LAW IS VACUOUS, WHICH IT MUST SAY RATHER THAN PASS. A local fusion is a
+    //    `childLaneSet`, so the kind this law guards is emitted nowhere and `0 == 0` is true for
+    //    the wrong reason. A rule that examines nothing reporting a pass is the single failure
+    //    `checks/all.sqlc` is assembled to prevent, and a law in an example owes the same
+    //    verdict a rule in the corpus does.
     match svg_kinds.get("subProcess").copied() {
         None | Some(0) => println!(
-            "      {:<14} ⛔ VACUOUS: no sub-process is emitted since childLaneSet replaced it",
+            "      {:<14} ⛔ VACUOUS: a local fusion is a childLaneSet, so no sub-process is emitted",
             "⊞ marker"
         ),
         Some(subs) => {
@@ -979,7 +979,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let bpmn_parents = parents("bpmn", false);
     let svg_parents = parents("svg", true);
     // ⭐⭐ PIVOT BY CHILD. The count per node is 1 for a tree; anything higher is a node with
-    //   two parents, and the map this used to be could not hold one. ⛔ Under the colliding key
+    //   two parents, and a map keyed the other way cannot hold one. ⛔ Under the colliding key
     //   `labour` is a layer in three filings, so this is the direct route to that defect: it is
     //   not a lost row, it is a node whose parent depends on which document you read last.
     let by_child = |es: &Vec<(String, String)>| -> BTreeMap<String, Vec<String>> {
@@ -1324,8 +1324,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    look for, which is the same hole one stage down.
     //
     // ⭐⭐ A LITERAL, FOR THE REASON `notation.sqlc` IS A LITERAL. Derived from what the SVG
-    //    draws, this could report a shape we drew and never decided about and never a BPMN
-    //    element we ignored. Nothing this stage silently drops leaves a trace in the SVG to read.
+    //    draws, this could report a shape this stage drew and never decided about, and never a
+    //    BPMN element it ignored. Nothing this stage silently drops leaves a trace in the SVG.
     //
     // ⭐ THREE FATES, AND THE SECOND IS THE ONE THAT NEEDS SAYING. `glyph` means a shape is
     //   drawn. `geometry` means the element became POSITION rather than ink, which is a faithful
@@ -1344,11 +1344,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ("flowNodeRef",    "geometry", "membership, drawn by putting the node inside the lane"),
         ("task",           "glyph",    "a thin rounded rectangle"),
         ("callActivity",   "glyph",    "a THICK rounded rectangle, and the thickness is the notation for substitution"),
-        // ⛔⛔⛔ THIS ROW IS AT THE WRONG GRAIN AND SAID SO FOR ONE USE OUT OF SIX. See the
+        // ⛔⛔⛔ THIS ROW IS AT THE WRONG GRAIN AND ANSWERS FOR ONE USE OUT OF SIX. See the
         //   per-USE roster below: `documentation` is an ANNOTATION, admitted on any base element,
-        //   and it now carries six different facts with different fates. Calling the KIND
-        //   `geometry` on the strength of the rank was the fate roster's own blind spot: 20
-        //   kinds, 20 fates, 0 undecided, and 37 facts falling off the page.
+        //   and it carries six different facts with different fates. Calling the KIND `geometry`
+        //   on the strength of the rank is the fate roster's own blind spot: 20 kinds, 20 fates,
+        //   0 undecided, and 37 facts falling off the page.
         ("documentation",  "geometry", "⚠️ SPLIT BY USE below; the kind alone cannot answer"),
         ("textAnnotation", "glyph",    "an OPEN BRACKET under the pool, which is BPMN's own glyph and says these words are commentary rather than a container"),
         ("text",           "glyph",    "the words themselves, one line each"),
@@ -1394,8 +1394,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    `geometry, the rank`, which is true of 51 uses out of 88, and the other 37 fell off the
     //    page with `20 kinds, 20 fates, 0 undecided` printing underneath.
     //
-    // ⭐⭐ SO THE USES GET THEIR OWN ROSTER, AND EACH IS COUNTED IN BOTH ARTIFACTS. Same repair as
-    //    every other time a count was blind: the population was right and the ATTRIBUTION was not.
+    // ⭐⭐ SO THE USES GET THEIR OWN ROSTER, AND EACH IS COUNTED IN BOTH ARTIFACTS. It is the
+    //    repair for every blind count of this shape: the population is right and the
+    //    ATTRIBUTION is not.
     // ------------------------------------------------------------------
     let uses: &[(&str, &str, &str)] = &[
         ("rank ",                  "drawn",   "a label on the lane and `data-rank` on its group"),
@@ -1433,8 +1434,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   reappeared inside the paragraph reporting it.
     println!("   ⛔ {unseen_total} documentation facts are in the BPMN and not on the page, \
               against {seen_total} that are.");
-    println!("      That is not the whole story and it used to be: a `documentation` is for the \
-              TOOL, attached");
+    println!("      That is not the whole story: a `documentation` is for the TOOL, attached");
     println!("      to the element it is about. {svg_notes} of them are ALSO drawn as \
               `textAnnotation` notes, which");
     println!("      is the carrier for the READER, and the four chosen are the four places the \

@@ -10,8 +10,8 @@
 //! other people for other reasons, driven by a bench that knows nothing about accounting, fills
 //! these fields WITHOUT STRAIN. `tests/independence.rs` holds that corroboration between two
 //! things sharing a code path is worth nothing; `examples/matrices.rs` corroborates the
-//! arithmetic. Nothing corroborated the MODELLING until this. A field that had to be bent to
-//! take a simulated fact is a finding about the field.
+//! arithmetic. This is what corroborates the MODELLING. A field that has to be bent to take a
+//! simulated fact is a finding about the field.
 //!
 //! ⛔⛔ AND THE SECOND FILING IS THE ONE TO WATCH. Every run is filed twice, once from the whole
 //! history and once from what a stock-and-flow log records. The blinder filing is not a worse

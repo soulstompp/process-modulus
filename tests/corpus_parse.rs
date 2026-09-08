@@ -103,7 +103,7 @@ fn corpus() -> Vec<(&'static str, ProcessModulusElementType)> {
 /// consolidation: a `booked` share in a group filing IS booked in some member's books, and
 /// naming which one looks exactly like what `party` is for. It is not — on a counterparty
 /// holder `party` names whose OTHER books carry the burden; on a booked holder it would name
-/// which of our OWN units records it. Two relations, one field.
+/// which of the filer's OWN units records it. Two relations, one field.
 ///
 /// ⭐ And the half that matters more: A `counterparty` HOLDER MUST NAME ITS PARTY. A burden
 /// asserted to sit in another entity's books with no entity named is a guess wearing the one
@@ -124,8 +124,8 @@ fn assert_holder_rules(doc: &ProcessModulusElementType, what: &str) {
             assert!(
                 counterparty || (h.party.is_none() && h.as_of.is_none()),
                 "{what}/{}: a {:?} holder carries party/asOf, which belong only to a \
-                 counterparty. Which of our own units books a share is a different relation \
-                 from whose other books carry it, and a consolidation already answers the \
+                 counterparty. Which of the filer's own units books a share is a different \
+                 relation from whose other books carry it, and a consolidation already answers the \
                  first by naming the filed layer the share came from",
                 l.name,
                 h.kind
@@ -213,9 +213,9 @@ fn bounds(c: &StatedClaimType, what: &str) -> (f64, f64, f64) {
 /// `derived`. What no instrument reaches is HOW MUCH OF IT THE TEAM ABSORBED, and that
 /// is the holder's `share`.
 ///
-/// ⛔ Filing the whole remainder as `unmeasured` understated the claim. It said we know
-/// nothing, when in fact we know the size and not the bearer, which is the more
-/// damaging of the two things to be able to say.
+/// ⛔ Filing the whole remainder as `unmeasured` understates the claim. It says nothing is
+/// known, where in fact the size is known and the bearer is not, which is the more damaging
+/// of the two things to be able to say.
 ///
 /// ⭐⭐ AND THE BEARER IS TWO THINGS, WHICH A SHAPE ASSERTION HERE WOULD DENY.
 /// `let [one_holder] = &r.holder[..]` with the message "labour has one holder, and nobody
@@ -289,8 +289,8 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
 ///
 /// ⛔ `Fit` names BOTH `customer` and `unrealised` for an unserved excess, because a
 /// customer who waited and one who never arrived are different people and only one of
-/// them is still yours. The old shape made the sender pick one and discard the other,
-/// and the discarded half is frequently the one somebody wanted.
+/// them is still yours. A single slot makes the sender pick one and discard the other, and
+/// the discarded half is frequently the one somebody wanted.
 ///
 /// ⭐ It also exercises the sum rule, which XSD 1.0 cannot express: the stated shares
 /// add up to `|nameplate - demand|`.
@@ -365,7 +365,7 @@ fn a_continuous_supply_files_a_remainder_of_none() {
     };
     // ⭐ THE ZERO PREMIUM IS THE COUNTER-EXAMPLE, AND IT IS A CLAIM. `Continuous` reads
     // above 0 / at 0 / below 0, and the middle is a claim of zero rather than
-    // `absent reason="none"`. Spell it as an absence while the ends stay claims and the
+    // `absent/reason = none`. Spell it as an absence while the ends stay claims and the
     // three-point scale stops being comparable as arithmetic.
     let StatedClaimType::Claim(premium) = &q.premium else {
         panic!("the premium should be stated, and a zero premium is a claim of zero");
@@ -665,10 +665,10 @@ fn a_subject_that_is_not_a_supply_can_decline_the_divisibility_axis() {
 /// S-2. The one required value a sender could not decline, and the fact new
 /// senders most often have not established.
 ///
-/// ⭐ `unmeasured` AND `none` ARE NOW DIFFERENT DOCUMENTS HERE, which they were not while
-/// this was a boolean. `none` says somebody looked and there is no room above the rating;
-/// `unmeasured` says nobody has established how much room there is. The old `true` meant
-/// both at once and a reader could not tell which.
+/// ⭐ `unmeasured` AND `none` ARE DIFFERENT DOCUMENTS HERE, WHICH A BOOLEAN CANNOT SAY.
+/// `none` says somebody looked and there is no room above the rating; `unmeasured` says
+/// nobody has established how much room there is. A `true` means both at once and a reader
+/// cannot tell which.
 #[test]
 fn a_capacity_slack_can_be_left_unmeasured_instead_of_guessed() {
     let doc = load("unstated.xml");
@@ -756,7 +756,7 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
 
 /// The couplings a stack filed, or an empty slice where it filed a typed reason instead.
 ///
-/// ⛔⛔ THE EMPTY SLICE AND `absent reason="none"` ARE NOT THE SAME DOCUMENT, and no caller
+/// ⛔⛔ THE EMPTY SLICE AND `absent/reason = none` ARE NOT THE SAME DOCUMENT, and no caller
 /// may treat them as one. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Stack/couplings`
 /// makes a stack tested for independence and a stack nobody looked at byte-identical, which is
 /// the boolean anti-pattern wearing a plural. Use `coupling_absence` when the question is
@@ -942,7 +942,7 @@ fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
 ///
 /// ⭐⭐ AND THE SCHEMA IS ALREADY SAFE, WHICH IS THE HAPPY PART. `Remainder` carries
 /// `quantity`, `sign`, `absorber` and `holder` — the TOTAL and never the two components.
-/// That shape was right before the reasoning for it was written down. What is not safe is
+/// The shape is right, whether or not the reasoning below is read. What is not safe is
 /// `conformance/README.md` presenting `m·q` and `residue` as though a sender could file
 /// them, and an implementer who reads that block as a filing instruction will produce
 /// documents this schema would reject.
@@ -1057,13 +1057,13 @@ fn denominator_says(d: &pm::StatedDenominatorType) -> String {
 /// than under-used: of every nameplate unit in this corpus only `shifts per week`, `turnos por
 /// semana` and `launches per quarter` have a denominator at all.
 ///
-/// ✅ IT WAS A STRING TEST AND THE MODEL ANSWERS IT NOW. The caveat here read "a unit is an
-/// `xs:token` and nothing in the model distinguishes a rate from a stock", which was true when
-/// it was written and stopped being true with `pm:StatedDenominator`. Reading the token for a
-/// `per`/`por` word is the `LIKE '% per %'` the SQL side removed, still running: it would miss
-/// `muffins/day`, miss a third language, and count `GPU-hour per GPU` as a period when the arm
-/// that document files is `each`, explicitly not a cycle. ⛔ The schema forbids the read in as
-/// many words: "a unit is an `xs:token`; nothing may read inside it".
+/// ✅ THE MODEL ANSWERS THIS AND A STRING TEST CANNOT. *A unit is an `xs:token` and nothing in
+/// the model distinguishes a rate from a stock* holds only where there is no
+/// `pm:StatedDenominator`. Reading the token for a `per`/`por` word is the `LIKE '% per %'` the
+/// SQL side refuses: it misses `muffins/day`, misses a third language, and counts
+/// `GPU-hour per GPU` as a period when the arm that document files is `each`, explicitly not a
+/// cycle. ⛔ The schema forbids the read in as many words: "a unit is an `xs:token`; nothing may
+/// read inside it".
 #[test]
 fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
     let mut checked = 0;
@@ -1119,7 +1119,7 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
 /// document that files it says the same thing, and there is no calendar to lose in a fusion —
 /// so including them would compare a support desk against a packing line and call the
 /// disagreement a defect. ⚠️ THE NARROWNESS IS A CHOICE AND HAS TO BE VISIBLE AS ONE. Spell
-/// "always on" as `absent reason="none"` and `window()` returns nothing for it, so the same
+/// "always on" as `absent/reason = none` and `window()` returns nothing for it, so the same
 /// scope arrives free and nothing shows that anybody chose it.
 #[test]
 fn a_window_is_carried_through_a_fusion_and_never_summed() {
@@ -1184,7 +1184,7 @@ fn a_window_is_carried_through_a_fusion_and_never_summed() {
 /// ⭐ THE CASE THAT FORCED IT IS AN SLA. Two layers can file the same `timeSlack` and mean
 /// opposite things: one is how long queued work physically keeps, the other is how long a
 /// contract says the customer waits. The first is not a lever and the second is a negotiation,
-/// and no reader can tell them apart from the number. The corpus now files one of each —
+/// and no reader can tell them apart from the number. The corpus files one of each —
 /// `capability` intrinsic, `shift-line` contractual — which is the smallest population that
 /// makes the distinction visible rather than asserted.
 #[test]
@@ -1410,9 +1410,9 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
         }
     }
 
-    // ⚠️ S-15's TRAP, GUARDING THE POPULATION THAT CAN ACTUALLY GO SILENT. Every slack in
-    // this corpus was `unmeasured` when this rule was written, so it passed by checking
-    // nothing and would have scored as covered.
+    // ⚠️ S-15's TRAP, GUARDING THE POPULATION THAT CAN ACTUALLY GO SILENT. A corpus whose
+    // slacks are all `unmeasured` lets this rule pass by checking nothing, and score as
+    // covered.
     //
     // ⛔⛔ IT READ `checked >= 2`, AND THAT IS THE WRONG STAGE TO GUARD ONCE THE UNSERVED
     // PAIR IS EXEMPT. `checked` is empty here on purpose: every candidate is removed by the
@@ -1470,19 +1470,18 @@ fn exposure(d: Range, n: Range) -> f64 {
 }
 
 /// True where somebody looked at how far this supply can run above its rating and found zero.
-/// ⭐⭐ A MEASURED ZERO, HOWEVER IT IS SPELLED. This read only the absence arm, and every
-/// measured-zero capacity slack in the corpus is now a stated `[0, 0, 0]`, so it silently
-/// stopped finding any, and the assertion downstream fell to zero examined rather than
-/// failing on a document. ⭐ The SQL side no longer needs a union for it: `ClaimAbsence`
-/// carries no `none`, so the second spelling does not parse, and `layers/absorption.sqlc`
-/// reads the one that remains straight off `entries/slacks.sqlc`.
+/// ⭐⭐ A MEASURED ZERO, HOWEVER IT IS SPELLED. Read only the absence arm, and a corpus whose
+/// measured-zero capacity slacks are all stated `[0, 0, 0]` silently yields none, so the
+/// assertion downstream falls to zero examined rather than failing on a document. ⭐ The SQL side needs no union for it: `ClaimAbsence` carries no
+/// `none`, so the second spelling does not parse, and `layers/absorption.sqlc` reads the one
+/// spelling straight off `entries/slacks.sqlc`.
 ///
 /// ⛔ A SIZED SLACK IS NOT AUTOMATICALLY HEADROOM. Sized AT ZERO is the strongest statement
 /// the element can make, the supply cannot be run hot at any price, and the `boundOrigin`
 /// says by whose authority: a shelf life, a reserved block, or somebody's own ceiling.
 ///
 /// ✅ ONE SPELLING. A claim of zero is the only way to say this, and it does not need
-/// unioning with `absent reason="none"`, because `pm:ClaimAbsence` has no `none` to reach
+/// unioning with `absent/reason = none`, because `pm:ClaimAbsence` has no `none` to reach
 /// for.
 fn cannot_run_hot(l: &pm::LayerType) -> bool {
     match &l.supply.nameplate.capacity_slack {
@@ -1772,7 +1771,7 @@ fn the_corpus_exercises_every_narrowing_kind() {
     );
     assert!(
         unmeasured > 0,
-        "no claim files `unmeasured`, which was what the old blank usually meant"
+        "no claim files `unmeasured`, which is what a blank usually means"
     );
 
     // ⚠️ `intervention` and `experiment` sit on holder shares, coupling strengths and
@@ -1838,12 +1837,12 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
         reasons.len()
     );
 
-    // ⛔⛔ AND HERE IS THE READING THE OLD ENCODING COULD NOT PRODUCE. Not one stack in this
+    // ⛔⛔ AND HERE IS THE READING AN EMPTY LIST CANNOT PRODUCE. Not one stack in this
     // corpus files `none` — nobody has relieved a layer's constraint and watched the others
     // and reported independence. Every stack that declines says `unmeasured` or has no pair
     // to test, and one stack files a coupling that CONTRADICTS the assumption outright. That
-    // is a fact about the evidence rather than about any one filing, and it is a fact only
-    // because the empty list stopped being an answer.
+    // is a fact about the evidence rather than about any one filing, and it is reachable only
+    // because an empty list is not an answer here.
     assert!(
         !reasons.contains(&"None".to_string()),
         "a stack now claims tested independence. That is a heavy claim and a welcome one — \
@@ -1906,7 +1905,7 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
             // `q / clearance` spreads the spare evenly across the denominator, so it needs
             // either no denominator at all (`notApplicable`) or a supply that is live for
             // the whole of one (a window of one whole period). Spelling the second as
-            // `absent reason="none"` files a number as a nothing.
+            // `absent/reason = none` files a number as a nothing.
             let derivable = absence
                 .is_some_and(|a| a.reason == ClaimAbsenceReasonType::NotApplicable)
                 || runs_the_whole_period(l);
@@ -1940,10 +1939,11 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
     );
 }
 
-/// ⭐⭐⭐ WHO OWNS THE EDGE OF THIS RANGE. `Claim/boundOrigin` was an optional bare
-/// enumeration and it was filed ONCE IN THE WHOLE CORPUS, which `Nameplate/capacitySlack`'s
-/// own annotation complains about, three types away, while asking for exactly this field.
-/// `assets/sql/reports/bound_ownership.sql` prints what the required field gets instead.
+/// ⭐⭐⭐ WHO OWNS THE EDGE OF THIS RANGE. As an optional bare enumeration `Claim/boundOrigin`
+/// is filed ONCE IN THE WHOLE CORPUS, which `Nameplate/capacitySlack`'s own annotation
+/// complains about, three types away, while asking for exactly this field.
+/// `assets/sql/reports/bound_ownership.sql` prints what the required, wrapped field gets
+/// instead.
 ///
 /// ⛔ AN OPTIONAL FIELD NOBODY FILLS IS NOT A WEAK SIGNAL, IT IS AN ABSENT ONE, and its blank
 /// could not separate "nobody has asked" from "NOTHING sets this bound — the range is where

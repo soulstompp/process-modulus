@@ -112,11 +112,11 @@ fn main() {
     //
     // ⭐⭐ SO CHECK THE INVARIANT INSTEAD OF THE ORDER: every `.bpmn` owes a `.svg` at the same
     //    path under `assets/svg/`,
-    //    at least as new. That fails exactly when the pipeline ran out of order or stopped early,
-    //    and it says so with the command that fixes it. Measured before this existed: running the
-    //    battery in REVERSE alphabetical order left **18 BPMN and 0 SVG, with every example
-    //    reporting success**, and the SVG is the stage the *verifies with no BPMN tool present*
-    //    claim rests on.
+    //    at least as new. That fails exactly when the pipeline runs out of order or stops
+    //    early, and it says so with the command that fixes it. Measured: with nothing checking
+    //    the invariant, running the battery in REVERSE alphabetical order leaves **18 BPMN and
+    //    0 SVG, with every example reporting success**, and the SVG is the stage the *verifies
+    //    with no BPMN tool present* claim rests on.
     //
     // ⚠️ GUARDED ON EXISTENCE, because `assets/bpmn/` is generated and untracked: a fresh clone
     //   has not run the pipeline at all and owes nothing. Once it exists it must be COMPLETE.

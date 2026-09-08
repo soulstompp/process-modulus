@@ -8,7 +8,7 @@
 //!
 //! ⛔⛔ THE SET IS WHY THE ANSWER IS A RANGE. There is no inverse to recover the history from the
 //! log, and a right inverse would be a **choice** rather than a reconstruction, so the honest
-//! report of the pre-image is its extent. `pm:narrowingKind = instrument` is exactly this case and
+//! report of the pre-image is its extent. `pm:Narrowing/kind = instrument` is exactly this case and
 //! is distinguished from `intervention` for exactly this reason: re-running never narrows it,
 //! because the width was made by the projection and not by the world.
 //!
@@ -29,7 +29,7 @@ use super::window::Run;
 
 /// A magnitude as an instrument is able to report it.
 ///
-/// ⭐ THE THIRD VARIANT IS NOT A WIDE RANGE. `pm:absence_reason = unmeasured` says nobody looked
+/// ⭐ THE THIRD VARIANT IS NOT A WIDE RANGE. `pm:absent/reason = unmeasured` says nobody looked
 /// or nobody could; a range says somebody looked and this is how well. Collapsing the two would
 /// let an unbounded guess pass for a measurement.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -160,9 +160,9 @@ pub enum Instrument {
 
 /// What a filer is willing to declare about the size of an ask nobody recorded.
 ///
-/// ⭐⭐ THIS IS THE ONLY PLACE A BOUND CAN COME FROM AND IT IS NOT IN THE LOG. `pm:Estimate`
-/// requires an author for exactly this reason: a range over unrecorded magnitudes is somebody's
-/// stipulation, and if nobody will make it the field is `unmeasured` rather than zero.
+/// ⭐⭐ THIS IS THE ONLY PLACE A BOUND CAN COME FROM AND IT IS NOT IN THE LOG. A `pm:Claim`
+/// carries a `pm:provenance` for exactly this reason: a range over unrecorded magnitudes is
+/// somebody's stipulation, and if nobody will make it the field is `unmeasured` rather than zero.
 #[derive(Clone, Copy, Debug)]
 pub struct DeclaredAskSize {
     pub low: f64,
@@ -298,7 +298,7 @@ fn stock_and_flow(run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
         unserved,
         // ⭐⭐⭐ NOT A WIDE RANGE, AN ABSENCE. The sum above is bounded and the split is not
         // observed at all, so filing either half as a number would be inventing evidence. This
-        // is `pm:HolderShare` with `absence_reason = unmeasured` on both halves, and it is the
+        // is `pm:Holder/share` with `absence_reason = unmeasured` on both halves, and it is the
         // shape of the loss rather than its size.
         unrealised: Unmeasured,
         customer: Unmeasured,

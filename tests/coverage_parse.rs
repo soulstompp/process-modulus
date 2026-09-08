@@ -214,11 +214,10 @@ fn every_position_is_held_in_a_chart_its_own_document_declares() {
     }
 }
 
-/// ⭐⭐⭐ HOW MUCH OF THE QUESTION DOES THIS WITNESS SAY IT ANSWERS? `CoverageEntry/complete`
-/// was an `xs:boolean` — the only one in either schema — and it was the last survivor of the
-/// pattern this project has caught five times: A TWO-VALUED ENCODING SURVIVES REVIEW BECAUSE
-/// BOTH OF ITS VALUES ARE CORRECT. `true` was right, `false` was right, and nothing in a
-/// boolean field points at what it cannot say.
+/// ⭐⭐⭐ HOW MUCH OF THE QUESTION DOES THIS WITNESS SAY IT ANSWERS? As an `xs:boolean`,
+/// `CoverageEntry/complete` is the pattern this project has caught five times: A TWO-VALUED
+/// ENCODING SURVIVES REVIEW BECAUSE BOTH OF ITS VALUES ARE CORRECT. `true` is right, `false`
+/// is right, and nothing in a boolean field points at what it cannot say.
 ///
 /// ⛔ `false` WAS CARRYING TWO OPPOSITE READINGS. `none` says the question is outside this
 /// witness's subject; `partial` says it is inside and half covered. A report that merges them

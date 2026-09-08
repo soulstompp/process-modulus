@@ -198,9 +198,9 @@ fn both_members_parse_and_declare_what_they_report_under() {
 /// filings agree about a slack only when they agree about a unit. That is a real loss and it
 /// buys the ability to say `barely`.
 ///
-/// ⚠️ NOTE WHAT THIS TEST HAD TO DO TO RUN AT ALL: it pairs `labour` with `pessoal`
-/// BY HAND, because I read both documents and know they are one layer. Nothing in
-/// either file says so. That is what the composition supplies.
+/// ⚠️ NOTE WHAT THIS TEST DOES TO RUN AT ALL: it pairs `labour` with `pessoal` BY HAND,
+/// because nothing in either file says they are one layer. Only a reader of both knows it.
+/// That is what the composition supplies.
 #[test]
 fn the_contributed_vocabulary_compares_with_no_authority_at_all() {
     let (us, pt) = (load(US), load(PT));
@@ -419,7 +419,7 @@ fn joining_two_filings_on_the_facts_produces_a_false_negative() {
     // ⭐⭐⭐ AND THE PAIR THAT IS NOT ONE LAYER DIFFERS BY EXACTLY ONE FACT: THE UNIT.
     //
     // This asserted the two fingerprints were IDENTICAL, and they were, because all three
-    // slacks were `absent reason="none"` and an absence carries no unit. Stating those zeros
+    // slacks were `absent/reason = none` and an absence carries no unit. Stating those zeros
     // as claims put `GPU` and `GPU-hour` into the key, and that is not noise: it is the exact
     // obstacle `merge-holding-composition` had to bridge with a `GPU-hour per GPU` factor
     // when it did eventually fuse them.
@@ -543,7 +543,7 @@ fn fusion<'a>(c: &'a CompositionType, name: &str) -> &'a FusionType {
 
 /// The eliminations a fusion filed, or an empty slice where it filed a typed reason instead.
 ///
-/// ⛔⛔ AN EMPTY SLICE IS NOT `absent reason="none"`, AND `expected` BELOW IS WHERE THAT COSTS
+/// ⛔⛔ AN EMPTY SLICE IS NOT `absent/reason = none`, AND `expected` BELOW IS WHERE THAT COSTS
 /// SOMETHING. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Fusion/eliminations` makes a
 /// composer who checked for double counting and found none produce the same bytes as one who
 /// never looked, and the sum rule the `Elimination` type exists to make EXACT falls back to a
@@ -660,9 +660,9 @@ fn the_composition_says_which_filed_layers_are_one_layer() {
 }
 
 /// ⭐⭐⭐ THE FALSE POSITIVE, AND NOT ANSWERED BY A HEURISTIC EITHER. Two one-part fusions
-/// under two names. A fusion of one part is not degenerate: it is the composer saying
-/// "I read this layer, it fuses with nothing, I carried it through" — and `observed` is
-/// required, so they had to say why.
+/// under two names. A fusion of one part is not degenerate: it is the composer stating that
+/// they read the layer, that it fuses with nothing, and that they carried it through — and
+/// `observed` is required, so they say why.
 #[test]
 fn the_composition_tells_the_two_compute_layers_apart() {
     let c = composition();
@@ -817,8 +817,9 @@ fn expected(
     // ⛔⛔ AND THE SUSPENSION APPLIES AT THE LIST LEVEL TOO, WHICH IS THE WHOLE REASON
     // `Fusion/eliminations` IS A WRAPPER. A composer who never looked for double counting
     // owes no equation; reading their empty list as "nothing to remove" is the same clean
-    // pass on a false sum that an unsized elimination produces one level down, and it used
-    // to be unavoidable because an unchecked fusion and a checked-clean one were one shape.
+    // pass on a false sum that an unsized elimination produces one level down, and without
+    // the wrapper it is unavoidable, because an unchecked fusion and a checked-clean one are
+    // one shape.
     if let Some(a) = elimination_absence(f) {
         if a.reason == AbsenceReasonType::Unmeasured {
             return None;
@@ -835,12 +836,12 @@ fn expected(
     Some(total)
 }
 
-/// ⭐⭐⭐ THE RULE THAT COULD NOT BE WRITTEN UNTIL `Elimination` EXISTED.
+/// ⭐⭐⭐ THE RULE `Elimination` IS WHAT MAKES WRITABLE.
 ///
-/// Before it, a checker comparing a fused figure against the sum of its parts had no way
-/// to tell an elimination from an error, so the strongest thing it could report was a
-/// warning. With eliminations filed the rule is exact: `Σ parts - Σ eliminations` equals
-/// the composed claim, per quantity, and any leftover difference is a finding.
+/// Without it, a checker comparing a fused figure against the sum of its parts has no way to
+/// tell an elimination from an error, so the strongest thing it can report is a warning. With
+/// eliminations filed the rule is exact: `Σ parts - Σ eliminations` equals the composed claim,
+/// per quantity, and any leftover difference is a finding.
 ///
 /// ⛔ NOT REACHABLE BY A VALIDATOR. Both members are other documents; this test can only
 /// run at all because `resolve` above happens to hold them.
@@ -980,7 +981,7 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
 
     // ⭐⭐ THE ASYMMETRY IS A VALUE NOW AND NOT A PRESENCE, AND THAT IS THE STRONGER FORM.
     // These four are values and not slots. As `sized` / `!sized`, the two zero axes file
-    // `absent reason="none"` and the test reads which SLOT is empty. But an unsized
+    // `absent/reason = none` and the test reads which SLOT is empty. But an unsized
     // elimination in this corpus means the reconciliation is UNCOMPUTABLE -- this file says
     // so itself -- and both zeros here are reconciliations that were RUN: "payroll registers
     // checked against each other for shared national identifiers; no person appears on both",
@@ -1598,14 +1599,14 @@ fn a_converted_remainder_is_converted_and_never_re_derived() {
 
 /// ⭐⭐⭐ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? Three of this corpus's eight fusions
 /// file no elimination at all, and until `Fusion/eliminations` became a `StatedEliminations`
-/// there was no way to ask — an empty list said "we checked and the parts are disjoint" and
+/// there is no way to ask — an empty list says "the parts were checked and are disjoint" and
 /// "nobody checked" in the same bytes.
 ///
 /// ⛔⛔ AND THE TWO ANSWERS OWE DIFFERENT ARITHMETIC, WHICH IS WHAT MAKES THIS A RULE RATHER
 /// THAN A VOCABULARY. Under `none` or `notApplicable` the composed figure MUST equal the sum
 /// of its converted parts exactly, and this test performs that sum. Under `unmeasured` no
-/// equality is owed at all and `expected` returns `None`. The old empty list quietly bought
-/// the first reading for documents that had earned the second.
+/// equality is owed at all and `expected` returns `None`. An empty list in place of the
+/// wrapper quietly buys the first reading for documents that have earned the second.
 #[test]
 fn a_fusion_says_whether_anybody_looked_for_double_counting() {
     let mut exact = 0;

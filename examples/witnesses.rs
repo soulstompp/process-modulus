@@ -217,12 +217,11 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         says: "a local part names a layer this document's own stack does not contain",
     },
-    // ⭐⭐ THIS WITNESS OUTLIVED THE RULE IT WAS WRITTEN FOR. It aimed at `local_cycle`, which
-    //   retired into `layers_move_together`: the same mutation, the same document, and a rule
-    //   that now states the repair the schema actually asks for. ⛔ It could not have been
-    //   repointed while both were live, because a mutation tripping two rules shows that
-    //   something is checked and not that THIS is, and that coupling is the argument for the
-    //   retirement rather than a consequence of it.
+    // ⭐⭐ ONE MUTATION, AND ONLY ONE RULE MAY CLAIM IT. This document falsifies
+    //   `layers_move_together`, which states the repair the schema asks for: merge the layers,
+    //   or withdraw a part. ⛔ A witness cannot be aimed at a rule while a second rule fires on
+    //   the same edit, because a mutation tripping two shows that SOMETHING is checked and not
+    //   that THIS is.
     // ⭐⭐⭐ THE ONE THE GRAMMAR CANNOT REACH, AND THE MUTANT STILL VALIDATES BECAUSE OF IT.
     //   `partRegime` keyrefs the handle against `compositionRegimeId`, so flipping a part from
     //   the composer's `us` regime to its `pt` one resolves perfectly and XSD 1.0 is content.
@@ -475,9 +474,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    `jagged_layer` has no witness of its own and fires under the `layers_move_together` one:
     //    a layer composed from itself is also reachable by two paths, so the two rules cannot be
     //    separated by a single edit. That is evidence about the rule set rather than about
-    //    this file, and folding it into either column would hide it. ⚠️ It was `leaf_reached_twice`
-    //    under `local_cycle` before both retired, and the pairing survived the rename because the
-    //    entanglement is between the QUESTIONS and not between the files.
+    //    this file, and folding it into either column would hide it. ⚠️ The entanglement is
+    //    between the QUESTIONS and not between the files, so it survives any renaming of either
+    //    rule.
     let collateral_only: Vec<&&str> = all
         .iter()
         .filter(|r| !WITNESSES.iter().any(|w| w.rule == **r))
@@ -512,13 +511,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for r in &unwitnessed {
             println!("  {r}");
         }
-        // ⛔⛔⛔ THIS PARAGRAPH USED TO SAY "Both are the rules that examine NOTHING", AND IT WAS
-        //    PRINTED ON EVERY RUN LONG AFTER IT STOPPED BEING TRUE. Two rules were added whose
-        //    populations are real, so the list grew to four and the sentence went on asserting
-        //    two, and a claim in prose beside the data that contradicts it is worse than no claim
-        //    at all. ⭐ It is DERIVED now: a rule with no witness because nothing can falsify it
-        //    and a rule with no witness because nobody wrote one are DIFFERENT FACTS, and
-        //    collapsing them is the flattening this repository exists to refuse.
+        // ⛔⛔⛔ THIS PARAGRAPH IS DERIVED AND NEVER WRITTEN OUT. A sentence like "both of these
+        //    examine NOTHING" is printed on every run whatever the list beside it holds, so it
+        //    goes on asserting two while the list grows to four, and a claim in prose beside
+        //    data that contradicts it is worse than no claim at all. ⭐ And the split is the
+        //    point: a rule with no witness because nothing can falsify it and a rule with no
+        //    witness because nobody wrote one are DIFFERENT FACTS, and collapsing them is the
+        //    flattening this repository exists to refuse.
         let empty: Vec<&&&str> =
             unwitnessed.iter().filter(|r| examined.get(***r).copied().unwrap_or(0) == 0).collect();
         let unwritten: Vec<&&&str> =

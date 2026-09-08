@@ -17,7 +17,7 @@
 //!
 //! ⛔ THE SECOND ASSERTION IS THE ONE THAT MATTERS MOST. Every set difference in `assets/sqlc/`
 //! must appear on `algebra/roster.sqlc`. A difference nobody declared a law for is
-//! `asrt:Verdict`'s `unclaimed`, a guard we believe is there and have never once checked.
+//! `asrt:Verdict`'s `unclaimed`, a guard believed to be there and never once checked.
 //!
 //! Run it with a loaded database:
 //!
@@ -182,7 +182,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // ⛔⛔⛔ `unclaimed` IS asrt:Verdict's OWN WORD FOR THIS, and it is the verdict the run record
-    //     calls the most valuable line: a guard we believed was there and never once checked.
+    //     calls the most valuable line: a guard believed to be there and never once checked.
     //     A difference added without a law is exactly that, and it is silent in every other test.
     assert!(
         unclaimed.is_empty(),

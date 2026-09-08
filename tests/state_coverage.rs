@@ -2,10 +2,10 @@
 //!
 //! `pm:AbsenceReason` is a closed set of four applied at eleven wrapper types, so the two
 //! schemas admit roughly fifty (site, state) pairs. Asking which of them any document has ever
-//! filed produced the finding that started this file: **eight of nine wrappers had dark
-//! states, and it predated the Pattern 1 cleanup entirely.** `StatedFit` was the worst —
-//! twenty-one values and not one absence, in the wrapper whose annotation spends four
-//! paragraphs defending its own existence.
+//! filed is the question this file exists to ask, and the first answer was **eight of nine
+//! wrappers with dark states**. `StatedFit` is the sharpest case: twenty-one values and not
+//! one absence, in the wrapper whose annotation spends four paragraphs defending its own
+//! existence.
 //!
 //! ⛔⛔ A DARK STATE IS NOT AUTOMATICALLY A DEFECT, WHICH IS WHY THIS IS A TABLE AND NOT A
 //! COVERAGE PERCENTAGE. Three things a cell can be, and conflating them is how a coverage
@@ -46,8 +46,8 @@ enum Verdict {
     /// ⭐⭐ THE BUDGET IS TWO, ENFORCED BELOW, AND THAT IS WHAT MAKES THIS ARM HONEST RATHER
     /// THAN A PARKING SPACE. Every other state either has a document filing it or has an
     /// argument here for why it means nothing. Removing this arm would leave the next dark
-    /// state nowhere to be recorded except a reviewer's memory, which is where the eight of
-    /// them found by this pass had been living — but leaving it UNCAPPED would let the next
+    /// state nowhere to be recorded except a reviewer's memory, which is where a dark state
+    /// lives when no table admits it — but leaving it UNCAPPED would let the next
     /// one be recorded and never settled, which is the same failure wearing a label.
     Open(&'static str),
 }
@@ -80,7 +80,7 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
              would be computing a claim about a person",
         )),
         // ⛔⛔⛔ THERE IS NO `window` / `RNone` CELL, AND ITS DELETION IS THE POINT.
-        // `absent reason="none"` here meant "the duty fraction is one", which is a VALUE and
+        // `absent/reason = none` here meant "the duty fraction is one", which is a VALUE and
         // not a nothing: it has a size and, in `LumpyQuantum/origin`, an author who could
         // change it. A line that cannot be stopped and a line somebody staffed round the
         // clock filed identically and neither said which it was. `window` is a
@@ -104,11 +104,11 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         // waited." ⛔ AND IT IS THE `none` THAT SURVIVES THE SWEEP THAT DELETED TWO OTHERS.
         // The test is whether the value arm has a NAMED STATE for the degenerate case:
         // `Fit` names the zero remainder (`clearance`), and a window of one whole period
-        // names the duty fraction of one, so `none` was a second door at both. An absorber
+        // names the duty fraction of one, so `none` would be a second door at both. An absorber
         // names WHICH of three buffers took it, and choosing none of three is a genuine empty
         // selection with no size and no origin to lose.
         ("absorber", RNone, Exercised),
-        // ---- the wrappers that were already here, and were never measured ----
+        // ---- the wrappers a value-arm audit reaches and an absence audit does not ----
         // ⛔ NO `RNone` CELL HERE EITHER, FOR THE SAME REASON ONE LEVEL UP. "There is no
         // remainder" reads either "nothing to subtract from" or "the remainder is zero", and
         // a remainder of zero is a CLEARANCE FIT carrying [0, 0, 0] and a sign, which `Fit`
@@ -138,12 +138,12 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
              CHOSE, and a holder is an observation somebody MADE. No arrangement of figures \
              implies either",
         )),
-        // ⭐⭐⭐ THE CELL IS GONE AND THE ARGUMENT IT CARRIED IS WHY. It said `none` was doing
-        // the missing third member's job: a demand of [3,4,5] against a nameplate of 4 is a
-        // TRANSITION fit, which the value arm names, so the absence was a second door to a
-        // filed answer. That argument was right and lived only here and in the annotation
-        // while the grammar admitted the state for revisions. `StatedFit` takes a
-        // `pm:ClaimAbsence` now, so there is no cell because there is no state.
+        // ⭐⭐⭐ THERE IS NO CELL HERE BECAUSE THERE IS NO STATE, AND THE ARGUMENT IS WHY.
+        // `none` on a fit does the missing third member's job: a demand of [3,4,5] against a
+        // nameplate of 4 is a TRANSITION fit, which the value arm names, so the absence is a
+        // second door to a filed answer. ⛔ An argument that lives only in a table and an
+        // annotation while the grammar admits the state is a refusal nothing enforces;
+        // `StatedFit` takes a `pm:ClaimAbsence`, which is the grammar saying it.
         // ⛔ FOUND BY A BIT MASK, not by reading. Fold `epistemics/absences.sqlc` to one row
         // per site and the reasons become a four-bit word; every site that admits `none`
         // showed `n` except two, and this was one of them: admitted, refused in prose, filed
@@ -179,15 +179,14 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("StatedNarrowing", Unmeasured, Exercised),
         ("StatedNarrowing", NotApplicable, Exercised),
         // ---- the two that arrived with local composition ----
-        // ---- ⭐⭐⭐ THE FOUR WRAPPERS THAT WERE NEVER IN FRAME ----
+        // ---- ⭐⭐⭐ THE FOUR WRAPPERS AN ANNOTATION AUDIT DOES NOT REACH ----
         //
         // Every cell below is `Exercised` and not one of them is a judgement call: each is a
-        // state some document in `assets/` actually files, counted by a walker that until now
-        // read what was INSIDE a claim and never the claim's own absence. The pass that built
-        // this table audited the wrappers that had ARGUMENTS to audit, and `StatedClaim`,
-        // `StatedHolder` and `StatedBasis` carry no annotation at all -- three bare
-        // `xs:choice` types with nothing to read. That is why the most reused wrapper in the
-        // schema had no row here.
+        // state some document in `assets/` actually files. ⛔ A walker that reads what is
+        // INSIDE a claim and never the claim's own absence misses all four, and so does an
+        // audit driven by annotations: `StatedClaim`, `StatedHolder` and `StatedBasis` carry
+        // no annotation at all -- three bare `xs:choice` types with nothing to read. The most
+        // reused wrapper in the schema is exactly the one with no argument to audit.
         ("amount", NotApplicable, Exercised),
         ("amount", Unmeasured, Exercised),
         ("patience", Unmeasured, Exercised),
@@ -205,8 +204,8 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("remainder quantity", Unmeasured, Exercised),
         ("remainder quantity", Derived, Exercised),
         ("premium", Unmeasured, Exercised),
-        // `StatedBasis` and `StatedBorrowedTerm`: the two that reach neither the database nor,
-        // until now, this table. `measurementBasis` is `notApplicable` 35 times because the
+        // `StatedBasis` and `StatedBorrowedTerm`: the two that reach no table in the database,
+        // so this is the only place they are counted. `measurementBasis` is `notApplicable` 35 times because the
         // quantity is physical -- a deliberate state `enterprise-contract` argues in its header.
         ("measurementBasis", NotApplicable, Exercised),
         ("standing", Unmeasured, Exercised),
@@ -291,12 +290,11 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         // spots are written down, which is the whole reason it carries an argument rather than
         // a flag.
         ("StatedNarrowing", Derived, Exercised),
-        // ⭐⭐ NEW ON 2026-09-06, AND THE STATE EXISTED ALL ALONG WITH NOTHING IN IT.
-        // `Coupling/strength` was an OPTIONAL `pm:StatedClaim`, which is two ways to say
-        // nothing: the corpus omitted the element twice and filed this typed absence never.
-        // The element is required now and the wrapper carries the absence, so a coupling
-        // whose direction is on the routing logs and whose magnitude is on nobody's says so
-        // in the one word that means it.
+        // ⭐⭐ AN OPTIONAL `pm:StatedClaim` IS TWO WAYS TO SAY NOTHING, and a corpus given the
+        // choice omits the element and never files the typed absence. `Coupling/strength` is
+        // REQUIRED and the wrapper carries the absence, so a coupling whose direction is on
+        // the routing logs and whose magnitude is on nobody's says so in the one word that
+        // means it.
         ("strength", Unmeasured, Exercised),
     ]
 }
@@ -477,7 +475,7 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
         }
 
         // ⛔⛔ THE WRAPPER AND WHAT IS INSIDE IT ARE TWO QUESTIONS, AND ONLY THE SECOND WAS EVER
-        // ASKED. `absent reason="unmeasured"` on a `capacitySlack` says nobody measured the
+        // ASKED. `absent/reason = unmeasured` on a `capacitySlack` says nobody measured the
         // headroom; a `boundOrigin` absence INSIDE a stated one says nobody owns its edge.
         // Reading only the second answers a question about edges on a corpus that never filed
         // the quantity.
@@ -619,8 +617,8 @@ fn every_admitted_state_has_a_verdict_and_the_documents_agree_with_it() {
     }
 }
 
-/// The three `Claimed` values, and the one that had no encoding until `CoverageEntry/complete`
-/// stopped being an `xs:boolean`.
+/// The three `Claimed` values, the third of which an `xs:boolean` `CoverageEntry/complete`
+/// has no encoding for.
 ///
 /// ⚠️ `partial` is exercised ONLY by a fixture, and that is deliberate rather than a shortfall.
 /// A coverage entry is a witness's own claim about what its framework does; writing `partial`
@@ -652,9 +650,9 @@ fn every_claimed_value_is_filed_somewhere() {
 // ⛔⛔⛔ THE LOOP THIS FILE COULD NOT CLOSE, AND THE ONE IT EXISTS TO CLOSE FOR EVERYTHING ELSE.
 //
 // The table above asserts, in prose, that "adding a wrapper to either schema and not adding it
-// here leaves its states unmeasured". Nothing enforced it. The site list was a Rust literal
-// checked only against the tally it produced itself, so a wrapper that was never in frame was
-// indistinguishable from one with no dark states, and FOUR of the sixteen never were.
+// here leaves its states unmeasured". ⛔ A site list checked only against the tally it produces
+// itself enforces nothing: a wrapper never in frame is then indistinguishable from one with no
+// dark states, and four of sixteen sit in exactly that position.
 //
 // ⭐⭐ THE PATTERN IS ALREADY IN THIS DIRECTORY, TWICE. `tests/translation.rs` reads the schemas
 // and asserts its declared list is what is on disk, in BOTH directions.
@@ -740,8 +738,7 @@ fn wrappers_in(src: &str) -> BTreeSet<String> {
 
 /// ⛔⛔⛔ ADDING A WRAPPER TO EITHER SCHEMA AND NOT ADDING IT HERE NOW FAILS THE BUILD.
 ///
-/// That sentence was the table's claim about itself from the day it was written, and this is
-/// the first thing that holds it to it.
+/// That sentence is the table's claim about itself, and this is what holds it to it.
 #[test]
 fn every_wrapper_that_admits_an_absence_is_accounted_for() {
     let mut on_disk = BTreeSet::new();

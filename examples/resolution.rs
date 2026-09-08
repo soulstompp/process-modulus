@@ -16,7 +16,7 @@
 //!
 //! ⭐⭐ AND THE TWO LOSSES ARE NOT THE SAME SPECIES, WHICH IS THE FINDING THIS PRINTS. Dropping the
 //! magnitude of a refusal widens a bound and keeps the truth inside it, so the field is still
-//! filed, as a range, with `pm:narrowingKind = instrument`. Losing the ability to tell one unserved
+//! filed, as a range, with `pm:Narrowing/kind = instrument`. Losing the ability to tell one unserved
 //! holder from another pins their SUM and leaves the split free, which no range can express: it is
 //! a face of the holder simplex and it has to be filed as `unmeasured` on both halves.
 
@@ -29,8 +29,8 @@ use simulation::window::{Run, queued_settings, run, short_settings, slack_settin
 
 /// ⭐ THE BOUND IS A STIPULATION AND IT HAS AN AUTHOR. Nothing in a stock-and-flow log says how
 /// big an unrecorded ask was. Somebody has to be willing to say "no order here is smaller than one
-/// or larger than six", which in the schema is a `pm:Estimate` and carries a name. Withhold it and
-/// the field is not a wide range, it is absent.
+/// or larger than six", which in the schema is a `pm:Claim` whose `pm:provenance` carries a
+/// name. Withhold it and the field is not a wide range, it is absent.
 const DECLARED: DeclaredAskSize = DeclaredAskSize {
     low: 1.0,
     high: 6.0,
@@ -178,7 +178,7 @@ fn report(name: &str, outcome: &Run) -> usize {
         cap = match b.capacity {
             Some(c) => format!("{c:.0}"),
             // ⭐ NOT ZERO. There is no branch in the line that makes a lot early, so the buffer
-            //    is absent rather than empty, which is `pm:absence_reason = notApplicable`.
+            //    is absent rather than empty, which is `pm:absent/reason = notApplicable`.
             None => "notApplicable".to_string(),
         },
         t = b.time_high.as_secs(),

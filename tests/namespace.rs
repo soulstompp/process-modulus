@@ -328,9 +328,9 @@ fn schema_version(src: &str, what: &str) -> (u32, u32) {
 /// `process-modulus 0.1.x` is entitled to assume it renders schema 0.1.x. The patch digit is
 /// the crate's own: a codegen fix or a new test moves it and the schema does not.
 ///
-/// ⚠️ THREE PLACES DECLARED A VERSION AND ALL THREE DISAGREED when this was written.
-/// `xs:schema/@version` said `0.1.0`, `Cargo.toml` said `0.0.1`, and the namespace URI ends
-/// `/1.0`. The first two are locked here. The third is deliberately NOT, because a namespace
+/// ⚠️ THREE PLACES DECLARE A VERSION AND NOTHING BUT THIS HOLDS THEM TOGETHER.
+/// `xs:schema/@version`, `Cargo.toml`, and the namespace URI ending `/1.0`, which have
+/// disagreed all three ways. The first two are locked here. The third is deliberately NOT, because a namespace
 /// URI answers a different question — by convention it changes only when documents written
 /// against the old one stop being valid, which is why BPMN's has been a fixed date since 2010.
 /// Deciding what this model's URI carries is a live question and belongs with settling the
@@ -423,5 +423,157 @@ fn every_corpus_document_is_ingested_by_the_sql() {
         missing.is_empty(),
         "these corpus documents are not read by assets/sql/ingest.sql, so every rule in \
          rules.sql silently skips them: {missing:?}"
+    );
+}
+
+// ── A qualified name in prose is a pointer, and a pointer is followed ──────────────────────
+
+/// Every name a schema DECLARES, and is therefore reachable as `pm:` or `asrt:`: elements and
+/// types, plus the identity constraints a `refer=` points at.
+///
+/// ⭐ `elementFormDefault="qualified"` on both schemas is what puts a LOCAL element in its
+/// schema's namespace too, so `pm:absent` is a name even though `absent` is declared four
+/// levels down inside another type.
+fn declared(schema: &str) -> Vec<&str> {
+    let mut out = Vec::new();
+    for kind in [
+        "<xs:element name=\"",
+        "<xs:complexType name=\"",
+        "<xs:simpleType name=\"",
+        "<xs:group name=\"",
+        "<xs:attributeGroup name=\"",
+        "<xs:key name=\"",
+        "<xs:keyref name=\"",
+        "<xs:unique name=\"",
+    ] {
+        let mut rest = schema;
+        while let Some(i) = rest.find(kind) {
+            rest = &rest[i + kind.len()..];
+            let end = rest.find('"').expect("unterminated name");
+            out.push(&rest[..end]);
+        }
+    }
+    out
+}
+
+/// Every prefixed schema name written in `body`, with the line it sits on.
+fn qualified_names(body: &str) -> Vec<(usize, &str, &str)> {
+    let bytes = body.as_bytes();
+    let mut out = Vec::new();
+    for prefix in ["pm:", "asrt:"] {
+        let mut at = 0usize;
+        while let Some(i) = body[at..].find(prefix) {
+            let start = at + i;
+            at = start + prefix.len();
+            // `xmlns:pm` and `Xpm:` are not references; a leading `/` or `<` is.
+            let before = bytes[..start].iter().rev().next().copied().unwrap_or(b' ');
+            if before.is_ascii_alphanumeric() || before == b'_' {
+                continue;
+            }
+            let name = &body[at..];
+            let len = name
+                .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+                .unwrap_or(name.len());
+            if len == 0 || !name.as_bytes()[0].is_ascii_alphabetic() {
+                continue;
+            }
+            let line = body[..start].matches('\n').count() + 1;
+            out.push((line, prefix.trim_end_matches(':'), &name[..len]));
+        }
+    }
+    out
+}
+
+/// Every tracked file whose prose points at the schemas, under the roots that carry argument.
+///
+/// ⛔ `assets/sql/` is deliberately out: it is generated from `assets/sqlc/`, so a finding
+/// there is the same finding twice and it names the copy nobody edits.
+fn files_that_cite_the_schemas() -> Vec<String> {
+    fn walk(dir: &str, out: &mut Vec<String>) {
+        let entries = match fs::read_dir(dir) {
+            Ok(e) => e,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let name = entry.file_name().to_string_lossy().into_owned();
+            if path.is_dir() {
+                if name != "plans" && name != "sql" && name != "target" {
+                    walk(&path.to_string_lossy(), out);
+                }
+            } else if ["sqlc", "rs", "md", "ddl", "xsd"]
+                .contains(&path.extension().unwrap_or_default().to_string_lossy().as_ref())
+            {
+                out.push(path.to_string_lossy().into_owned());
+            }
+        }
+    }
+    let root = env!("CARGO_MANIFEST_DIR");
+    let mut out = Vec::new();
+    for sub in [
+        "assets/sqlc", "assets/ddl", "assets/fixtures", "conformance", "docs", "examples",
+        "schema", "src", "tests",
+    ] {
+        walk(&format!("{root}/{sub}"), &mut out);
+    }
+    for top in ["README.md", "README.pt.md", "build.rs"] {
+        out.push(format!("{root}/{top}"));
+    }
+    out.sort();
+    out
+}
+
+/// A `--` line, a `#` header and a doc comment all name schema elements so that a reader can go
+/// and read them. A name that resolves to nothing sends them looking for an element that is not
+/// there, and the two namespaces make that easy: `Part`, `Fusion` and `Composition` live in
+/// `assertion.xsd`, and every type they compose lives in `process-modulus.xsd`.
+///
+/// ⭐⭐ IT ALSO HOLDS THE CASE, which carries a fact: a capital is a TYPE and a lowercase is an
+/// ELEMENT. The absence wrapper is the element `pm:absent`, of type `pm:Absence`, so the
+/// capitalised spelling of the element is neither and a reader who greps for it finds nothing.
+///
+/// ⛔ AND IT REACHES THE XPath IN `ingest.sqlc`, which is the one place a wrong name is not
+/// merely misleading: `PATH 'pm:demand/pm:amount'` that names an element the schema does not
+/// declare extracts NULL from every document and the load still succeeds.
+#[test]
+fn every_qualified_name_in_the_prose_is_one_a_schema_declares() {
+    let base = declared(BASE);
+    let assertion = declared(ASSERTION);
+    assert!(
+        base.len() > 100 && assertion.len() > 40,
+        "only {} and {} names were read out of the schemas, so the declaration syntax moved and \
+         this test is now checking every pointer against almost nothing",
+        base.len(),
+        assertion.len()
+    );
+
+    let root = env!("CARGO_MANIFEST_DIR");
+    let mut dangling: Vec<String> = Vec::new();
+    for path in files_that_cite_the_schemas() {
+        let body = match fs::read_to_string(&path) {
+            Ok(b) => b,
+            Err(_) => continue,
+        };
+        let short = path.strip_prefix(root).unwrap_or(&path).trim_start_matches('/');
+        for (line, prefix, name) in qualified_names(&body) {
+            let known = if prefix == "pm" { &base } else { &assertion };
+            if !known.contains(&name) {
+                let elsewhere = if prefix == "pm" { &assertion } else { &base };
+                let hint = if elsewhere.contains(&name) {
+                    let other = if prefix == "pm" { "asrt" } else { "pm" };
+                    format!(" (it is `{other}:{name}`)")
+                } else {
+                    String::new()
+                };
+                dangling.push(format!("{short}:{line} `{prefix}:{name}`{hint}"));
+            }
+        }
+    }
+
+    assert!(
+        dangling.is_empty(),
+        "these point at schema names that do not exist, so a reader who follows one finds \
+         nothing:\n  {}",
+        dangling.join("\n  ")
     );
 }

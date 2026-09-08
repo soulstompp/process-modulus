@@ -230,9 +230,9 @@ fn a_checked_search_owes_an_exact_sum_and_an_unchecked_one_owes_nothing() {
 /// This is the same rule, on the same code path, reporting that a broken one is not — and the
 /// document is broken IN MEMORY, so nothing on disk changes and nothing has to be restored.
 ///
-/// ⭐⭐ IT REPLACES A RITUAL. Until now "proved able to fail" meant somebody copied a corpus
-/// file to a scratchpad, edited it, ran the suite, read the failure and copied the file back.
-/// That is a real proof and it runs exactly once, in one person's terminal, and leaves behind
+/// ⭐⭐ IT REPLACES A RITUAL. "Proved able to fail" otherwise means somebody copies a corpus
+/// file to a scratchpad, edits it, runs the suite, reads the failure and copies the file back.
+/// That is a real proof, and it runs exactly once, in one person's terminal, and leaves behind
 /// a sentence in a findings file. This runs on every build.
 #[test]
 fn the_sum_rule_rejects_a_fusion_that_does_not_reconcile() {
@@ -276,10 +276,10 @@ fn the_sum_rule_rejects_a_fusion_that_does_not_reconcile() {
 /// fusion's SEARCH RESULT and nothing else — same parts, same figures, same prose — and the
 /// arithmetic a checker owes changes.
 ///
-/// ⭐⭐⭐ THAT IS THE PROOF THE WRAPPER WAS LOAD-BEARING RATHER THAN VOCABULARY. Under the old
-/// `minOccurs="0" maxOccurs="unbounded"` these two documents were BYTE-IDENTICAL, so no test
-/// like this could be written: there was one document and one verdict. Now there are two of
-/// each, and this test fails if a future refactor collapses them back.
+/// ⭐⭐⭐ THAT IS THE PROOF THE WRAPPER IS LOAD-BEARING RATHER THAN VOCABULARY. Under a bare
+/// `minOccurs="0" maxOccurs="unbounded"` these two documents are BYTE-IDENTICAL, so no test
+/// like this can be written: one document, one verdict. The wrapper makes two of each, and
+/// this test fails if a refactor collapses them back.
 #[test]
 fn the_same_figures_owe_different_arithmetic_under_a_different_search() {
     let (m, c) = (members(), composition());
@@ -325,7 +325,7 @@ fn the_same_figures_owe_different_arithmetic_under_a_different_search() {
 /// sentence became a stipulation, and a Portuguese fixture had to announce itself in English.
 ///
 /// ⛔⛔ `every-draft.xml` IS THE ONE EXCEPTION AND IT IS THE ENTIRE POINT OF THAT FILE. It
-/// files `absent reason="unmeasured"` deliberately, because the state a first-time adopter's
+/// files `absent/reason = unmeasured` deliberately, because the state a first-time adopter's
 /// document is really in is "nobody has said", and `tests/state_coverage.rs` can only call
 /// that state Exercised if some document is in it. The comment still announces the file, so a
 /// human is never misled; the element declines to, so a machine is never made to guess.
@@ -371,12 +371,12 @@ fn every_fixture_declares_that_it_is_a_stipulation() {
 /// own composition's is a LOCAL part — there is no second kind of part, no new element, and
 /// the distinction is a string comparison against the filing's own name.
 ///
-/// ⚠️ I proposed a new relation peer to `Fusion` for this, and two more refusals that were not
-/// refusals. The whole of it was one missing self-identifier.
+/// ⚠️ IT LOOKS LIKE IT NEEDS A NEW RELATION PEER TO `Fusion`, AND IT DOES NOT. The whole of it
+/// is one self-identifier: a filing that says which filing it is.
 #[test]
 fn a_composer_builds_a_layer_out_of_two_layers_they_built() {
     let c = local();
-    let me = notation(&c.process_modulus).expect("this fixture names itself");
+    let own = notation(&c.process_modulus).expect("this fixture names itself");
 
     let kind = |name: &str| -> Vec<bool> {
         c.fusion
@@ -385,7 +385,7 @@ fn a_composer_builds_a_layer_out_of_two_layers_they_built() {
             .unwrap_or_else(|| panic!("no fusion `{name}`"))
             .part
             .iter()
-            .map(|p| p.layer.filing.notation == me)
+            .map(|p| p.layer.filing.notation == own)
             .collect()
     };
 
@@ -450,8 +450,8 @@ fn two_views_of_one_number_reconcile_under_the_unmodified_sum_rule() {
         // ⭐ The elimination is ONE WHOLE COPY, at every bound — not a point. `Elimination`
         // subtracts component-wise because it removes "a COMPONENT OF THE VERY FIGURE IT IS
         // REMOVED FROM", and for two views of one quantity that is exact: the removed copy IS
-        // the figure, so it moves with it. Getting this wrong was the first mistake the
-        // fixture caught, in the hand that wrote it.
+        // the figure, so it moves with it. ⛔ Subtracting a point here is the easiest way to
+        // get it wrong, and this fixture is what catches that.
         let e = both
             .eliminations
             .content

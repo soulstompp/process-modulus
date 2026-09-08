@@ -5,10 +5,10 @@
 //!, because a relation whose product is knowledge rather than a verdict had nowhere to land,
 //! and so either never got written or got written and read by nobody.
 //!
-//! ⭐⭐⭐ EVERY NUMBER A COMMENT IN THIS REPOSITORY QUOTES SHOULD BE PRINTED BY A PROGRAM. Four
-//! were not, and all four had drifted: the capacity-slack coverage in two places, the template
-//! count, and the refusal count in `epistemics/standing.sqlc`'s own header. None of the authors
-//! was wrong when they wrote it. The corpus moved and the sentences did not.
+//! ⭐⭐⭐ EVERY NUMBER A COMMENT IN THIS REPOSITORY QUOTES SHOULD BE PRINTED BY A PROGRAM. A
+//! figure written into a header is correct on the day it is written and answers to nothing
+//! afterwards: the corpus moves and the sentence does not. This is where the ones that would
+//! otherwise sit in prose get printed.
 //!
 //! ⛔⛔ THE TEETH ARE ON THE UNASKED QUESTION, NEVER ON THE ANSWER. Two assertions:
 //! that no relation and no document is reached by nothing, and that every remainder has had
@@ -324,12 +324,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("      {:<20} {:>3}", d.answer, d.times);
     }
 
-    // ⭐⭐⭐ THE EVIDENCE FOR AN ELIMINATION, WHICH THIS DATABASE COULD NOT STORE UNTIL
-    //    2026-09-06. `asrt:Elimination/between` is repeating and no rule read it, so it had no
-    //    column, no table and no ingest, and eight of them were parsed out of the corpus and
-    //    thrown away on every load. Nothing on the query side could find that: a rule reads what
-    //    it needs, so a field nothing reads is under no pressure to exist. The question that
-    //    finds it is "could I write this document back out from what I stored".
+    // ⭐⭐⭐ THE EVIDENCE FOR AN ELIMINATION, AND THE ONLY DIRECTION THAT FINDS A MISSING ONE.
+    //    `asrt:Elimination/between` is repeating and no rule reads it, so nothing puts it under
+    //    pressure to have a column, a table or an ingest, and eight filed instances are parsed
+    //    out of the corpus and thrown away on every load. The query side cannot find that: a
+    //    rule reads what it needs, so a field nothing reads is under no pressure to exist. The
+    //    question that finds it is "can this document be written back out from what is stored".
     let evidence =
         sqlx::query_file!("assets/sql/queries/observations/10-elimination-evidence.sql")
             .fetch_all(&pool)
@@ -508,8 +508,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    the split between the words carrying `n` and the words not carrying it is the
     //    `pm:Absence` / `pm:ClaimAbsence` boundary, printed from the data instead of read off
     //    the grammar. A question on the wrong side of it is a defect, and one was: `StatedFit`
-    //    admitted `none` for revisions while `remainder sign` never once took it, and its own
-    //    annotation had been refusing the state in prose the whole time.
+    //    admits `none` in the grammar while `remainder sign` never once takes it, and its own
+    //    annotation refuses the state in prose.
     let masks = sqlx::query_file!("assets/sql/queries/observations/12-state-masks.sql")
         .fetch_all(&pool)
         .await?;

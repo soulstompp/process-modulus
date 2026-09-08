@@ -148,10 +148,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // ⭐⭐ THE CENSUS, AND WHY IT IS PRINTED RATHER THAN COUNTED. `docs/linear-algebra.md`
-    // quotes these figures, and until this section existed they were maintained by reading
-    // the XML and counting. They drifted, twice, and the second time took an afternoon to
-    // notice. The rows the assertion above already ran on are the same rows the note needs,
-    // so the note's numbers come from here or they are somebody's recollection.
+    // quotes these figures. Maintained by reading the XML and counting, they are numbers
+    // nobody recounts. The rows the assertion above already ran on are the same rows the note
+    // needs, so the note's numbers come from here or they are somebody's recollection.
     let mut census: BTreeMap<(&str, &str), usize> = BTreeMap::new();
     for row in &rows {
         *census

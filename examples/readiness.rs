@@ -129,10 +129,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   ⛔ [{}] {}: {}", d.contract, d.problem, d.subject);
     }
 
-    // ⛔⛔⛔ THE ASSERTION THIS EXAMPLE EXISTS FOR. `layers/drawn.sqlc` was missing for months
-    //     because nothing held a list of the places this model combines two magnitudes, so a
-    //     missing one was not a failure, it was a silence. A tenth site added without a
-    //     roster row, or a roster row added without a relation, now fails here.
+    // ⛔⛔⛔ THE ASSERTION THIS EXAMPLE EXISTS FOR. With nothing holding a list of the places
+    //     this model combines two magnitudes, a missing site is not a failure, it is a
+    //     silence. A tenth site added without a roster row, or a roster row added without a
+    //     relation, fails here.
     //
     // ⭐ It covers the conformance and algebra rosters too, because reports/integrity.sqlc
     //   checks every contract in one pass. A readiness report that passed while the rule

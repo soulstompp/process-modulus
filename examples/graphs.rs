@@ -27,10 +27,10 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::fs;
 
-/// ⛔ THIS PROGRAM OWNS THIS DIRECTORY. It used to write into `assets/bpmn/` beside
-/// `examples/diagramming.rs`, which WIPES what it owns, so these three documents survived only
-/// when that example happened to run first. It also never created the directory, so it depended
-/// on the other program having run at all.
+/// ⛔ THIS PROGRAM OWNS THIS DIRECTORY, AND CREATES IT. Writing into `assets/bpmn/` beside
+/// `examples/diagramming.rs`, which WIPES what it owns, leaves these three documents surviving
+/// only when that example runs first, and leaves this one depending on the other having run at
+/// all.
 const OUT: &str = "assets/bpmn/graphs";
 
 /// Every row set this program serializes, in a total order that is a function of the ROWS.
@@ -80,8 +80,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("THE THREE GRAPHS, AS LANE SETS OF ONE POOL\n");
     // ⛔ WIPED, and only this program's own subdirectory. A stale document is a claim about a
     //   model that has moved, and wiping a directory ANOTHER program also writes is how these
-    //   three used to vanish: `examples/diagramming.rs` wiped the shared parent, so they
-    //   survived only when this example happened to run second.
+    //   three vanish: `examples/diagramming.rs` wipes a shared parent, leaving them only when
+    //   this example runs second.
     if std::path::Path::new(OUT).exists() {
         fs::remove_dir_all(OUT)?;
     }
