@@ -19,16 +19,16 @@
 #    NEGOTIATED EDGE on it, and `boundOrigin` is where an edge says whose it is. Reading the
 #    two together is the difference between renegotiating a term and measuring again.
 #
-# ⛔ ZERO PATIENCE IS A CLAIM OF ZERO, NEVER `absent reason="none"`. Demand that leaves the
+# ⛔ ZERO PATIENCE IS A CLAIM OF ZERO, NEVER `absent/reason = none`. Demand that leaves the
 #   moment it is not served has a patience of zero, and a measured zero is a claim: `patience`
 #   is a `pm:StatedClaim`, whose absent arm carries `pm:ClaimAbsenceReason`, and that type has
 #   no `none`. So `patience_absent` can honestly hold three reasons and not four. The validator
 #   refuses the fourth and `a_patience_absence_has_no_none` refuses it again on the way in.
 #
-# ⚠️ AND THE RETIRED SPELLING IS WHY THE ELEMENT EXISTS. `merge-group-composition`'s `on-call`
-#   layer "does not survive being held at all", and before there was a patience that fact had
-#   nowhere to go but the time slack's `absent reason="none"`, which is exactly where it sat.
-#   It is a `timeSlack` of [0, 0, 0] now. ⭐ Its patience is still `unmeasured`, and the gap
+# ⚠️ AND THE SPELLING IT REPLACES IS WHY THE ELEMENT EXISTS. `merge-group-composition`'s `on-call`
+#   layer "does not survive being held at all", and with no patience element that fact has
+#   nowhere to go but the time slack's `absent/reason = none`, which is a different claim. It
+#   is a `timeSlack` of [0, 0, 0] and a patience beside it. ⭐ Its patience is still `unmeasured`, and the gap
 #   between the two is worth a query: a slack of zero is a buffer nobody funded, a patience of
 #   zero is demand that would not use one even if somebody did.
 -- pm:Demand/pm:patience, beside the demand it qualifies.

@@ -1,4 +1,4 @@
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -45,10 +45,10 @@ LEFT JOIN (
                             j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -77,7 +77,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -106,7 +106,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -131,7 +131,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -142,7 +142,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -194,7 +194,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -218,7 +218,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -229,7 +229,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -281,7 +281,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

@@ -9,7 +9,7 @@
 # ⚠️ AN UNMEASURED CAPACITY SLACK SUSPENDS THE BOUND RATHER THAN ZEROING IT. A nameplate is
 #   not a ceiling until somebody says the buffer is empty; layers/drawn.sqlc leaves the column
 #   NULL for exactly that reason and this relation reports the six layers it happens to.
--- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

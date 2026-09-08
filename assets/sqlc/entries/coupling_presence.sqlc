@@ -12,9 +12,9 @@
 #    a claim about the evidence, and a fixture that asserts independence on purpose would
 #    answer it with a yes nobody earned. `matrices.sql` asks it of EVERY filing, because it is
 #    a tour of what the matrix cannot express and the stipulations demonstrate that best.
-#    ⛔ This relation was written twice, once in each of those files, with identical joins and
-#      different scopes. That is how two copies of one relation start.
--- pm:Stack/pm:couplings against pm:Couplings/pm:absent, over a scope the caller names.
+#    ⛔ Written into each of those files instead, it is one relation with identical joins and
+#      two scopes. That is how two copies of one relation start.
+-- pm:Stack/pm:couplings against pm:couplings/pm:absent, over a scope the caller names.
 SELECT f.filing,
        count(c.filing) AS couplings_filed,
        s.answer        AS search_answer

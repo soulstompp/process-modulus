@@ -11,8 +11,8 @@
 #    PREDICATE. A point nameplate equal to a point demand is `r = 0`, and `Fit` settles that
 #    case in prose: "IT IS A CLEARANCE FIT, which is ISO 286's own answer for the line-to-line
 #    case, where minimum clearance is zero." A clearance is a REMAINDER, filed with a sign and
-#    a quantity of [0, 0, 0]. Exempting it let the wrapper's absence stand in for a filing the
-#    schema had already decided, and it was the last place `none` on a remainder could hide.
+#    a quantity of [0, 0, 0]. Exempting it lets the wrapper's absence stand in for a filing the
+#    schema has already decided, which is the last place `none` on a remainder can hide.
 #
 # ⭐ `derived` IS THE ONE DENIAL A STATED PAIR DOES NOT CONTRADICT, and that is what the word
 #   means: "this is an OUTPUT, computed from other elements ... the receiver computes it."

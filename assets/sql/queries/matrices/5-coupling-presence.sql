@@ -4,7 +4,7 @@ SELECT p.filing            AS "filing!",
        p.couplings_filed   AS "n!",
        p.search_answer::text AS why
 FROM (
-    -- pm:Stack/pm:couplings against pm:Couplings/pm:absent, over a scope the caller names.
+    -- pm:Stack/pm:couplings against pm:couplings/pm:absent, over a scope the caller names.
 SELECT f.filing,
        count(c.filing) AS couplings_filed,
        s.answer        AS search_answer
@@ -17,14 +17,14 @@ WHERE f.evidence = 'observation'
 
 ) f
 LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
 
 ) c USING (filing)
 LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
 

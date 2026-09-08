@@ -349,10 +349,10 @@ FROM source s,
                --   `pm:quantity` `draw/quantity` with `remainder/quantity`      4
                -- A duty cycle is a fraction of the NAMEPLATE's period, and
                -- `units/with_a_period.sqlc` is the one relation that filters on this column.
-               -- It read `owns = 'pm:amount'` and therefore answered for the demand too,
-               -- returning two rows per layer. Nothing was wrong yet only because no layer
-               -- in this corpus disagrees with itself about carrying a period; the day one
-               -- does, a window gets measured against the wrong denominator.
+               -- Read `owns = 'pm:amount'` and it answers for the demand too, returning two
+               -- rows per layer. Nothing goes wrong while no layer in this corpus disagrees
+               -- with itself about carrying a period; the day one does, a window gets measured
+               -- against the wrong denominator.
                -- ⭐ The grandparent settles all three, and `concat` is ordinary XPath 1.0.
                -- A composite key would settle them too and would put the burden on every
                -- caller to remember the second column, which is the trap rather than the
@@ -514,7 +514,7 @@ FROM source s,
                --   pm:StatedClaim, so it admits all three; this reads the one that was lost.
                f_absent text PATH 'asrt:factor/pm:absent/pm:reason') p;
 
--- e_x. One row per quantity eliminated, and `absent reason="none"` is the common case:
+-- e_x. One row per quantity eliminated, and `absent/reason = none` is the common case:
 -- somebody checked and nothing was double counted.
 INSERT INTO elimination
 SELECT s.name, f.composed, e.against, e.low, e.mode, e.high, e.unit,
@@ -535,7 +535,7 @@ FROM source s,
                observed text PATH 'asrt:observed') e;
 
 -- ⭐⭐ AND THE SAME ROW ONE DOCUMENT UP: which fusions looked for double counting, and what
---    they found. Three of this corpus's eight file no elimination, and until now that was
+--    they found. Three of this corpus's eight file no elimination, and without this row that is
 --    indistinguishable from three composers who never checked.
 INSERT INTO elimination_search
 SELECT s.name, f.composed, e.absent::absence_reason, e.note
@@ -554,7 +554,7 @@ FROM source s,
 --    the eight in `merge-holding-composition` and `merge-group-composition` are read from the
 --    XML and dropped on the floor. Nothing notices, because no rule reads them: a rule reads
 --    only what it needs, and a field no rule reads is under no pressure to exist. Only asking
---    "could I WRITE this document back out" finds it.
+--    "can this document be WRITTEN back out" finds it.
 -- ⭐ `FOR ORDINALITY` keeps two `between` elements two rows rather than one, the same reason
 --   `regime` uses it above.
 INSERT INTO elimination_between

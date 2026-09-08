@@ -1,4 +1,4 @@
--- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,

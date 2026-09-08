@@ -1,4 +1,4 @@
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -43,7 +43,7 @@ LEFT JOIN (
         -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

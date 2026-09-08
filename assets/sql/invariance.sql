@@ -178,7 +178,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -210,7 +210,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -312,7 +312,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -344,10 +344,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -369,7 +369,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -381,7 +381,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -404,7 +404,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -486,7 +486,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -495,7 +495,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -512,7 +512,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -523,7 +523,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -576,7 +576,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -600,7 +600,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -622,7 +622,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -633,7 +633,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -686,7 +686,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -710,7 +710,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -897,7 +897,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -929,7 +929,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1031,7 +1031,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1063,10 +1063,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1088,7 +1088,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -1100,7 +1100,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1123,7 +1123,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1205,7 +1205,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1214,7 +1214,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1231,7 +1231,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -1242,7 +1242,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1295,7 +1295,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1319,7 +1319,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1341,7 +1341,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -1352,7 +1352,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1405,7 +1405,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1429,7 +1429,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1631,7 +1631,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1663,7 +1663,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1765,7 +1765,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1797,10 +1797,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1822,7 +1822,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -1834,7 +1834,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1857,7 +1857,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -1939,7 +1939,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1948,7 +1948,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -1965,7 +1965,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -1976,7 +1976,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2029,7 +2029,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2053,7 +2053,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2075,7 +2075,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -2086,7 +2086,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2139,7 +2139,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2163,7 +2163,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2385,7 +2385,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2417,7 +2417,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2519,7 +2519,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2551,10 +2551,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2576,7 +2576,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -2588,7 +2588,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2611,7 +2611,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2693,7 +2693,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2702,7 +2702,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2719,7 +2719,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -2730,7 +2730,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2783,7 +2783,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2807,7 +2807,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -2829,7 +2829,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -2840,7 +2840,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2893,7 +2893,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -2917,7 +2917,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3146,7 +3146,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3178,7 +3178,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3280,7 +3280,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3312,10 +3312,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3337,7 +3337,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -3349,7 +3349,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3372,7 +3372,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3454,7 +3454,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3463,7 +3463,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3480,7 +3480,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -3491,7 +3491,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3544,7 +3544,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3568,7 +3568,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3590,7 +3590,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -3601,7 +3601,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3654,7 +3654,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -3678,7 +3678,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -3979,7 +3979,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4011,7 +4011,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4113,7 +4113,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4145,10 +4145,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4170,7 +4170,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -4182,7 +4182,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4205,7 +4205,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4287,7 +4287,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4296,7 +4296,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4313,7 +4313,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -4324,7 +4324,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4377,7 +4377,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4401,7 +4401,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4423,7 +4423,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -4434,7 +4434,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4487,7 +4487,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4511,7 +4511,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4688,7 +4688,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4720,7 +4720,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4822,7 +4822,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4854,10 +4854,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4879,7 +4879,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -4891,7 +4891,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -4914,7 +4914,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -4996,7 +4996,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5005,7 +5005,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5022,7 +5022,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -5033,7 +5033,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5086,7 +5086,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5110,7 +5110,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5132,7 +5132,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -5143,7 +5143,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5196,7 +5196,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5220,7 +5220,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5301,7 +5301,7 @@ LEFT JOIN (
                             d.n_low + d.capacity_low, d.n_high + d.capacity_high)
            END                                                        AS detail
     FROM (
-        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+        -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,
@@ -5477,7 +5477,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5509,7 +5509,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5611,7 +5611,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5643,10 +5643,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5668,7 +5668,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -5680,7 +5680,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5703,7 +5703,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5785,7 +5785,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5794,7 +5794,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5811,7 +5811,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -5822,7 +5822,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5875,7 +5875,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5899,7 +5899,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -5921,7 +5921,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -5932,7 +5932,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -5985,7 +5985,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6009,7 +6009,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -6053,7 +6053,7 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'clearance_with_unserved'
 UNION ALL
--- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+-- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -6095,7 +6095,7 @@ LEFT JOIN (
            r.composition IS NULL AS violates,
            format('%s / %s resolves to nothing', a.part_filing, a.part_layer) AS detail
     FROM      (
-        -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+        -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6110,7 +6110,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6137,7 +6137,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -6184,10 +6184,10 @@ LEFT JOIN (
                             j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6216,7 +6216,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6245,7 +6245,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6270,7 +6270,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -6281,7 +6281,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6333,7 +6333,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6357,7 +6357,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -6368,7 +6368,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6420,7 +6420,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6496,10 +6496,10 @@ LEFT JOIN (
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6531,7 +6531,7 @@ FROM (
     SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
            a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
     FROM      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -6542,7 +6542,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6584,7 +6584,7 @@ SELECT * FROM walk
 
     ) a
     JOIN      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -6595,7 +6595,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6646,7 +6646,7 @@ WINDOW w AS (PARTITION BY p.filing, p.layer)
 ) p ON true
 WHERE r.slug = 'layers_move_together'
 UNION ALL
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -6692,7 +6692,7 @@ LEFT JOIN (
                   a.from_layer, a.to_layer, a.mode, a.lower_filing,
                   round(a.ceil_mode, 3)) AS detail
     FROM (
-        -- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+        -- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,
@@ -6700,7 +6700,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -6715,7 +6715,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6737,7 +6737,7 @@ FROM pm.layer l
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -6753,7 +6753,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -6881,7 +6881,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'narrows_a_point_value'
 UNION ALL
--- pm:Claim/pm:narrowsWhen with pm:Absent reason="notApplicable" on any claim where low <> high.
+-- pm:Claim/pm:narrowsWhen with pm:absent/reason = notApplicable on any claim where low <> high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -6949,7 +6949,7 @@ WHERE NOT c.is_a_point
 ) p ON true
 WHERE r.slug = 'range_says_no_range'
 UNION ALL
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7016,7 +7016,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'bound_fell_with_no_range'
 UNION ALL
--- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7065,7 +7065,7 @@ LEFT JOIN (
                             w.composed_window_low, w.window_low)
            END AS detail
     FROM (
-        -- pm:Part's own pm:Divisibility/window against the composed pm:Layer's.
+        -- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_unit,
        cw.window_low    AS composed_window_low,
@@ -7079,7 +7079,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7123,7 +7123,7 @@ WHERE pw.window_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_lost_or_summed'
 UNION ALL
--- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7167,7 +7167,7 @@ LEFT JOIN (
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (
-        -- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+        -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -7238,7 +7238,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'derived_slack_over_a_window'
 UNION ALL
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
+-- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7321,7 +7321,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'window_not_applicable_on_a_rate'
 UNION ALL
--- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+-- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7366,13 +7366,13 @@ LEFT JOIN (
         -- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
 SELECT es.composition, es.composed_layer, count(*) AS parts
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
 ) es
 JOIN (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7430,7 +7430,7 @@ LEFT JOIN (
                   f.computed_low, f.computed_mode, f.computed_high,
                   f.filed_low, f.filed_mode, f.filed_high) AS detail
     FROM (
-        -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+        -- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
 SELECT c.composition, c.composed_layer,
        'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
@@ -7458,7 +7458,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7502,10 +7502,10 @@ JOIN      (
     -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
 SELECT f.filing, f.layer, 'demand' AS quantity
 FROM (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7526,7 +7526,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -7538,7 +7538,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -7561,7 +7561,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7608,7 +7608,7 @@ WHERE l.demand_low IS NOT NULL
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -7624,7 +7624,7 @@ GROUP BY c.composition, c.composed_layer
 ) p ON true
 WHERE r.slug = 'fusion_sum_disagrees'
 UNION ALL
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -7669,7 +7669,7 @@ LEFT JOIN (
         -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7855,7 +7855,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -7991,7 +7991,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8015,7 +8015,7 @@ FROM pm.layer l
 
 ) c
 WHERE NOT EXISTS (
-        SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+        SELECT 1 FROM ( -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -8033,7 +8033,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -8045,7 +8045,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -8068,7 +8068,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8153,7 +8153,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8364,7 +8364,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8580,7 +8580,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8699,7 +8699,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8857,7 +8857,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8889,7 +8889,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -8991,7 +8991,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9023,10 +9023,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9048,7 +9048,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -9060,7 +9060,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9083,7 +9083,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9165,7 +9165,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9174,7 +9174,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9191,7 +9191,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -9202,7 +9202,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9255,7 +9255,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9279,7 +9279,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9301,7 +9301,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -9312,7 +9312,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9365,7 +9365,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9389,7 +9389,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9600,7 +9600,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9632,7 +9632,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9734,7 +9734,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9766,10 +9766,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9791,7 +9791,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -9803,7 +9803,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9826,7 +9826,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9908,7 +9908,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9917,7 +9917,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -9934,7 +9934,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -9945,7 +9945,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -9998,7 +9998,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10022,7 +10022,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10044,7 +10044,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -10055,7 +10055,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10108,7 +10108,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10132,7 +10132,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10319,7 +10319,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10351,7 +10351,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10453,7 +10453,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10485,10 +10485,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10510,7 +10510,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -10522,7 +10522,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10545,7 +10545,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10627,7 +10627,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10636,7 +10636,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10653,7 +10653,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -10664,7 +10664,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10717,7 +10717,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10741,7 +10741,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -10763,7 +10763,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -10774,7 +10774,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10827,7 +10827,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -10851,7 +10851,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11053,7 +11053,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11085,7 +11085,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11187,7 +11187,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11219,10 +11219,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11244,7 +11244,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -11256,7 +11256,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11279,7 +11279,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11361,7 +11361,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11370,7 +11370,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11387,7 +11387,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -11398,7 +11398,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11451,7 +11451,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11475,7 +11475,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11497,7 +11497,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -11508,7 +11508,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11561,7 +11561,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11585,7 +11585,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -11807,7 +11807,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11839,7 +11839,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11941,7 +11941,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11973,10 +11973,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -11998,7 +11998,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -12010,7 +12010,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12033,7 +12033,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12115,7 +12115,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12124,7 +12124,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12141,7 +12141,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -12152,7 +12152,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12205,7 +12205,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12229,7 +12229,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12251,7 +12251,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -12262,7 +12262,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12315,7 +12315,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12339,7 +12339,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12568,7 +12568,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12600,7 +12600,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12702,7 +12702,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12734,10 +12734,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12759,7 +12759,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -12771,7 +12771,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12794,7 +12794,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12876,7 +12876,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12885,7 +12885,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -12902,7 +12902,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -12913,7 +12913,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12966,7 +12966,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -12990,7 +12990,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13012,7 +13012,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -13023,7 +13023,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13076,7 +13076,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13100,7 +13100,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13401,7 +13401,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13433,7 +13433,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13535,7 +13535,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13567,10 +13567,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13592,7 +13592,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -13604,7 +13604,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13627,7 +13627,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13709,7 +13709,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13718,7 +13718,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13735,7 +13735,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -13746,7 +13746,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13799,7 +13799,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13823,7 +13823,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -13845,7 +13845,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -13856,7 +13856,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13909,7 +13909,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -13933,7 +13933,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14110,7 +14110,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14142,7 +14142,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14244,7 +14244,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14276,10 +14276,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14301,7 +14301,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -14313,7 +14313,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14336,7 +14336,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14418,7 +14418,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14427,7 +14427,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14444,7 +14444,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -14455,7 +14455,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14508,7 +14508,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14532,7 +14532,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14554,7 +14554,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -14565,7 +14565,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14618,7 +14618,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14642,7 +14642,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -14723,7 +14723,7 @@ LEFT JOIN (
                             d.n_low + d.capacity_low, d.n_high + d.capacity_high)
            END                                                        AS detail
     FROM (
-        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+        -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,
@@ -14899,7 +14899,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -14931,7 +14931,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15033,7 +15033,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15065,10 +15065,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15090,7 +15090,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -15102,7 +15102,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -15125,7 +15125,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15207,7 +15207,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -15216,7 +15216,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -15233,7 +15233,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -15244,7 +15244,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15297,7 +15297,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15321,7 +15321,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -15343,7 +15343,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -15354,7 +15354,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15407,7 +15407,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15431,7 +15431,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -15475,7 +15475,7 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'clearance_with_unserved'
 UNION ALL
--- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+-- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -15517,7 +15517,7 @@ LEFT JOIN (
            r.composition IS NULL AS violates,
            format('%s / %s resolves to nothing', a.part_filing, a.part_layer) AS detail
     FROM      (
-        -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+        -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15532,7 +15532,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15559,7 +15559,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -15606,10 +15606,10 @@ LEFT JOIN (
                             j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15638,7 +15638,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15667,7 +15667,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15692,7 +15692,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -15703,7 +15703,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15755,7 +15755,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15779,7 +15779,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -15790,7 +15790,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15842,7 +15842,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15918,10 +15918,10 @@ LEFT JOIN (
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -15953,7 +15953,7 @@ FROM (
     SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
            a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
     FROM      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -15964,7 +15964,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16006,7 +16006,7 @@ SELECT * FROM walk
 
     ) a
     JOIN      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -16017,7 +16017,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16068,7 +16068,7 @@ WINDOW w AS (PARTITION BY p.filing, p.layer)
 ) p ON true
 WHERE r.slug = 'layers_move_together'
 UNION ALL
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16114,7 +16114,7 @@ LEFT JOIN (
                   a.from_layer, a.to_layer, a.mode, a.lower_filing,
                   round(a.ceil_mode, 3)) AS detail
     FROM (
-        -- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+        -- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,
@@ -16122,7 +16122,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -16137,7 +16137,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16159,7 +16159,7 @@ FROM pm.layer l
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -16175,7 +16175,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16303,7 +16303,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'narrows_a_point_value'
 UNION ALL
--- pm:Claim/pm:narrowsWhen with pm:Absent reason="notApplicable" on any claim where low <> high.
+-- pm:Claim/pm:narrowsWhen with pm:absent/reason = notApplicable on any claim where low <> high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16371,7 +16371,7 @@ WHERE NOT c.is_a_point
 ) p ON true
 WHERE r.slug = 'range_says_no_range'
 UNION ALL
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16438,7 +16438,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'bound_fell_with_no_range'
 UNION ALL
--- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16487,7 +16487,7 @@ LEFT JOIN (
                             w.composed_window_low, w.window_low)
            END AS detail
     FROM (
-        -- pm:Part's own pm:Divisibility/window against the composed pm:Layer's.
+        -- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_unit,
        cw.window_low    AS composed_window_low,
@@ -16501,7 +16501,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16545,7 +16545,7 @@ WHERE pw.window_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_lost_or_summed'
 UNION ALL
--- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16589,7 +16589,7 @@ LEFT JOIN (
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (
-        -- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+        -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -16660,7 +16660,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'derived_slack_over_a_window'
 UNION ALL
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
+-- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16743,7 +16743,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'window_not_applicable_on_a_rate'
 UNION ALL
--- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+-- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -16788,13 +16788,13 @@ LEFT JOIN (
         -- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
 SELECT es.composition, es.composed_layer, count(*) AS parts
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
 ) es
 JOIN (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16852,7 +16852,7 @@ LEFT JOIN (
                   f.computed_low, f.computed_mode, f.computed_high,
                   f.filed_low, f.filed_mode, f.filed_high) AS detail
     FROM (
-        -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+        -- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
 SELECT c.composition, c.composed_layer,
        'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
@@ -16880,7 +16880,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16924,10 +16924,10 @@ JOIN      (
     -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
 SELECT f.filing, f.layer, 'demand' AS quantity
 FROM (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -16948,7 +16948,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -16960,7 +16960,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -16983,7 +16983,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17030,7 +17030,7 @@ WHERE l.demand_low IS NOT NULL
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -17046,7 +17046,7 @@ GROUP BY c.composition, c.composed_layer
 ) p ON true
 WHERE r.slug = 'fusion_sum_disagrees'
 UNION ALL
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -17091,7 +17091,7 @@ LEFT JOIN (
         -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17277,7 +17277,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17413,7 +17413,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17437,7 +17437,7 @@ FROM pm.layer l
 
 ) c
 WHERE NOT EXISTS (
-        SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+        SELECT 1 FROM ( -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -17455,7 +17455,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -17467,7 +17467,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -17490,7 +17490,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17575,7 +17575,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -17786,7 +17786,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18002,7 +18002,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18121,7 +18121,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18362,7 +18362,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18394,7 +18394,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18496,7 +18496,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18528,10 +18528,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18553,7 +18553,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -18565,7 +18565,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -18588,7 +18588,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18670,7 +18670,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -18679,7 +18679,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -18696,7 +18696,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -18707,7 +18707,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18760,7 +18760,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18784,7 +18784,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -18806,7 +18806,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -18817,7 +18817,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18870,7 +18870,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -18894,7 +18894,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19081,7 +19081,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19113,7 +19113,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19215,7 +19215,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19247,10 +19247,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19272,7 +19272,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -19284,7 +19284,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19307,7 +19307,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19389,7 +19389,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19398,7 +19398,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19415,7 +19415,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -19426,7 +19426,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19479,7 +19479,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19503,7 +19503,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19525,7 +19525,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -19536,7 +19536,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19589,7 +19589,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19613,7 +19613,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -19815,7 +19815,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19847,7 +19847,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19949,7 +19949,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -19981,10 +19981,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20006,7 +20006,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -20018,7 +20018,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20041,7 +20041,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20123,7 +20123,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20132,7 +20132,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20149,7 +20149,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -20160,7 +20160,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20213,7 +20213,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20237,7 +20237,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20259,7 +20259,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -20270,7 +20270,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20323,7 +20323,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20347,7 +20347,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20569,7 +20569,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20601,7 +20601,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20703,7 +20703,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20735,10 +20735,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20760,7 +20760,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -20772,7 +20772,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20795,7 +20795,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20877,7 +20877,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20886,7 +20886,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -20903,7 +20903,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -20914,7 +20914,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20967,7 +20967,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -20991,7 +20991,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21013,7 +21013,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -21024,7 +21024,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21077,7 +21077,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21101,7 +21101,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21330,7 +21330,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21362,7 +21362,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21464,7 +21464,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21496,10 +21496,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21521,7 +21521,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -21533,7 +21533,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21556,7 +21556,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21638,7 +21638,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21647,7 +21647,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21664,7 +21664,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -21675,7 +21675,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21728,7 +21728,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21752,7 +21752,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -21774,7 +21774,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -21785,7 +21785,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21838,7 +21838,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -21862,7 +21862,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22163,7 +22163,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22195,7 +22195,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22297,7 +22297,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22329,10 +22329,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22354,7 +22354,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -22366,7 +22366,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22389,7 +22389,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22471,7 +22471,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22480,7 +22480,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22497,7 +22497,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -22508,7 +22508,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22561,7 +22561,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22585,7 +22585,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22607,7 +22607,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -22618,7 +22618,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22671,7 +22671,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22695,7 +22695,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -22872,7 +22872,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -22904,7 +22904,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23006,7 +23006,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23038,10 +23038,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23063,7 +23063,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -23075,7 +23075,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23098,7 +23098,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23180,7 +23180,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23189,7 +23189,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23206,7 +23206,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -23217,7 +23217,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23270,7 +23270,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23294,7 +23294,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23316,7 +23316,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -23327,7 +23327,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23380,7 +23380,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23404,7 +23404,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23485,7 +23485,7 @@ LEFT JOIN (
                             d.n_low + d.capacity_low, d.n_high + d.capacity_high)
            END                                                        AS detail
     FROM (
-        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+        -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,
@@ -23661,7 +23661,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23693,7 +23693,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23795,7 +23795,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23827,10 +23827,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23852,7 +23852,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -23864,7 +23864,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23887,7 +23887,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -23969,7 +23969,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23978,7 +23978,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -23995,7 +23995,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24006,7 +24006,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24059,7 +24059,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24083,7 +24083,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -24105,7 +24105,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24116,7 +24116,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24169,7 +24169,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24193,7 +24193,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -24237,7 +24237,7 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'clearance_with_unserved'
 UNION ALL
--- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+-- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -24279,7 +24279,7 @@ LEFT JOIN (
            r.composition IS NULL AS violates,
            format('%s / %s resolves to nothing', a.part_filing, a.part_layer) AS detail
     FROM      (
-        -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+        -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24294,7 +24294,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24321,7 +24321,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -24368,10 +24368,10 @@ LEFT JOIN (
                             j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24400,7 +24400,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24429,7 +24429,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24454,7 +24454,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24465,7 +24465,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24517,7 +24517,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24541,7 +24541,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24552,7 +24552,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24604,7 +24604,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24680,10 +24680,10 @@ LEFT JOIN (
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24715,7 +24715,7 @@ FROM (
     SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
            a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
     FROM      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24726,7 +24726,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24768,7 +24768,7 @@ SELECT * FROM walk
 
     ) a
     JOIN      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -24779,7 +24779,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24830,7 +24830,7 @@ WINDOW w AS (PARTITION BY p.filing, p.layer)
 ) p ON true
 WHERE r.slug = 'layers_move_together'
 UNION ALL
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -24876,7 +24876,7 @@ LEFT JOIN (
                   a.from_layer, a.to_layer, a.mode, a.lower_filing,
                   round(a.ceil_mode, 3)) AS detail
     FROM (
-        -- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+        -- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,
@@ -24884,7 +24884,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -24899,7 +24899,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -24921,7 +24921,7 @@ FROM pm.layer l
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -24937,7 +24937,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25065,7 +25065,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'narrows_a_point_value'
 UNION ALL
--- pm:Claim/pm:narrowsWhen with pm:Absent reason="notApplicable" on any claim where low <> high.
+-- pm:Claim/pm:narrowsWhen with pm:absent/reason = notApplicable on any claim where low <> high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25133,7 +25133,7 @@ WHERE NOT c.is_a_point
 ) p ON true
 WHERE r.slug = 'range_says_no_range'
 UNION ALL
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25200,7 +25200,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'bound_fell_with_no_range'
 UNION ALL
--- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25249,7 +25249,7 @@ LEFT JOIN (
                             w.composed_window_low, w.window_low)
            END AS detail
     FROM (
-        -- pm:Part's own pm:Divisibility/window against the composed pm:Layer's.
+        -- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_unit,
        cw.window_low    AS composed_window_low,
@@ -25263,7 +25263,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25307,7 +25307,7 @@ WHERE pw.window_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_lost_or_summed'
 UNION ALL
--- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25351,7 +25351,7 @@ LEFT JOIN (
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (
-        -- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+        -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -25422,7 +25422,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'derived_slack_over_a_window'
 UNION ALL
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
+-- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25505,7 +25505,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'window_not_applicable_on_a_rate'
 UNION ALL
--- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+-- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25550,13 +25550,13 @@ LEFT JOIN (
         -- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
 SELECT es.composition, es.composed_layer, count(*) AS parts
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
 ) es
 JOIN (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25614,7 +25614,7 @@ LEFT JOIN (
                   f.computed_low, f.computed_mode, f.computed_high,
                   f.filed_low, f.filed_mode, f.filed_high) AS detail
     FROM (
-        -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+        -- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
 SELECT c.composition, c.composed_layer,
        'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
@@ -25642,7 +25642,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25686,10 +25686,10 @@ JOIN      (
     -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
 SELECT f.filing, f.layer, 'demand' AS quantity
 FROM (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25710,7 +25710,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -25722,7 +25722,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -25745,7 +25745,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -25792,7 +25792,7 @@ WHERE l.demand_low IS NOT NULL
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -25808,7 +25808,7 @@ GROUP BY c.composition, c.composed_layer
 ) p ON true
 WHERE r.slug = 'fusion_sum_disagrees'
 UNION ALL
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -25853,7 +25853,7 @@ LEFT JOIN (
         -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26039,7 +26039,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26175,7 +26175,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26199,7 +26199,7 @@ FROM pm.layer l
 
 ) c
 WHERE NOT EXISTS (
-        SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+        SELECT 1 FROM ( -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -26217,7 +26217,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -26229,7 +26229,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -26252,7 +26252,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26337,7 +26337,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26548,7 +26548,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26764,7 +26764,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -26883,7 +26883,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27123,7 +27123,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27155,7 +27155,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27257,7 +27257,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27289,10 +27289,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27314,7 +27314,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -27326,7 +27326,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -27349,7 +27349,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27431,7 +27431,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -27440,7 +27440,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -27457,7 +27457,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -27468,7 +27468,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27521,7 +27521,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27545,7 +27545,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -27567,7 +27567,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -27578,7 +27578,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27631,7 +27631,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27655,7 +27655,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -27842,7 +27842,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27874,7 +27874,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -27976,7 +27976,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28008,10 +28008,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28033,7 +28033,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -28045,7 +28045,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28068,7 +28068,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28150,7 +28150,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28159,7 +28159,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28176,7 +28176,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -28187,7 +28187,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28240,7 +28240,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28264,7 +28264,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28286,7 +28286,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -28297,7 +28297,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28350,7 +28350,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28374,7 +28374,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28576,7 +28576,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28608,7 +28608,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28710,7 +28710,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28742,10 +28742,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28767,7 +28767,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -28779,7 +28779,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28802,7 +28802,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28884,7 +28884,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28893,7 +28893,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -28910,7 +28910,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -28921,7 +28921,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28974,7 +28974,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -28998,7 +28998,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29020,7 +29020,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -29031,7 +29031,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29084,7 +29084,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29108,7 +29108,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29330,7 +29330,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29362,7 +29362,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29464,7 +29464,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29496,10 +29496,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29521,7 +29521,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -29533,7 +29533,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29556,7 +29556,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29638,7 +29638,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29647,7 +29647,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29664,7 +29664,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -29675,7 +29675,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29728,7 +29728,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29752,7 +29752,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -29774,7 +29774,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -29785,7 +29785,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29838,7 +29838,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -29862,7 +29862,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30091,7 +30091,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30123,7 +30123,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30225,7 +30225,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30257,10 +30257,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30282,7 +30282,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -30294,7 +30294,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30317,7 +30317,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30399,7 +30399,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30408,7 +30408,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30425,7 +30425,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -30436,7 +30436,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30489,7 +30489,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30513,7 +30513,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30535,7 +30535,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -30546,7 +30546,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30599,7 +30599,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30623,7 +30623,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -30924,7 +30924,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -30956,7 +30956,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31058,7 +31058,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31090,10 +31090,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31115,7 +31115,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -31127,7 +31127,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31150,7 +31150,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31232,7 +31232,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31241,7 +31241,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31258,7 +31258,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -31269,7 +31269,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31322,7 +31322,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31346,7 +31346,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31368,7 +31368,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -31379,7 +31379,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31432,7 +31432,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31456,7 +31456,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31633,7 +31633,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31665,7 +31665,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31767,7 +31767,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31799,10 +31799,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31824,7 +31824,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -31836,7 +31836,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31859,7 +31859,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -31941,7 +31941,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31950,7 +31950,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -31967,7 +31967,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -31978,7 +31978,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32031,7 +32031,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32055,7 +32055,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32077,7 +32077,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -32088,7 +32088,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32141,7 +32141,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32165,7 +32165,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32246,7 +32246,7 @@ LEFT JOIN (
                             d.n_low + d.capacity_low, d.n_high + d.capacity_high)
            END                                                        AS detail
     FROM (
-        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+        -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,
@@ -32422,7 +32422,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32454,7 +32454,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32556,7 +32556,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32588,10 +32588,10 @@ JOIN      (
     -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32613,7 +32613,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -32625,7 +32625,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32648,7 +32648,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32730,7 +32730,7 @@ JOIN pm.layer l USING (filing, layer)
 
 ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32739,7 +32739,7 @@ FROM pm.elimination e
 ) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
     AND en.quantity = 'nameplate'
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32756,7 +32756,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -32767,7 +32767,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32820,7 +32820,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32844,7 +32844,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32866,7 +32866,7 @@ SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        sum(e.mode * w.factor_mode)                                  AS e_mode,
        sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -32877,7 +32877,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32930,7 +32930,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -32954,7 +32954,7 @@ WHERE p.factor_low IS DISTINCT FROM p.factor_high
 
 ) o ON o.filing = w.filing AND o.layer = w.layer
 JOIN      (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -32998,7 +32998,7 @@ WHERE h.kind IN ('customer', 'unrealised')
 ) p ON true
 WHERE r.slug = 'clearance_with_unserved'
 UNION ALL
--- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+-- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -33040,7 +33040,7 @@ LEFT JOIN (
            r.composition IS NULL AS violates,
            format('%s / %s resolves to nothing', a.part_filing, a.part_layer) AS detail
     FROM      (
-        -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+        -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33055,7 +33055,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33082,7 +33082,7 @@ FROM pm.layer l
 ) p ON true
 WHERE r.slug = 'unresolved_part'
 UNION ALL
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -33129,10 +33129,10 @@ LEFT JOIN (
                             j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33161,7 +33161,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33190,7 +33190,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33215,7 +33215,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -33226,7 +33226,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33278,7 +33278,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33302,7 +33302,7 @@ FROM pm.layer l
 JOIN      (
     SELECT DISTINCT root_filing, root_layer, filing, layer
     FROM (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -33313,7 +33313,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33365,7 +33365,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33441,10 +33441,10 @@ LEFT JOIN (
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (
-        -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+        -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33476,7 +33476,7 @@ FROM (
     SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,
            a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer
     FROM      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -33487,7 +33487,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33529,7 +33529,7 @@ SELECT * FROM walk
 
     ) a
     JOIN      (
-        -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -33540,7 +33540,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33591,7 +33591,7 @@ WINDOW w AS (PARTITION BY p.filing, p.layer)
 ) p ON true
 WHERE r.slug = 'layers_move_together'
 UNION ALL
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -33637,7 +33637,7 @@ LEFT JOIN (
                   a.from_layer, a.to_layer, a.mode, a.lower_filing,
                   round(a.ceil_mode, 3)) AS detail
     FROM (
-        -- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+        -- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,
@@ -33645,7 +33645,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -33660,7 +33660,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33682,7 +33682,7 @@ FROM pm.layer l
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -33698,7 +33698,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -33826,7 +33826,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'narrows_a_point_value'
 UNION ALL
--- pm:Claim/pm:narrowsWhen with pm:Absent reason="notApplicable" on any claim where low <> high.
+-- pm:Claim/pm:narrowsWhen with pm:absent/reason = notApplicable on any claim where low <> high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -33894,7 +33894,7 @@ WHERE NOT c.is_a_point
 ) p ON true
 WHERE r.slug = 'range_says_no_range'
 UNION ALL
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -33961,7 +33961,7 @@ WHERE c.is_a_point
 ) p ON true
 WHERE r.slug = 'bound_fell_with_no_range'
 UNION ALL
--- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -34010,7 +34010,7 @@ LEFT JOIN (
                             w.composed_window_low, w.window_low)
            END AS detail
     FROM (
-        -- pm:Part's own pm:Divisibility/window against the composed pm:Layer's.
+        -- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_unit,
        cw.window_low    AS composed_window_low,
@@ -34024,7 +34024,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34068,7 +34068,7 @@ WHERE pw.window_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'window_lost_or_summed'
 UNION ALL
--- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -34112,7 +34112,7 @@ LEFT JOIN (
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (
-        -- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+        -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
@@ -34183,7 +34183,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'derived_slack_over_a_window'
 UNION ALL
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
+-- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -34266,7 +34266,7 @@ WHERE c.owns = 'pm:nameplate/pm:amount'
 ) p ON true
 WHERE r.slug = 'window_not_applicable_on_a_rate'
 UNION ALL
--- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+-- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -34311,13 +34311,13 @@ LEFT JOIN (
         -- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
 SELECT es.composition, es.composed_layer, count(*) AS parts
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
 ) es
 JOIN (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34375,7 +34375,7 @@ LEFT JOIN (
                   f.computed_low, f.computed_mode, f.computed_high,
                   f.filed_low, f.filed_mode, f.filed_high) AS detail
     FROM (
-        -- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+        -- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
 SELECT c.composition, c.composed_layer,
        'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
@@ -34403,7 +34403,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34447,10 +34447,10 @@ JOIN      (
     -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
 SELECT f.filing, f.layer, 'demand' AS quantity
 FROM (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34471,7 +34471,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -34483,7 +34483,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -34506,7 +34506,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34553,7 +34553,7 @@ WHERE l.demand_low IS NOT NULL
 ) d
        ON d.filing = c.composition AND d.layer = c.composed_layer
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -34569,7 +34569,7 @@ GROUP BY c.composition, c.composed_layer
 ) p ON true
 WHERE r.slug = 'fusion_sum_disagrees'
 UNION ALL
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -34614,7 +34614,7 @@ LEFT JOIN (
         -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34800,7 +34800,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34936,7 +34936,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -34960,7 +34960,7 @@ FROM pm.layer l
 
 ) c
 WHERE NOT EXISTS (
-        SELECT 1 FROM ( -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+        SELECT 1 FROM ( -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -34978,7 +34978,7 @@ SELECT es.composition, es.composed_layer,
        'the search was never made' AS suspended_because,
        es.note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
@@ -34990,7 +34990,7 @@ SELECT e.composition, e.composed_layer, e.quantity,
        'the overlap was found and could not be sized' AS suspended_because,
        e.reason AS note
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -35013,7 +35013,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -35098,7 +35098,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -35309,7 +35309,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -35525,7 +35525,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -35644,7 +35644,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

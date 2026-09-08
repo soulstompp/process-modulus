@@ -6,15 +6,15 @@
 #    appeared nowhere in ingest.sqlc until 0.4 -- no table, no column, no path -- so `standing`,
 #    which `Dependence` describes as "the axis separating a statutory auditor's observation
 #    from a controller's hunch", was filed 117 times and readable by nothing below the XML. It
-#    was found by asking a different question: tests/state_coverage.rs declared verdicts for
-#    twelve wrappers and `StatedBorrowedTerm` was not among them.
+#    is reached by asking a different question: tests/state_coverage.rs declares a verdict per
+#    wrapper, and a wrapper missing from that table is a wrapper nobody has measured.
 #
 # ⛔⛔ AND THE FIRST THING IT SAYS IS THAT ALMOST NOBODY CLAIMS ANY. One stated standing in the
 #    whole corpus against 116 explicit refusals and 124 claims carrying no provenance element
-#    at all. ⚠️ Those figures were 58 and 124 when this header was written, and the first one
-#    aged while the second did not: the corpus grew its Portuguese twins and the refusals
-#    doubled. examples/observations.rs prints all three now, so the next time they move it is
-#    a diff rather than a comment nobody recounted.
+#    at all. ⚠️ Two of those three figures move with the corpus and one does not, so quoting
+#    them here is quoting a number nobody recounts: adding the Portuguese twins doubles the
+#    refusals and leaves the claims where they were. examples/observations.rs prints all three,
+#    which makes a move a diff rather than a comment nobody rereads.
 #
 #    That is a finding about the EVIDENCE and not a defect in it -- `unmeasured` here reads
 #    "no standing vocabulary is published for this assertion", which is the honest answer when

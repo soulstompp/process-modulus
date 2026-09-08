@@ -5,9 +5,9 @@
 # answer and nothing further is filtered here.
 #
 # ⭐⭐ IT EXISTS SO THE EXAMPLE STOPS REACHING PAST TWO RELATIONS INTO `pm.layer` AND
-#    `pm.nameplate`. The count was written inline in Rust as a join with the two
-#    `IS NOT NULL` predicates spelled out again -- the same two predicates layers/demand.sqlc
-#    and layers/nameplate.sqlc already own. Two copies of one population, and the day either
+#    `pm.nameplate`. Written inline in Rust the count is a join with the two `IS NOT NULL`
+#    predicates spelled out again -- the same two predicates layers/demand.sqlc and
+#    layers/nameplate.sqlc already own. Two copies of one population, and the day either
 #    wrapper narrows, the example keeps passing while measuring a different set.
 #
 # ⛔ THE ASSERTION IT FEEDS IS A SECOND WITNESS, NOT THE FIRST. algebra/remainder_standing.sqlc

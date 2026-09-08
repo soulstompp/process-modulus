@@ -6,9 +6,10 @@
 # assumption?" with a yes nobody earned. But the fixture census is still worth reading -- it is
 # just not a finding, so it belongs in an observation and not in a report of record.
 #
-# ⛔ IT HAD NO CALLER UNTIL NOW. The relation composed, emitted, and was read by nothing, which
-# reads from the outside exactly like a relation that does not exist.
--- reports/absences_in_the_fixtures.sqlc, at last given a caller.
+# ⛔ THIS SECTION IS ITS CALLER, AND THAT IS THE POINT OF THE SECTION. A relation that composes,
+# emits, and is read by nothing reads from the outside exactly like a relation that does not
+# exist, which is what examples/observations.rs refuses to allow.
+-- reports/absences_in_the_fixtures.sqlc, given the caller that makes it readable.
 SELECT a.question AS "question!", a.reason::text AS "reason!", a.times AS "times!"
 FROM (
     :compose(reports/absences_in_the_fixtures.sqlc)

@@ -1,4 +1,4 @@
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.
@@ -44,7 +44,7 @@ LEFT JOIN (
                   a.from_layer, a.to_layer, a.mode, a.lower_filing,
                   round(a.ceil_mode, 3)) AS detail
     FROM (
-        -- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+        -- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,
@@ -52,7 +52,7 @@ SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.high * (pd.d_high / cd.d_high) AS ceil_high,
        up.low, up.mode, up.high
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -67,7 +67,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -89,7 +89,7 @@ FROM pm.layer l
 ) pf
        ON pf.composition = up.filing AND pf.composed_layer = up.from_layer
 JOIN      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -105,7 +105,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

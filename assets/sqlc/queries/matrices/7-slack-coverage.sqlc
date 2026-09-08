@@ -9,13 +9,13 @@
 # on top of that, the one bounding what a filing's own demand and nameplate say could have
 # gone unserved.
 #
-# ⛔⛔ THE INTERESTING ANSWER IS THE ONE THAT READS ZERO, AND IT NOW READS ZERO A DIFFERENT WAY.
+# ⛔⛔ THE INTERESTING ANSWER IS THE ONE THAT READS ZERO, AND THERE ARE TWO WAYS TO READ ZERO.
 # Eleven corpus layers size their capacity slack and every one sizes it at [0,0,0], a filer
 # saying the supply cannot be run above its rating at any price. That is the TIGHTEST possible
 # bound rather than a missing one, so the shortfall inequality is exercised, not silent.
 #
 # ⚠️ A SENTENCE LIKE "NO LAYER IN THIS CORPUS SIZES ITS CAPACITY SLACK" IS TRUE UNTIL A
-# SPELLING MOVES, AND THIS ONE MOVES: turn the `absent reason="none"` slacks into claimed zeros
+# SPELLING MOVES, AND THIS ONE MOVES: turn the `absent/reason = none` slacks into claimed zeros
 # and the column fills while any prose beside it stands still, because nothing printed the
 # number. examples/observations.rs prints it. A bound with nothing to bound passes loudest, so
 # the trap is real; it is just not this column today.

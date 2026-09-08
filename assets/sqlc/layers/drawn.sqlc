@@ -4,9 +4,10 @@
 # ⭐⭐⭐ THE THIRD OF THE LAYER'S THREE QUANTITIES, AND THE FIRST RELATION TO READ ONE.
 #    `EliminationAgainst` names all three -- demand, nameplate, draw -- and says why the third
 #    is there: "an implementation that eliminates demand and forgets the draw has silently
-#    claimed a utilisation it did not observe". Seventeen draws are filed. Before this file the
-#    only question anything asked of one was whether it was ABSENT -- epistemics/absences.sqlc
-#    reads `draw_absent` -- and no relation anywhere read the value. The warning was executed.
+#    claimed a utilisation it did not observe". Seventeen draws are filed. ⛔ The only other
+#    question anything asks of one is whether it is ABSENT -- epistemics/absences.sqlc reads
+#    `draw_absent` -- so without this relation the VALUE is read nowhere, which is the warning
+#    carried out.
 #
 # ⛔ THE DRAW IS NOT THE DEMAND, AND THE CORPUS SETTLES THAT RATHER THAN ASSUMING IT. They
 #   agree at the mode in eight layers of seventeen and differ in nine, so a reader taking one
@@ -27,7 +28,7 @@
 # ⚠️ `capacity_slack` IS LEFT NULL WHERE IT IS UNMEASURED rather than coalesced to zero. Six of
 #   these layers do not know how far they can stretch, and a nameplate is not a ceiling until
 #   somebody says the buffer is empty.
--- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,

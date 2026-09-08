@@ -1,11 +1,11 @@
 # HAS ANYBODY TESTED THE MODEL'S CENTRAL ASSUMPTION? One row per answer, with how many stacks
 # gave it.
 #
-# ⭐⭐⭐ THE SINGLE MOST IMPORTANT NUMBER IN THIS REPOSITORY, AND IT WAS UNASKABLE UNTIL THE
-#    COUPLING LIST STOPPED BEING ABLE TO WRITE ONLY THE AMBIGUOUS THING. This model ASSUMES
-#    layers hold their remainders independently -- C = 0. The schema's own annotation says a
-#    document with no couplings "is not evidence of independence; it is a document where nobody
-#    looked", and for two revisions there was no column anywhere that could say which.
+# ⭐⭐⭐ THE SINGLE MOST IMPORTANT NUMBER IN THIS REPOSITORY, AND A BARE COUPLING LIST CANNOT
+#    CARRY IT. This model ASSUMES layers hold their remainders independently -- C = 0. The
+#    schema's own annotation says a document with no couplings "is not evidence of
+#    independence; it is a document where nobody looked", and an empty list has no column that
+#    says which.
 #    Across this corpus: some stacks file couplings, some say nobody looked, one is a single
 #    layer with no pair to couple, and NOT ONE says somebody looked and found independence.
 #    The central assumption has never been confirmed and has once been contradicted.
@@ -14,7 +14,7 @@
 #    independence ON PURPOSE, to prove the branch works. Counting a stipulation here would
 #    answer "has anybody tested this?" with a yes that nobody earned -- which would turn the
 #    finding into a lie.
--- pm:Stack/pm:Couplings/pm:Absent, over the corpus.
+-- pm:Stack/pm:couplings/pm:absent, over the corpus.
 SELECT CASE
          WHEN s.answer IS NULL              THEN 'somebody looked and the layers MOVE TOGETHER'
          WHEN s.answer = 'none'             THEN 'somebody looked and found independence'

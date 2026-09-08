@@ -2,7 +2,7 @@
 # which OTHER document a composer says the double counting runs against.
 #
 # ⭐⭐⭐ THE MODEL HAS TWO `pm:ForeignId` REFERENCES AND ONLY ONE OF THEM WAS NAMED AS ONE. A
-#    `pm:Part` has `composition/part_references.sqlc`; `asrt:Elimination/between` had only the
+#    `asrt:Part` has `composition/part_references.sqlc`; `asrt:Elimination/between` had only the
 #    raw table, read by a single observation, filed under EVIDENCE. So anyone enumerating what
 #    this model points at in other documents composed the parts and got half the answer, and the
 #    BPMN mapping did exactly that: it reasoned from `elimination`, a magnitude BPMN genuinely

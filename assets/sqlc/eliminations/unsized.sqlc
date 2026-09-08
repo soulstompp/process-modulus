@@ -2,8 +2,8 @@
 # row per composed layer that FILES a demand elimination whose quantity is `unmeasured`.
 #
 # ⭐⭐ THIS IS A DIFFERENT DOCUMENT FROM AN UNSEARCHED ONE AND IT SUSPENDS FOR A DIFFERENT
-#    REASON. "We know these hours are double counted and cannot say by how much" is a
-#    composer who looked, found something, and reported the honest width of their ignorance.
+#    REASON. "These hours are double counted and by how much cannot be said" is a composer who
+#    looked, found something, and reported the honest width of their ignorance.
 #    Reading that as a zero -- which `coalesce(e.low, 0)` does -- asserts a sum the composer
 #    explicitly declined to make.
 #
@@ -21,8 +21,8 @@
 #    above wear the name "the composed layers that owe no sum AT ALL" while suspending only the
 #    demand sum, and the first nameplate rule to compose it is then wrong in BOTH
 #    directions: suspended because the DEMAND elimination was unsized, and letting a nameplate
-#    elimination filed `unmeasured` through into a `coalesce(..., 0)`. A caller now says which
-#    grain it means.
+#    elimination filed `unmeasured` through into a `coalesce(..., 0)`. The pin in the file name
+#    is what makes a caller say which grain it means.
 #
 # ⭐⭐ AND IT SUSPENDS ON ANY TYPED ABSENCE, NOT ONLY `unmeasured`. An elimination quantity is a
 #    `pm:StatedClaim`, so its absent branch is a `pm:ClaimAbsence` carrying

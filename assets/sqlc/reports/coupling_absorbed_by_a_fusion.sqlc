@@ -20,7 +20,7 @@
 #    rather than authored -- there is nobody to refer it to and nothing for them to weigh.
 #    No fixture files a coupling today, so this join changes no row; that is exactly the
 #    moment to write it, rather than the run after the first one does.
--- pm:Coupling against pm:Fusion/pm:Part pairs that contain both of its ends, over the corpus.
+-- pm:Coupling against asrt:Fusion/asrt:Part pairs that contain both of its ends, over the corpus.
 SELECT c.filing,
        c.from_layer || ' -> ' || c.to_layer AS coupling,
        CASE WHEN a.composition IS NULL THEN '(no fusion holds both ends)'

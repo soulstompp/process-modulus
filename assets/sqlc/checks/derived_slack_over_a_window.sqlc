@@ -10,7 +10,7 @@
 #   statement of the same thing and the one worth reading: exactly two REASONS license it,
 #   "it runs the whole period" and "the question has no denominator". Two answers, not
 #   two documents -- most layers in this corpus file one of them.
--- pm:Layer/pm:timeSlack with pm:absent reason="derived", against pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

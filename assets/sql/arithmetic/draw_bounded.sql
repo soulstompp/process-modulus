@@ -1,4 +1,4 @@
--- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+-- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     -- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
@@ -26,7 +26,7 @@ LEFT JOIN (
                      THEN format('a draw in %s against a rating in %s', d.draw_unit, d.n_unit)
                 ELSE format('draw, rating and slack all in %s', d.n_unit) END AS detail
     FROM (
-        -- pm:Supply/pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
+        -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT n.filing, n.layer,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
        n.amount_low  AS n_low,

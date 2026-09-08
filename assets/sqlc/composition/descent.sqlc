@@ -25,7 +25,7 @@
 # ⛔ `factor_absent` IS CARRIED AS A DISJUNCTION AND NOT COALESCED AWAY. A part whose conversion
 #   nobody sized poisons every path through it: the product is unknown rather than one, and a
 #   caller that reads the number without the flag has asserted the units already agree.
--- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     :compose(composition/parts.sqlc)

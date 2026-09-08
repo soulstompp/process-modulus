@@ -15,7 +15,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -43,7 +43,7 @@ FROM pm.layer l
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.regime
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b

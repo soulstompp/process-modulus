@@ -17,7 +17,7 @@
 #    threshold and reported a thin rule as well covered. That is the trap this repository is
 #    written to name, firing inside its own coverage table -- and it is why nothing counts a
 #    population except by composing the population.
--- pm:Coupling at two levels, related through pm:Fusion/pm:Part.
+-- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part.
 SELECT up.filing AS upper_filing, up.from_layer, up.to_layer,
        lo.filing AS lower_filing,
        lo.low  * (pd.d_low  / cd.d_low)  AS ceil_low,

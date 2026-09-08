@@ -10,7 +10,7 @@
 # was added to prevent, arriving in the CHECKER instead of in the document.
 # ⭐ `none` and `notApplicable` still owe the sum exactly. Only `unmeasured` suspends it.
 # ⛔⛔ AND IT SUSPENDS AT BOTH LEVELS. A fusion may file an elimination and declare its
-# QUANTITY `unmeasured`, "we know these hours are double counted and cannot say by how much" , 
+# QUANTITY `unmeasured`, "these hours are double counted and nobody can say by how much" , 
 # which is a different filing from an unsearched list and owes no equality either.
 # `coalesce(e.low, 0)` reads that as a zero and asserts a sum the composer declined, and
 # `tests/composition.rs::expected` returns `None` for exactly that case. Two witnesses, one

@@ -9,8 +9,8 @@
 # at all, while the demand it was computed from is perfectly well formed.
 #
 # ⭐ The example recomputes every `mod` in Rust and asserts the verdict matches this column, so
-# the figure the note quotes is calculated twice rather than counted by hand, which is what it
-# was, and it drifted.
+# the figure the note quotes is calculated twice rather than counted by hand, which is what a
+# figure counted by hand does: it drifts.
 #
 # ⚠️ `quantum_mode` ALONE IS THE DIVISOR because every filed quantum in this corpus is a point
 # value. The example ASSERTS that rather than assuming it: a quantum with a spread would make

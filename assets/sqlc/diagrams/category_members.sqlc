@@ -9,8 +9,8 @@
 #
 # ⭐⭐ MEASURED, AND EXERCISED RATHER THAN HYPOTHETICAL. In this corpus one operation both draws
 #    from `labour` and induces into `capability`, so it belongs to two layers, and a lane set can
-#    hold it in one. Before this relation existed the emitter put it in the draw lane and the
-#    induction was absent from the artifact entirely.
+#    hold it in one. ⛔ With no relation for the cover, an emitter puts the operation in the
+#    draw lane and the induction is absent from the artifact entirely.
 #
 # ⛔ INCIDENCE ONLY. The wider relation carries three points, a unit, a typed absence and
 #   `decider`; none of it composes here, for the reason diagrams/lane_members.sqlc gives.

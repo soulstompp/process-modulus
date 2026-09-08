@@ -2,7 +2,7 @@
 # `violates` where the answer is that the bound is where the measurements fell.
 #
 # ⭐⭐⭐ THE RULE IS THE SCHEMA'S OWN TWO SENTENCES PUT BESIDE EACH OTHER.
-#    `boundOrigin absent reason="none"` is documented as: "NOTHING SETS IT. The bound is where
+#    `boundOrigin absent/reason = none` is documented as: "NOTHING SETS IT. The bound is where
 #    the MEASUREMENTS FELL, not where a rule put them, and there is no lever to look for."
 #    A point value has no range, so nothing fell anywhere. The sentence describes a spread the
 #    claim does not have, and it is the answer a receiver would act on -- go measure again and
@@ -22,9 +22,9 @@
 #    Seventeen `pm:jagged/pm:draw` claims are filed. Sixteen are points and all sixteen
 #    answered `none`; the ONE with a spread answers `derived`, under a comment that reads "a
 #    point draw converts into a range for the same reason the nameplate does: the cards drawn
-#    are EXACT, the hours they were drawn for are not." In the single place a draw stopped
-#    being a point, the author wrote down why the others are points. The rule was not imposing
-#    a reading -- it was reciting one the documents already made somewhere else.
+#    are EXACT, the hours they were drawn for are not." In the single place a draw is not a
+#    point, the author writes down why the others are. The rule imposes no reading; it recites
+#    one the documents already make somewhere else.
 #    ⭐ Look for that shape before acting on any first run: the sibling that BREAKS the pattern
 #      is the author's own control, and it is worth more than the count of the ones that fit.
 #
@@ -37,7 +37,7 @@
 # ⛔ WHAT WOULD REFUTE IT: a quantity that is genuinely exact, genuinely unowned, and genuinely
 #   not an observed count. The schema's own gloss on `none` argues no such thing exists, since
 #   an unowned bound is by construction one that measurement placed.
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

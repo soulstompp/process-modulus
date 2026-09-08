@@ -1,4 +1,4 @@
--- pm:Fusion/pm:Part crossing a document; BPMN 2.0 tRelationship source/target.
+-- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
     -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
@@ -13,7 +13,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

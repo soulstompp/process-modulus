@@ -20,8 +20,8 @@
 #
 # ⛔ TWO RULES READ THIS RELATION AND THEY ASK DIFFERENT QUESTIONS OF IT. One wants the layers
 #   with no named holder; the other wants every one of them, against the shares that were
-#   admitted. They shared these joins in two inlined copies before this file existed, which is
-#   one edit away from two populations under one argument.
+#   admitted. Inlined at both call sites, these joins are two copies of one population, which
+#   is one edit away from two populations under one argument.
 -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (

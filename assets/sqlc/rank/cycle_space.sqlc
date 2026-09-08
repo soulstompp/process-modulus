@@ -11,10 +11,11 @@
 #    the ROW SPACE, a gradient, plus the LEFT NULLSPACE, the cycle part.
 #    `checks/conversion_cycle_does_not_close` asks that the cycle component of `log phi` vanish,
 #    which says `log phi` is a gradient, which says a POTENTIAL exists: an absolute log-size per
-#    unit whose differences are the filed factors. A rule written as a walk round a loop was a
-#    subspace condition the whole time. Gilbert Strang's graph chapter is the reference.
+#    unit whose differences are the filed factors. A rule written as a walk round a loop IS a
+#    subspace condition. Gilbert Strang's graph chapter is the reference.
 #
-# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER, AND PROSE CARRIED THEM BEFORE THIS RELATION EXISTED. Run it. The corpus moves and a sentence does not.
+# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER, BECAUSE THIS RELATION IS WHAT PRINTS THEM. Run it.
+#   The corpus moves and a sentence does not.
 #
 # ⚠️ COMPONENTS ARE UNDIRECTED, because `n - c` and `m - n + c` are facts about the underlying
 #   undirected graph. Reading them off the directed edges gives a different and wrong `c`.

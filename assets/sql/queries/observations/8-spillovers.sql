@@ -7,7 +7,7 @@ SELECT s.borne_by                       AS "borne_by!",
        coalesce(s.their_search::text, 'a coupling of its own') AS "their_search!",
        coalesce(s.their_extent, '')     AS "their_extent!"
 FROM (
-    -- pm:Couplings/pm:coupling, projected onto every other filing holding both of its ends.
+    -- pm:couplings/pm:coupling, projected onto every other filing holding both of its ends.
 SELECT c.filing        AS observed_in,
        b.filing        AS borne_by,
        c.from_layer,
@@ -17,7 +17,7 @@ SELECT c.filing        AS observed_in,
        s.answer        AS their_search,
        sc.extent       AS their_extent
 FROM      (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -36,7 +36,7 @@ FROM pm.layer l
 
 ) b2 ON b2.filing = b.filing AND b2.layer = c.to_layer
 LEFT JOIN (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
 

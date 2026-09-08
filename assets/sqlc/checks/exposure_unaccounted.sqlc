@@ -7,9 +7,9 @@
 #    largest demand against the smallest supply. What could have gone unserved is at most
 #    what the buffer can absorb plus what they admit went unserved, and the buffer here
 #    absorbs nothing by their own measurement. So the whole exposure has to be accounted for
-#    in the holder rows. ⭐ `absorbable` is now READ rather than assumed: it is a sum across
-#    the whole buffer row and it is zero by construction of this population, where the literal
-#    `0` in the sentence below was a claim about the capacity column alone.
+#    in the holder rows. ⭐ `absorbable` is READ and never assumed: it is a sum across the whole
+#    buffer row and it is zero by construction of this population, where a literal `0` in the
+#    sentence below would be a claim about the capacity column alone.
 #
 # ⛔⛔ EVALUATED AT THE HIGH CORNER, ON PURPOSE. The two sides of a transition fit are
 #    ANTI-CORRELATED -- the week demand ran highest is not the week supply ran lowest -- so

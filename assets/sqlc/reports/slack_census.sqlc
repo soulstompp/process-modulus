@@ -1,13 +1,13 @@
 # WHICH BUFFERS A SET OF DOCUMENTS SIZES, AND FOR THE REST, WHY NOT. One row per (buffer,
-# evidence): how many slacks were sized, how many of those read zero, and one column per typed
-# reason the others were not.
+# evidence): how many slacks are sized, how many of those read zero, and one column per typed
+# reason the rest are not.
 #
-# ⭐⭐⭐ IT PARTITIONS, AND THE CENSUS IT REPLACES DID NOT. `matrices.sqlc` counted `sized`,
-#    `absent = 'none'` and `absent = 'unmeasured'` and called it a breakdown. Those three do not
-#    add up to the total: `notApplicable` and `derived` slacks fell out of the count silently,
-#    and one of the dropped rows was the single `derived` time slack that
-#    entries/derived_time_slacks.sqlc and checks/derived_slack_over_a_window.sqlc exist to talk
-#    about. A census with a residue is a census nobody can check.
+# ⭐⭐⭐ IT PARTITIONS, AND A BREAKDOWN THAT DOES NOT IS WORSE THAN NO BREAKDOWN. Counting
+#    `sized`, `absent = 'none'` and `absent = 'unmeasured'` gives three figures that do not add
+#    up to the total: `notApplicable` and `derived` slacks fall out silently, and among them is
+#    the single `derived` time slack that entries/derived_time_slacks.sqlc and
+#    checks/derived_slack_over_a_window.sqlc exist to talk about. A census with a residue is a
+#    census nobody can check.
 #
 # ⛔⛔ AND `absent = 'none'` WAS STRUCTURALLY DEAD, WHICH IS WORSE THAN WRONG. A slack is a
 #    `pm:StatedClaim`, so its absent branch is a `pm:ClaimAbsence` carrying

@@ -8,9 +8,9 @@
 #    document boundary.
 #
 # ⛔⛔⛔ AND THE PARTS ARE NOT THE ONLY PLACE THIS MODEL REACHES OUT OF A FILING. There are TWO
-#    `pm:ForeignId` references: a `pm:Part`, and an `asrt:Elimination/between`. Both name a
-#    notation and a layer in another document, and the second had no relation calling it a
-#    reference, so every enumeration of what this model reaches returned the parts alone.
+#    `pm:ForeignId` references: a `asrt:Part`, and an `asrt:Elimination/between`. Both name a
+#    notation and a layer in another document. ⛔ With no relation calling the second one a
+#    reference, every enumeration of what this model reaches returns the parts alone.
 #    ⭐ In THIS corpus the union changes nothing, because all 3 documents a `between` names are
 #    already reached by a part. That is luck and not construction, and a count cannot tell the
 #    difference, which is why the union is taken here rather than argued about.

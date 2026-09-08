@@ -16,7 +16,7 @@
 # ⭐ `unbounded` IS NOT A SMALLER `scoped`. epistemics/scopes.sqlc has the argument: `scoped`
 #   says somebody established what lies outside, `unbounded` says nobody looked. Folding them
 #   would count a silence as a boundary.
--- layers/remainder.sqlc against pm:Stack/pm:scope, pm:Couplings/pm:absent and entries/spillovers.sqlc.
+-- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent and entries/spillovers.sqlc.
 SELECT r.filing, r.layer,
        sc.extent,
        cs.answer AS search,

@@ -1,4 +1,4 @@
--- every pm:Absent/@reason in the schema, from every element that admits one.
+-- every pm:absent/reason in the schema, from every element that admits one.
 SELECT filing, subject, question, reason FROM (
     SELECT filing, layer AS subject, 'demand'              AS question, demand_absent         AS reason FROM pm.layer
     UNION ALL SELECT filing, layer, 'demand narrowsWhen',  demand_narrows_absent FROM pm.layer
@@ -114,7 +114,7 @@ FROM pm.stack_scope ss
 
     ) sc
     UNION ALL SELECT filing, '(the stack)',   'did anybody look for couplings',   answer    FROM (
-        -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+        -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
 
@@ -126,13 +126,13 @@ FROM pm.filing_identity fi
 
     ) n
     UNION ALL SELECT composition, composed_layer, 'did anybody look for double counting', answer FROM (
-        -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+        -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 
     ) es
     UNION ALL SELECT composition, composed_layer || ' / ' || quantity, 'eliminated quantity', absent FROM (
-        -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+        -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason

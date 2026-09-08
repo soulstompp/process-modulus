@@ -1,15 +1,15 @@
 # THE PARTS THAT CROSS A DOCUMENT, WHICH IS THE `callActivity` POPULATION AND NO LONGER THE WHOLE
 # PART TABLE. One row per part whose target lives in another filing.
 #
-# ⭐⭐⭐ THE PIN IS IN THE FILE NAME BECAUSE IT IS NOT IN THE KEY, AND A RELATION THAT RESTRICTS A DIMENSION MUST DECLARE IT. `calls`
-#    used to expect `|callActivity| + |subProcess| = |part|`, one law over two elements, and that
-#    is what let a LOCAL part be rendered as a flow node at all. A local fusion is a partition of
-#    the composed layer, not an activity inside it, so the two halves are now two laws.
+# ⭐⭐⭐ THE PIN IS IN THE FILE NAME BECAUSE IT IS NOT IN THE KEY, AND A RELATION THAT RESTRICTS A DIMENSION MUST DECLARE IT.
+#    `|callActivity| + |subProcess| = |part|` is one law over two elements, and a law of that
+#    shape lets a LOCAL part be rendered as a flow node. A local fusion is a partition of the
+#    composed layer, not an activity inside it, so the two halves are two laws.
 #
 # ⛔⛔ AND SPLITTING THEM IS WHAT LETS THE `invents` STATE BE MEASURED. Only a foreign part goes
 #   through `calledElement`, which is a QName of a PROCESS, and that is the flattening that can put
-#   a cycle in the emitted call graph which `F` does not have. A law over the union of both could
-#   not say how much of the emission was exposed to it. This one can: it IS the exposed population.
+#   a cycle in the emitted call graph which `F` does not have. A law over the union of both cannot
+#   say how much of the emission is exposed to it. This one can: it IS the exposed population.
 -- diagrams/calls.sqlc pinned to the parts that leave their own document.
 SELECT c.composition, c.composed_layer, c.part_notation, c.part_filing, c.part_layer
 FROM (

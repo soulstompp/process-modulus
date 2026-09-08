@@ -9,8 +9,8 @@
 #    other with nothing downstream able to tell.
 #
 # ⭐⭐⭐ THIS RELATION EXISTS BECAUSE OF DE MORGAN AND IT IS WORTH SAYING WHY. The condition
-#    it replaces was written as a conjunction of two negations, in two different SQL idioms,
-#    at two call sites -- an `IS DISTINCT FROM` beside a `NOT EXISTS`. That is the most
+#    it names reaches its call sites otherwise as a conjunction of two negations, in two
+#    different SQL idioms -- an `IS DISTINCT FROM` beside a `NOT EXISTS`. That is the most
 #    drift-prone shape there is: two ways to say NOT, neither of which names what is being
 #    excluded. `NOT a AND NOT b` is `NOT (a OR b)`, so the thing to name is the DISJUNCTION:
 #    the fusions that are suspended. The callers then anti-join one relation, and adding a

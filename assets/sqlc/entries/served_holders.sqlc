@@ -1,12 +1,12 @@
 # THE HOLDERS WHOSE SHARE THE ABSORBING BUFFER ACTUALLY TOOK. One row per holder of a kind that
 # represents demand the system met: `booked`, `counterparty`, `people`.
 #
-# ⭐⭐⭐ IT IS THE POSITIVE SET OF THE MODEL'S OWN INEQUALITY AND IT HAD NO NAME. The rule is
-#    `Σ_{j served} H[l,j] <= S[l, A(l)]`: what was absorbed is bounded by what could absorb. Only
-#    the complement was a file, so three callers spelled this side out as
+# ⭐⭐⭐ IT IS THE POSITIVE SET OF THE MODEL'S OWN INEQUALITY, AND THE SIDE MOST LIKELY TO GO
+#    UNNAMED. The rule is `Σ_{j served} H[l,j] <= S[l, A(l)]`: what was absorbed is bounded by
+#    what could absorb. With only the complement in a file, a caller spells this side out as
 #    `LEFT JOIN entries/unserved_holders.sqlc USING (filing, layer, kind)` followed by
 #    `u.kind IS NULL` -- an anti-join standing in for a kind test on a column already in hand,
-#    written three times, in a relation nobody could run alone and count.
+#    written once per caller, in a relation nobody can run alone and count.
 #
 # ⛔⛔ IT IS WRITTEN AS THE KINDS IT KEEPS, NOT AS A NEGATION OF ITS SIBLING. `NOT IN
 #    ('customer','unrealised')` would make this file's meaning depend on a list living somewhere

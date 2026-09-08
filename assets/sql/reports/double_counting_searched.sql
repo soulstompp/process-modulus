@@ -1,10 +1,10 @@
--- pm:Fusion/pm:Eliminations/pm:Absent, over the corpus.
+-- asrt:Fusion/asrt:eliminations/pm:absent, over the corpus.
 SELECT coalesce(s.answer::text, 'eliminations filed') AS the_search,
        count(*) AS fusions,
        CASE WHEN s.answer = 'unmeasured' THEN 'sum rule SUSPENDED'
             ELSE 'sum rule exact' END AS what_is_owed
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:Absent, one row per composed layer asked.
+    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es
 

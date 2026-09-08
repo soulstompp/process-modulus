@@ -50,11 +50,11 @@ fundo: a descida de um resto para mais cedo do que a de uma soma, na primeira ca
 procura e capacidade nominal não foram ambas escaladas por um mesmo fator com largura, porque
 subtraí-las é aí legítimo. Ler as arestas `:compose()` de cima para
 baixo é ler o que este modelo considera construído a partir de quê — que é aquilo que os
-esquemas afirmam em prosa e que, até agora, não se podia verificar nem sequer percorrer.
+esquemas afirmam em prosa, e esta árvore é onde isso se verifica e se percorre em vez de
+apenas se ler.
 
-**A afirmação:** quarenta e quatro regras deste modelo estão escritas na prosa dos esquemas e não
-são verificadas por nada, porque o XSD 1.0 não tem `xs:assert` e não consegue comparar um elemento
-com outro. Repare-se no que essas regras dizem de facto. *As parcelas somam a grandeza. O sinal
+**A afirmação:** há regras deste modelo escritas na prosa dos esquemas e verificadas por nada,
+porque o XSD 1.0 não tem `xs:assert` e não consegue comparar um elemento com outro. Repare-se no que essas regras dizem de facto. *As parcelas somam a grandeza. O sinal
 concorda com a comparação de intervalos. Nenhuma folha é alcançável por dois caminhos.* São
 junções, somas e comparações — impossíveis numa gramática, correntes numa linguagem de consulta.
 
@@ -157,7 +157,7 @@ Distingui-los é todo o assunto, dos dois lados.
 | **o mau zero** | dois factos diferentes colapsados num só número | `C` densificado — [§5](#5-o-que-custa-densificar) |
 | **o zero perigoso** | uma regra que não examinou nada e parece uma passagem | a tabela de cobertura |
 | **o zero que se quer** | nenhuma violação, de regras que correram mesmo | a primeira tabela do `rules.sql` |
-| **o mesmo zero, duas vezes** | um facto com duas grafias | `absent reason="none"` contra uma afirmação de `[0,0,0]` |
+| **o mesmo zero, duas vezes** | um facto com duas grafias | `absent/reason = none` contra uma afirmação de `[0,0,0]` |
 | **o zero de fronteira** | uma comparação a assentar exatamente na linha | `n_low = d_high` — uma convenção escolhida |
 | **o zero que NÃO devia ser zero** | uma tabela cujo vazio significaria que ninguém foi ver | os reencaminhamentos abaixo |
 | **o zero que agora são dois zeros** | um branco que transportava «verificado e não há» e «ninguém verificou» ao mesmo tempo | `coupling_search`, `elimination_search` — [§8](#8-o-zero-que-afinal-eram-dois) |
@@ -343,11 +343,11 @@ direito a discordar. Ver a `asrt:Fusion`.
 
 *Alguém foi procurar a dupla contagem?*
 
-Durante duas revisões a resposta era indeclarável. Uma fusão que tinha sido verificada e estava
-limpa e uma fusão que ninguém tinha examinado produziam **os mesmos bytes** — uma lista vazia de
-eliminações. O que quer dizer que a reconciliação `Σ partes − eliminações = consolidado` era
-**exata para as fusões que declaravam uma e um encolher de ombros para as que não declaravam
-nenhuma**, e nada no documento dizia qual se estava a ler.
+Sem invólucro a resposta é indeclarável. Uma fusão verificada e limpa e uma fusão que ninguém
+examinou produzem **os mesmos bytes** — uma lista vazia de eliminações. O que torna a
+reconciliação `Σ partes − eliminações = consolidado` **exata para as fusões que declaram uma e um
+encolher de ombros para as que não declaram nenhuma**, sem que nada no documento diga qual se
+está a ler.
 
 ```
 eliminations absent none          verificado, limpo -> Σ partes tem de igualar a figura consolidada
@@ -479,9 +479,9 @@ resto.** → **verificado na [§4](#4-φ-correlacionado-consigo-próprio)**
 
 `x_composta = F Φ x_partes − e`, ao longo de onze camadas compostas, exata nos três extremos.
 
-Estava errada da primeira vez que correu, porque me esqueci do `e`. As eliminações são o termo que
-se deixa cair, e numa camada isso são 90 GPU-hora de procura contadas nas declarações de dois
-membros ao mesmo tempo. Nada avisa — os totais saem plausíveis e errados.
+As eliminações são o termo que se deixa cair, e numa camada isso são 90 GPU-hora de procura
+contadas nas declarações de dois membros ao mesmo tempo. Nada avisa — os totais saem plausíveis
+e errados.
 → **como produto matricial a sério na [§3](#3-fφx--e-como-produto-matricial-a-sério)**
 
 ---
@@ -554,13 +554,12 @@ reescrevia cada população num segundo dialeto de si mesma, e **três das vinte
 regra sobre que reportavam** — uma delas em voz alta que chegava para chamar `ok` a uma regra que
 examina uma única linha.
 
-⭐⭐ **Algumas dessas linhas são novas e nenhuma delas é uma ideia nova.** Cada uma já estava escrita
-na prosa dos esquemas e era INVERIFICÁVEL, porque em cada caso o estado de que depende era um branco
-— uma lista vazia, um elemento em falta, uma enumeração omitida — e um branco não tem razão por que
-agrupar. *Uma janela é transportada através de uma fusão e nunca somada* é a mais afiada: apanhou um
-defeito vivo à primeira execução, uma camada composta que tinha deixado cair o ciclo de
-funcionamento da sua parte, onde a queda era idêntica byte a byte a uma linha que corre sete dias
-por semana. → **[§8](#8-o-zero-que-afinal-eram-dois)**
+⭐⭐ **Nenhuma dessas linhas é uma ideia nova, e várias só são alcançáveis porque o estado de que
+dependem tem nome.** Quando um estado é um branco — uma lista vazia, um elemento em falta, uma
+enumeração omitida — não há por que agrupar, e a regra fica em prosa por mais claramente que
+esteja escrita. *Uma janela é transportada através de uma fusão e nunca somada* é a mais afiada:
+uma camada composta que deixa cair o ciclo de funcionamento da sua parte é idêntica byte a byte a
+uma linha que corre sete dias por semana. → **[§8](#8-o-zero-que-afinal-eram-dois)**
 
 As finas são finas pela mesma razão que os testes em Rust o são: quase nada no conjunto declara
 uma margem numérica, apenas três declarações registam algum acoplamento, e exatamente duas camadas
@@ -792,8 +791,8 @@ interessa.** Tudo limpo significaria que o conjunto só declara procuras assente
 dente de serra significaria que o caso ordenado está por exercitar. A afirmação é que um resíduo
 desordenado é ORDINÁRIO e não universal, e isso precisa que ambos ocorram.
 
-⛔ Este número é citado no [`docs/linear-algebra.md`](../../docs/linear-algebra.md), onde era mantido
-lendo o XML e contando. Derivou duas vezes, e à segunda era o denominador tanto como o numerador.
+⛔ Este número é citado no [`docs/linear-algebra.md`](../../docs/linear-algebra.md), que o lê
+daqui. Mantido a ler o XML e a contar, é um número que ninguém volta a contar.
 ↑ *resolve a metade do dente de serra de [`r = n − d` inverte os
 extremos](#r--n--d-inverte-os-extremos).*
 
@@ -818,7 +817,7 @@ limite mais apertado possível, não um limite em falta**, e é um facto diferen
 declaram `unmeasured`.
 
 ⚠️ **Uma frase sobre esta coluna apodrece sempre que a grafia de um zero se move, e ela move-se.**
-Declarem-se os zeros como `absent reason="none"` e contam como ausências; estreite-se o
+Declarem-se os zeros como `absent/reason = none` e contam como ausências; estreite-se o
 `pm:StatedClaim` de modo que um zero medido seja uma afirmação e a coluna muda por baixo de
 qualquer prosa que tenha nomeado uma figura. Imprima-se em vez de se escrever. O que continua
 por exercitar é uma margem de capacidade NÃO nula: nenhuma declaração enunciou ainda uma, pelo que
@@ -839,7 +838,7 @@ ficado mais afiadas. Cinco codificações nos dois esquemas continham um facto d
 valores em dois estados, e todas elas sobreviveram à revisão **porque os seus dois valores estavam
 corretos.** Nada num booleano, ou numa lista vazia, aponta para o que ele não consegue dizer.
 
-| o que era de dois valores | o valor que não tinha codificação |
+| o que é de dois valores | o valor sem codificação |
 |---|---|
 | `Stack/coupling`, elemento sem limite superior | ⭐⭐ *alguém foi ver e as camadas são independentes* |
 | `Fusion/elimination`, elemento sem limite superior | *quem compôs verificou e as partes não se duplicam* |
@@ -861,8 +860,8 @@ corretos.** Nada num booleano, ou numa lista vazia, aponta para o que ele não c
 ⛔⛔ **Leia-se a linha que não está lá.** Nenhuma pilha deste conjunto afirma independência. A
 afirmação central do modelo — a de que uma camada é um sítio onde um resto é suportado
 *independentemente do de todas as outras* — nunca foi testada por declaração nenhuma daqui, e foi
-uma vez contradita. Isso é um facto sobre a PROVA e não sobre um documento qualquer, e só é um facto porque
-a lista vazia deixou de ser uma resposta.
+uma vez contradita. Isso é um facto sobre a PROVA e não sobre um documento qualquer, e só é
+alcançável porque aqui uma lista vazia não é uma resposta.
 
 **A mesma forma um documento acima, e aqui a resposta muda a aritmética.** Uma fusão que declare
 `eliminations` como `none` ou `notApplicable` deve uma soma EXATA — a figura composta iguala `Σ`
@@ -886,10 +885,10 @@ volta a um aviso.
 | alguém é dono dele: policy                                     |          1 |
 ```
 
-Cerca de um terço do conjunto responde `derived`, o que quer dizer que **o modelo já enuncia o autor
-desse extremo num elemento irmão e não tinha maneira de apontar para ele.** O
-`Nameplate/amountOrigin` e o `LumpyQuantum/origin` estavam a fazer o trabalho para a metade da
-capacidade nominal de todas as declarações enquanto o `boundOrigin` ficava em branco três linhas
-adiante — obrigatório e embrulhado num caso, opcional e silencioso no outro, na mesma sequência.
+Cerca de um terço do conjunto responde `derived`, o que quer dizer que **o modelo já enuncia o
+autor desse extremo num elemento irmão.** O `Nameplate/amountOrigin` e o `LumpyQuantum/origin`
+fazem esse trabalho para a metade da capacidade nominal de todas as declarações, e um
+`boundOrigin` opcional três linhas adiante fica em branco — obrigatório e embrulhado num caso,
+opcional e silencioso no outro, na mesma sequência.
 ↑ *resolve [porque é que as tabelas têm a forma que
 têm](#porque-é-que-as-tabelas-têm-a-forma-que-têm).*

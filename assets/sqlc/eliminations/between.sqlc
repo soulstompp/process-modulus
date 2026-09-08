@@ -10,15 +10,15 @@
 # ⛔⛔ WITHOUT A HOME IN THE DATABASE the corpus's eight are read from the XML and dropped on
 #    every ingest, and nothing notices, because no rule reads them: a rule reads only what it
 #    needs, so a field no rule reads is under no pressure to exist. Only asking
-#    "could I write this document back out" finds a hole like this, which is a question the query
-#    side structurally cannot ask.
+#    "can this document be written back out" finds a hole like this, which is a question the
+#    query side structurally cannot ask.
 #
 # ⛔ `notation` IS A FOREIGN REFERENCE AND MAY DANGLE, so it carries no foreign key, exactly as
 #   `composition/part_references.sqlc` does not. `asrt:Elimination` argues the point directly,
 #   refusing a keyref that would restrict `between` to the fusion's own parts because "a group
 #   eliminating against a member that files nothing, or against a layer folded into a different
 #   composed layer, is ordinary".
--- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+-- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b

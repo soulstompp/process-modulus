@@ -19,8 +19,8 @@
 #    difference. Filing [1, 1, 1] with a `boundOrigin` and a provenance says a person checked.
 #
 # ⭐ A TYPED-ABSENT FACTOR SATISFIES THIS RULE and suspends the sum instead, via
-#   `composition/unsized_conversions.sqlc`. "I looked at the crossing and cannot size it" is an
-#   answer; saying nothing is not.
+#   `composition/unsized_conversions.sqlc`. "Somebody looked at the crossing and cannot size it"
+#   is an answer; saying nothing is not.
 -- asrt:Part against its composed pm:Layer's unit, per quantity they both file.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

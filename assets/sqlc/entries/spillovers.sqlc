@@ -18,7 +18,7 @@
 # ⛔ THE FAR FILING IS NAMED AND THE BOUND IS NOT COPIED. merge-holding-composition argues at
 #   length that a coupling carried up a level CANNOT survive at full strength and had to be
 #   re-observed. A number copied across a boundary is a number nobody took.
--- pm:Couplings/pm:coupling, projected onto every other filing holding both of its ends.
+-- pm:couplings/pm:coupling, projected onto every other filing holding both of its ends.
 SELECT c.filing        AS observed_in,
        b.filing        AS borne_by,
        c.from_layer,

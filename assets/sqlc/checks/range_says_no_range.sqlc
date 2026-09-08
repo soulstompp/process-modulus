@@ -10,12 +10,13 @@
 #    `every-local-part` filed an elimination of 1800/2000/2400 answering `notApplicable`, under
 #    a note pasted verbatim from the elimination beside it -- which is genuinely a point value,
 #    2160 exactly, where the same note is true. One document, two claims, and only the width
-#    tells them apart. Widening the rule from `layer.demand_*` to every claim found it on the
-#    first run; the filing now answers `unmeasured`, which is what its own source demand says.
+#    tells them apart. A rule confined to `layer.demand_*` never reaches it; widened to every
+#    claim it does, and the honest answer there is `unmeasured`, which is what that filing's
+#    own source demand says.
 #    ⭐ THE PASSING IDIOM FOR A RANGED ELIMINATION IS IN THE CORPUS TWICE and worth copying:
 #      `instrument` with the measurement that would tighten it, over a `none` bound origin --
 #      "nothing sets this bound. It is the size of the double counting the composer found".
--- pm:Claim/pm:narrowsWhen with pm:Absent reason="notApplicable" on any claim where low <> high.
+-- pm:Claim/pm:narrowsWhen with pm:absent/reason = notApplicable on any claim where low <> high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

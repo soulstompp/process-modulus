@@ -1,12 +1,12 @@
 -- BPMN 2.0 §7 (activities), §8 (gateways, events), §9 (swimlanes), §10 (data), §11 (artifacts).
 SELECT * FROM (VALUES
-  -- ACTIVITIES. The three we spend, and the border is what tells them apart.
+  -- ACTIVITIES. The three this emission spends, and the border is what tells them apart.
   ('task'::text, 'rounded rectangle, thin border'::text, 'composition'::text, true,
    'pm:Operation, reached by ForeignId'::text, NULL::text),
   ('callActivity', 'rounded rectangle, THICK border', 'composition', true,
-   '⭐ pm:Part crossing a document. The thick border IS the notation for substitution, so this glyph is what a compose directive renders as, and drawing it like a task discards the pipeline', NULL),
+   '⭐ asrt:Part crossing a document. The thick border IS the notation for substitution, so this glyph is what a compose directive renders as, and drawing it like a task discards the pipeline', NULL),
   ('subProcess', 'rounded rectangle with the ⊞ marker', 'composition', false,
-   NULL, '⭐⭐⭐ SPENT ONCE AND THEN WITHDRAWN, WHICH IS THE ONLY ROW HERE THAT MOVED THAT WAY. A local fusion was written as this and it said the wrong thing twice: a subProcess is an ACTIVITY INSIDE a lane where a fusion''s parts PARTITION one, and it is a flow node, so it leaves layer grain exactly as a callActivity does. `childLaneSet` says the true thing and stays keyed (filing, layer). ⛔ Withheld on the COMPOSITION axis, which the ceded law refuses outright, so it is legible ONLY through diagrams/admitted.sqlc'),
+   NULL, '⭐⭐⭐ WITHDRAWN AFTER BEING SPENT, WHICH IS THE ONLY ROW HERE ON THAT PATH. A local fusion written as this says the wrong thing twice: a subProcess is an ACTIVITY INSIDE a lane where a fusion''s parts PARTITION one, and it is a flow node, so it leaves layer grain exactly as a callActivity does. `childLaneSet` says the true thing and stays keyed (filing, layer). ⛔ Withheld on the COMPOSITION axis, which the ceded law refuses outright, so it is legible ONLY through diagrams/admitted.sqlc'),
   ('childLaneSet', 'a laneSet nested inside one lane', 'composition', true,
    '⭐⭐⭐ THE RECURSION EQUIVALENCE, AND BPMN HAD THE ELEMENT ALL ALONG. A fusion''s parts partition what they compose, and this is a SUB-PARTITION. A nested lane is still keyed (filing, layer), so unlike a call it collapses nothing and can invent nothing', NULL),
   ('transaction', 'double-bordered rounded rectangle', 'routing', false,
@@ -43,7 +43,7 @@ SELECT * FROM (VALUES
   ('intermediateThrowEvent', 'double circle, filled marker', 'routing', false, NULL, '§1: no token, no clock'),
   ('boundaryEvent', 'double circle on an activity edge', 'routing', false, NULL, '§1: an interruption is a control-flow event'),
   ('timerEventDefinition', 'clock face', 'routing', false,
-   NULL, '⭐ §1 SAYS THERE IS NO CLOCK, AND A WINDOW IS NOT ONE. pm:Window is a CALENDAR EXTENT: it says over what span a figure was measured, never when anything fires'),
+   NULL, '⭐ §1 SAYS THERE IS NO CLOCK, AND A WINDOW IS NOT ONE. pm:window is a CALENDAR EXTENT: it says over what span a figure was measured, never when anything fires'),
   ('messageEventDefinition', 'envelope', 'routing', false, NULL, '§1: no token'),
   ('errorEventDefinition', 'lightning bolt', 'routing', false, NULL, '⚠️ NOT a violation. A check reports a contradiction between filed sentences; an error event is a runtime throw'),
   ('signalEventDefinition', 'triangle', 'routing', false, NULL, '§1: no token'),

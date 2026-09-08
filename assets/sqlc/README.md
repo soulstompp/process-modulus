@@ -27,7 +27,7 @@ IS and what it MEANS, and can be run on its own by somebody who wants to look at
 ask a question that has nothing to do with any of the above.
 
 ```
-scope/         which documents am I looking at         — corpus, fixtures, everything
+scope/         which documents are in view              — corpus, fixtures, everything
 units/         which units carry a denominator         — and which denominators, over all claims
 layers/        the L-indexed vectors                   — d, n, r = n − d, the absorber
 entries/       the sparse matrices                     — H, S, C, D, N
@@ -45,11 +45,11 @@ vectors. `composition/leaves.sqlc` anti-joins `composition/fusions.sqlc`, becaus
 reached layer that is not a fusion. ⭐ And `composition/unsettled.sqlc` is the other bottom:
 a remainder's descent stops earlier than a sum's, at the first layer whose demand and nameplate
 were not both scaled by one factor with width, because differencing them is legitimate there.
-Reading the `:compose()` edges top-down is reading what this model thinks is built out of what — which is the thing the schemas state in prose and
-could not, until now, be checked or even browsed.
+Reading the `:compose()` edges top-down is reading what this model thinks is built out of what — which is the thing the schemas state in prose, and
+this tree is where it is checkable and browsable rather than only readable.
 
-**The claim:** forty-four rules in this model are written in the schemas' prose and checked by
-nothing, because XSD 1.0 has no `xs:assert` and cannot compare one element against another.
+**The claim:** rules in this model are written in the schemas' prose and checked by nothing,
+because XSD 1.0 has no `xs:assert` and cannot compare one element against another.
 Look at what those rules actually say. *The shares sum to the magnitude. The sign agrees with
 the range comparison. No leaf is reachable by two paths.* Those are joins and sums and
 comparisons — impossible in a grammar, ordinary in a query language.
@@ -151,7 +151,7 @@ zero. Telling them apart is the entire subject, on both sides.
 | **the bad zero** | two different facts collapsed into one number | densified `C` — [§5](#5-what-densifying-costs) |
 | **the dangerous zero** | a rule that examined nothing and looks like a pass | the coverage table |
 | **the zero you want** | no violations, from rules that did run | `rules.sql`'s first table |
-| **the same zero, twice** | one fact with two spellings | `absent reason="none"` vs a claim of `[0,0,0]` |
+| **the same zero, twice** | one fact with two spellings | `absent/reason = none` vs a claim of `[0,0,0]` |
 | **the boundary zero** | a comparison landing exactly on the line | `n_low = d_high` — a chosen convention |
 | **the zero that should NOT be zero** | a table whose emptiness would mean nobody looked | the referrals below |
 | **the zero that is now two zeros** | a blank that carried "checked and found nothing" and "nobody checked" at once | `coupling_search`, `elimination_search` — [§8](#8-the-zero-that-turned-out-to-be-two) |
@@ -331,11 +331,11 @@ entitled to argue with. See `asrt:Fusion`.
 
 *Did anybody look for the double counting?*
 
-For two revisions the answer was unfileable. A fusion that had been checked and found clean and a
-fusion nobody had examined produced **the same bytes** — an empty list of eliminations. Which
-means the reconciliation `Σ parts − eliminations = consolidated` was **exact for the fusions that
-filed one and a shrug for the fusions that filed none**, and nothing in the document said which
-you were reading.
+Without a wrapper the answer is unfileable. A fusion checked and found clean and a fusion nobody
+examined produce **the same bytes** — an empty list of eliminations. Which makes the
+reconciliation `Σ parts − eliminations = consolidated` **exact for the fusions that file one and
+a shrug for the fusions that file none**, with nothing in the document saying which you are
+reading.
 
 ```
 eliminations absent none          checked, clean   -> Σ parts must equal the consolidated figure
@@ -463,9 +463,9 @@ remainder.** → **checked in [§4](#4-φ-correlated-with-itself)**
 
 `x_composed = F Φ x_parts − e`, over eleven composed layers, exact on all three bounds.
 
-It was wrong the first time it ran, because I forgot `e`. The eliminations are the term you
-drop, and on one layer that is 90 GPU-hours of demand counted in two members' filings at once.
-Nothing warns you — the totals come out plausible and wrong.
+The eliminations are the term that gets dropped, and on one layer that is 90 GPU-hours of
+demand counted in two members' filings at once. Nothing warns you — the totals come out
+plausible and wrong.
 → **as a real matrix product in [§3](#3-fφx--e-as-an-actual-matrix-product)**
 
 ---
@@ -536,12 +536,12 @@ disagree about what was examined. The previous version restated each population 
 **three of the twenty-two restatements disagreed with the rule they reported on** — one loudly
 enough to call a rule that examines a single row `ok`.
 
-⭐⭐ **Some of those rows are new and none of them is a new idea.** Each was already written down
-in the schemas' prose and was UNCHECKABLE, because in each case the state it turns on was a blank
-— an empty list, a missing element, an omitted enumeration — and a blank has no reason to group
-by. *A window is carried through a fusion and never summed* is the sharpest: it caught a live
-defect on its first run, a composed layer that had dropped its part's duty cycle where the drop
-was byte-identical to a line that runs seven days a week. → **[§8](#8-the-zero-that-turned-out-to-be-two)**
+⭐⭐ **None of those rows is a new idea, and several are reachable only because the state they
+turn on has a name.** Where a state is a blank — an empty list, a missing element, an omitted
+enumeration — there is no reason to group by, and the rule stays prose however plainly it is
+written. *A window is carried through a fusion and never summed* is the sharpest: a composed
+layer that drops its part's duty cycle is byte-identical to a line that runs seven days a
+week. → **[§8](#8-the-zero-that-turned-out-to-be-two)**
 
 The thin ones are thin for the same reason the Rust tests are: almost nothing in the corpus
 files a numeric slack, only three filings state any coupling at all, and exactly two layers
@@ -767,9 +767,9 @@ interesting.** All-clean would mean the corpus files only demands sitting on the
 all-sawtoothed would mean the ordered case is unexercised. The claim is that an unordered residue
 is ORDINARY rather than universal, and that needs both to occur.
 
-⛔ This figure is quoted in [`docs/linear-algebra.md`](../../docs/linear-algebra.md), where it was
-maintained by reading the XML and counting. It drifted, twice, and the second time it was the
-denominator as well as the numerator.
+⛔ This figure is quoted in [`docs/linear-algebra.md`](../../docs/linear-algebra.md), which
+reads it from here. Maintained by reading the XML and counting instead, it is a number nobody
+recounts.
 ↑ *settles the sawtooth half of [`r = n − d` reverses its
 bounds](#r--n--d-reverses-its-bounds).*
 
@@ -793,7 +793,7 @@ cannot be run hot at any price. **That is the tightest possible bound, not a mis
 is a different fact from the fifteen that file `unmeasured`.
 
 ⚠️ **A sentence about this column rots whenever the spelling of a zero moves, and it has.** File
-the zeroes as `absent reason="none"` and they count as absences; narrow `pm:StatedClaim` so a
+the zeroes as `absent/reason = none` and they count as absences; narrow `pm:StatedClaim` so a
 measured zero becomes a claim and the column moves under any prose that named a figure. Print
 it rather than writing it down. What is still unexercised is a **non-zero** capacity slack: no
 filing has yet stated one, so the inequality has never had to bind against a real number. Run
@@ -813,7 +813,7 @@ sharper. Five encodings in the two schemas held a three- or four-valued fact in 
 every one of them survived review **because both of its values were correct.** Nothing in a
 boolean, or in an empty list, points at what it cannot say.
 
-| what was two-valued | the value that had no encoding |
+| what is two-valued | the value with no encoding |
 |---|---|
 | `Stack/coupling`, an unbounded element | ⭐⭐ *somebody looked and the layers are independent* |
 | `Fusion/elimination`, an unbounded element | *the composer checked and the parts do not double count* |
@@ -835,8 +835,8 @@ boolean, or in an empty list, points at what it cannot say.
 ⛔⛔ **Read the row that is not there.** No stack in this corpus asserts independence. The
 model's central claim — that a layer is a place where a remainder is held *independently of every
 other layer's* — has never been tested by any filing here, and has once been contradicted. That is
-a fact about the EVIDENCE rather than about any one document, and it is a fact only because the
-empty list stopped being an answer.
+a fact about the EVIDENCE rather than about any one document, and it is reachable only because an
+empty list is not an answer here.
 
 **The same shape one document up, and here the answer changes the arithmetic.** A fusion that
 files `eliminations` as `none` or `notApplicable` owes an EXACT sum — the composed figure equals
@@ -860,8 +860,7 @@ second, which is the sum rule `Elimination` exists to make exact, silently back 
 ```
 
 Roughly a third of the corpus answers `derived`, meaning **the model already states the author of
-that edge in a sibling element and had no way to point at it.** `Nameplate/amountOrigin` and
-`LumpyQuantum/origin` were doing the job for the nameplate half of every filing while
-`boundOrigin` sat blank three lines away — required and wrapped in one case, optional and silent
-in the other, in the same sequence.
+that edge in a sibling element.** `Nameplate/amountOrigin` and `LumpyQuantum/origin` do that job
+for the nameplate half of every filing, and an optional `boundOrigin` three lines away sits blank
+— required and wrapped in one case, optional and silent in the other, in the same sequence.
 ↑ *settles [why the tables are shaped as they are](#why-the-tables-are-shaped-as-they-are).*

@@ -13,7 +13,7 @@
 #   ⚠️ A REMAINDER'S WALK BOTTOMS OUT EARLIER AND THIS RELATION DOES NOT NAME THAT BOUNDARY.
 #   composition/unsettled.sqlc does. A row here is a fusion whatever quantity is being folded;
 #   whether a descent should stop on it depends on the quantity.
--- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+-- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     :compose(composition/part_references.sqlc)

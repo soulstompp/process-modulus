@@ -27,7 +27,7 @@
 #   ⭐ At most one ground can apply per quantity because assertion.xsd makes StatedEliminations
 #   an xs:choice: a fusion files an `absent` or `elimination+`, never both. That is a grammar
 #   guarantee the DDL does not carry, which is why the narrowing is written rather than assumed.
--- asrt:Fusion/asrt:Part against asrt:Eliminations, via composition/owed_equality.sqlc.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

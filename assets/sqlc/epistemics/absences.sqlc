@@ -34,7 +34,7 @@
 #    absence is exactly the complement -- mutually exclusive by CHECK constraint, zero rows in
 #    both directions. The wrapper is the POSITIVE side; this relation wants the negative one.
 #    Composing them would return nothing. Naming those complements is a separate decision.
--- every pm:Absent/@reason in the schema, from every element that admits one.
+-- every pm:absent/reason in the schema, from every element that admits one.
 SELECT filing, subject, question, reason FROM (
     SELECT filing, layer AS subject, 'demand'              AS question, demand_absent         AS reason FROM pm.layer
     UNION ALL SELECT filing, layer, 'demand narrowsWhen',  demand_narrows_absent FROM pm.layer

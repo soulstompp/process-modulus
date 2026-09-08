@@ -56,7 +56,7 @@
 #   wearing one number. ⭐ algebra/borne.sqlc settles it without touching this file: Σall = Σkept
 #   + Σremoved, per layer, every run. It prints `3 held = 0 absorbed + 3 unserved` for each of the
 #   four layers above, the vacuum as arithmetic rather than as an argument in a comment.
-#   ⛔ That replaced a hand probe whose `sed` silently matched nothing and reported the opposite.
+#   ⛔ A hand probe cannot say it: a `sed` that matches nothing reports the opposite in silence.
 -- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
 SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
 FROM (

@@ -4,8 +4,8 @@
 # claim whose provenance was asked for and refused, and a claim with no provenance element at
 # all. Folding the last two would count a silence as a refusal.
 #
-# ⛔ epistemics/standing.sqlc HAS BEEN READ BY NOTHING, and its own header quotes a figure the
-# relation no longer returns. A number in a comment is a number nobody recounts.
+# ⛔ THIS SECTION IS epistemics/standing.sqlc's READER, and a relation nothing reads is a
+# relation whose own header quotes a figure nobody recounts.
 -- epistemics/standing.sqlc, folded to its three verdicts.
 SELECT s.what_the_claim_says AS "says!", count(*) AS "claims!"
 FROM (

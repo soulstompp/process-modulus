@@ -8,7 +8,7 @@ SELECT e.composition                              AS "composition!",
        coalesce(string_agg(b.party || '/' || b.layer, ', ' ORDER BY b.seq), '(none named)')
                                                   AS "between!"
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination, per composed layer and quantity.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
        e.absent, e.reason
@@ -16,7 +16,7 @@ FROM pm.elimination e
 
 ) e
 LEFT JOIN (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b

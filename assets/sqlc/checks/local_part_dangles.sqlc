@@ -9,7 +9,7 @@
 # ⛔ XSD 1.0 CANNOT MAKE A KEYREF CONDITIONAL ON ANOTHER FIELD'S VALUE, which is why this is a
 #   query. `composedLayerName` cannot be pointed at "the local stack, but only when the
 #   notation matches mine".
--- pm:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
+-- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

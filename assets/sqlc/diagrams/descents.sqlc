@@ -22,7 +22,7 @@
 #
 # ⚠️ FOREIGN PARTS ONLY. A local part is a `childLaneSet` and already keyed `(filing, layer)`, so
 #   it never lost the grain and owes no repair.
--- pm:Fusion/pm:Part crossing a document; BPMN 2.0 tRelationship source/target.
+-- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
     :compose(diagrams/calls.sqlc)

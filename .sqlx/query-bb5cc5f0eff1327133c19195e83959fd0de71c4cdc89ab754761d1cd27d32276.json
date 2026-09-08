@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.\nSELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states\nFROM ( -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.\nSELECT s.filing, s.extent, s.basis\nFROM (\n    -- pm:Stack/pm:scope, with its pm:basis.\nSELECT ss.filing, ss.extent, ss.basis, ss.absent\nFROM pm.stack_scope ss\n\n) s\n ) s\nUNION ALL\nSELECT s.filing, 'search', 'diagrams/searches.sqlc'\nFROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the\n-- laneSet IS the partition the search is about.\nSELECT s.filing,\n       coalesce(s.answer::text, 'stated') AS answer\nFROM (\n    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n\n) s\n ) s\nUNION ALL\nSELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'\nFROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.\nSELECT c.filing, c.from_layer, c.to_layer\nFROM (\n    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.\nSELECT c.filing, c.from_layer, c.to_layer,\n       c.low, c.mode, c.high, c.unit, c.observation\nFROM pm.coupling c\n\n) c\n ) d\nUNION ALL\nSELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'\nFROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.\nSELECT DISTINCT i.filing, i.layer\nFROM (\n    -- pm:Operation/pm:Induction, carrying pm:decidedBy.\nSELECT n.filing, n.operation, n.layer,\n       n.low, n.mode, n.high, n.unit, n.absent, n.decider\nFROM pm.induction n\n\n) i\n ) c\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "note",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "states",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "bb5cc5f0eff1327133c19195e83959fd0de71c4cdc89ab754761d1cd27d32276"
+}

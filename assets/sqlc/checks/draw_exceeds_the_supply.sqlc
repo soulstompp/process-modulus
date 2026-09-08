@@ -9,8 +9,8 @@
 # ⛔ IT IS THE SUPPLY'S BOUND AND NEVER THE DEMAND'S. "A draw does not exceed what was asked"
 #   is the rule this one is NOT, because a shared line's output is partly somebody else's
 #   demand -- see layers/drawn.sqlc, where the corpus's one instance is quoted. Bounding the
-#   draw by the demand would fire on a correct document, which is the defect
-#   share_exceeds_slack was carrying.
+#   draw by the demand fires on a correct document, which is a rule spending the reader's
+#   trust to say nothing.
 #
 # ⭐⭐⭐ THREE ANSWERS AND NOT TWO, BORROWED FROM `pm:Fit` RATHER THAN INVENTED HERE. This
 #    compared `draw_mode > n_mode + capacity_slack`: two POINTS, in a model whose thesis is

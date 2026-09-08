@@ -9,7 +9,7 @@
 # column, a table or an ingest, and without them the corpus's eight are parsed out and discarded
 # on every load. The query side cannot find that:
 # a rule reads what it needs, so a field nothing reads is under no pressure to exist. The
-# question that finds it is "could I write this document back out from the database".
+# question that finds it is "can this document be written back out from the database".
 #
 # ⛔ AN ELIMINATION WITH NO `between` IS NOT MALFORMED. The element is `minOccurs="0"`, and a
 # composer who eliminates against a member that files nothing has nothing to name. The count is

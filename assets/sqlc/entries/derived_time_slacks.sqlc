@@ -1,5 +1,5 @@
 # THE TIME SLACKS SOMEBODY DERIVED RATHER THAN MEASURED. One row per layer filing its time
-# buffer as `absent reason="derived"`, beside the window that would have to license it.
+# buffer as `absent/reason = derived`, beside the window that would have to license it.
 #
 # ⭐⭐ `derived` MEANS "THE ANSWER IS ALREADY STATED ELSEWHERE AND REPEATING IT HERE WOULD BE
 #    A RESTATEMENT" -- here, that the time slack falls out of the clearance as q / clearance.
@@ -9,7 +9,7 @@
 #   spare concentrated, so dividing by the whole period computes over a base that does not
 #   exist -- and `unmeasured` is worse than a stated window, because it hides the same
 #   assumption behind a number.
--- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     :compose(layers/windows.sqlc)

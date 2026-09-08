@@ -8,7 +8,7 @@
 #
 # ⛔ CORPUS ONLY -- a statement about how real composers file, not about the fixtures written
 #   to exercise the suspension.
--- pm:Fusion/pm:Eliminations/pm:Absent, over the corpus.
+-- asrt:Fusion/asrt:eliminations/pm:absent, over the corpus.
 SELECT coalesce(s.answer::text, 'eliminations filed') AS the_search,
        count(*) AS fusions,
        CASE WHEN s.answer = 'unmeasured' THEN 'sum rule SUSPENDED'

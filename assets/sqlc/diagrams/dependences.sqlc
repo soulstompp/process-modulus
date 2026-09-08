@@ -1,11 +1,11 @@
 # C, THE COUPLING INCIDENCE, PROJECTED TO WHAT AN `association` CAN CARRY. One row per
 # (filing, from_layer, to_layer): this filing observed that relieving one layer moves the other.
 #
-# ⭐⭐⭐ THE MODEL'S OWN FALSIFIER, AND UNTIL NOW NO DIAGRAM COULD STATE IT. `pm:Coupling` exists
-#    *so that the model can be REFUTED IN ITS OWN FORMAT*: a stack is assumed to be independent
-#    quantizations, and a coupling is the observation that says it is not. Every emitted document
-#    was silent about it, so the one artifact a reader is most likely to be shown was the one
-#    artifact incapable of carrying the refutation.
+# ⭐⭐⭐ THE MODEL'S OWN FALSIFIER, DRAWN. `pm:Coupling` exists *so that the model can be REFUTED
+#    IN ITS OWN FORMAT*: a stack is assumed to be independent quantizations, and a coupling is
+#    the observation that says it is not. A diagram silent about it is the artifact a reader is
+#    most likely to be shown AND the one incapable of carrying the refutation, which is what
+#    this relation is here to prevent.
 #
 # ⭐⭐ IT IS DIRECTED, AND THAT WAS CHECKED RATHER THAN ASSUMED. `composition/attenuated.sqlc`
 #    matches from to from and to to to, `entries/spillovers.sqlc` joins each end separately, and

@@ -11,7 +11,7 @@
 #   only three filings state any coupling at all, one of those has no parts, and no fixture
 #   states one. That is a fact about who wrote what, not about the world -- and it is exactly
 #   what a coverage table is for.
--- pm:Coupling at two levels related through pm:Fusion/pm:Part; see composition/attenuated.sqlc.
+-- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

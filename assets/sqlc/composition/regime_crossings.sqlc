@@ -1,12 +1,11 @@
 # EVERY CROSS-DOCUMENT PART WHOSE FRAMEWORK DIFFERS FROM THE ONE IT IS COMPOSED INTO. One row per
 # crossing, with both frameworks and whether the composition cites an instrument.
 #
-# ⭐⭐⭐ IT EXISTS BECAUSE `pm.regime` HELD TEN FILED ROWS AND NO RELATION IN THE TREE READ ONE.
-#    The table was created for a real defect, `refutation` reports under two regimes and a
-#    `filing.jurisdiction` column could not hold that, and then nobody wrote the query. The answer
-#    turned out to need NO schema change at all: pair `regime` with `part` and the crossing is
-#    already there. `merge-group-composition` composes under IFRS-2026 from parts under `NCRF-PE`
-#    and `us-gaap`, which is what consolidation IS, and nothing said so.
+# ⭐⭐⭐ IT NEEDS NO SCHEMA CHANGE: PAIR `regime` WITH `part` AND THE CROSSING IS ALREADY THERE.
+#    `pm.regime` is a tall table because a `filing.jurisdiction` column cannot hold `refutation`,
+#    which reports under two regimes at once. `merge-group-composition` composes under IFRS-2026
+#    from parts under `NCRF-PE` and `us-gaap`, which is what consolidation IS, and this is the
+#    relation that says so.
 #
 # ⭐⭐ AND IT IS THE EXACT ANALOGUE OF THE UNIT CROSSING. `checks/unit_crossing_without_a_factor`
 #    says: cross a unit boundary and you must file what converts, because somebody is asserting
@@ -20,23 +19,15 @@
 #    carries that apart, and it is the §9 pattern arriving where nobody had looked for it: the
 #    matrix needs the search beside it. ⚠️ `pm.regime` has no typed absence column, alone among
 #    the fact tables, so `unmeasured` and `notApplicable` are stored identically here.
-# ⭐⭐⭐ IT NOW READS THE COMPOSER'S OWN FILED HANDLE, AND IT ONCE GUESSED. Written before
-#    `asrt:regime` was ingested, this took each document's FIRST declared regime with `seq = 1`
-#    and compared two documents' self-declarations, which is a real fact and NOT the composer's
-#    claim. The composer states which of its own regimes each part comes under, on every one of
-#    twenty-seven parts, and none of it reached the database. The old header read: Each `asrt:part/asrt:layer` carries an
-#    `asrt:regime` naming WHICH of the composition's own declared regimes that part comes under.
-#    Thirty of those are filed across five documents, fifteen in `merge-group-composition` alone,
-#    and the ingest reads `//pm:regime` only, so not one of them reaches the database. There is no
-#    column for it anywhere.
+# ⭐⭐⭐ IT JOINS TWO SELF-DECLARATIONS AND NEVER THE COMPOSER'S ASSIGNMENT. The composition's
+#    own framework against the PART FILING'S own framework is a real fact and a checkable one.
+#    What the composer says a part reports under is a DIFFERENT claim with a different author,
+#    filed as `asrt:part/asrt:layer/asrt:regime`, and keeping the two apart is what this whole
+#    model exists for: what a filing says about itself and what somebody says about it are never
+#    the same claim.
 #
-#    ⛔ So this relation joins the composition's OWN framework to the PART FILING'S OWN framework.
-#    That is a real fact and a checkable one, and it is NOT the composer's assignment. The two
-#    have different authors, which is the distinction this whole model exists to keep: what a
-#    filing says about itself and what somebody says about it are never the same claim.
-#
-#    ⭐ That rule is `checks/part_regime_disagrees` and it exists now:
-#    `composition/part_regimes.sqlc` holds both claims side by side.
+#    ⭐ The composer's side is `checks/part_regime_disagrees`, over
+#    `composition/part_regimes.sqlc`, which holds both claims side by side.
 --
 -- composition/part_regimes.sqlc: the composer's framework for each part against the framework
 -- the composition itself reports under.

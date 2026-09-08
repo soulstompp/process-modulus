@@ -127,8 +127,8 @@ ORDER BY root_layer, depth, part_filing, part_layer;
 \echo
 \echo === The fusion rule, verified: x_composed = F Phi x_parts - e_x ================
 \echo 'Convert each part into the composed unit, add them up, subtract what was counted'
-\echo 'twice. The elimination is the term that is easy to forget, and forgetting it is'
-\echo 'how this query was wrong the first time it ran.'
+\echo 'twice. The elimination is the term that is easy to forget, and dropping it gives a'
+\echo 'total that is plausible and wrong with nothing to warn you.'
 SELECT composition, composed_layer,
        computed_low, computed_mode, computed_high,   -- computed here
        filed_low, filed_mode, filed_high,            -- filed in the document

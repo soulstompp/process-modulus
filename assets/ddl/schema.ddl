@@ -67,7 +67,7 @@ CREATE TYPE absence_reason AS ENUM ('none', 'unmeasured', 'notApplicable', 'deri
 --    literal, so `WHERE absent = 'derived'` stops resolving at eighteen call sites. A CHECK
 --    keeps the column's type, and therefore its operators.
 
--- ⭐ This model's own, added when `narrowsWhen` stopped being an optional bare string.
+-- ⭐ This model's own, and the typed half of `narrowsWhen`.
 CREATE TYPE narrowing_kind AS ENUM ('instrument', 'intervention', 'experiment');
 
 -- ---------------------------------------------------------------------------
@@ -281,9 +281,9 @@ CREATE TABLE layer (
     --
     --  ⛔⛔ AND ONE OF THEM SAYS SO IN THE NOTE, WHICH IS WHY THE NOTE IS STORED.
     --     `refutation/object-storage` files a counter-example "to the claim that every layer
-    --     carries a remainder, NOT AS A GAP IN THIS DOCUMENT." A gap is exactly what was
-    --     stored. Keeping only the reason keeps the fact and loses the argument, and the
-    --     argument is what the document was written to make.
+    --     carries a remainder, NOT AS A GAP IN THIS DOCUMENT." A gap is exactly what the
+    --     reason alone records. Keeping only the reason keeps the fact and loses the argument,
+    --     and the argument is what the document is written to make.
     --
     -- ⛔ A REMAINDER OF ZERO ARRIVES AS A FILED CLEARANCE, NOT AS `remainder_absent = 'none'`.
     --    "There is no remainder" reads two ways: nothing to subtract from, or the difference
@@ -305,7 +305,7 @@ CREATE TABLE layer (
     --     `absorber buffer` and the corpus refuses to load: `invalid input value for
     --     enum buffer: "capacidade"`. The Portuguese filing cites a TRANSLATED EDITION
     --     of Factory Physics, `urn:example:pt:fisica-da-fabrica:amortecedores`, and its
-    --     absorber is `capacidade`. That filing is correct. The enum was the fork, and
+    --     absorber is `capacidade`. That filing is correct. The enum is the fork, and
     --     the README says so in as many words: "a restated value set is a fork, and a
     --     fork drifts with nothing here able to notice that it has".
     --  ⭐ So the value travels WITH the authority that defines it, and comparing two
@@ -323,10 +323,11 @@ CREATE TABLE layer (
     -- ⛔ `StatedRemainder` takes a `ClaimAbsence` for the reason above: an ingested `'none'`
     --    here is a document that did not validate.
     CONSTRAINT a_remainder_absence_has_no_none CHECK (remainder_absent <> 'none'),
-    -- ⛔ `StatedFit` takes a `ClaimAbsence` too, and its annotation had refused this state in
-    --    prose for revisions while the type admitted it: overlapping ranges are a `transition`
-    --    fit, which the value arm NAMES, so `none` was a second door to a filed answer. Zero
-    --    documents ever took it; the mask over `epistemics/absences.sqlc` is what found it.
+    -- ⛔ `StatedFit` takes a `ClaimAbsence` too, and its annotation refuses this state in prose
+    --    while the type admits it: overlapping ranges are a `transition` fit, which the value
+    --    arm NAMES, so `none` is a second door to a filed answer. No document takes it, and a
+    --    door nobody walks through is reachable only from the mask over
+    --    `epistemics/absences.sqlc`.
     CONSTRAINT a_sign_absence_has_no_none CHECK (sign_absent <> 'none'),
     CONSTRAINT a_remainder_quantity_absence_has_no_none CHECK (qty_absent <> 'none'),
     PRIMARY KEY (filing, layer),
@@ -342,8 +343,8 @@ CREATE TABLE layer (
     --   RATHER THAN THE OBVIOUS ONE. The obvious one,
     --       CHECK (demand_low IS NULL OR (demand_low <= demand_mode AND demand_mode <= demand_high))
     --   READS correctly and ENFORCES nothing: with `demand_mode` NULL the comparison is
-    --   NULL, and a CHECK passes on NULL. Half a claim could be filed, and what it became
-    --   downstream was not a blank -- `greatest(NULL, 0)` ignores the NULL and returns a zero
+    --   NULL, and a CHECK passes on NULL. Half a claim files, and what it becomes downstream
+    --   is not a blank -- `greatest(NULL, 0)` ignores the NULL and returns a zero
     --   exposure, and the fit CASE falls through to `transition`. A typed absence flattened
     --   into a filed answer, which is the one thing this model exists to refuse.
     --   Counting the non-nulls first is what makes the comparison two-valued.
@@ -363,8 +364,8 @@ CREATE TABLE layer (
                                              AND qty_low IS NULL AND qty_absent IS NULL
                                              AND absorber_taxonomy IS NULL)),
     -- ⛔ AND INSIDE A FILED REMAINDER, THE SAME STATED-OR-TYPED-ABSENT RULE AS EVERYWHERE
-    --   ELSE. Both of these were missing: a filed remainder could carry neither a sign nor
-    --   a reason for having none, and the corpus happened not to.
+    --   ELSE. Without both of these a filed remainder carries neither a sign nor a reason for
+    --   having none, and nothing notices while the corpus happens not to.
     CONSTRAINT a_filed_remainder_states_or_types_its_sign
         CHECK (remainder_absent IS NOT NULL
                OR ((sign IS NOT NULL) <> (sign_absent IS NOT NULL))),
@@ -482,15 +483,14 @@ CREATE TABLE nameplate (
 -- describes. That is the right shape for asking about a demand. It is the wrong shape, and
 -- for a while the only shape, for asking about A CLAIM.
 --
--- ⛔⛔⛔ WHAT THE MISSING TABLE COST, EXACTLY. `narrowsWhen` and `boundOrigin` were ingested
--- as bare document ordinals with no way back to the claim that made them, so the two rules
--- that read a narrowing against its own width -- "a point value files narrowsWhen as
--- notApplicable" and its converse -- could only be written over `layer.demand_*`, the one
--- copy reachable from a table. No demand in this corpus is a point value, so one of them
--- reported ⛔ VACUOUS and the other examined 40 of 182 claims and passed. The claim it could
--- not see was a RANGED elimination quantity filing `notApplicable`, carrying a note pasted
--- verbatim from the point-valued claim beside it -- which is the failure the rule's own
--- comment names in those words.
+-- ⛔⛔⛔ WHAT THIS TABLE'S ABSENCE COSTS, EXACTLY. Ingest `narrowsWhen` and `boundOrigin` as
+-- bare document ordinals with no way back to the claim that made them, and the two rules that
+-- read a narrowing against its own width -- "a point value files narrowsWhen as notApplicable"
+-- and its converse -- can only be written over `layer.demand_*`, the one copy reachable from a
+-- table. No demand in this corpus is a point value, so one of them reports ⛔ VACUOUS and the
+-- other examines 40 of 182 claims and passes. What neither reaches is a RANGED elimination
+-- quantity filing `notApplicable`, carrying a note pasted verbatim from the point-valued claim
+-- beside it -- which is the failure the rule's own comment names in those words.
 --
 -- ⭐⭐ AND THE ORDINAL BECOMES STRUCTURAL RATHER THAN LUCKY. `narrowing` and `bound_origin`
 -- keyed on a document-order ordinal and were joinable only because `Claim` requires exactly
@@ -591,13 +591,12 @@ CREATE TABLE narrowing (
 -- factors and coupling strengths, and neither question can be asked of a document until the
 -- rows are in one place.
 --
--- ⛔⛔ THE COLUMN THIS TABLE REPLACES WAS `slack.bound_origin` ALONE, AND THAT IS WHY THE
--- QUESTION LOOKED ANSWERED. `boundOrigin` was optional on every claim and filed once in 124,
--- so the only rows worth ingesting were the two sized slacks -- which made the field look
--- like a slack attribute rather than what it is. Required and typed, it turns out that
--- roughly a third of this corpus's claims answer `derived`: the model ALREADY states the
--- author of that edge in a sibling element (`Nameplate/amountOrigin`, `LumpyQuantum/origin`)
--- and had no way to say so. That is a finding the single column could not produce.
+-- ⛔⛔ A `slack.bound_origin` COLUMN ALONE IS WHY THE QUESTION LOOKS ANSWERED. With
+-- `boundOrigin` optional on every claim and filed once in 124, the only rows worth ingesting
+-- are the two sized slacks, which makes the field look like a slack attribute rather than what
+-- it is. Required and typed, roughly a third of this corpus's claims answer `derived`: the
+-- model ALREADY states the author of that edge in a sibling element (`Nameplate/amountOrigin`,
+-- `LumpyQuantum/origin`), and a single column on one table has no way to say so.
 CREATE TABLE bound_origin (
     filing text NOT NULL REFERENCES filing(name),
     seq    int  NOT NULL,
@@ -632,9 +631,9 @@ CREATE TABLE slack (
     high         numeric,
     unit         text,
     absent       absence_reason,
-    -- ⭐⭐ WHO OWNS THE EDGE, AND WHY BOTH COLUMNS ARE HERE. `Claim/boundOrigin` was an
-    -- optional bare enumeration filed ONCE in 124 claims, so this column was almost
-    -- entirely NULL and the NULL meant "nobody asked" and "nothing sets this bound"
+    -- ⭐⭐ WHO OWNS THE EDGE, AND WHY BOTH COLUMNS ARE HERE. As an optional bare enumeration
+    -- `Claim/boundOrigin` is filed ONCE in 124 claims, which leaves this column almost entirely
+    -- NULL and the NULL meaning "nobody asked" and "nothing sets this bound"
     -- indistinguishably. The second reading is the common one: a range read off a year
     -- of history has edges nobody chose, and an SLA has edges somebody negotiated.
     bound_origin constraint_origin,
@@ -832,15 +831,15 @@ INSERT INTO buffer_term VALUES
 -- A composition names its parts by a `ForeignId`: a notation plus an id, e.g.
 -- `urn:example:filing:us-member:2026-08-31` / `compute`. Until 0.3.0 NO DOCUMENT
 -- DECLARED ITS OWN NOTATION -- `Composition` carried witness, observedAt, provenance,
--- regime, citation and fusion, and nothing that said "I am that URN", and neither did
+-- regime, citation and fusion, and nothing naming the document as that URN, and neither did
 -- `pm:processModulus`. So a part reference could not be resolved from the corpus at
 -- all, and the conformance rule "a dependence end's filing exists, and the layer named
 -- is in it" presupposed a lookup the model did not provide.
 --
--- ⭐ WRITING THIS QUERY IS WHAT SURFACED IT: a foreign key needs something to point AT,
--- and there was nothing. It was invisible from both other angles -- XSD 1.0 cannot
--- follow a cross-document reference so it never had to resolve one, and the Rust tests
--- load by FILENAME and pass the name in themselves.
+-- ⭐ WRITING THIS QUERY IS WHAT SURFACES IT: a foreign key needs something to point AT. It is
+-- invisible from both other angles -- XSD 1.0 cannot follow a cross-document reference so it
+-- never has to resolve one, and the Rust tests load by FILENAME and pass the name in
+-- themselves.
 --
 -- ⛔ THE VALUE IS THE DOCUMENT'S AND NEVER THE READER'S. `'the reader, from the filename'`
 -- is a guess dressed as data. These are read out of `pm:processModulus/pm:notation` by
@@ -910,7 +909,7 @@ CREATE TABLE part (
     -- ⭐⭐⭐ THE IMAGE OF AN xs:keyref THE GRAMMAR ALREADY ENFORCES. `assertion.xsd` is explicit:
     --   "a fusion has a foreign end and a local one, the composed layer is in this very document
     --   ... and a fusion naming a layer the composer did not file is a schema error." That is
-    --   `fusionName`, enforced by any validator. The database was missing its image.
+    --   `fusionName`, enforced by any validator, and this key is its image here.
     -- ⛔ AND THE OTHER END IS DELIBERATELY UNKEYED. `(part_filing, part_layer)` gets no foreign
     --   key and must not get one: `part_filing` is a NOTATION resolved through `filing_identity`,
     --   whose own `absent` admits a filing that declines to name itself, and a part naming a

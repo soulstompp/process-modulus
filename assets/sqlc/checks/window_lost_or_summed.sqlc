@@ -8,7 +8,7 @@
 #
 # ⛔ BOTH HALVES WERE UNENFORCEABLE WHILE A DROPPED WINDOW AND A SUPPLY THAT RUNS CONTINUOUSLY
 #   WERE THE SAME DOCUMENT, and the holding level in this corpus had dropped one.
--- pm:Part's pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

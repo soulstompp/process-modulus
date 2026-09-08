@@ -4,7 +4,7 @@
 # ⭐⭐⭐ `F⁺ ∩ (F⁺)ᵀ`, WHICH IS THE MODEL'S FOURTH FALSIFIER MADE COMPUTABLE. `pm:Layer` states it:
 #    *if two candidate layers' remainders always move together, they were never two layers.* If A
 #    is composed from B while B is composed from A there is no perturbation of one that leaves the
-#    other fixed, so the pair fails the definition of a layer and the two cells were one cell.
+#    other fixed, so the pair fails the definition of a layer: the two cells are one cell.
 #
 # ⭐⭐ AND IT IS A RANK DEFICIENCY, WHICH IS THE SAME DEFECT IN THE OTHER ALGEBRA. Composition is
 #    the linear map `x = (F Phi - E) x`, and two composed layers on a loop have linearly DEPENDENT

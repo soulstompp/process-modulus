@@ -5,7 +5,7 @@
 #    magnitude directly and both are compared against `n - d` -- by matrices.sqlc and by
 #    queries/matrices/4-converted-remainder.sqlc -- without either reading the unit the filer
 #    wrote beside the number. A grep for the column name across every .sqlc returned those two
-#    projections and no predicate anywhere. layers/filed_remainders.sqlc now carries it, and
+#    projections and no predicate anywhere. layers/filed_remainders.sqlc carries the unit, and
 #    this is the site that asks the question.
 #
 # ⭐ AND THE COMPARISON IS NOT ALWAYS OWED. assertion.xsd:1783 says a CONVERTED part's

@@ -10,8 +10,8 @@
 #
 #     x_composed = F Φ x_parts − e_x
 #
-# ⭐⭐ THE ELIMINATION IS THE TERM THAT IS EASY TO FORGET, AND FORGETTING IT IS HOW THIS
-#    ARITHMETIC WAS WRONG THE FIRST TIME IT RAN. Two parts that both count the same shared
+# ⭐⭐ THE ELIMINATION IS THE TERM THAT IS EASY TO FORGET, AND FORGETTING IT IS THE ORDINARY
+#    WAY TO GET THIS ARITHMETIC WRONG. Two parts that both count the same shared
 #    machine sum to more machine than exists; `e` is what the composer says was counted
 #    twice. Dropping it does not produce an obviously silly number -- it produces a slightly
 #    large one, which is worse.
@@ -23,7 +23,7 @@
 # ⛔ THIS SPANS TWO DOCUMENTS, WHICH IS WHY NO GRAMMAR CAN STATE IT. The parts are in one
 #   filing and the composed figure is in another; XSD 1.0 cannot follow the reference, let
 #   alone add up what is on the other end.
--- pm:Fusion/pm:Part against the composed pm:Layer/pm:Demand, less pm:Eliminations.
+-- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
 SELECT c.composition, c.composed_layer,
        'demand' AS quantity,
        sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,

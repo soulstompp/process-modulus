@@ -59,7 +59,7 @@ SET search_path TO pm, public;
 \echo
 \echo
 \echo '⛔⛔⛔ HAS ANYBODY TESTED THE MODEL? The single most important number in this file, and'
-\echo '   it was unaskable until `Stack/couplings` stopped being an empty list. `pm:Coupling`'
+\echo '   it is unaskable while `Stack/couplings` is a bare empty list. `pm:Coupling`'
 \echo '   says a document with no couplings "is not evidence of independence; it is a document'
 \echo '   where nobody looked" -- and for two revisions the element it says that about could'
 \echo '   only write the ambiguous thing. This is a fact about THE EVIDENCE rather than about'
@@ -88,7 +88,7 @@ SET search_path TO pm, public;
 \echo '   move. As an optional bare enumeration it was filed ONCE across the corpus; required'
 \echo '   and typed, the answer that leads is that NOTHING sets the edge -- the range is'
 \echo '   simply where the measurements fell -- with `derived` close behind it, where the'
-\echo '   model already states the author in a sibling element and had no way to point at it.'
+\echo '   model already states the author in a sibling element and no bare column points at it.'
 :compose(reports/bound_ownership.sqlc);
 
 \echo
@@ -97,8 +97,7 @@ SET search_path TO pm, public;
 \echo '   cell, an indictment: a claim that answers "nobody has said what would narrow this"'
 \echo '   AND "nothing sets this bound" has no course of action and no owner -- a bare number'
 \echo '   pair wearing the clothes of a three-point estimate, and neither census alone can'
-\echo '   see it. The ingest aligned these two the day they were split out; nothing joined'
-\echo '   them until now.'
+\echo '   see it. The ingest aligns the two columns; this is the relation that joins them.'
 :compose(reports/what_would_move_it.sqlc);
 
 \echo

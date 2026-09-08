@@ -1,5 +1,5 @@
 # EVERY LAYER THAT DERIVED ITS TIME SLACK RATHER THAN MEASURING IT, AND WHETHER THE DIVISION
-# BEHIND IT HOLDS. One row per time slack filed `absent reason="derived"`.
+# BEHIND IT HOLDS. One row per time slack filed `absent/reason = derived`.
 #
 # ⭐⭐⭐ THE MULTIPLICATION IS OWED AND IT IS INVISIBLE ONCE DONE. `timeSlack = q / clearance`
 #    turns a quantity into a DURATION, so the two sides are not merely in different units --
@@ -10,7 +10,7 @@
 # ⛔ checks/derived_slack_over_a_window ASKS A DIFFERENT QUESTION OF THE SAME ROWS -- whether
 #   the window licenses the assumption -- and that one is guarded. Whether the arithmetic
 #   itself is dimensionally sound is not asked anywhere.
--- pm:Layer/pm:timeSlack absent reason="derived", against the quantum it was divided from.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against the quantum it was divided from.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

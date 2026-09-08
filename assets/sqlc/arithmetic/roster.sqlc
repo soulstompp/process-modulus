@@ -5,8 +5,8 @@
 # ⭐⭐⭐ THE NULL COLUMN IS THE WHOLE REASON THIS FILE EXISTS. `r = n - d` is the central
 #    computation in the model and layers/remainder.sqlc carries `d_unit` and `n_unit` as two
 #    separate columns and subtracts across them with no predicate anywhere. That is not a bug
-#    in that file -- it is a rule nobody wrote, and until it was written down beside the eight
-#    others there was no place for the absence to be visible.
+#    in that file -- it is a rule nobody wrote, and a rule with no row beside the eight others
+#    has nowhere for its absence to be visible.
 #
 # ⛔⛔ `NOT CHECKED` MUST NEVER RENDER AS `ok`. A site whose operands happen to agree in this
 #    corpus is not a site that is guarded; it is a site whose luck has not run out. Most of the

@@ -1,4 +1,4 @@
--- pm:Claim/pm:boundOrigin with pm:Absent reason="none" on a claim where low = high.
+-- pm:Claim/pm:boundOrigin with pm:absent/reason = none on a claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.

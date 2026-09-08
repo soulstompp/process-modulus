@@ -6,7 +6,7 @@
 #    `pm:StatedDenominator` the question was asked of `pm.nameplate` alone and reached a small
 #    fraction of them: demands, quanta, draws, shares and slacks all state a unit and nothing
 #    asked any of them. ⛔ `SELECT count(*) FILTER (WHERE denominator IS NOT NULL), count(*)
-#    FROM pm.claim` is the pair; it was written here once and was wrong in both halves.
+#    FROM pm.claim` is the pair, and written by hand it is wrong in both halves.
 #
 # ⭐⭐ THE `kind` COLUMN IS THE FILER'S ANSWER AND NOT A READER'S. `period` says the supply
 #    cycles through it, so the duty-cycle question has an answer; `each` says there is a

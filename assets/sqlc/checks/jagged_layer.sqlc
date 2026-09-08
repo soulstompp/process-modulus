@@ -15,7 +15,7 @@
 # ⛔ IT ACCUSES THE FUSION AND NOT THE ROOT ABOVE IT. See composition/jagged_layers.sqlc: every
 #   ancestor also reaches the doubled layer twice, and keying the rule on the root reports one
 #   defect once per ancestor while naming composers who did nothing wrong.
--- pm:Fusion/pm:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

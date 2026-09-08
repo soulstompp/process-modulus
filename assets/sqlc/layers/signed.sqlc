@@ -7,7 +7,7 @@
 #    `notApplicable` -- the question does not arise here.
 #    A rule that counted those as examined would report itself as testing layers it never
 #    looked at, and a checker that flagged them would report a document for declining to
-#    make a claim. The first fixture to file `sign absent reason="derived"` was reported as
+#    make a claim. The first fixture to file `sign absent/reason = derived` was reported as
 #    a violation by exactly that mistake.
 #
 # ⛔ RUN THIS BESIDE layers/remainder.sqlc AND SUBTRACT: the difference is the set of layers

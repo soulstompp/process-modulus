@@ -5,14 +5,14 @@
 # ⭐⭐⭐ A `VALUES` LITERAL, AND THE ARGUMENT IS `diagrams/graphs.sqlc`'s ARGUMENT. Every closure
 #    this repository had over the emission was DERIVED FROM THE EMISSION: `examples/diagramming.rs`
 #    reads the element kinds off disk and asks whether each is governed. That can report an element
-#    we drew and never decided about. It can NEVER report an element BPMN has and we ignored,
-#    because an unused glyph leaves no trace in the artifact to be read. The unused half of the
+#    this repository drew and never decided about. It can NEVER report an element BPMN has and
+#    this repository ignored, because an unused glyph leaves no trace in the artifact to be read. The unused half of the
 #    notation is unreachable from the artifact by construction, so it has to be declared.
 #
 # ⭐⭐ AND IT IS THE ONLY WAY TO MEET THE DEMAND THIS EMISSION OWES: *what could NOT be
 #    drawn must be enumerated, because a blank diagram and a diagram of nothing are
-#    indistinguishable from outside*. The icon pack is the enumeration. Without it, "we do not draw
-#    gateways" and "we forgot gateways" are the same sentence.
+#    indistinguishable from outside*. The icon pack is the enumeration. Without it, "gateways are
+#    not drawn here" and "gateways were forgotten" are the same sentence.
 #
 # ⛔⛔ EXACTLY ONE OF `stands_for` AND `withheld_because` IS FILLED, WHICH IS THE SCHEMA'S OWN
 #    `<>` IDIOM IN A ROSTER. A fact or a typed reason there is none, never a blank and never both.
@@ -20,8 +20,8 @@
 #
 # ⚠️ `withheld_because` IS NOT ONE REASON WEARING FORTY COSTUMES, and reading it that way is how
 #   the boundary gets restated as "out of scope". Four different things are in this column: a
-#   ROUTING element we refuse by §1, a PERFORMER element we cannot fill because the claimant graph
-#   files no edges, a DATA element we refuse because it would appear to carry a magnitude it cannot
+#   ROUTING element §1 refuses, a PERFORMER element nothing can fill because the claimant graph
+#   files no edges, a DATA element refused because it would appear to carry a magnitude it cannot
 #   hold, and an element that is an OPEN QUESTION rather than a settled no.
 #
 # ⭐⭐⭐ AND THE FOURTH KIND IS NOW EMPTY, BECAUSE `group` MOVED OUT OF IT. It was withheld as an
@@ -33,13 +33,13 @@
 #    regions is invisible to an enumeration organised by region**, and this roster is one.
 -- BPMN 2.0 §7 (activities), §8 (gateways, events), §9 (swimlanes), §10 (data), §11 (artifacts).
 SELECT * FROM (VALUES
-  -- ACTIVITIES. The three we spend, and the border is what tells them apart.
+  -- ACTIVITIES. The three this emission spends, and the border is what tells them apart.
   ('task'::text, 'rounded rectangle, thin border'::text, 'composition'::text, true,
    'pm:Operation, reached by ForeignId'::text, NULL::text),
   ('callActivity', 'rounded rectangle, THICK border', 'composition', true,
-   '⭐ pm:Part crossing a document. The thick border IS the notation for substitution, so this glyph is what a compose directive renders as, and drawing it like a task discards the pipeline', NULL),
+   '⭐ asrt:Part crossing a document. The thick border IS the notation for substitution, so this glyph is what a compose directive renders as, and drawing it like a task discards the pipeline', NULL),
   ('subProcess', 'rounded rectangle with the ⊞ marker', 'composition', false,
-   NULL, '⭐⭐⭐ SPENT ONCE AND THEN WITHDRAWN, WHICH IS THE ONLY ROW HERE THAT MOVED THAT WAY. A local fusion was written as this and it said the wrong thing twice: a subProcess is an ACTIVITY INSIDE a lane where a fusion''s parts PARTITION one, and it is a flow node, so it leaves layer grain exactly as a callActivity does. `childLaneSet` says the true thing and stays keyed (filing, layer). ⛔ Withheld on the COMPOSITION axis, which the ceded law refuses outright, so it is legible ONLY through diagrams/admitted.sqlc'),
+   NULL, '⭐⭐⭐ WITHDRAWN AFTER BEING SPENT, WHICH IS THE ONLY ROW HERE ON THAT PATH. A local fusion written as this says the wrong thing twice: a subProcess is an ACTIVITY INSIDE a lane where a fusion''s parts PARTITION one, and it is a flow node, so it leaves layer grain exactly as a callActivity does. `childLaneSet` says the true thing and stays keyed (filing, layer). ⛔ Withheld on the COMPOSITION axis, which the ceded law refuses outright, so it is legible ONLY through diagrams/admitted.sqlc'),
   ('childLaneSet', 'a laneSet nested inside one lane', 'composition', true,
    '⭐⭐⭐ THE RECURSION EQUIVALENCE, AND BPMN HAD THE ELEMENT ALL ALONG. A fusion''s parts partition what they compose, and this is a SUB-PARTITION. A nested lane is still keyed (filing, layer), so unlike a call it collapses nothing and can invent nothing', NULL),
   ('transaction', 'double-bordered rounded rectangle', 'routing', false,
@@ -76,7 +76,7 @@ SELECT * FROM (VALUES
   ('intermediateThrowEvent', 'double circle, filled marker', 'routing', false, NULL, '§1: no token, no clock'),
   ('boundaryEvent', 'double circle on an activity edge', 'routing', false, NULL, '§1: an interruption is a control-flow event'),
   ('timerEventDefinition', 'clock face', 'routing', false,
-   NULL, '⭐ §1 SAYS THERE IS NO CLOCK, AND A WINDOW IS NOT ONE. pm:Window is a CALENDAR EXTENT: it says over what span a figure was measured, never when anything fires'),
+   NULL, '⭐ §1 SAYS THERE IS NO CLOCK, AND A WINDOW IS NOT ONE. pm:window is a CALENDAR EXTENT: it says over what span a figure was measured, never when anything fires'),
   ('messageEventDefinition', 'envelope', 'routing', false, NULL, '§1: no token'),
   ('errorEventDefinition', 'lightning bolt', 'routing', false, NULL, '⚠️ NOT a violation. A check reports a contradiction between filed sentences; an error event is a runtime throw'),
   ('signalEventDefinition', 'triangle', 'routing', false, NULL, '§1: no token'),

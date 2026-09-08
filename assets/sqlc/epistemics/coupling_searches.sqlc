@@ -14,6 +14,6 @@
 #    that wanted one of them filtered on that string -- entries/coupling_presence.sqlc,
 #    reports/independence_tested.sqlc, and two relations that gave up and read pm.coupling_search
 #    raw. A union whose members were never files is a union nobody can compose half of.
--- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+-- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs

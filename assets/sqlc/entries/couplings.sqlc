@@ -10,7 +10,7 @@
 #    a stack of independent layers or nobody who looked, and those are opposite claims.
 #    Which one it is lives in `coupling_search` -- see epistemics/searches.sqlc -- and NOT
 #    in this relation. Densify this into a grid of 0.0 and the difference is gone for good.
--- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+-- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c

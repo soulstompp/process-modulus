@@ -5,10 +5,9 @@
 # ⭐⭐⭐ THE FIRST RELATION IN THIS TREE THAT READS A ROOT ELEMENT. Every other query reaches
 #    past it with the descendant axis, because `//pm:stack/pm:layer` finds a stack whether it
 #    sits at the root or one level down inside a composition. That is the right shape for
-#    asking about a LAYER and the wrong shape for asking about a DOCUMENT -- which is why
-#    `filing.kind` was a substring match on a namespace PREFIX until this file existed. A
-#    prefix is the sender's lexical choice; `local-name()` and `namespace-uri()` are the
-#    document's own.
+#    asking about a LAYER and the wrong shape for asking about a DOCUMENT, which is how
+#    `filing.kind` ends up a substring match on a namespace PREFIX. A prefix is the sender's
+#    lexical choice; `local-name()` and `namespace-uri()` are the document's own.
 #
 # ⛔⛔ THE EMPTY COLUMN IS THE FINDING. Five roots are declared across the two schemas, every
 #    `asrt:` one names a witness, and `pm:processModulus` is the only one that does not. A
@@ -32,8 +31,8 @@
 # ⛔ THE OTHER TWO PLACES A STIPULATION ANNOUNCES ITSELF, WHICH NOTHING READS AND NOTHING
 #   SHOULD. The directory it sits in is rejected as a source on purpose. And the `notation`
 #   below carries a `:fixture:` segment that no query touches -- `contrato-empresarial`
-#   already spells the sibling segment `:declaracao:` in the other edition, so that convention
-#   had drifted before anybody leaned on it. A URN is an identifier, not a claim.
+#   already spells the sibling segment `:declaracao:` in the other edition, so the convention
+#   has drifted with nothing leaning on it. A URN is an identifier, not a claim.
 --
 -- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
 SELECT s.name AS filing,

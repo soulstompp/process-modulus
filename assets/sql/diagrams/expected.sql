@@ -50,7 +50,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -90,7 +90,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -282,7 +282,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -321,12 +321,12 @@ FROM pm.stack_scope ss
  ) s
 UNION ALL
 SELECT s.filing, 'search', 'diagrams/searches.sqlc'
-FROM ( -- pm:Stack/pm:Couplings/pm:Absent; carried as the laneSet's own documentation, because the
+FROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
 -- laneSet IS the partition the search is about.
 SELECT s.filing,
        coalesce(s.answer::text, 'stated') AS answer
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
 
@@ -337,7 +337,7 @@ SELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'
 FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
 SELECT c.filing, c.from_layer, c.to_layer
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -358,7 +358,7 @@ FROM pm.induction n
  ) c
  ) x
 UNION ALL
-SELECT 'descents', count(*) FROM ( -- pm:Fusion/pm:Part crossing a document; BPMN 2.0 tRelationship source/target.
+SELECT 'descents', count(*) FROM ( -- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
     -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
@@ -373,7 +373,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -406,7 +406,7 @@ FROM      (
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.regime
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b
@@ -455,7 +455,7 @@ UNION ALL
 SELECT 'dependences', count(*) FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
 SELECT c.filing, c.from_layer, c.to_layer
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c
@@ -485,7 +485,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -513,7 +513,7 @@ FROM pm.layer l
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.regime
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b
@@ -555,7 +555,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -759,12 +759,12 @@ FROM pm.induction n
  ) k ) c
 UNION ALL
 SELECT 'lane set, the coupling search', s.filing, 'diagrams/searches.sqlc'
-FROM ( -- pm:Stack/pm:Couplings/pm:Absent; carried as the laneSet's own documentation, because the
+FROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
 -- laneSet IS the partition the search is about.
 SELECT s.filing,
        coalesce(s.answer::text, 'stated') AS answer
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Absent, one row per filing asked.
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs
 
@@ -799,7 +799,7 @@ FROM pm.composition_citation c
 UNION ALL
 SELECT 'relationship', d.composition || '/' || d.composed_layer || '<-' || d.part_filing || '/' || d.part_layer,
        'diagrams/descents.sqlc'
-FROM ( -- pm:Fusion/pm:Part crossing a document; BPMN 2.0 tRelationship source/target.
+FROM ( -- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
     -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
@@ -814,7 +814,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -850,7 +850,7 @@ FROM      (
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.regime
 FROM (
-    -- asrt:Fusion/asrt:Eliminations/asrt:elimination/asrt:between, one row each.
+    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime
 FROM pm.elimination_between b
@@ -877,7 +877,7 @@ SELECT 'dependence', d.filing || '/' || d.from_layer || '->' || d.to_layer,
 FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
 SELECT c.filing, c.from_layer, c.to_layer
 FROM (
-    -- pm:Stack/pm:Couplings/pm:Coupling, each carrying its pm:observed.
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.observation
 FROM pm.coupling c

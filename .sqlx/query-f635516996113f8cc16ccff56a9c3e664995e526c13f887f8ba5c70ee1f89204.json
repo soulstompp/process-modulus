@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §9  Across every kind of search this model defines, how often did somebody actually look?\n-- epistemics/searches.sqlc, folded by question and answer.\nSELECT s.looked_for                                   AS \"looked_for!\",\n       coalesce(s.answer::text, 'filed the thing')    AS \"answer!\",\n       count(*)                                       AS \"times!\"\nFROM (\n    -- pm:Stack/pm:couplings and asrt:Fusion/asrt:eliminations, each with its pm:absent.\nSELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,\n       cs.answer, cs.note\nFROM (\n    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n\n) cs\nUNION ALL\nSELECT es.composition, 'double counting across parts', es.composed_layer,\n       es.answer, es.note\nFROM (\n    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.\nSELECT es.composition, es.composed_layer, es.absent AS answer, es.note\nFROM pm.elimination_search es\n\n) es\n\n) s\nGROUP BY s.looked_for, s.answer\nORDER BY s.looked_for, count(*) DESC\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "looked_for!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "answer!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "times!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "f635516996113f8cc16ccff56a9c3e664995e526c13f887f8ba5c70ee1f89204"
+}

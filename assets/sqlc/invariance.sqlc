@@ -27,10 +27,10 @@
 #    read on purpose, so a `steady` there is not good news -- it says the harness is blind and
 #    the other two results mean nothing.
 #
-# ⛔⛔ THE DIFF COUNTS AND DOES NOT SUBTRACT, AND WRITING IT THE OBVIOUS WAY WAS WRONG.
-#    checks/all.sqlc IS A BAG, and for TWO reasons rather than the one stated here. This read
-#    *three rules examine several items per layer that produce the same sentence*, and the count
-#    was seven and the reason covered two of them. ⭐ `checks/grain.sqlc` prints both live:
+# ⛔⛔ THE DIFF COUNTS AND DOES NOT SUBTRACT, AND THE OBVIOUS WAY IS WRONG. checks/all.sqlc IS
+#    A BAG, and for TWO reasons rather than one. *Three rules examine several items per layer
+#    that produce the same sentence* names one of them and undercounts: the figure is seven
+#    rules across the two reasons. ⭐ `checks/grain.sqlc` prints both live:
 #      REPETITION, 2 rules -- several items per layer saying the same sentence, two shares
 #        against one slack, so identical rows are legitimately repeated;
 #      GRAIN, 5 rules -- the examined item is a PART, finer than the `(filing, layer)` the

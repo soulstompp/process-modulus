@@ -27,7 +27,7 @@ LEFT JOIN (
            format('%s descent rows = %s leaves + %s that name parts (over %s distinct keys)',
                   x.total, x.kept, x.removed, x.keys) AS detail
     FROM ( SELECT
-             (SELECT count(*) FROM ( -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+             (SELECT count(*) FROM ( -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -38,7 +38,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -78,7 +78,7 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
  ) d)  AS total,
-             (SELECT count(DISTINCT (d.filing, d.layer)) FROM ( -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+             (SELECT count(DISTINCT (d.filing, d.layer)) FROM ( -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -89,7 +89,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -129,10 +129,10 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
  ) d) AS keys,
-             (SELECT count(*) FROM ( -- pm:Part followed to a layer that names no parts of its own.
+             (SELECT count(*) FROM ( -- asrt:Part followed to a layer that names no parts of its own.
 SELECT d.*
 FROM      (
-    -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -143,7 +143,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -185,10 +185,10 @@ SELECT * FROM walk
 
 ) d
 LEFT JOIN (
-    -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -199,7 +199,7 @@ FROM pm.part p
        ON f.filing = d.filing AND f.layer = d.layer
 WHERE f.filing IS NULL
  ) l)   AS kept,
-             (SELECT count(*) FROM ( -- pm:Fusion/pm:Part followed transitively through pm.filing_identity.
+             (SELECT count(*) FROM ( -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     -- pm.part joined through pm.filing_identity to pm.layer.
@@ -210,7 +210,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p
@@ -250,10 +250,10 @@ walk(root_filing, root_layer, filing, layer, depth, path,
 ) CYCLE filing, layer SET is_cycle USING route
 SELECT * FROM walk
  ) d
-               WHERE EXISTS (SELECT 1 FROM ( -- distinct (composition, composedLayerName) over pm:Fusion/pm:Part.
+               WHERE EXISTS (SELECT 1 FROM ( -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

@@ -3,12 +3,11 @@
 #
 #     x_composed = F Φ x_parts − e
 #
-# ⭐⭐⭐ THE MODEL'S HEADLINE EQUATION HAD NO CONFORMANCE RULE UNTIL NOW, AND THAT IS THE GAP
-#    THIS FILLS. composition/fused.sqlc has computed the sum, the filed figure and an `agrees`
-#    verdict, and exactly one caller reads it: matrices.sqlc, a
-#    psql tour that PRINTS it. examples/matrices.rs recomputes the product in Rust instead. So
-#    the one equation the whole repository is built to check was asserted by an example and a
-#    test, and by nothing that reports/violations.sqlc or reports/coverage.sqlc could see.
+# ⭐⭐⭐ THIS IS THE CONFORMANCE RULE FOR THE MODEL'S HEADLINE EQUATION. composition/fused.sqlc
+#    computes the sum, the filed figure and an `agrees` verdict; matrices.sqlc, a psql tour,
+#    PRINTS it, and examples/matrices.rs recomputes the product in Rust. A verdict that only a
+#    tour prints and an example asserts is a verdict reports/violations.sqlc and
+#    reports/coverage.sqlc cannot see, which is what a row on the roster buys.
 #
 # ⛔⛔ THE POPULATION IS ALREADY CORRECT AND MUST NOT BE WIDENED. composition/fused.sqlc inner
 #    joins composition/owed_equality.sqlc, so a fusion suspended on either ground is ABSENT

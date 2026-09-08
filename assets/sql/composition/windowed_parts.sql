@@ -1,4 +1,4 @@
--- pm:Part's own pm:Divisibility/window against the composed pm:Layer's.
+-- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_unit,
        cw.window_low    AS composed_window_low,
@@ -12,7 +12,7 @@ SELECT p.composition, p.composed_layer,
        p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM      (
-    -- pm:Composition/pm:Fusion/pm:Part, keyed by pm:ForeignId (notation + id).
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
 FROM pm.part p

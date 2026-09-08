@@ -16,7 +16,7 @@
 #   couple, and a NULL is somebody looked and the couplings are the ones drawn. The note is the
 #   ARGUMENT for the answer, it is free prose, and diagrams/dependences.sqlc says why prose does
 #   not travel into an artifact with no unit on it.
--- pm:Stack/pm:Couplings/pm:Absent; carried as the laneSet's own documentation, because the
+-- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
 -- laneSet IS the partition the search is about.
 SELECT s.filing,
        coalesce(s.answer::text, 'stated') AS answer

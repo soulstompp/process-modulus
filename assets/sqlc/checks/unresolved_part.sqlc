@@ -13,7 +13,7 @@
 # ⭐ THE VIOLATION IS THE DIFFERENCE BETWEEN TWO NAMED RELATIONS -- every part, minus the parts
 #   that resolve. An anti-join, not a NOT EXISTS, because "the parts that resolve" is the
 #   object with a life of its own and this rule is what falls out of it.
--- pm:Part/pm:ForeignId against pm.filing_identity and pm.layer.
+-- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

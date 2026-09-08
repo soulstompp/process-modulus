@@ -1,4 +1,4 @@
-# ONE ROW PER DOCUMENT THAT WAS INGESTED, whatever it was written to attest.
+# ONE ROW PER DOCUMENT THE INGEST LOADS, whatever it attests.
 #
 # ⭐⭐ THE SET OF DOCUMENTS IS A CHOICE SOMEBODY MAKES ON PURPOSE, AND THIS FILE IS ONE OF
 #    THE THREE ANSWERS. Every query downstream is "some relation, over some set of

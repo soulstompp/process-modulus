@@ -16,10 +16,9 @@
 #    a document takes on by saying it looked. This relation is the set of documents that took
 #    it on, so it is the honest denominator for every claim that the composition rule holds.
 #
-# ⭐⭐⭐ AND IT IS WRITTEN AS `EXCEPT`, WHICH IS WHAT IT ALWAYS MEANT. The line below said
-#    "pm.part MINUS the two suspensions" while the SQL underneath it was a LEFT JOIN with a
-#    NULL test -- an idiom that names the left operand and buries the right one inside an ON
-#    clause. `EXCEPT` names both, in the order the sentence reads, and the set difference is
+# ⭐⭐⭐ AND IT IS WRITTEN AS `EXCEPT`, WHICH IS WHAT THE SENTENCE MEANS. "pm.part MINUS the two
+#    suspensions" written as a LEFT JOIN with a NULL test is an idiom that names the left
+#    operand and buries the right one inside an ON clause. `EXCEPT` names both, in the order the sentence reads, and the set difference is
 #    exact here because both arms are the bare key: fusions is already `SELECT DISTINCT`, and
 #    EXCEPT deduplicates.
 #

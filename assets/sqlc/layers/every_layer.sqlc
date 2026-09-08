@@ -1,12 +1,13 @@
 # EVERY LAYER ANY DOCUMENT DECLARES, WHATEVER IT WENT ON TO SAY ABOUT IT. One row per
 # (filing, layer): the roster, before any of the vectors decide whether they have an entry for it.
 #
-# ⭐⭐⭐ EVERY OTHER RELATION IN THIS DIRECTORY IS A FILTER ON THIS ONE, AND UNTIL NOW THE THING
-#    BEING FILTERED HAD NO NAME. `layers/demand.sqlc` keeps the layers with a stated demand,
-#    `layers/nameplate.sqlc` those with a stated amount, `layers/absorber.sqlc` those whose
-#    taxonomy a reader has mapped. Each is correct, and each is a sparse reading of a population
-#    that was never written down -- so five files reached into `pm.layer` for existence alone,
-#    projecting no column of it, because there was nothing to compose.
+# ⭐⭐⭐ EVERY OTHER RELATION IN THIS DIRECTORY IS A FILTER ON THIS ONE, AND THIS IS WHERE THE
+#    THING BEING FILTERED HAS ITS NAME. `layers/demand.sqlc` keeps the layers with a stated
+#    demand, `layers/nameplate.sqlc` those with a stated amount, `layers/absorber.sqlc` those
+#    whose taxonomy a reader has mapped. Each is correct, and each is a sparse reading of one
+#    population -- and without a name for that population a caller needing existence alone
+#    reaches into `pm.layer` raw, projecting no column of it, because there is nothing to
+#    compose.
 #
 # ⛔ EXISTENCE IS NOT A COLUMN, AND THAT IS WHY THIS FILE LOOKS EMPTY. It carries the key and
 #   nothing else on purpose. A caller wanting a layer's demand composes layers/demand.sqlc; a

@@ -20,7 +20,7 @@
 #    `looked_for` string this file invented: a union taken back apart by string comparison at
 #    every call site, and callers that give up and read the base table instead. A
 #    `:union` whose members are not files is a union nobody can compose half of.
--- pm:Stack/pm:Couplings and pm:Fusion/pm:Eliminations, each with its pm:Absent.
+-- pm:Stack/pm:couplings and asrt:Fusion/asrt:eliminations, each with its pm:absent.
 SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,
        cs.answer, cs.note
 FROM (

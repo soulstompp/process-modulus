@@ -1,4 +1,4 @@
--- pm:Layer/pm:timeSlack with pm:Absent reason="derived", beside pm:Divisibility/pm:window.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.

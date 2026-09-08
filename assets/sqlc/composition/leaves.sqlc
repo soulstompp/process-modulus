@@ -29,7 +29,7 @@
 #    `pm.part.composition` is NOT NULL, so a matched row can never carry a NULL there. Testing a
 #    NULLABLE column of the right-hand relation instead would keep matched rows whose payload
 #    happens to be null -- an anti-join that quietly under-removes, with no symptom.
--- pm:Part followed to a layer that names no parts of its own.
+-- asrt:Part followed to a layer that names no parts of its own.
 SELECT d.*
 FROM      (
     :compose(composition/descent.sqlc)

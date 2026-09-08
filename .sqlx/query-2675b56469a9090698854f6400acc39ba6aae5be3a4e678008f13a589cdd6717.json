@@ -1,0 +1,88 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §10b Every `between` as a cross-document REFERENCE, beside whether it lands on a layer here.\n-- eliminations/references.sqlc against eliminations/resolved.sqlc, the whole beside the half.\nSELECT a.composition                        AS \"composition!\",\n       a.composed_layer                     AS \"composed_layer!\",\n       a.quantity                           AS \"quantity!\",\n       a.party                              AS \"party!\",\n       a.layer                              AS \"layer!\",\n       coalesce(r.resolved_filing, '(outside this corpus)') AS \"lands_on!\",\n       (r.resolved_filing IS NOT NULL)      AS \"resolves!\"\nFROM      (\n    -- asrt:Elimination/asrt:between, typed asrt:FiledLayer, whose filing is a pm:ForeignId.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.regime\nFROM (\n    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.version, b.regime\nFROM pm.elimination_between b\n\n) b\n\n) a\nLEFT JOIN (\n    -- eliminations/references.sqlc joined through pm.filing_identity to pm.layer.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, fi.filing AS resolved_filing, b.layer, b.regime\nFROM      (\n    -- asrt:Elimination/asrt:between, typed asrt:FiledLayer, whose filing is a pm:ForeignId.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.regime\nFROM (\n    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.version, b.regime\nFROM pm.elimination_between b\n\n) b\n\n) b\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = b.notation\nJOIN      (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n) l  ON l.filing = fi.filing AND l.layer = b.layer\n\n) r USING (composition, composed_layer, quantity, seq)\nORDER BY (r.resolved_filing IS NOT NULL), 1, 2, 3, a.seq\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "quantity"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "party!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "party"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "lands_on!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "resolves!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "2675b56469a9090698854f6400acc39ba6aae5be3a4e678008f13a589cdd6717"
+}

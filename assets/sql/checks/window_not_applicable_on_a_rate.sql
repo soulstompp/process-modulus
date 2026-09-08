@@ -1,4 +1,4 @@
--- pm:Divisibility/window with pm:Absent reason="notApplicable", against pm:Claim/pm:denominator.
+-- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     -- the conformance rules stated in the schemas' prose and gated by no grammar.

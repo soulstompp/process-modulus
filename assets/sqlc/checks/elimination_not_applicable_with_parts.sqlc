@@ -6,7 +6,7 @@
 #    Between two or more the question HAS a population, and `notApplicable` becomes a claim
 #    that two supplies cannot possibly overlap -- a judgement about the world, which belongs in
 #    `observed` where somebody signs it rather than in an absence that reads as a technicality.
--- pm:Eliminations with pm:Absent reason="notApplicable", counted over pm:Part.
+-- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

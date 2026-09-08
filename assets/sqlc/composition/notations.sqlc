@@ -8,12 +8,11 @@
 #    that decision is signed. A model that resolved silently would be inventing a fact about the
 #    world in the middle of a join.
 #
-# ⛔⛔ IT WAS THE JOIN WRITTEN FIVE TIMES. `composition/parts.sqlc`, `used_as_a_part.sqlc` (since
-#    retired with `leaf_reached_twice`, the rule it existed to restrict),
-#    `local_parts.sqlc`, `epistemics/documents.sqlc` and `epistemics/absences.sqlc` each reached
-#    into `pm.filing_identity` on their own. `composition/parts.sqlc`'s own header claims the
-#    resolution was "written ten times" and is now written once -- true of the resolved PART, and
-#    not of the identity table underneath it, which is what this file finally names.
+# ⛔⛔ IT IS THE JOIN EVERY READER OF `pm.filing_identity` WOULD OTHERWISE WRITE AGAIN.
+#    `composition/parts.sqlc`, `local_parts.sqlc`, `epistemics/documents.sqlc` and
+#    `epistemics/absences.sqlc` all need it. ⚠️ `composition/parts.sqlc`'s own header says the
+#    resolution is written once -- true of the resolved PART, and not of the identity table
+#    underneath it, which is what this file names.
 #
 # ⭐ `absent` IS A NOTATION NOBODY COULD RESOLVE. It is kept rather than filtered: a reference
 #   that points nowhere is the population `checks/unresolved_part.sqlc` exists to find, and a
