@@ -60,12 +60,12 @@
       `absorber` is WRAPPED, because a remainder may genuinely have been absorbed by NOTHING.
       A shop at capacity that turns people away with no waiting list has a real remainder —
       demand exceeded the nameplate — held as `unrealised`, and nothing queued, stretched or
-      waited. `absent reason="none"` is the honest filing, and it is Factory Physics' own
+      waited. `absent/reason = none` is the honest filing, and it is Factory Physics' own
       logic rather than an argument against it: variability that is not buffered by one of
       the three is variability whose demand went unserved.
 
       `sign` is normally derived and is carried anyway because the DIRECTION is frequently
-      known when the MAGNITUDE is not. "We ran hot in August" is a filable fact with no
+      known when the MAGNITUDE is not. "It ran hot in August" is a filable fact with no
       number in it, and a model that can only record it as a quantity records it as nothing.
       `quantity` stays a `StatedClaim` for the same reason: a witness may know the total
       while filing no demand range at all.
@@ -183,12 +183,12 @@
       O `absorber` é ENVOLVIDO, porque um resto pode genuinamente não ter sido absorvido por NADA.
       Uma loja no limite que manda gente embora sem lista de espera tem um resto real — a procura
       excedeu a capacidade nominal — suportado como `unrealised`, e nada ficou em fila, esticou ou
-      esperou. O `absent reason="none"` é a declaração honesta, e é a própria lógica da Factory
+      esperou. O `absent/reason = none` é a declaração honesta, e é a própria lógica da Factory
       Physics e não um argumento contra ela: a variabilidade que não é amortecida por um dos três é
       variabilidade cuja procura não foi servida.
 
       O `sign` é normalmente derivado e é transportado à mesma porque a DIREÇÃO é muitas vezes
-      conhecida quando a GRANDEZA não é. «Estivemos em esforço em agosto» é um facto declarável sem
+      conhecida quando a GRANDEZA não é. «Esteve em esforço em agosto» é um facto declarável sem
       número nenhum, e um modelo que só o consiga registar como quantidade regista-o como nada. A
       `quantity` continua a ser uma `StatedClaim` pela mesma razão: uma testemunha pode saber o total
       sem declarar intervalo de procura nenhum.
@@ -627,7 +627,7 @@
         counterparty  the burden sits in another entity's books under an AGREEMENT, and THE
                       CONSIDERATION NEED NOT HAVE BEEN CASH.
         customer      no transaction occurred: degradation borne by a customer creates no
-                      obligation of ours.
+                      obligation on the filer.
         people        absorbed work is not a transaction and obliges the entity to nobody.
         unrealised    demand never served is not an event.
 
@@ -670,7 +670,7 @@
         counterparty  o encargo está nos livros de outra entidade ao abrigo de um ACORDO, e A
                       CONTRAPARTIDA NÃO TEM DE TER SIDO DINHEIRO.
         customer      não houve transação nenhuma: a degradação suportada por um cliente não cria
-                      obrigação nossa nenhuma.
+                      obrigação nenhuma para quem declara.
         people        trabalho absorvido não é uma transação e não obriga a entidade a ninguém.
         unrealised    procura que nunca foi servida não é um acontecimento.
 
@@ -880,8 +880,8 @@
        ABSENCE: a blank that says WHICH KIND OF BLANK IT IS.
 
        ⛔ THE POINT OF THE WHOLE SCHEMA, AND WHAT SEPARATES IT FROM AN ERP FORM.
-       An ERP takes a number or nothing, so a receiver cannot tell "we do not
-       measure this" from "this is genuinely zero" from "you are asking the wrong
+       An ERP takes a number or nothing, so a receiver cannot tell "nobody
+       measures this" from "this is genuinely zero" from "you are asking the wrong
        entity". Those are three different truths and only one of them is a gap.
 
        ⭐ AND IT MAKES REQUIRING AN ELEMENT CHEAP. A required element is expensive
@@ -1039,7 +1039,7 @@
       one is being read, so its silence is the most expensive silence in the model, and
       `asrt:Composition` calls a composition filed without it a fabrication.
 
-      `absent reason="unmeasured"` is the honest answer for a sender whose framework
+      `absent/reason = unmeasured` is the honest answer for a sender whose framework
       publishes no standing vocabulary, and `notApplicable` for an assertion nobody is
       standing behind in any formal sense. Both say more than a blank.
 
@@ -1087,7 +1087,7 @@
       campo que diz qual delas se está a ler, portanto o seu silêncio é o silêncio mais caro do
       modelo, e a `asrt:Composition` chama fabricação a uma composição declarada sem ela.
 
-      O `absent reason="unmeasured"` é a resposta honesta para quem envie e cujo referencial não
+      O `absent/reason = unmeasured` é a resposta honesta para quem envie e cujo referencial não
       publique vocabulário de legitimidade, e o `notApplicable` para uma afirmação por trás da qual
       ninguém está em sentido formal nenhum. Ambos dizem mais do que um branco.
 
@@ -1123,12 +1123,12 @@
 
       WHAT IT CONTAINS
 
-        reason    the element that carries the meaning.
-        note      prose beside it, and never instead of it.
-        asserter  who says so.
-        asOf      when.
+        reason      the element that carries the meaning.
+        note        prose beside it, and never instead of it.
+        provenance  who says so, and with what standing.
+        asOf        when.
 
-      `asserter` and `asOf` matter here for the same reason they matter on a `Claim`: in a
+      `provenance` and `asOf` matter here for the same reason they matter on a `Claim`: in a
       chain, WHO says a thing is unmeasured is itself information. One party not measuring
       something is not evidence that the party upstream does not.
 
@@ -1147,7 +1147,7 @@
 
       SEE ALSO
 
-      `AbsenceReason` for the four members. `Claim` for the same asserter argument. Every
+      `AbsenceReason` for the four members. `Claim` for the same provenance argument. Every
       `Stated*` wrapper for where this appears.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -1160,12 +1160,12 @@
 
       O QUE CONTÉM
 
-        reason    o elemento que transporta o sentido.
-        note      prosa ao lado dele, e nunca em vez dele.
-        asserter  quem o diz.
-        asOf      quando.
+        reason      o elemento que transporta o sentido.
+        note        prosa ao lado dele, e nunca em vez dele.
+        provenance  quem o diz, e com que legitimidade.
+        asOf        quando.
 
-      O `asserter` e o `asOf` importam aqui pela mesma razão por que importam numa `Claim`: numa
+      O `provenance` e o `asOf` importam aqui pela mesma razão por que importam numa `Claim`: numa
       cadeia, QUEM diz que uma coisa não está medida é ele próprio informação. Uma parte não medir
       uma coisa não é prova de que a parte a montante não a mede.
 
@@ -1184,7 +1184,7 @@
 
       VER TAMBÉM
 
-      A `AbsenceReason` para os quatro membros. A `Claim` para o mesmo argumento do asserter. Todos
+      A `AbsenceReason` para os quatro membros. A `Claim` para o mesmo argumento da proveniência. Todos
       os invólucros `Stated*` para os sítios onde isto aparece.
     </xs:documentation></xs:annotation>
     <xs:sequence>
@@ -1237,9 +1237,9 @@
       `policy` (somebody staffed three shifts) collapsed into a blank that named none of them.
       Both take this type now, and a whole duty cycle is filed as one whole period.
 
-      ⛔ Leaving it to a rule. It WAS a rule: `zero_stated_as_a_claim` examined 120 slacks,
-      and a relation existed only to name the violations. A narrower simpleType reaches it in
-      the validator instead, and both were deleted rather than kept as a second opinion.
+      ⛔ Leaving it to a rule. A rule of that shape examines 120 slacks and needs a relation
+      whose only product is the violation list, while a narrower simpleType reaches the same
+      fact in the validator. Two gates on one fact is a second opinion nobody adjudicates.
 
       SEE ALSO
 
@@ -1274,9 +1274,10 @@
       `window` (a fração de serviço é um), os `couplings` (alguém procurou acoplamentos e não
       encontrou nenhum) -- e esses mantêm o `AbsenceReason` inteiro.
 
-      ⛔ Deixá-lo a uma regra. FOI uma regra: o `zero_stated_as_a_claim` examinava 120 folgas,
-      e existia uma relação só para nomear as violações. Um simpleType mais estreito alcança-o
-      no validador, e ambos foram apagados em vez de guardados como segunda opinião.
+      ⛔ Deixá-lo a uma regra. Uma regra dessa forma examina 120 folgas e precisa de uma relação
+      cujo único produto é a lista de violações, ao passo que um simpleType mais estreito alcança
+      o mesmo facto no validador. Duas portas sobre um facto são uma segunda opinião que ninguém
+      arbitra.
 
       VER TAMBÉM
 
@@ -1345,14 +1346,14 @@
        by whoever is sending. Eleven exist. Not wrapped, deliberately: Nameplate and
        Jagged (their own leaf quantities are stated, so wrapping the container as
        well would give one fact two homes).
-       ⚠️ Fit WAS on that list — "the direction is known whenever the remainder is" —
-       and StatedFit replaced it. Two of the three exceptions this block once named
-       have now fallen, both because the reasoning was about a SENDER WHO HAS THE
-       FACT rather than about the range of senders. That is worth a reader's
-       suspicion of the one remaining.
+       ⚠️ THAT IS THE ONLY EXCEPTION LEFT, AND TWO OTHERS HAVE FALLEN. `Fit` is wrapped,
+       against "the direction is known whenever the remainder is"; `Divisibility` is
+       wrapped, against "a sender describing a supply knows whether they buy it in whole
+       units". Both exemptions argued about A SENDER WHO HAS THE FACT rather than about
+       the range of senders, and that is worth a reader's suspicion of the one above.
 
        ⛔⛔⛔ AND A REPEATING ELEMENT NEEDS A WRAPPER MORE THAN A SINGLE ONE DOES, WHICH
-       THIS BLOCK MISSED FOR TWO REVISIONS. `minOccurs="0" maxOccurs="unbounded"` looks
+       IS THE EASIEST CASE HERE TO MISS. `minOccurs="0" maxOccurs="unbounded"` looks
        like it has already solved absence, because a sender who has nothing simply
        writes nothing — and that is precisely the failure. AN EMPTY LIST IS A BLANK
        FIELD WEARING A PLURAL. It cannot distinguish
@@ -1364,8 +1365,8 @@
        and for the two lists in this model that carry FALSIFIERS — `Stack/coupling`
        and `asrt:Fusion/elimination` — the first two readings are opposite verdicts on
        the model itself. `StatedCouplings` and `asrt:StatedEliminations` are the repair:
-       one branch is the list with at least one member, the other is an Absence, and the
-       empty document is no longer writable.
+       one branch is the list with at least one member, the other is an Absence, and an
+       empty document is not writable.
 
        ⛔ AND FOR BorrowedTerm THE RULE IS NOT "OPTIONAL VERSUS REQUIRED". Read that
        way, the schema contradicts it at once: `Remainder/absorber` and
@@ -1377,7 +1378,7 @@
                      `Regime/framework` and `Regime/chart` are the two. A Regime
                      cannot be declined with a reason, only omitted, and it is
                      unbounded, so wrapping the whole type would produce A LIST OF
-                     MAYBE-REGIMES, which says less than the list it replaced.
+                     MAYBE-REGIMES, which says less than a plain unbounded list.
 
          unwrapped   where an enclosing Stated* already says it: `absorber` under
                      StatedRemainder, `borrowed` under StatedBasis, `holds` beside
@@ -1385,9 +1386,9 @@
                      than the FRAME the fact is read under, so its silence says only
                      "not cited": `Citation/instrument`, `Provenance/standing`.
 
-       ⚠️ Divisibility WAS on this list, on the reasoning that a sender describing a
-       supply knows whether they buy it in whole units. That was wrong about a
-       subject which is not a supply at all, and StatedDivisibility replaced it.
+       ⚠️ `StatedDivisibility` is the second half of that warning: divisibility is asked
+       of subjects that are not supplies at all, where "a sender describing a supply
+       knows whether they buy it in whole units" does not reach.
        ================================================================== -->
   <xs:complexType name="StatedClaim">
     <xs:choice>
@@ -1505,8 +1506,8 @@
       With the wrapper the two separate cleanly, and `regime` being unbounded completes it:
 
         regime omitted                          nobody said
-        framework absent reason="unmeasured"    reports under something, unnamed
-        framework absent reason="none"          somebody looked; reports under none
+        framework absent/reason = unmeasured    reports under something, unnamed
+        framework absent/reason = none          somebody looked; reports under none
 
       SEE ALSO
 
@@ -1539,8 +1540,8 @@
       Com o invólucro os dois separam-se com nitidez, e o `regime` ser sem limite superior completa-o:
 
         regime omitido                          ninguém disse
-        framework absent reason="unmeasured"    reporta sob algo, não nomeado
-        framework absent reason="none"          alguém foi ver; não reporta sob nada
+        framework absent/reason = unmeasured    reporta sob algo, não nomeado
+        framework absent/reason = none          alguém foi ver; não reporta sob nada
 
       VER TAMBÉM
 
@@ -1626,7 +1627,7 @@
       established the block size, and knowing the size means knowing whose terms set it.
       There is no honest state where the size is known and its author is not.
 
-      AN AMOUNT'S ORIGIN IS A COUNTERFACTUAL: could we have held a different number of them?
+      AN AMOUNT'S ORIGIN IS A COUNTERFACTUAL: could a different number of them have been held?
       That is a question about a decision nobody may have tested, and a new sender frequently
       has not. Forcing a value would make an untested assumption indistinguishable from an
       established one, which is the bargain typed absence exists to protect.
@@ -1638,13 +1639,13 @@
       WHAT IT CONTAINS
 
         origin intrinsic/contractual/policy  somebody can move this, and here is who
-        absent reason="unmeasured"           nobody has asked who sets this bound
-        absent reason="none"                 NOTHING SETS IT. The bound is where the
+        absent/reason = unmeasured           nobody has asked who sets this bound
+        absent/reason = none                 NOTHING SETS IT. The bound is where the
                                              measurements fell, not where a rule put them,
                                              and there is no lever to look for
-        absent reason="notApplicable"        the quantity has no author to ask about: an
+        absent/reason = notApplicable        the quantity has no author to ask about: an
                                              observed count, a derived residual
-        absent reason="derived"              it follows from a bound stated elsewhere
+        absent/reason = derived              it follows from a bound stated elsewhere
 
       `none` is the common case, and it is what an optional enumeration cannot say. A demand
       interval read off twelve months of history has bounds nobody chose; an SLA has bounds
@@ -1678,7 +1679,7 @@
       dimensão do bloco, e saber a dimensão é saber de quem são os termos que a fixaram. Não há
       estado honesto nenhum em que a dimensão seja conhecida e o autor dela não.
 
-      A ORIGEM DE UMA QUANTIDADE É UM CONTRAFACTUAL: poderíamos ter tido um número diferente delas?
+      A ORIGEM DE UMA QUANTIDADE É UM CONTRAFACTUAL: poderia ter-se tido um número diferente delas?
       Essa é uma pergunta sobre uma decisão que ninguém pode ter testado, e quem envia pela primeira
       vez muitas vezes não testou. Forçar um valor tornaria uma suposição não testada indistinguível
       de uma estabelecida, que é o negócio que a ausência tipificada existe para proteger.
@@ -1691,12 +1692,12 @@
       O QUE CONTÉM
 
         origin intrinsic/contractual/policy  alguém pode mexer isto, e é este
-        absent reason="unmeasured"           ninguém perguntou quem fixa este limite
-        absent reason="none"                 NADA O FIXA. O limite é onde as medições caíram, e não
+        absent/reason = unmeasured           ninguém perguntou quem fixa este limite
+        absent/reason = none                 NADA O FIXA. O limite é onde as medições caíram, e não
                                              onde uma regra as pôs, e não há alavanca para procurar
-        absent reason="notApplicable"        a quantidade não tem autor por quem perguntar: uma
+        absent/reason = notApplicable        a quantidade não tem autor por quem perguntar: uma
                                              contagem observada, um residual derivado
-        absent reason="derived"              decorre de um limite declarado noutro sítio
+        absent/reason = derived              decorre de um limite declarado noutro sítio
 
       O `none` é o caso corrente, e é o que uma enumeração opcional não consegue dizer. Um intervalo
       de procura lido de doze meses de histórico tem limites que ninguém escolheu; um acordo de nível
@@ -1735,9 +1736,9 @@
       WHAT IT CONTAINS
 
         uri                         this document is that URN, and a part may cite it
-        absent reason="none"        a working document, published under no identifier at all
-        absent reason="unmeasured"  it will have one and nobody has assigned it yet
-        absent reason="notApplicable"  rare and suspicious. A document nobody may reference
+        absent/reason = none        a working document, published under no identifier at all
+        absent/reason = unmeasured  it will have one and nobody has assigned it yet
+        absent/reason = notApplicable  rare and suspicious. A document nobody may reference
                                     cannot be composed into anything, which is a strong claim
 
       WHAT IT OBLIGES
@@ -1786,9 +1787,9 @@
       O QUE CONTÉM
 
         uri                         este documento é esse URN, e uma parte pode citá-lo
-        absent reason="none"        um documento de trabalho, publicado sob identificador nenhum
-        absent reason="unmeasured"  vai ter um e ninguém lho atribuiu ainda
-        absent reason="notApplicable"  raro e suspeito. Um documento que ninguém pode referenciar não
+        absent/reason = none        um documento de trabalho, publicado sob identificador nenhum
+        absent/reason = unmeasured  vai ter um e ninguém lho atribuiu ainda
+        absent/reason = notApplicable  raro e suspeito. Um documento que ninguém pode referenciar não
                                     pode ser composto em nada, que é uma afirmação forte
 
       O QUE OBRIGA
@@ -1903,7 +1904,7 @@
       WHAT IT CONTAINS
 
         attests                     one of the two values
-        absent reason="unmeasured"  the document does not say. Every document written before
+        absent/reason = unmeasured  the document does not say. Every document written before
                                     this element existed is in this state, and so is one
                                     republished by somebody who did not write it
 
@@ -1918,14 +1919,14 @@
 
       WHAT IT REFUSES
 
-      ⛔ `absent reason="none"`. "Somebody looked and there is nothing to report" does not
+      ⛔ `absent/reason = none`. "Somebody looked and there is nothing to report" does not
       parse here. A document that exists was written by somebody who knew whether they were
       observing or stipulating, and the knowledge is not external the way a `notation` is.
 
-      ⛔ `absent reason="notApplicable"`. There is no document the question fails to reach.
+      ⛔ `absent/reason = notApplicable`. There is no document the question fails to reach.
       Every document either reports something somebody saw, or it does not.
 
-      ⛔ `absent reason="derived"`. Nothing in the model implies a document's standing.
+      ⛔ `absent/reason = derived`. Nothing in the model implies a document's standing.
       Admitting the reason would invite a receiver to infer evidence FROM CONTENT, which is
       the inference this element exists to stop.
 
@@ -1950,7 +1951,7 @@
       SEE ALSO
 
       `EvidenceKind` for the two values. `StatedNotation` for the other thing a document says
-      about itself. `Absence` for the asserter argument. `assets/fixtures/README.md` for why
+      about itself. `Absence` for the provenance argument. `assets/fixtures/README.md` for why
       this distinction is the whole reason that directory exists.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -1969,7 +1970,7 @@
       O QUE CONTÉM
 
         attests                     um dos dois valores
-        absent reason="unmeasured"  o documento não o diz. Todos os documentos escritos antes de este
+        absent/reason = unmeasured  o documento não o diz. Todos os documentos escritos antes de este
                                     elemento existir estão neste estado, e também o está um
                                     republicado por quem não o escreveu
 
@@ -1984,14 +1985,14 @@
 
       O QUE RECUSA
 
-      ⛔ `absent reason="none"`. «Alguém foi ver e não há nada a relatar» não se lê aqui. Um documento
+      ⛔ `absent/reason = none`. «Alguém foi ver e não há nada a relatar» não se lê aqui. Um documento
       que existe foi escrito por alguém que sabia se estava a observar ou a estipular, e esse saber
       não é externo como o de uma `notation` é.
 
-      ⛔ `absent reason="notApplicable"`. Não há documento que a pergunta não alcance. Ou o documento
+      ⛔ `absent/reason = notApplicable`. Não há documento que a pergunta não alcance. Ou o documento
       relata algo que alguém viu, ou não relata.
 
-      ⛔ `absent reason="derived"`. Nada no modelo implica a legitimidade de um documento. Admitir a
+      ⛔ `absent/reason = derived`. Nada no modelo implica a legitimidade de um documento. Admitir a
       razão convidaria quem recebe a inferir a prova A PARTIR DO CONTEÚDO, que é precisamente a
       inferência que este elemento existe para travar.
 
@@ -2180,7 +2181,7 @@
       Whether the filer said what decided which layers are here.
 
       THE FOURTH STATE, AND IT IS NOT `unbounded`. `unbounded` says the filer considered
-      what lies outside and did not look; `absent reason="unmeasured"` says the question of
+      what lies outside and did not look; `absent/reason = unmeasured` says the question of
       extent was never put at all. The first is a filing decision, the second is a gap — the
       same distinction `Absence` draws everywhere else, arriving one level up.
 
@@ -2208,7 +2209,7 @@
       Se quem declara disse o que decidiu quais as camadas que aqui estão.
 
       O QUARTO ESTADO, E NÃO É O `unbounded`. O `unbounded` diz que quem declara considerou o que
-      fica de fora e não foi ver; o `absent reason="unmeasured"` diz que a questão da extensão nunca
+      fica de fora e não foi ver; o `absent/reason = unmeasured` diz que a questão da extensão nunca
       chegou a ser posta. A primeira é uma decisão de declaração, a segunda é uma lacuna — a mesma
       distinção que a `Absence` faz em todo o lado, a chegar um nível acima.
 
@@ -2246,14 +2247,14 @@
                                     WHOLE PERIOD IS A DUTY FRACTION OF ONE, quoted in the
                                     period's own unit -- `1 week` against a period of `week`
                                     -- and a `derived` timeSlack stays legal there
-        absent reason="unmeasured"  the unit HAS a period and nobody has measured the live
+        absent/reason = unmeasured  the unit HAS a period and nobody has measured the live
                                     part of it. The one state that disables the timeSlack
                                     rule below
-        absent reason="notApplicable"  the unit has no denominator, so there is no cycle to
+        absent/reason = notApplicable  the unit has no denominator, so there is no cycle to
                                     be live in part of. A stock, not a rate
 
       ⛔⛔ THERE IS NO FOURTH, AND ITS DELETION IS WHY THIS ARM IS A `ClaimAbsence`. "The
-      supply is always on" was `absent reason="none"` for two revisions, and it is a VALUE
+      supply is always on" was `absent/reason = none` for two revisions, and it is a VALUE
       wearing an absence: a duty fraction of one, with a size and an `origin` naming who could
       shorten it. A line that cannot be stopped, a desk somebody promised round the clock and
       a plant staffed three shifts filed identically, and only the last two are levers. Worse,
@@ -2263,7 +2264,7 @@
       WHAT IT OBLIGES
 
       The distinction buys back a rule the window itself asks for: where a `window` is filed,
-      `Layer/timeSlack` must not be `absent reason="derived"`, because a clearance spread
+      `Layer/timeSlack` must not be `absent/reason = derived`, because a clearance spread
       evenly across the denominator is exactly what a window denies. `unmeasured` is the case
       that rule cannot otherwise reach — nobody knows whether the spare is spread evenly, so
       a DERIVED time slack is an assumption rather than a computation. With `none` filed it
@@ -2300,13 +2301,13 @@
                                     PERÍODO INTEIRO É UMA FRAÇÃO DE SERVIÇO DE UM, cotado na
                                     unidade do próprio período -- `1 week` para um período de
                                     `week` -- e aí um `timeSlack` `derived` continua legal
-        absent reason="unmeasured"  a unidade TEM um período e ninguém mediu a parte viva dele. O
+        absent/reason = unmeasured  a unidade TEM um período e ninguém mediu a parte viva dele. O
                                     único estado que desativa a regra do `timeSlack` abaixo
-        absent reason="notApplicable"  a unidade não tem denominador, portanto não há ciclo nenhum
+        absent/reason = notApplicable  a unidade não tem denominador, portanto não há ciclo nenhum
                                     em parte do qual estar vivo. Um stock, não uma taxa
 
       ⛔⛔ NÃO HÁ UM QUARTO, E A SUA ELIMINAÇÃO É A RAZÃO DE ESTE RAMO SER UM `ClaimAbsence`. «A
-      oferta está sempre ligada» era `absent reason="none"` durante duas revisões, e é um VALOR
+      oferta está sempre ligada» era `absent/reason = none` durante duas revisões, e é um VALOR
       vestido de ausência: uma fração de serviço de um, com um tamanho e um `origin` a dizer quem
       a poderia encurtar. Uma linha que não se pode parar, um balcão que alguém prometeu 24 horas
       e uma fábrica com três turnos declaravam-se de forma idêntica, e só os dois últimos são
@@ -2315,7 +2316,7 @@
       O QUE OBRIGA
 
       A distinção recupera uma regra que a própria janela pede: onde uma `window` é declarada, o
-      `Layer/timeSlack` não pode ser `absent reason="derived"`, porque uma folga espalhada
+      `Layer/timeSlack` não pode ser `absent/reason = derived`, porque uma folga espalhada
       uniformemente pelo denominador é exatamente o que uma janela nega. O `unmeasured` é o caso que
       essa regra de outro modo não alcança — ninguém sabe se a sobra está espalhada uniformemente,
       portanto uma margem de tempo DERIVADA é uma suposição e não um cálculo. Com o `none` declarado
@@ -2352,11 +2353,11 @@
       WHAT IT CONTAINS
 
         coupling+                   somebody looked and found these
-        absent reason="none"        SOMEBODY LOOKED AND THE LAYERS MOVE INDEPENDENTLY. This
+        absent/reason = none        SOMEBODY LOOKED AND THE LAYERS MOVE INDEPENDENTLY. This
                                     is the model's central claim, ASSERTED.
-        absent reason="unmeasured"  nobody has tested it. The honest state of most first
+        absent/reason = unmeasured  nobody has tested it. The honest state of most first
                                     filings.
-        absent reason="notApplicable"  a one-layer stack. There is no pair to couple.
+        absent/reason = notApplicable  a one-layer stack. There is no pair to couple.
 
       WHAT IT OBLIGES
 
@@ -2394,11 +2395,11 @@
       O QUE CONTÉM
 
         coupling+                   alguém foi ver e encontrou estes
-        absent reason="none"        ALGUÉM FOI VER E AS CAMADAS MOVEM-SE INDEPENDENTEMENTE. Esta é a
+        absent/reason = none        ALGUÉM FOI VER E AS CAMADAS MOVEM-SE INDEPENDENTEMENTE. Esta é a
                                     afirmação central do modelo, AFIRMADA.
-        absent reason="unmeasured"  ninguém o testou. O estado honesto da maioria das primeiras
+        absent/reason = unmeasured  ninguém o testou. O estado honesto da maioria das primeiras
                                     declarações.
-        absent reason="notApplicable"  uma pilha de uma só camada. Não há par nenhum para acoplar.
+        absent/reason = notApplicable  uma pilha de uma só camada. Não há par nenhum para acoplar.
 
       O QUE OBRIGA
 
@@ -2442,9 +2443,9 @@
       derived. One argument, applied to both elements instead of one.
 
       And carrying `sign` at all is still worth it, which is why this is a wrapper rather
-      than a deletion: the DIRECTION is frequently known when the MAGNITUDE is not. "We ran
-      hot in August" is a filable fact with no number in it, and so is "some weeks we are
-      short and some weeks we are fine" — which is `transition`, and probably the more common
+      than a deletion: the DIRECTION is frequently known when the MAGNITUDE is not. "It ran
+      hot in August" is a filable fact with no number in it, and so is "some weeks it is
+      short and some weeks it is fine" — which is `transition`, and probably the more common
       of the two.
 
       `absent` still has work: `unmeasured` where nobody compared the two, and
@@ -2452,7 +2453,7 @@
 
       WHAT IT REFUSES
 
-      ⛔ `absent reason="none"` meaning "the ranges overlap", AND THE GRAMMAR NOW REFUSES IT
+      ⛔ `absent/reason = none` meaning "the ranges overlap", AND THE GRAMMAR NOW REFUSES IT
       TOO: this wrapper takes a `pm:ClaimAbsence`, so the state is not spellable. Overlapping ranges at the
       nominal size are a `transition` fit — the textbook case rather than a boundary
       curiosity — and a demand of [3, 4, 5] people against a nameplate of 4 is one. Reading
@@ -2479,9 +2480,9 @@
       `Remainder/quantity` é derivado. Um argumento, aplicado a dois elementos em vez de um.
 
       E transportar sequer o `sign` continua a valer a pena, e é por isso que isto é um invólucro e
-      não uma supressão: a DIREÇÃO é muitas vezes conhecida quando a GRANDEZA não é. «Estivemos em
-      esforço em agosto» é um facto declarável sem número nenhum, e «há semanas em que estamos curtos
-      e semanas em que estamos bem» também — que é `transition`, e provavelmente o mais frequente dos
+      não uma supressão: a DIREÇÃO é muitas vezes conhecida quando a GRANDEZA não é. «Esteve em
+      esforço em agosto» é um facto declarável sem número nenhum, e «há semanas curtas e semanas
+      folgadas» também — que é `transition`, e provavelmente o mais frequente dos
       dois.
 
       O `absent` continua a ter trabalho: `unmeasured` onde ninguém comparou os dois, e
@@ -2489,7 +2490,7 @@
 
       O QUE RECUSA
 
-      ⛔ O `absent reason="none"` com o sentido de «os intervalos sobrepõem-se». Intervalos que se
+      ⛔ O `absent/reason = none` com o sentido de «os intervalos sobrepõem-se». Intervalos que se
       sobrepõem à dimensão nominal são um ajustamento `transition` — o caso de manual e não uma
       curiosidade de fronteira — e uma procura de [3, 4, 5] pessoas contra uma capacidade nominal de
       4 é um deles. Lê-lo como ausência avalia uma comparação de intervalos no `mostLikely` e reporta
@@ -2661,13 +2662,15 @@
 
       A narrowing, or one of three absences that are three DIFFERENT claims:
 
-        absent reason="none"           somebody looked and NOTHING would tighten this.
+        narrowing                      the condition that would tighten it, and which of the
+                                       three kinds of width it is.
+        absent/reason = none           somebody looked and NOTHING would tighten this.
                                        WHICH IS THE VARIATION CLAIM, STATED: the width is
                                        not ignorance, so no instrument, no intervention and
                                        no experiment reduces it.
-        absent reason="unmeasured"     nobody has said what would tighten it. The honest
+        absent/reason = unmeasured     nobody has said what would tighten it. The honest
                                        default.
-        absent reason="notApplicable"  there is no range. `low` = `mostLikely` = `high`, so
+        absent/reason = notApplicable  there is no range. `low` = `mostLikely` = `high`, so
                                        there is nothing to tighten.
 
       WHAT IT OBLIGES
@@ -2681,7 +2684,7 @@
       WHAT IT REFUSES
 
       ⛔ Optional-with-a-wrapper, on this schema's own precedent. Admitting BOTH an omitted
-      element AND `absent reason="none"` is two encodings of one fact with no rule saying
+      element AND `absent/reason = none` is two encodings of one fact with no rule saying
       which to send, and it leaves a receiver unable to tell "nothing would narrow this" from
       "nobody said" — which is precisely the distinction this element exists to carry. See
       `Regime`.
@@ -2709,13 +2712,15 @@
 
       Um estreitamento, ou uma de três ausências que são três afirmações DIFERENTES:
 
-        absent reason="none"           alguém foi ver e NADA estreitaria isto. QUE É A AFIRMAÇÃO DE
+        narrowing                      a condição que o estreitaria, e qual das três espécies de
+                                       largura é.
+        absent/reason = none           alguém foi ver e NADA estreitaria isto. QUE É A AFIRMAÇÃO DE
                                        VARIAÇÃO, ENUNCIADA: a largura não é ignorância, portanto
                                        instrumento nenhum, intervenção nenhuma e experiência nenhuma
                                        a reduzem.
-        absent reason="unmeasured"     ninguém disse o que a estreitaria. O valor honesto por
+        absent/reason = unmeasured     ninguém disse o que a estreitaria. O valor honesto por
                                        omissão.
-        absent reason="notApplicable"  não há intervalo. `low` = `mostLikely` = `high`, portanto não
+        absent/reason = notApplicable  não há intervalo. `low` = `mostLikely` = `high`, portanto não
                                        há nada para estreitar.
 
       O QUE OBRIGA
@@ -2729,7 +2734,7 @@
       O QUE RECUSA
 
       ⛔ Opcional-com-invólucro, pelo próprio precedente deste esquema. Admitir TANTO um elemento
-      omitido COMO `absent reason="none"` são duas codificações de um facto sem regra nenhuma a dizer
+      omitido COMO `absent/reason = none` são duas codificações de um facto sem regra nenhuma a dizer
       qual enviar, e deixa quem recebe sem conseguir distinguir «nada estreitaria isto» de «ninguém
       disse» — que é precisamente a distinção que este elemento existe para transportar. Ver o
       `Regime`.
@@ -2800,7 +2805,7 @@
       bounds no shares. Where the layer's unit is service time the two coincide numerically,
       and that coincidence is a fact about that layer rather than a licence to conflate them.
 
-      ⛔ A zero patience written as `absent reason="none"`. Demand that leaves the moment it is
+      ⛔ A zero patience written as `absent/reason = none`. Demand that leaves the moment it is
       not served has a patience of zero, and a measured zero is a claim: `patience` is a
       `pm:StatedClaim`, whose absent arm carries `pm:ClaimAbsenceReason`, and that type has no
       `none`. It is filed as `[0, 0, 0]` in the unit it is zero in. Two spellings of one fact
@@ -2873,7 +2878,7 @@
       quota nenhuma. Onde a unidade da camada é tempo de serviço as duas coincidem numericamente, e
       essa coincidência é um facto sobre aquela camada e não uma licença para as confundir.
 
-      ⛔ Uma paciência zero escrita como `absent reason="none"`. A procura que se vai embora no
+      ⛔ Uma paciência zero escrita como `absent/reason = none`. A procura que se vai embora no
       momento em que não é servida tem paciência zero, e um zero medido é uma afirmação: a
       `patience` é uma `pm:StatedClaim`, cujo ramo de ausência carrega o `pm:ClaimAbsenceReason`,
       e esse tipo não tem `none`. Declara-se `[0, 0, 0]` na unidade em que é zero. Duas grafias de
@@ -2921,9 +2926,9 @@
         each                        a countable thing the claim is stated per one of --
                                     `GPU`, `person`, `order`. There is a denominator and it is
                                     NOT a cycle, so the duty-cycle question stays malformed
-        absent reason="notApplicable"  nothing under the line at all. A stock: `12 people`,
+        absent/reason = notApplicable  nothing under the line at all. A stock: `12 people`,
                                     `GPU`, `GPU-hour`, whose hour is in the NUMERATOR
-        absent reason="unmeasured"  nobody has said. The state a document converted out of
+        absent/reason = unmeasured  nobody has said. The state a document converted out of
                                     another format arrives in
 
       WHAT IT OBLIGES
@@ -2942,11 +2947,11 @@
 
       WHAT IT REFUSES
 
-      ⛔ `absent reason="none"`. "Somebody looked and there is no denominator" is exactly what
+      ⛔ `absent/reason = none`. "Somebody looked and there is no denominator" is exactly what
       `notApplicable` already says here. Two spellings of one state is the collapse this
       wrapper exists to prevent.
 
-      ⛔ `absent reason="derived"`. Deriving the denominator from the unit STRING is the
+      ⛔ `absent/reason = derived`. Deriving the denominator from the unit STRING is the
       `LIKE` this element replaces, and admitting the reason would license it in the schema's
       own voice. A unit is an `xs:token`; nothing may read inside it.
 
@@ -2966,7 +2971,7 @@
       SEE ALSO
 
       `Claim` for the unit this describes. `StatedLumpyQuantum` for the window whose four
-      states this makes answerable. `Divisibility` for the axis. `Absence` for the asserter
+      states this makes answerable. `Divisibility` for the axis. `Absence` for the provenance
       argument.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -2993,9 +2998,9 @@
         each                        uma coisa contável de que a afirmação vale por uma, `GPU`,
                                     `person`, `order`. Há denominador e NÃO é um ciclo, portanto a
                                     pergunta do ciclo continua malformada
-        absent reason="notApplicable"  nada debaixo do traço. Um stock: `12 people`, `GPU`,
+        absent/reason = notApplicable  nada debaixo do traço. Um stock: `12 people`, `GPU`,
                                     `GPU-hour`, cuja hora está no NUMERADOR
-        absent reason="unmeasured"  ninguém disse. O estado em que chega um documento convertido
+        absent/reason = unmeasured  ninguém disse. O estado em que chega um documento convertido
                                     a partir de outro formato
 
       O QUE OBRIGA
@@ -3013,11 +3018,11 @@
 
       O QUE RECUSA
 
-      ⛔ `absent reason="none"`. «Alguém foi ver e não há denominador» é exatamente o que o
+      ⛔ `absent/reason = none`. «Alguém foi ver e não há denominador» é exatamente o que o
       `notApplicable` já diz aqui. Duas grafias de um estado é o achatamento que este invólucro
       existe para impedir.
 
-      ⛔ `absent reason="derived"`. Derivar o denominador da CADEIA da unidade é o `LIKE` que este
+      ⛔ `absent/reason = derived`. Derivar o denominador da CADEIA da unidade é o `LIKE` que este
       elemento substitui, e admitir a razão licenciá-lo-ia na própria voz do esquema. Uma unidade é
       um `xs:token`; nada pode ler lá dentro.
 
@@ -3061,9 +3066,12 @@
                                  collects both is a slot with no domain.
         unit                     including currency. "EUR", "months", "share of annual
                                  salary" are all units here.
+        denominator              what is under the line: a `period` the supply cycles
+                                 through, an `each` it is stated per one of, or the typed
+                                 reason it has neither. Required.
         narrowsWhen              what would tighten the bounds or move the mode. Required.
         boundOrigin              who could move the edge. Required.
-        asserter · asOf          WHO says this and WHEN it was true.
+        provenance · asOf        WHO says this and WHEN it was true.
 
       A POINT VALUE IS THE DEGENERATE CASE: `low` = `mostLikely` = `high`, meaning "known
       exactly". It is precision stated honestly rather than a misuse of the type, and it is
@@ -3082,7 +3090,7 @@
       `assets/sql/reports/bound_ownership.sql` prints what the required, typed field gets
       instead.
 
-      `asserter` and `asOf` are not bookkeeping. In a chain of organisations, one party's
+      `provenance` and `asOf` are not bookkeeping. In a chain of organisations, one party's
       claim about another party's capacity is a different fact from that party's own claim
       about it.
 
@@ -3119,7 +3127,7 @@
 
       `StatedNarrowing` and `StatedConstraintOrigin` for the two required wrappers.
       `Divisibility` for the window this denominator rule serves. `Absence` for the same
-      asserter argument.
+      provenance argument.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -3137,9 +3145,12 @@
                                  uma casa sem domínio.
         unit                     incluindo moeda. «EUR», «months», «share of annual salary» são todos
                                  unidades aqui.
+        denominator              o que está debaixo da linha: um `period` que a oferta percorre, um
+                                 `each` de que a afirmação é dita por unidade, ou a razão tipificada
+                                 de não ter nenhum dos dois. Obrigatório.
         narrowsWhen              o que estreitaria os limites ou moveria a moda. Obrigatório.
         boundOrigin              quem poderia mexer a borda. Obrigatório.
-        asserter · asOf          QUEM o diz e QUANDO era verdade.
+        provenance · asOf        QUEM o diz e QUANDO era verdade.
 
       UM VALOR PONTUAL É O CASO DEGENERADO: `low` = `mostLikely` = `high`, querendo dizer «conhecido
       exatamente». É precisão enunciada com honestidade e não um mau uso do tipo, e é por isso que um
@@ -3158,7 +3169,7 @@
       O `assets/sql/reports/bound_ownership.sql` imprime o que o campo obrigatório e tipificado
       obtém em vez disso.
 
-      O `asserter` e o `asOf` não são escrituração. Numa cadeia de organizações, a afirmação de uma
+      O `provenance` e o `asOf` não são escrituração. Numa cadeia de organizações, a afirmação de uma
       parte sobre a capacidade de outra é um facto diferente da afirmação da própria sobre ela.
 
       O QUE OBRIGA
@@ -3194,7 +3205,7 @@
 
       A `StatedNarrowing` e a `StatedConstraintOrigin` para os dois invólucros obrigatórios. A
       `Divisibility` para a janela a que esta regra do denominador serve. A `Absence` para o mesmo
-      argumento do asserter.
+      argumento da proveniência.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="low"         type="xs:decimal"/>
@@ -3570,8 +3581,8 @@
         contractual  the counterparty can. A minimum reserved block, a minimum commitment,
                      the size of a funding round. It is somebody else's terms, and terms
                      move.
-        policy       WE can, unilaterally. A price ladder's rungs, a hiring unit, a release
-                     train. No permission required from anyone.
+        policy       THE FILER can, unilaterally. A price ladder's rungs, a hiring unit, a
+                     release train. No permission required from anyone.
 
       WHAT IT OBLIGES
 
@@ -3609,9 +3620,9 @@
         contractual  a contraparte consegue. Um bloco reservado mínimo, um compromisso mínimo, a
                      dimensão de uma ronda de financiamento. São os termos de outra pessoa, e os
                      termos mexem-se.
-        policy       NÓS conseguimos, unilateralmente. Os degraus de uma escada de preços, uma
-                     unidade de contratação, um comboio de lançamentos. Não é precisa autorização de
-                     ninguém.
+        policy       QUEM DECLARA consegue, unilateralmente. Os degraus de uma escada de preços,
+                     uma unidade de contratação, um comboio de lançamentos. Não é precisa
+                     autorização de ninguém.
 
       O QUE OBRIGA
 
@@ -3659,7 +3670,7 @@
       `size` is a `Claim` rather than a number because a quantum is often itself a range —
       "one to three months' notice", "a hire is four to nine weeks" — and because a point
       value is the degenerate `Claim`, so nothing is lost when it is exact.
-      `absent reason="unmeasured"` is the honest filing for a supply known to be lumpy whose
+      `absent/reason = unmeasured` is the honest filing for a supply known to be lumpy whose
       unit nobody has measured.
 
       WHAT IT REFUSES
@@ -3703,7 +3714,7 @@
       O `size` é uma `Claim` e não um número porque um quantum é muitas vezes ele próprio um
       intervalo — «um a três meses de pré-aviso», «uma contratação são quatro a nove semanas» — e
       porque um valor pontual é a `Claim` degenerada, portanto nada se perde quando é exato. O
-      `absent reason="unmeasured"` é a declaração honesta para uma oferta que se sabe vir aos lotes e
+      `absent/reason = unmeasured` é a declaração honesta para uma oferta que se sabe vir aos lotes e
       cuja unidade ninguém mediu.
 
       O QUE RECUSA
@@ -4004,7 +4015,7 @@
           corpus of headcount layers would report twenty of them.
 
           ⛔ Treating an always-on supply as needing no filing. It is exactly what
-          needs saying, and `absent reason="none"` is the filing that says it. Rare
+          needs saying, and `absent/reason = none` is the filing that says it. Rare
           in its VALUE, universal in its ELEMENT: of the units in this corpus only
           `shifts per week`, `turnos por semana` and `launches per quarter` have a
           denominator at all, and only the shared line has a real duty cycle inside
@@ -4067,7 +4078,7 @@
 
       UMA JANELA É A RAZÃO DE NÃO SE PODER DERIVAR UMA DURAÇÃO DE UMA FOLGA. `q / folga` pressupõe
       que a sobra está espalhada uniformemente pelo denominador, e este elemento é a declaração de
-      que não está. Sob `absent reason="unmeasured"` ninguém sabe também se está espalhada
+      que não está. Sob `absent/reason = unmeasured` ninguém sabe também se está espalhada
       uniformemente, portanto uma margem de tempo derivada é uma SUPOSIÇÃO vestida de cálculo e
       aplica-se a mesma proibição. Só o `none` e o `notApplicable` autorizam a derivação — dois dos
       quatro estados.
@@ -4083,7 +4094,7 @@
       delas.
 
       ⛔ Tratar uma oferta sempre ligada como não precisando de declaração. É exatamente o que precisa
-      de ser dito, e o `absent reason="none"` é a declaração que o diz. Raro no VALOR, universal no
+      de ser dito, e o `absent/reason = none` é a declaração que o diz. Raro no VALOR, universal no
       ELEMENTO: das unidades deste corpus só `shifts per week`, `turnos por semana` e `launches per
       quarter` têm sequer denominador, e só a linha partilhada tem um ciclo de serviço a sério dentro
       de um.
@@ -4169,10 +4180,10 @@
 
         a claim                     available up to this much, in the layer's unit
         a claim of [0, 0, 0]        somebody looked and it is zero, in the layer's unit
-        absent reason="unmeasured"  available, and nobody has sized it
-        absent reason="derived"     computable here, e.g. from the clearance
+        absent/reason = unmeasured  available, and nobody has sized it
+        absent/reason = derived     computable here, e.g. from the clearance
 
-      ⛔ There is no `absent reason="none"` here. All three slacks are `pm:StatedClaim`, whose
+      ⛔ There is no `absent/reason = none` here. All three slacks are `pm:StatedClaim`, whose
       absent arm is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, and that type is
       `AbsenceReason` WITHOUT `none`. A measured zero has a unit, an observer and a provenance,
       and the absence arm has a home for none of the three, so it is a claim.
@@ -4293,10 +4304,10 @@
 
         uma afirmação               disponível até este ponto, na unidade da camada
         uma afirmação de [0, 0, 0]  alguém foi ver e é zero, na unidade da camada
-        absent reason="unmeasured"  disponível, e ninguém a dimensionou
-        absent reason="derived"     calculável aqui, por exemplo a partir da folga
+        absent/reason = unmeasured  disponível, e ninguém a dimensionou
+        absent/reason = derived     calculável aqui, por exemplo a partir da folga
 
-      ⛔ Não existe aqui `absent reason="none"`. As três folgas são `pm:StatedClaim`, cujo ramo de
+      ⛔ Não existe aqui `absent/reason = none`. As três folgas são `pm:StatedClaim`, cujo ramo de
       ausência é um `pm:ClaimAbsence` que transporta `pm:ClaimAbsenceReason`, e esse tipo é o
       `AbsenceReason` SEM o `none`. Um zero medido tem unidade, observador e proveniência, e o ramo
       de ausência não tem lugar para nenhum dos três, portanto é uma afirmação.
@@ -5217,7 +5228,7 @@
 
       This is the element the whole typed-absence apparatus was built for. The absorbed
       evening, the interruption, the fix that never became a ticket: a draw on the labour
-      layer with `quantity` filed as `absent reason="unmeasured"`. It is a real draw, it is
+      layer with `quantity` filed as `absent/reason = unmeasured`. It is a real draw, it is
       attributed to a real operation, and it has no number — and every one of those three
       facts survives transmission.
 
@@ -5245,7 +5256,7 @@
 
       Este é o elemento para que todo o aparato da ausência tipificada foi construído. A noite
       absorvida, a interrupção, o arranjo que nunca deu bilhete: um consumo sobre a camada de mão de
-      obra com a `quantity` declarada como `absent reason="unmeasured"`. É um consumo real, está
+      obra com a `quantity` declarada como `absent/reason = unmeasured`. É um consumo real, está
       atribuído a uma operação real, e não tem número — e cada um desses três factos sobrevive à
       transmissão.
 
@@ -5284,10 +5295,12 @@
 
       WHAT IT CONTAINS
 
-        decidedBy  WHO made the commitment. Optional, because a sender may genuinely not
-                   know — but an induction without it records that the transfer happened and
-                   not who made it, which is the weaker half of the finding, and a receiver
-                   is entitled to say so.
+        layer       the layer the commitment lands on, which is NOT the layer that decided.
+        commitment  how much, as a `StatedClaim`.
+        decidedBy   WHO made the commitment. Optional, because a sender may genuinely not
+                    know — but an induction without it records that the transfer happened and
+                    not who made it, which is the weaker half of the finding, and a receiver
+                    is entitled to say so.
 
       WHAT IT REFUSES
 
@@ -5318,10 +5331,12 @@
 
       O QUE CONTÉM
 
-        decidedBy  QUEM assumiu o compromisso. Opcional, porque quem envia pode genuinamente não
-                   saber — mas uma indução sem ele regista que a transferência aconteceu e não quem
-                   a fez, que é a metade mais fraca do resultado, e quem recebe tem o direito de o
-                   dizer.
+        layer       a camada em que o compromisso cai, que NÃO é a camada que o decidiu.
+        commitment  quanto, como `StatedClaim`.
+        decidedBy   QUEM assumiu o compromisso. Opcional, porque quem envia pode genuinamente não
+                    saber — mas uma indução sem ele regista que a transferência aconteceu e não quem
+                    a fez, que é a metade mais fraca do resultado, e quem recebe tem o direito de o
+                    dizer.
 
       O QUE RECUSA
 
@@ -5448,6 +5463,8 @@
         chart         the chart of accounts a position code belongs to.
         id            a document-local handle, so a conformance profile can name which regime
                       it narrows and two declarations cannot silently be the same.
+        note          prose about this declaration. Optional, and never where a coded fact
+                      belongs.
 
       The third axis — WHO CODES IT — is carried inside the borrowed term.
 
@@ -5523,6 +5540,8 @@
         chart         o plano de contas a que um código de posição pertence.
         id            um identificador local ao documento, para que um perfil de conformidade possa
                       dizer que regime estreita e duas declarações não possam ser a mesma em silêncio.
+        note          prosa sobre esta declaração. Opcional, e nunca onde pertence um facto
+                      codificado.
 
       O terceiro eixo — QUEM O CODIFICA — vai dentro do termo emprestado.
 
@@ -5637,10 +5656,10 @@
            already chosen to declare one.
 
            ⛔ REJECTED: OPTIONAL AND WRAPPED, which looks like the cheaper half and is the
-           incoherent middle. It admits `chart` omitted AND `chart absent reason="none"`:
+           incoherent middle. It admits `chart` omitted AND `chart absent/reason = none`:
            two encodings of one fact with no rule saying which to send. That is the mirror
-           of the defect `framework`'s wrapper was added to repair. S-1 was two facts
-           sharing one encoding; this would be one fact split across two.
+           of the defect `framework`'s wrapper repairs: S-1 is two facts sharing one
+           encoding; this would be one fact split across two.
 
            ⛔ REJECTED: ANNOTATION ALONE, left optional and unwrapped. The self-authored
            clause closes the US population but cannot close a sender who is not the entity,

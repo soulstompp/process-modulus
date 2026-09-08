@@ -287,9 +287,9 @@
         agreed     claimed, and the answer matches the corpus or its declared exception.
         diverged   claimed, and the answer differs with no exception.
         notable    answered beyond what was claimed. Never a failure, and usually the most
-                   valuable line in a report: a witness admitted something we assumed it
-                   must refuse, so either the model is stronger than we thought or a guard
-                   is not guarding. Two shapes reach it — `none` answering at all, and
+                   valuable line in a report: a witness answered something the model
+                   assumes it must refuse, so either the model is stronger than stated or a
+                   guard is not guarding. Two shapes reach it — `none` answering at all, and
                    `partial` answering the whole question.
         unclaimed  `claimed` is `none` and the witness said `cannotAsk`. Quiet, and correct.
 
@@ -573,13 +573,15 @@
       A WITNESS IS NOT REQUIRED TO BE A PROGRAM. When an accountant answers the corpus on
       paper, their answers ARE a coverage file, and that is why this is a document format
       rather than a Rust trait. A second regime should be able to answer without running,
-      compiling or depending on anything of ours.
+      compiling or depending on anything of this project's.
 
       WHAT IT CONTAINS
 
-        witness  who is answering.
-        regime   the frameworks this witness reports under. Optional and unbounded.
-        entry+   one per question claimed.
+        witness   who is answering.
+        evidence  whether this document reports what somebody saw or what somebody
+                  stipulated, as a `pm:StatedEvidence`.
+        regime    the frameworks this witness reports under. Optional and unbounded.
+        entry+    one per question claimed.
 
       WHAT IT OBLIGES
 
@@ -610,13 +612,15 @@
       UMA TESTEMUNHA NÃO TEM DE SER UM PROGRAMA. Quando um contabilista responde ao corpus em papel,
       as respostas dele SÃO um ficheiro de cobertura, e é por isso que isto é um formato de documento
       e não um trait de Rust. Um segundo regime tem de conseguir responder sem executar, compilar ou
-      depender de nada do que é nosso.
+      depender de nada deste projeto.
 
       O QUE CONTÉM
 
-        witness  quem responde.
-        regime   os referenciais sob os quais esta testemunha reporta. Opcional e sem limite.
-        entry+   um por pergunta afirmada.
+        witness   quem responde.
+        evidence  se este documento reporta o que alguém viu ou o que alguém estipulou, como
+                  `pm:StatedEvidence`.
+        regime    os referenciais sob os quais esta testemunha reporta. Opcional e sem limite.
+        entry+    um por pergunta afirmada.
 
       O QUE OBRIGA
 
@@ -736,6 +740,8 @@
       WHAT IT CONTAINS
 
         witness        who was run.
+        evidence       whether this document reports what somebody saw or what somebody
+                       stipulated, as a `pm:StatedEvidence`.
         ranAt          when. Required.
         corpusVersion  WHICH corpus was answered. Optional.
         result+        one per question.
@@ -775,6 +781,8 @@
       O QUE CONTÉM
 
         witness        o que foi executado.
+        evidence       se este documento reporta o que alguém viu ou o que alguém estipulou,
+                       como `pm:StatedEvidence`.
         ranAt          quando. Obrigatório.
         corpusVersion  QUAL o corpus que foi respondido. Opcional.
         result+        um por pergunta.
@@ -1220,6 +1228,8 @@
         witness     the observer. Required, and for a sharper reason than on `Coverage` or
                     `Run`: THIS IS TESTIMONY ABOUT PARTIES WHO DID NOT CONSENT TO IT, and
                     anonymous testimony about somebody else's books is not a filing.
+        evidence    whether this document reports what somebody saw or what somebody
+                    stipulated, as a `pm:StatedEvidence`.
         observedAt  when it was observed. Required, for `Run/ranAt`'s reason rather than
                     `Coverage`'s: a coverage claim is a standing position, and THIS IS A
                     STATEMENT ABOUT A MOMENT. Both filings change, so an observation that
@@ -1328,6 +1338,8 @@
         witness     quem observa. Obrigatório, e por razão mais aguda do que na `Coverage` ou no
                     `Run`: ISTO É TESTEMUNHO SOBRE PARTES QUE NÃO CONSENTIRAM NELE, e testemunho
                     anónimo sobre as contas de outrem não é uma declaração.
+        evidence    se este documento reporta o que alguém viu ou o que alguém estipulou, como
+                    `pm:StatedEvidence`.
         observedAt  quando foi observado. Obrigatório, pela razão do `Run/ranAt` e não pela da
                     `Coverage`: uma afirmação de cobertura é uma posição permanente, e ISTO É UMA
                     DECLARAÇÃO SOBRE UM MOMENTO. As duas declarações mudam, portanto uma observação
@@ -1626,7 +1638,7 @@
       WHAT IT CONTAINS
 
         quantity    how much was double counted, as a `pm:StatedClaim` and not a bare
-                    `pm:Claim`. "There is intra-group demand here and we cannot size it" is
+                    `pm:Claim`. "There is intra-group demand here and nobody can size it" is
                     the honest state of most consolidations, and a required number would be
                     answered by writing zero. An `unmeasured` elimination says the composer
                     looked, found double counting and could not measure it, and a receiver
@@ -1655,8 +1667,8 @@
 
       WHAT IT REFUSES
 
-      ⛔ An elimination filed against an arbitrary pair to mean "we looked and found nothing
-      anywhere". That invents a relation. The search is answered where the search lives.
+      ⛔ An elimination filed against an arbitrary pair to mean "somebody looked and found
+      nothing anywhere". That invents a relation. The search is answered where the search lives.
 
       ⛔ An unexplained reduction. `observed` is required for `pm:Coupling/observed`'s reason
       and a sharper one: this is the only element in the model that makes a filed number
@@ -1692,7 +1704,7 @@
       O QUE CONTÉM
 
         quantity    quanto foi contado duas vezes, como `pm:StatedClaim` e não como `pm:Claim` nu.
-                    «Há procura intragrupo aqui e não a conseguimos dimensionar» é o estado honesto
+                    «Há procura intragrupo aqui e ninguém a consegue dimensionar» é o estado honesto
                     da maioria das consolidações, e um número obrigatório seria respondido escrevendo
                     zero. Uma eliminação `unmeasured` diz que quem compôs foi ver, encontrou dupla
                     contagem e não a conseguiu medir, e quem recebe fica a saber que a figura fundida
@@ -1721,8 +1733,8 @@
 
       O QUE RECUSA
 
-      ⛔ Uma eliminação declarada contra um par arbitrário para dizer «fomos ver e não encontrámos
-      nada em lado nenhum». Isso inventa uma relação. A procura responde-se onde a procura vive.
+      ⛔ Uma eliminação declarada contra um par arbitrário para dizer «alguém foi ver e não
+      encontrou nada em lado nenhum». Isso inventa uma relação. A procura responde-se onde a procura vive.
 
       ⛔ Uma redução não explicada. O `observed` é obrigatório pela razão do `pm:Coupling/observed` e
       por outra mais aguda: este é o único elemento do modelo que torna um número declarado menor.
@@ -1803,7 +1815,7 @@
 
       ⛔ An absent `factor` read as "unknown". Absent means ONE, exactly. The overwhelming
       majority of parts need no conversion and must not file a ceremonial 1, and a
-      conversion nobody has measured is `absent reason="unmeasured"` INSIDE the
+      conversion nobody has measured is `absent/reason = unmeasured` INSIDE the
       `pm:StatedClaim` — a different document from a part carrying no `factor` at all.
 
       ⛔ A factor at or below zero, which would reorder the bounds the component-wise
@@ -1878,7 +1890,7 @@
 
       ⛔ Um `factor` ausente lido como «desconhecido». Ausente quer dizer UM, exatamente. A esmagadora
       maioria das partes não precisa de conversão nenhuma e não deve ser obrigada a declarar um 1
-      cerimonial, e uma conversão que ninguém mediu é `absent reason="unmeasured"` DENTRO do
+      cerimonial, e uma conversão que ninguém mediu é `absent/reason = unmeasured` DENTRO do
       `pm:StatedClaim` — um documento diferente de uma parte sem `factor` nenhum.
 
       ⛔ Um fator igual ou inferior a zero, que reordenaria os limites que o produto componente a
@@ -1919,11 +1931,11 @@
       Exactly one of:
 
         elimination+                somebody looked and found these
-        absent reason="none"        somebody looked and the parts do not double count. The
+        absent/reason = none        somebody looked and the parts do not double count. The
                                     fused figure IS the sum, asserted rather than assumed
-        absent reason="unmeasured"  nobody checked. The fused figure may be overstated by
+        absent/reason = unmeasured  nobody checked. The fused figure may be overstated by
                                     an unknown amount and the composer says so
-        absent reason="notApplicable"  a one-part fusion. Nothing can be counted twice
+        absent/reason = notApplicable  a one-part fusion. Nothing can be counted twice
                                     between a set of one
 
       "Somebody looked and found none" is a fact about the SEARCH, and a search has no
@@ -1982,11 +1994,11 @@
       Exatamente um de:
 
         elimination+                alguém foi ver e encontrou estas
-        absent reason="none"        alguém foi ver e as partes não se duplicam. A figura fundida É a
+        absent/reason = none        alguém foi ver e as partes não se duplicam. A figura fundida É a
                                     soma, afirmado em vez de assumido
-        absent reason="unmeasured"  ninguém verificou. A figura fundida pode estar sobreavaliada por
+        absent/reason = unmeasured  ninguém verificou. A figura fundida pode estar sobreavaliada por
                                     um montante desconhecido e quem compõe di-lo
-        absent reason="notApplicable"  uma fusão de uma só parte. Entre um conjunto de um nada pode
+        absent/reason = notApplicable  uma fusão de uma só parte. Entre um conjunto de um nada pode
                                     ser contado duas vezes
 
       «Alguém foi ver e não encontrou nenhuma» é um facto sobre a PROCURA, e uma procura não tem
