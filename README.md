@@ -146,10 +146,13 @@ valid documents.
   Most are joins and comparisons across elements, which is a shape XSD has no way to express
   and a query language has nothing else.
 
-* Deserialization is not validation, and there is one concrete case where they differ.
+* Neither direction of the crate is validation, and one concrete case covers both.
   `Operation` is a sequence with a repeated choice in it, which the code generator
   flattens into a single `Vec`, so `label` stops being a required singular field as far as
-  `rustc` is concerned. The XSD still enforces it. Validate with an XSD validator.
+  `rustc` is concerned. The XSD still enforces it. Reading, the types accept a document the
+  validator refuses; writing, the crate emits an operation with no `label` and reports
+  success. `tests/roundtrip.rs` holds every document here to surviving the write and the read
+  back, which is a weaker claim than being valid. Validate with an XSD validator.
 
 * No conformance profile ships yet. A profile should follow a real adopter rather than
   precede one, and the reasoning behind that is in `conformance/`.

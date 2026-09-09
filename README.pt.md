@@ -150,10 +150,13 @@ são documentos válidos.
   [`conformance/README.pt.md`](conformance/README.pt.md) lista-as, nomeia a consulta que corre
   cada uma das que correm, e diz o que um implementador continua a dever.
 
-* Desserializar não é validar, e há um caso concreto onde as duas diferem. O `Operation` é uma
-  sequência com uma escolha repetida lá dentro, que o gerador de código achata num único `Vec`,
-  pelo que o `label` deixa de ser um campo singular obrigatório do ponto de vista do `rustc`. O
-  XSD continua a impô-lo. Valide-se com um validador de XSD.
+* Nenhuma das duas direções da biblioteca é validação, e um único caso concreto cobre as duas. O
+  `Operation` é uma sequência com uma escolha repetida lá dentro, que o gerador de código achata
+  num único `Vec`, pelo que o `label` deixa de ser um campo singular obrigatório do ponto de vista
+  do `rustc`. O XSD continua a impô-lo. A ler, os tipos aceitam um documento que o validador
+  recusa; a escrever, a biblioteca emite uma operação sem `label` e reporta sucesso. O
+  `tests/roundtrip.rs` obriga todos os documentos daqui a sobreviverem à escrita e à releitura, o
+  que é uma afirmação mais fraca do que serem válidos. Valide-se com um validador de XSD.
 
 * Ainda não é distribuído nenhum perfil de conformidade. Um perfil deve seguir um adotante real em
   vez de o preceder, e o raciocínio está em `conformance/`.
