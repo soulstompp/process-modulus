@@ -2596,7 +2596,21 @@
     </xs:keyref>
 
     <!-- ⭐ The one reference in a cross-filing document that is genuinely local: the
-         composed layer is in this file, so a fusion cannot name a layer nobody filed. -->
+         composed layer is in this file, so a fusion cannot name a layer nobody filed.
+
+         ⛔ AND IT IS LOCAL ONLY BECAUSE `composition` EMBEDS THE WHOLE `pm:processModulus`
+         ELEMENT RATHER THAN A `pm:Stack`. The base declares its identity constraints on that
+         element, so embedding the element brings them into scope and embedding the type does
+         not. Swap the `xs:element ref` above for a `type` and this key selects nothing, which
+         does not fail quietly: every composition is then refused for naming a layer that is
+         present and correctly spelled. `xmllint` blames the document; Xerces says `refers to a
+         key or unique that is out of scope` and is the faster way to read it.
+
+         ⚠️ Restating the path here, rather than `refer="pm:layerName"`, is deliberate and was
+         measured both ways. The base's own key IS in scope at this element and both validators
+         accept a keyref against it, so an embedder may point at the base's constraints with
+         nothing restated. This file does not, so that it depends on the base's ELEMENT names
+         and never on the names the base gave its constraints. -->
     <xs:key name="composedLayerName">
       <xs:selector xpath="pm:processModulus/pm:stack/pm:layer"/>
       <xs:field    xpath="pm:name"/>
