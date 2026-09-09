@@ -3,7 +3,12 @@
 //! These are not tests of the schema. The schema is checked by a validator, and a
 //! validator is the thing other parties will run. They test the CRATE: that the
 //! reference implementation can actually read a conforming document, and that the
-//! facts the examples were written to demonstrate survive the round trip into Rust.
+//! facts the examples were written to demonstrate survive being read into Rust.
+//!
+//! ⚠️ READING IS ALL THIS FILE DOES, and the line above said "round trip" for a long
+//! time while nothing in this repository had ever written a document back out.
+//! `tests/roundtrip.rs` is the other half, and it holds the crate to writing what it
+//! was handed. Neither file is a validator and neither claims to be.
 //!
 //! ⚠️ `assert_layer_references_resolve` deliberately re-implements the schema's
 //! `xs:keyref` in Rust. That is not redundancy: the two checks answer to different

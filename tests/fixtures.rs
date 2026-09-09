@@ -9,6 +9,11 @@
 //!   a negative      proves the CHECKER BITES — the same rule, run against a document
 //!   control         mutated in memory to be wrong, must reject it
 //!
+//! ⚠️ The first of those three verbs is a validator's job and the second is
+//! `tests/roundtrip.rs`, which walks this directory alongside the corpus so that a state the
+//! schema admits is also a state the generated crate can write back out. Only the third is
+//! here.
+//!
 //! ⚠️ A repository with only the first kind reports green for rules that examine nothing,
 //! which is the trap this codebase names as *"a bound with nothing to bound passes loudest."*
 //! A repository with only the second never learns that a state exists.

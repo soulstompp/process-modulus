@@ -47,3 +47,8 @@ different axes, which is the split the schema itself draws between `Verdict` and
 reports `notable` for a witness that answers beyond it. The negative controls in
 `tests/fixtures.rs` are the other half, and they mutate a parsed document rather than reading a
 file, because what they check is whether the CHECKER bites.
+
+⭐ **The three verbs at the top of this file land in three places and only one of them is
+`tests/fixtures.rs`.** A validator does the validating. `tests/roundtrip.rs` does the round
+trip, walking this directory alongside the corpus, so that a state the schema admits is also
+a state the generated crate can write back out and read again. The rules are the third.
