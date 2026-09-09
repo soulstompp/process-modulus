@@ -1,4 +1,4 @@
-//! Generate the Rust types from `schema/process-modulus.xsd`.
+//! Generate the Rust types from the two schemas in `schema/`.
 //!
 //! The schema is the source of truth for the types AND for their documentation:
 //! `RendererFlags`'s five doc flags emit every `xs:documentation` block as rustdoc,
@@ -26,6 +26,19 @@ fn main() -> Result<(), Error> {
     // Two schemas, ONE generate call. `assertion.xsd` xs:imports the base, so a
     // second call would emit the base's types twice under two module trees and the
     // shared BorrowedTerm would stop being shared.
+    //
+    // ⚠️ THE HAZARD IS THE SECOND CALL AND NOT THE IMPORT, and the first reader from
+    // outside took it the other way round. One call resolves an xs:import by its
+    // schemaLocation, so an imported schema need not be listed here at all: these
+    // five roots generated from `assertion.xsd` alone come out byte identical. Both
+    // names stay in the loop because it also emits `rerun-if-changed`, which is a
+    // different job and is load-bearing.
+    //
+    // ⛔ SO DO NOT DROP A NAME FROM THIS LOOP: a partial list is worse than no loop at
+    // all. Emitting any `rerun-if-changed` replaces cargo's default of watching the
+    // whole package, so a name left out stops being watched, and the next edit to that
+    // schema serves the previous generation byte for byte with no error. A stale
+    // generation and a broken one present identically.
     let mut schemas = Vec::new();
     for name in ["process-modulus.xsd", "assertion.xsd"] {
         println!("cargo:rerun-if-changed=schema/{name}");
