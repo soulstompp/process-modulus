@@ -25,6 +25,10 @@
 # ⛔ `factor_absent` IS CARRIED AS A DISJUNCTION AND NOT COALESCED AWAY. A part whose conversion
 #   nobody sized poisons every path through it: the product is unknown rather than one, and a
 #   caller that reads the number without the flag has asserted the units already agree.
+# ⚠️ `composition/remainder_frontier.sqlc` IS THIS WALK WITH A STOP CONDITION, and a reader who
+#   finds the two nearly identical should read that file's header rather than merge them: a
+#   remainder bottoms out EARLIER than a sum does, and stopping inside a recursion is not a
+#   filter over this relation's result.
 -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (

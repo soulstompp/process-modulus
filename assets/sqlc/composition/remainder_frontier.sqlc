@@ -11,6 +11,14 @@
 #   entered. The difference then selects those stopping points. Two different uses of
 #   composition/unsettled.sqlc, and collapsing them into one would either walk the whole tree
 #   or stop at the first node.
+# ⚠️ IT IS `composition/descent.sqlc` WITH A STOP CONDITION, AND THE DUPLICATION IS DELIBERATE.
+#   The two files share more source lines than any other pair in this tree, and the difference is
+#   one join: this walk halts where `composition/unsettled.sqlc` stops holding. ⛔ It cannot be
+#   written as a restriction OF that relation, because stopping inside a recursion is not a
+#   filter over its result: a row at depth 3 there may be reachable only through a node this walk
+#   never passes. ⭐ The tool that would fit is a slot on the stop condition, and it would make
+#   `descent.sqlc` a shape rather than a query, costing it the standalone runnability every
+#   template here is supposed to have. So the copy stays, and this sentence is the record of why.
 -- composition/parts.sqlc walked while composition/unsettled.sqlc holds, carrying the product.
 WITH RECURSIVE
 resolved AS (

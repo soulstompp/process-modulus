@@ -63,6 +63,27 @@ struct Triple {
     high: DVector<f64>,
 }
 
+/// The fit, read across the whole demand range rather than at a point.
+///
+/// ⭐⭐ THREE MEMBERS, AND THE THIRD IS WHY THE SIGN IS READ ACROSS THE RANGE AT ALL. A
+/// two-valued fit, `clearance | interference`, has nowhere to put the overlap, so it can only
+/// be read at a single point. ISO 286, which the vocabulary is borrowed from, defines THREE
+/// classes, and the missing one is exactly the overlap case:
+///
+/// ```text
+/// clearance     n_low  ≥ d_high     the whole range clears
+/// transition    the ranges overlap  partly each way
+/// interference  n_high ≤ d_low      the whole range interferes
+/// ```
+///
+/// Where `n − d` crosses zero the magnitude's low bound is legitimately 0, and the sign says
+/// so rather than leaving a reader to infer it.
+///
+/// ⛔ THE THREE ARE NOT MUTUALLY EXCLUSIVE, WHICH THE SCHEMA'S PROSE CLAIMS AND THE ARITHMETIC
+/// REFUSES. `clearance` and `interference` BOTH hold when a point nameplate equals a point
+/// demand. `layers/remainder.sqlc` settles it by arm order and so does the `if` below, which is
+/// the same decision written twice on purpose: a `CASE` is a partition by construction, so no
+/// partition law can see the overlap. Disjointness has to be probed on the PREDICATES.
 fn classify(r_low: f64, r_high: f64) -> &'static str {
     if r_low >= 0.0 {
         "clearance"
@@ -83,6 +104,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 1. r = n - d, and the fit read off the ranges.
+    //
+    // ⛔ THE INTERVAL-ARITHMETIC TRAP, WHICH IS NOT A MODELLING CHOICE. Under a transition fit
+    //    `|n - d|` is SIGN-BLIND: it keeps only the LARGER of the two sides and the smaller is
+    //    invisible inside it. `d = [11.0, 13.2, 16.4]` against `n = 16` gives `[0.0, 2.8, 5.0]`,
+    //    the clearance side, and the 0.4 of interference lies inside that interval,
+    //    indistinguishable from 0.4 of clearance. So the interference exposure is derived from
+    //    the INPUTS and never from the filed magnitude: `max(0, d_high - n_low)`. §7 bounds it.
+    //
+    // ⭐ AND THE TWO SIDES MUST NEVER BE ADDED. Clearance falls as `d` rises while interference
+    //    rises, so a component-wise sum pairs the slack week's spare with the busy week's
+    //    unserved demand and reports a state that occurs in no week. It is the same correlation
+    //    error as §4, except that the shared driver is `d` itself and the pairing is exactly
+    //    backwards. The cure is to evaluate at one corner, where there is one value of each,
+    //    which is why `quantity` stayed a single Claim.
     // ------------------------------------------------------------------
     let rows = sqlx::query_file_as!(Layer, "assets/sql/queries/matrices/1-fit-from-ranges.sql")
         .fetch_all(&pool)
@@ -147,10 +182,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "a filed fit disagrees with its own ranges"
     );
 
-    // ⭐⭐ THE CENSUS, AND WHY IT IS PRINTED RATHER THAN COUNTED. `docs/linear-algebra.md`
-    // quotes these figures. Maintained by reading the XML and counting, they are numbers
-    // nobody recounts. The rows the assertion above already ran on are the same rows the note
-    // needs, so the note's numbers come from here or they are somebody's recollection.
+    // ⭐⭐ THE CENSUS, AND WHY IT IS PRINTED RATHER THAN COUNTED. These are figures the header
+    // above would otherwise have to quote. Maintained by reading the XML and counting, they are
+    // numbers nobody recounts. The rows the assertion above already ran on are the same rows the
+    // argument needs, so they come from here or they are somebody's recollection.
     let mut census: BTreeMap<(&str, &str), usize> = BTreeMap::new();
     for row in &rows {
         *census
@@ -189,6 +224,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 2. D-transpose N: computed, empty, and the reason is the thesis.
+    //
+    // A document also declares OPERATIONS. Each draws on a layer, or induces a commitment on
+    // another, giving two P×L matrices over operations × layers: `D` for draws, `N` for
+    // inductions. They are deliberately different types -- a draw is consumption that happened,
+    // an induction is a commitment that creates a future draw on a DIFFERENT supply. So there is
+    // genuine cross-layer structure, and `D^T N` is the obvious way to collect it.
+    //
+    // ⛔⛔ TWO THINGS STOP IT BEING WHAT IT LOOKS LIKE. The units: each layer carries its own --
+    //    people, GPU, launches per quarter -- so entries come out in people·launches rather than
+    //    launches per person. The incidence PATTERNS compose and give you reachability; the
+    //    quantities do not. And there is no firing count per operation, deliberately, because
+    //    sequence and timing are BPMN's job. What you have is a rate structure, not a flow.
+    //
+    // ⭐ THAT MATTERS BECAUSE OF WHAT IT IS NOT. `D^T N`'s off-diagonal says WORK DRAWN HERE
+    //   COMMITS WORK THERE. Coupling is a different object, and §5 is where it lands.
     // ------------------------------------------------------------------
     let ops = sqlx::query_file!("assets/sql/queries/matrices/2-draws-and-inductions.sql")
         .fetch_all(&pool)
@@ -213,6 +263,54 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 3. x_composed = F Phi x_parts - e, as an actual matrix product.
+    //
+    // THE ONE PLACE A REAL LINEAR MAP APPEARS. A second document type consolidates filings.
+    // Given part layers indexed by `p` and composed layers by `l`, a composition declares an
+    // incidence matrix `F` (L×P, entries in {0,1}, each part used at most once) plus a diagonal
+    // `Phi = diag(phi_p)` of strictly positive conversion factors carrying each part into the
+    // composed layer's unit. For each quantity `x` in {d, n, draw}:  x_composed = F Phi x - e.
+    //
+    // `e` is a vector of ELIMINATIONS: quantities double-counted across parts, filed individually
+    // with prose and the pair of filings they sit between.
+    //
+    // ⛔ AN ABSENT `e` IS NOT `e = 0`. A missing vector cannot tell "somebody looked for double
+    //   counting and there is none" from "nobody looked", and the two owe OPPOSITE arithmetic:
+    //   the first requires `x_composed = F Phi x` exactly, the second requires no equality at
+    //   all. The schema makes a filer say which, and that is the difference between an exact
+    //   rule and a warning. The `suspended` count below is that difference, counted.
+    //
+    // ⭐⭐ THE RULE IS INCLUSION-EXCLUSION.  x_composed = Σ x_parts - e  is  |A ∪ B| = |A| + |B|
+    //    - |A ∩ B|, with `e` in the place of the intersection. Which answers why `e` has to be
+    //    filed at all: FROM |A| AND |B| NOTHING RECOVERS |A ∩ B|. A layer carries a magnitude,
+    //    never the set the magnitude counts, so the correction is not a function of the operands.
+    //    That is the whole argument for `asrt:Elimination` being an observation with an
+    //    `unmeasured` arm.
+    //
+    // ⭐⭐ UNLESS YOU PIVOT TO AN INCIDENCE WHOSE ELEMENTS CARRY MEASURES OF THEIR OWN, AND `F`'s
+    //    DO. A part IS a layer, and a layer carries its own demand and nameplate. So express an
+    //    overlap in the part basis and the correction falls out complete, with nothing filed:
+    //    `eliminations/derived.sqlc` computes it. The test is whether the incidence's elements
+    //    are themselves measured objects. `F`'s are; `D`'s and `N`'s are not, and the same pivot
+    //    buys nothing there. ⛔ What the pivot cannot name is the residue: an overlap that is a
+    //    SLICE of a part rather than a whole one has no element in the pivoted basis either. That
+    //    case, and only that case, is what the filed element is for.
+    //
+    // ⛔ `F` IS NOT `C` AND IT IS NOT `e`. `F` is where fungibility is asserted: two parts are one
+    //   composed layer exactly when supply in one can serve demand in the other. That is a
+    //   judgement, it is required to carry prose, and coupling and fungibility are independent
+    //   axes -- the corpus populates both off-diagonal cells. The confusion with `e` is a TYPE
+    //   error rather than a matter of vocabulary: `F` in {0,1}^(L×P) carries the judgement,
+    //   `e` in R^L carries what two parts counted twice, and `e` is not a function of `F`. A
+    //   fusion of two disjoint establishments has `e = 0` and is perfectly fungible; a fusion of
+    //   two claimants on one machine has `e` equal to a whole part's nameplate and is equally
+    //   fungible. `assets/fixtures/every-partial-elimination.xml` files the middle of that scale,
+    //   `e = 3` against parts of 10. Reading the operation off `e` -- pooling here, aggregation
+    //   there -- quantises a magnitude and infers a judgement from an adjustment. There is no
+    //   operator-valued parameter anywhere in `x = F Phi x - e` and no type tag on a row of `F`.
+    //
+    // ⭐ A LAYER THE COMPOSER ORIGINATED IS A ZERO ROW OF `F` -- a composed layer with no parts,
+    //   whose figures are the composer's own. Nothing in the arithmetic forbids it and the model
+    //   needs it: a group-level rota belongs to the parent and came from no member.
     // ------------------------------------------------------------------
     let parts = sqlx::query_file!("assets/sql/queries/matrices/3a-fusion-parts.sql")
         .fetch_all(&pool)
@@ -236,6 +334,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .unwrap();
         f[(i, j)] = 1.0;
     }
+    // ⛔⛔ SPARSITY, AND THE ONE THING THE MATRIX CANNOT SAY. Dense, `F` is rows×cols entries;
+    //    the relation stores one row per part. The figures are printed rather than written down,
+    //    because a figure carried in a note is right on the day it is written and not after.
+    //
+    //    IN THE MATRIX, A ZERO ENTRY AND AN ABSENT ENTRY ARE THE SAME VALUE. In the relation they
+    //    are a row that says zero and no row at all, and the difference between those two is this
+    //    model's entire subject. A `0` in `F` says the composer considered these two layers and
+    //    judged them not fungible. A missing row says nothing whatever. Linear algebra has one
+    //    symbol for both, which is what §5 pays for.
+    let dense = rows_n * cols_n;
+    println!(
+        "3. F is {rows_n}x{cols_n}: dense that is {dense} entries, the relation stores {cols_n} \
+         ({:.1}%)",
+        100.0 * cols_n as f64 / dense as f64
+    );
+
     let diag = |g: fn(&_) -> f64| {
         DMatrix::from_diagonal(&DVector::from_iterator(cols_n, parts.iter().map(g)))
     };
@@ -282,7 +396,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         checked += 1;
     }
     println!(
-        "3. F.Phi.x - e against the filed composed demand: {checked} layers, all agree; \
+        "   F.Phi.x - e against the filed composed demand: {checked} layers, all agree; \
          {suspended} suspended"
     );
     println!(
@@ -300,6 +414,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 5. What densifying costs. The interesting failure, kept for the end.
+    //
+    // COUPLING is `C`, L×L, and it says RELIEVING THIS LAYER'S CONSTRAINT MEASURABLY MOVES THAT
+    // LAYER'S REMAINDER. The model assumes `C = 0` -- that is what makes the layers separable in
+    // the first place -- and requires any nonzero entry to carry a prose observation of how it
+    // was seen. `C` and `D^T N` cannot be connected without exactly the firing counts §2 says
+    // are not there, so `C` is OBSERVED and never derived.
+    //
+    // ⛔⛔ ZERO COUPLINGS IS THE ASSUMPTION, NOT A RESULT. A document with none is one where
+    //    nobody looked, and the mask below is what keeps the two apart.
+    //
+    // ⭐⭐⭐ THE SAME GAP RUNS THROUGH EVERY QUANTITY, AND IT IS WHY THE TABLES ARE SPARSE. A
+    //    matrix entry is drawn from R. A relation's cell here is drawn from
+    //
+    //        R  ⊎  {none, unmeasured, notApplicable, derived}
+    //
+    //    a coproduct, not a number with a sentinel. And the right-hand set is not fixed: at a
+    //    `pm:StatedClaim` position it narrows to the three-member subset WITHOUT `none`, because
+    //    a measured zero carries a unit, an observer and a provenance and the absence arm has a
+    //    home for none of them. A zero there is a claim of `[0, 0, 0]`. That distinction is
+    //    unrepresentable in R, it is the reason `NULL` is refused throughout, and nine `CHECK`
+    //    constraints hold it in the database.
     // ------------------------------------------------------------------
     let couplings = sqlx::query_file!("assets/sql/queries/matrices/5-coupling-presence.sql")
         .fetch_all(&pool)
@@ -348,6 +483,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 4. Phi is correlated with itself, and the corpus shows it.
+    //
+    // `Phi`'s entries are themselves three-point intervals ("a month is `[672, 720, 744]` hours"),
+    // and the product is component-wise wherever the quantity converted is non-negative, which
+    // covers a demand and a nameplate. ⛔ IT DOES NOT COVER A REMAINDER: `r` carries a sign, and
+    // under interference the larger factor gives the smaller product, so component-wise would
+    // return an interval whose low exceeded its high. `composition/settled_remainders.sqlc`
+    // therefore takes the corner on each side, `least(phi_low·r_low, phi_high·r_low)` and the
+    // matching `greatest`. ⭐ The general four-corner product, where BOTH operands straddle zero,
+    // is not implemented and not owed: a conversion is strictly positive.
+    //
+    // ⛔⛔ AND `r_composed != n_composed - d_composed` WHEN `Phi != I`, WHICH IS NOT A DEFECT IN
+    //    EITHER FIGURE. One `phi_p` multiplies both `n_p` and `d_p`, so those converted intervals
+    //    are CORRELATED; differencing them with the bound reversal that independent quantities
+    //    require counts `phi`'s spread twice. `r` must be converted directly:
+    //
+    //        r_composed = F Phi r_parts - e_n + e_d
+    //
+    //    and BOTH eliminations appear because they act on `r` in opposite directions: removing
+    //    double-counted demand RAISES the remainder, removing double-counted nameplate LOWERS it.
+    //
+    // ⛔ AN IDENTITY STATED IN PROSE AND EVALUATED NOWHERE CAN LOSE A WHOLE TERM WITHOUT ANYTHING
+    //   NOTICING, and that one lost `+ e_d` for exactly as long as it lived in a document.
+    //   `composition/fused_remainders.sqlc` evaluates it, observation 13 in `examples/observations`
+    //   prints it beside the figure `layers/remainder` derives from the composed totals, and the
+    //   two agree on every composed layer whose parts convert at a point value and differ on
+    //   exactly those carrying a factor with spread. This section is the differing pair.
     // ------------------------------------------------------------------
     let c = sqlx::query_file!("assets/sql/queries/matrices/4-converted-remainder.sql")
         .fetch_one(&pool)
@@ -404,6 +565,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 6. The residue census: how often the sawtooth defeats a filed demand.
+    //
+    // THE DECOMPOSITION. With `m = k - floor(d/q)`:      r = mq - (d mod q)
+    //
+    // `mq` is whole quanta and a procurement decision -- hold one more unit and it moves.
+    // `(d mod q)` is a residue and no choice of `k` removes it; the closest any decision reaches
+    // is `min(d mod q, q - d mod q)`. Since `n` is a multiple of `q`, `r ≡ -d (mod q)` always:
+    // rounding up leaves `(-d) mod q` in `[0, q)`, rounding down leaves `-(d mod q)` in `(-q, 0]`,
+    // additive inverses in R/qR summing to `q`. Clearance and interference are one division read
+    // from opposite sides. The model's claim is that the residue is CONSERVED and the integer part
+    // is CHOSEN, so the document records who may change each: the quantum's origin and the
+    // amount's origin, each one of `intrinsic`/`contractual`/`policy`.
+    //
+    // ⛔ TWO THINGS ABOUT THAT IDENTITY THAT A FINDINGS PASS GOT WRONG. First, substituting
+    //   `k = n/q` collapses it: `r = (n/q - floor(d/q))q - (d - floor(d/q)q) = n - d`. The floors
+    //   appear twice with opposite signs and cancel, so `r` is exact for ANY `d` and ANY `n`,
+    //   interval or not. A finding claiming the decomposition "assumes point values" was wrong
+    //   about the total.
+    //
+    // ⛔⛔ SECOND, AND WORSE: `d mod q` IS A SAWTOOTH, so evaluated at an interval's three points
+    //    it need not be ordered. `d = (4.5, 5.2, 6.7)` at `q = 1` gives residues `(0.5, 0.2, 0.7)`,
+    //    which is not a valid three-point interval at all, while `d` is perfectly well formed.
+    //    The census below counts how many corpus layers are in that state. The TOTAL is an
+    //    identity; the SPLIT is not representable as two intervals in general. The schema happens
+    //    to carry only the total, so nothing is broken -- but read the decomposition as a
+    //    derivation of `r`, never as a filing instruction for its two halves.
     // ------------------------------------------------------------------
     let residue = sqlx::query_file!("assets/sql/queries/matrices/6-residue-census.sql")
         .fetch_all(&pool)
@@ -464,6 +650,89 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 7. Slack coverage, and the column that reads zero.
+    //
+    // HOLDERS AND THE THREE SLACKS THAT BOUND THEM. Each remainder is borne by one or more of
+    // exactly five HOLDERS -- `booked`, `counterparty`, `customer`, `people`, `unrealised` --
+    // each with a share in the layer's unit, shares summing to `|r|`. That is `H`, L×5, a
+    // DISTRIBUTION rather than a selection. Four of the five have no transaction behind them;
+    // the substantive claim concerns `people`, where absorbed work creates no instrument and so
+    // no accounting system can see it.
+    //
+    // Each layer also carries three SLACKS, one per buffer, in the layer's unit: `capacitySlack`
+    // (how far supply runs above its rating), `inventorySlack` (how much output is held ahead)
+    // and `timeSlack` (how much demand survives being held). Call that `S`, L×3. Each remainder
+    // names one buffer as its `absorber`, so there is a selection `A: L -> {1,2,3}`, and the rule
+    // is
+    //
+    //     Σ_{j ∉ {customer, unrealised}} H[l,j]  ≤  S[l, A(l)]
+    //                                    wherever r[l] < 0 and S[l,A(l)] is stated
+    //
+    // ⭐ THE SLACKS ARE QUANTITIES AND NOT FLAGS, AND THIS INEQUALITY IS THE REASON: a bit says a
+    //   buffer exists, not how much it holds, so against a bit every share fits and nothing is
+    //   bounded. BOTH unserved holders are exempt, because both are the overflow: `customer` and
+    //   `unrealised` each name demand nobody met, which is not a load the buffer held. Exempting
+    //   `unrealised` alone sums a customer's borne degradation into the buffer's load, and `Fit`
+    //   calls the same pair a violation under a clearance. And the constraint is ONE-SIDED --
+    //   the slacks bound the interference side only, since under clearance the spare IS the
+    //   remainder and there is nothing to absorb.
+    //
+    // ⚠️ THE COMPARISON IS EVALUATED AT THE MODE, following the `sign` convention. The strict
+    //    reading, worst share against smallest slack, is available and is deliberately left to a
+    //    conformance profile, because choosing between them is a policy rather than a fact. On
+    //    `shift-line` the two readings diverge sharply, `1.7 ≤ 2.5` at the mode against
+    //    `2.9 ≤ 1.0` strictly. ⚠️ Note what that example is: `shift-line` does not reach this
+    //    inequality at all, because both its holders are `customer` and `unrealised` and the left
+    //    side is therefore empty. The policy question is real; no document here illustrates it.
+    //
+    // ⛔⛔ AND THE LEFT SIDE IS EMPTY ON EVERY CORPUS LAYER THAT REACHES THE RULE, which is a
+    //    finding about the evidence rather than a gap in it. On every interference layer that
+    //    sizes its absorbing buffer, every holder is one of the two unserved kinds: nothing was
+    //    absorbed at all, the demand was turned away. `Σ served shares ≤ S` has an empty left side
+    //    because the served set is empty, `checks/share_exceeds_slack` reports VACUOUS, and
+    //    `algebra/borne.sqlc` prints `held = absorbed + unserved` per layer on every run rather
+    //    than leaving that to a comment.
+    //
+    // ⛔ `S` MUST BE IN THE LAYER'S UNIT, AND ITS NATURAL MEASUREMENT IS NOT. A buffer's size is
+    //   observed as a DURATION -- how long stock keeps, how long a caller waits -- while `H` is in
+    //   the layer's unit, so the filer owes `quantity = duration × rate` before filing. Every
+    //   slack in the corpus carrying a size above zero was measured as a duration, and one of them
+    //   appears not to have been multiplied; the census below is sized against absent, one row per
+    //   buffer. ⭐ Whether `[0, S]` is closed is a much smaller question and it is closed: a buffer
+    //   exactly full has not failed, the next unit fails. The one genuinely half-open interval in
+    //   the model is the residue, `(-d) mod q` in `[0, q)`, half-open for the ISO 8601 reason --
+    //   at `q` it wraps to 0 rather than meaning "full".
+    //
+    // ⭐⭐ `S`'s CAPACITY COLUMN ALSO CLOSES AN EQUATION, AND IT IS THE ONLY PLACE THE MODEL
+    //    MEASURES SOMETHING WITH NO INSTRUMENT BEHIND IT. Everywhere above, a slack bounds shares
+    //    somebody already filed. Here it bounds a quantity derived from the inputs:
+    //
+    //        max(0, d_high - n_low)  ≤  Σ_j S[l,j]_high  +  Σ_{j ∈ {customer, unrealised}} H[l,j]_high
+    //                                   and only where every S[l,j] is stated
+    //
+    //    Read left to right: what a filing's own demand and nameplate say could have gone unserved
+    //    is at most what the supply can absorb plus what the document admits turning away. THE
+    //    SHORTFALL IS THE INTERESTING QUANTITY -- remainder that happened and that nothing
+    //    recorded, which is this model's subject stated as arithmetic rather than as an argument.
+    //    Evaluated at the one corner, for the anti-correlation reason in §1.
+    //
+    // ⛔⛔ THE BOUND IS OVER THE WHOLE ROW OF `S`, AND IT READ THE CAPACITY COLUMN ALONE UNTIL THE
+    //    2026-09-01 pass. The three buffers are SUBSTITUTES: an excess above the nameplate can be
+    //    absorbed by running hot, by drawing on stock, or by making the demand wait. One column
+    //    closed is ONE ROUTE closed, which does not entail that anything went unserved, and two
+    //    rules drew that conclusion from it. ⭐ An unstated slack SUSPENDS the inequality rather
+    //    than contributing zero, because coalescing an absence to zero turns NOBODY LOOKED into
+    //    THERE IS NO ROOM and manufactures a shortfall out of a gap.
+    //
+    // ⚠️ TWO LIMITS, BOTH WORTH KNOWING BEFORE YOU TRUST IT. It is a TRANSITION-FIT INSTRUMENT
+    //    ONLY: under interference the exposure IS `|n - d|`'s high bound and the inequality
+    //    degenerates into the share-sum rule, and under clearance it is zero. And it is SILENT ON
+    //    ALMOST EVERY EXPOSED LAYER, for the reason the model itself predicts:
+    //    `layers/exposure_scope.sqlc` sorts them into the three standings and
+    //    `algebra/exposure_standing.sqlc` holds those to a partition, so run it and read the
+    //    counts. Nearly all have a buffer nobody sized, and NOT ONE has a buffer with room in it.
+    //    The suspension is never the harmless case; it is always an unmeasured route, which is the
+    //    same sentence `people` states about instruments. A bound with nothing to bound passes
+    //    loudest, and the coverage table says VACUOUS rather than scoring it as covered.
     // ------------------------------------------------------------------
     let slacks = sqlx::query_file!("assets/sql/queries/matrices/7-slack-coverage.sql")
         .fetch_all(&pool)
@@ -489,7 +758,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⛔⛔ NO ASSERTION PINS `capacity` AT ZERO, and that is deliberate. An equality here
     //     would turn today's gap into tomorrow's failure: the first filer to size a capacity
     //     slack would break the build for doing the thing the model wants. The zero is
-    //     REPORTED, loudly, and `docs/linear-algebra.md` says the bound is unexercised on the
+    //     REPORTED, loudly, and the paragraph above says the bound is unexercised on the
     //     strength of this line rather than on somebody's memory.
     let sized_total: usize = per_buffer.values().map(|(s, _)| s).sum();
     assert!(

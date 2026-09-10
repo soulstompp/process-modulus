@@ -12,7 +12,8 @@
 # ⛔⛔ BOTH ELIMINATIONS APPEAR AND THEIR SIGNS ARE OPPOSITE. Removing double-counted DEMAND
 #    raises the remainder; removing double-counted NAMEPLATE lowers it. ⛔ An identity written in
 #    prose and evaluated nowhere can lose a whole term without anything noticing, and this one
-#    is the identity `docs/linear-algebra.md` states. This relation is what evaluates it.
+#    lost `+ e_d` for exactly as long as it lived in a document. This relation is what evaluates
+#    it, and `examples/matrices/main.rs` §4 is where the identity is now written down.
 #
 # ⛔⛔⛔ AN ELIMINATION ENTERS AT THE SAME END OF THE SHARED DRIVER AS THE `Σ φ r` TERM IT
 #    CORRECTS, AND WHICH END THAT IS DEPENDS ON WHICH DRIVER IS SHARED. `e` is a quantity

@@ -1,4 +1,5 @@
--- The matrices from docs/linear-algebra.md, pulled out with SQL.
+-- The matrices of examples/matrices/main.rs, pulled out with SQL. That example is where each one is
+-- defined; this file is the relational half of the pair it asserts agreement between.
 #
 #   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/matrices.sql
 #
