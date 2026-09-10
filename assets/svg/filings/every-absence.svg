@@ -21,6 +21,10 @@
     <rect id="lane_every-absence_delivery-box" x="120" y="86" width="620" height="34" class="laneBox"/>
     <text id="lane_every-absence_delivery-name" x="128" y="102" class="laneName">delivery</text>
     <text id="lane_every-absence_delivery-rank" x="732" y="102" class="rankName" text-anchor="end">rank 0</text>
+    <g class="node" data-id="task_every-absence_Take_a_delivery" data-kind="task" id="task_every-absence_Take_a_delivery"><title>task Take a delivery</title>
+      <rect id="task_every-absence_Take_a_delivery-box" x="290" y="92" width="440" height="18" rx="4" class="activity task"/>
+      <text id="task_every-absence_Take_a_delivery-name" x="296" y="105" class="nodeName">Take a delivery</text>
+    </g>
   </g>
   <g class="lane" data-layer="mixer" data-rank="0" id="lane_every-absence_mixer"><title>lane: mixer</title>
     <rect id="lane_every-absence_mixer-box" x="120" y="126" width="620" height="34" class="laneBox"/>
@@ -36,6 +40,10 @@
     <rect id="lane_every-absence_oven-box" x="120" y="206" width="620" height="34" class="laneBox"/>
     <a href="../graphs/model-layers.svg#lane_every-absence_oven"><text id="lane_every-absence_oven-name" x="128" y="222" class="laneName">oven</text></a>
     <text id="lane_every-absence_oven-rank" x="732" y="222" class="rankName" text-anchor="end">rank 0</text>
+    <g class="node" data-id="task_every-absence_Bake_a_tray" data-kind="task" id="task_every-absence_Bake_a_tray"><title>task Bake a tray</title>
+      <rect id="task_every-absence_Bake_a_tray-box" x="290" y="212" width="440" height="18" rx="4" class="activity task"/>
+      <text id="task_every-absence_Bake_a_tray-name" x="296" y="225" class="nodeName">Bake a tray</text>
+    </g>
   </g>
   <g class="lane" data-layer="oven-b" data-rank="0" id="lane_every-absence_oven-b"><title>lane: oven-b</title>
     <rect id="lane_every-absence_oven-b-box" x="120" y="246" width="620" height="34" class="laneBox"/>

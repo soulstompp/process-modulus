@@ -21,6 +21,7 @@
       </lane>
       <lane id="lane_every-absence_delivery" name="delivery">
         <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_every-absence_Take_a_delivery</flowNodeRef>
       </lane>
       <lane id="lane_every-absence_mixer" name="mixer">
         <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
@@ -30,11 +31,18 @@
       </lane>
       <lane id="lane_every-absence_oven" name="oven">
         <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <flowNodeRef>task_every-absence_Bake_a_tray</flowNodeRef>
       </lane>
       <lane id="lane_every-absence_oven-b" name="oven-b">
         <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
       </lane>
     </laneSet>
+    <task id="task_every-absence_Bake_a_tray" name="Bake a tray">
+      <documentation>notation position: none stated, and the filing says why: unmeasured. `none` is somebody looked and this operation is in no process notation, `unmeasured` is a notation exists and nobody has located it there, `notApplicable` is this filing has no notation to point into. ⛔ AN ABSENT POSITION IS NOT A GAP IN THE MODEL: most operations file one of these. [assets/sqlc/entries/operations.sqlc]</documentation>
+    </task>
+    <task id="task_every-absence_Take_a_delivery" name="Take a delivery">
+      <documentation>notation position: none stated, and the filing says why: notApplicable. `none` is somebody looked and this operation is in no process notation, `unmeasured` is a notation exists and nobody has located it there, `notApplicable` is this filing has no notation to point into. ⛔ AN ABSENT POSITION IS NOT A GAP IN THE MODEL: most operations file one of these. [assets/sqlc/entries/operations.sqlc]</documentation>
+    </task>
     <textAnnotation id="note_every-absence_scope">
       <text>SCOPE: complete. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -53,6 +61,9 @@
       <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_delivery" bpmnElement="tns:lane_every-absence_delivery">
         <dc:Bounds x="120" y="86" width="620" height="34"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_task_every-absence_Take_a_delivery" bpmnElement="tns:task_every-absence_Take_a_delivery">
+        <dc:Bounds x="290" y="92" width="440" height="18"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_mixer" bpmnElement="tns:lane_every-absence_mixer">
         <dc:Bounds x="120" y="126" width="620" height="34"/>
       </bpmndi:BPMNShape>
@@ -61,6 +72,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_oven" bpmnElement="tns:lane_every-absence_oven">
         <dc:Bounds x="120" y="206" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-absence_task_every-absence_Bake_a_tray" bpmnElement="tns:task_every-absence_Bake_a_tray">
+        <dc:Bounds x="290" y="212" width="440" height="18"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_every-absence_lane_every-absence_oven-b" bpmnElement="tns:lane_every-absence_oven-b">
         <dc:Bounds x="120" y="246" width="620" height="34"/>

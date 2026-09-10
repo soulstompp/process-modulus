@@ -1264,10 +1264,12 @@
        ============================================================ -->
   <pm:operation>
     <pm:label>Close an enterprise contract</pm:label>
-    <pm:foreignId>
-      <pm:notation>https://www.omg.org/spec/BPMN/20100524/MODEL</pm:notation>
-      <pm:id>Task_CloseEnterprise</pm:id>
-    </pm:foreignId>
+    <pm:notationPosition>
+      <pm:foreignId>
+        <pm:notation>https://www.omg.org/spec/BPMN/20100524/MODEL</pm:notation>
+        <pm:id>Task_CloseEnterprise</pm:id>
+      </pm:foreignId>
+    </pm:notationPosition>
 
     <pm:draw>
       <pm:layer>labour</pm:layer>
@@ -1311,6 +1313,15 @@
 
   <pm:operation>
     <pm:label>Serve an inference request</pm:label>
+    <!-- The BPMN this filing points into holds the contract task and not this one: serving a
+         request is below the grain that notation is drawn at. Somebody looked, so `none`. -->
+    <pm:notationPosition>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>the accompanying BPMN model draws the contract close and not the serving
+                 loop, which sits below the grain that notation is drawn at</pm:note>
+      </pm:absent>
+    </pm:notationPosition>
     <pm:draw>
       <pm:layer>compute</pm:layer>
       <pm:quantity>

@@ -1265,10 +1265,12 @@
        ============================================================ -->
   <pm:operation>
     <pm:label>Fechar um contrato empresarial</pm:label>
-    <pm:foreignId>
-      <pm:notation>https://www.omg.org/spec/BPMN/20100524/MODEL</pm:notation>
-      <pm:id>Task_CloseEnterprise</pm:id>
-    </pm:foreignId>
+    <pm:notationPosition>
+      <pm:foreignId>
+        <pm:notation>https://www.omg.org/spec/BPMN/20100524/MODEL</pm:notation>
+        <pm:id>Task_CloseEnterprise</pm:id>
+      </pm:foreignId>
+    </pm:notationPosition>
 
     <pm:draw>
       <pm:layer>pessoal</pm:layer>
@@ -1312,6 +1314,15 @@
 
   <pm:operation>
     <pm:label>Servir um pedido de inferência</pm:label>
+    <!-- O BPMN para onde esta declaração aponta tem a tarefa do contrato e não esta: servir um
+         pedido fica abaixo do grão a que essa notação está desenhada. Alguém procurou: `none`. -->
+    <pm:notationPosition>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>o modelo BPMN que acompanha desenha o fecho do contrato e não o ciclo de
+                 serviço, que fica abaixo do grão a que essa notação está desenhada</pm:note>
+      </pm:absent>
+    </pm:notationPosition>
     <pm:draw>
       <pm:layer>computacao</pm:layer>
       <pm:quantity>

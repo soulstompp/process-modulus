@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §17 Every operation beside the notation position it names, or the fact that it names none.\n-- entries/operations.sqlc against entries/notation_references.sqlc, the whole beside the part.\nSELECT o.filing                                       AS \"filing!\",\n       o.label                                        AS \"label!\",\n       coalesce(r.foreign_notation, '')               AS \"notation!\",\n       coalesce(r.foreign_id, '')                     AS \"node!\",\n       -- ⛔ NOT `coalesce(reason, 'stated')`: the two arms are exclusive by CHECK, so a row with\n       --   neither is a load that should not have happened, and printing a word for it here would\n       --   be this query answering for the document.\n       coalesce(o.foreign_absent, '')                 AS \"why_not!\",\n       (r.filing IS NOT NULL)                         AS \"crosses!\"\nFROM      (\n    -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.\n-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and\n--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,\n--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent\nFROM pm.operation o\n\n) o\nLEFT JOIN (\n    -- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id\nFROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.\n-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and\n--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,\n--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent\nFROM pm.operation o\n ) o\nWHERE o.foreign_notation IS NOT NULL\n\n) r USING (filing, label)\nORDER BY (r.filing IS NOT NULL) DESC, 1, 2\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "label!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "label"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "notation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "node!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "why_not!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "crosses!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "e5face8ec40055b5585b22149b146f5513e6b53caad2630f4815de26cd381111"
+}

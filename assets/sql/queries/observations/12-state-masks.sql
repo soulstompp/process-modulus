@@ -88,6 +88,16 @@ SELECT n.filing, n.operation, n.layer,
 FROM pm.induction n
 
     ) i
+    UNION ALL SELECT filing, label, 'where the operation is in a notation',
+                     foreign_absent::pm.absence_reason FROM (
+        -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+
+    ) o
     UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'narrowsWhen',      narrows_absent FROM (
         -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
 SELECT c.filing, c.seq, c.owns, c.layer,

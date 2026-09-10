@@ -1,0 +1,34 @@
+# EVERY OPERATION THAT NAMES A POSITION IN A PROCESS NOTATION. One row per filed
+# `pm:Operation/foreignId`: the notation, the id inside it, and the operation here that claims it.
+#
+# ⭐⭐⭐ THE THIRD `pm:ForeignId`, AND THE LAST ONE WITHOUT A FILE. The model carries exactly
+#    three references out of a document: an `asrt:Part`, an `asrt:Elimination/between`, and this.
+#    The part has `composition/part_references.sqlc` and a rule that verifies it resolves; the
+#    elimination has `eliminations/references.sqlc` and an observation, because the schema
+#    licenses a `between` that lands nowhere. ⚠️ TWO THINGS OF ONE TYPE OWE THE SAME APPARATUS,
+#    and an asymmetry between them is visible from `ls` without reading a line of SQL.
+#
+# ⛔⛔ AND NO RULE MAY JUDGE IT, WHICH IS WHY NOTHING PULLED IT INTO VIEW. This tree grows by
+#   rules, and a field no rule reads is under no pressure to exist. `pm:ForeignId`'s own
+#   annotation refuses the check outright: a notation plus an id names a position in ONE file
+#   that no authority publishes, so a receiver sent looking for `Task_17` in a normative list
+#   finds nothing there and reads it as a defect in the list. There is nothing to resolve
+#   against, so `checks/unresolved_part.sqlc`'s shape copied across would accuse every filing.
+#   ⭐ The answer is the same one `between` got: report, never assert.
+#
+# ⭐⭐ AND THE OTHER ARM IS NOW A FACT RATHER THAN A SILENCE. `notationPosition` is REQUIRED
+#    and takes `pm:StatedForeignId`, so an operation that names no position says WHY: `none` is
+#    in no notation and somebody looked, `unmeasured` is a notation exists and nobody located
+#    this operation in it, `notApplicable` is this filing has no notation at all. This relation
+#    is the stated arm; `queries/observations/17-notation-references.sqlc` reports both, because
+#    the population is the finding and the restriction alone would hide it.
+#
+# ⚠️ THE NOTATION IS A LANGUAGE, NOT A DOCUMENT, AND THAT IS THE DIFFERENCE FROM A PART. A part
+#   names another FILING and `filing_identity` resolves it. This names the OMG BPMN MODEL URI,
+#   and the id names a node in whichever BPMN document travels beside the filing. So the pair
+#   identifies a position RELATIVE to a document nobody here holds, which is exactly the
+#   property that makes the crossing cost the receiver nothing.
+-- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id
+FROM ( :compose(entries/operations.sqlc) ) o
+WHERE o.foreign_notation IS NOT NULL

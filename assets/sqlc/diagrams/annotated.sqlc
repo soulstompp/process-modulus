@@ -39,6 +39,26 @@
 #   that comes from `rank/evaluation_order.sqlc`. Owed by and stated by are two different
 #   questions and only one of them is what a reader chasing a number needs. Every other row here
 #   answers both with the same relation, which is why writing it down was easy to skip.
+#
+# ⭐⭐⭐ AND A TASK OWES ONE WHEREVER THE FILING NAMED A NOTATION POSITION, WHICH IS THE ONE
+#    SENTENCE IN THESE DOCUMENTS THAT POINTS OUT OF THE NOTATION RATHER THAN INTO THE MODEL.
+#    `pm:Operation/foreignId` names a node in a BPMN document that travels beside the filing and
+#    is NOT this one: this document is a rendering of the model, and that id belongs to the
+#    process notation the filer was actually reading. ⛔ So it must not become the task's own
+#    `id`, which would claim the two documents are one, and it cannot be a `relationship`, whose
+#    `source` and `target` are QNames and need an `import` that needs a location nobody filed.
+#    A `documentation` is what is left, and `demoted` is the honest word for it: a person can
+#    read the id and a tool cannot resolve it, which is the state `pm:ForeignId` intends, because
+#    no authority publishes the list a tool would resolve against.
+#
+# ⭐⭐⭐ AND THE TASK THAT NAMES NO POSITION OWES ONE TOO, WHICH IS THE `coupling_search` ARGUMENT
+#    AT A SECOND ADDRESS. A lane set carries whether anybody looked for a dependence, because an
+#    absent line reads as independence. A task with no position reads as *this model does not
+#    reach the notation*, and `notationPosition` is REQUIRED now precisely so the filing can say
+#    which of three things it means: in no notation and somebody looked, in a notation nobody has
+#    located it in, or no notation to point into at all. ⛔ Emitting the stated arm alone would
+#    put the answer on the page for the operations that cross and leave the far more common case
+#    looking like a gap in the model rather than an answer in the document.
 -- the pools, the lanes and the categories, which are the three places provenance is owed.
 SELECT 'document' AS annotated, d.filing AS subject,
        'diagrams/pools.sqlc' AS states
@@ -71,3 +91,12 @@ UNION ALL
 SELECT 'dependence', d.filing || '/' || d.from_layer || '->' || d.to_layer,
        'diagrams/dependences.sqlc'
 FROM ( :compose(diagrams/dependences.sqlc) ) d
+UNION ALL
+SELECT 'task, the notation position', n.filing || '/' || n.label,
+       'entries/notation_references.sqlc'
+FROM ( :compose(entries/notation_references.sqlc) ) n
+UNION ALL
+SELECT 'task, no notation position', o.filing || '/' || o.label,
+       'entries/operations.sqlc'
+FROM ( :compose(entries/operations.sqlc) ) o
+WHERE o.foreign_absent IS NOT NULL

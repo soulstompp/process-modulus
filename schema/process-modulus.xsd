@@ -3520,7 +3520,9 @@
       SEE ALSO
 
       `BorrowedTerm` for the other shape. `asrt:FiledLayer` uses this as a reference TARGET,
-      where the id is a layer name.
+      where the id is a layer name. `StatedForeignId` is the wrapper `pm:Operation` carries it
+      in, where an operation must state a position OR a typed reason it has none, because an
+      omitted element meant three different things at once and all of them arrived as silence.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -3550,12 +3552,21 @@
       VER TAMBÉM
 
       O `BorrowedTerm` para a outra forma. O `asrt:FiledLayer` usa isto como ALVO de referência, onde
-      o id é um nome de camada.
+      o id é um nome de camada. O `StatedForeignId` é o invólucro em que a `pm:Operation` o leva,
+      onde uma operação tem de declarar uma posição OU uma razão tipificada para não ter nenhuma,
+      porque um elemento omitido queria dizer três coisas ao mesmo tempo, todas elas em silêncio.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="notation" type="xs:anyURI"/>
       <xs:element name="id"       type="xs:token"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedForeignId">
+    <xs:choice>
+      <xs:element name="foreignId" type="pm:ForeignId"/>
+      <xs:element name="absent"    type="pm:Absence"/>
+    </xs:choice>
   </xs:complexType>
 
   <!-- ==================================================================
@@ -5380,13 +5391,31 @@
       nor commits anything is invisible to this model, and filing one is almost always a sign
       that the process notation was transcribed instead of the draws being asked for.
 
+      `notationPosition` IS REQUIRED, AND IT IS THE ONLY PLACE THIS MODEL POINTS OUT OF ITSELF.
+      It carries a `foreignId`, which is a notation plus an id, or a typed `absent`. It was
+      optional and bare, and an omitted element then meant three different things at once, all
+      of them arriving as the same silence:
+
+        absent/reason = none          this operation is in no process notation. Somebody looked
+        absent/reason = unmeasured    there is a notation and nobody located this operation in it
+        absent/reason = notApplicable this filing has no process notation to point into
+
+      Most operations will file an absence and that is expected rather than a shortfall. What is
+      refused is the blank: `unmeasured` and `notApplicable` are the difference between a
+      crossing nobody has done yet and a crossing there is nothing to do, and a receiver deciding
+      whether the two documents can be laid side by side needs to be told which.
+
+      ⛔ `derived` does not reach this question. A position in someone else's document is not
+      computable from anything in this one.
+
       WHAT IT REFUSES
 
       ⛔ Being read as a unit of SEQUENCE. There is no predecessor, no successor, no gateway
       and no condition here, and their absence is a scoping decision rather than an omission:
       BPMN 2.0 models all of that, is an OMG standard with published schemas, and restating
-      it inside this namespace would fork it. `foreignId` exists so an operation here can
-      name the same operation THERE.
+      it inside this namespace would fork it. `notationPosition` exists so an operation here
+      can name the same operation THERE, and it names it by POSITION and imports nothing, so
+      the other document needs no field added to it and no tool that reads it needs to change.
 
       SEE ALSO
 
@@ -5419,13 +5448,33 @@
       compromete nada é invisível a este modelo, e declarar uma é quase sempre sinal de que a notação
       de processo foi transcrita em vez de terem sido pedidos os consumos.
 
+      O `notationPosition` É OBRIGATÓRIO, E É O ÚNICO SÍTIO ONDE ESTE MODELO APONTA PARA FORA DE SI
+      PRÓPRIO. Leva um `foreignId`, que é uma notação mais um id, ou um `absent` tipificado. Era
+      opcional e nu, e um elemento omitido queria então dizer três coisas ao mesmo tempo, todas elas
+      a chegar como o mesmo silêncio:
+
+        absent/reason = none          esta operação não está em notação de processo nenhuma. Alguém
+                                      procurou
+        absent/reason = unmeasured    existe uma notação e ninguém localizou esta operação lá dentro
+        absent/reason = notApplicable esta declaração não tem notação de processo para onde apontar
+
+      A maioria das operações vai declarar uma ausência, e isso é o esperado e não uma falha. O que
+      se recusa é a casa em branco: `unmeasured` e `notApplicable` são a diferença entre um
+      cruzamento que ainda ninguém fez e um cruzamento que não há que fazer, e quem recebe e decide
+      se os dois documentos podem ser postos lado a lado precisa que lhe digam qual dos dois é.
+
+      ⛔ O `derived` não alcança esta pergunta. Uma posição no documento de outra pessoa não é
+      calculável a partir de coisa nenhuma neste.
+
       O QUE RECUSA
 
       ⛔ Ser lida como uma unidade de SEQUÊNCIA. Não há aqui antecessor, sucessor, porta de decisão
       nem condição, e a ausência deles é uma decisão de âmbito e não um esquecimento: o BPMN 2.0
       modela tudo isso, é uma norma do OMG com esquemas publicados, e reenunciá-la dentro deste
-      espaço de nomes bifurcá-la-ia. O `foreignId` existe para que uma operação aqui possa nomear a
-      mesma operação LÁ.
+      espaço de nomes bifurcá-la-ia. O `notationPosition` existe para que uma operação aqui possa
+      nomear a mesma operação LÁ, e nomeia-a por POSIÇÃO e não importa nada, portanto o outro
+      documento não precisa que lhe acrescentem campo nenhum e nenhuma ferramenta que o leia
+      precisa de mudar.
 
       VER TAMBÉM
 
@@ -5434,7 +5483,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="label"     type="xs:string"/>
-      <xs:element name="foreignId" type="pm:ForeignId" minOccurs="0"/>
+      <xs:element name="notationPosition" type="pm:StatedForeignId"/>
       <xs:choice maxOccurs="unbounded">
         <xs:element name="draw"    type="pm:Draw"/>
         <xs:element name="induces" type="pm:Induction"/>

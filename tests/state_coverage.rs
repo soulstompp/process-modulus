@@ -200,6 +200,22 @@ fn declared() -> Vec<(&'static str, AbsenceReasonType, Verdict)> {
         ("draw", Unmeasured, Exercised),
         ("draw", NotApplicable, Exercised),
         ("operation draw", Unmeasured, Exercised),
+        // ---- where an operation sits in somebody else's process notation ----
+        // ⭐ `pm:Operation/notationPosition` was `minOccurs="0"` over a bare `pm:ForeignId`, so
+        //   an omitted element meant three things at once and this table had no site to name.
+        ("notationPosition", RNone, Exercised),
+        // ⭐⭐ NOT `Open`, AND THAT WAS A DECISION RATHER THAN A CONVENIENCE. The budget below
+        //   is two and both were spent, so parking these would have meant arguing one of the
+        //   standing two out of the table. ⛔ The honest move was the other one: these are the
+        //   two states that decide whether a receiver can lay the two documents side by side,
+        //   so `every-absence.xml` files them and they are answers rather than intentions.
+        ("notationPosition", Unmeasured, Exercised),
+        ("notationPosition", NotApplicable, Exercised),
+        ("notationPosition", Derived, Incoherent(
+            "⛔ a position in another party's document is not computable from anything in this \
+             one. `derived` says the answer is stated in a sibling element, and no sibling of an \
+             operation knows what a BPMN file calls its own nodes",
+        )),
         ("share", Unmeasured, Exercised),
         ("remainder quantity", Unmeasured, Exercised),
         ("remainder quantity", Derived, Exercised),
@@ -407,10 +423,18 @@ fn tally() -> BTreeMap<(&'static str, String), usize> {
 
         // ⚠️ NOR WERE THE OPERATIONS. A draw and an induced commitment are both `StatedClaim`.
         for op in &doc.operation {
+            // ⭐⭐ THE ONE SITE WHOSE ABSENCE IS THE EXPECTED CASE. Every other wrapper here files
+            //    a value most of the time and an absence occasionally. `notationPosition` is the
+            //    other way round: most operations are in no process notation, or in one nobody
+            //    has located them in, and the whole reason it is REQUIRED is that those two are
+            //    different answers rather than one silence.
             for c in &op.content {
                 match c {
                     pm::OperationTypeContent::Draw(d) => claims.push(("operation draw", &d.quantity)),
                     pm::OperationTypeContent::Induces(i) => claims.push(("commitment", &i.commitment)),
+                    pm::OperationTypeContent::NotationPosition(
+                        pm::StatedForeignIdType::Absent(a),
+                    ) => bump("notationPosition", reason(a)),
                     _ => {}
                 }
             }
@@ -685,8 +709,11 @@ use Measured::{At, NotYet};
 /// ⚠️ `StatedLumpyQuantum` and `StatedRemainder` take a `pm:ClaimAbsence` rather than a
 /// `pm:Absence`, so `none` is not among their states. They are listed here because the site is
 /// still measured; the missing cell in the table above is the whole record of the narrowing.
-const MEASURED_AT: [(&str, Measured); 16] = [
+const MEASURED_AT: [(&str, Measured); 17] = [
     ("StatedConstraintOrigin", At(&["amountOrigin", "boundOrigin"])),
+    // ⭐ The newest wrapper, and the only one whose absence is the ORDINARY case: most
+    //   operations sit in no process notation this filing can point into.
+    ("StatedForeignId", At(&["notationPosition"])),
     ("StatedLumpyQuantum", At(&["window"])),
     ("StatedCouplings", At(&["StatedCouplings"])),
     ("StatedDenominator", At(&["StatedDenominator"])),

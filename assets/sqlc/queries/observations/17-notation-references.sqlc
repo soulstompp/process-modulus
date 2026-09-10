@@ -1,0 +1,41 @@
+-- §17 Every operation beside the notation position it names, or the fact that it names none.
+#
+# ONE ROW PER OPERATION, the whole dimension beside the restriction that crosses out of it.
+#
+# ⭐⭐⭐ REPORTED AND NEVER ASSERTED, FOR §10b's REASON AT A DIFFERENT ADDRESS. A part reference
+# that dangles is a VIOLATION and `checks/unresolved_part.sqlc` says so. An operation's
+# `foreignId` cannot dangle or resolve, because there is nothing in this corpus for it to land
+# on: it names a node in a BPMN document that travels beside the filing and is not held here.
+# `pm:ForeignId`'s annotation refuses the lookup by name, so the only honest instrument is a
+# report of who filed one.
+#
+# ⛔⛔ AND THE POPULATION IS THE FINDING, NOT THE CROSSING. Most operations name no position,
+# and the corpus is thinner still: most FILINGS declare no operation at all. A reader who sees
+# only the rows that cross would take this model for something that needs a process notation,
+# and the shape of this table is the argument that it does not. ⭐ The BPMN is optional, and so
+# is the logger that would fill it.
+#
+# ⭐⭐⭐ AND THE ABSENT ARM IS WHY THIS FILE CHANGED SHAPE. It printed `(none named)` for every
+# operation naming no position, which is the flattening this whole schema exists to refuse
+# arriving in the report ABOUT the crossing. `pm:Operation/notationPosition` is required now and
+# takes `pm:StatedForeignId`, so the reason is filed and this reads it: `none` is somebody looked
+# and it is in no notation, `unmeasured` is a notation exists and nobody located this operation
+# in it, `notApplicable` is this filing has no notation to point into. ⛔ The first is a finished
+# answer and the second is work outstanding, and an untyped absence cannot tell them apart.
+-- entries/operations.sqlc against entries/notation_references.sqlc, the whole beside the part.
+SELECT o.filing                                       AS "filing!",
+       o.label                                        AS "label!",
+       coalesce(r.foreign_notation, '')               AS "notation!",
+       coalesce(r.foreign_id, '')                     AS "node!",
+       -- ⛔ NOT `coalesce(reason, 'stated')`: the two arms are exclusive by CHECK, so a row with
+       --   neither is a load that should not have happened, and printing a word for it here would
+       --   be this query answering for the document.
+       coalesce(o.foreign_absent, '')                 AS "why_not!",
+       (r.filing IS NOT NULL)                         AS "crosses!"
+FROM      (
+    :compose(entries/operations.sqlc)
+) o
+LEFT JOIN (
+    :compose(entries/notation_references.sqlc)
+) r USING (filing, label)
+ORDER BY (r.filing IS NOT NULL) DESC, 1, 2

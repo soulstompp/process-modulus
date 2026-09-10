@@ -622,6 +622,46 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          grades printed above are about nothing"
     );
 
+    // ⭐⭐⭐ THE THIRD `pm:ForeignId`, AND THE ONE THAT COULD NOT BE REPORTED AT ALL UNTIL THE
+    //    COLUMN EXISTED. `pm:Operation/foreignId` is the whole BPMN interface and the ingest
+    //    discarded it, so the corpus filed a node id, the database held none, and every relation
+    //    that could have shown the crossing was derived from a table that had thrown it away.
+    //
+    // ⛔ REPORTED, NEVER ASSERTED, and for a sharper reason than `between`. A `between` MAY
+    //    resolve and happens not to; this one CANNOT, because the document it names is not in
+    //    the corpus and no authority publishes the list. There is no rule to write.
+    let crossings =
+        sqlx::query_file!("assets/sql/queries/observations/17-notation-references.sql")
+            .fetch_all(&pool)
+            .await?;
+    let crossing = crossings.iter().filter(|c| c.crosses).count();
+    println!(
+        "\n21. what each operation POINTS AT in a process notation: {} of {} name a node",
+        crossing,
+        crossings.len()
+    );
+    for c in &crossings {
+        println!("   {:<26} {:<34} {:<46} {}", c.filing, c.label,
+                 if c.crosses { c.notation.as_str() } else { "(no position stated)" },
+                 if c.crosses { c.node.as_str() } else { c.why_not.as_str() });
+    }
+    println!("   ⭐ The rows that name nothing are the argument, and each one now says WHICH");
+    println!("      nothing: `none` is in no notation and somebody looked, `unmeasured` is a");
+    println!("      notation exists and nobody located it, `notApplicable` is no notation at all.");
+    println!("      Most filings declare no operation either, so this model does not need a process");
+    println!("      notation. Where one exists the id is the join, and it costs that document");
+    println!("      nothing: no field is added to it and no tool that reads it has to change.");
+    assert!(
+        crossings.iter().all(|c| c.crosses != (c.why_not.is_empty() == false)),
+        "an operation both states a notation position and files a reason there is none, or does \
+         neither. The DDL forbids both by CHECK, so this is the relation having lost an arm"
+    );
+    assert!(
+        !crossings.is_empty(),
+        "no operation in the corpus, so this report has no population and the crossing above \
+         is a claim about nothing"
+    );
+
     println!("\nAll checks passed.");
     Ok(())
 }

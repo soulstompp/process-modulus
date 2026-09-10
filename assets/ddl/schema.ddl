@@ -678,9 +678,57 @@ CREATE TABLE holder (
                    AND share_low <= share_mode AND share_mode <= share_high))
 );
 
+-- ---------------------------------------------------------------------------
+-- P, THE OPERATION INDEX, AND THE ONE PLACE THIS MODEL NAMES A POSITION IN A
+-- PROCESS NOTATION.
+--
+-- ⭐⭐⭐ `pm:Operation/foreignId` IS THE WHOLE BPMN INTERFACE AND IT HAD NO COLUMN.
+-- `pm:ForeignId` is a notation plus an id and nothing else, and the model carries
+-- THREE of them: an `asrt:Part`, an `asrt:Elimination/between`, and this. The first two
+-- are ingested and have reference relations beside them; this one was dropped on
+-- every load, so the corpus filed it, the database never saw it, and the emitted
+-- BPMN could not carry it. A crossing nothing stores is a crossing nothing can show.
+--
+-- ⛔ THE NOTATION IS A LANGUAGE HERE AND A DOCUMENT IN A PART, WHICH IS WHY THIS END
+-- GETS NO FOREIGN KEY AND MUST NOT. `part_filing` resolves through `filing_identity`
+-- because a part names another FILING; this names the OMG BPMN MODEL URI, and the id
+-- names a node in whichever BPMN document travels with the filing. No authority
+-- publishes that list, so there is nothing to resolve against and nothing to key.
+-- `pm:ForeignId`'s own annotation refuses the lookup outright: a receiver sent to find
+-- `Task_17` in a normative list finds nothing there and reads it as a defect in the list.
+--
+-- ⭐⭐⭐ AND THE ABSENCE IS TYPED, WHICH IT WAS NOT WHEN THE COLUMN FIRST ARRIVED. The first
+-- cut of this table followed `part_regime`: nullable, no typed absence, because
+-- `foreignId` was `minOccurs="0"` over a `pm:ForeignId` with no absence branch, and a
+-- typed absence would have been the DDL answering a question the XSD declined to ask.
+-- ⛔ The repair was in the XSD rather than here. `notationPosition` is REQUIRED and takes
+-- `pm:StatedForeignId`, a choice of the pair or an `Absence`, so the three things an
+-- three things an omission would collapse are three filed answers: `none` is in no notation and
+-- somebody looked, `unmeasured` is a notation exists and nobody located this operation in it,
+-- `notApplicable` is this filing has no notation to point into. ⭐ Most operations file an
+-- absence, which is expected; what is refused is the blank.
+-- ---------------------------------------------------------------------------
 CREATE TABLE operation (
     filing text NOT NULL REFERENCES filing(name),
     label  text NOT NULL,
+    -- pm:Operation/pm:notationPosition. Both children are required INSIDE `pm:ForeignId`,
+    -- so the pair is whole or wholly absent, never half.
+    foreign_notation text,
+    foreign_id       text,
+    foreign_absent   absence_reason,
+    CONSTRAINT a_foreign_id_is_whole
+        CHECK (num_nonnulls(foreign_notation, foreign_id) <> 1),
+    -- ⛔ `<>` AND NOT `<= 1`, BECAUSE THE WRAPPER IS REQUIRED. `asrt:Part/factor` gets the
+    --    weaker form for a stated reason: its wrapper is optional and an omitted factor
+    --    MEANS phi = 1 exactly, so all-NULL is a third legal state. Nothing here means
+    --    anything, so exactly one arm is filled and a blank is a load failure.
+    CONSTRAINT a_notation_position_is_stated_or_typed_absent
+        CHECK ((foreign_notation IS NOT NULL) <> (foreign_absent IS NOT NULL)),
+    -- ⛔ `derived` does not reach this question: a position in another party's document is
+    --    not computable from anything in this one. The XSD says so in prose and cannot
+    --    enforce it, because `pm:Absence` carries the whole reason enum.
+    CONSTRAINT a_notation_absence_is_not_derived
+        CHECK (foreign_absent <> 'derived'),
     PRIMARY KEY (filing, label)
 );
 

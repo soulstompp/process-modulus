@@ -12,6 +12,12 @@
     sign       absent derived     both are stated, so the fit is computable
     boundOrigin absent notApplicable  the claim is not a bound on a committed quantity
 
+  ⭐ AND TWO MORE SINCE, both at `notationPosition`, which is where an operation says where it
+  sits in a process notation:
+
+    notationPosition absent unmeasured     a notation exists and nobody located this operation
+    notationPosition absent notApplicable  this filing has no process notation at all
+
   ⚠️ `sign` is the one worth reading twice. `StatedFit`'s annotation spends four paragraphs
   defending the wrapper's existence and the CORPUS FILES TWENTY-ONE VALUES AND NOT ONE
   ABSENCE, so every argument in it was untested until this file.
@@ -996,4 +1002,58 @@
     </pm:couplings>
 
   </pm:stack>
+
+  <!-- ============================================================
+       ⭐⭐⭐ THE TWO OPERATIONS EXIST FOR `notationPosition` AND FOR NOTHING ELSE. The whole
+       corpus files two operations, both in one filing, and both of them can say where they
+       sit in a process notation. The states nobody could reach are the other two, and they
+       are the ones that decide whether a receiver can lay the two documents side by side:
+       `unmeasured` is a crossing nobody has done yet, `notApplicable` is a crossing there is
+       nothing to do. Until this element was required they were the same silence.
+
+       ⚠️ The draws are stipulated and deliberately thin. This document is not evidence about
+       a bakery; the operations are here to carry the wrapper, and filing a rich draw would
+       invite somebody to read a number off a stipulation.
+       ============================================================ -->
+  <pm:operation>
+    <pm:label>Bake a tray</pm:label>
+    <pm:notationPosition>
+      <pm:absent>
+        <pm:reason>unmeasured</pm:reason>
+        <pm:note>stipulated: the bakery keeps a BPMN model of the morning run and nobody has
+                 gone through it to find which task this draw belongs to. The crossing is
+                 available and undone, which is not the same as unavailable</pm:note>
+      </pm:absent>
+    </pm:notationPosition>
+    <pm:draw>
+      <pm:layer>oven</pm:layer>
+      <pm:quantity>
+        <pm:absent>
+          <pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated: nobody metered a single tray against the oven's supply</pm:note>
+        </pm:absent>
+      </pm:quantity>
+    </pm:draw>
+  </pm:operation>
+
+  <pm:operation>
+    <pm:label>Take a delivery</pm:label>
+    <pm:notationPosition>
+      <pm:absent>
+        <pm:reason>notApplicable</pm:reason>
+        <pm:note>stipulated: this bakery has drawn no process notation at all, so there is no
+                 document for an id to name a position in. ⛔ Not `none`, which would say
+                 somebody searched a notation and this operation was not in it</pm:note>
+      </pm:absent>
+    </pm:notationPosition>
+    <pm:draw>
+      <pm:layer>delivery</pm:layer>
+      <pm:quantity>
+        <pm:absent>
+          <pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated: nobody metered one delivery against the layer's supply</pm:note>
+        </pm:absent>
+      </pm:quantity>
+    </pm:draw>
+  </pm:operation>
 </pm:processModulus>

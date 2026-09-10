@@ -1,0 +1,62 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id\nFROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.\n-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and\n--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,\n--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent\nFROM pm.operation o\n ) o\nWHERE o.foreign_notation IS NOT NULL\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "label",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "label"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "foreign_notation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "foreign_notation"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "foreign_id",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "foreign_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "45860063bd747e547f5fff1cfe3ad6b65b948b45ec0b3c39fac67b7da7dde9bb"
+}

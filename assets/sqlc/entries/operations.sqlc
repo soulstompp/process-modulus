@@ -1,16 +1,24 @@
 # P, THE OPERATION INDEX, AS A RELATION OF ITS OWN. One row per operation a filing declares.
 #
-# ⭐⭐⭐ THE OTHER CONFORMED DIMENSION, AND IT WAS THE ONLY ONE WITHOUT A FILE. `draw` and
-#    `induction` are both P x L fact tables, `layer` has layers/every_layer.sqlc, and `operation`
-#    had nothing. So every question about operations reached through an ENTRY table and got the
-#    operations that happen to have entries, rather than the operations that exist. The two
-#    coincide today only because `pm:Operation` requires at least one draw or induction, which is
-#    a fact about the grammar that no query stated.
+# ⭐⭐⭐ THE OTHER CONFORMED DIMENSION, AND IT OWES A FILE FOR THE SAME REASON `layer` DOES.
+#    `draw` and `induction` are both P x L fact tables, so a question about operations asked
+#    through an ENTRY table gets the operations that happen to have entries rather than the
+#    operations that EXIST. ⚠️ The two coincide only because `pm:Operation` requires at least one
+#    draw or induction, which is a fact about the grammar that no query states.
 #
 # ⛔ A DIMENSION WITHOUT A FILE CANNOT BE A LEFT OPERAND, so no law in algebra/ could ever have
 #   governed a count of operations, and diagrams/roster.sqlc's `tasks` law would have had nothing
 #   to count against. Same repair as composition/carriable.sqlc and
 #   composition/remainder_frontier.sqlc: the difference needs a named left operand.
--- pm:Operation, keyed (filing, label).
-SELECT o.filing, o.label
+#
+# ⭐⭐ AND P CARRIES THE CROSSING, BECAUSE THE CROSSING IS AN ATTRIBUTE OF AN OPERATION AND
+#    NOT AN ENTRY OF ANYTHING. `pm:Operation/foreignId` is at most one per operation, so it
+#    sits on the dimension the way `part_regime` sits on a part. `entries/notation_references.sqlc`
+#    is the restriction to the operations that file one, and it is a σ over this rather than a
+#    second read of `pm.operation`, so the two cannot drift about what an operation is.
+-- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
 FROM pm.operation o

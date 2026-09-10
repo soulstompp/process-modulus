@@ -87,7 +87,7 @@ SELECT * FROM (VALUES
   ('filing', 'participant', NULL, 'pools', NULL, NULL, 'the participant that renders the document as a pool'),
   ('filing_identity', 'targetNamespace', NULL, 'namespaces', NULL, NULL, 'a notation resolved to a document, which is what import does'),
   ('layer', 'lane', NULL, 'lanes', NULL, NULL, 'a lane, and the region it delimits'),
-  ('operation', 'task', NULL, 'tasks', NULL, NULL, 'a flow node, reached by foreignId'),
+  ('operation', 'task', NULL, 'tasks', 'demoted', '⭐ THE POINTER IS ON THE PAGE AND NO TOOL CAN FOLLOW IT, WHICH IS THE STATE `pm:ForeignId` INTENDS. A notation plus an id names a node in the process notation the filer was READING, which is a different document from this one, so it must not become this task''s own `id` (that would claim the two documents are one) and it cannot be a `relationship`, whose `source` and `target` are QNames needing an `import` that needs a location nobody filed. It rides the task''s `documentation`: a person reads the id, a tool resolves nothing. ⚠ Unlike every other `demoted` row here, the tool could not do better even in principle, because no authority publishes the list it would resolve against', 'a flow node, reached by foreignId. ⛔⛔ AND THE COLUMN DID NOT EXIST, so this row read `loses` NOTHING while losing the only thing it is about. `pm:Operation/foreignId` is the whole BPMN interface, the ingest read the label alone, and the crossing was filed by the corpus, discarded on every load and absent from every artifact. Third of the model''s three `pm:ForeignId` references and the last without a relation beside it: `entries/notation_references.sqlc`'),
   ('draw', 'laneSet', NULL, 'in_a_lane', NULL, NULL, 'D. The lane set a modeller actually files: the performer''s lane'),
   ('induction', 'group', NULL, 'induced_into', 'demoted', '⭐ THE POINTER, AND NOTHING ELSE NOW. `tCategoryValue` adds one `xs:string` to a base element and no reference attribute, so the layer arrives as TEXT beside a `lane` of the same name. That is the callActivity defect at one tenth the size: a call loses the layer, this keeps its name and loses the tie. ⛔ `decider` is lost too, and for the ordinary reason: it is a performer and nothing here files a claimant edge', 'N, the cover. Emitted as categoryValueRef on each operation and drawn as a group, which adds no lane where a second laneSet would have added one per induced layer'),
   ('part', 'callActivity', NULL, 'calls', 'absent', '⭐ WHAT IS LEFT IS THE FACTOR. With `calledElement` as the only reference the target LAYER went too: it names a PROCESS, so 17 layer-grain edges collapsed to 5 document pairs. `tRelationship` takes QNames at BOTH ends and a REQUIRED `type`, so `diagrams/descents.sqlc` now carries the same fact at the grain F has, read back and compared edge for edge. ⛔ What no element carries is the FACTOR, a three-point magnitude on a page with no unit, and that is `absent` for the reason every magnitude here is. ⚠️ AND THIS ROW IS AT THE WRONG GRAIN TO SAY SO: one table maps to TWO elements now, `callActivity` for the substitution and `relationship` for the grain, and the roster has one `element` and one `governed_by`', 'foreign; an embedded subProcess when the part is local'),
@@ -49131,8 +49131,11 @@ SELECT l.filing, l.layer
 FROM pm.layer l
  )    x
 UNION ALL
-SELECT 'tasks',   count(*) FROM ( -- pm:Operation, keyed (filing, label).
-SELECT o.filing, o.label
+SELECT 'tasks',   count(*) FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
 FROM pm.operation o
  )    x
 UNION ALL
@@ -49362,8 +49365,11 @@ FROM pm.layer l
  ) l
 UNION ALL
 SELECT o.filing, 'task', o.label
-FROM ( -- pm:Operation, keyed (filing, label).
-SELECT o.filing, o.label
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
 FROM pm.operation o
  ) o
 UNION ALL
@@ -49985,6 +49991,31 @@ FROM pm.coupling c
 
 ) c
  ) d
+UNION ALL
+SELECT 'task, the notation position', n.filing || '/' || n.label,
+       'entries/notation_references.sqlc'
+FROM ( -- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+ ) o
+WHERE o.foreign_notation IS NOT NULL
+ ) n
+UNION ALL
+SELECT 'task, no notation position', o.filing || '/' || o.label,
+       'entries/operations.sqlc'
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+ ) o
+WHERE o.foreign_absent IS NOT NULL
  ) x
  ) e
     )
@@ -98952,8 +98983,11 @@ SELECT l.filing, l.layer
 FROM pm.layer l
  )    x
 UNION ALL
-SELECT 'tasks',   count(*) FROM ( -- pm:Operation, keyed (filing, label).
-SELECT o.filing, o.label
+SELECT 'tasks',   count(*) FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
 FROM pm.operation o
  )    x
 UNION ALL
@@ -99183,8 +99217,11 @@ FROM pm.layer l
  ) l
 UNION ALL
 SELECT o.filing, 'task', o.label
-FROM ( -- pm:Operation, keyed (filing, label).
-SELECT o.filing, o.label
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
 FROM pm.operation o
  ) o
 UNION ALL
@@ -99806,6 +99843,31 @@ FROM pm.coupling c
 
 ) c
  ) d
+UNION ALL
+SELECT 'task, the notation position', n.filing || '/' || n.label,
+       'entries/notation_references.sqlc'
+FROM ( -- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+ ) o
+WHERE o.foreign_notation IS NOT NULL
+ ) n
+UNION ALL
+SELECT 'task, no notation position', o.filing || '/' || o.label,
+       'entries/operations.sqlc'
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+ ) o
+WHERE o.foreign_absent IS NOT NULL
  ) x
  ) e
     )
@@ -99885,7 +99947,7 @@ SELECT * FROM (VALUES
   ('filing', 'participant', NULL, 'pools', NULL, NULL, 'the participant that renders the document as a pool'),
   ('filing_identity', 'targetNamespace', NULL, 'namespaces', NULL, NULL, 'a notation resolved to a document, which is what import does'),
   ('layer', 'lane', NULL, 'lanes', NULL, NULL, 'a lane, and the region it delimits'),
-  ('operation', 'task', NULL, 'tasks', NULL, NULL, 'a flow node, reached by foreignId'),
+  ('operation', 'task', NULL, 'tasks', 'demoted', '⭐ THE POINTER IS ON THE PAGE AND NO TOOL CAN FOLLOW IT, WHICH IS THE STATE `pm:ForeignId` INTENDS. A notation plus an id names a node in the process notation the filer was READING, which is a different document from this one, so it must not become this task''s own `id` (that would claim the two documents are one) and it cannot be a `relationship`, whose `source` and `target` are QNames needing an `import` that needs a location nobody filed. It rides the task''s `documentation`: a person reads the id, a tool resolves nothing. ⚠ Unlike every other `demoted` row here, the tool could not do better even in principle, because no authority publishes the list it would resolve against', 'a flow node, reached by foreignId. ⛔⛔ AND THE COLUMN DID NOT EXIST, so this row read `loses` NOTHING while losing the only thing it is about. `pm:Operation/foreignId` is the whole BPMN interface, the ingest read the label alone, and the crossing was filed by the corpus, discarded on every load and absent from every artifact. Third of the model''s three `pm:ForeignId` references and the last without a relation beside it: `entries/notation_references.sqlc`'),
   ('draw', 'laneSet', NULL, 'in_a_lane', NULL, NULL, 'D. The lane set a modeller actually files: the performer''s lane'),
   ('induction', 'group', NULL, 'induced_into', 'demoted', '⭐ THE POINTER, AND NOTHING ELSE NOW. `tCategoryValue` adds one `xs:string` to a base element and no reference attribute, so the layer arrives as TEXT beside a `lane` of the same name. That is the callActivity defect at one tenth the size: a call loses the layer, this keeps its name and loses the tie. ⛔ `decider` is lost too, and for the ordinary reason: it is a performer and nothing here files a claimant edge', 'N, the cover. Emitted as categoryValueRef on each operation and drawn as a group, which adds no lane where a second laneSet would have added one per induced layer'),
   ('part', 'callActivity', NULL, 'calls', 'absent', '⭐ WHAT IS LEFT IS THE FACTOR. With `calledElement` as the only reference the target LAYER went too: it names a PROCESS, so 17 layer-grain edges collapsed to 5 document pairs. `tRelationship` takes QNames at BOTH ends and a REQUIRED `type`, so `diagrams/descents.sqlc` now carries the same fact at the grain F has, read back and compared edge for edge. ⛔ What no element carries is the FACTOR, a three-point magnitude on a page with no unit, and that is `absent` for the reason every magnitude here is. ⚠️ AND THIS ROW IS AT THE WRONG GRAIN TO SAY SO: one table maps to TWO elements now, `callActivity` for the substitution and `relationship` for the grain, and the roster has one `element` and one `governed_by`', 'foreign; an embedded subProcess when the part is local'),

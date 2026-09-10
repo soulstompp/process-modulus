@@ -36,9 +36,12 @@
       </lane>
     </laneSet>
     <task id="task_contrato-empresarial_Fechar_um_contrato_empresarial" name="Fechar um contrato empresarial">
+      <documentation>notation position: https://www.omg.org/spec/BPMN/20100524/MODEL / Task_CloseEnterprise. ⛔ THAT ID IS IN ANOTHER DOCUMENT, not in this one: this file renders the model, and the id names the node in the process notation the filer was reading. No authority publishes it, so it resolves by agreement and never by lookup. [assets/sqlc/entries/notation_references.sqlc]</documentation>
       <categoryValueRef>cv_contrato-empresarial_capacidade-entregavel</categoryValueRef>
     </task>
-    <task id="task_contrato-empresarial_Servir_um_pedido_de_infer_ncia" name="Servir um pedido de inferência"/>
+    <task id="task_contrato-empresarial_Servir_um_pedido_de_infer_ncia" name="Servir um pedido de inferência">
+      <documentation>notation position: none stated, and the filing says why: none. `none` is somebody looked and this operation is in no process notation, `unmeasured` is a notation exists and nobody has located it there, `notApplicable` is this filing has no notation to point into. ⛔ AN ABSENT POSITION IS NOT A GAP IN THE MODEL: most operations file one of these. [assets/sqlc/entries/operations.sqlc]</documentation>
+    </task>
     <textAnnotation id="note_contrato-empresarial_cover">
       <text>A DASHED BOX is a COVER, not a container: an operation may be in several and is in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</text>
     </textAnnotation>

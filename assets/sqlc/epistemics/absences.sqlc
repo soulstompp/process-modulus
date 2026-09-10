@@ -65,6 +65,10 @@ SELECT filing, subject, question, reason FROM (
     UNION ALL SELECT filing, operation || ' / ' || layer, 'operation induction',  absent    FROM (
         :compose(entries/inductions.sqlc)
     ) i
+    UNION ALL SELECT filing, label, 'where the operation is in a notation',
+                     foreign_absent::pm.absence_reason FROM (
+        :compose(entries/operations.sqlc)
+    ) o
     UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'narrowsWhen',      narrows_absent FROM (
         :compose(epistemics/claims.sqlc)
     ) c

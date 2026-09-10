@@ -193,6 +193,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let filings = ordered(sqlx::query_file!("assets/sql/diagrams/pools.sql").fetch_all(&pool).await?);
     let layers = ordered(sqlx::query_file!("assets/sql/layers/every_layer.sql").fetch_all(&pool).await?);
     let ops = ordered(sqlx::query_file!("assets/sql/entries/operations.sql").fetch_all(&pool).await?);
+    // The third pm:ForeignId, and the only one that points OUT of the model rather than at
+    // another filing. Read as its own relation so the sentence on the task cites the file that
+    // states it, rather than a dimension that merely carries the column.
+    let crossings =
+        ordered(sqlx::query_file!("assets/sql/entries/notation_references.sql").fetch_all(&pool).await?);
     let draws = ordered(sqlx::query_file!("assets/sql/diagrams/lane_members.sql").fetch_all(&pool).await?);
     let parts = ordered(sqlx::query_file!("assets/sql/diagrams/calls.sql").fetch_all(&pool).await?);
     let notations = ordered(sqlx::query_file!("assets/sql/diagrams/imports.sql").fetch_all(&pool).await?);
@@ -469,12 +474,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .filter(|m| m.filing == filing && m.operation == o.label)
                 .map(|m| m.layer.as_str())
                 .collect();
-            if refs.is_empty() {
+            // ⛔ `tBaseElement` puts `documentation` FIRST, before `categoryValueRef` on
+            //   `tFlowElement`, so the notation position is written above the cover and the
+            //   element is only self-closing when it owes neither.
+            let crossing = crossings
+                .iter()
+                .find(|c| c.filing == filing && c.label == o.label);
+            // ⭐⭐ BOTH ARMS REACH THE PAGE, because `notationPosition` is required and the
+            //   absence is the ordinary answer. A task carrying nothing would read as *this
+            //   model does not reach the notation*, where the filing actually says which of
+            //   three things it means. Same argument as the coupling search on the laneSet.
+            let unstated = o.foreign_absent.as_deref();
+            if refs.is_empty() && crossing.is_none() && unstated.is_none() {
                 writeln!(x, "    <task id=\"{}\" name=\"{}\"/>",
                          id("task", &[filing, &o.label]), esc(&o.label))?;
             } else {
                 writeln!(x, "    <task id=\"{}\" name=\"{}\">",
                          id("task", &[filing, &o.label]), esc(&o.label))?;
+                if let Some((notation, node)) = crossing.and_then(|c| {
+                    // ⛔ The relation restricts to the operations that filed one, so a NULL here
+                    //   would mean the restriction stopped restricting rather than that this
+                    //   operation names nothing. Dropping the sentence silently is how a fact
+                    //   comes to be in the model and on no page.
+                    Some((c.foreign_notation.as_deref()?, c.foreign_id.as_deref()?))
+                }) {
+                    writeln!(x, "      <documentation>notation position: {} / {}. ⛔ THAT ID IS IN \
+                                 ANOTHER DOCUMENT, not in this one: this file renders the model, \
+                                 and the id names the node in the process notation the filer was \
+                                 reading. No authority publishes it, so it resolves by agreement \
+                                 and never by lookup.{}</documentation>",
+                             esc(notation), esc(node),
+                             cite("task, the notation position"))?;
+                } else if let Some(reason) = unstated {
+                    // ⛔ THE REASON IS THE MODEL'S VOICE AND THE GLOSS IS THE EMITTER'S. The word
+                    //   comes from the filing; the sentence saying what the three words mean is
+                    //   true of this schema whatever any corpus holds, so it may be a literal.
+                    writeln!(x, "      <documentation>notation position: none stated, and the \
+                                 filing says why: {}. `none` is somebody looked and this operation \
+                                 is in no process notation, `unmeasured` is a notation exists and \
+                                 nobody has located it there, `notApplicable` is this filing has \
+                                 no notation to point into. ⛔ AN ABSENT POSITION IS NOT A GAP IN \
+                                 THE MODEL: most operations file one of these.{}</documentation>",
+                             esc(reason), cite("task, no notation position"))?;
+                }
                 for layer in refs {
                     writeln!(x, "      <categoryValueRef>{}</categoryValueRef>",
                              id("cv", &[filing, layer]))?;
@@ -1600,6 +1642,67 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⭐ {demoted_checked} foreign parts, and every target LAYER is in its document as a");
     println!("      NAME as well as in a relationship. Two readers, two paths: a person reads the");
     println!("      callActivity label, a tool resolves the QName, and each has its own law.");
+
+    // ⛔⛔⛔ AND THE THIRD `pm:ForeignId` OWES THE SAME LAW, WHICH NO COUNT COULD EVER STAND IN
+    //   FOR. The `documentation` count reads diagrams/annotated.sqlc and stays exact with every
+    //   sentence hung on the WRONG task, and for a REFERENCE that is the entire fact: an id
+    //   against the wrong node is a crossing that points somewhere real and wrong, which is the
+    //   reversed-dependence defect at the one place a reader would act on it.
+    // ⚠️ READ THE TASK, NOT THE DOCUMENT. `doc.contains(node)` passes on a sentence attached to
+    //   any task in the file, which is the same weaker-than-its-claim shape the callActivity law
+    //   above has to avoid. Probed by moving one sentence to the other task and by changing one
+    //   character of the id: both fire, and the documentation count stays exact.
+    let mut misattributed = Vec::new();
+    let mut crossings_checked = 0usize;
+    for c in &crossings {
+        let (notation, node) = match (c.foreign_notation.as_deref(), c.foreign_id.as_deref()) {
+            (Some(n), Some(i)) => (n, i),
+            _ => continue,
+        };
+        crossings_checked += 1;
+        let doc = fs::read_to_string(format!("{OUT}/{}.bpmn", c.filing))?;
+        let open = format!("<task id=\"{}\"", id("task", &[&c.filing, &c.label]));
+        let body = match doc.split_once(&open) {
+            // ⛔ A self-closing task has no `</task>`, so a body taken to the next one would run
+            //   through every task between here and it, and the law would read a sentence that
+            //   belongs to somebody else. Stop at whichever boundary comes first.
+            Some((_, rest)) => {
+                let end = [rest.find("</task>"), rest.find("<task ")]
+                    .into_iter()
+                    .flatten()
+                    .min()
+                    .unwrap_or(rest.len());
+                rest[..end].to_string()
+            }
+            None => {
+                misattributed.push(format!(
+                    "{}: no task is emitted for the operation `{}`, which files a notation position",
+                    c.filing, c.label
+                ));
+                continue;
+            }
+        };
+        if !body.contains(&esc(node)) || !body.contains(&esc(notation)) {
+            misattributed.push(format!(
+                "{}: the task for `{}` does not carry its filed position {notation} / {node}",
+                c.filing, c.label
+            ));
+        }
+    }
+    assert!(
+        crossings_checked > 0,
+        "no operation in this corpus files a pm:ForeignId, so the crossing law examined nothing \
+         and the BPMN interface is asserted by a rule that never ran"
+    );
+    assert!(
+        misattributed.is_empty(),
+        "an operation files a position in a process notation and its own task does not carry it, \
+         so the one thing that crosses out of this model is missing from the artifact that exists \
+         to show the crossing: {misattributed:?}"
+    );
+    println!("   ⭐ {crossings_checked} operations file a notation position, and each one is on its");
+    println!("      OWN task. That id is the whole BPMN interface: nothing is added to the filer's");
+    println!("      diagram, so the crossing costs that document nothing and survives wherever it goes.");
 
     // ------------------------------------------------------------------
     // ⛔ What could NOT be drawn, enumerated. A blank diagram and a diagram of nothing are

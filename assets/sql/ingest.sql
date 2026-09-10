@@ -407,11 +407,16 @@ FROM source s,
 -- ---------------------------------------------------------------------------
 -- Operations, and the two matrices that hang off them.
 -- ---------------------------------------------------------------------------
+-- pm:Operation: the label, and the position in a process notation where the filer named one.
 INSERT INTO operation
-SELECT DISTINCT s.name, x.label
+SELECT DISTINCT s.name, x.label, x.notation, x.foreign_id, x.absent::absence_reason
 FROM source s,
      XMLTABLE(XMLNAMESPACES('https://example.invalid/process-flow/1.0' AS pm),
-       '//pm:operation' PASSING s.body COLUMNS label text PATH 'pm:label') x;
+       '//pm:operation' PASSING s.body
+       COLUMNS label      text PATH 'pm:label',
+               notation   text PATH 'pm:notationPosition/pm:foreignId/pm:notation',
+               foreign_id text PATH 'pm:notationPosition/pm:foreignId/pm:id',
+               absent     text PATH 'pm:notationPosition/pm:absent/pm:reason') x;
 
 -- ⭐ D, TALL. What an operation takes from a layer, NOW.
 INSERT INTO draw
