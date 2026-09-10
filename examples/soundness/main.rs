@@ -1,41 +1,16 @@
-//! Does the machinery do what it claims?
-//!
-//! The other examples ask about the arithmetic, the data, the corpus, and what a generated run
-//! can be made to say. This one asks about the **queries themselves**, whether each relation
-//! computes the operation it says it does. It is the only one that can accuse nobody's filing.
-//!
-//! ⭐⭐⭐ IT EXISTS BECAUSE A SET DIFFERENCE FAILS TO A PLAUSIBLE TABLE, NEVER TO AN ERROR.
-//! `EXCEPT` and `LEFT JOIN … IS NULL` return the right shape, the right column names and a
-//! believable count when they are wrong. Written once with the parentheses misplaced,
-//! `reports/integrity.sqlc` returned 227 rows where 0 was correct, and 227 well-formed rows is
-//! not a thing anybody reads twice.
-//!
-//! ⭐⭐ AND THE LAW IS CHECKABLE WITHOUT TOUCHING A FILE. |A ∖ B| = |A| − |A ⋉ B|, so a difference
-//! and its semijoin must partition the left operand. As a manual probe that is edit the
-//! template, recompose, observe, revert: a procedure nothing repeats, and one where a `sed`
-//! silently matching nothing reports a false finding. Each law is a query instead.
-//!
-//! ⛔ THE SECOND ASSERTION IS THE ONE THAT MATTERS MOST. Every set difference in `assets/sqlc/`
-//! must appear on `algebra/roster.sqlc`. A difference nobody declared a law for is
-//! `asrt:Verdict`'s `unclaimed`, a guard believed to be there and never once checked.
-//!
-//! ⛔⛔ AND ONE OF THE LAWS IS NOT A QUERY, BECAUSE IT COULD NOT BE. §6 asks whether a rule still
-//! reports that it examined NOTHING, and that is visible only where the population is nothing, so
-//! it empties the corpus: a `TRUNCATE` inside a transaction that is rolled back, the idiom
-//! `examples/generation/main.rs` and `assets/sqlc/invariance.sqlc` already use. The database this reads
-//! is the database it leaves.
-//!
-//! ⛔ IT IS THE ONLY WRITE THIS EXAMPLE MAKES, AND IT TAKES AN `ACCESS EXCLUSIVE` LOCK WHILE IT
-//! RUNS. So this is no longer an example to point at a database somebody else is reading, which
-//! is a change in what it costs to run and not only in what it checks.
-//!
-//! Run it with a loaded database:
-//!
-//! ```text
-//! psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
-//! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
-//!   cargo run --example soundness
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;

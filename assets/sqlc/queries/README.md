@@ -1,5 +1,7 @@
 # `queries/`, the examples' SQL, as templates
 
+> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+
 **One subdirectory per example, one file per query.** Pulled out so they can be read and run
 without Rust; each is a single statement.
 
@@ -11,8 +13,8 @@ without Rust; each is a single statement.
 | `soundness/` | [`examples/soundness/main.rs`](../../../examples/soundness/main.rs) | does the machinery do what it claims? |
 
 ⭐ **The directory is the correspondence, rather than something a reader has to remember.** A
-query added to `readiness/` and never read by `readiness.rs` shows up as an orphan in
-`observations.rs`, which asserts that nothing in `assets/sqlc/` is reached by nothing at all.
+query added to `readiness/` and never read by `examples/readiness/main.rs` shows up as an orphan in
+`examples/observations/main.rs`, which asserts that nothing in `assets/sqlc/` is reached by nothing at all.
 
 ⚠️ `matrices/` answers the numbered sections of [`../README.md`](../README.md). The other three
 do not map onto it: `readiness/` is a view of `arithmetic/all.sqlc`, `observations/` is a tour of

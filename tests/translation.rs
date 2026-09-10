@@ -14,9 +14,16 @@
 //! untranslated remainder is a number a reader can see rather than a claim nobody checked.
 //! ⛔ This test does NOT judge the translations. It cannot. It checks that they are present,
 //! that they are not stubs, and that the English is still there beside them.
+//!
+//! ⭐⭐⭐ AND THE SAME ARGUMENT REACHES THE MARKDOWN, WHERE COVERAGE IS NOT PARTIAL. A `README.md`
+//! carries rules no validator reaches exactly as an annotation does, and it is what a reader
+//! browsing the repository lands on, so the roster idiom above is the wrong shape for it: every
+//! one of them owes a Portuguese sibling, so the law is a closure rather than a declared list.
+//! A directory whose argument exists in English alone is a directory one audience cannot use.
 
 use std::collections::BTreeSet;
 use std::fs;
+use std::path::PathBuf;
 
 /// Every declaration that carries a Portuguese annotation today.
 ///
@@ -232,4 +239,78 @@ fn the_untranslated_remainder_is_visible() {
         total >= TRANSLATED.len(),
         "the declared list is longer than what the schemas carry"
     );
+}
+
+// ---------------------------------------------------------------------------
+// The markdown, where the rule is a closure and not a roster
+// ---------------------------------------------------------------------------
+
+/// Every `README.md` in the repository, ignoring what is generated or not published.
+fn readmes() -> Vec<PathBuf> {
+    let mut found = Vec::new();
+    walk(&PathBuf::from(env!("CARGO_MANIFEST_DIR")), &mut found);
+    found.sort();
+    assert!(!found.is_empty(), "the repository has no README.md, which cannot be right");
+    found
+}
+
+/// ⛔ `target/` IS BUILD OUTPUT AND `.claude/` IS NOT PUBLISHED, and both hold markdown that
+/// would make this law report on files nobody ships.
+fn walk(dir: &std::path::Path, out: &mut Vec<PathBuf>) {
+    for e in fs::read_dir(dir).expect("readable directory").flatten() {
+        let path = e.path();
+        let name = path.file_name().and_then(|s| s.to_str()).unwrap_or_default().to_string();
+        if path.is_dir() {
+            if !matches!(name.as_str(), "target" | ".git" | ".claude" | ".cargo" | ".sqlx") {
+                walk(&path, out);
+            }
+        } else if name == "README.md" {
+            out.push(path);
+        }
+    }
+}
+
+/// ⭐ Every `README.md` has a Portuguese sibling, and it is a translation rather than a note.
+///
+/// ⛔ THE FAILURE THIS CATCHES IS A NEW DIRECTORY, not a deleted file. Somebody adds a README to
+/// explain a directory they just built, in the language they were thinking in, and nothing asks
+/// about the other one. Measured when this law was written, three directories were in that state.
+#[test]
+fn every_readme_has_a_portuguese_sibling_and_it_is_not_a_stub() {
+    for en in readmes() {
+        let pt = en.with_file_name("README.pt.md");
+        let shown = en
+            .strip_prefix(env!("CARGO_MANIFEST_DIR"))
+            .unwrap_or(&en)
+            .display()
+            .to_string();
+        let body_pt = fs::read_to_string(&pt).unwrap_or_else(|_| {
+            panic!(
+                "{shown} has no README.pt.md beside it, so whatever it explains is explained in \
+                 one language. This model's origin and its hardest jurisdiction are both \
+                 Portuguese; the pair is the point."
+            )
+        });
+        let body_en = fs::read_to_string(&en).expect("unreadable README.md");
+
+        assert!(
+            body_pt.contains("AO90"),
+            "{shown}: the Portuguese sibling does not name the orthography it is written in. \
+             Every other one opens with it, and a reader is owed the same sentence about which \
+             spelling and which version is authoritative."
+        );
+        // Measured against its own sibling, never against a fixed floor: see `no_translation_is_a_stub`.
+        assert!(
+            body_pt.len() * 2 >= body_en.len(),
+            "{shown}: {} chars of Portuguese against {} of English is a summary rather than a \
+             translation. Equal footing means the reader who cannot read the English loses nothing.",
+            body_pt.len(),
+            body_en.len()
+        );
+        assert!(
+            body_en.contains("README.pt.md"),
+            "{shown} does not point at its Portuguese sibling, so a reader who needs it has to \
+             already know it is there."
+        );
+    }
 }

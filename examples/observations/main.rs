@@ -1,29 +1,16 @@
-//! What the corpus actually says, and whether anything is looking.
-//!
-//! [`examples/matrices/main.rs`] proves the arithmetic agrees with itself. [`examples/readiness/main.rs`]
-//! asks whether it may be performed. This one asks the corpus questions and prints the answers
-//!, because a relation whose product is knowledge rather than a verdict had nowhere to land,
-//! and so either never got written or got written and read by nobody.
-//!
-//! ⭐⭐⭐ EVERY NUMBER A COMMENT IN THIS REPOSITORY QUOTES SHOULD BE PRINTED BY A PROGRAM. A
-//! figure written into a header is correct on the day it is written and answers to nothing
-//! afterwards: the corpus moves and the sentence does not. This is where the ones that would
-//! otherwise sit in prose get printed.
-//!
-//! ⛔⛔ THE TEETH ARE ON THE UNASKED QUESTION, NEVER ON THE ANSWER. Two assertions:
-//! that no relation and no document is reached by nothing, and that every remainder has had
-//! the closure question put to it. Neither judges a filing. `unbounded` is the honest state
-//! for a document written to argue about three layers, and a spillover is a REFERRAL, a
-//! filing is not the system, and a second document's observation is a projection onto this one
-//! rather than an accusation against it.
-//!
-//! Run it with a loaded database:
-//!
-//! ```text
-//! psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
-//! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
-//!   cargo run --example observations
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::BTreeSet;
 use std::fs;

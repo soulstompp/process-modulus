@@ -114,22 +114,27 @@ fn env_path(var: &str) -> PathBuf {
 /// every build from what is on disk: add an example and it appears, delete one and it goes.
 ///
 /// ⭐ IT IS THE SAME BARGAIN AS THE TYPES. `src/lib.rs` says the schema's `xs:documentation` is
-/// what `cargo doc` shows, so you change a schema rather than the crate. Change an example's
-/// `//!` header rather than this file, and the crate's front page follows.
+/// what `cargo doc` shows, so you change a schema rather than the crate. Change an example's own
+/// `README.md` rather than this file, and the crate's front page follows.
 struct Example {
     name: String,
-    /// The example's first `//!` line: the question it exists to answer.
+    /// The first line of the example's own `README.md`: the question it exists to answer.
     question: String,
-    /// ⛔ TAKEN FROM THE CALL AND NEVER FROM THE WORD. `examples/rendering/main.rs` carries the
+    /// ⛔ TAKEN FROM THE CALL AND NEVER FROM THE WORD. `examples/rendering/README.md` carries the
     /// string `DATABASE_URL` in the shell line of its header, saying it needs none, so a grep for
     /// the name reports the opposite of the truth about exactly the file that went out of its way
     /// to state it. `env::var("DATABASE_URL")` is the thing that actually reads one.
     needs_database: bool,
 }
 
-/// ⛔ A MISSING HEADER IS A HARD ERROR, not a blank cell. An example with no `//!` line is one
-/// nobody can find from the front page, and a roster that quietly prints an empty row for it has
-/// hidden the omission behind evidence of its own completeness.
+/// ⛔ A MISSING HEADER IS A HARD ERROR, not a blank cell. An example nothing describes is one
+/// nobody can find from the front page or from the repository page, and a roster that quietly
+/// prints an empty row for it has hidden the omission behind evidence of its own completeness.
+///
+/// ⭐⭐ THE HEADER IS A FILE THE PROGRAM ITSELF INCLUDES, SO THERE ARE TWO REFUSALS AND THIS IS
+/// THE SECOND. `#![doc = include_str!("README.md")]` at the top of every `main.rs` means a target
+/// whose header is MISSING does not compile at all; what this function adds is the target whose
+/// header is present and says nothing.
 ///
 /// ⚠️ PROBE IT RATHER THAN TRUSTING IT. `mkdir examples/zzprobe && printf 'fn main(){}\n' >
 /// examples/zzprobe/main.rs` and `cargo build` must fail naming that directory; delete it and the
@@ -156,15 +161,17 @@ fn examples(manifest: &std::path::Path) -> Result<Vec<Example>, Error> {
             .to_string();
         let source = read_to_string(path.join("main.rs"))
             .with_context(|| format!("Cannot read examples/{name}/main.rs"))?;
-        let question = source
+        let header = read_to_string(path.join("README.md")).with_context(|| {
+            format!("examples/{name}/ has no README.md, so the roster cannot say what it answers \
+                     and `include_str!` has nothing to make a rustdoc page from either.")
+        })?;
+        let question = header
             .lines()
-            .find_map(|l| l.strip_prefix("//!"))
             .map(str::trim)
-            .filter(|q| !q.is_empty())
+            .find(|l| !l.is_empty())
             .with_context(|| {
-                format!("examples/{name}/main.rs has no `//!` header, so the roster cannot say \
-                         what it answers. Give it one line naming the question it puts to the \
-                         model.")
+                format!("examples/{name}/README.md says nothing, so the roster cannot say what it \
+                         answers. Give it one line naming the question it puts to the model.")
             })?
             .to_string();
         found.push(Example {
@@ -197,10 +204,12 @@ fn roster(examples: &[Example]) -> String {
         "\n# The examples, and the question each one puts to the model\n\n\
          Twelve is not a number written here: this table is generated from `examples/` on every \
          build, so it is what is on disk rather than what somebody last remembered. Each row's \
-         question is that program's own first line.\n\n\
+         question is the first line of that program's own `README.md`, which is its whole \
+         header: `examples/<name>/README.md` is the page rustdoc renders and the page the \
+         repository front end renders, because the program includes that one file.\n\n\
          ⭐ **The argument lives in the program that evaluates it.** An identity written into \
          prose and computed nowhere is unverified, and this crate keeps none: every equation \
-         below sits in the `//!` header or the section comment of the code that runs it, so a \
+         below sits in that header or in the section comment of the code that runs it, so a \
          claim and its evidence move together or neither moves.\n\n\
          | example | the question it answers | database |\n|---|---|---|\n",
     );

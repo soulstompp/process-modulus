@@ -1,28 +1,16 @@
-//! The compositions this repository has, and the three preconditions that make them an algebra.
-//!
-//! ⭐⭐⭐ THERE ARE TWO LAYERS AND THEY ARE NOT TWO READINGS OF ONE THING. The DOMAIN OBJECTS are
-//! the relational objects, `pm.*` in `assets/ddl/schema.ddl`. The COMPOSITIONS are the queries,
-//! `assets/sqlc/**.sqlc`, and they are ad-hoc views this repository never builds: `CREATE VIEW`
-//! appears in the schema zero times. Everything else here refers to a composition by NAME, the
-//! way a `.sqlc` refers to another `.sqlc` and never repeats its SQL.
-//!
-//! ⭐⭐ AND THE COMPOSE DAG IS A CALL GRAPH. `sql-composer`, BPMN 2.0 and this model are the
-//! reachability algebra of a well-founded binary relation on names, which is a claim with three
-//! preconditions: every name resolves, no name expands to itself, the expansion has a start and
-//! an end. This example ASSERTS all three on the real tree rather than restating them.
-//!
-//! ⛔⛔ THE ONE THAT IS WORTH THE MOST IS THE CONTRAST AT THE END. A layer reached twice inside
-//! one fusion is `checks/jagged_layer`, a violation, because the carrier is CONSERVED and one
-//! total closes over both occurrences. A composition reached twice inside one root is the NORMAL
-//! CASE and costs nothing, because a query is idempotent and the planner reads the relation once.
-//! Same substitution algebra, same graph shape, opposite verdicts. The difference is the carrier,
-//! and it is the whole of what this model adds to its two neighbours.
-//!
-//! ⭐ It needs no database. The compose DAG is a fact about the source tree.
-//!
-//! ```text
-//! cargo run --example compositions
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;

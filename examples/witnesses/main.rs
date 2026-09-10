@@ -1,41 +1,16 @@
-//! Whether each rule has ever been SEEN TO SAY NO.
-//!
-//! ⭐⭐⭐ THE OTHER EXAMPLES ASK WHETHER THE RULES ARE RIGHT. THIS ONE ASKS WHETHER THEY CAN BE
-//!    WRONG. `soundness.rs` checks that each query computes what it claims and `readiness.rs`
-//!    checks that each rule has a population, and a rule can pass both while being incapable
-//!    of failing: a predicate true by construction examines a thousand rows and concludes
-//!    nothing. Measured before this file existed, the corpus and fixtures put 22 of 24 rules
-//!    over real rows and NOT ONE RULE HAD EVER BEEN OBSERVED TO FIRE. The violated column of
-//!    the rule x {passed, violated} matrix was empty end to end.
-//!
-//! ⭐⭐ A WITNESS IS A MINIMAL MUTATION OF A REAL FILING THAT TRIPS EXACTLY ONE RULE. Minimal
-//!    matters: a mutation that trips six rules has shown that something is checked, not that
-//!    THIS rule is. Each is a single string substitution against a corpus or fixture document,
-//!    and the mutant must still validate against the XSD, because a document the grammar
-//!    rejects proves nothing about a rule the grammar never reaches.
-//!
-//! ⛔ A RULE WITH NO WITNESS IS THE FINDING AND NOT A GAP IN THIS FILE. Two have none, and
-//!    they are exactly the two that examine nothing: `share_exceeds_slack` and
-//!    `exposure_unaccounted`. That is not a coincidence and it is the useful half of the
-//!    result. A rule can only be falsified where it has rows, so an empty population and an
-//!    unfalsifiable rule are one fact seen from two sides, and no edit to a document these
-//!    rules do not look at will ever produce a witness.
-//!
-//! ⚠️ SUBSTITUTION, NOT ADDITION. The mutant REPLACES its source document in the ingest rather
-//!    than joining it, so the corpus keeps its shape: same thirteen filings, same notation
-//!    URNs, same part references. Adding a mutated copy would collide on `filing_identity`
-//!    and would change what every composition rule is looking at.
-//!
-//! ⚠️ AND THE ANCHOR COUNT IS ASSERTED. Each witness names the occurrence it edits and this
-//!    file checks how many there are. A document edit that changes the count fails loudly
-//!    here rather than silently mutating a different claim and still going green.
-//!
-//! Run it with:
-//!
-//! ```text
-//! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
-//!     cargo run --example witnesses
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;

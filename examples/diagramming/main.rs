@@ -1,29 +1,16 @@
-//! The model, translated into BPMN 2.0, and the laws that say the translation was faithful.
-//!
-//! ⭐⭐⭐ THIS IS A COMPOSE STEP, NOT A DRAWING PROGRAM. Modulus is the `.sqlc`, BPMN is
-//! `assets/sql/`, and this is `cargo sqlc compose`. So `assets/bpmn/` is GENERATED AND WIPED on
-//! every run and must never be hand edited, every emitted document is complete and openable
-//! ALONE, and provenance survives INTO the artifact the way the `--` line survives into generated
-//! SQL. If you found a diagram you want to change, change the model.
-//!
-//! ⛔⛔ THE READER OF THE OUTPUT IS THE RDBMS OF THIS PIPELINE. Postgres executes a broken
-//! difference and returns a plausible table; a brilliant analyst reads a broken diagram and
-//! reaches a confident conclusion. Neither tells you that you were wrong, and the diagram is the
-//! worse of the two, because a wrong table gets re-checked and a wrong diagram gets believed and
-//! put in a deck. `assets/sqlc/diagrams/roster.sqlc` is why the laws below exist at all.
-//!
-//! ⭐⭐ THE EMITTER HAS NO JUDGMENT IN IT, AND THE EXPECTED COUNTS ARE NOT ITS OWN. Every
-//! `pm.*` object renders as whatever `diagrams/domain_objects.sqlc` says, and every count is
-//! checked against `diagrams/expected.sqlc`, which is computed from the model by relations this
-//! program does not write. An emitter that computed its own expectation would agree with itself
-//! whatever it did.
-//!
-//! ⛔ WHAT COULD NOT BE DRAWN IS ENUMERATED, because a blank diagram and a diagram of nothing are
-//! indistinguishable from outside. That list is the boundary claim performed instead of asserted.
-//!
-//! ```text
-//! DATABASE_URL=... cargo run --example diagramming
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;

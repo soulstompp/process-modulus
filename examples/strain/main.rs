@@ -1,18 +1,16 @@
-//! What does the model have to be bent to say?
-//!
-//! Every other example asks whether the machinery is right. This one assumes it is and goes
-//! looking for the places it cannot reach: ordinary situations, from ordinary businesses, that the
-//! schema has no honest way to express. A field that has to be bent to take a fact is a finding
-//! about the field, and it is worth more than another document that fits.
-//!
-//! ⭐⭐⭐ THE METHOD IS TO GENERALISE ONE ASSUMPTION AT A TIME AND SEE WHAT SURVIVES. Each probe
-//! below changes exactly one thing the model takes for granted, keeps everything else, and reports
-//! what the filing then has to claim. Two of the three assumptions turn out to be load-bearing in
-//! ways the annotations do not say.
-//!
-//! ⛔ NOTHING HERE ACCUSES A FILING. These are questions about the SCHEMA, so they run without a
-//! database and print rather than assert, except where an arithmetic claim can be checked against
-//! a sieve.
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::time::Duration;
 

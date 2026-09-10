@@ -729,9 +729,14 @@ The crate's major and minor track the schema's `xs:schema/@version`, and
 namespace URIs, which are still `https://example.invalid/…`. No conformance profile exists yet,
 by choice.
 
-Further reading: [`docs/linear-algebra.md`](docs/linear-algebra.md) reconstructs the model
-for a reader who wants the matrices, and is also in European Portuguese at
-[`docs/linear-algebra.pt.md`](docs/linear-algebra.pt.md).
+Further reading: the model reconstructed for a reader who wants the matrices lives in the
+examples that evaluate it, rather than in a note beside them. [`examples/`](examples/) is one
+directory per program, each holding the program and the header that argues its case, with a table
+of the question each one answers; nothing needs building to read it. `cargo doc --examples --open`
+renders the same headers, and [`examples/matrices/`](examples/matrices/) is the one that carries
+the arithmetic, with `nalgebra` on one side and `assets/sql/` on the other and the agreement
+asserted on every run. ⭐ Every header exists in both languages, side by side in the same
+directory, and `tests/examples.rs` fails if a program argues its case in only one of them.
 
 ## Licence
 

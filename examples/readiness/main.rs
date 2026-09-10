@@ -1,36 +1,16 @@
-//! Before the arithmetic: may you compute here at all?
-//!
-//! `xmllint` says a filing is well formed. [`assets/sql/checks/`] says it does not contradict
-//! the model. Neither answers the question this program asks, which is whether the numbers in
-//! front of you can be put together at all, whether both operands were stated, and whether
-//! they are numbers of the same thing.
-//!
-//! ⭐⭐⭐ THE COLUMN THAT MATTERS IS THE EMPTY ONE. `arithmetic/roster.sqlc` names every place
-//! this model combines two magnitudes and, beside each, the rule that checks they are
-//! commensurable. Six of the nine are blank, a seventh is `(forbidden)`, and two name a rule.
-//! `r = n − d` is one of the blank ones: thirty-nine layers
-//! deep, and `layers/remainder.sqlc` carries `d_unit` and `n_unit` as two separate columns and
-//! subtracts across them with no predicate anywhere.
-//!
-//! ⛔ A BLANK GUARD BESIDE A ZERO IS NOT A PASS. Every unguarded site is clean in this corpus
-//! today, which is precisely the state that reads as safe and is not. `NOT CHECKED` is printed
-//! as `not checked`, never as `ok`, and that distinction is the whole reason this example
-//! exists.
-//!
-//! ⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED. Ninety-one instances cannot be
-//! computed because somebody declined to measure an operand. That is not a defect in the
-//! document and not a pass either, and the gated relations cannot report it: a row dropped by
-//! a `WHERE` cannot say why it went.
-//!
-//! Run it with a loaded database:
-//!
-//! ```text
-//! psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
-//! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
-//!   cargo run --example readiness
-//! ```
-//!
-//! ⛔ There is no silent skip. No database means it fails to run.
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

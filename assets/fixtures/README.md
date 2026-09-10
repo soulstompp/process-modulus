@@ -1,5 +1,7 @@
 # `assets/fixtures/` — one document per state, and NOT a second corpus
 
+> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+
 ⛔⛔⛔ **THESE ARE STIPULATIONS, NOT FILINGS, AND THE DIFFERENCE IS THE WHOLE REASON THE
 DIRECTORY EXISTS.** Every document in [`assets/corpus/`](../corpus/) is a claim about a
 business — a demand somebody observed, a remainder somebody bore. Every document here is a

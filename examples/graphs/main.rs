@@ -1,27 +1,16 @@
-//! The three graphs this model composes, as the lane sets of one pool.
-//!
-//! ⭐⭐⭐ THE BIG POOL IS THE MODEL, AND THE THREE GRAPHS ARE LANE SETS OVER IT. The fifteen
-//! filing-pools `examples/diagramming/main.rs` emits sit INSIDE this one. A `laneSet` is a partition
-//! claimed exhaustive, and three LANES would put every composition in exactly one; measured, 169
-//! of 220 compositions touch more than one graph, because a relation reading a part AND its factor
-//! is in the layer graph and the unit graph and that is what a factor IS. BPMN permits several
-//! lane sets over one process for exactly this reason.
-//!
-//! ⛔⛔ AND THREE LANE SETS CANNOT ALL BE THE CONTAINMENT. An inclusion tree gives each node ONE
-//! parent, so only one of them can be the nesting a diagram draws. That is why the graph is a
-//! SLOT here rather than a silent pick: `entries/coupling_presence.sqlc` is asked of the corpus by
-//! one caller and of every filing by another, both are right, and a caller supplying no `@scope`
-//! DOES NOT COMPOSE. The choice moves from a habit into the structure.
-//!
-//! ⭐⭐ THE BPMN WORD FOR A SLOT IS ALREADY IN THE SPEC. A `participant` has an OPTIONAL
-//! `processRef`: supply it and the pool has contents, omit it and you have a BLACK BOX POOL, which
-//! is first-class BPMN for *a party acts here and what they do is not in this diagram*. An
-//! unfilled slot IS a black-box participant, and this example emits one for the graph that has no
-//! edges, rather than pretending it drew something.
-//!
-//! ```text
-//! DATABASE_URL=... cargo run --example graphs
-//! ```
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;

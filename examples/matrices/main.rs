@@ -1,31 +1,16 @@
-//! The second witness: the same arithmetic, computed a different way.
-//!
-//! [`assets/sql/matrices.sql`] computes each matrix in the database, with joins and
-//! `GROUP BY`. This program pulls the same rows out and computes with `nalgebra`, where a
-//! matrix product is a matrix product. Then it asserts the two agree.
-//!
-//! ⭐⭐ THAT ASSERTION IS THE POINT, AND IT IS THIS REPOSITORY'S OWN STANDARD APPLIED TO
-//! ARITHMETIC. `tests/independence.rs` argues that corroboration between two things sharing
-//! a code path is worth nothing. A query that computes a number and a README that says "look,
-//! it is right" is ONE WITNESS ASSERTING. Recomputing it by a different route and comparing
-//! is two, and the claim `assets/sqlc/README.md` makes — that a matrix product IS a join with
-//! a `GROUP BY` — stops being something the author said and becomes something that was
-//! checked.
-//!
-//! ⚠️ The two sides share the ingest, and that is fine: the ingest is not what is being
-//! proved. What is being proved is the arithmetic on top of it.
-//!
-//! Run it with a loaded database:
-//!
-//! ```text
-//! createdb process_modulus_proof
-//! psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
-//! DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
-//!   cargo run --example matrices
-//! ```
-//!
-//! ⛔ There is no silent skip. No database means it fails to run, because a proof that
-//! passes when it did not execute is the vacuity trap this repository keeps naming.
+// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
+// GitHub renders a directory's README and renders no `//!` block at all, so an argument
+// kept only in the source is unreadable from the one place this repository is published.
+// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
+// and a missing header is a compile error rather than a blank row on the front page.
+//
+// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
+// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
+// them into one Rust doc comment; these two files are the same arrangement one directory over.
+// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
+// second-class citizenship `tests/translation.rs` exists to refuse.
+#![doc = include_str!("README.md")]
+#![doc = include_str!("README.pt.md")]
 
 use nalgebra::{DMatrix, DVector};
 use std::collections::BTreeMap;

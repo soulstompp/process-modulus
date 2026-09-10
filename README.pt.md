@@ -748,8 +748,15 @@ O maior e o menor da biblioteca acompanham o `xs:schema/@version` do esquema, e 
 URI dos espaços de nomes, que continuam a ser `https://example.invalid/…`. Ainda não existe
 nenhum perfil de conformidade, por opção.
 
-Leitura adicional: o [`docs/linear-algebra.pt.md`](docs/linear-algebra.pt.md) reconstrói o
-modelo para quem queira as matrizes, em português europeu.
+Leitura adicional: o modelo reconstruído para quem queira as matrizes está nos exemplos que o
+calculam, e não numa nota ao lado deles. O [`examples/README.pt.md`](examples/README.pt.md) tem
+uma pasta por programa, cada uma com o programa e o cabeçalho que defende o seu caso, mais uma
+tabela com a pergunta a que cada um responde; nada precisa de ser compilado para o ler. O
+`cargo doc --examples --open` compõe os mesmos cabeçalhos, e o
+[`examples/matrices/`](examples/matrices/) é o que carrega a aritmética, com o `nalgebra` de um
+lado e o `assets/sql/` do outro, e a concordância é afirmada em cada execução.
+⭐ Cada cabeçalho existe nas duas línguas, lado a lado na mesma pasta, e o
+`tests/examples.rs` falha se um programa argumentar o seu caso só numa delas.
 
 ## Licença
 
