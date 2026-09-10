@@ -464,6 +464,33 @@ fn clone_run(r: &Run) -> Run {
 /// twelve. A team is staffed in half shifts and whole shifts. A cloud bill is quoted per instance
 /// hour on two instance sizes. None of that is exotic and all of it is one supply with two lot
 /// sizes.
+///
+/// ⭐⭐ A COMPOSED QUANTUM EXISTS, AND IT IS THE GREATEST COMMON DIVISOR. If parts carry `q₁` and
+/// `q₂` in the same unit then `n₁ = a q₁` and `n₂ = b q₂`, and every achievable sum `a q₁ + b q₂`
+/// is divisible by `g = gcd(q₁, q₂)`, which is the largest number of which that is true.
+/// `composition/composed_quantum.sqlc` is where the model computes it.
+///
+/// ⚠️ NOT EVERY MULTIPLE OF `g` IS ACHIEVABLE. Bézout's identity is a statement about ℤ, and `a`
+/// and `b` here are counts of WHOLE units. Over ℕ the reachable set is the numerical semigroup,
+/// so `q₁ = 3, q₂ = 5` gives `g = 1` while 1, 2, 4 and 7 cannot be made at all. Only the forward
+/// direction is used by the model, and only the forward direction holds — which is what the sieve
+/// below exists to show rather than assert. `gcd` also needs the two quanta commensurable, a live
+/// condition because they are reals.
+///
+/// ⛔ ASKING FOR A "BEST" `q` WITHIN A SINGLE LAYER IS THE WRONG QUESTION: there the quantum is
+/// OBSERVED, and choosing the largest divisor of `n` would infer the physics from the number.
+///
+/// ⭐⭐⭐ AND THEREFORE THE ELIMINATION MUST ITSELF BE A WHOLE MULTIPLE OF THE COMPOSED QUANTUM.
+/// `n_composed = n₁ + n₂ − e`, and `g` divides the sum, so `g | n_composed` requires `g | e`.
+/// **You cannot eliminate half a machine.** `arithmetic/whole_multiple.sqlc` is the site and it
+/// holds in every corpus case where it is checkable: `every-local-part/both-views` eliminates
+/// 2160 against `q = 12`, which is 180 whole ovens.
+///
+/// ⛔ ACROSS UNITS THERE IS NO COMPOSED QUANTUM AT ALL, and the reason is narrower than it sounds.
+/// `gcd` is a same-unit operation. `merge-holding-composition/compute` fuses `720 GPU-hour` with
+/// `8 GPU` and no number divides both. That is not awkward data; it is the same wall as `Φ`, which
+/// is what crosses units, and a conversion factor multiplies a quantum too. `g = 1` is the other
+/// degenerate case, where lumpiness dissolves and the composed supply is effectively continuous.
 fn two_quanta() -> Result<(), Box<dyn std::error::Error>> {
     println!("═══ 1. a supply with two lot sizes ═══════════════════════════════════════\n");
 
