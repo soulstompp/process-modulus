@@ -9,6 +9,12 @@
 //! The generated types live in [`pm`] and [`asrt`], after the two namespace prefixes:
 //! the model itself in [`pm`], and what a second party asserts about a filing in
 //! [`asrt`]. One `generate` call emits both, so the types they share are shared.
+//!
+//! The same bargain covers the examples. `build.rs` reads `examples/` on every build and
+//! writes the table below from what it finds, so the roster is the directory rather than a
+//! sentence about it. A named list of examples reads like a complete one, which is what makes
+//! it dangerous when it stops being one.
+#![doc = include_str!(concat!(env!("OUT_DIR"), "/examples.md"))]
 #![forbid(unsafe_code)]
 // Everything below the `include!` is machine-written: the generator emits a
 // `Phantom__` variant per serializer state and unused bindings in the deserializers.
