@@ -512,7 +512,7 @@ the whole four-member absence vocabulary.
 ### The laws are asserted, not assumed
 
 `algebra/roster.sqlc` carries one row per set-algebraic law this tree claims, and
-`examples/soundness.rs` asserts every one on every run. **A set difference anywhere in the tree
+`examples/soundness/main.rs` asserts every one on every run. **A set difference anywhere in the tree
 with no law on that roster fails the build.** The laws replace what would otherwise be a hand
 probe: `|A| = |A∖B| + |A⋉B|` is checked live rather than argued in a comment.
 
@@ -548,7 +548,7 @@ conversion was made for legibility, which is a real gain; this is its price.
 
 ### Both are computed, and the agreement is the claim
 
-`examples/matrices.rs` builds `F`, `Φ` and `x` in `nalgebra` and evaluates three matrix products.
+`examples/matrices/main.rs` builds `F`, `Φ` and `x` in `nalgebra` and evaluates three matrix products.
 `assets/sql/` evaluates the same expression as joins and `GROUP BY`s. Neither is derived from the
 other, and the example asserts they agree to `1e-9` over the eleven composed layers that owe the
 equality. `checks/fusion_sum_disagrees` then makes it a conformance rule rather than a test.

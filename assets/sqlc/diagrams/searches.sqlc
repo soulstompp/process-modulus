@@ -8,7 +8,7 @@
 #
 # ⭐⭐ AND A DIAGRAM IS THE WORST PLACE FOR THAT, because an absence is invisible on a page in a
 #    way it is not in a table. A missing row can be counted; a missing line cannot be seen. That
-#    is `examples/diagramming.rs`'s own demand, *what could NOT be drawn must be enumerated*,
+#    is `examples/diagramming/main.rs`'s own demand, *what could NOT be drawn must be enumerated*,
 #    applied to the corpus instead of to the notation.
 #
 # ⛔ THE TYPED ANSWER AND NOT THE NOTE. The four reasons ARE the fact: `unmeasured` is nobody

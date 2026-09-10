@@ -542,7 +542,7 @@ dizer que ele não está no artefacto sob forma nenhuma.
 ⛔ **Um desenho é acreditado de uma maneira que uma tabela não é.** Uma tabela errada é
 reconferida; um diagrama errado é citado numa apresentação. Por isso cada frase que um documento
 emitido carrega nomeia a relação que a afirma, no ficheiro e na página desenhada, e o
-`examples/diagramming.rs` volta a lê-las do artefacto depois de o escrever: uma frase sem
+`examples/diagramming/main.rs` volta a lê-las do artefacto depois de o escrever: uma frase sem
 origem, uma origem que não é uma relação desta árvore, e uma origem que o emissor nunca
 consultou fazem cada uma delas falhar a execução.
 
@@ -718,7 +718,7 @@ eles, e o conjunto de documentos é verificado de **três maneiras independentes
 2. os testes em Rust, que leem os documentos com os tipos gerados e afirmam os factos que cada um
    existe para demonstrar;
 3. o `assets/sql/`, que exprime as regras entre elementos e entre documentos a que o XSD não
-   chega, com o `examples/matrices.rs` a recalcular a mesma aritmética em `nalgebra` e a afirmar
+   chega, com o `examples/matrices/main.rs` a recalcular a mesma aritmética em `nalgebra` e a afirmar
    que as duas concordam.
 
 Cada um foi provado capaz de falhar antes de qualquer passagem ser acreditada. O validador por

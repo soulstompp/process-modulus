@@ -12,7 +12,7 @@
 #
 # ⛔ THE ASSERTION IT FEEDS IS A SECOND WITNESS, NOT THE FIRST. algebra/remainder_standing.sqlc
 #   asserts the same equality by counting layers/remainder.sqlc against
-#   layers/remainder_scope.sqlc, and examples/soundness.rs runs it. This route reaches the same
+#   layers/remainder_scope.sqlc, and examples/soundness/main.rs runs it. This route reaches the same
 #   number through the example that prints the standings, which is the point of having two.
 -- layers/remainder.sqlc, counted.
 SELECT count(*) AS "computable!"

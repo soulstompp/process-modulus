@@ -31,7 +31,7 @@ use std::fs;
 use std::path::Path;
 
 /// ⛔⛔⛔ THIS PROGRAM OWNS THIS DIRECTORY AND WIPES IT, WHICH IS WHY IT IS A SUBDIRECTORY.
-/// Sharing `assets/bpmn/` with `examples/graphs.rs` puts the wipe below over that program's
+/// Sharing `assets/bpmn/` with `examples/graphs/main.rs` puts the wipe below over that program's
 /// three documents whenever this one runs second. Both orders pass every law: `rendering` then
 /// covers 18 documents or 15 depending on which example was invoked last, silently, and the
 /// battery holds only because `d` sorts before `g`. A per-owner subdirectory is what makes the
@@ -47,7 +47,7 @@ const DC_NS: &str = "http://www.omg.org/spec/DD/20100524/DC";
 
 /// ⭐⭐⭐ THE LAYOUT LIVES HERE BECAUSE `bpmndi:BPMNDiagram` LIVES IN `tDefinitions`. BPMN has a
 /// designated place for a document's own picture and this emitter left it empty, so the SVG's
-/// geometry was derived from NOTHING: `examples/rendering.rs` invented coordinates, and a cache
+/// geometry was derived from NOTHING: `examples/rendering/main.rs` invented coordinates, and a cache
 /// whose content has no original is a second opinion rather than a cache. Its own header says
 /// `.sqlx` is extracted from the GENERATED artifact for exactly that reason.
 ///
@@ -250,7 +250,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let grain = ordered(sqlx::query_file!("assets/sql/diagrams/lane_grain.sql").fetch_all(&pool).await?);
     let elims = ordered(sqlx::query_file!("assets/sql/diagrams/eliminations.sql").fetch_all(&pool).await?);
     let levels = ordered(sqlx::query_file!("assets/sql/diagrams/levels.sql").fetch_all(&pool).await?);
-    // ⭐⭐ THE ORDINAL RANK OF EACH LAYER, CARRIED INTO THE ARTIFACT. `examples/rendering.rs` reads
+    // ⭐⭐ THE ORDINAL RANK OF EACH LAYER, CARRIED INTO THE ARTIFACT. `examples/rendering/main.rs` reads
     //   only the BPMN, because a cache derived from the source rather than the artifact is a
     //   stale cache, and the rank is NOT recoverable from what BPMN can express:
     //   `calledElement` names a PROCESS, so the emitted call graph links filing to filing while
@@ -265,7 +265,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let objects = ordered(sqlx::query_file!("assets/sql/diagrams/domain_objects.sql").fetch_all(&pool).await?);
     // ⭐⭐⭐ WHICH GRAPH THIS PROGRAM DRAWS, DECLARED, AND THE MEASUREMENT THAT LICENSES IT.
     //   Three graphs compose in this model and only one clustering can be a diagram's nesting,
-    //   so `examples/graphs.rs` makes the graph a SLOT. This program cannot: it emits one document
+    //   so `examples/graphs/main.rs` makes the graph a SLOT. This program cannot: it emits one document
     //   per FILING, and cutting a graph by filing is not free.
     let decomposition = ordered(sqlx::query_file!("assets/sql/rank/decomposition.sql").fetch_all(&pool).await?);
     let governance = ordered(sqlx::query_file!("assets/sql/diagrams/ungoverned.sql").fetch_all(&pool).await?);
@@ -338,7 +338,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // ⭐ The provenance line, and it is a COMMENT on purpose: the `--` line that survives into
         //   generated SQL is a comment too. It is for the reader of the artifact, and a schema
         //   element would be this emitter inventing a field.
-        writeln!(x, "<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.")?;
+        writeln!(x, "<!-- GENERATED from process-modulus by examples/diagramming/main.rs. DO NOT EDIT.")?;
         writeln!(x, "     source: the filing `{}`; change the model, not this file.", esc(filing))?;
         writeln!(x, "     laws:   assets/sqlc/diagrams/roster.sqlc -->")?;
         let target = notation_of.get(filing).copied().unwrap_or(filing);
@@ -707,7 +707,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         licensed.corpus_wide.unwrap_or(-1), licensed.summed_per_filing.unwrap_or(-1)
     );
     println!("   ⭐ `{EMITS_GRAPH}` is the only one of the three that survives, which is why this");
-    println!("      program does not offer the graph as a slot the way examples/graphs.rs does.\n");
+    println!("      program does not offer the graph as a slot the way examples/graphs/main.rs does.\n");
 
     println!("THE PARTITION, before anything is drawn");
     println!("   {} references into the layer dimension, {} of them naming a piece of a layer",
@@ -823,7 +823,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    anything cites what sounds right, which is the `invents` state with a filename on it.
     //    Reading the program's own source is what makes the artifact's provenance checkable
     //    against the thing that produced it rather than against a second list that drifts beside
-    //    it, and it is `examples/compositions.rs`'s idiom: the source tree is a fact.
+    //    it, and it is `examples/compositions/main.rs`'s idiom: the source tree is a fact.
     //
     // ⚠️ IT GOVERNS `text` AS WELL AS `documentation`, AND THOSE ARE THE ONES THAT MATTER MOST. A
     //   `documentation` element is read by a tool that could have opened the database anyway. A
@@ -1217,7 +1217,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //
     // ⭐⭐ THE THIRD TIME ATTRIBUTION HAS BEEN THE REPAIR AND A BIGGER COUNT HAS NOT.
     //    `diagrams/ungoverned.sqlc` for a table declared and never rendered, the per-kind law in
-    //    `examples/rendering.rs` for 65 identical rectangles, and this. ⭐ A defect that puts the
+    //    `examples/rendering/main.rs` for 65 identical rectangles, and this. ⭐ A defect that puts the
     //    RIGHT NUMBER of the WRONG THING on the page is invisible to cardinality by construction,
     //    and a hardcoded sentence about a filing is exactly that defect in prose.
     // ------------------------------------------------------------------

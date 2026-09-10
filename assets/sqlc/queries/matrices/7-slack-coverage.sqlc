@@ -17,7 +17,7 @@
 # ⚠️ A SENTENCE LIKE "NO LAYER IN THIS CORPUS SIZES ITS CAPACITY SLACK" IS TRUE UNTIL A
 # SPELLING MOVES, AND THIS ONE MOVES: turn the `absent/reason = none` slacks into claimed zeros
 # and the column fills while any prose beside it stands still, because nothing printed the
-# number. examples/observations.rs prints it. A bound with nothing to bound passes loudest, so
+# number. examples/observations/main.rs prints it. A bound with nothing to bound passes loudest, so
 # the trap is real; it is just not this column today.
 #
 # ⚠️ A NULL `absent` BESIDE AN UNSIZED ROW IS NOT THE SAME AS `unmeasured`. The schema's CHECK

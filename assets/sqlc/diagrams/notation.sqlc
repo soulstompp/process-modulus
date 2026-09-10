@@ -3,7 +3,7 @@
 # stated as data instead of as prose.
 #
 # ⭐⭐⭐ A `VALUES` LITERAL, AND THE ARGUMENT IS `diagrams/graphs.sqlc`'s ARGUMENT. Every closure
-#    this repository had over the emission was DERIVED FROM THE EMISSION: `examples/diagramming.rs`
+#    this repository had over the emission was DERIVED FROM THE EMISSION: `examples/diagramming/main.rs`
 #    reads the element kinds off disk and asks whether each is governed. That can report an element
 #    this repository drew and never decided about. It can NEVER report an element BPMN has and
 #    this repository ignored, because an unused glyph leaves no trace in the artifact to be read. The unused half of the

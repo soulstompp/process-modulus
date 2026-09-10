@@ -13,7 +13,7 @@
 #    The anti-join preserves the multiplicity; this law is what says so.
 #
 # ⚠️ IT IS VACUOUS ON A CLEAN CORPUS AND THAT IS CORRECT. No fusion here is jagged, so the law
-#   reads 0 = 0 + 0. It binds the moment one is, and examples/soundness.rs runs it either way.
+#   reads 0 = 0 + 0. It binds the moment one is, and examples/soundness/main.rs runs it either way.
 #   ⭐ PROBE: file a part that a sibling already reaches and this law must still hold.
 -- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
 SELECT a.law, p.subject, p.holds, p.detail

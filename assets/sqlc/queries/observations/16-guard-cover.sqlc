@@ -12,7 +12,7 @@
 #
 # ⚠️ `ok` IS NOT ONE FACT. A contract whose population the contract did not write earns it;
 # so does one built exactly like `rules` whose population is merely complete today. The two are
-# a template apart and a query cannot tell them apart at all, which is why examples/soundness.rs
+# a template apart and a query cannot tell them apart at all, which is why examples/soundness/main.rs
 # §5 exists beside this and not inside it.
 #
 # ⚠️ AND IT GRADES A DERIVED COLUMN RATHER THAN RESTRICTING ONE, which is a weaker thing than

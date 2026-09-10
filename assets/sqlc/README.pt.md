@@ -19,7 +19,7 @@ matrices.sql          as matrizes, extraídas com junções — um percurso, sem
 rules.sql             as regras a que o XSD 1.0 não chega — uma montagem, sem lógica própria
 invariance.sql        cada falha dita de uma segunda maneira, com todas as regras a correr de novo
 queries/              um diretório por exemplo, um ficheiro por secção, executáveis no psql
-../../examples/matrices.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
+../../examples/matrices/main.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
 
 **Cada um desses ficheiros é composto a partir de consultas mais pequenas, e cada consulta
@@ -622,9 +622,9 @@ o XSD 1.0 desistiu. Essa metade acaba por ser a maior parte dele.
 ### E onde começa um desenho, que é para onde o perigo se muda
 
 O `assets/sqlc/diagrams/` representa o modelo em BPMN 2.0, um documento por declaração, mais um SVG
-de cada. Três programas o fazem e nenhum deles decide seja o que for: o `examples/diagramming.rs`
-emite as declarações, o `examples/graphs.rs` emite os grafos do próprio modelo como os lane sets de
-uma pool, e o `examples/rendering.rs` desenha o que o BPMN diz sem ler modelo nenhum.
+de cada. Três programas o fazem e nenhum deles decide seja o que for: o `examples/diagramming/main.rs`
+emite as declarações, o `examples/graphs/main.rs` emite os grafos do próprio modelo como os lane sets de
+uma pool, e o `examples/rendering/main.rs` desenha o que o BPMN diz sem ler modelo nenhum.
 
 ⛔⛔ **Quem lê um diagrama é o SGBD desta cadeia.** O Postgres executa uma diferença mal escrita e
 devolve uma tabela plausível; uma analista brilhante lê um diagrama bem formado, chega a uma
@@ -644,7 +644,7 @@ leis do roster perguntam quantos elementos de uma espécie o artefacto carrega, 
 um facto dessa natureza: um documento pode carregar exatamente o número certo de elementos
 `documentation` e cada um deles dizer algo que relação nenhuma afirma, com a contagem exata do
 princípio ao fim. Por isso cada frase nomeia a relação que a afirma, tal como um ficheiro `.sql`
-gerado nomeia o seu modelo numa linha `--`, e o `examples/diagramming.rs` volta a lê-las dos
+gerado nomeia o seu modelo numa linha `--`, e o `examples/diagramming/main.rs` volta a lê-las dos
 ficheiros depois de os escrever. Uma frase sem origem, uma origem que não é uma relação desta
 árvore, e uma origem que o emissor nunca consultou fazem cada uma delas falhar a execução.
 
@@ -659,7 +659,7 @@ com uma imagem na mão, que não tem outro caminho de volta.
 Tudo o que está acima é uma testemunha. O `matrices.sql` calcula um número e este documento diz
 *vejam, está certo.* Isso é um autor a afirmar.
 
-⭐⭐ O `examples/matrices.rs` extrai as mesmas linhas e calcula com `nalgebra`, onde um produto
+⭐⭐ O `examples/matrices/main.rs` extrai as mesmas linhas e calcula com `nalgebra`, onde um produto
 matricial é um produto matricial, e depois afirma que os dois concordam. O padrão do próprio
 repositório, [`tests/independence.rs`](../../tests/independence.rs), diz que a corroboração entre
 duas coisas que partilhem um caminho de código não vale nada — portanto o SQL faz as suas somas com

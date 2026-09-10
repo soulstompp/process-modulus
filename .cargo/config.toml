@@ -1,7 +1,7 @@
 # ⭐ The committed `.sqlx/` cache is what makes `Cargo.toml`'s promise true: "the `.sqlx`
 # cache is committed, so building needs no database". Without this, `sqlx`'s `query_as!`
 # macros prefer a `DATABASE_URL` found in the environment over the cache, so anyone with
-# one set for an unrelated project fails to build `examples/matrices.rs` against tables
+# one set for an unrelated project fails to build `examples/matrices/main.rs` against tables
 # that exist only in `assets/ddl/schema.ddl`. That is not a hypothetical — it is how this
 # file came to exist.
 #

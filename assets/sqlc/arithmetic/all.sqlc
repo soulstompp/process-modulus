@@ -2,7 +2,7 @@
 # PERFORMED. One row per (site, examined item): which arithmetic, which layer of which filing,
 # whether the operands are there and commensurable, and a sentence saying what is in the way.
 #
-# ⭐⭐⭐ THIS IS THE RELATION examples/readiness.rs IS A VIEW OF, AND IT ANSWERS A DIFFERENT
+# ⭐⭐⭐ THIS IS THE RELATION examples/readiness/main.rs IS A VIEW OF, AND IT ANSWERS A DIFFERENT
 #    QUESTION FROM checks/all.sqlc. A check says the document contradicts the model. This says
 #    you cannot compute here at all -- which is not a defect in the document and not a pass
 #    either. Reporting the second as the first accuses a filer of a gap they told you about.

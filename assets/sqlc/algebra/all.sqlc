@@ -1,7 +1,7 @@
 # EVERY SET-ALGEBRAIC LAW THIS TREE CLAIMS, WITH ITS VERDICT. One row per (law, subject): which
 # law, which relation or instance, whether it holds, and the cardinalities that decide it.
 #
-# ⭐⭐⭐ THIS IS THE RELATION examples/soundness.rs IS A VIEW OF, AND IT ANSWERS A QUESTION NEITHER
+# ⭐⭐⭐ THIS IS THE RELATION examples/soundness/main.rs IS A VIEW OF, AND IT ANSWERS A QUESTION NEITHER
 #    checks/ NOR arithmetic/ ASKS. A check says the DOCUMENT contradicts the model. An arithmetic
 #    site says you cannot COMPUTE here. This says the QUERY does not compute what it claims to --
 #    a defect in the machinery rather than in the evidence, and the only one of the three that

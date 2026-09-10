@@ -5,7 +5,7 @@
 #
 # ⭐⭐⭐ THIS IS THE CONFORMANCE RULE FOR THE MODEL'S HEADLINE EQUATION. composition/fused.sqlc
 #    computes the sum, the filed figure and an `agrees` verdict; matrices.sqlc, a psql tour,
-#    PRINTS it, and examples/matrices.rs recomputes the product in Rust. A verdict that only a
+#    PRINTS it, and examples/matrices/main.rs recomputes the product in Rust. A verdict that only a
 #    tour prints and an example asserts is a verdict reports/violations.sqlc and
 #    reports/coverage.sqlc cannot see, which is what a row on the roster buys.
 #

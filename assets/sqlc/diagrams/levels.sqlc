@@ -1,5 +1,5 @@
 # THE PROCESSES THIS CORPUS ACTUALLY HOLDS, AT EVERY LEVEL. One row per level: who acts, what
-# they act on, what comes out, and whether examples/diagramming.rs emits it.
+# they act on, what comes out, and whether examples/diagramming/main.rs emits it.
 #
 # ⭐⭐⭐ THE UNCARRIED TABLES ARE NOT CONTENTLESS, THEY ARE A DIFFERENT PROCESS. `coupling_search`,
 #    `stack_scope`, `bound_origin`, `narrowing` and `claim`'s provenance columns have no home in

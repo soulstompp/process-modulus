@@ -11,7 +11,7 @@
 # ⛔⛔ `NOT CHECKED` MUST NEVER RENDER AS `ok`. A site whose operands happen to agree in this
 #    corpus is not a site that is guarded; it is a site whose luck has not run out. Most of the
 #    sites below are clean in the data today and unguarded in the code, which is exactly the
-#    state that reads as safe and is not. `examples/readiness.rs` prints the tally on every run;
+#    state that reads as safe and is not. `examples/readiness/main.rs` prints the tally on every run;
 #    a count written here would be a count nobody recounts.
 #
 # ⭐⭐ AND ONE SITE IS GUARDED BY BEING FORBIDDEN. conformance/README.md:326 -- "the units of a

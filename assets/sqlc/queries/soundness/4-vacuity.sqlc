@@ -5,7 +5,7 @@
 # ⛔ VACUOUS would be delivered by silence. Every arm joins its roster with `LEFT JOIN … ON true`
 # so the row exists before the population does, and this counts it.
 #
-# ⛔⛔ IT IS ONLY A LAW ON AN EMPTY CORPUS, WHICH IS WHY examples/soundness.rs EMPTIES ONE. With
+# ⛔⛔ IT IS ONLY A LAW ON AN EMPTY CORPUS, WHICH IS WHY examples/soundness/main.rs EMPTIES ONE. With
 # rows on hand an arm emits `1 + examined` either way and a broken join is invisible; with none
 # it emits exactly one row, or zero if the join stopped carrying the roster. That is the whole
 # finding this closes: the guard's reach was a property of the corpus, and the corpus is

@@ -72,7 +72,7 @@ pub fn build_script(written: &[(String, PathBuf)]) -> Result<String, Box<dyn std
     //    never reached. These are the ones some real document exercises and no generated one
     //    does, which is a list of what the bench would have to grow to be a corpus.
     //
-    // ⛔ AN ANTI-JOIN AND NOT AN `EXCEPT`. `examples/soundness.rs` argues at length that a set
+    // ⛔ AN ANTI-JOIN AND NOT AN `EXCEPT`. `examples/soundness/main.rs` argues at length that a set
     //   difference fails to a plausible table rather than to an error, and the argument does not
     //   stop applying because this file is an example.
     writeln!(s, "WITH v AS (\n{checks}\n)")?;

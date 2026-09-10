@@ -16,7 +16,7 @@ matrices.sql          the matrices, pulled out with joins — a tour, holding no
 rules.sql             the rules XSD 1.0 cannot reach — an assembly, holding no logic
 invariance.sql        each shortfall said a second way, and every rule re-run on it
 queries/              one directory per example, one file per section, each runnable in psql
-../../examples/matrices.rs   the same arithmetic again, in nalgebra, asserting agreement
+../../examples/matrices/main.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
 
 **Every one of those is composed from smaller queries, and every smaller query runs alone.**
@@ -601,9 +601,9 @@ half XSD 1.0 gave up on. That half turns out to be most of it.
 ### And where a picture starts, which is where the danger moves
 
 `assets/sqlc/diagrams/` renders the model into BPMN 2.0, one document per filing, plus an SVG of
-each. Three programs do it and none of them decides anything: `examples/diagramming.rs` emits the
-filings, `examples/graphs.rs` emits the model's own graphs as the lane sets of one pool, and
-`examples/rendering.rs` draws what the BPMN says while reading no model at all.
+each. Three programs do it and none of them decides anything: `examples/diagramming/main.rs` emits the
+filings, `examples/graphs/main.rs` emits the model's own graphs as the lane sets of one pool, and
+`examples/rendering/main.rs` draws what the BPMN says while reading no model at all.
 
 ⛔⛔ **The reader of a diagram is the RDBMS of this pipeline.** Postgres executes a broken
 difference and returns a plausible table; a brilliant analyst reads a well-formed diagram, reaches
@@ -624,7 +624,7 @@ on the roster asks how many of an element the artifact carries, and a sentence i
 fact: a document can carry exactly the right number of `documentation` elements and have each of
 them say something no relation states, with the count exact the whole way. So every sentence names
 the relation that states it, the way a generated `.sql` file names its template on one `--` line,
-and `examples/diagramming.rs` reads them back out of the files afterwards. A sentence with no
+and `examples/diagramming/main.rs` reads them back out of the files afterwards. A sentence with no
 source, a source that is not a relation in this tree, and a source the emitter never queried each
 fail the run.
 
@@ -639,7 +639,7 @@ who has no other route back.
 Everything above is one witness. `matrices.sql` computes a number and this document says *look,
 it is right.* That is an author asserting.
 
-⭐⭐ `examples/matrices.rs` pulls the same rows out and computes with `nalgebra`, where a matrix
+⭐⭐ `examples/matrices/main.rs` pulls the same rows out and computes with `nalgebra`, where a matrix
 product is a matrix product, then asserts the two agree. This repository's own standard,
 [`tests/independence.rs`](../../tests/independence.rs), says corroboration between two things
 sharing a code path is worth nothing — so the SQL does its sums as `GROUP BY` and the Rust does

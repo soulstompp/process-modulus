@@ -9,7 +9,7 @@
 #    and draw eliminations a composer filed and sized are read by nothing.
 #
 # ⛔⛔ AND A FUSION CAN THEREFORE MOVE A NAMEPLATE IN SILENCE. Demonstrated 2026-09-06 with
-#    `examples/witnesses.rs`: `merge-group-composition/compute-us` is a ONE-PART fusion with no
+#    `examples/witnesses/main.rs`: `merge-group-composition/compute-us` is a ONE-PART fusion with no
 #    eliminations, its composed nameplate was moved from 8 GPU to 40 GPU -- five times the
 #    single part it is composed from -- and no composition rule noticed.
 #

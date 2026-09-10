@@ -33,7 +33,7 @@ anyhow = "1"
 
 # ⛔ DEV ONLY, AND THE DISTINCTION IS LOAD-BEARING. These do not propagate: `cargo add
 # process-modulus` still pulls `xsd-parser-types` and `quick-xml` and nothing else, so
-# "a schema, not a library" survives. They exist for `examples/matrices.rs`, which checks
+# "a schema, not a library" survives. They exist for `examples/matrices/main.rs`, which checks
 # the SQL in `assets/sql/` against an independent computation.
 #
 # ⚠️ Each name here is also a deliberate edit to PERMITTED in tests/independence.rs,
@@ -50,7 +50,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 nalgebra = "0.34"
 
 # ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
-# `examples/simulation/` builds a bench on NeXosim, which is a bare discrete-event
+# `examples/shared/simulation/` builds a bench on NeXosim, which is a bare discrete-event
 # scheduler: mailboxes, an event queue and a clock. It carries no stocks, no flows,
 # no processes and no opinion about what a shortfall is. Taking the stock-and-flow
 # layer above it would be taking somebody's model, and corroboration between two

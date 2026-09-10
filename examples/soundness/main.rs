@@ -22,7 +22,7 @@
 //! ⛔⛔ AND ONE OF THE LAWS IS NOT A QUERY, BECAUSE IT COULD NOT BE. §6 asks whether a rule still
 //! reports that it examined NOTHING, and that is visible only where the population is nothing, so
 //! it empties the corpus: a `TRUNCATE` inside a transaction that is rolled back, the idiom
-//! `examples/generation.rs` and `assets/sqlc/invariance.sqlc` already use. The database this reads
+//! `examples/generation/main.rs` and `assets/sqlc/invariance.sqlc` already use. The database this reads
 //! is the database it leaves.
 //!
 //! ⛔ IT IS THE ONLY WRITE THIS EXAMPLE MAKES, AND IT TAKES AN `ACCESS EXCLUSIVE` LOCK WHILE IT
@@ -40,6 +40,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
+// The tree walker is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which
+// is exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/tree/mod.rs"]
 mod tree;
 use tree::{emitted, reaches, references, sql_only, templates};
 
@@ -371,7 +374,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    is every subject on both rosters, and it gets STRONGER as they grow.
     //
     // ⛔⛔ NOTHING IS COMMITTED. The truncate runs inside a transaction that is rolled back, the
-    //    idiom `examples/generation.rs` and `assets/sqlc/invariance.sqlc` already use, so the
+    //    idiom `examples/generation/main.rs` and `assets/sqlc/invariance.sqlc` already use, so the
     //    database this reads is the database it leaves. ⛔ It is the only write this example
     //    makes, and it is the reason the example now needs a corpus it is allowed to touch.
     //

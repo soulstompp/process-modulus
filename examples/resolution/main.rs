@@ -22,6 +22,9 @@
 
 use std::time::Duration;
 
+// The bench is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which is
+// exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/simulation/mod.rs"]
 mod simulation;
 
 use simulation::instrument::{Bounded, DeclaredAskSize, Instrument, buffers, census, relabelled};

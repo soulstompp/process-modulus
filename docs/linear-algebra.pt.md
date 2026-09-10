@@ -594,7 +594,7 @@ mantêm o vocabulário de ausência com os quatro membros.
 ### As leis são afirmadas, não presumidas
 
 O `algebra/roster.sqlc` transporta uma linha por cada lei de álgebra de conjuntos que esta árvore
-reivindica, e o `examples/soundness.rs` afirma cada uma em cada execução. **Uma diferença de
+reivindica, e o `examples/soundness/main.rs` afirma cada uma em cada execução. **Uma diferença de
 conjuntos em qualquer ponto da árvore sem lei nesse roster falha a construção.** As leis
 substituem o que de outro modo seria uma sondagem à mão: o `|A| = |A∖B| + |A⋉B|` é verificado ao
 vivo em vez de argumentado num comentário.
@@ -633,7 +633,7 @@ ramos. A conversão foi feita por legibilidade, que é um ganho real; isto é o 
 
 ### Calculam-se os dois, e a concordância é a afirmação
 
-O `examples/matrices.rs` constrói o `F`, o `Φ` e o `x` em `nalgebra` e avalia três produtos
+O `examples/matrices/main.rs` constrói o `F`, o `Φ` e o `x` em `nalgebra` e avalia três produtos
 matriciais. O `assets/sql/` avalia a mesma expressão como junções e `GROUP BY`. Nenhum deriva do
 outro, e o exemplo afirma que concordam até `1e-9` sobre as onze camadas compostas que devem a
 igualdade. O `checks/fusion_sum_disagrees` faz disso depois uma regra de conformidade e não um

@@ -1,6 +1,6 @@
 # EVERY COMPUTABLE REMAINDER, AND WHETHER IT WAS CLASSIFIED EXACTLY ONCE. One row.
 #
-# ⭐⭐ THE ASSERTION examples/observations.rs MAKES IS THAT THE CLOSURE QUESTION WAS PUT TO EVERY
+# ⭐⭐ THE ASSERTION examples/observations/main.rs MAKES IS THAT THE CLOSURE QUESTION WAS PUT TO EVERY
 #    REMAINDER, AND THIS IS THAT ASSERTION AS ALGEBRA. layers/remainder_scope.sqlc must be a
 #    partition of layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic
 #    unasked, and disjoint, so no remainder is counted under two standings.

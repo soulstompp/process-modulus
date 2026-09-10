@@ -2,7 +2,7 @@
 # |carriable| = |carried| + |carriable ⋉ (eliminated ∪ suspended)|.
 #
 # ⛔⛔ A DIFFERENCE NEEDS TWO THINGS BEFORE ANY LAW CAN GOVERN IT, AND THIS ONE NEEDED BOTH.
-#    Its operator must be one examples/soundness.rs recognises, which for an anti-semijoin means
+#    Its operator must be one examples/soundness/main.rs recognises, which for an anti-semijoin means
 #    `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`; and its left operand must be a FILE, so
 #    there is an A to count. Miss either and the `unclaimed` guard reports nothing, because it
 #    walks for syntax and cannot see an operand that was never named.

@@ -1,6 +1,6 @@
 //! What the corpus actually says, and whether anything is looking.
 //!
-//! [`examples/matrices.rs`] proves the arithmetic agrees with itself. [`examples/readiness.rs`]
+//! [`examples/matrices/main.rs`] proves the arithmetic agrees with itself. [`examples/readiness/main.rs`]
 //! asks whether it may be performed. This one asks the corpus questions and prints the answers
 //!, because a relation whose product is knowledge rather than a verdict had nowhere to land,
 //! and so either never got written or got written and read by nobody.
@@ -29,7 +29,16 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+// The tree walker is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which
+// is exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/tree/mod.rs"]
 mod tree;
+
+// ⛔ AND THE SCAN OF THIS DIRECTORY IS SHARED FOR THE SAME REASON. `examples/compositions/main.rs`
+// asks the identical question of `examples/`, and two copies of one walk is how the two answers
+// start to differ.
+#[path = "../shared/sources/mod.rs"]
+mod sources;
 use tree::{emitted, references, templates};
 
 /// Documents that are parsed only by Rust tests and never reach the database, each with the
@@ -63,11 +72,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // A root is reached by no other template. It earns its place by being run: as a psql entry
     // point, or by an example naming its composed output.
-    let examples: String = fs::read_dir("examples")
-        .expect("examples/ is readable")
-        .flatten()
-        .map(|e| fs::read_to_string(e.path()).unwrap_or_default())
-        .collect();
+    let examples = sources::all();
     let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc"];
 
     let mut unobserved: Vec<&str> = Vec::new();

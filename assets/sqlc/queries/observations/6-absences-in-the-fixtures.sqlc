@@ -8,7 +8,7 @@
 #
 # ⛔ THIS SECTION IS ITS CALLER, AND THAT IS THE POINT OF THE SECTION. A relation that composes,
 # emits, and is read by nothing reads from the outside exactly like a relation that does not
-# exist, which is what examples/observations.rs refuses to allow.
+# exist, which is what examples/observations/main.rs refuses to allow.
 -- reports/absences_in_the_fixtures.sqlc, given the caller that makes it readable.
 SELECT a.question AS "question!", a.reason::text AS "reason!", a.times AS "times!"
 FROM (

@@ -26,7 +26,7 @@
 //! bigger count, which is the same repair `diagrams/ungoverned.sqlc` made on the model side.
 //!
 //! ⛔⛔ THE LAW IS CHECKED AGAINST THE BPMN, NOT AGAINST `diagrams/expected.sqlc`. A cache is
-//! verified against the thing it caches. `examples/diagramming.rs` already checked the BPMN
+//! verified against the thing it caches. `examples/diagramming/main.rs` already checked the BPMN
 //! against the model, so the two together carry the SVG back to the corpus by transitivity, and
 //! each link is checked where it can actually be seen.
 //!
@@ -116,8 +116,8 @@ fn drawing_of(bpmn: &std::path::Path) -> std::path::PathBuf {
 /// split there was one shared directory, `diagramming` wiped it, and `graphs` survived only when
 /// it ran second: **both orders rendered cleanly, one over 18 documents and one over 15.**
 const EMITTERS: &[(&str, &str)] = &[
-    ("filings", "examples/diagramming.rs, one document per FILING at layer grain"),
-    ("graphs", "examples/graphs.rs, one document per GRAPH FILLING, corpus-wide"),
+    ("filings", "examples/diagramming/main.rs, one document per FILING at layer grain"),
+    ("graphs", "examples/graphs/main.rs, one document per GRAPH FILLING, corpus-wide"),
 ];
 const LANE_H: usize = 34;
 const NODE_H: usize = 22;
@@ -131,7 +131,7 @@ fn esc(s: &str) -> String {
 ///
 /// ⭐ The rank is READ, never computed. It is not derivable from this artifact: `calledElement`
 /// names a PROCESS, so the emitted call graph links filing to filing while `F` links layer to
-/// layer, ten pairs against twenty-seven. `examples/diagramming.rs` writes it into the lane's
+/// layer, ten pairs against twenty-seven. `examples/diagramming/main.rs` writes it into the lane's
 /// `documentation`, which is untyped text carrying the words and not the claim.
 struct Lane {
     name: String,
@@ -616,7 +616,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut svg = String::new();
         writeln!(svg, r#"<?xml version="1.0" encoding="UTF-8"?>"#)?;
-        writeln!(svg, "<!-- GENERATED from {} by examples/rendering.rs. DO NOT EDIT.", path.display())?;
+        writeln!(svg, "<!-- GENERATED from {} by examples/rendering/main.rs. DO NOT EDIT.", path.display())?;
         writeln!(svg, "     Every lane is its own group carrying the layer name; every activity is drawn")?;
         writeln!(svg, "     with the BPMN glyph for its kind, thin for a task and thick for a call. That is")?;
         writeln!(svg, "     what *properly layered* means, and it is what lets a reader check the partition")?;

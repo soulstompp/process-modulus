@@ -1,7 +1,7 @@
 //! ⭐⭐⭐ THE WRITE DIRECTION, WHICH NOTHING HERE HAD EVER RUN.
 //!
 //! Every parse test in this repository reads a document into the generated types. Not one of
-//! them ever wrote one back out, and `examples/simulation/filing.rs` builds its filings with
+//! them ever wrote one back out, and `examples/shared/simulation/filing.rs` builds its filings with
 //! `push_str` rather than with the crate, so the serializer that ships to `cargo add
 //! process-modulus` had never been executed here at all. The first person to call it was a
 //! reader from outside, and it silently dropped every child of the root it was given.

@@ -13,7 +13,7 @@
 #    whole corpus against 116 explicit refusals and 124 claims carrying no provenance element
 #    at all. ⚠️ Two of those three figures move with the corpus and one does not, so quoting
 #    them here is quoting a number nobody recounts: adding the Portuguese twins doubles the
-#    refusals and leaves the claims where they were. examples/observations.rs prints all three,
+#    refusals and leaves the claims where they were. examples/observations/main.rs prints all three,
 #    which makes a move a diff rather than a comment nobody rereads.
 #
 #    That is a finding about the EVIDENCE and not a defect in it -- `unmeasured` here reads

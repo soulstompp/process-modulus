@@ -31,7 +31,7 @@ const PERMITTED: &[&str] = &[
     "quick-xml",
     "xsd-parser",
     "anyhow",
-    // ⭐ dev only, for examples/matrices.rs. None reaches a consumer, and none is the
+    // ⭐ dev only, for examples/matrices/main.rs. None reaches a consumer, and none is the
     // model this crate exists to corroborate: they are a database driver, its runtime,
     // and a linear algebra library. Added deliberately, which is what this list is for.
     "sqlx",
@@ -43,7 +43,7 @@ const PERMITTED: &[&str] = &[
     // requires it on every model type.
     "nexosim",
     "serde",
-    // ⭐⭐ dev only, for examples/simulation/. THE ADMISSION TEST IS WHETHER IT CARRIES
+    // ⭐⭐ dev only, for examples/shared/simulation/. THE ADMISSION TEST IS WHETHER IT CARRIES
     // A MODEL, and NeXosim does not: it is mailboxes, an event queue and a clock, with
     // no stock, no flow and no opinion about what a shortfall is. The stock-and-flow
     // layer that sits above it in the wild is exactly what must NOT be taken, because

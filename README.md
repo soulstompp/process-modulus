@@ -531,7 +531,7 @@ tool can no longer resolve it, `absent` means it is not in the artifact in any f
 
 ⛔ **A drawing is believed in a way a table is not.** A wrong table gets re-checked; a wrong
 diagram gets quoted in a deck. So every sentence an emitted document carries names the relation
-that states it, in the file and on the drawn page, and `examples/diagramming.rs` reads them back
+that states it, in the file and on the drawn page, and `examples/diagramming/main.rs` reads them back
 out of the artifact afterwards: a sentence with no source, a source that is not a relation in this
 tree, and a source the emitter never queried each fail the run.
 
@@ -701,7 +701,7 @@ checked **three independent ways**:
 2. `tests/corpus_parse.rs`, which reads the documents with the generated types and asserts the
    facts each one exists to demonstrate;
 3. `assets/sql/`, which expresses the cross-element and cross-document rules XSD cannot reach,
-   with `examples/matrices.rs` recomputing the same arithmetic in `nalgebra` and asserting the
+   with `examples/matrices/main.rs` recomputing the same arithmetic in `nalgebra` and asserting the
    two agree.
 
 ⭐ Each was proved able to fail before any pass was believed. The validator by three deliberate

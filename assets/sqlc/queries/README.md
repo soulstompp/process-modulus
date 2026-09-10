@@ -5,10 +5,10 @@ without Rust; each is a single statement.
 
 | directory | example | the question it asks |
 |---|---|---|
-| `matrices/` | [`examples/matrices.rs`](../../../examples/matrices.rs) | does the arithmetic agree with itself? |
-| `readiness/` | [`examples/readiness.rs`](../../../examples/readiness.rs) | may you compute here at all? |
-| `observations/` | [`examples/observations.rs`](../../../examples/observations.rs) | what does the corpus say? |
-| `soundness/` | [`examples/soundness.rs`](../../../examples/soundness.rs) | does the machinery do what it claims? |
+| `matrices/` | [`examples/matrices/main.rs`](../../../examples/matrices/main.rs) | does the arithmetic agree with itself? |
+| `readiness/` | [`examples/readiness/main.rs`](../../../examples/readiness/main.rs) | may you compute here at all? |
+| `observations/` | [`examples/observations/main.rs`](../../../examples/observations/main.rs) | what does the corpus say? |
+| `soundness/` | [`examples/soundness/main.rs`](../../../examples/soundness/main.rs) | does the machinery do what it claims? |
 
 ⭐ **The directory is the correspondence, rather than something a reader has to remember.** A
 query added to `readiness/` and never read by `readiness.rs` shows up as an orphan in
@@ -51,7 +51,7 @@ asserts to the Rust macro that the column is never NULL, and `::float8` pins a n
 type the macro can map. Postgres treats both as an ordinary alias and an ordinary cast, so
 these files run unchanged in `psql` — the column just comes back named `layer!`.
 
-⛔ **Editing one of these files changes a compile-time contract.** `examples/matrices.rs`
+⛔ **Editing one of these files changes a compile-time contract.** `examples/matrices/main.rs`
 reads the composed output with `sqlx::query_file!`, which checks the columns and their types
 against a live database at build time. After editing a template, recompose and regenerate:
 

@@ -28,7 +28,7 @@
 #
 # ⚠️ THE MIDDLE ANSWER HAS NO POPULATION TODAY, and that is worth knowing rather than hiding.
 #    Of twelve examined rows only three carry a ranged draw or rating at all, and two of those
-#    arrived with `support-cover`; all three clear outright. `examples/witnesses.rs` is where
+#    arrived with `support-cover`; all three clear outright. `examples/witnesses/main.rs` is where
 #    the other two states are exercised.
 #
 # ⛔ AN UNMEASURED CAPACITY BUFFER SUSPENDS THE RULE rather than passing it. Six layers do not

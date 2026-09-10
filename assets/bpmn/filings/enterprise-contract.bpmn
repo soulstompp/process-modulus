@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- GENERATED from process-modulus by examples/diagramming.rs. DO NOT EDIT.
+<!-- GENERATED from process-modulus by examples/diagramming/main.rs. DO NOT EDIT.
      source: the filing `enterprise-contract`; change the model, not this file.
      laws:   assets/sqlc/diagrams/roster.sqlc -->
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"

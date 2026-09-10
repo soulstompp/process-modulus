@@ -4,7 +4,7 @@
 # ⭐⭐⭐ IT IS A `VALUES` LITERAL BECAUSE A CONTRACT MUST NOT BE DERIVED FROM WHAT IT GOVERNS.
 #    Every roster in this repository is a literal for the same reason: derive it from the schema
 #    and declared, produced and derived could never disagree, so reports/integrity.sqlc would be
-#    anti-joining a set against itself. examples/compositions.rs asserts that property of the tree.
+#    anti-joining a set against itself. examples/compositions/main.rs asserts that property of the tree.
 #
 # ⭐⭐⭐ AND THERE IS A FOURTH STATE THAT IS NEITHER A MAPPING NOR AN ABSENCE: `invents`, WHERE THE
 #    ARTIFACT SAYS SOMETHING THE MODEL DOES NOT. `loses` makes a reader know less; `invents` makes

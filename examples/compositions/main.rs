@@ -28,7 +28,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
+// The tree walker is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which
+// is exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/tree/mod.rs"]
 mod tree;
+
+// ⛔ AND THE SCAN OF THIS DIRECTORY IS SHARED FOR THE SAME REASON. `examples/observations/main.rs`
+// asks the identical question of `examples/`, and two copies of one walk is how the two answers
+// start to differ.
+#[path = "../shared/sources/mod.rs"]
+mod sources;
 use tree::{emitted, references, templates};
 
 /// The one composition that is reached by nothing and reaches nothing, with the reason. ⛔ It is
@@ -177,11 +186,7 @@ fn main() {
     //   its composed output. A literal contract read straight by an example composes nothing and
     //   is composed by nothing, and it is not an orphan. Reading `examples/` is the same test
     //   that file makes, and keeping the two in step matters more than either being clever.
-    let example_src: String = fs::read_dir("examples")
-        .expect("examples/ is readable")
-        .flatten()
-        .map(|e| fs::read_to_string(e.path()).unwrap_or_default())
-        .collect();
+    let example_src = sources::all();
     for n in &isolated {
         let run_by_an_example =
             example_src.contains(&format!("assets/sql/{}", n.replace(".sqlc", ".sql")));

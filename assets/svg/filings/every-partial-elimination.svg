@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- GENERATED from assets/bpmn/filings/every-partial-elimination.bpmn by examples/rendering.rs. DO NOT EDIT.
+<!-- GENERATED from assets/bpmn/filings/every-partial-elimination.bpmn by examples/rendering/main.rs. DO NOT EDIT.
      Every lane is its own group carrying the layer name; every activity is drawn
      with the BPMN glyph for its kind, thin for a task and thick for a call. That is
      what *properly layered* means, and it is what lets a reader check the partition

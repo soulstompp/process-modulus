@@ -13,7 +13,7 @@
 #
 # ⛔ AND THREE LANE SETS CANNOT ALL BE THE CONTAINMENT. An inclusion tree gives each node ONE
 #   parent, so only one of these can be the nesting a diagram draws; the others need showing some
-#   other way. That is why `examples/diagramming.rs` takes the graph as a SLOT rather than picking
+#   other way. That is why `examples/diagramming/main.rs` takes the graph as a SLOT rather than picking
 #   one silently, and why a caller that names none does not run.
 -- the three graphs this model composes, as data an emitter chooses between.
 SELECT * FROM (VALUES

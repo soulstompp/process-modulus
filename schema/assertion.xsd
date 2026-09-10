@@ -1972,7 +1972,7 @@
 
       `assets/sql/rules.sql` as `elimination_not_applicable_with_parts`, and both
       `tests/composition.rs` and `tests/fixtures.rs` for the arithmetic each state owes.
-      `examples/matrices.rs` carries the suspended count separately.
+      `examples/matrices/main.rs` carries the suspended count separately.
 
       SEE ALSO
 
@@ -2037,7 +2037,7 @@
 
       No `assets/sql/rules.sql` como `elimination_not_applicable_with_parts`, e tanto no
       `tests/composition.rs` como no `tests/fixtures.rs` para a aritmética que cada estado deve. O
-      `examples/matrices.rs` conta os suspensos à parte.
+      `examples/matrices/main.rs` conta os suspensos à parte.
 
       VER TAMBÉM
 

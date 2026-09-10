@@ -16,6 +16,9 @@
 
 use std::time::Duration;
 
+// The bench is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which is
+// exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/simulation/mod.rs"]
 mod simulation;
 
 use simulation::event::{Event, Record};
@@ -469,7 +472,7 @@ fn two_quanta() -> Result<(), Box<dyn std::error::Error>> {
 
     // ⛔ THE CLOSED FORM IS CHECKED, NOT QUOTED. Sylvester gives both numbers for two coprime
     //   generators; the sieve above computes them independently. One witness asserting is what
-    //   `examples/matrices.rs` exists to argue against.
+    //   `examples/matrices/main.rs` exists to argue against.
     let gaps = fill.gaps();
     let (f_formula, g_formula) = fill.sylvester().expect("two coprime generators");
     let f_sieved = fill.frobenius().expect("a gap exists");

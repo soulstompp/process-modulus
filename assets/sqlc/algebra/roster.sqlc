@@ -30,7 +30,7 @@
 #
 # ⛔ A ROW HERE WITH NO RELATION BEHIND IT IS A LAW NOBODY CHECKS, and a difference in the tree
 #   with no row here is a guard nobody declared -- `asrt:Verdict`'s `unclaimed`. Both directions
-#   are caught: the first by reports/integrity.sqlc, the second by examples/soundness.rs, which
+#   are caught: the first by reports/integrity.sqlc, the second by examples/soundness/main.rs, which
 #   walks the tree for set-difference syntax and requires every one to appear below.
 -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES

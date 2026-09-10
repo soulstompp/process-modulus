@@ -1,7 +1,7 @@
 # WHAT EACH GRAPH LOSES WHEN IT IS CUT UP BY FILING. One row per graph: its cycle space taken
 # corpus-wide, and the sum of its cycle spaces taken one filing at a time.
 #
-# ⭐⭐⭐ IT ANSWERS AN ACCUSATION RATHER THAN RAISING ONE. `examples/diagramming.rs` emits one
+# ⭐⭐⭐ IT ANSWERS AN ACCUSATION RATHER THAN RAISING ONE. `examples/diagramming/main.rs` emits one
 #    document per FILING and draws the LAYER graph, and that is not a silent pick
 #    among three equals. **It is the only one of the three whose per-filing projection
 #    preserves the graph's cycle space**, and this relation is the measurement that says so.

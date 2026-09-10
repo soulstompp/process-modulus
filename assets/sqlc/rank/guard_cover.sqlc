@@ -3,11 +3,11 @@
 # roster's own puts into the produced side.
 #
 # ⭐⭐⭐ diagrams/domain_objects.sqlc STATES THE PRINCIPLE FOR ONE SIDE AND THIS MEASURES THE
-#    OTHER. "A contract must not be derived from what it governs", and examples/compositions.rs
+#    OTHER. "A contract must not be derived from what it governs", and examples/compositions/main.rs
 #    asserts it: every roster here is a bare VALUES literal. Nothing says the converse, and some
 #    of the populations below take their subject's NAME from the very roster they are compared
 #    against: `checks/all.sqlc` reads `r.rule`, `arithmetic/all.sqlc` reads `a.site`,
-#    `algebra/all.sqlc` reads `a.law`. examples/soundness.rs §5 prints which, and gates it.
+#    `algebra/all.sqlc` reads `a.law`. examples/soundness/main.rs §5 prints which, and gates it.
 #
 # ⭐⭐ AND THAT IS A TRADE RATHER THAN A DEFECT, WHICH IS WHY IT WANTS A NUMBER. The roster join
 #    is what buys ⛔ VACUOUS: a rule with nothing to examine still emits a row, so the verdict
@@ -25,7 +25,7 @@
 # ⛔ SQL CANNOT SEE WHICH POPULATIONS TAKE THEIR KEY FROM THEIR ROSTER, only where a corpus
 #   happens to make it visible. A contract built exactly like `rules` shows no shortfall here
 #   while its population is complete, so a full column is not evidence of a second witness.
-#   That property is a fact about the TEMPLATE and examples/soundness.rs §5 is where it lives.
+#   That property is a fact about the TEMPLATE and examples/soundness/main.rs §5 is where it lives.
 #
 # ⛔ THE SUBJECT COUNT IS DISTINCT ON THE KEY BECAUSE `EXCEPT` IS. algebra/roster.sqlc files
 #   more rows than it has law strings, its own `multiplicity` column calls that collapse

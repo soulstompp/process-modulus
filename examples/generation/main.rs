@@ -1,6 +1,6 @@
 //! Does a run of the model file at all?
 //!
-//! [`examples/resolution.rs`] measures what an instrument throws away, but it measures it in a
+//! [`examples/resolution/main.rs`] measures what an instrument throws away, but it measures it in a
 //! struct this repository invented for the purpose. Nothing about that reaches the schema. This
 //! one takes the same readings, writes them out as `pm:processModulus`, and puts them through the
 //! two gates every document in `assets/corpus/` goes through: `xmllint` against the XSD, and the
@@ -9,7 +9,7 @@
 //! ⭐⭐⭐ THE POINT IS NOT THAT A GENERATED FILE VALIDATES. It is that a simulator written by
 //! other people for other reasons, driven by a bench that knows nothing about accounting, fills
 //! these fields WITHOUT STRAIN. `tests/independence.rs` holds that corroboration between two
-//! things sharing a code path is worth nothing; `examples/matrices.rs` corroborates the
+//! things sharing a code path is worth nothing; `examples/matrices/main.rs` corroborates the
 //! arithmetic. This is what corroborates the MODELLING. A field that has to be bent to take a
 //! simulated fact is a finding about the field.
 //!
@@ -34,6 +34,9 @@ use std::path::PathBuf;
 use std::process::Command;
 use std::time::Duration;
 
+// The bench is shared, so it is not a target: `examples/shared/` holds no `main.rs`, which is
+// exactly how cargo decides what is an example, and `#[path]` is how a target reaches into it.
+#[path = "../shared/simulation/mod.rs"]
 mod simulation;
 
 use simulation::filing::emit;
