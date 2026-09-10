@@ -19,6 +19,13 @@ queries/              one directory per example, one file per section, each runn
 ../../examples/matrices/main.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
 
+⭐ **THE TREE'S OWN SHAPE IS A RELATION.** `public.compose_edge (parent, child, splices,
+inner_joins)` is which template composes which, how many times, and how many of those are inner
+joins. `examples/compositions/main.rs` emits `assets/dag/edges.sql` from the source tree, `ingest`
+loads it, `rank/compose_edges.sqlc` reads it. So **adding a `.sqlc` means: compose, then
+`cargo run --example compositions`, then reload `assets/sql/ingest.sql`, then `cargo sqlx
+prepare`** — and `examples/soundness/main.rs` fails the build if the loaded DAG and the tree disagree.
+
 **Every one of those is composed from smaller queries, and every smaller query runs alone.**
 `assets/sqlc/*.sqlc` are templates; `cargo sqlc compose` turns them into `assets/sql/*.sql`,
 which is what psql and `sqlx` read. The point of the split is not to avoid repeating a join.
@@ -29,11 +36,15 @@ ask a question that has nothing to do with any of the above.
 ```
 scope/         which documents are in view              — corpus, fixtures, everything
 units/         which units carry a denominator         — and which denominators, over all claims
-layers/        the L-indexed vectors                   — d, n, r = n − d, the absorber
-entries/       the sparse matrices                     — H, S, C, D, N
+layers/        one row per layer, one fact per column  — d, n, r = n − d, the absorber
+entries/       the sparse matrices                     — D draw, N induction, C coupling, H holder, S slack
 composition/   F and Φ, the walk, and what it owes     — parts, conversion, descent, leaves
 eliminations/  e, what a composer took out and why     — filed, derived, searched, suspended
 epistemics/    what the documents say about knowing    — absences, searches, widths, edges, roots
+rank/          what well-foundedness gives you         — evaluation order, cycle space, the graphs, reach
+algebra/       one law per set operation the tree uses — and the roster that declares them
+arithmetic/    one site per computation, with a verdict — every interval, every unit
+diagrams/      the model rendered into BPMN 2.0        — plus the rosters a translation owes
 checks/        one file per rule: every row it examined, with a verdict on each
 relabellings/  what a rule must not notice: the same system, said differently
 reports/       findings a person settles, and the two views of checks/
@@ -129,6 +140,14 @@ GROUP BY a.i, b.k;                -- the groups
 If you have ever written a join with a `SUM` in it, you have multiplied matrices. Nobody told
 you that was what it was. → **checked in [§3](#3-fφx--e-as-an-actual-matrix-product)**
 
+⛔ **And the query being legal is not the product being meaningful, which is the one caveat to
+carry from here.** The join always runs. Whether its answer means anything depends on whether the
+two operands are in a unit that survives being multiplied, and in this model almost none of them
+are: each layer carries its own unit, so multiplying a draw by an induction yields `people *
+launches`. **`FΦx` is the one product here that composes magnitudes**, because `F` relates layers
+to layers and `Φ` puts them in one unit first. → **[`DᵀN` composes, but its quantities do
+not](#dᵀn-composes-but-its-quantities-do-not)**
+
 ⭐⭐ **And if you have ever consolidated a group you have done it by hand.** Adding members up
 along an ownership structure IS `Fx`; the incidence is which member rolls into which line. →
 **[from the financial side](#from-the-financial-side)**, which is the shallow end of the same
@@ -202,6 +221,13 @@ because the relational form is the one that can say *nobody looked*.
 
 ### Why the tables are shaped as they are
 
+**Two index sets, and everything below is indexed by one or both.** `L` is the LAYERS, keyed
+`(filing, layer)` and conformed across the whole corpus, so the same layer in two documents is
+one index. `P` is the OPERATIONS, keyed `(filing, label)`. Every shape written `L×3` or `P×L`
+below means rows indexed by the first and columns by the second. Nothing here is indexed by a
+filing, a buffer name or a unit: those appear as the small fixed dimensions, `3` for the buffers
+and `5` for the holder kinds.
+
 **The tables that ARE matrices are tall. The ones holding attributes are wide.**
 
 `slack` has one row per layer per buffer — three rows, not three columns — so the table *is* the
@@ -245,14 +271,14 @@ your work already.
 | you call it | it is | in this model |
 |---|---|---|
 | adding the members up | a matrix product, `Fx` | `part` joined to the members' layers |
-| translation, restatement, unit conversion | a **diagonal** scale, `Φ` | `Part/factor` |
+| translation, restatement, unit conversion | a scale applied one part at a time, `Φ` | `Part/factor` |
 | elimination entries | a vector subtraction, `e` | `Elimination`, one row per quantity |
 | the consolidated column | `FΦx − e` | the composed layer's own claim |
 
 **That is the entire consolidation, written once.** `FΦx − e` — take the members, put them in one
 unit, add them along the ownership incidence, subtract what was counted twice. → **and it is
-checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), eleven layers, to the
-digit.**
+checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), fifteen layers, to
+the digit.**
 
 ### The chart of accounts is a basis, and two charts are two bases
 
@@ -414,11 +440,13 @@ Read as linear algebra, a filing declares these.
 | `C` | L×L | an **observed** dependence between two remainders |
 | `H` | L×5 | who bears layer *l*'s remainder, and how much |
 | `S` | L×3 | how much each of the three buffers holds |
-| `F` | L×P | which part filings compose into which layer |
-| `Φ` | diag | the factor converting each part into the composed unit |
+| `F` | L×L | which layer of another filing composes into which layer of this one |
+| `Φ` | a weight on each entry of `F` | the factor converting that part into the composed unit |
 | `e` | L | quantities double-counted across parts, subtracted once |
 
-Three of them are not what they look like.
+Three things in that table do not behave the way the notation suggests, and each has its own
+subsection below: the product `DᵀN`, which is two rows rather than one; the difference `r = n − d`;
+and `Φ`.
 
 ### `DᵀN` composes, but its quantities do not
 
@@ -461,7 +489,7 @@ remainder.** → **checked in [§4](#4-φ-correlated-with-itself)**
 
 ### And the fusion rule checks out
 
-`x_composed = F Φ x_parts − e`, over eleven composed layers, exact on all three bounds.
+`x_composed = F Φ x_parts − e`, over fifteen composed layers, exact on all three bounds.
 
 The eliminations are the term that gets dropped, and on one layer that is 90 GPU-hours of
 demand counted in two members' filings at once. Nothing warns you — the totals come out
@@ -658,9 +686,9 @@ as vector arithmetic, one line per bound. Then classifies each layer by ISO 286'
 compares to the filed `sign`.
 
 ```
-1. fits recomputed from the ranges: 38 layers, 0 disagreements
-   observation  24 layers: 9 clearance, 14 interference, 1 transition
-   stipulation  14 layers: 6 clearance, 8 transition
+1. fits recomputed from the ranges: 42 of 46 layers, 0 disagreements
+   observation  26 layers: 11 clearance, 14 interference, 1 transition
+   stipulation  20 layers: 12 clearance, 8 transition
 ```
 
 ⭐⭐ **The census is split by `evidence` and the split is the content.** The stipulations were
@@ -678,7 +706,7 @@ bounds](#r--n--d-reverses-its-bounds).*
 ### 2. `DᵀN`, the good zero
 
 ```
-2. D-transpose N: 2 operations both draw and induce, 0 with both stated
+2. D-transpose N: 2 operation(s) both draw and induce, 0 with both stated
    'Close an enterprise contract' draws on `labour` and commits `capability`,
       and THE DRAW IS UNMEASURED, so the product is empty.
 ```
@@ -691,11 +719,14 @@ corpus could have had is missing for exactly the reason the model exists.
 ### 3. `FΦx − e`, as an actual matrix product
 
 `F` is built as a dense incidence matrix — 1 where a part composes into a layer — and `Φ` as a
-diagonal. Then the fusion is three real matrix products, one per bound, and each result is
+diagonal, which is available because no part layer in this corpus is used twice with two different
+factors. The model permits that, and the factor is filed per edge of `F` rather than per layer, so
+a corpus that exercised it would need the weights on the entries instead. Then the fusion is three real matrix products, one per bound, and each result is
 compared against the demand the composed layer filed.
 
 ```
-3. F.Phi.x - e against the filed composed demand: 11 layers, all agree; 3 suspended
+3. F is 18x27: dense that is 486 entries, the relation stores 27 (5.6%)
+   F.Phi.x - e against the filed composed demand: 15 layers, all agree; 3 suspended
 ```
 
 ⭐⭐ **This is where "a matrix product is a join with a `GROUP BY`" gets checked.**
@@ -751,7 +782,7 @@ need not come back ordered — and an unordered triple is not an interval at all
 it was computed from is perfectly well formed.
 
 ```
-6. residue census: 23 lumpy corpus layers, 15 sawtoothed, 0 disagreements
+6. residue census: 25 lumpy corpus layers, 15 sawtoothed, 0 disagreements
 ```
 
 Postgres computes the verdict with `mod()`; the example recomputes it with `%`. The disagreement
@@ -767,9 +798,8 @@ interesting.** All-clean would mean the corpus files only demands sitting on the
 all-sawtoothed would mean the ordered case is unexercised. The claim is that an unordered residue
 is ORDINARY rather than universal, and that needs both to occur.
 
-⛔ This figure is quoted in [`docs/linear-algebra.md`](../../docs/linear-algebra.md), which
-reads it from here. Maintained by reading the XML and counting instead, it is a number nobody
-recounts.
+⛔ This figure is quoted nowhere in prose, deliberately: `examples/matrices/main.rs` §6 prints it on
+every run. Maintained by reading the XML and counting instead, it is a number nobody recounts.
 ↑ *settles the sawtooth half of [`r = n − d` reverses its
 bounds](#r--n--d-reverses-its-bounds).*
 
@@ -779,10 +809,10 @@ One row per (layer, buffer): whether that buffer was sized, or which typed absen
 instead.
 
 ```
-7. slack coverage (corpus): 78 (layer, buffer) rows
-   capacity   11 sized of 26
-   inventory  18 sized of 26
-   time       11 sized of 26
+7. slack coverage (corpus): 84 (layer, buffer) rows
+   capacity   13 sized of 28
+   inventory  20 sized of 28
+   time       13 sized of 28
 ```
 
 ⛔⛔ **The interesting number is that every sized capacity slack reads `[0, 0, 0]`.** `capacity`

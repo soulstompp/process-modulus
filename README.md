@@ -493,6 +493,17 @@ actually moves, and it has no element. ⭐ That matters because a range in this 
 genuine week-to-week variation does not narrow when you measure harder. The two are not
 distinguished, and saying so is more useful than pretending the question does not arise.
 
+**Pointing at your process notation is optional. Saying whether you did is not.** Most filings
+name no operation at all, and a filing that names none says nothing about BPMN. But an operation
+that is filed must say where it sits in a process notation, or give the typed reason it names
+none: `none` where somebody looked and it is in no notation, `unmeasured` where a notation exists
+and nobody has located it, `notApplicable` where there is no notation to point into. Those were
+one silence until the element was made required, and they are the difference between a crossing
+nobody has done yet and a crossing there is nothing to do — which is exactly what a receiver
+deciding whether the two documents can be laid side by side needs to be told. ⭐ The crossing
+itself costs the other document nothing: it is named by position, so no field is added to your
+BPMN and no tool that reads it has to change.
+
 ## How it fits alongside existing standards
 
 The model names other people's vocabulary rather than restating it. A restated value set is
@@ -519,6 +530,7 @@ instead of taking a description of one on trust.
 cargo run --example diagramming   # one .bpmn per filing, into assets/bpmn/filings/
 cargo run --example graphs        # the model's own graphs, as the lane sets of one pool
 cargo run --example rendering     # assets/svg/ from assets/bpmn/, reading no model at all
+cargo run --example compositions  # the compose DAG, into assets/dag/edges.sql, needing no database
 ```
 
 What a correct translation owes is written down rather than assumed.
@@ -527,7 +539,7 @@ element kind, and each law names the relation that supplies the count it has to 
 [`assets/sqlc/diagrams/domain_objects.sqlc`](assets/sqlc/diagrams/domain_objects.sqlc) says, for
 every table in the model, which BPMN element it renders as or the typed reason there is none, and
 a mapping that loses something says how: `demoted` means a person can still read the fact and a
-tool can no longer resolve it, `absent` means it is not in the artifact in any form.
+tool cannot resolve it, `absent` means it is not in the artifact in any form.
 
 ⛔ **A drawing is believed in a way a table is not.** A wrong table gets re-checked; a wrong
 diagram gets quoted in a deck. So every sentence an emitted document carries names the relation

@@ -502,6 +502,18 @@ que um intervalo que seja variação genuína de semana para semana não estreit
 mais cuidado. As duas coisas não são distinguidas, e dizê-lo é mais útil do que fingir que a
 pergunta não se põe.
 
+**Apontar para a sua notação de processo é opcional. Dizer se o fez não é.** A maioria das
+declarações não nomeia operação nenhuma, e uma declaração que não nomeie nenhuma nada diz sobre
+BPMN. Mas uma operação que seja declarada tem de dizer onde fica numa notação de processo, ou dar
+a razão tipificada para não nomear nenhuma: `none` quando alguém procurou e ela não está em
+notação nenhuma, `unmeasured` quando existe uma notação e ninguém a localizou lá dentro,
+`notApplicable` quando não há notação para onde apontar. Eram um só silêncio até o elemento passar
+a ser obrigatório, e são a diferença entre um cruzamento que ainda ninguém fez e um cruzamento que
+não há que fazer — que é exatamente o que precisa de saber quem recebe e decide se os dois
+documentos podem ser postos lado a lado. ⭐ O cruzamento em si não custa nada ao outro documento:
+é nomeado por posição, portanto não se acrescenta campo nenhum ao seu BPMN e nenhuma ferramenta
+que o leia tem de mudar.
+
 ## Como se articula com as normas existentes
 
 O modelo nomeia o vocabulário dos outros em vez de o reescrever. Um conjunto de valores reescrito é
@@ -528,6 +540,7 @@ possa pôr as duas notações lado a lado em vez de aceitar por confiança a des
 cargo run --example diagramming   # um .bpmn por declaração, para assets/bpmn/filings/
 cargo run --example graphs        # os grafos do próprio modelo, como os lane sets de uma pool
 cargo run --example rendering     # o assets/svg/ a partir do assets/bpmn/, sem ler modelo nenhum
+cargo run --example compositions  # o DAG de composição, para assets/dag/edges.sql, sem base de dados
 ```
 
 O que uma tradução correta deve está escrito e não pressuposto.

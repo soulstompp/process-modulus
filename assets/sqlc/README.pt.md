@@ -22,6 +22,14 @@ queries/              um diretório por exemplo, um ficheiro por secção, execu
 ../../examples/matrices/main.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
 
+⭐ **A FORMA DA PRÓPRIA ÁRVORE É UMA RELAÇÃO.** O `public.compose_edge (parent, child, splices,
+inner_joins)` é que modelo compõe qual, quantas vezes, e quantas dessas são junções internas. O
+`examples/compositions/main.rs` emite o `assets/dag/edges.sql` a partir da árvore de código, o `ingest`
+carrega-o, e o `rank/compose_edges.sqlc` lê-o. Portanto **acrescentar um `.sqlc` quer dizer:
+compor, depois `cargo run --example compositions`, depois recarregar o `assets/sql/ingest.sql`,
+depois `cargo sqlx prepare`** — e o `examples/soundness/main.rs` falha a compilação se o DAG carregado
+e a árvore discordarem.
+
 **Cada um desses ficheiros é composto a partir de consultas mais pequenas, e cada consulta
 mais pequena corre sozinha.** Os `assets/sqlc/*.sqlc` são modelos; o `cargo sqlc compose`
 transforma-os nos `assets/sql/*.sql`, que são os que o psql e o `sqlx` leem. O objetivo da
@@ -32,11 +40,15 @@ por quem queira olhar para os dados e fazer uma pergunta que nada tem a ver com 
 ```
 scope/         que documentos estou a ver             — corpus, fixtures, tudo
 units/         que unidades têm denominador           — e quais os denominadores, em todas as afirmações
-layers/        os vetores indexados por camada        — d, n, r = n − d, o amortecedor
-entries/       as matrizes esparsas                   — H, S, C, D, N
+layers/        uma linha por camada, um facto/coluna  — d, n, r = n − d, o amortecedor
+entries/       as matrizes esparsas                   — D consumo, N indução, C acoplamento, H portador, S folga
 composition/   F e Φ, a descida, e o que é devido     — partes, conversão, descida, folhas
 eliminations/  e, o que quem compôs retirou e porquê  — apresentadas, derivadas, buscadas, suspensas
 epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos, raízes
+rank/          o que a boa fundação dá                — ordem de avaliação, espaço de ciclos, os grafos
+algebra/       uma lei por operação de conjuntos      — e a lista que as declara
+arithmetic/    um sítio por cálculo, com um veredicto — cada intervalo, cada unidade
+diagrams/      o modelo representado em BPMN 2.0      — e as listas que uma tradução deve
 checks/        um ficheiro por regra: cada linha examinada, com um veredito em cada uma
 relabellings/  o que uma regra não pode notar: o mesmo sistema, dito de outra maneira
 reports/       achados que uma pessoa decide, e as duas vistas de checks/
@@ -135,6 +147,14 @@ GROUP BY a.i, b.k;                -- os grupos
 Quem alguma vez escreveu uma junção com um `SUM` lá dentro já multiplicou matrizes. Ninguém lhe
 disse que era isso. → **verificado em [§3](#3-fφx--e-como-produto-matricial-a-sério)**
 
+⛔ **E a consulta ser legal não é o produto ter sentido, e esta é a única ressalva a levar daqui.**
+A junção corre sempre. Se a resposta quer dizer alguma coisa depende de os dois operandos estarem
+numa unidade que sobreviva a ser multiplicada, e neste modelo quase nenhum está: cada camada leva a
+sua própria unidade, portanto multiplicar um consumo por uma indução dá `pessoas * lançamentos`.
+**O `FΦx` é o único produto aqui que compõe magnitudes**, porque o `F` relaciona camadas com
+camadas e o `Φ` põe-nas primeiro numa só unidade. → **[o `DᵀN` compõe, mas as suas quantidades
+não](#dᵀn-compõe-se-mas-as-suas-quantidades-não)**
+
 **E quem alguma vez consolidou um grupo já o fez à mão.** Somar os membros ao longo de uma
 estrutura de participações É `Fx`; a incidência é que membro entra em que linha. → **[do lado
 financeiro](#do-lado-financeiro)**, que é a parte rasa da mesma água e o sítio por onde começar se
@@ -210,6 +230,14 @@ forma relacional é a que consegue dizer *ninguém foi ver*.
 
 ### Porque é que as tabelas têm a forma que têm
 
+**Dois conjuntos de índices, e tudo o que vem abaixo é indexado por um deles ou por ambos.** O `L`
+são as CAMADAS, com chave `(filing, layer)` e conformadas em todo o corpus, portanto a mesma camada
+em dois documentos é um só índice. O `P` são as OPERAÇÕES, com chave `(filing, label)`. Cada forma
+escrita `L×3` ou `P×L` abaixo quer dizer linhas indexadas pelo primeiro e colunas pelo segundo.
+Nada aqui é indexado por uma declaração, por um nome de amortecedor ou por uma unidade: essas
+aparecem como as pequenas dimensões fixas, `3` para os amortecedores e `5` para os tipos de
+portador.
+
 **As tabelas que SÃO matrizes são altas. As que contêm atributos são largas.**
 
 A `slack` tem uma linha por camada e por amortecedor — três linhas, e não três colunas — portanto a
@@ -254,13 +282,13 @@ trabalho.
 | a que lhe chama | o que é | neste modelo |
 |---|---|---|
 | somar os membros | um produto matricial, `Fx` | a `part` junta às camadas dos membros |
-| tradução, reexpressão, conversão de unidades | uma escala **diagonal**, `Φ` | `Part/factor` |
+| tradução, reexpressão, conversão de unidades | uma escala aplicada parte a parte, `Φ` | `Part/factor` |
 | lançamentos de eliminação | uma subtração vetorial, `e` | `Elimination`, uma linha por quantidade |
 | a coluna consolidada | `FΦx − e` | a própria afirmação da camada composta |
 
 **É a consolidação inteira, escrita uma vez.** `FΦx − e` — tomar os membros, pô-los numa unidade,
 somá-los ao longo da incidência de participações, subtrair o que foi contado duas vezes. → **e é
-verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), onze camadas, ao
+verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), quinze camadas, ao
 dígito.**
 
 ### O plano de contas é uma base, e dois planos são duas bases
@@ -429,11 +457,12 @@ Lida como álgebra linear, uma declaração declara isto.
 | `C` | L×L | uma dependência **observada** entre dois restos |
 | `H` | L×5 | quem suporta o resto da camada *l*, e quanto |
 | `S` | L×3 | quanto cada um dos três amortecedores leva |
-| `F` | L×P | que declarações-parte compõem em que camada |
-| `Φ` | diag | o fator que converte cada parte na unidade composta |
+| `F` | L×L | que camada de outra declaração compõe em que camada desta |
+| `Φ` | um peso em cada entrada de `F` | o fator que converte essa parte na unidade composta |
 | `e` | L | quantidades contadas em duplicado entre partes, subtraídas uma vez |
 
-Três delas não são o que parecem.
+Três coisas nessa tabela não se comportam como a notação sugere, e cada uma tem a sua secção
+mais abaixo: o produto `DᵀN`, que são duas linhas e não uma; a diferença `r = n − d`; e o `Φ`.
 
 ### `DᵀN` compõe-se, mas as suas quantidades não
 
@@ -477,7 +506,7 @@ resto.** → **verificado na [§4](#4-φ-correlacionado-consigo-próprio)**
 
 ### E a regra da fusão confere
 
-`x_composta = F Φ x_partes − e`, ao longo de onze camadas compostas, exata nos três extremos.
+`x_composta = F Φ x_partes − e`, ao longo de quinze camadas compostas, exata nos três extremos.
 
 As eliminações são o termo que se deixa cair, e numa camada isso são 90 GPU-hora de procura
 contadas nas declarações de dois membros ao mesmo tempo. Nada avisa — os totais saem plausíveis
@@ -679,9 +708,9 @@ como aritmética vetorial, uma linha por extremo. Depois classifica cada camada 
 286 e compara com o `sign` declarado.
 
 ```
-1. ajustamentos recalculados a partir dos intervalos: 38 camadas, 0 discordâncias
-   observation  24 camadas: 9 clearance, 14 interference, 1 transition
-   stipulation  14 camadas: 6 clearance, 8 transition
+1. ajustamentos recalculados a partir dos intervalos: 42 de 46 camadas, 0 discordâncias
+   observation  26 camadas: 11 clearance, 14 interference, 1 transition
+   stipulation  20 camadas: 12 clearance, 8 transition
 ```
 
 ⭐⭐ **O recenseamento é separado por `evidence`, e a separação é o conteúdo.** As estipulações
@@ -699,7 +728,7 @@ os extremos](#r--n--d-inverte-os-extremos).*
 ### 2. `DᵀN`, o bom zero
 
 ```
-2. D-transposta N: 2 operações consomem e induzem, 0 com ambos declarados
+2. D-transposta N: 2 operação(ões) consomem e induzem, 0 com ambos declarados
    «Fechar um contrato empresarial» consome de `labour` e compromete `capability`,
       e O CONSUMO ESTÁ POR MEDIR, portanto o produto é vazio.
 ```
@@ -713,11 +742,14 @@ não](#dᵀn-compõe-se-mas-as-suas-quantidades-não).*
 ### 3. `FΦx − e`, como produto matricial a sério
 
 `F` é construída como matriz de incidência densa — 1 onde uma parte compõe numa camada — e `Φ` como
-diagonal. Depois a fusão são três produtos matriciais a sério, um por extremo, e cada resultado é
+diagonal, o que é possível porque nenhuma camada-parte neste corpus é usada duas vezes com fatores
+diferentes. O modelo permite-o, e o fator é declarado por aresta do `F` e não por camada, portanto
+um corpus que exercitasse esse caso precisaria dos pesos nas entradas. Depois a fusão são três produtos matriciais a sério, um por extremo, e cada resultado é
 comparado com a procura que a camada composta declarou.
 
 ```
-3. F.Phi.x - e contra a procura composta declarada: 11 camadas, todas concordam; 3 suspensas
+3. F é 18x27: densa são 486 entradas, a relação guarda 27 (5,6%)
+   F.Phi.x - e contra a procura composta declarada: 15 camadas, todas concordam; 3 suspensas
 ```
 
 ⭐⭐ **É aqui que «um produto matricial é uma junção com um `GROUP BY`» é verificado.** O
@@ -775,7 +807,7 @@ pontos de um intervalo não tem de voltar ordenada — e um trio desordenado nã
 ao passo que a procura de onde saiu está perfeitamente bem formada.
 
 ```
-6. contagem do resíduo: 23 camadas com quantum no conjunto, 15 com dente de serra, 0 discordâncias
+6. contagem do resíduo: 25 camadas com quantum no conjunto, 15 com dente de serra, 0 discordâncias
 ```
 
 O Postgres calcula o veredicto com `mod()`; o exemplo recalcula-o com `%`. A contagem de
@@ -791,8 +823,9 @@ interessa.** Tudo limpo significaria que o conjunto só declara procuras assente
 dente de serra significaria que o caso ordenado está por exercitar. A afirmação é que um resíduo
 desordenado é ORDINÁRIO e não universal, e isso precisa que ambos ocorram.
 
-⛔ Este número é citado no [`docs/linear-algebra.md`](../../docs/linear-algebra.md), que o lê
-daqui. Mantido a ler o XML e a contar, é um número que ninguém volta a contar.
+⛔ Este número não é citado em prosa nenhuma, de propósito: o `examples/matrices/main.rs` §6
+imprime-o em cada execução. Mantido a ler o XML e a contar, é um número que ninguém volta a
+contar.
 ↑ *resolve a metade do dente de serra de [`r = n − d` inverte os
 extremos](#r--n--d-inverte-os-extremos).*
 
@@ -802,10 +835,10 @@ Uma linha por (camada, `buffer`): se essa margem foi dimensionada, ou qual a aus
 está em vez disso.
 
 ```
-7. cobertura das margens (conjunto): 78 linhas (camada, buffer)
-   capacity   11 dimensionadas de 26
-   inventory  18 dimensionadas de 26
-   time       11 dimensionadas de 26
+7. cobertura das margens (conjunto): 84 linhas (camada, buffer)
+   capacity   13 dimensionadas de 28
+   inventory  20 dimensionadas de 28
+   time       13 dimensionadas de 28
 ```
 
 ⛔⛔ **O número interessante é que toda a margem de capacidade dimensionada lê `[0, 0, 0]`.** A
