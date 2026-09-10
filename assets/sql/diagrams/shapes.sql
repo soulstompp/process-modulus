@@ -1,5 +1,5 @@
--- BPMN 2.0 DI: one bpmndi:BPMNShape per pool, lane and flow node.
-SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject
+-- BPMN 2.0 DI: a bpmndi:BPMNShape per box and a bpmndi:BPMNEdge per route.
+SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject, 'shape' AS di
 FROM ( -- epistemics/documents.sqlc projected to the filing alone; one pool per document.
 SELECT d.filing
 FROM (
@@ -31,13 +31,13 @@ LEFT JOIN pm.filing f ON f.name = s.name
 ) d
  ) p
 UNION ALL
-SELECT l.filing, 'lane', l.layer
+SELECT l.filing, 'lane', l.layer, 'shape'
 FROM ( -- pm:Stack/pm:layer, keyed and nothing more.
 SELECT l.filing, l.layer
 FROM pm.layer l
  ) l
 UNION ALL
-SELECT o.filing, 'task', o.label
+SELECT o.filing, 'task', o.label, 'shape'
 FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
 -- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
 --    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
@@ -46,7 +46,7 @@ SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::te
 FROM pm.operation o
  ) o
 UNION ALL
-SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer
+SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer, 'shape'
 FROM ( -- diagrams/calls.sqlc pinned to the parts that leave their own document.
 SELECT c.composition, c.composed_layer, c.part_notation, c.part_filing, c.part_layer
 FROM (
@@ -89,3 +89,78 @@ JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ) c
 WHERE NOT c.is_local
  ) c
+UNION ALL
+SELECT k.filing, 'group', k.layer, 'shape'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) k
+UNION ALL
+SELECT g.filing, 'textAnnotation', g.note, 'shape'
+FROM ( -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
+SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
+FROM ( -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
+SELECT s.filing, s.extent, s.basis
+FROM (
+    -- pm:Stack/pm:scope, with its pm:basis.
+SELECT ss.filing, ss.extent, ss.basis, ss.absent
+FROM pm.stack_scope ss
+
+) s
+ ) s
+UNION ALL
+SELECT s.filing, 'search', 'diagrams/searches.sqlc'
+FROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
+-- laneSet IS the partition the search is about.
+SELECT s.filing,
+       coalesce(s.answer::text, 'stated') AS answer
+FROM (
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
+SELECT cs.filing, cs.absent AS answer, cs.note
+FROM pm.coupling_search cs
+
+) s
+ ) s
+UNION ALL
+SELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d
+UNION ALL
+SELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) c
+ ) g
+UNION ALL
+SELECT d.filing, 'association', d.from_layer || '->' || d.to_layer, 'edge'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d

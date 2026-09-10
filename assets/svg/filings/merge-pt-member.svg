@@ -33,7 +33,7 @@
     <text id="lane_merge-pt-member_pessoal-rank" x="732" y="182" class="rankName" text-anchor="end">rank 0</text>
   </g>
   <g class="note" id="legend"><title>legend</title>
-    <path id="legend-bracket" d="M20 214 h-8 v66 h8" class="noteBox"/>
+    <path id="legend-bracket" d="M20 214 h-8 v58 h8" class="noteBox"/>
     <text id="legend-0-says" x="26" y="226" class="noteText">SCOPE: unbounded. This pool is a PROJECTION of one system and not the system.</text>
     <text id="legend-0-source" x="26" y="238" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
     <text id="legend-1-says" x="26" y="256" class="noteText">COUPLING SEARCH: unmeasured. An absent dependence line is NOT independence.</text>

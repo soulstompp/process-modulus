@@ -37,12 +37,16 @@ use std::path::Path;
 /// battery holds only because `d` sorts before `g`. A per-owner subdirectory is what makes the
 /// order stop mattering.
 ///
-/// ⭐ AND THE SPLIT SAYS WHAT WAS ALREADY TRUE. These are one document per FILING, at layer
+/// ⭐ AND THE SPLIT SAYS WHAT THE TWO EMITTERS ALREADY ARE. These are one document per FILING, at layer
 /// grain; `graphs` emits one per GRAPH FILLING, corpus-wide. §8 already says the two do not nest,
 /// because a `participant` cannot contain a `participant`. Two collaborations, two directories.
 const OUT: &str = "assets/bpmn/filings";
 const BPMN_NS: &str = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 const DI_NS: &str = "http://www.omg.org/spec/BPMN/20100524/DI";
+/// The DI namespace proper, which is where a `waypoint` lives. `bpmndi` is the BPMN-specific
+/// diagram interchange and `dc` is the shared graphics primitives; an edge's waypoints are
+/// `di:waypoint`, in neither of those, and an association could not be given a route without it.
+const DI_BASE_NS: &str = "http://www.omg.org/spec/DD/20100524/DI";
 const DC_NS: &str = "http://www.omg.org/spec/DD/20100524/DC";
 
 /// ⭐⭐⭐ THE LAYOUT LIVES HERE BECAUSE `bpmndi:BPMNDiagram` LIVES IN `tDefinitions`. BPMN has a
@@ -355,6 +359,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   for a reference that stays inside the document, which is what a coupling needs.
         write!(x, "\n             xmlns:tns=\"{}\"", esc(target))?;
         write!(x, "\n             xmlns:bpmndi=\"{DI_NS}\"\n             xmlns:dc=\"{DC_NS}\"")?;
+        write!(x, "\n             xmlns:di=\"{DI_BASE_NS}\"")?;
         for (i, n) in imports.iter().enumerate() {
             write!(x, "\n             xmlns:f{i}=\"{}\"", esc(n))?;
         }
@@ -617,6 +622,131 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         writeln!(x, "  </process>")?;
 
+        // ⭐⭐⭐ THE DIAGRAM'S OWN PLACE IN THE DOCUMENT. `tDefinitions` puts `bpmndi:BPMNDiagram`
+        //    last, after the root elements, and a document that declares nothing here leaves the
+        //    SVG stage to invent coordinates: the same model laid out two ways, with nothing
+        //    tying them and the shipped one derivable from nothing.
+        //
+        // ⭐⭐ THE DOCUMENT DECLARES ITS LAYOUT AND THE SVG RENDERS WHAT IS DECLARED, which is
+        //    what `rendering.rs`'s own header claims for itself: a cache extracted from the
+        //    GENERATED artifact rather than computed beside it.
+        //
+        // ⛔⛔⛔ AND EVERY DRAWN ELEMENT NEEDS ONE, NOT ONLY THE PRIMITIVES. Declaring a shape per
+        //    pool, lane and flow node and nothing else leaves a `group`, an `association` and a
+        //    `textAnnotation` with no interchange at all, which is 42 elements lost to anybody
+        //    who is not the renderer beside this program: absent DI is not an error, it is
+        //    nothing drawn.
+        //
+        // ⭐⭐ AND THE ARGUMENT AGAINST DECLARING THEM IS ABOUT THE WRONG STAGE. Filing a derived
+        //    coordinate in a RELATION is what `diagrams/shapes.sqlc` refuses, which is why it
+        //    carries no x or y for anything; DERIVING one into an artifact is what both stages do
+        //    for every box here. So the derivation belongs upstream of the document that carries
+        //    it, and the same numbers reach both stages instead of one recomputing them from the
+        //    other's output. Nothing new is filed. docs/plans/FINDINGS-2026-09-10 finding 2.
+        //
+        // ⚠️ THE MATH IS `rendering.rs`'s OWN, ON PURPOSE, so the picture does not move: a cover
+        //   is the bounding box of its members inflated by 6, a dependence runs out of the source
+        //   lane to a gutter 26 left of the leftmost of the pair and back in, and the notes stack
+        //   under the pool at 30 apiece.
+        let mut shapes: Vec<(String, usize, usize, usize, usize)> = Vec::new();
+        let mut ly = 46usize;
+        for layer in mine.iter().filter(|l| !nested.contains(*l)) {
+            place(&mut shapes, &kids, &nodes, filing, layer, 120, ly, WIDTH - 140);
+            ly += lane_height(&kids, &nodes, layer) + 6;
+        }
+        let pool_h = (ly - 36).max(48);
+        writeln!(x, "  <bpmndi:BPMNDiagram id=\"{}\">", id("diagram", &[filing]))?;
+        writeln!(x, "    <bpmndi:BPMNPlane id=\"{}\" bpmnElement=\"tns:{}\">",
+                 id("plane", &[filing]), id("collab", &[filing]))?;
+        writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{}\" isHorizontal=\"true\">",
+                 id("shape", &[filing, "pool"]), id("pool", &[filing]))?;
+        writeln!(x, "        <dc:Bounds x=\"8\" y=\"36\" width=\"{}\" height=\"{pool_h}\"/>", WIDTH - 16)?;
+        writeln!(x, "      </bpmndi:BPMNShape>")?;
+        for (sid, sx, sy, sw, sh) in &shapes {
+            writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{sid}\">",
+                     id("shape", &[filing, sid]))?;
+            writeln!(x, "        <dc:Bounds x=\"{sx}\" y=\"{sy}\" width=\"{sw}\" height=\"{sh}\"/>")?;
+            writeln!(x, "      </bpmndi:BPMNShape>")?;
+        }
+
+        // ⭐ THE COVER, AS THE HULL OF WHAT IT COVERS. A `group` carries no membership itself:
+        //   the flow nodes name it through `categoryValueRef`, so its box is the union of theirs.
+        let box_of = |wanted: &str| -> Option<(usize, usize, usize, usize)> {
+            shapes.iter().find(|(sid, ..)| sid == wanted).map(|&(_, a, b, c, d)| (a, b, c, d))
+        };
+        for layer in &mine_cats {
+            let ms: Vec<(usize, usize, usize, usize)> = cat_members
+                .iter()
+                .filter(|m| m.filing == filing && &m.layer == *layer)
+                .map(|m| box_of(&id("task", &[filing, &m.operation])))
+                .flatten()
+                .collect();
+            if ms.is_empty() {
+                continue;
+            }
+            let x0 = ms.iter().map(|b| b.0).min().unwrap().saturating_sub(6);
+            let y0 = ms.iter().map(|b| b.1).min().unwrap().saturating_sub(6);
+            let x1 = ms.iter().map(|b| b.0 + b.2).max().unwrap() + 6;
+            let y1 = ms.iter().map(|b| b.1 + b.3).max().unwrap() + 6;
+            writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{}\">",
+                     id("shape", &[filing, &id("grp", &[filing, layer])]),
+                     id("grp", &[filing, layer]))?;
+            writeln!(x, "        <dc:Bounds x=\"{x0}\" y=\"{y0}\" width=\"{}\" height=\"{}\"/>",
+                     x1 - x0, y1 - y0)?;
+            writeln!(x, "      </bpmndi:BPMNShape>")?;
+        }
+
+        // ⭐ THE NOTES, IN A BAND UNDER THE POOL. An artifact may sit outside a participant, and
+        //   these belong outside it: each one says how the picture ABOVE must not be read.
+        for (i, l) in legends.iter().filter(|l| l.filing.as_deref() == Some(filing)).enumerate() {
+            let ny = 44 + pool_h + i * 30;
+            writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{}\">",
+                     id("shape", &[filing, &id("note", &[filing, l.note.as_deref().unwrap_or("")])]),
+                     id("note", &[filing, l.note.as_deref().unwrap_or("")]))?;
+            writeln!(x, "        <dc:Bounds x=\"20\" y=\"{ny}\" width=\"{}\" height=\"28\"/>",
+                     WIDTH - 40)?;
+            writeln!(x, "      </bpmndi:BPMNShape>")?;
+        }
+
+        // ⚠️ EVERY SHAPE FIRST, THEN EVERY EDGE, AND `di:Plane` DOES NOT REQUIRE IT. Its content
+        //    model is one repeated `di:DiagramElement` substitution group, so a shape and an edge
+        //    may interleave and the documents that did were legal. ⛔ No tool emits them that way,
+        //    and finding 1 was a document that looked legal and was refused, so removing the
+        //    doubt is worth more than the interleaving: grouping them costs nothing.
+        // ⭐ THE DEPENDENCE, AS A ROUTE RATHER THAN A BOX. `bpmndi:BPMNEdge` takes `di:waypoint`,
+        //   two at minimum; four describe the gutter run, which is what keeps the line outside
+        //   both lanes so a reader cannot mistake it for something inside one.
+        for d in deps.iter().filter(|d| d.filing == filing) {
+            let (Some((ax, ay, _, ah)), Some((bx, by, _, bh))) =
+                (box_of(&id("lane", &[filing, &d.from_layer])),
+                 box_of(&id("lane", &[filing, &d.to_layer]))) else { continue };
+            let (y0, y1) = (ay + ah / 2, by + bh / 2);
+            let gx = ax.min(bx).saturating_sub(26);
+            writeln!(x, "      <bpmndi:BPMNEdge id=\"{}\" bpmnElement=\"tns:{}\">",
+                     id("edge", &[filing, &d.from_layer, &d.to_layer]),
+                     id("dep", &[filing, &d.from_layer, &d.to_layer]))?;
+            for (wx, wy) in [(ax, y0), (gx, y0), (gx, y1), (bx, y1)] {
+                writeln!(x, "        <di:waypoint x=\"{wx}\" y=\"{wy}\"/>")?;
+            }
+            writeln!(x, "      </bpmndi:BPMNEdge>")?;
+        }
+        writeln!(x, "    </bpmndi:BPMNPlane>")?;
+        writeln!(x, "  </bpmndi:BPMNDiagram>")?;
+
+        // ⛔⛔⛔ AND IT IS EMITTED HERE, AFTER THE DIAGRAM, BECAUSE `tDefinitions` IS AN
+        //    `xsd:sequence`: import*, extension*, rootElement*, bpmndi:BPMNDiagram*,
+        //    relationship*. The order is normative, so a `relationship` ahead of the diagram is
+        //    a document a schema processor REFUSES. ⭐ The comment above stated that rule and
+        //    the code three lines under it did the opposite, which is the sharpest shape a
+        //    defect takes here: the emitter knew the constraint and wrote it down.
+        // ⛔ NOTHING IN THIS REPOSITORY COULD SEE IT. `roster.sqlc` counts elements and this
+        //    changes no count; the read-back laws below find the elements wherever they sit;
+        //    `xmllint` is never run on the output. It took a BPMN 2.0 reader in another
+        //    checkout, deserializing against the OMG schemas, and the four documents it refused
+        //    are exactly the four that emit a `relationship`.
+        // ⚠️ Those four are also the only four carrying a `callActivity`, so no cross-document
+        //    call in this corpus had ever reached that reader's semantic checks: it stopped at
+        //    the ordering error and never ran them. docs/plans/FINDINGS-2026-09-10.
         // ⭐⭐⭐ `F`, AT LAYER GRAIN, AS A REFERENCE RATHER THAN AS A NAME. `tDefinitions` puts
         //    `relationship` LAST, after the root elements and the diagrams, which is where a
         //    fact about the document rather than about its contents belongs. ⛔ It is not a
@@ -655,41 +785,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                      id("lane", &[&b.resolved_filing, &b.layer]))?;
             writeln!(x, "  </relationship>")?;
         }
-        // ⭐⭐⭐ THE DIAGRAM'S OWN PLACE IN THE DOCUMENT. `tDefinitions` puts `bpmndi:BPMNDiagram`
-        //    last, after the root elements, and this emitter left it empty for as long as it
-        //    existed. So the SVG stage invented its coordinates and the BPMN document, opened in
-        //    any tool, would lay itself out differently: two pictures of one model with nothing
-        //    tying them, and the one the repository ships was derivable from nothing.
-        //
-        // ⭐⭐ NOW THE DOCUMENT DECLARES ITS LAYOUT AND THE SVG RENDERS WHAT IS DECLARED, which
-        //    is what `rendering.rs`'s own header always claimed: a cache extracted from the
-        //    GENERATED artifact rather than computed beside it.
-        //
-        // ⛔ ONE SHAPE PER POOL, LANE AND FLOW NODE, and nothing else: a `group`, an
-        //   `association` and a `textAnnotation` are DERIVED from those boxes, so declaring them
-        //   would be filing a value that can disagree with the thing it is computed from.
-        let mut shapes: Vec<(String, usize, usize, usize, usize)> = Vec::new();
-        let mut ly = 46usize;
-        for layer in mine.iter().filter(|l| !nested.contains(*l)) {
-            place(&mut shapes, &kids, &nodes, filing, layer, 120, ly, WIDTH - 140);
-            ly += lane_height(&kids, &nodes, layer) + 6;
-        }
-        let pool_h = (ly - 36).max(48);
-        writeln!(x, "  <bpmndi:BPMNDiagram id=\"{}\">", id("diagram", &[filing]))?;
-        writeln!(x, "    <bpmndi:BPMNPlane id=\"{}\" bpmnElement=\"tns:{}\">",
-                 id("plane", &[filing]), id("collab", &[filing]))?;
-        writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{}\" isHorizontal=\"true\">",
-                 id("shape", &[filing, "pool"]), id("pool", &[filing]))?;
-        writeln!(x, "        <dc:Bounds x=\"8\" y=\"36\" width=\"{}\" height=\"{pool_h}\"/>", WIDTH - 16)?;
-        writeln!(x, "      </bpmndi:BPMNShape>")?;
-        for (sid, sx, sy, sw, sh) in &shapes {
-            writeln!(x, "      <bpmndi:BPMNShape id=\"{}\" bpmnElement=\"tns:{sid}\">",
-                     id("shape", &[filing, sid]))?;
-            writeln!(x, "        <dc:Bounds x=\"{sx}\" y=\"{sy}\" width=\"{sw}\" height=\"{sh}\"/>")?;
-            writeln!(x, "      </bpmndi:BPMNShape>")?;
-        }
-        writeln!(x, "    </bpmndi:BPMNPlane>")?;
-        writeln!(x, "  </bpmndi:BPMNDiagram>")?;
         writeln!(x, "</definitions>")?;
         fs::write(format!("{OUT}/{filing}.bpmn"), x)?;
     }
@@ -794,6 +889,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ("diagrams", count("<bpmndi:BPMNDiagram ")),
         ("planes", count("<bpmndi:BPMNPlane ")),
         ("shapes", count("<bpmndi:BPMNShape ")),
+        ("edges", count("<bpmndi:BPMNEdge ")),
         ("scopes", count("scope: ")),
         ("citations", count("filed under: ")),
         ("namespaces", count("targetNamespace=\"")),
@@ -818,11 +914,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    and "nothing appears that is not in the model" cannot be checked one element at a time.
     //    This is the only assertion here that grows when the emitter does.
     let containers = ["definitions", "collaboration", "process", "laneSet", "documentation",
-                      "BPMNDiagram", "BPMNPlane"];
+                      "BPMNDiagram", "BPMNPlane", "BPMNEdge"];
     let counted = ["participant", "lane", "task", "callActivity", "childLaneSet", "import",
                    "flowNodeRef", "category", "categoryValue", "group", "categoryValueRef",
                    "association", "relationship", "source", "target", "textAnnotation", "text",
-                   "BPMNShape", "Bounds"];
+                   "BPMNShape", "Bounds", "waypoint"];
     let mut written_kinds: Vec<&str> = Vec::new();
     let mut rest = written.as_str();
     while let Some(i) = rest.find('<') {
@@ -982,6 +1078,52 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "a sentence cites a relation this program never queried, so the citation is decorative \
          and the sentence is still the emitter's own claim: {unread:?}"
     );
+
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ `tDefinitions` IS AN `xsd:sequence`, SO THE ORDER OF ITS CHILDREN IS NORMATIVE, AND
+    //    NOTHING HERE COULD CHECK IT. import*, extension*, rootElement*, bpmndi:BPMNDiagram*,
+    //    relationship*. This emitter put `relationship` ahead of the diagram, and four
+    //    documents were refused by a schema processor while every law in this file passed: the
+    //    counts do not move, the read-back laws find an element wherever it sits, and the OMG
+    //    schemas are not vendored here so nothing validates the output against them.
+    //
+    // ⭐⭐ SO CHECK THE INVARIANT THE ORDER WOULD PRODUCE, which is the same repair the SVG
+    //    staleness needed: a position is not assertable from inside the thing being positioned,
+    //    but the RESULT is readable off the artifact. Every `relationship` must open after the
+    //    diagram closes. ⚠️ It cannot stand in for a schema processor and is not meant to; it
+    //    holds the one ordering this emitter has been wrong about. docs/plans/FINDINGS-2026-09-10.
+    // ------------------------------------------------------------------
+    let mut misordered = Vec::new();
+    let mut ordered_checked = 0usize;
+    for e in fs::read_dir(OUT)?.flatten() {
+        let path = e.path();
+        if path.extension().and_then(|x| x.to_str()) != Some("bpmn") {
+            continue;
+        }
+        let doc = fs::read_to_string(&path)?;
+        let who = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+        let Some(first_rel) = doc.find("<relationship ") else { continue };
+        ordered_checked += 1;
+        match doc.find("</bpmndi:BPMNDiagram>") {
+            Some(diag) if diag < first_rel => {}
+            Some(_) => misordered.push(format!("{who}: a relationship opens before the diagram closes")),
+            None => misordered.push(format!("{who}: emits a relationship and declares no diagram")),
+        }
+    }
+    assert!(
+        ordered_checked > 0,
+        "no emitted document carries a relationship, so the tDefinitions ordering law examined \
+         nothing and the four documents a schema processor refused would be refused again"
+    );
+    assert!(
+        misordered.is_empty(),
+        "tDefinitions is an xsd:sequence and puts `relationship` after `bpmndi:BPMNDiagram`, so \
+         these documents are well formed, correct in every count here, and refused by a schema \
+         processor: {misordered:?}"
+    );
+    println!("   ⭐ {ordered_checked} documents emit a relationship, every one after the diagram");
+    println!("      closes. `tDefinitions` is a sequence, so that order is the difference between");
+    println!("      a document a third-party reader opens and one it refuses at byte 5867.");
 
     // ⛔ AND THE OTHER DIRECTION, WHICH IS THE `composition_citation` DEFECT IN A NEW PLACE: a
     //   source declared and never reaching the artifact is a pointer nobody can follow because
@@ -1251,10 +1393,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // ⛔⛔⛔ THE SCOPE EACH DOCUMENT STATES, AGAINST THE SCOPE ITS FILING CLAIMS. THE COUNT ABOVE
-    //    CANNOT DO THIS AND NEITHER CAN ANY OTHER LAW IN THIS FILE. Before it existed the emitter
-    //    wrote *a partition of layers claimed exhaustive* into all 15 documents from a string
-    //    literal, where the corpus holds 1 `complete`, 9 `scoped` and 5 `unbounded`. Fifteen
-    //    scope sentences reached fifteen documents, so `|scopes| = |filing|` was 15 = 15 and true
+    //    CANNOT DO THIS AND NEITHER CAN ANY OTHER LAW IN THIS FILE. An emitter writing *a
+    //    partition of layers claimed exhaustive* into all 15 documents from a string literal
+    //    says it of 14 that decline to, because the corpus holds 1 `complete`, 9 `scoped` and 5
+    //    `unbounded`. Fifteen scope sentences reach fifteen documents either way, so
+    //    `|scopes| = |filing|` is 15 = 15 and true
     //    throughout.
     //
     // ⭐⭐ THE THIRD TIME ATTRIBUTION HAS BEEN THE REPAIR AND A BIGGER COUNT HAS NOT.

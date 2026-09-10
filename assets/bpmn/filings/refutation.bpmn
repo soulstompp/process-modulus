@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:filing:acme-platform:2026-Q2-refutation"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:filing:acme-platform:2026-Q2-refutation"
              id="defs_refutation">
   <collaboration id="collab_refutation">
@@ -53,6 +54,21 @@
       <bpmndi:BPMNShape id="shape_refutation_lane_refutation_object-storage" bpmnElement="tns:lane_refutation_object-storage">
         <dc:Bounds x="120" y="126" width="620" height="34"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_dependence" bpmnElement="tns:note_refutation_dependence">
+        <dc:Bounds x="20" y="174" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_scope" bpmnElement="tns:note_refutation_scope">
+        <dc:Bounds x="20" y="204" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_search" bpmnElement="tns:note_refutation_search">
+        <dc:Bounds x="20" y="234" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_refutation_compute_labour" bpmnElement="tns:dep_refutation_compute_labour">
+        <di:waypoint x="120" y="63"/>
+        <di:waypoint x="94" y="63"/>
+        <di:waypoint x="94" y="103"/>
+        <di:waypoint x="120" y="103"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </definitions>

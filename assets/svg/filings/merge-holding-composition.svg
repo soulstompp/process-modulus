@@ -51,7 +51,7 @@
     <path id="dep-lane_merge-holding-composition_staff-lane_merge-holding-composition_shift-line-line" d="M120 176 H94 V125 H120" class="depLine" marker-end="url(#depArrow)"/>
   </g>
   <g class="note" id="legend"><title>legend</title>
-    <path id="legend-bracket" d="M20 218 h-8 v96 h8" class="noteBox"/>
+    <path id="legend-bracket" d="M20 218 h-8 v88 h8" class="noteBox"/>
     <text id="legend-0-says" x="26" y="230" class="noteText">A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion.</text>
     <text id="legend-0-source" x="26" y="242" class="noteCite">assets/sqlc/diagrams/dependences.sqlc</text>
     <text id="legend-1-says" x="26" y="260" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>

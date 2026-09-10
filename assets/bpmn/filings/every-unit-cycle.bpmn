@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:fixture:capacity-desk:every-unit-cycle"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:fixture:capacity-desk:every-unit-cycle"
              id="defs_every-unit-cycle">
   <collaboration id="collab_every-unit-cycle">
@@ -50,6 +51,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_every-unit-cycle_lane_every-unit-cycle_reserved-hours" bpmnElement="tns:lane_every-unit-cycle_reserved-hours">
         <dc:Bounds x="148" y="90" width="580" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_note_every-unit-cycle_scope" bpmnElement="tns:note_every-unit-cycle_scope">
+        <dc:Bounds x="20" y="158" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unit-cycle_note_every-unit-cycle_search" bpmnElement="tns:note_every-unit-cycle_search">
+        <dc:Bounds x="20" y="188" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

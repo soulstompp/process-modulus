@@ -50991,7 +50991,7 @@ SELECT * FROM (VALUES
   ('categories', '|category| = |filing with an induction|', 'diagrams/categories', 'category',
               'a classification scheme emitted into a document that has nothing to classify, or a document with inductions and no scheme to hang them on'),
   ('category_values', '|categoryValue| = |layer induced into|', 'diagrams/categories', 'categoryValue',
-              '⭐ N GETTING A NOTATION. It was filed as losing EVERYTHING and emitted nothing, on the true observation that a second `laneSet` gives every layer two `lane` elements. BPMN''s other mechanism adds no lane at all: `tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the MEMBER declares the cover and no container grows'),
+              '⭐ N GETTING A NOTATION. The route that does NOT work is a second `laneSet`, which gives every layer two `lane` elements. BPMN''s other mechanism adds no lane at all: `tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the MEMBER declares the cover and no container grows'),
   ('groups',     '|group| = |categoryValue|',    'diagrams/categories', 'group',
               '⭐⭐ THE GLYPH AGAINST THE FACT, AND THE PAIR IS THE ANSWER TO WHAT A GROUP IS. `group` is to `categoryValueRef` what `lane` is to `flowNodeRef`: the drawn shape of an incidence held elsewhere. A categoryValue with no group is a classification nobody drew; a group with no categoryValue is a dashed box that means nothing'),
   ('induced_into', '|categoryValueRef| = |induction|', 'diagrams/category_members', 'categoryValueRef',
@@ -51000,20 +51000,22 @@ SELECT * FROM (VALUES
               '⭐⭐⭐ THE SVG''S PROPER PLACE IN THE DOCUMENT. `bpmndi:BPMNDiagram` is in `tDefinitions`''s own sequence, and a document without one leaves the SVG stage to INVENT its coordinates while any tool that opens the file lays it out differently: two pictures of one model with nothing tying them'),
   ('planes', '|BPMNPlane| = |filing|', 'diagrams/pools', 'BPMNPlane',
               'one surface per document, naming the collaboration it is a picture OF. A second plane would be a second picture of one model with no way to say which is meant'),
-  ('shapes', '|BPMNShape| = |pool| + |lane| + |flow node|', 'diagrams/shapes', 'BPMNShape',
-              '⛔ THE PRIMITIVES ONLY. A `group`, an `association` and a `textAnnotation` are drawn and none is declared, because each is DERIVED from these boxes, and filing a derived coordinate is filing a value that can disagree with what computes it'),
+  ('shapes', '|BPMNShape| = every element that owes a box', 'diagrams/shapes', 'BPMNShape',
+              '⛔⛔ THE PRIMITIVES ARE NOT ALL OF IT, AND THE TEMPTING ANSWER IS THAT A `group`, AN `association` AND A `textAnnotation` ARE DERIVED FROM THESE BOXES, so filing a derived coordinate files a value that can disagree with whatever computes it. ⭐ That argument holds and it is about the wrong column: `diagrams/shapes.sqlc` carries no coordinate for ANYTHING, so a row there says which elements owe a box and never where it is, and the derivation belongs in the emitter. An element drawn from geometry the document does not declare is an element every other reader of the file loses, without an error'),
+  ('edges', '|BPMNEdge| = |association|', 'diagrams/shapes', 'BPMNEdge',
+              '⭐ THE ONE ROUTE IN THE NOTATION, and it needs a different carrier from every box here: `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. Counting it with the shapes would make `|BPMNShape|` a number that matches nothing in the document, which is why `diagrams/shapes.sqlc` declares `di` per row'),
   ('legends', '|textAnnotation| = |note a document owes on its face|', 'diagrams/legends', 'textAnnotation',
-              '⭐⭐⭐ A FACT PRESENT AND INVISIBLE, WHICH IS THE STATE 71 OF THEM WERE IN. `documentation` is admitted on any base element and drawn in no rendering, so a scope, a coupling search, a dependence''s meaning and a cover''s meaning were all in the artifact and on no page. `textAnnotation` is the only element in BPMN that puts words on the canvas and it was withheld on *documentation is spent instead*: true, and about the wrong property'),
+              '⭐⭐⭐ A FACT PRESENT AND INVISIBLE, WHICH IS WHAT THIS LAW CATCHES. `documentation` is admitted on any base element and drawn in no rendering, so a scope, a coupling search, a dependence''s meaning and a cover''s meaning can all be in the artifact and on no page. `textAnnotation` is the only element in BPMN that puts words on the canvas, and *documentation is spent instead* is true and about the wrong property'),
   ('attributions', '|relationship type=elimination-between| = |between that resolves|', 'eliminations/resolved', 'relationship',
               '⭐⭐⭐ THE SECOND `pm:ForeignId`, AND THE ELEMENT''S TYPE EARNING ITS KEEP. `association` was refused for F because it has no type and a second use makes two facts indistinguishable; `tRelationship/@type` is REQUIRED, so a second relation costs a different string and the laws filter on it. ⛔ The population is the RESOLVED references and not all of them: a QName needs a prefix and a prefix needs an import, so a `between` naming a document nobody filed cannot be pointed at, and the schema calls that filing ORDINARY'),
   ('descents', '|relationship| = |part crossing a document|', 'diagrams/descents', 'relationship',
               '⭐⭐⭐ THE MAPPING''S WIDEST DEMOTION, PROMOTED. `calledElement` names a PROCESS, so 17 layer-grain edges collapsed to 5 document pairs and the layer survived only inside `@name`. ⛔ THE COUNT IS THE WEAK HALF: 17 relationships joining the wrong 17 pairs passes it, which is why the isomorphism law in examples/diagramming/main.rs reads the ENDPOINTS back and compares the edge SET to F'),
   ('citations', '|citation rendered| = |citation filed|', 'diagrams/citations', 'documentation',
-              '⭐ THE LAST ROW THAT WAS DECLARED AND NEVER RENDERED. It named `documentation`, emitted nothing, and was invisible because element KINDS are not one to one: that element was already spent by the pools and the lanes, so its count was exact while this table''s share of it was zero'),
+              '⭐ A TABLE DECLARED AS MAPPING AND RENDERED NOWHERE, WHICH NO COUNT OF ELEMENTS CAN SEE. Element KINDS are not one to one: the pools and the lanes spend `documentation` too, so a count of that element is exact while this table''s share of it is zero, and `diagrams/ungoverned.sqlc` is the law that checks ATTRIBUTION instead'),
   ('scopes', '|scope stated| = |filing|', 'diagrams/scopes', 'documentation',
-              '⛔⛔⛔ THE `invents` STATE, CAUGHT IN THE EMITTER''S OWN PROSE. Every document said *a partition of layers claimed exhaustive*, hardcoded, 15 of 15, where one filing claims `complete` and 14 declined to. That is not something a reader inferred: the artifact SAID it. ⭐ A count is not the law that matters here, the ATTRIBUTION one below it is: this only checks that a scope reached every document, and a wrong scope in every document would pass it'),
+              '⛔⛔⛔ THE `invents` STATE, CAUGHT IN THE EMITTER''S OWN PROSE. A sentence about a filing, hardcoded in the emitter, says one thing about every document where the filings differ, and `diagrams/scopes.sqlc` is what each one claims. That is not something a reader infers: the artifact SAYS it. ⭐ A count is not the law that matters here, the ATTRIBUTION one below it is: this only checks that a scope reached every document, and a wrong scope in every document would pass it'),
   ('dependences', '|association| = |coupling|', 'diagrams/dependences', 'association',
-              '⭐⭐⭐ THE MODEL''S OWN FALSIFIER, WHICH NO EMITTED DOCUMENT COULD STATE. `pm:Coupling` exists so the model can be REFUTED IN ITS OWN FORMAT, and it was mapped `notApplicable` on a reason that ruled out `messageFlow` and was never asked of `association`, whose `sourceRef` and `targetRef` are unconstrained QNames. ⛔ The law is worth as much for what it CANNOT check: an association carries no magnitude and no observation, so |association| = |coupling| passes while the evidence and the strength are both gone'),
+              '⭐⭐⭐ THE MODEL''S OWN FALSIFIER, WHICH NO EMITTED DOCUMENT COULD STATE. `pm:Coupling` exists so the model can be REFUTED IN ITS OWN FORMAT, and the reason that rules out `messageFlow` says nothing about `association`, whose `sourceRef` and `targetRef` are unconstrained QNames. ⛔ The law is worth as much for what it CANNOT check: an association carries no magnitude and no observation, so |association| = |coupling| passes while the evidence and the strength are both gone'),
   ('namespaces', '|targetNamespace| = |notation|', 'composition/notations', 'targetNamespace',
               'a document that does not declare the uri it IS, so nothing can reference it'),
   ('imports', '|import| = |cross-document part reference|', 'diagrams/cross_document', 'import',
@@ -51029,7 +51031,7 @@ SELECT * FROM (VALUES
   ('lane_set',      '|laneSet| = |filing|',       'diagrams/pools', 'laneSet',
               '⛔ THE ONE THAT GOVERNS THE ELIMINATION: a SECOND lane set is how D and N would both be rendered, and every layer then has two lane elements with nothing but a matching name to say they are one layer'),
   ('documentation', '|documentation| = |sentence a relation states|', 'diagrams/annotated', 'documentation',
-              '⛔ IT WAS IN THE CONTAINER LIST AND DOCUMENTATION IS NOT A CONTAINER. The other four frame a document and must appear once; this is an ANNOTATION and may sit on any base element. Written as one per document it fired the moment a lane was annotated, which is the law being right about a fact and wrong about a kind. ⛔⛔ AND ITS IDENTITY READ `|filing| + |layer|` LONG AFTER `diagrams/annotated.sqlc` GREW TO NINE ARMS: the model side is a relation and the identity beside it is prose, so the count stayed exact while the sentence describing it rotted. ⭐ A count is also the wrong instrument here and always was, which is what `states` is for: fifteen documents can carry the right number of sentences and each say something no relation states. examples/diagramming/main.rs reads every one back and asks what states it')
+              '⛔ DOCUMENTATION IS NOT A CONTAINER, WHICH IS WHAT SEPARATES THIS ROW FROM THE OTHER FOUR. They frame a document and must appear once; this is an ANNOTATION and may sit on any base element, so one per document fires the moment a lane is annotated, which is a law right about a fact and wrong about a kind. ⛔⛔ AND THE IDENTITY BESIDE IT IS PROSE WHERE THE MODEL SIDE IS A RELATION, so `diagrams/annotated.sqlc` can grow an arm with this count staying exact and the sentence describing it going stale. ⭐ A count is also the wrong instrument here and always was, which is what `states` is for: fifteen documents can carry the right number of sentences and each say something no relation states. examples/diagramming/main.rs reads every one back and asks what states it')
 ) AS l(slug, law, model_side, element, catches)
 
 ) l
@@ -51266,8 +51268,8 @@ LEFT JOIN pm.filing f ON f.name = s.name
 ) d
  ) x
 UNION ALL
-SELECT 'shapes',   count(*) FROM ( -- BPMN 2.0 DI: one bpmndi:BPMNShape per pool, lane and flow node.
-SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject
+SELECT 'shapes',   count(*) FROM ( -- BPMN 2.0 DI: a bpmndi:BPMNShape per box and a bpmndi:BPMNEdge per route.
+SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject, 'shape' AS di
 FROM ( -- epistemics/documents.sqlc projected to the filing alone; one pool per document.
 SELECT d.filing
 FROM (
@@ -51299,13 +51301,13 @@ LEFT JOIN pm.filing f ON f.name = s.name
 ) d
  ) p
 UNION ALL
-SELECT l.filing, 'lane', l.layer
+SELECT l.filing, 'lane', l.layer, 'shape'
 FROM ( -- pm:Stack/pm:layer, keyed and nothing more.
 SELECT l.filing, l.layer
 FROM pm.layer l
  ) l
 UNION ALL
-SELECT o.filing, 'task', o.label
+SELECT o.filing, 'task', o.label, 'shape'
 FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
 -- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
 --    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
@@ -51314,7 +51316,7 @@ SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::te
 FROM pm.operation o
  ) o
 UNION ALL
-SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer
+SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer, 'shape'
 FROM ( -- diagrams/calls.sqlc pinned to the parts that leave their own document.
 SELECT c.composition, c.composed_layer, c.part_notation, c.part_filing, c.part_layer
 FROM (
@@ -51357,7 +51359,250 @@ JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ) c
 WHERE NOT c.is_local
  ) c
- ) x
+UNION ALL
+SELECT k.filing, 'group', k.layer, 'shape'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) k
+UNION ALL
+SELECT g.filing, 'textAnnotation', g.note, 'shape'
+FROM ( -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
+SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
+FROM ( -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
+SELECT s.filing, s.extent, s.basis
+FROM (
+    -- pm:Stack/pm:scope, with its pm:basis.
+SELECT ss.filing, ss.extent, ss.basis, ss.absent
+FROM pm.stack_scope ss
+
+) s
+ ) s
+UNION ALL
+SELECT s.filing, 'search', 'diagrams/searches.sqlc'
+FROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
+-- laneSet IS the partition the search is about.
+SELECT s.filing,
+       coalesce(s.answer::text, 'stated') AS answer
+FROM (
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
+SELECT cs.filing, cs.absent AS answer, cs.note
+FROM pm.coupling_search cs
+
+) s
+ ) s
+UNION ALL
+SELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d
+UNION ALL
+SELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) c
+ ) g
+UNION ALL
+SELECT d.filing, 'association', d.from_layer || '->' || d.to_layer, 'edge'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d
+ ) x WHERE x.di = 'shape'
+UNION ALL
+SELECT 'edges',    count(*) FROM ( -- BPMN 2.0 DI: a bpmndi:BPMNShape per box and a bpmndi:BPMNEdge per route.
+SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject, 'shape' AS di
+FROM ( -- epistemics/documents.sqlc projected to the filing alone; one pool per document.
+SELECT d.filing
+FROM (
+    --
+-- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
+SELECT s.name AS filing,
+       x.root, x.ns,
+       fi.notation, fi.absent AS notation_absent,
+       f.evidence, f.evidence_absent,
+       x.witness, x.observed_at, x.ran_at
+FROM      pm.source s
+CROSS JOIN XMLTABLE(XMLNAMESPACES('https://example.invalid/assertion/1.0' AS asrt),
+       '/*' PASSING s.body
+       COLUMNS root        text PATH 'local-name(.)',
+               ns          text PATH 'namespace-uri(.)',
+               witness     text PATH 'asrt:witness',
+               observed_at text PATH 'asrt:observedAt',
+               ran_at      text PATH 'asrt:ranAt') x
+LEFT JOIN (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.filing = s.name
+-- ⛔ pm.filing raw, and deliberately: scope/every_filing.sqlc drops evidence_absent, and a
+--    document that declines to say what it is evidence FOR is exactly what this relation reports.
+LEFT JOIN pm.filing f ON f.name = s.name
+
+) d
+ ) p
+UNION ALL
+SELECT l.filing, 'lane', l.layer, 'shape'
+FROM ( -- pm:Stack/pm:layer, keyed and nothing more.
+SELECT l.filing, l.layer
+FROM pm.layer l
+ ) l
+UNION ALL
+SELECT o.filing, 'task', o.label, 'shape'
+FROM ( -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
+-- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
+--    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
+--    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
+SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
+FROM pm.operation o
+ ) o
+UNION ALL
+SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer, 'shape'
+FROM ( -- diagrams/calls.sqlc pinned to the parts that leave their own document.
+SELECT c.composition, c.composed_layer, c.part_notation, c.part_filing, c.part_layer
+FROM (
+    -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
+       (p.part_filing = p.composition) AS is_local
+FROM (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+
+) c
+WHERE NOT c.is_local
+ ) c
+UNION ALL
+SELECT k.filing, 'group', k.layer, 'shape'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) k
+UNION ALL
+SELECT g.filing, 'textAnnotation', g.note, 'shape'
+FROM ( -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
+SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
+FROM ( -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
+SELECT s.filing, s.extent, s.basis
+FROM (
+    -- pm:Stack/pm:scope, with its pm:basis.
+SELECT ss.filing, ss.extent, ss.basis, ss.absent
+FROM pm.stack_scope ss
+
+) s
+ ) s
+UNION ALL
+SELECT s.filing, 'search', 'diagrams/searches.sqlc'
+FROM ( -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation, because the
+-- laneSet IS the partition the search is about.
+SELECT s.filing,
+       coalesce(s.answer::text, 'stated') AS answer
+FROM (
+    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
+SELECT cs.filing, cs.absent AS answer, cs.note
+FROM pm.coupling_search cs
+
+) s
+ ) s
+UNION ALL
+SELECT DISTINCT d.filing, 'dependence', 'diagrams/dependences.sqlc'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d
+UNION ALL
+SELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'
+FROM ( -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+SELECT DISTINCT i.filing, i.layer
+FROM (
+    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
+SELECT n.filing, n.operation, n.layer,
+       n.low, n.mode, n.high, n.unit, n.absent, n.decider
+FROM pm.induction n
+
+) i
+ ) c
+ ) g
+UNION ALL
+SELECT d.filing, 'association', d.from_layer || '->' || d.to_layer, 'edge'
+FROM ( -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+SELECT c.filing, c.from_layer, c.to_layer
+FROM (
+    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
+SELECT c.filing, c.from_layer, c.to_layer,
+       c.low, c.mode, c.high, c.unit, c.observation
+FROM pm.coupling c
+
+) c
+ ) d
+ ) x WHERE x.di = 'edge'
 UNION ALL
 SELECT 'legends', count(*) FROM ( -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
 SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states

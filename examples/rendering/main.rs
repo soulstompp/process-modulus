@@ -423,11 +423,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut cat_label: std::collections::BTreeMap<String, String> = Default::default();
         let mut cat_members: std::collections::BTreeMap<String, Vec<String>> = Default::default();
         let mut groups: Vec<String> = Vec::new();
+        // ⭐ THE GROUP'S OWN ID, BECAUSE ITS BOX IS DECLARED AGAINST THAT AND NOT AGAINST THE
+        //   CATEGORY IT POINTS AT. Captured in parallel so the hull can be READ instead of
+        //   recomputed from the members this stage happens to have parsed.
+        let mut group_ids: Vec<String> = Vec::new();
+        let mut edge_pts: BTreeMap<String, Vec<(usize, usize)>> = BTreeMap::new();
+        let mut note_ids: Vec<String> = Vec::new();
+        let mut last_edge = String::new();
         // ⭐⭐⭐ C, THE ONLY EDGE IN THIS NOTATION. `F` is drawn as containment and as nodes, so
         //    a line between two lanes has nothing to be confused with, which is the entire reason
         //    the arrowhead is safe: BPMN glosses it as a direction of flow and a coupling is a
         //    DEPENDENCE. ⚠️ Draw `F` as an edge one day and that argument expires.
         let mut deps: Vec<(String, String)> = Vec::new();
+        // ⭐ THE PAIR TO THE ELEMENT'S OWN ID, because the declared route is keyed on the
+        //   `association` and this stage draws by the two lanes it joins.
+        let mut dep_edge_of: BTreeMap<(String, String), String> = BTreeMap::new();
         // ⭐⭐⭐ THE GEOMETRY THE DOCUMENT DECLARES, READ AND NEVER INVENTED. A program that
         //    invents coordinates derives the SVG's layout from nothing, and its own header's
         //    claim -- a cache extracted from the GENERATED artifact -- is then false of the one
@@ -508,13 +518,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             }
                         }
                         "group" => {
-                            if let Some(c) = attr("categoryValueRef") { groups.push(c); }
+                            if let Some(c) = attr("categoryValueRef") {
+                                groups.push(c);
+                                group_ids.push(attr("id").unwrap_or_default());
+                            }
+                        }
+                        "BPMNEdge" => {
+                            last_edge = attr("bpmnElement")
+                                .map(|q| q.rsplit(':').next().unwrap_or("").to_string())
+                                .unwrap_or_default();
+                        }
+                        "waypoint" => {
+                            let num = |k: &str| -> usize {
+                                attr(k).and_then(|v| v.parse().ok()).unwrap_or(0)
+                            };
+                            if !last_edge.is_empty() {
+                                edge_pts.entry(last_edge.clone()).or_default()
+                                        .push((num("x"), num("y")));
+                            }
+                        }
+                        "textAnnotation" => {
+                            note_ids.push(attr("id").unwrap_or_default());
                         }
                         "association" => {
                             let q = |v: Option<String>| {
                                 v.map(|t| t.rsplit(':').next().unwrap_or("").to_string())
                             };
                             if let (Some(a), Some(b)) = (q(attr("sourceRef")), q(attr("targetRef"))) {
+                                dep_edge_of.insert((a.clone(), b.clone()),
+                                                   attr("id").unwrap_or_default());
                                 deps.push((a, b));
                             }
                             bpmn_deps += 1;
@@ -624,16 +656,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //    the same nodes is a lane, and a reader who takes a group for a lane has read an
         //    overlapping cover as a partition, which is `pm:Layer`'s falsifier drawn by accident.
         //    The dash is doing the work the thick border does for a `callActivity`.
-        for cv in &groups {
+        for (gi, cv) in groups.iter().enumerate() {
             let ms: Vec<&(usize, usize, usize, usize)> = cat_members
                 .get(cv).into_iter().flatten()
                 .filter_map(|n| boxes.get(n)).collect();
             _svg_groups += 1;
             if ms.is_empty() { continue; }
-            let x0 = ms.iter().map(|b| b.0).min().unwrap() - 6;
-            let y0 = ms.iter().map(|b| b.1).min().unwrap() - 6;
-            let x1 = ms.iter().map(|b| b.0 + b.2).max().unwrap() + 6;
-            let y1 = ms.iter().map(|b| b.1 + b.3).max().unwrap() + 6;
+            // ⭐⭐⭐ READ, NOT RECOMPUTED. The emitter derives this hull from the same member boxes
+            //    and declares it, so taking it from the document is what stops the two stages
+            //    being two pictures. ⛔ A cover with no declared shape is a finding rather than
+            //    something to fall back from: it means the emitter stopped declaring one.
+            let gid = group_ids.get(gi).cloned().unwrap_or_default();
+            let &(x0, y0, gw, gh) = bounds.get(&gid).unwrap_or_else(|| panic!(
+                "the document declares no bpmndi:BPMNShape for group {gid}"));
+            let (x1, y1) = (x0 + gw, y0 + gh);
             let label = cat_label.get(cv).cloned().unwrap_or_else(|| cv.clone());
             writeln!(body, r#"  <g class="group" data-category="{}" id="cover-{}"><title>cover: induces into {}</title>"#,
                      esc(&label), sanitise(&label), esc(&label))?;
@@ -655,10 +691,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         for (a, b) in &deps {
             bpmn_pairs.push((doc_name.clone(), a.clone(), b.clone()));
-            let (Some(&(ax, ay, _, ah)), Some(&(bx, by, _, bh))) =
-                (lane_boxes.get(a), lane_boxes.get(b)) else { continue };
-            let (y0, y1) = (ay + ah / 2, by + bh / 2);
-            let gx = ax.min(bx).saturating_sub(26);
+            // ⭐⭐⭐ THE ROUTE IS READ FROM `di:waypoint`, NOT COMPUTED FROM THE TWO LANE BOXES.
+            //    The emitter runs that arithmetic and declares the result, so a third party
+            //    opening the document gets the line and this stage is not a second opinion
+            //    about where it goes.
+            let Some(pts) = dep_edge_of.get(&(a.clone(), b.clone())).and_then(|k| edge_pts.get(k))
+            else { continue };
+            let (Some(&(ax, y0)), Some(&(bx, y1))) = (pts.first(), pts.last()) else { continue };
+            let gx = pts.get(1).map(|p| p.0).unwrap_or(ax);
             writeln!(body, r#"  <g class="dependence" data-from="{}" data-to="{}" id="dep-{}-{}"><title>dependence: {} moves {}</title>"#,
                      esc(a), esc(b), sanitise(a), sanitise(b),
                      esc(&layer_name(a)), esc(&layer_name(b)))?;
@@ -734,9 +774,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   the glyph: it says *these words are commentary and not a container*. A rectangle here
         //   would be one more box on a page whose whole difficulty is which box means what.
         if !notes.is_empty() {
-            let ny = 44 + pool_h;
+            // ⭐⭐⭐ EACH NOTE SITS WHERE THE DOCUMENT PUTS IT. The emitter declares a
+            //    `bpmndi:BPMNShape` per `textAnnotation` now, so these positions are READ, and
+            //    the band is the union of what was read rather than a height computed from a
+            //    count. ⛔ A note whose annotation declares no shape is a finding: it means the
+            //    emitter stopped declaring one and this stage would silently place it by guess.
+            let note_boxes: Vec<(usize, usize, usize, usize)> = note_ids
+                .iter()
+                .map(|nid| *bounds.get(nid).unwrap_or_else(|| panic!(
+                    "the document declares no bpmndi:BPMNShape for textAnnotation {nid}")))
+                .collect();
+            let ny = note_boxes.iter().map(|b| b.1).min().unwrap_or(44 + pool_h);
+            let band = note_boxes.iter().map(|b| b.1 + b.3).max().unwrap_or(ny) - ny;
             writeln!(svg, r#"  <g class="note" id="legend"><title>legend</title>"#)?;
-            writeln!(svg, r#"    <path id="legend-bracket" d="M20 {} h-8 v{} h8" class="noteBox"/>"#, ny, note_h - 8)?;
+            writeln!(svg, r#"    <path id="legend-bracket" d="M20 {} h-8 v{} h8" class="noteBox"/>"#, ny, band)?;
             // ⭐⭐⭐ THE SENTENCE AND WHAT STATES IT ARE TWO LINES, FOR TWO READERS. The note is
             //   the reason the default reading of this page is wrong; the line under it is where
             //   to go and argue. A reader who accepts the note never needs the second line, and a
@@ -749,11 +800,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Some((a, b)) => (a, Some(b.trim_end_matches(']'))),
                     None => (n.as_str(), None),
                 };
-                writeln!(svg, r#"    <text id="legend-{i}-says" x="26" y="{}" class="noteText">{}</text>"#,
-                         ny + 12 + i * 30, esc(says))?;
+                let (bx, by) = note_boxes.get(i).map(|b| (b.0, b.1)).unwrap_or((20, ny));
+                writeln!(svg, r#"    <text id="legend-{i}-says" x="{}" y="{}" class="noteText">{}</text>"#,
+                         bx + 6, by + 12, esc(says))?;
                 if let Some(f) = from {
-                    writeln!(svg, r#"    <text id="legend-{i}-source" x="26" y="{}" class="noteCite">assets/sqlc/{}</text>"#,
-                             ny + 24 + i * 30, esc(f))?;
+                    writeln!(svg, r#"    <text id="legend-{i}-source" x="{}" y="{}" class="noteCite">assets/sqlc/{}</text>"#,
+                             bx + 6, by + 24, esc(f))?;
                 }
                 svg_notes += 1;
             }
@@ -1064,13 +1116,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    document declares its own picture now, and this is the law that the SVG is a rendering
     //    of that declaration rather than a second opinion beside it.
     // ------------------------------------------------------------------
+    // ⛔⛔⛔ THE EXPECTED TRACE IS PER ELEMENT KIND, BECAUSE NOT EVERY DECLARED SHAPE IS A BOX.
+    //    A pool, a lane and a flow node are each drawn as a `rect` carrying
+    //    `x`/`y`/`width`/`height`, so one literal string proves the bounds was honoured. BPMN's
+    //    glyph for a `textAnnotation` is an OPEN BRACKET, and a rect there would be one more box
+    //    on a page whose whole difficulty is which box means what.
+    // ⭐⭐ So a declared bounds is honoured by the mark THAT KIND takes: a rect kind owes the
+    //    literal bounds, an annotation owes its text inside the box it is given. ⚠️ Getting this
+    //    wrong in the lenient direction is the whole risk, so the two forms are counted apart and
+    //    printed: a law that accepted anything for the second kind would be no law.
     let mut misplaced = Vec::new();
     let mut placed = 0usize;
+    let mut placed_as_text = 0usize;
     for path in &files {
         let doc = fs::read_to_string(path)?;
         let svg = fs::read_to_string(drawing_of(path)).unwrap_or_default();
         let mut rest = doc.as_str();
         while let Some(i) = rest.find("<dc:Bounds ") {
+            // ⭐ The element the bounds belongs to is the `bpmnElement` of the shape that opened
+            //   just before it, which is the nearest one behind this position.
+            // ⛔ THE OFFSET MUST INCLUDE `i`, so the slice ends at the bounds tag and not at the
+            //   start of `rest`. Taken from `rest` it stops at the PREVIOUS match and attributes
+            //   every box to whichever element was declared before it, silently.
+            let abs = doc.len() - rest.len() + i;
+            let subject = doc[..abs]
+                .rmatch_indices("bpmnElement=\"")
+                .next()
+                .map(|(j, m)| doc[j + m.len()..].split('"').next().unwrap_or("").to_string())
+                .unwrap_or_default();
             rest = &rest[i + 11..];
             let end = rest.find("/>").unwrap_or(rest.len());
             let tag = &rest[..end];
@@ -1080,11 +1153,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .map(|(v, _)| v.to_string())
                     .unwrap_or_default()
             };
-            let want = format!("x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\"",
-                               g("x"), g("y"), g("width"), g("height"));
+            let is_note = subject.rsplit(':').next().unwrap_or("").starts_with("note_");
+            let want = if is_note {
+                // the annotation's text, placed inside the box the document gave it
+                let y: usize = g("y").parse().unwrap_or(0);
+                format!("y=\"{}\" class=\"noteText\"", y + 12)
+            } else {
+                format!("x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\"",
+                        g("x"), g("y"), g("width"), g("height"))
+            };
             placed += 1;
+            if is_note { placed_as_text += 1 }
             if !svg.contains(&want) {
-                misplaced.push(format!("{}: {want}", path.display()));
+                misplaced.push(format!("{}: {} {want}", path.display(), subject));
             }
             rest = &rest[end..];
         }
@@ -1134,8 +1215,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for path in &files {
         let doc = fs::read_to_string(drawing_of(path)).unwrap_or_default();
         let body = doc.split_once("</defs>").map(|(_, b)| b).unwrap_or(&doc);
-        // ⛔⛔ UNIQUE WITHIN A DOCUMENT, WHICH IS ALL AN `id` PROMISES, AND THE FIRST VERSION OF
-        //   this law checked it across all of them at once and accused every lane. A REPEAT
+        // ⛔⛔ UNIQUE WITHIN A DOCUMENT, WHICH IS ALL AN `id` PROMISES, so a law checking it
+        //   across all of them at once accuses every lane. A REPEAT
         //   ACROSS DOCUMENTS IS THE MECHANISM RATHER THAN THE DEFECT: `lane_every-absence_mixer`
         //   is the same lane in the filing's drawing and in the layer graph's, and that is what
         //   makes `href="...#lane_every-absence_mixer"` resolve to the same layer in both.
@@ -1278,17 +1359,172 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("      containment is a tree; the cover, each dependence and the legend are separate");
     println!("      groups because they CROSS it, so a reader can hide them one at a time.");
 
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ EVERY MARK'S GEOMETRY IS DECLARED READ OR COMPUTED, AND THREE KINDS WERE EXEMPT IN
+    //    SILENCE. `misplaced` compares each mark against the `bpmndi:BPMNShape` for it, so it
+    //    is a statement about the marks that HAVE one, and `placed` reads as a completeness
+    //    figure while three kinds sit outside it: the cover box is the union of its members', a
+    //    dependence line is routed through the gutter, and the legend band is sized from the
+    //    notes it holds. Measured: **no** `bpmnElement` beginning `grp_`, `assoc_` or `note_`
+    //    is ever the subject of a declared shape, in any of the 18 documents.
+    //
+    // ⛔ AND THE FATE ROSTER SAYS THE OPPOSITE IN THIS FILE. `BPMNShape` is filed as *READ and
+    //    never computed*, which is true of a pool, a lane and a flow node and false of the other
+    //    three. A claim narrower than it reads, in the stage whose own comment says it stopped
+    //    inventing coordinates the moment it could read them.
+    //
+    // ⭐⭐⭐ AND THE REASON IS NOT THIS FILE'S TO GIVE. `diagrams/shapes.sqlc` names these three
+    //    and says why: *filing a box for a derived shape would file a value that can disagree
+    //    with the thing that computes it*, which is the same test `eliminations/derived.sqlc`
+    //    passes one algebra over. A derivable coordinate must not be FILED, exactly as a
+    //    derivable magnitude must not be. ⛔ A row here saying *no shape is declared for a group*
+    //    would be a fact about the artifact standing where a principle belongs, and it would make
+    //    a decision look settled that this stage does not get to make.
+    //
+    // ⚠️ AND THE PRINCIPLE DOES NOT SAY WHAT IT LOOKS LIKE IT SAYS. It forbids FILING a derived
+    //    coordinate in a relation; it says nothing against DERIVING one into an artifact, which
+    //    is what the three lines below already do into the SVG. So whether the emitter should
+    //    derive them into `bpmndi` as well is open, and the answer would move all six of these
+    //    rows to `read`. `diagrams/shapes.sqlc` carries no coordinates for anything, so that is
+    //    a question about the EMITTER and not a missing relation.
+    //
+    // ⭐⭐ WHAT THIS ROSTER IS FOR, THEN: a fourth kind cannot join the three without somebody
+    //    saying so, and the shortfall is a printed figure rather than something an outside
+    //    reader has to find. Closed both ways, like the two rosters above.
+    //    docs/plans/FINDINGS-2026-09-10.
+    // ------------------------------------------------------------------
+    // ⚠️ AND THE MARK COUNT IS NOT THE ELEMENT COUNT, WHICH IS THIS SESSION'S OWN LESSON ARRIVING
+    //   HERE. One legend bracket holds every annotation in its document, so `noteBox` is 15 marks
+    //   over 35 `textAnnotation` elements. Reporting 15 would read as fifteen annotations. Each
+    //   row carries the element it stands for and both numbers are printed.
+    let geometry: &[(&str, &str, &str, &str)] = &[
+        ("poolBox",  "participant",    "read",    "bpmndi:BPMNShape for the participant"),
+        ("laneBox",  "lane",           "read",    "bpmndi:BPMNShape for the lane"),
+        ("activity", "task",           "read",    "bpmndi:BPMNShape for the flow node"),
+        ("groupBox", "group",          "read",    "bpmndi:BPMNShape for the group, whose hull the emitter derives from its members"),
+        ("depLine",  "association",    "read",    "bpmndi:BPMNEdge, four di:waypoints describing the gutter run"),
+        // ⭐⭐⭐ `derived` IS THE THIRD STATE AND IT IS NOT A SOFTER `computed`. This bracket is
+        //    the only mark on the page that is not any BPMN element's glyph: it groups the
+        //    annotation boxes, and those ARE read. So there is no shape for it to honour and
+        //    nothing being thrown away. ⛔ `computed` means placed from geometry the document
+        //    does not carry, and after this pass NOTHING is in that state, which is the whole
+        //    of finding 2. A row arriving there again is the regression.
+        ("noteBox",  "",               "derived", "a bracket around the annotation boxes, which are read; it is no element's own glyph, so no shape declares it"),
+    ];
+    let svg_all_marks: String = files
+        .iter()
+        .filter_map(|p| fs::read_to_string(drawing_of(p)).ok())
+        .collect();
+    let bpmn_all_docs: String = files.iter().filter_map(|p| fs::read_to_string(p).ok()).collect();
+    let mark_count = |class: &str| -> usize {
+        svg_all_marks.matches(&format!("class=\"{class}")).count()
+    };
+    // ⛔⛔⛔ THE DRAWN KINDS COME OFF THE ARTIFACT, NOT OFF A LIST BESIDE THE ROSTER. Written as a
+    //    literal checked against a literal this arm could never report a kind nobody declared,
+    //    which is the contract-derived-from-what-it-governs defect and the exact shape of the
+    //    hole it exists to close. Every `class` on a `rect` or a `path` in every drawing must be
+    //    on the roster above, so a new mark added to this stage fails the run.
+    let mut drawn_kinds: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    let mut rest = svg_all_marks.as_str();
+    // ⛔ THE MINIMUM OF THE TWO, NOT `or_else`. `or_else` only looks for a path when there is no
+    //   rect left in the whole remainder, so every path before the last rect was skipped and this
+    //   arm found four kinds of six. A scan that silently sees less than the page is the defect
+    //   this roster is for, one level down.
+    while let Some(i) = [rest.find("<rect "), rest.find("<path ")].into_iter().flatten().min() {
+        rest = &rest[i + 6..];
+        let Some(gt) = rest.find('>') else { break };
+        if let Some((_, after)) = rest[..gt].split_once("class=\"") {
+            if let Some((v, _)) = after.split_once('"') {
+                if let Some(first) = v.split_whitespace().next() {
+                    drawn_kinds.insert(first.to_string());
+                }
+            }
+        }
+        rest = &rest[gt..];
+    }
+    let undeclared: Vec<&String> = drawn_kinds
+        .iter()
+        .filter(|k| !geometry.iter().any(|g| g.0 == k.as_str()))
+        .collect();
+    let stale_geom: Vec<&str> = geometry.iter().map(|g| g.0).filter(|c| mark_count(c) == 0).collect();
+    let element_count = |el: &str| -> usize {
+        bpmn_all_docs.matches(&format!("<{el} ")).count() + bpmn_all_docs.matches(&format!("<{el}>")).count()
+    };
+    // ⛔ THE CONVERSE ARM, AND IT IS THE ONE THAT WOULD CATCH THE REPAIR GOING HALF WAY. A kind
+    //   declared `computed` whose element DOES have a declared shape is a document offering
+    //   geometry this stage throws away, which is the same disagreement pointing the other way.
+    let ignored: Vec<&str> = geometry
+        .iter()
+        .filter(|g| g.2 == "computed")
+        .map(|g| g.0)
+        .filter(|c| {
+            let prefix = match *c { "groupBox" => "grp_", "depLine" => "dep_", _ => "note_" };
+            bpmn_all_docs.contains(&format!("bpmnElement=\"tns:{prefix}"))
+                || bpmn_all_docs.contains(&format!("bpmnElement=\"{prefix}"))
+        })
+        .collect();
+
     println!("\nTHE DECLARED GEOMETRY, AGAINST WHAT THE SVG DREW");
-    println!("   {placed} bpmndi:BPMNShape bounds, {} drawn somewhere else", misplaced.len());
+    let (mut computed_marks, mut computed_els) = (0usize, 0usize);
+    for (class, el, source, why) in geometry {
+        let (n, e) = (mark_count(class), element_count(el));
+        if *source == "computed" { computed_marks += n; computed_els += e }
+        println!("   {source:<8} {class:<9} {n:>3} marks / {e:>2} <{el}>   {why}");
+    }
+    println!("   {placed} bpmndi:BPMNShape bounds read, {placed_as_text} of them honoured by an \
+              annotation's text rather than by a rect, {} drawn somewhere else, {computed_marks} \
+              marks placed by this stage for {computed_els} elements",
+             misplaced.len());
+    println!("   {} mark kinds on the page, every one declared read, derived or computed", drawn_kinds.len());
     assert!(placed > 0, "no document declares a box, so this stage is inventing geometry again");
+    // ⛔ THE LENIENT FORM NEEDS A POSITIVE CONTROL, because it is the one that could accept
+    //   anything. At zero it has never run and the strict form is the only form there is; at all
+    //   of them the strict form has never run and every box is checked by the weaker test.
+    assert!(
+        placed_as_text > 0 && placed_as_text < placed,
+        "the lenient arm of this law, a bounds honoured by an annotation's text, covers \
+         {placed_as_text} of {placed} declared boxes, so one of the two arms is doing no work"
+    );
     assert!(
         misplaced.is_empty(),
         "the SVG draws a shape at coordinates the document does not declare, so the picture and \
          the document are two pictures of one model: {misplaced:?}"
     );
-    println!("   ⭐ Every box is where the document says. `bpmndi:BPMNDiagram` is the SVG's proper");
-    println!("      place in the document, and the SVG is now a rendering of it rather than a");
-    println!("      second opinion computed beside it.");
+    assert!(
+        undeclared.is_empty(),
+        "the SVG draws a mark whose geometry this roster does not declare as read or computed, \
+         so a fourth kind can be placed by guesswork in silence exactly as three already were: \
+         {undeclared:?}"
+    );
+    assert!(
+        stale_geom.is_empty(),
+        "this roster declares a geometry source for a mark no drawing carries, so it describes a \
+         renderer that no longer exists: {stale_geom:?}"
+    );
+    let mis_stated: Vec<&str> = geometry
+        .iter()
+        .filter(|g| (g.2 == "derived") != g.1.is_empty())
+        .map(|g| g.0)
+        .collect();
+    assert!(
+        mis_stated.is_empty(),
+        "a mark declares `derived` and names an element, or declares read/computed and names \
+         none. `derived` means it is no element's glyph, which is exactly why it owes no shape: \
+         {mis_stated:?}"
+    );
+    assert!(
+        ignored.is_empty(),
+        "a mark is declared `computed` and its element HAS a bpmndi shape in the document, so \
+         this stage is throwing away geometry a document offered: {ignored:?}"
+    );
+    println!("   ⭐ Every box declared in the document is where the document says, and this stage");
+    println!("      places nothing a document could have declared. A cover, a dependence line and");
+    println!("      an annotation each owe a bpmndi shape for that reason: a coordinate computed");
+    println!("      here is a coordinate no other reader of the file has, so a third party opening");
+    println!("      the file gets the pools, the lanes and the tasks and loses the rest silently.");
+    println!("   ⛔ `derived` is the one row that is read from nothing, and it is not a softer");
+    println!("      `computed`: the legend bracket is no BPMN element's glyph, so no shape exists");
+    println!("      for it to honour.");
 
     println!("\nTHE CONTAINMENT, WHICH NO LANE COUNT CAN SEE");
     println!("   {nested} of {} lanes sit inside another", bpmn_parents.len());
@@ -1403,7 +1639,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ("callActivity",   "glyph",    "a THICK rounded rectangle, and the thickness is the notation for substitution"),
         // ⛔⛔⛔ THIS ROW IS AT THE WRONG GRAIN AND ANSWERS FOR ONE USE OUT OF SIX. See the
         //   per-USE roster below: `documentation` is an ANNOTATION, admitted on any base element,
-        //   and it carries six different facts with different fates. Calling the KIND `geometry`
+        //   and it carries as many different facts as the `uses` roster below has rows, each with
+        //   its own fate. Calling the KIND `geometry`
         //   on the strength of the rank is the fate roster's own blind spot: 20 kinds, 20 fates,
         //   0 undecided, and 37 facts falling off the page.
         ("documentation",  "geometry", "⚠️ SPLIT BY USE below; the kind alone cannot answer"),
@@ -1414,8 +1651,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   position, and this stage stopped inventing coordinates the moment it could read them.
         ("BPMNDiagram",    "geometry", "the picture itself, which becomes the <svg> element"),
         ("BPMNPlane",      "geometry", "the surface, which becomes the viewBox"),
-        ("BPMNShape",      "geometry", "⭐ the box of a pool, lane or flow node, READ and never computed. A lane with no declared shape fails the run rather than being placed by guesswork"),
+        ("BPMNShape",      "geometry", "⭐ the box of a pool, lane or flow node, READ and never computed: one with no declared shape fails the run rather than being placed by guesswork. ⛔ THAT IS THREE KINDS AND NOT ALL OF THEM, and this row read as all of them until a reader outside this repository refused four documents. The cover, the dependence line and the legend are placed by this stage, and `THE DECLARED GEOMETRY` below is where each mark says which"),
         ("Bounds",         "geometry", "x, y, width, height. The one number this pipeline draws, because a coordinate is not a magnitude"),
+        ("BPMNEdge",       "geometry", "⭐ the route of the one edge in the notation, READ now rather than recomputed here from the two lane boxes"),
+        ("waypoint",       "geometry", "a corner of that route, from the DI namespace proper. Four of them describe the gutter run that keeps the line outside both lanes"),
         ("category",       "geometry", "the scheme; its VALUES are what get drawn"),
         ("categoryValue",  "glyph",    "the dashed box's label, which is the layer induced into"),
         ("categoryValueRef", "geometry", "membership again, drawn by enclosing the node in the dashed box"),
@@ -1447,8 +1686,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // ⛔⛔⛔ AND THE FATE ROSTER'S OWN BLIND SPOT, WHICH IS THE ONE IT WAS BUILT TO CATCH ONE
     //    LEVEL UP. It is keyed by ELEMENT KIND, and `documentation` is not a kind of fact: it is
-    //    an annotation BPMN admits on any base element, so it carries six here. One fate row said
-    //    `geometry, the rank`, which is true of 51 uses out of 88, and the other 37 fell off the
+    //    an annotation BPMN admits on any base element, so it carries as many facts here as the
+    //    roster below has rows, and that number has grown three times since. One fate row said
+    //    `geometry, the rank`, which was true of 51 uses out of 88, and the other 37 fell off the
     //    page with `20 kinds, 20 fates, 0 undecided` printing underneath.
     //
     // ⭐⭐ SO THE USES GET THEIR OWN ROSTER, AND EACH IS COUNTED IN BOTH ARTIFACTS. It is the
@@ -1464,26 +1704,121 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ("pm:Induction:",          "unseen",  "⛔ that a group is a COVER and not a partition, which is the only thing separating it from a lane"),
         ("pm:Stack of",            "unseen",  "provenance: which filing this came from"),
         ("a composed layer and",   "unseen",  "the relationship's own gloss, and it is dropped with the relationship"),
+        ("notation position: ",    "unseen",  "⛔ the node in the filer's OWN process notation that this operation is filed against, which is the whole BPMN interface and is the one sentence here pointing OUT of the model"),
+        // ⛔⛔ AND A NEEDLE CAN MATCH A SIBLING AND BE DECLARED FOR IT. `a composed layer and` is
+        //   the descent's gloss; the attribution's reads `a composed layer, and`. One matches 17
+        //   sentences, `b > 0` passes, and the other 8 are unclaimed. ⭐ A one-directional roster
+        //   cannot see that, because the arm it has is satisfied by the sibling that DID match.
+        ("a composed layer, and a layer of another document",
+                                   "unseen",  "⛔ the attribution relationship's gloss: which composed layer an overlap sits between, and the other document's layer. Dropped with the relationship, for the same reason"),
+        // ⚠️ AND THE NEEDLE IS THE EMITTER'S LITERAL, NEVER THE MODEL'S VALUE. This one sentence
+        //   is emitted once per graph and its opening words come from `diagrams/graphs.sqlc`, so
+        //   a needle taken from the layer graph's wording would leave a fourth graph's sentence
+        //   unclaimed the day one is added. The semicolon clause is the emitter's own.
+        ("; a cycle here is ",     "unseen",  "⛔ what a cycle MEANS in the graph this document draws, and the rule that judges one, which is the sentence separating a misfiled partition from a conversion that is required to close"),
+        // ⭐⭐⭐ THE ONLY USE ON THIS ROSTER THAT IS ABOUT WHAT COULD CONTRADICT THE DRAWING
+        //   RATHER THAN ABOUT WHAT IT SHOWS. Every other sentence here states a filed fact; this
+        //   one states how many of this repository's rules can speak about that layer, so the
+        //   picture carries its own refutability. ⛔ It is `drawn` and the `b == v` arm holds it
+        //   to one mark per fact, because a coverage number that reaches half the boxes is worse
+        //   than one that reaches none: a reader compares what is on the page.
+        ("refutable by ",          "drawn",   "⭐ how many rules can say anything about this layer, and how many of them say no. The count is ink and the THRESHOLD is not: `rank/layer_cover.sqlc` refuses to name an N below which a layer is under-checked, so a shaded band would be this stage asserting what the relation declines to"),
     ];
-    let bpmn_all: String = files.iter().filter_map(|p| fs::read_to_string(p).ok()).collect();
-    let svg_all: String = files
+    // ⛔⛔⛔ COUNT THE FACT, NOT THE SUBSTRING, AND THIS ROSTER DID THE SECOND WHILE SAYING THE
+    //   FIRST. `bpmn_all.matches("rank ")` returned 153 over 51 lanes, because the sentence a
+    //   lane carries says the word three times, and the summary underneath called that number
+    //   *documentation facts*. The skill's own rule, one line long: COUNT THE ARTIFACT AS WHAT
+    //   IT IS. A `documentation` element is one fact whatever its prose repeats, so parse the
+    //   elements and attribute each body once.
+    // ⚠️ It is also why a raw scan is unsafe here at all: every SVG carries a provenance comment
+    //   that quotes the markup it explains, which is how this file once counted 66 lanes.
+    let element_bodies = |src: &str, tag: &str| -> Vec<String> {
+        let (mut out, mut rest) = (Vec::new(), src);
+        let open = format!("<{tag}");
+        while let Some(i) = rest.find(&open) {
+            rest = &rest[i + open.len()..];
+            // ⛔ `<text` must not match `<textAnnotation`: the next character decides whether
+            //   this is the tag or a longer name that starts with it.
+            if !rest.starts_with('>') && !rest.starts_with(' ') {
+                continue;
+            }
+            let Some(gt) = rest.find('>') else { break };
+            rest = &rest[gt + 1..];
+            let Some(end) = rest.find(&format!("</{tag}>")) else { break };
+            out.push(rest[..end].to_string());
+            rest = &rest[end..];
+        }
+        out
+    };
+    let bpmn_facts: Vec<String> = files
+        .iter()
+        .filter_map(|p| fs::read_to_string(p).ok())
+        .flat_map(|d| element_bodies(&d, "documentation"))
+        .collect();
+    let svg_facts: Vec<String> = files
         .iter()
         .filter_map(|p| fs::read_to_string(drawing_of(p)).ok())
+        .flat_map(|d| element_bodies(&d, "text"))
         .collect();
+    // ⭐⭐⭐ AND THE ROSTER IS CLOSED IN BOTH DIRECTIONS NOW, WHICH IS THE HALF THAT WAS MISSING.
+    //    `b > 0` catches a use nothing carries. Nothing caught a documentation body no use
+    //    DECLARES, so a seventh use could be added to the emitter and fall off this page in
+    //    silence, which is the exact defect this roster exists to have caught one level up.
+    //    The element-kind roster above has both arms; this one now does too.
+    let attributed = |body: &str| -> Vec<&str> {
+        uses.iter().map(|u| u.0).filter(|n| body.contains(n)).collect()
+    };
+    let mut unclaimed = Vec::new();
+    let mut ambiguous = Vec::new();
+    for body in &bpmn_facts {
+        match attributed(body).len() {
+            1 => {}
+            0 => unclaimed.push(body.chars().take(70).collect::<String>()),
+            _ => ambiguous.push(body.chars().take(70).collect::<String>()),
+        }
+    }
+    assert!(
+        unclaimed.is_empty(),
+        "a `documentation` element is in the BPMN and no use on this roster claims it, so its \
+         fate is undeclared and it can fall off the page exactly as 71 facts once did: {unclaimed:?}"
+    );
+    assert!(
+        ambiguous.is_empty(),
+        "a `documentation` body matches two uses on this roster, so the attribution is a guess \
+         and every count under it is of something nobody can name: {ambiguous:?}"
+    );
     println!("\nWHAT `documentation` CARRIES, USE BY USE, BECAUSE THE KIND CANNOT ANSWER");
+    println!("   {} declared uses of one element kind, which is why a fate per KIND cannot answer",
+             uses.len());
     let (mut seen_total, mut unseen_total) = (0usize, 0usize);
     for (needle, want, why) in uses {
-        let b = bpmn_all.matches(needle).count();
-        let v = svg_all.matches(needle).count();
+        let b = bpmn_facts.iter().filter(|f| f.contains(needle)).count();
+        let v = svg_facts.iter().filter(|f| f.contains(needle)).count();
         assert!(b > 0, "no document carries `{needle}`, so its fate row describes nothing");
         assert_eq!(
             *want == "drawn", v > 0,
             "`{needle}` is filed as `{want}` and the SVG carries it {v} times: a documentation use \
              either reaches the page or is declared not to, and this row says the wrong one"
         );
+        // ⛔⛔ ONCE PER FACT, NOT MERELY AT ALL. `v > 0` above is satisfied by ONE label
+        //   surviving out of 88, which is exactly what a partial loss looks like: the layer
+        //   graph's ranks arrive through a join in `rank/graph_nodes.sqlc`, and a join that
+        //   quietly stopped matching would drop 37 of them and leave this row still true.
+        assert!(
+            *want != "drawn" || b == v,
+            "`{needle}` is filed as drawn: the BPMN carries it {b} times and the SVG {v}. A fact \
+             declared drawn owes a mark per fact, and a count that only has to be nonzero cannot \
+             tell a whole use from the one member of it that survived"
+        );
         if *want == "drawn" { seen_total += b } else { unseen_total += b }
         println!("   {:<9} {:<24} bpmn {b:>3}   svg {v:>3}   {}", want, needle.trim(), why);
     }
+    assert_eq!(
+        seen_total + unseen_total,
+        bpmn_facts.len(),
+        "the uses do not partition the documentation elements, so the two totals below are \
+         about a different population than the one on disk"
+    );
     // ⛔⛔⛔ AND THIS SUMMARY IS COMPUTED, BECAUSE THE HARDCODED ONE WAS FALSE WITHIN THE HOUR. It
     //   read *`textAnnotation` is the element that would fix this and it is withheld*, written
     //   while that was true and left standing after the element was spent and the notes drawn.

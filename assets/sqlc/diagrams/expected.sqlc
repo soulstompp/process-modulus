@@ -35,7 +35,9 @@ SELECT 'diagrams', count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
 UNION ALL
 SELECT 'planes',   count(*) FROM ( :compose(diagrams/pools.sqlc) ) x
 UNION ALL
-SELECT 'shapes',   count(*) FROM ( :compose(diagrams/shapes.sqlc) ) x
+SELECT 'shapes',   count(*) FROM ( :compose(diagrams/shapes.sqlc) ) x WHERE x.di = 'shape'
+UNION ALL
+SELECT 'edges',    count(*) FROM ( :compose(diagrams/shapes.sqlc) ) x WHERE x.di = 'edge'
 UNION ALL
 SELECT 'legends', count(*) FROM ( :compose(diagrams/legends.sqlc) ) x
 UNION ALL

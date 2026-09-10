@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:filing:acme-platform:2026-08-30-margin"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:filing:acme-platform:2026-08-30-margin"
              id="defs_unstated">
   <collaboration id="collab_unstated">
@@ -34,6 +35,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_unstated_lane_unstated_margin-ratio" bpmnElement="tns:lane_unstated_margin-ratio">
         <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_unstated_note_unstated_scope" bpmnElement="tns:note_unstated_scope">
+        <dc:Bounds x="20" y="94" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_unstated_note_unstated_search" bpmnElement="tns:note_unstated_search">
+        <dc:Bounds x="20" y="124" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

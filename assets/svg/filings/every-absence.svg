@@ -51,7 +51,7 @@
     <text id="lane_every-absence_oven-b-rank" x="732" y="262" class="rankName" text-anchor="end">rank 0</text>
   </g>
   <g class="note" id="legend"><title>legend</title>
-    <path id="legend-bracket" d="M20 294 h-8 v66 h8" class="noteBox"/>
+    <path id="legend-bracket" d="M20 294 h-8 v58 h8" class="noteBox"/>
     <text id="legend-0-says" x="26" y="306" class="noteText">SCOPE: complete. This pool is a PROJECTION of one system and not the system.</text>
     <text id="legend-0-source" x="26" y="318" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
     <text id="legend-1-says" x="26" y="336" class="noteText">COUPLING SEARCH: none. An absent dependence line is NOT independence.</text>

@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:filing:holding-company:2026-08-31"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:f0="urn:example:filing:group-parent:2026-08-31"
              targetNamespace="urn:example:filing:holding-company:2026-08-31"
              id="defs_merge-holding-composition">
@@ -52,6 +53,52 @@
       <documentation>an observed dependence: relieving `staff` moved `shift-line`. NOT a supply edge and never evidence for a fusion. ⛔ What was observed, and how strongly, is not here. [assets/sqlc/diagrams/dependences.sqlc]</documentation>
     </association>
   </process>
+  <bpmndi:BPMNDiagram id="diagram_merge-holding-composition">
+    <bpmndi:BPMNPlane id="plane_merge-holding-composition" bpmnElement="tns:collab_merge-holding-composition">
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_pool" bpmnElement="tns:pool_merge-holding-composition" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="174"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_compute" bpmnElement="tns:lane_merge-holding-composition_compute">
+        <dc:Bounds x="120" y="46" width="620" height="56"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-pt" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-pt">
+        <dc:Bounds x="290" y="52" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-us" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-us">
+        <dc:Bounds x="290" y="74" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_shift-line" bpmnElement="tns:lane_merge-holding-composition_shift-line">
+        <dc:Bounds x="120" y="108" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_shift-line_merge-group-composition_shift-line" bpmnElement="tns:call_merge-holding-composition_shift-line_merge-group-composition_shift-line">
+        <dc:Bounds x="290" y="114" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_staff" bpmnElement="tns:lane_merge-holding-composition_staff">
+        <dc:Bounds x="120" y="148" width="620" height="56"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_labour" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_labour">
+        <dc:Bounds x="290" y="154" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_on-call" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_on-call">
+        <dc:Bounds x="290" y="176" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_note_merge-holding-composition_dependence" bpmnElement="tns:note_merge-holding-composition_dependence">
+        <dc:Bounds x="20" y="218" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_note_merge-holding-composition_scope" bpmnElement="tns:note_merge-holding-composition_scope">
+        <dc:Bounds x="20" y="248" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-holding-composition_note_merge-holding-composition_search" bpmnElement="tns:note_merge-holding-composition_search">
+        <dc:Bounds x="20" y="278" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_merge-holding-composition_staff_shift-line" bpmnElement="tns:dep_merge-holding-composition_staff_shift-line">
+        <di:waypoint x="120" y="176"/>
+        <di:waypoint x="94" y="176"/>
+        <di:waypoint x="94" y="125"/>
+        <di:waypoint x="120" y="125"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
   <relationship type="process-modulus:part" direction="Forward">
     <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
     <source>tns:lane_merge-holding-composition_compute</source>
@@ -87,35 +134,4 @@
     <source>tns:lane_merge-holding-composition_compute</source>
     <target>f0:lane_merge-group-composition_compute-pt</target>
   </relationship>
-  <bpmndi:BPMNDiagram id="diagram_merge-holding-composition">
-    <bpmndi:BPMNPlane id="plane_merge-holding-composition" bpmnElement="tns:collab_merge-holding-composition">
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_pool" bpmnElement="tns:pool_merge-holding-composition" isHorizontal="true">
-        <dc:Bounds x="8" y="36" width="744" height="174"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_compute" bpmnElement="tns:lane_merge-holding-composition_compute">
-        <dc:Bounds x="120" y="46" width="620" height="56"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-pt" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-pt">
-        <dc:Bounds x="290" y="52" width="440" height="18"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_compute_merge-group-composition_compute-us" bpmnElement="tns:call_merge-holding-composition_compute_merge-group-composition_compute-us">
-        <dc:Bounds x="290" y="74" width="440" height="18"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_shift-line" bpmnElement="tns:lane_merge-holding-composition_shift-line">
-        <dc:Bounds x="120" y="108" width="620" height="34"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_shift-line_merge-group-composition_shift-line" bpmnElement="tns:call_merge-holding-composition_shift-line_merge-group-composition_shift-line">
-        <dc:Bounds x="290" y="114" width="440" height="18"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_lane_merge-holding-composition_staff" bpmnElement="tns:lane_merge-holding-composition_staff">
-        <dc:Bounds x="120" y="148" width="620" height="56"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_labour" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_labour">
-        <dc:Bounds x="290" y="154" width="440" height="18"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-holding-composition_call_merge-holding-composition_staff_merge-group-composition_on-call" bpmnElement="tns:call_merge-holding-composition_staff_merge-group-composition_on-call">
-        <dc:Bounds x="290" y="176" width="440" height="18"/>
-      </bpmndi:BPMNShape>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
 </definitions>

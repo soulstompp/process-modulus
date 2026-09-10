@@ -1,5 +1,5 @@
-# THE PARTS THAT CROSS A DOCUMENT, WHICH IS THE `callActivity` POPULATION AND NO LONGER THE WHOLE
-# PART TABLE. One row per part whose target lives in another filing.
+# THE PARTS THAT CROSS A DOCUMENT, WHICH IS THE `callActivity` POPULATION AND NOT THE WHOLE PART
+# TABLE. One row per part whose target lives in another filing.
 #
 # ⭐⭐⭐ THE PIN IS IN THE FILE NAME BECAUSE IT IS NOT IN THE KEY, AND A RELATION THAT RESTRICTS A DIMENSION MUST DECLARE IT.
 #    `|callActivity| + |subProcess| = |part|` is one law over two elements, and a law of that

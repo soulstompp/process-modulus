@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:declaracao:padaria-do-largo:2026-08-30"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:declaracao:padaria-do-largo:2026-08-30"
              id="defs_contrato-empresarial">
   <category id="cat_contrato-empresarial" name="induction">
@@ -75,6 +76,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_contrato-empresarial_task_contrato-empresarial_Fechar_um_contrato_empresarial" bpmnElement="tns:task_contrato-empresarial_Fechar_um_contrato_empresarial">
         <dc:Bounds x="290" y="172" width="440" height="18"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_grp_contrato-empresarial_capacidade-entregavel" bpmnElement="tns:grp_contrato-empresarial_capacidade-entregavel">
+        <dc:Bounds x="284" y="166" width="452" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_cover" bpmnElement="tns:note_contrato-empresarial_cover">
+        <dc:Bounds x="20" y="214" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_scope" bpmnElement="tns:note_contrato-empresarial_scope">
+        <dc:Bounds x="20" y="244" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_search" bpmnElement="tns:note_contrato-empresarial_search">
+        <dc:Bounds x="20" y="274" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

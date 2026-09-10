@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:filing:acme-platform:2026-08-30"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:filing:acme-platform:2026-08-30"
              id="defs_enterprise-contract">
   <category id="cat_enterprise-contract" name="induction">
@@ -75,6 +76,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_enterprise-contract_lane_enterprise-contract_support-cover" bpmnElement="tns:lane_enterprise-contract_support-cover">
         <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_grp_enterprise-contract_capability" bpmnElement="tns:grp_enterprise-contract_capability">
+        <dc:Bounds x="284" y="126" width="452" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_note_enterprise-contract_cover" bpmnElement="tns:note_enterprise-contract_cover">
+        <dc:Bounds x="20" y="214" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_note_enterprise-contract_scope" bpmnElement="tns:note_enterprise-contract_scope">
+        <dc:Bounds x="20" y="244" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_enterprise-contract_note_enterprise-contract_search" bpmnElement="tns:note_enterprise-contract_search">
+        <dc:Bounds x="20" y="274" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:fixture:audit-firm:every-local-part"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:f0="urn:example:fixture:bakery:every-absence"
              targetNamespace="urn:example:fixture:audit-firm:every-local-part"
              id="defs_every-local-part">
@@ -40,11 +41,6 @@
       <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
     </textAnnotation>
   </process>
-  <relationship type="process-modulus:part" direction="Forward">
-    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
-    <source>tns:lane_every-local-part_as-filed</source>
-    <target>f0:lane_every-absence_oven</target>
-  </relationship>
   <bpmndi:BPMNDiagram id="diagram_every-local-part">
     <bpmndi:BPMNPlane id="plane_every-local-part" bpmnElement="tns:collab_every-local-part">
       <bpmndi:BPMNShape id="shape_every-local-part_pool" bpmnElement="tns:pool_every-local-part" isHorizontal="true">
@@ -62,6 +58,17 @@
       <bpmndi:BPMNShape id="shape_every-local-part_call_every-local-part_as-filed_every-absence_oven" bpmnElement="tns:call_every-local-part_as-filed_every-absence_oven">
         <dc:Bounds x="304" y="112" width="420" height="18"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_scope" bpmnElement="tns:note_every-local-part_scope">
+        <dc:Bounds x="20" y="164" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_search" bpmnElement="tns:note_every-local-part_search">
+        <dc:Bounds x="20" y="194" width="720" height="28"/>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
+  <relationship type="process-modulus:part" direction="Forward">
+    <documentation>a composed layer and the layer it is composed FROM. `calledElement` names a process, so the call beside this one is at document grain; this is the same fact at layer grain. [assets/sqlc/diagrams/descents.sqlc]</documentation>
+    <source>tns:lane_every-local-part_as-filed</source>
+    <target>f0:lane_every-absence_oven</target>
+  </relationship>
 </definitions>

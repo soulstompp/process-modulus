@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:fixture:group:every-unsized-conversion"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:fixture:group:every-unsized-conversion"
              id="defs_every-unsized-conversion">
   <collaboration id="collab_every-unsized-conversion">
@@ -49,6 +50,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_every-unsized-conversion_lane_every-unsized-conversion_team-b" bpmnElement="tns:lane_every-unsized-conversion_team-b">
         <dc:Bounds x="134" y="106" width="600" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_scope" bpmnElement="tns:note_every-unsized-conversion_scope">
+        <dc:Bounds x="20" y="164" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_search" bpmnElement="tns:note_every-unsized-conversion_search">
+        <dc:Bounds x="20" y="194" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

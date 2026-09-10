@@ -1,24 +1,44 @@
-# EVERYTHING THE DIAGRAM INTERCHANGE OWES A BOX. One row per pool, per lane and per flow node.
+# EVERYTHING THE DIAGRAM INTERCHANGE OWES A SHAPE OR AN EDGE. One row per drawn element.
 #
-# ⭐⭐⭐ THE PRIMITIVES ONLY, AND THE OMISSIONS ARE THE ARGUMENT. A `group`, an `association` and
-#    a `textAnnotation` are all DRAWN, and none of them is here, because each is DERIVED from
-#    these boxes: a group is the union of its members', a coupling line is a route between two
-#    lanes', a legend hangs under the pool. Filing a box for a derived shape would file a value
-#    that can disagree with the thing that computes it, which is this repository's own definition
-#    of a stale cache.
+# ⭐⭐⭐ EVERY DRAWN ELEMENT IS HERE, INCLUDING THE THREE THAT ARE DERIVED. A `group`, an
+#    `association` and a `textAnnotation` are each computed from the primitives' boxes, and it is
+#    tempting to leave them out on the argument that a derived value can disagree with what
+#    computes it. ⛔ That argument is about the wrong column: this relation carries no `x` and no
+#    `y` for ANYTHING. It says which elements OWE a shape, never where the shape is, so a row
+#    here files no coordinate and the derivation stays in `examples/diagramming/main.rs`, which
+#    computes the primitives' geometry anyway.
 #
-# ⛔ AND IT IS THE SAME TEST `eliminations/derived.sqlc` PASSES. A magnitude that can be derived
-#   must not be filed; a coordinate that can be derived must not be filed either. The difference
-#   is only that one of them is arithmetic and the other is geometry.
--- BPMN 2.0 DI: one bpmndi:BPMNShape per pool, lane and flow node.
-SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject
+# ⛔ AND AN ELEMENT WITH NO ROW HERE GETS NO DIAGRAM INTERCHANGE, so `examples/rendering/main.rs` must
+#    derive its geometry a second time from the artifact it just read, and any other reader loses
+#    it silently: absent DI is not an error, it is nothing drawn.
+#
+# ⛔ IT IS STILL THE SAME TEST `eliminations/derived.sqlc` PASSES, and the test still bites. A
+#   magnitude that can be derived must not be FILED; a coordinate that can be derived must not be
+#   filed either. Neither is filed here. Deriving one INTO AN ARTIFACT is what both stages do and
+#   what the test was never about.
+#
+# ⚠️ `di` IS DECLARED BECAUSE BPMN HAS TWO CARRIERS AND THEY ARE NOT INTERCHANGEABLE. A box is a
+#   `bpmndi:BPMNShape` with `dc:Bounds`; a route is a `bpmndi:BPMNEdge` with `di:waypoint`s, in a
+#   third namespace. An association is the only thing here that is a route, and counting it with
+#   the boxes would make `|shapes|` a number that matches nothing in the document.
+-- BPMN 2.0 DI: a bpmndi:BPMNShape per box and a bpmndi:BPMNEdge per route.
+SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject, 'shape' AS di
 FROM ( :compose(diagrams/pools.sqlc) ) p
 UNION ALL
-SELECT l.filing, 'lane', l.layer
+SELECT l.filing, 'lane', l.layer, 'shape'
 FROM ( :compose(layers/every_layer.sqlc) ) l
 UNION ALL
-SELECT o.filing, 'task', o.label
+SELECT o.filing, 'task', o.label, 'shape'
 FROM ( :compose(entries/operations.sqlc) ) o
 UNION ALL
-SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer
+SELECT c.composition, 'callActivity', c.composed_layer || '<-' || c.part_filing || '/' || c.part_layer, 'shape'
 FROM ( :compose(diagrams/foreign_calls.sqlc) ) c
+UNION ALL
+SELECT k.filing, 'group', k.layer, 'shape'
+FROM ( :compose(diagrams/categories.sqlc) ) k
+UNION ALL
+SELECT g.filing, 'textAnnotation', g.note, 'shape'
+FROM ( :compose(diagrams/legends.sqlc) ) g
+UNION ALL
+SELECT d.filing, 'association', d.from_layer || '->' || d.to_layer, 'edge'
+FROM ( :compose(diagrams/dependences.sqlc) ) d

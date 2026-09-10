@@ -14,10 +14,10 @@
 #      cover       a dashed box around nodes reads as a CONTAINER. A group is a cover: an
 #                  operation may be in several and is in exactly one lane.
 #
-# ⛔⛔ AND EVERY ONE OF THEM WAS ALREADY IN THE ARTIFACT AND ON NO PAGE. They sit in
-#   `documentation`, which is an ANNOTATION admitted on any base element and INVISIBLE in every
-#   rendering. `textAnnotation` is the only element in BPMN that puts words on the canvas, and it
-#   was withheld on the reason *documentation is spent instead* -- true, and about the wrong
+# ⛔⛔ AND `documentation` PUTS ALL OF THEM IN THE ARTIFACT AND ON NO PAGE. It is an ANNOTATION
+#   admitted on any base element and INVISIBLE in every rendering. `textAnnotation` is the only
+#   element in BPMN that puts words on the canvas, and withholding it on the reason
+#   *documentation is spent instead* is true, and about the wrong
 #   property. Two readers need two carriers: a tool reads the documentation where it is attached,
 #   a person reads the note where it is drawn.
 #

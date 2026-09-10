@@ -90,7 +90,7 @@ SELECT * FROM (VALUES
   ('group', 'dashed rounded rectangle', 'artifact', true,
    '⭐⭐⭐ SETTLED, AND THE ANSWER IS THAT IT IS A GLYPH AND NOT A FACT. A group is to `categoryValueRef` what a `lane` is to `flowNodeRef`: the drawn shape of an incidence held on the members. It implies NO containment because the incidence it draws permits many parents, which is why N fits it and D does not. It carries `pm:Induction`, and without it the categoryValueRefs are readable and invisible', NULL),
   ('textAnnotation', 'open bracket with text', 'artifact', true,
-   '⭐⭐⭐ THE ONLY ELEMENT IN BPMN THAT PUTS WORDS ON THE CANVAS, AND THE THIRD ROW REFUSED FOR A PROPERTY OF SOMETHING ADJACENT. It read *documentation is spent instead: it attaches TO an element where this floats beside one*, which is TRUE and is about the wrong property: a `documentation` is INVISIBLE in every rendering and this is not. Measured at the moment it was found: 71 facts in the artifact and 0 on the page. ⛔ Emitted FLOATING, with no `association`, because attaching it would spend that element a second way and the two consolidation filings already carry coupling lines', NULL),
+   '⭐⭐⭐ THE ONLY ELEMENT IN BPMN THAT PUTS WORDS ON THE CANVAS, AND THE THIRD ROW REFUSED FOR A PROPERTY OF SOMETHING ADJACENT. It read *documentation is spent instead: it attaches TO an element where this floats beside one*, which is TRUE and is about the wrong property: a `documentation` is INVISIBLE in every rendering and this is not. `diagrams/legends.sqlc` is the population, and a fact carried in `documentation` alone is in the artifact and on no page. ⛔ Emitted FLOATING, with no `association`, because attaching it would spend that element a second way and the two consolidation filings already carry coupling lines', NULL),
   ('text', 'the annotation''s words', 'artifact', true, 'the note itself, and `tTextAnnotation` carries a `textFormat` this emitter leaves at its default', NULL),
 
   -- INFRASTRUCTURE. No glyph, and the last row is the whole boundary in one element.
@@ -110,15 +110,17 @@ SELECT * FROM (VALUES
   -- half is the half that is about drawing, and `bpmndi:BPMNDiagram` sits in `tDefinitions`'s own
   -- sequence: the document has a designated place for its picture and this one left it empty.
   ('BPMNDiagram', 'none, it is the container of the picture', 'interchange', true,
-   '⭐ THE SVG''S PROPER PLACE IN THE DOCUMENT. Until it was emitted the SVG''s geometry was derived from NOTHING: the renderer invented coordinates, and a cache whose content has no original is a second opinion rather than a cache', NULL),
+   '⭐ THE SVG''S PROPER PLACE IN THE DOCUMENT. A document with no plane leaves the SVG stage to derive its geometry from NOTHING, inventing coordinates, and a cache whose content has no original is a second opinion rather than a cache', NULL),
   ('BPMNPlane', 'none, the surface the shapes sit on', 'interchange', true,
    'the collaboration, drawn. One plane per document, naming the element the picture is OF', NULL),
   ('BPMNShape', 'none, it places a glyph', 'interchange', true,
-   '⭐ the box of a pool, a lane or a flow node. ⛔ NOT of a group, an association or a text annotation: those are DERIVED from these boxes, so declaring them would file a value that can disagree with what computes it', NULL),
+   '⭐ the box of EVERY element that gets one: a pool, a lane, a flow node, a group and a text annotation. ⛔ *NOT a group, an association or a text annotation, those are DERIVED* is an argument aimed at the wrong stage: filing a coordinate in a RELATION is what `diagrams/shapes.sqlc` refuses, while deriving one INTO the artifact is what the emitter does for every box here. An element with no shape is an element every reader but the renderer beside it loses, and loses without an error', NULL),
   ('Bounds', 'none, x/y/width/height', 'interchange', true,
    'the geometry itself, from the DC namespace. The one place in this pipeline where a NUMBER is legitimately drawn, because it is a coordinate and not a magnitude', NULL),
-  ('BPMNEdge', 'none, it routes a connector', 'interchange', false,
-   NULL, '⛔ IT PLACES A `sequenceFlow`, a `messageFlow`, an `association` or a `dataAssociation`, and of those only `association` is spent here. The coupling line IS drawn, and its route is DERIVED from the two lane boxes rather than filed, for the reason `BPMNShape` gives'),
+  ('BPMNEdge', 'none, it routes a connector', 'interchange', true,
+   '⭐ THE COUPLING LINE''S ROUTE, AND IT IS THE ONLY EDGE IN THE NOTATION. It places a `sequenceFlow`, a `messageFlow`, an `association` or a `dataAssociation`, and of those only `association` is spent here, so an edge in one of these documents is a dependence and can be nothing else. Four `di:waypoint`s describe the gutter run, which is what keeps the line outside both lanes', NULL),
+  ('waypoint', 'none, a point on a route', 'interchange', true,
+   '⭐ a corner of an edge, from the DI namespace proper rather than from `bpmndi` or `dc`. An edge could not be given a route without it, which is why the emitter declares a third namespace', NULL),
   ('BPMNLabel', 'none, it places a label', 'interchange', false,
    NULL, 'where a shape''s text sits. Every label here is placed relative to its own box by one rule, so filing a position per label would be filing what a rule already determines'),
   ('BPMNLabelStyle', 'none, a font', 'interchange', false,

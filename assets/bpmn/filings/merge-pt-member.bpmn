@@ -6,6 +6,7 @@
              xmlns:tns="urn:example:filing:pt-member:2026-08-31"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              targetNamespace="urn:example:filing:pt-member:2026-08-31"
              id="defs_merge-pt-member">
   <collaboration id="collab_merge-pt-member">
@@ -52,6 +53,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape_merge-pt-member_lane_merge-pt-member_pessoal" bpmnElement="tns:lane_merge-pt-member_pessoal">
         <dc:Bounds x="120" y="166" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_note_merge-pt-member_scope" bpmnElement="tns:note_merge-pt-member_scope">
+        <dc:Bounds x="20" y="214" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-pt-member_note_merge-pt-member_search" bpmnElement="tns:note_merge-pt-member_search">
+        <dc:Bounds x="20" y="244" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
