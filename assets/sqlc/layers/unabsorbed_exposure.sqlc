@@ -8,9 +8,10 @@
 #    carry it. `S` is an L x 3 matrix and the three buffers are substitutes; the index belongs
 #    in a column, which is where assets/ddl/schema.ddl has always kept it.
 #
-# ⭐⭐ AND THE ESCAPE CLAUSE THAT MAKES IT SOUND WAS ALREADY WRITTEN, FOR ONE BUFFER. "An absent
-#    capacity slack licenses none of this, because nobody knows whether the supply could have
-#    stretched." That is true of all three and was carried to none of the others.
+# ⭐⭐ AND THE ESCAPE CLAUSE THAT MAKES IT SOUND IS WRITTEN FOR ONE BUFFER AND TRUE OF THREE. "An
+#    absent capacity slack licenses none of this, because nobody knows whether the supply could
+#    have stretched." The same holds of inventory and of time, and a clause carried to one of
+#    three reads as though the other two were settled.
 #
 # ✅⛔ AND IT RESTS ON `stated`, NOT ON `measured`. Once every zero carried a `boundOrigin` the
 #    population could be read back, and none of the capacity zeros was measured: `contractual`,

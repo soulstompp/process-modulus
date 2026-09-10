@@ -16,8 +16,9 @@
 #    the one fact table with no typed absence column, so *nobody looked* and *no regime applies*
 #    are stored identically and this rule cannot tell them apart either.
 #
-# ⭐ THE TABLE THIS READS HELD TEN FILED ROWS THAT NO RELATION IN THE TREE HAD EVER READ. Writing
-#   the query needed no schema change: the crossing was already in the corpus, unasked.
+# ⭐ THE TABLE THIS READS HOLDS TEN FILED ROWS AND NEEDED NO SCHEMA CHANGE TO BE ASKED ABOUT. A
+#   crossing sits in the corpus whether or not a relation reads it, which is why the WRITE side
+#   is the only direction that finds a fact nothing queries.
 #
 # ⛔⛔⛔ AND WRITING IT FOUND A SECOND, LARGER SILENCE. `asrt:part/asrt:layer/asrt:regime` names
 #    which of the composition's OWN regimes each part comes under, thirty of them are filed, and

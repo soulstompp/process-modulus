@@ -387,8 +387,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⭐⭐⭐ THE SAME EIGHT ROWS AS A POINTER RATHER THAN AS EVIDENCE, WHICH IS THE DIFFERENCE
     //    THAT HID THEM. §11 above reads `between` as what an elimination is ABOUT; this reads it
     //    as what the document POINTS AT. The model has two `pm:ForeignId` references and only the
-    //    part had a relation naming it as one, so enumerating what this model reaches in other
-    //    documents returned half the answer for as long as nobody asked twice.
+    //    part has a relation naming it as one, so an enumeration of what this model reaches in
+    //    other documents returns half the answer and nothing says which half.
     //
     // ⛔⛔ REPORTED, NEVER ASSERTED. A dangling PART is a violation because the fusion sum needs
     //    it; a dangling `between` is ORDINARY and the schema says so. That licence is exactly why

@@ -526,7 +526,7 @@ impl Narrowing {
 /// Who owns the edge of a claim.
 ///
 /// ⛔⛔ THERE IS NO `none` VARIANT AND THAT IS THE POINT. `bound_fell_with_no_range` fired on the
-/// first generated corpus, three filings out of six, and it was right: `none` says the bound is
+/// first generated corpus, three filings out of six, and it is right: `none` says the bound is
 /// where the MEASUREMENTS FELL, which describes a spread a point claim does not have. The honest
 /// answer for an exact observation is `notApplicable`, and the schema names it one entry below.
 /// Removing the variant is what stops the generator from being able to make the mistake again.

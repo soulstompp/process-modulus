@@ -7,7 +7,7 @@
 #    and did not arrive: an unloaded file leaves no row to read. The unloaded half of the corpus is
 #    unreachable from the database by construction, so it has to be declared.
 #
-# ⛔⛔ AND IT WAS ONLY EVER STATED IN PROSE. `assets/ddl/schema.ddl` says it, beside the `kind`
+# ⛔⛔ AND PROSE IS NOT ENOUGH TO CARRY IT. `assets/ddl/schema.ddl` says it beside the `kind`
 #   CHECK: *documents rooted at `coverage`, `dependence` and `run` that ingest does not yet load*.
 #   That comment is correct and no program reads it, so a fourth kind added tomorrow loads nothing
 #   and says nothing, and the day ingest learns to load one the sentence goes quietly stale. A
