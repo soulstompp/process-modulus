@@ -4,6 +4,13 @@ FROM      (
     -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('decomposition',    '|E| = Σ_filing |E_filing|',  'rank/decomposition',               'partition',  'bag: one edge counted in both scopes'),
+  -- ⭐⭐⭐ NOT A SET IDENTITY, AND IT IS THE FIRST ROW HERE THAT IS NOT. Every other law on this
+  --    roster is a cardinality identity over relations. This one is about the compose DAG: which
+  --    templates may compose the layer DIMENSION. A dimension reaches every layer by
+  --    construction, so a relation composing it hands the whole dimension to every consumer, and
+  --    any downstream bound of the form *this reach is inside that reach* goes vacuous. Measured:
+  --    one edge put the dimension into 20 of 29 rules' closures.
+  ('dimension_use',    'parents(dimension) ⊆ declared', 'algebra/dimension_use',         'roster',     'set: one row per undeclared parent'),
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
   ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
@@ -144,12 +151,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 open_node AS (
@@ -176,12 +186,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -278,12 +291,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -370,12 +386,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_absent IS NOT NULL
@@ -489,12 +508,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -542,12 +564,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -599,12 +624,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -652,12 +680,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -805,12 +836,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 open_node AS (
@@ -837,12 +871,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -939,12 +976,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1031,12 +1071,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_absent IS NOT NULL
@@ -1150,12 +1193,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -1203,12 +1249,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1260,12 +1309,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -1313,12 +1365,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1488,12 +1543,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 open_node AS (
@@ -1520,12 +1578,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1622,12 +1683,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1714,12 +1778,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_absent IS NOT NULL
@@ -1833,12 +1900,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -1886,12 +1956,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -1943,12 +2016,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -1996,12 +2072,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -2171,12 +2250,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 open_node AS (
@@ -2203,12 +2285,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -2305,12 +2390,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -2397,12 +2485,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_absent IS NOT NULL
@@ -2516,12 +2607,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -2569,12 +2663,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high
@@ -2626,12 +2723,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ),
 walk(root_filing, root_layer, filing, layer, depth, path,
@@ -2679,12 +2779,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 WHERE p.factor_low IS DISTINCT FROM p.factor_high

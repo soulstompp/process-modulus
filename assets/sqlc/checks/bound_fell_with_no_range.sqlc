@@ -43,9 +43,10 @@ FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
-    SELECT c.filing, c.owns || ' claim ' || c.seq AS layer,
+    SELECT c.filing, c.layer,
            c.origin_absent IS NOT DISTINCT FROM 'none' AS violates,
-           format('%s %s exactly, and nothing is said to set it', c.mode, c.unit) AS detail
+           format('%s claim %s: %s %s exactly, and nothing is said to set it',
+                  c.owns, c.seq, c.mode, c.unit) AS detail
     FROM (
         :compose(epistemics/point_claims.sqlc)
     ) c

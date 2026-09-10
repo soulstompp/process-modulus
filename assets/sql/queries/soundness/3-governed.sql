@@ -7,6 +7,13 @@ FROM (
     -- the set-algebraic laws this tree's relations claim to obey.
 SELECT * FROM (VALUES
   ('decomposition',    '|E| = Σ_filing |E_filing|',  'rank/decomposition',               'partition',  'bag: one edge counted in both scopes'),
+  -- ⭐⭐⭐ NOT A SET IDENTITY, AND IT IS THE FIRST ROW HERE THAT IS NOT. Every other law on this
+  --    roster is a cardinality identity over relations. This one is about the compose DAG: which
+  --    templates may compose the layer DIMENSION. A dimension reaches every layer by
+  --    construction, so a relation composing it hands the whole dimension to every consumer, and
+  --    any downstream bound of the form *this reach is inside that reach* goes vacuous. Measured:
+  --    one edge put the dimension into 20 of 29 rules' closures.
+  ('dimension_use',    'parents(dimension) ⊆ declared', 'algebra/dimension_use',         'roster',     'set: one row per undeclared parent'),
   ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
   ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
   ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),

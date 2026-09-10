@@ -1,0 +1,68 @@
+# EVERY NODE OF EVERY GRAPH THIS MODEL COMPOSES, WITH WHAT THAT GRAPH'S NODES CARRY.
+# One row per (graph, node).
+#
+# ⭐⭐⭐ A NODE MUST BE JOINABLE, WHICH MEANS THE EDGES MUST NOT LOSE THE KEY FIRST. A node set
+#    derived by dedup'ing the endpoints of a flattened edge list is a set of display strings:
+#    nothing can be joined to it, so a drawing of the layer graph can carry no fact about a
+#    layer except its name, and a renderer with no rank to read draws its own sentinel.
+#
+# ⭐⭐ SO THE ORDER OF OPERATIONS IS THE WHOLE POINT: JOIN AT REAL GRAIN, FLATTEN AFTERWARDS.
+#    The layer arm joins `rank/evaluation_order.sqlc` on `(filing, layer)`, which is the
+#    conformed key `diagrams/lane_grain.sqlc` asserts is whole, and only then concatenates for
+#    the drawing's node id. `rank/graph_edges.sqlc` flattens up front because everything
+#    downstream of it counts. Same idiom, opposite order, and the order is what decides whether
+#    a fact can still be reached.
+#
+# ⛔ `rank` IS NULL ON THE UNIT ARM AND THAT IS `notApplicable`, NOT `unmeasured`. Rank is
+#   `max(depth)` over `F`, a relation on LAYERS. A unit is not a layer and has no position in
+#   that order, so there is no number missing here and none to go looking for. A renderer must
+#   draw no label rather than a number, because printing one states an ordinal for a subject the
+#   model has no ordinal for, which is worse than printing nothing.
+#
+# ⭐⭐⭐ AND THE SECOND FACT A LAYER NODE CARRIES IS HOW MUCH OF THIS REPOSITORY CAN CONTRADICT
+#    IT. `rank/layer_cover.sqlc` counts the rules that examine each layer, 1 to 19 across this
+#    corpus, and `violated` is how many of them said no. Joined here, the drawing of `F` stops
+#    being a picture of what was filed and becomes a picture of what could be REFUTED, which is
+#    the only thing that separates a diagram somebody believes from one they can argue with.
+#
+# ⛔⛔ IT IS ONLY JOINABLE BECAUSE THE CHECKER'S KEY WAS REPAIRED FIRST. Three rules declared
+#    `layer` and returned a claim ADDRESS in that column, so 324 of the checker's 373 distinct
+#    pairs named no layer. This join would have kept 49, dropped 324, shaded most of the graph
+#    as thinly-checked and been wrong about which. `checks/grain.sqlc`'s `unresolvable` arm is
+#    what keeps it true.
+#
+# ⚠️ BOTH ARE NULL ON THE UNIT ARM, FOR RANK'S REASON. No rule declares a unit as its subject,
+#   so a unit is not thinly checked, it is outside the checker's dimension entirely. A zero
+#   would be a claim that somebody looked; the absence is that nobody could.
+#
+# ⚠️ THE NODES ARE THE EDGES' ENDPOINTS AND NOT THE DIMENSION, WHICH IS CORRECT AND IS WORTH
+#   SAYING. 37 of the 51 filed layers are in the layer graph and 14 are not: a layer in no part,
+#   in either direction, is in no composition and is correctly not a node. Taking the nodes from
+#   `layers/every_layer.sqlc` instead would draw a graph that says every layer takes part in a
+#   composition, which is the drawing asserting what the model denies.
+-- rank/graph_edges.sqlc's endpoints, with evaluation_order and layer_cover joined at (filing, layer).
+SELECT 'layers' AS graph,
+       e.filing || '/' || e.layer AS node,
+       r.rank                     AS rank,
+       c.examined_by              AS examined_by,
+       c.violated                 AS violated
+FROM (
+    SELECT p.composition AS filing, p.composed_layer AS layer
+    FROM ( :compose(composition/parts.sqlc) ) p
+    UNION
+    SELECT p.part_filing, p.part_layer
+    FROM ( :compose(composition/parts.sqlc) ) p
+) e
+LEFT JOIN (
+    :compose(rank/evaluation_order.sqlc)
+) r ON r.filing = e.filing AND r.layer = e.layer
+LEFT JOIN (
+    :compose(rank/layer_cover.sqlc)
+) c ON c.filing = e.filing AND c.layer = e.layer
+UNION ALL
+SELECT 'units', u.unit, NULL, NULL, NULL
+FROM (
+    SELECT c.from_unit AS unit FROM ( :compose(units/conversions.sqlc) ) c
+    UNION
+    SELECT c.to_unit        FROM ( :compose(units/conversions.sqlc) ) c
+) u

@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.\n--\n-- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT\n--   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of\n--   two reported five and the rule's detail said so in words. The dedup has to happen in a\n--   subquery and the window has to sit outside it.\nSELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,\n       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,\n       count(*) OVER w                                                    AS members\nFROM (\n    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,\n           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer\n    FROM      (\n        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.\nWITH RECURSIVE\nresolved AS (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\n-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS\n--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is\n--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire\n--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules\n--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment\n--    law over a rule is vacuous the moment the dimension is inside its closure, because the\n--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now\n--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.\nJOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n),\nwalk(root_filing, root_layer, filing, layer, depth, path,\n     factor_low, factor_mode, factor_high, factor_absent) AS (\n        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,\n               ARRAY[p.composition  || '/' || p.composed_layer,\n                     p.part_filing  || '/' || p.part_layer],\n               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),\n               (p.factor_absent IS NOT NULL)\n        FROM resolved p\n    UNION ALL\n        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,\n               w.path || (p.part_filing || '/' || p.part_layer),\n               w.factor_low  * coalesce(p.factor_low,  1),\n               w.factor_mode * coalesce(p.factor_mode, 1),\n               w.factor_high * coalesce(p.factor_high, 1),\n               w.factor_absent OR (p.factor_absent IS NOT NULL)\n        FROM walk w\n        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer\n) CYCLE filing, layer SET is_cycle USING route\nSELECT * FROM walk\n\n    ) a\n    JOIN      (\n        -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.\nWITH RECURSIVE\nresolved AS (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM      (\n    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent\nFROM pm.part p\n\n) p\nJOIN      (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n) fi ON fi.notation = p.part_filing\n-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS\n--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is\n--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire\n--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules\n--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment\n--    law over a rule is vacuous the moment the dimension is inside its closure, because the\n--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now\n--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.\nJOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n),\nwalk(root_filing, root_layer, filing, layer, depth, path,\n     factor_low, factor_mode, factor_high, factor_absent) AS (\n        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,\n               ARRAY[p.composition  || '/' || p.composed_layer,\n                     p.part_filing  || '/' || p.part_layer],\n               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),\n               (p.factor_absent IS NOT NULL)\n        FROM resolved p\n    UNION ALL\n        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,\n               w.path || (p.part_filing || '/' || p.part_layer),\n               w.factor_low  * coalesce(p.factor_low,  1),\n               w.factor_mode * coalesce(p.factor_mode, 1),\n               w.factor_high * coalesce(p.factor_high, 1),\n               w.factor_absent OR (p.factor_absent IS NOT NULL)\n        FROM walk w\n        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer\n) CYCLE filing, layer SET is_cycle USING route\nSELECT * FROM walk\n\n    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer\n        AND b.filing      = a.root_filing AND b.layer      = a.root_layer\n) p\nWINDOW w AS (PARTITION BY p.filing, p.layer)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "co_moves_with_filing",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "co_moves_with_layer",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "class",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "members",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "63f27f4155340e320abc66c6a89c28202a36cd86332d732404c4c1642a9b36fc"
+}

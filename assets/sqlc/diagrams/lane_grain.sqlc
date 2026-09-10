@@ -20,6 +20,13 @@
 #   P x L and not P x L x 3, and the buffer attribution nobody can make is eliminated before any
 #   diagram exists. ⚠️ What the engines DO explain is why a lane is EMPTY: `pm.slack` holds three
 #   rows per layer and every one of them renders as `none`.
+# ⛔⛔ AND IT SEES THE SCHEMA ONLY, WHICH IS WORTH KNOWING BECAUSE THE KEY CAN BE LOST OUTSIDE IT.
+#    This reads `pg_constraint`, so it can prove every foreign key into `pm.layer` names both
+#    columns and can prove nothing about a RELATION that flattens them. Two places have done it:
+#    `rank/graph_edges.sqlc` concatenates on purpose, because everything downstream of it counts
+#    and a count needs only distinct ids; and three rules put a claim address in the checker's
+#    own `layer` column, which `checks/grain.sqlc`'s `unresolvable` arm now refuses. ⭐ Two
+#    guards, one property: this one holds it in the schema, that one holds it in the output.
 -- pg_constraint, for the foreign keys into pm.layer; the grain the lane mapping rests on.
 SELECT c.conrelid::regclass::text                       AS referrer,
        pg_get_constraintdef(c.oid)                      AS reference,

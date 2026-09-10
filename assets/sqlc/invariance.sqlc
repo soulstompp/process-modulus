@@ -29,12 +29,15 @@
 #
 # ⛔⛔ THE DIFF COUNTS AND DOES NOT SUBTRACT, AND THE OBVIOUS WAY IS WRONG. checks/all.sqlc IS
 #    A BAG, and for TWO reasons rather than one. *Three rules examine several items per layer
-#    that produce the same sentence* names one of them and undercounts: the figure is seven
-#    rules across the two reasons. ⭐ `checks/grain.sqlc` prints both live:
-#      REPETITION, 2 rules -- several items per layer saying the same sentence, two shares
-#        against one slack, so identical rows are legitimately repeated;
-#      GRAIN, 5 rules -- the examined item is a PART, finer than the `(filing, layer)` the
-#        contract names, and every row says something DIFFERENT.
+#    that produce the same sentence* names one of them and undercounts. ⭐ The two shapes, with
+#    the tally left to `checks/grain.sqlc`, which prints it live and where it has now moved twice:
+#      REPETITION -- several items per layer saying the SAME sentence, two shares against one
+#        slack, so identical rows are legitimately repeated. `rows > sentences`;
+#      GRAIN -- the examined item is finer than the `(filing, layer)` the contract names, a PART
+#        or a SLACK or a CLAIM, and every row says something DIFFERENT. `rows > layers`.
+#    ⚠️ A rule putting a claim ADDRESS in the `layer` column reads as one row per layer and falls
+#    into NEITHER shape, because the address is unique per row. `checks/grain.sqlc` is where the
+#    key is checked for resolving rather than for being unique.
 #    ⛔ The repair below is right for BOTH and was more general than the reason given for it: `EXCEPT` deduplicates, which means a verdict
 #    that changes only HOW MANY TIMES it is said survives the difference invisibly, and the
 #    file reports `steady` on a rule that moved. Grouping and comparing the two counts keeps

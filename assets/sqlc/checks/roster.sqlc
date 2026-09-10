@@ -1,15 +1,24 @@
 # THE RULES THIS REPOSITORY CLAIMS TO ENFORCE. One row per rule: a slug, WHAT ONE EXAMINED ROW
 # OF IT IS, and the sentence the schema states it in.
 #
-# ⭐⭐⭐ `subject` IS DECLARED BECAUSE THE CONTRACT'S COLUMNS NAME A THING SEVEN RULES DO NOT
+# ⭐⭐⭐ `subject` IS DECLARED BECAUSE THE CONTRACT'S COLUMNS NAME A THING MANY RULES DO NOT
 #    EXAMINE. `checks/all.sqlc` returns `(rule, filing, layer, violates, detail)` and its header
-#    reads *which layer of which filing it is*, which is false for a quarter of these: their
-#    subject is a PART or a SLACK, both finer than a layer. The identity of the examined item
-#    then survives only inside the prose `detail`.
+#    reads *which layer of which filing it is*, which is false wherever the examined item is
+#    finer than a layer: a PART, a SLACK or a CLAIM. The identity of that item then survives
+#    only inside the prose `detail`. ⚠️ The tally is not written here on purpose, because it has
+#    moved twice: `examples/soundness/main.rs` §4 prints it per subject every run.
 #
-# ⛔⛔ SO THE COVERAGE NUMBER HAS A UNIT AND IT WAS NOT PRINTED. *examined 20* means twenty PARTS
-#    for one rule and twenty LAYERS for another, and the `< 3 is thin` threshold was applied
-#    across both. ⚠️ Measured on this corpus, NO rule's verdict changes when counted at layer
+# ⛔⛔⛔ AND A CLAIM-GRAINED RULE MUST STILL REPORT THE CLAIM'S OWN LAYER. Returning the claim's
+#    ADDRESS in that column instead, `pm:nameplate/pm:amount claim 7`, names no filed layer at
+#    all, and the multiplicity law here cannot see it: it asks for ONE ROW PER `(filing, layer)`,
+#    and a value unique per row satisfies that by construction. **What makes the column wrong is
+#    exactly what makes that guard pass.** ⭐ So the address belongs in `detail`, where a finer
+#    subject's identity belongs, and `checks/grain.sqlc`'s `unresolvable` arm asks whether the
+#    key RESOLVES rather than whether it is unique.
+#
+# ⛔⛔ SO THE COVERAGE NUMBER HAS A UNIT AND IT OWES PRINTING. *examined 20* means twenty PARTS
+#    for one rule and twenty LAYERS for another, and a `< 3 is thin` threshold across both grades
+#    two different things alike. ⚠️ Measured on this corpus, NO rule's verdict changes when counted at layer
 #    grain instead, so the harm is latent rather than live -- which is a reason to declare the
 #    unit, not a reason to leave it implicit.
 #
@@ -48,9 +57,9 @@ SELECT * FROM (VALUES
   ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
-  ('narrows_a_point_value', 'layer', 'a point value files narrowsWhen as notApplicable, having no range'),
-  ('range_says_no_range', 'layer', 'a ranged claim does not file narrowsWhen as notApplicable'),
-  ('bound_fell_with_no_range', 'layer', 'a point value does not say its bound is where the measurements fell'),
+  ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range', 'claim', 'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range', 'claim', 'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed', 'part', 'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window', 'layer', 'a derived time slack needs a window that permits the derivation'),
   ('window_not_applicable_on_a_rate', 'layer', 'a window is notApplicable only where the unit has no period under the line'),

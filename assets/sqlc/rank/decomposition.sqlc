@@ -20,44 +20,21 @@
 #
 # ⚠️ A GRAPH THAT SURVIVES IS NOT THEREBY WORTH DRAWING. `claimants` survives trivially, with no
 #   edges at all. Survival is a precondition on an honest per-filing emission and never a reason.
--- rank/cycle_space.sqlc's arithmetic, taken corpus-wide and again per filing, and compared.
-WITH RECURSIVE edges AS (
-    SELECT 'units'::text AS graph, c.filing, c.from_unit AS a, c.to_unit AS b
-    FROM ( :compose(units/conversions.sqlc) ) c
-  UNION
-    SELECT 'layers', p.composition, p.composition || '/' || p.composed_layer,
-           p.part_filing || '/' || p.part_layer
-    FROM ( :compose(composition/parts.sqlc) ) p
-),
-whole AS (
-    SELECT graph, NULL::text AS filing, a, b FROM edges
-  UNION ALL
-    SELECT graph, filing, a, b FROM edges
-),
-nodes AS (SELECT graph, filing, a AS u FROM whole UNION SELECT graph, filing, b FROM whole),
-sym   AS (SELECT graph, filing, a, b FROM whole UNION SELECT graph, filing, b, a FROM whole),
-reach(graph, filing, root, at) AS (
-      SELECT graph, filing, u, u FROM nodes
-    UNION
-      SELECT r.graph, r.filing, r.root, s.b
-      FROM reach r JOIN sym s ON s.graph = r.graph AND s.filing IS NOT DISTINCT FROM r.filing
-                              AND s.a = r.at
-),
-comp AS (SELECT graph, filing, root, min(at) AS component FROM reach GROUP BY graph, filing, root),
-dim AS (
-    SELECT n.graph, n.filing,
-           (SELECT count(*) FROM whole w
-             WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing)
-             - count(DISTINCT n.u) + count(DISTINCT c.component) AS cycle_space_dim
-    FROM nodes n
-    JOIN comp c ON c.graph = n.graph AND c.filing IS NOT DISTINCT FROM n.filing AND c.root = n.u
-    GROUP BY n.graph, n.filing
-)
+# ⭐⭐⭐ AND THE WALK IS GONE FROM THIS FILE. It carried its own `nodes`, `sym`, `reach` and
+#    `comp`, the same twenty lines `rank/cycle_space.sqlc` carried, and this file's own
+#    `filing IS NULL` rows WERE that file's whole output. `rank/graph_measures.sqlc` now
+#    computes both scopes once and this is the comparison between them, which is the only
+#    thing here that was ever about decomposition.
+-- rank/graph_measures.sqlc at both scopes: the whole against the sum of the parts.
 SELECT w.graph,
-       w.cycle_space_dim                        AS corpus_wide,
-       coalesce(sum(p.cycle_space_dim), 0)::bigint AS summed_per_filing,
+       w.cycle_space_dim                                               AS corpus_wide,
+       coalesce(sum(p.cycle_space_dim), 0)::bigint                     AS summed_per_filing,
        w.cycle_space_dim = coalesce(sum(p.cycle_space_dim), 0)::bigint AS survives_the_cut
-FROM      dim w
-LEFT JOIN dim p ON p.graph = w.graph AND p.filing IS NOT NULL
+FROM      (
+    :compose(rank/graph_measures.sqlc)
+) w
+LEFT JOIN (
+    :compose(rank/graph_measures.sqlc)
+) p ON p.graph = w.graph AND p.filing IS NOT NULL
 WHERE w.filing IS NULL
 GROUP BY w.graph, w.cycle_space_dim

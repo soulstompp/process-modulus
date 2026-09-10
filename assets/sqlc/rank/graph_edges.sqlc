@@ -1,0 +1,41 @@
+# EVERY EDGE OF EVERY GRAPH THIS MODEL COMPOSES, ONE ROW PER (graph, filing, from, to).
+#
+# ⭐⭐⭐ IT EXISTS BECAUSE FOUR FILES WROTE IT OUT BY HAND. `rank/cycle_space.sqlc`,
+#    `rank/decomposition.sqlc`, `algebra/decomposition.sqlc` and the emitter each carried their
+#    own copy of the same union over `composition/parts.sqlc` and `units/conversions.sqlc`, with
+#    the same concatenation retyped in each. Four spellings of one relation is four chances to
+#    typo one, and no law here could ever have compared them: an expression written inline is
+#    not a left operand, so nothing could count it.
+#
+# ⛔⛔ THE NODE IS AN OPAQUE ID AND THAT IS THE ONE COMPROMISE IN THIS FILE. A layer graph's node
+#    is `(filing, layer)` and a unit graph's node is `(unit)`, two different arities, and one
+#    relation carrying both must pick a common type. Everything downstream of THIS relation
+#    counts -- nodes, edges, components, two dimensions -- and a count needs only that distinct
+#    nodes have distinct ids. ⭐ Which is why the flattening is legitimate here and was a defect
+#    in the emitter: drawing needs to JOIN a node back to the model, and a concatenation cannot
+#    be joined to anything. `rank/graph_nodes.sqlc` attaches each graph's node facts at real
+#    grain and flattens afterwards, which is the same idiom in the order that works.
+#
+# ⚠️ THE SEPARATOR IS `/` AND NOTHING FORBIDS ONE IN A LAYER NAME. `pm:Layer/name` is an
+#    `xs:token`, so two distinct layers could flatten to one node, and both the drawing and the
+#    measurement would collapse identically and agree. Measured: 51 distinct `(filing, layer)`
+#    pairs and 51 distinct strings, so it is injective by luck rather than by construction, and
+#    this is the one place that has to be true rather than four.
+#
+# ⭐ `filing` IS THE PER-FILING CUT AND IT IS NOT PART OF THE EDGE'S IDENTITY. `rank/decomposition.sqlc`
+#   asks whether cutting each graph by filing loses an edge, so it needs the column; `cycle_space`
+#   takes the graph whole and ignores it. A caller that wants the corpus-wide edge set takes
+#   `DISTINCT graph, from_node, to_node` and drops it, which is what both did inline before.
+-- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.
+SELECT 'layers' AS graph,
+       p.composition                            AS filing,
+       p.composition  || '/' || p.composed_layer AS from_node,
+       p.part_filing  || '/' || p.part_layer     AS to_node
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+UNION ALL
+SELECT 'units', c.filing, c.from_unit, c.to_unit
+FROM (
+    :compose(units/conversions.sqlc)
+) c

@@ -1,0 +1,61 @@
+# EVERY GRAPH THIS MODEL COMPOSES, MEASURED, AT BOTH SCOPES. One row per (graph, filing), where
+# `filing IS NULL` is the graph taken WHOLE and a non-null filing is that filing's cut of it.
+# Nodes, edges, components, and the two dimensions those three determine.
+#
+# ⭐⭐⭐ THE UNDIRECTED WALK LIVES HERE ONCE. `rank/cycle_space.sqlc` is this relation at the
+#    corpus-wide scope and `rank/decomposition.sqlc` is the comparison across scopes, so neither
+#    carries `nodes`, `sym`, `reach` or `comp` of its own: the recursion that finds connected
+#    components is one relation and the two readings are aggregations of it.
+#
+# ⛔ A NEAR-COPY THAT DIFFERS BY ONE COLUMN PER LINE IS INVISIBLE TO ANY SCAN THAT COMPARES
+#    LINES, so a duplicate of this walk would have to be found by reading. Both instruments are
+#    needed and neither subsumes the other.
+#
+# ⭐⭐⭐ THE ARITHMETIC IS STRANG'S AND IT LIVES HERE ONCE. For an incidence matrix over `n`
+#    nodes, `m` edges and `c` components, the rank is `n - c` and the cycle space is the LEFT
+#    nullspace at dimension `m - n + c`. Either formula spelled out in two files is two places
+#    for a sign to be wrong and one law that is green either way.
+#
+# ⛔⛔ `m_edges` COUNTS DISTINCT EDGES, AND THE OTHER READING IS AVAILABLE AND WRONG. Building the
+#    whole-graph scope with `UNION ALL` and counting `count(*)` counts (filing, edge) PAIRS, so an
+#    edge filed under two filings inflates `m` without touching `n` or `c` and moves the cycle
+#    space by one per repeat. ⚠️ The two agree while no edge is filed twice, which is the state of
+#    this corpus, so nothing distinguishes them here. `m - n + c` means distinct edges.
+#
+# ⚠️ THE PER-FILING SCOPE IS A CUT AND NOT A SUBGRAPH SUM. Cutting a graph by filing can destroy
+#   a cycle that spans two of them, which is the whole point of `rank/decomposition.sqlc`: the
+#   unit graph's only cycle is corpus-wide and vanishes under the cut, and that is why
+#   `examples/diagramming/main.rs` may draw the layer graph per filing and not the unit graph.
+-- rank/graph_edges.sqlc, symmetrised and walked for components, counted at both scopes.
+WITH RECURSIVE
+edges AS (
+    SELECT DISTINCT g.graph, g.filing, g.from_node AS a, g.to_node AS b
+    FROM ( :compose(rank/graph_edges.sqlc) ) g
+),
+scoped AS (
+    SELECT DISTINCT graph, NULL::text AS filing, a, b FROM edges
+  UNION ALL
+    SELECT graph, filing, a, b FROM edges
+),
+nodes AS (SELECT graph, filing, a AS u FROM scoped UNION SELECT graph, filing, b FROM scoped),
+sym   AS (SELECT graph, filing, a, b FROM scoped UNION SELECT graph, filing, b, a FROM scoped),
+reach(graph, filing, root, at) AS (
+      SELECT graph, filing, u, u FROM nodes
+    UNION
+      SELECT r.graph, r.filing, r.root, s.b
+      FROM reach r JOIN sym s ON s.graph = r.graph AND s.filing IS NOT DISTINCT FROM r.filing
+                              AND s.a = r.at
+),
+comp AS (SELECT graph, filing, root, min(at) AS component FROM reach GROUP BY graph, filing, root)
+SELECT n.graph, n.filing,
+       count(DISTINCT n.u)                                         AS n_nodes,
+       (SELECT count(*) FROM scoped w
+         WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing) AS m_edges,
+       count(DISTINCT c.component)                                 AS c_components,
+       (SELECT count(*) FROM scoped w
+         WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing)
+         - count(DISTINCT n.u) + count(DISTINCT c.component)       AS cycle_space_dim,
+       count(DISTINCT n.u) - count(DISTINCT c.component)           AS rank_of_incidence
+FROM nodes n
+JOIN comp c ON c.graph = n.graph AND c.filing IS NOT DISTINCT FROM n.filing AND c.root = n.u
+GROUP BY n.graph, n.filing

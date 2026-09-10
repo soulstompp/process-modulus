@@ -74,8 +74,43 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   the tree it could never report that a declared graph has nothing behind it, and the
     //   claimant row is precisely that case.
     let graphs = ordered(sqlx::query_file!("assets/sql/diagrams/graphs.sql").fetch_all(&pool).await?);
-    let edges = ordered(sqlx::query_file!("assets/sql/diagrams/graph_edges.sql").fetch_all(&pool).await?);
+    let edges = ordered(sqlx::query_file!("assets/sql/rank/graph_edges.sql").fetch_all(&pool).await?);
+    // ⭐⭐⭐ THE NODES ARE A RELATION NOW, NOT A DEDUP'D `Vec<&str>` OF ENDPOINTS. Derived here,
+    //    a node was a display string with nothing joinable behind it, so the layer graph drew
+    //    37 lanes carrying no fact about a layer except its name. `rank/graph_nodes.sqlc` joins
+    //    each graph's node facts at real grain and flattens afterwards, which is the same
+    //    concatenation in the order that keeps the key usable.
+    let gnodes = ordered(sqlx::query_file!("assets/sql/rank/graph_nodes.sql").fetch_all(&pool).await?);
     let cyc = ordered(sqlx::query_file!("assets/sql/rank/cycle_space.sql").fetch_all(&pool).await?);
+
+    // ⛔⛔⛔ WHICH NODES CARRY A RANK IS A CLAIM, SO IT IS ASSERTED RATHER THAN TRUSTED. The join
+    //    in `rank/graph_nodes.sqlc` is on `(filing, layer)`, and a join that stopped matching
+    //    would return the same 47 nodes with every rank NULL: the node count, the edge count,
+    //    the cycle space and the drawing's lane count all stay exactly right, and the only
+    //    symptom is 37 labels quietly missing from a picture nobody diffs. Count the item.
+    let (no_rank, wrong_rank): (Vec<_>, Vec<_>) = (
+        gnodes.iter().filter(|n| n.graph.as_deref() == Some("layers") && n.rank.is_none())
+              .filter_map(|n| n.node.clone()).collect(),
+        gnodes.iter().filter(|n| n.graph.as_deref() != Some("layers") && n.rank.is_some())
+              .filter_map(|n| n.node.clone()).collect(),
+    );
+    assert!(
+        no_rank.is_empty(),
+        "a layer is a node of the layer graph and carries no rank, so its lane will be drawn \
+         with no evaluation order while every count stays exact: {no_rank:?}"
+    );
+    assert!(
+        wrong_rank.is_empty(),
+        "a node that is not a layer carries a rank. Rank is max(depth) over F, a relation on \
+         layers, so this states an ordinal for a subject the model has no ordinal for: \
+         {wrong_rank:?}"
+    );
+    println!(
+        "\n   ⭐ {} layer-graph nodes, every one with its rank joined at (filing, layer); {} \
+         unit nodes, none with a rank, because rank is not a fact about a unit.",
+        gnodes.iter().filter(|n| n.graph.as_deref() == Some("layers")).count(),
+        gnodes.iter().filter(|n| n.graph.as_deref() == Some("units")).count(),
+    );
 
     println!("THE THREE GRAPHS, AS LANE SETS OF ONE POOL\n");
     // ⛔ WIPED, and only this program's own subdirectory. A stale document is a claim about a
@@ -93,10 +128,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for g in &graphs {
         let name = g.graph.as_deref().unwrap_or("?");
         let mine: Vec<_> = edges.iter().filter(|e| e.graph.as_deref() == Some(name)).collect();
-        let mut nodes: Vec<&str> = mine
+        let mine_nodes: Vec<_> = gnodes.iter().filter(|n| n.graph.as_deref() == Some(name)).collect();
+        let rank_of: BTreeMap<&str, i32> = mine_nodes
             .iter()
-            .flat_map(|e| [e.from_node.as_deref().unwrap_or(""), e.to_node.as_deref().unwrap_or("")])
+            .filter_map(|n| Some((n.node.as_deref()?, n.rank?)))
             .collect();
+        // ⭐⭐⭐ WHAT COULD CONTRADICT THIS NODE. `rank/layer_cover.sqlc` counts the rules whose
+        //    population contains the layer and how many of them said no. A drawing carrying only
+        //    what was filed is a drawing a reader believes; this is the half that lets them
+        //    argue with it, and on a clean corpus the second number is 0 everywhere, which is
+        //    why `examples/witnesses/main.rs` has to be run against it before it means anything.
+        let cover_of: BTreeMap<&str, (i64, i64)> = mine_nodes
+            .iter()
+            .filter_map(|n| Some((n.node.as_deref()?, (n.examined_by?, n.violated?))))
+            .collect();
+        let mut nodes: Vec<&str> = mine_nodes.iter().filter_map(|n| n.node.as_deref()).collect();
         nodes.sort_unstable();
         nodes.dedup();
 
@@ -149,7 +195,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //   that rules on one. ⛔ A NULL here is not a blank: it is the claimant graph, whose
             //   cycles nothing judges, and the sentence says so rather than omitting the clause.
             writeln!(x, "    <documentation>{}; a cycle here is {}. The edges: \
-                         [assets/sqlc/diagrams/graph_edges.sqlc]; a cycle is ruled on by {}\
+                         [assets/sqlc/rank/graph_edges.sqlc]; a cycle is ruled on by {}\
                          </documentation>",
                      esc(g.edge_is.as_deref().unwrap_or("")),
                      esc(g.a_cycle_is.as_deref().unwrap_or("")),
@@ -160,6 +206,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             writeln!(x, "    <laneSet id=\"{}\" name=\"{}\">", id("lanes", name), esc(name))?;
             for n in &nodes {
                 writeln!(x, "      <lane id=\"{}\" name=\"{}\">", id("lane", n), esc(n))?;
+                // ⛔ ONLY WHERE THE GRAPH HAS ONE. Rank is `max(depth)` over F, a relation on
+                //   LAYERS, so a unit has no position in that order and none is missing. ⚠️ An
+                //   emitter that writes no rank leaves the renderer its own sentinel to draw,
+                //   which puts a number this model cannot produce on the page and makes one
+                //   layer read two different ranks in the two drawings its links connect.
+                if let Some(r) = rank_of.get(*n) {
+                    writeln!(x, "        <documentation>rank {r}; nothing beneath this layer \
+                                 needs evaluating first at rank 0, and a higher rank waits on \
+                                 every arrival below it \
+                                 [assets/sqlc/rank/evaluation_order.sqlc]</documentation>")?;
+                }
+                // ⛔ NO ROW MEANS OUTSIDE THE CHECKER'S DIMENSION, NOT ZERO RULES. No rule
+                //   declares a unit as its subject, so a unit is not thinly checked: the
+                //   question does not reach it, and a `0` here would say somebody looked.
+                if let Some((examined, violated)) = cover_of.get(*n) {
+                    writeln!(x, "        <documentation>refutable by {examined} rule(s), \
+                                 {violated} of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A \
+                                 LOW ONE IS NOT A FAULT: it is how many different questions this \
+                                 repository can put to this layer, so a layer near the bottom is \
+                                 one that a single repair would silence \
+                                 [assets/sqlc/rank/layer_cover.sqlc]</documentation>")?;
+                }
                 for e in mine.iter().filter(|e| e.from_node.as_deref() == Some(*n)) {
                     writeln!(x, "        <flowNodeRef>{}</flowNodeRef>",
                              id("edge", &format!("{}__{}", n, e.to_node.as_deref().unwrap_or(""))))?;
@@ -365,6 +433,122 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   ⭐ An undirected cycle in F IS a layer arriving twice under one fold, so these");
     println!("      two are one statement. The two-root sharing in eliminations/derived is a tree");
     println!("      JOIN between unconnected roots and correctly moves neither.");
+
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ THE CITATION CONTRACT, WHICH THIS DIRECTORY DID NOT HAVE. `examples/diagramming/main.rs`
+    //    holds it over `assets/bpmn/filings/` and reads only its own directory, so every
+    //    sentence these three documents carry has been unattributed and unchecked for as long
+    //    as they have existed: the cycle gloss, the rank, and now the coverage. Two emitters,
+    //    one contract, and the second was governed by nothing.
+    //
+    // ⭐ A sentence about a FILING is the model's voice and comes from a relation. The check is
+    //   the same one, three arms: the cited file exists, this program actually queried it, and
+    //   no sentence is unattributed. `query_file!` takes a literal, so what was queried is
+    //   readable out of this program's own source.
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ AND `QUERIED` HAS TO MEAN THE COMPOSE CLOSURE, WHICH IS WHERE THIS LAW DIFFERS FROM
+    //    `examples/diagramming/main.rs`'s. That program reads the relation that states each fact
+    //    directly, so a direct-query set is enough there. This one reads `rank/graph_nodes.sqlc`
+    //    and gets the rank and the coverage THROUGH it, so citing `rank/evaluation_order.sqlc`
+    //    is the honest pointer and a direct-query test calls it decorative. ⭐ Written the strict
+    //    way first, it accused all 74 of its own sentences, which is the law being wrong about
+    //    what a citation is FOR: it names where the fact is stated, not where it was fetched.
+    let mut queried: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    let own = fs::read_to_string(file!())?;
+    let mut rest = own.as_str();
+    while let Some(i) = rest.find("query_file!(\"assets/sql/") {
+        rest = &rest[i + 24..];
+        if let Some(j) = rest.find(".sql\"") {
+            queried.insert(format!("assets/sqlc/{}.sqlc", &rest[..j]));
+            rest = &rest[j..];
+        } else {
+            break;
+        }
+    }
+    assert!(!queried.is_empty(), "the query scan found nothing, so the citation law below is vacuous");
+    // ⭐⭐⭐ THE CLOSURE COMES FROM THE RELATION, NOT FROM A SCAN IN THIS FILE. An inline
+    //    `:compose(` reader here would duplicate `examples/shared/tree` in a program that has a
+    //    database open the whole time. `public.compose_edge` is that fact as a relation, so the
+    //    closure is a walk over rows and the source tree is read once, by the program whose job
+    //    that is.
+    let seeded = queried.len();
+    let dag = ordered(sqlx::query_file!("assets/sql/rank/compose_edges.sql").fetch_all(&pool).await?);
+    let mut frontier: Vec<String> = queried.iter().cloned().collect();
+    while let Some(f) = frontier.pop() {
+        let parent = f.trim_start_matches("assets/sqlc/").to_string();
+        for e in dag.iter().filter(|e| e.parent == parent) {
+            let child = format!("assets/sqlc/{}", e.child);
+            if queried.insert(child.clone()) {
+                frontier.push(child);
+            }
+        }
+    }
+    // ⭐⭐ AND A ROSTER'S OWN DATA IS THE SECOND ROUTE. `diagrams/graphs.sqlc` carries the rule
+    //    that judges each graph's cycles as a VALUE, and the emitter writes that value into the
+    //    document so a reader can reach the rule. Nothing composes it and nothing should: it is
+    //    a pointer the roster states, and the honest test is that the emitter actually read it.
+    for g in &graphs {
+        if let Some(r) = g.governed_by.as_deref() {
+            queried.insert(format!("assets/sqlc/{r}.sqlc"));
+        }
+    }
+    println!("\n   ⭐ {seeded} relations queried directly, {} in their compose closure plus the",
+             queried.len() - seeded);
+    println!("      rules the graph roster names as data. A citation points at where a fact is");
+    println!("      STATED, and this emitter reaches most of its facts through composition.");
+    let (mut sentences, mut unattributed, mut dangling, mut unread) = (0usize, vec![], vec![], vec![]);
+    for e in fs::read_dir(OUT)?.flatten() {
+        let path = e.path();
+        if path.extension().and_then(|x| x.to_str()) != Some("bpmn") {
+            continue;
+        }
+        let doc = fs::read_to_string(&path)?;
+        let who = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+        for (open, close) in [("<documentation>", "</documentation>"), ("<text>", "</text>")] {
+            let mut rest = doc.as_str();
+            while let Some(i) = rest.find(open) {
+                rest = &rest[i + open.len()..];
+                let Some(end) = rest.find(close) else { break };
+                let body = &rest[..end];
+                rest = &rest[end..];
+                sentences += 1;
+                let mut cited = 0usize;
+                let mut b = body;
+                while let Some(i) = b.find("[assets/sqlc/") {
+                    b = &b[i + 1..];
+                    let Some(j) = b.find(']') else { break };
+                    let c = b[..j].to_string();
+                    cited += 1;
+                    if !std::path::Path::new(&c).exists() {
+                        dangling.push(format!("{who}: {c}"));
+                    } else if !queried.contains(&c) {
+                        unread.push(format!("{who}: {c}"));
+                    }
+                    b = &b[j..];
+                }
+                if cited == 0 {
+                    unattributed.push(format!("{who}: {}", body.chars().take(60).collect::<String>()));
+                }
+            }
+        }
+    }
+    assert!(
+        unattributed.is_empty(),
+        "a sentence is in an emitted graph document with nothing naming the relation that states \
+         it, so a reader who wants to argue with it has no route back: {unattributed:?}"
+    );
+    assert!(
+        dangling.is_empty(),
+        "a sentence cites a relation that is not in this tree: {dangling:?}"
+    );
+    assert!(
+        unread.is_empty(),
+        "a sentence cites a relation this program never queried, so the citation is decorative \
+         and the sentence is still the emitter's own claim: {unread:?}"
+    );
+    println!("\n   ⭐ {sentences} sentences across these documents, 0 unattributed. This directory");
+    println!("      had no citation law at all: diagramming.rs holds one and reads only its own");
+    println!("      directory, so a second emitter's sentences were governed by nothing.");
 
     println!("\nAll checks passed.");
     Ok(())

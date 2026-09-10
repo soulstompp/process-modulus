@@ -135,7 +135,20 @@ fn esc(s: &str) -> String {
 /// `documentation`, which is untyped text carrying the words and not the claim.
 struct Lane {
     name: String,
-    rank: i64,
+    /// ⛔⛔ `Option`, AND NEVER AN `i64` WITH A SENTINEL. A lane whose document files no rank is
+    /// not a lane at rank minus one: rank is `max(depth)` over `F`, a relation on LAYERS, and
+    /// `rank/evaluation_order.sqlc` is `coalesce(max(depth), 0)`, so any negative value is one
+    /// the model cannot produce. ⛔ A sentinel here reaches the page: the graph documents' lanes
+    /// include units, which have no position in that order at all.
+    /// ⭐ The typed absence belongs here for the same reason it belongs in the schema: *nobody
+    /// wrote one* and *the question does not arise* are different, and a number is neither.
+    rank: Option<i64>,
+    /// ⭐⭐⭐ HOW MUCH OF THE CHECKER CAN SPEAK ABOUT THIS LAYER, and how much of it says no.
+    /// A drawing carrying only what was filed is a drawing a reader BELIEVES; this is the half
+    /// that lets them argue with it. ⛔ `None` is not zero: no rule declares a unit as its
+    /// subject, so a unit is outside the checker's dimension rather than thinly checked.
+    examined: Option<i64>,
+    violated: Option<i64>,
     nodes: Vec<String>,
     /// ⭐⭐⭐ THE PARTITION RECURSES, SO THE CACHE MUST TOO. The BPMN nests a local fusion's parts
     ///    in the parent lane's `childLaneSet`, and a flat read of `<lane>` throws that away in the
@@ -184,8 +197,18 @@ fn emit_lane(
         .get(&l.id)
         .unwrap_or_else(|| panic!("the document declares no bpmndi:BPMNShape for lane {}", l.id));
     lane_boxes.insert(l.id.clone(), (x, y, w, h));
-    writeln!(body, r#"  <g class="lane" data-layer="{}" data-rank="{}" id="{}"><title>lane: {}</title>"#,
-             esc(&l.name), l.rank, esc(&l.id), esc(&l.name))?;
+    // ⛔ NO ATTRIBUTE RATHER THAN AN EMPTY ONE. `data-rank=""` is a stylesheet's problem and a
+    //   reader's puzzle; an absent attribute is what a selector already knows how to miss.
+    let rank_attr = match l.rank {
+        Some(r) => format!(r#" data-rank="{r}""#),
+        None => String::new(),
+    };
+    let cover_attr = match (l.examined, l.violated) {
+        (Some(e), Some(v)) => format!(r#" data-examined="{e}" data-violated="{v}""#),
+        _ => String::new(),
+    };
+    writeln!(body, r#"  <g class="lane" data-layer="{}"{}{} id="{}"><title>lane: {}</title>"#,
+             esc(&l.name), rank_attr, cover_attr, esc(&l.id), esc(&l.name))?;
     // ⚠️ THE NAME IS HORIZONTAL AND NOT IN A ROTATED BAND, WHICH WAS TRIED AND MEASURED OUT.
     //   A pool's name rotates because a pool is tall; a lane here is 34px at the median and the
     //   longest layer name needs about 290px of height, so 98 of 98 lanes were too short for it.
@@ -193,7 +216,12 @@ fn emit_lane(
     //   so a reader opening the drawing saw `text20` and `text22` where the box, the name and the
     //   rank should have been. An invented id is stable for nobody: it renumbers when the file is
     //   re-emitted, so an annotation or a stylesheet written against it silently moves.
-    writeln!(body, r#"    <rect id="{}-box" x="{x}" y="{y}" width="{w}" height="{h}" class="laneBox"/>"#, esc(&l.id))?;
+    // ⛔⛔ THE MARK IS ON `violated` AND NEVER ON A BAND OF `examined`. A threshold would be
+    //   this stage inventing the number `rank/layer_cover.sqlc` explicitly refuses to state:
+    //   a layer under few rules is not a defect, it is a layer few questions reach. A rule
+    //   SAYING NO is a fact, so it is the only thing that gets ink.
+    let box_class = if l.violated.unwrap_or(0) > 0 { "laneBox refuted" } else { "laneBox" };
+    writeln!(body, r#"    <rect id="{}-box" x="{x}" y="{y}" width="{w}" height="{h}" class="{box_class}"/>"#, esc(&l.id))?;
     // ⭐⭐⭐ THE SAME LAYER IN TWO DRAWINGS CARRIES THE SAME `id`, SO IT CAN BE LINKED. A filing's
     //    lane and its row in the layer graph are one layer under one key, `(filing, layer)`, and
     //    the drawing says so with an `<a>` rather than by looking alike. ⛔ Following the links is
@@ -223,8 +251,21 @@ fn emit_lane(
         None => writeln!(body, r#"    <text id="{}-name" x="{}" y="{}" class="laneName">{}</text>"#,
                          esc(&l.id), x + 8, y + 16, esc(&l.name))?,
     }
-    writeln!(body, r#"    <text id="{}-rank" x="{}" y="{}" class="rankName" text-anchor="end">rank {}</text>"#,
-             esc(&l.id), x + w - 8, y + 16, l.rank)?;
+    if let Some(r) = l.rank {
+        writeln!(body, r#"    <text id="{}-rank" x="{}" y="{}" class="rankName" text-anchor="end">rank {}</text>"#,
+                 esc(&l.id), x + w - 8, y + 16, r)?;
+    }
+    // ⭐ THE COUNT AS A NUMBER AND NOT AS A SHADE. `rank/layer_cover.sqlc` states outright that
+    //   there is no threshold at which a layer is under-checked, so a band would be ink asserting
+    //   what the relation declines to say. A reader comparing 6 against 19 across the page is
+    //   doing the comparison the number supports.
+    if let Some(e) = l.examined {
+        let says_no = l.violated.unwrap_or(0);
+        writeln!(body, r#"    <text id="{}-cover" x="{}" y="{}" class="coverName" text-anchor="end">refutable by {}{}</text>"#,
+                 esc(&l.id), x + w - 8, y + 28, e,
+                 if says_no > 0 { format!(", {says_no} say no") } else { String::new() })?;
+        let _ = says_no;
+    }
     *svg_lanes += 1;
     if l.kids.is_empty() {
         // ⭐⭐⭐ THE GLYPH IS THE DISCRIMINATOR, NOT A DECORATION. BPMN says which KIND an activity
@@ -425,7 +466,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             lanes.push(Lane {
                                 id: attr("id").unwrap_or_default(),
                                 name: attr("name").unwrap_or_default(),
-                                rank: -1,
+                                rank: None,
+                                examined: None,
+                                violated: None,
                                 nodes: Vec::new(),
                                 kids: Vec::new(),
                                 parent,
@@ -484,14 +527,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 //   provenance where a layer's rank belongs.
                 Event::Text(t) if in_doc => {
                     if let Some(l) = open.last().copied().and_then(|i| lanes.get_mut(i)) {
-                        if l.rank < 0 {
+                        if l.rank.is_none() {
                             let txt = String::from_utf8_lossy(&t);
                             if let Some(r) = txt.strip_prefix("rank ") {
                                 l.rank = r
                                     .split(|c: char| !c.is_ascii_digit())
                                     .next()
-                                    .and_then(|d| d.parse().ok())
-                                    .unwrap_or(-1);
+                                    .and_then(|d| d.parse().ok());
+                            }
+                        }
+                        // ⛔ READ, NEVER COMPUTED, exactly as the rank is. This stage holds no
+                        //   model by design, so the coverage is a fact the document carries or
+                        //   a fact this drawing does not have.
+                        if l.examined.is_none() {
+                            let txt = String::from_utf8_lossy(&t);
+                            if let Some(r) = txt.strip_prefix("refutable by ") {
+                                let num = |x: &str| -> Option<i64> {
+                                    x.split(|c: char| !c.is_ascii_digit()).find(|d| !d.is_empty())?.parse().ok()
+                                };
+                                l.examined = num(r);
+                                l.violated = r.split_once("rule(s), ").and_then(|(_, m)| num(m));
                             }
                         }
                     }
@@ -655,6 +710,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                        .nodeName{{font:11px sans-serif}} \
                        .poolName{{font:13px sans-serif;font-weight:700}} \
                        .rankName{{font:10px sans-serif;fill:#666;letter-spacing:.5px}} \
+                       .refuted{{stroke:#b00;stroke-width:2.5}} \
+                       .coverName{{font:10px sans-serif;fill:#888}} \
                        .groupBox{{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4}} \
                        .groupName{{font:10px sans-serif;fill:#555;font-style:italic}} \
                        .depLine{{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3}} \

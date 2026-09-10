@@ -12,7 +12,8 @@
 #   to check. Same shape as checks/ and arithmetic/, same reason -- a law with an empty subject
 #   set must report ⛔ VACUOUS rather than vanish from a GROUP BY.
 -- algebra/roster.sqlc joined to each law's own subjects.
-:union(ALL algebra/decomposition.sqlc,
+:union(ALL algebra/dimension_use.sqlc,
+           algebra/decomposition.sqlc,
            algebra/owed_equality.sqlc,
            algebra/leaves.sqlc,
            algebra/jagged_layers.sqlc,

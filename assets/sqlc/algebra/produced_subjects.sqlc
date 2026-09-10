@@ -1,0 +1,37 @@
+# EVERY SUBJECT EVERY POPULATION ACTUALLY PRODUCES. One row per (contract, subject), against
+# which `algebra/declared_subjects.sqlc` is the difference every contract in this repository
+# rests on.
+#
+# ⭐⭐⭐ THE OTHER OPERAND, AND THE TWO ARE NOT SYMMETRIC IN WHAT THEY PROVE. A subject declared
+#    and not produced is a contract naming something that does not exist. A subject produced and
+#    not declared is the tree growing past its own roster. Both are findings and they are
+#    different findings, which is why `reports/integrity.sqlc` takes the difference BOTH ways and
+#    why neither direction may be dropped as the obvious one.
+#
+# ⛔ `checks/all.sqlc` AND NOT `reports/violations.sqlc`, and the distinction is the whole reason
+#   a roster is joined first. A check that filters its population disappears from a `GROUP BY`
+#   when the population is empty, so the single most important verdict, ⛔ VACUOUS, is exactly
+#   the one a grouping cannot produce. `all` carries a row per declared rule whatever happened;
+#   `violations` carries only the failures. Differencing against the wrong one would report every
+#   passing rule as undeclared.
+#
+# ⚠️ `diagrams/catalogue.sqlc` IS THE PRODUCED SIDE FOR TABLES AND IT IS NOT DERIVED FROM THE
+#   ROSTER. It reads `information_schema`, which is the only honest source for which tables
+#   actually exist: a contract needs a population it did not write. That is also why
+#   `examples/compositions/main.rs`'s table predicate had to learn that *reads a base table* is not
+#   *reads `pm.`*, and the same predicate has since had to learn `public.` for the compose DAG.
+-- the five populations, each labelled with the contract it answers to.
+SELECT 'rules' AS contract, c.rule AS subject
+FROM ( :compose(checks/all.sqlc) ) c
+UNION ALL
+SELECT 'arithmetic', z.site
+FROM ( :compose(arithmetic/all.sqlc) ) z
+UNION ALL
+SELECT 'algebra', w.law
+FROM ( :compose(algebra/all.sqlc) ) w
+UNION ALL
+SELECT 'diagrams', k.object
+FROM ( :compose(diagrams/catalogue.sqlc) ) k
+UNION ALL
+SELECT 'diagram laws', e.slug
+FROM ( :compose(diagrams/expected.sqlc) ) e

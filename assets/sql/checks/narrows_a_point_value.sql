@@ -17,9 +17,9 @@ SELECT * FROM (VALUES
   ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
-  ('narrows_a_point_value', 'layer', 'a point value files narrowsWhen as notApplicable, having no range'),
-  ('range_says_no_range', 'layer', 'a ranged claim does not file narrowsWhen as notApplicable'),
-  ('bound_fell_with_no_range', 'layer', 'a point value does not say its bound is where the measurements fell'),
+  ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
+  ('range_says_no_range', 'claim', 'a ranged claim does not file narrowsWhen as notApplicable'),
+  ('bound_fell_with_no_range', 'claim', 'a point value does not say its bound is where the measurements fell'),
   ('window_lost_or_summed', 'part', 'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window', 'layer', 'a derived time slack needs a window that permits the derivation'),
   ('window_not_applicable_on_a_rate', 'layer', 'a window is notApplicable only where the unit has no period under the line'),
@@ -36,9 +36,9 @@ SELECT * FROM (VALUES
 
 ) r
 LEFT JOIN (
-    SELECT c.filing, c.owns || ' claim ' || c.seq AS layer,
+    SELECT c.filing, c.layer,
            c.narrows_absent IS DISTINCT FROM 'notApplicable' AS violates,
-           format('%s exactly, and it still answers %s', c.mode,
+           format('%s claim %s: %s exactly, and it still answers %s', c.owns, c.seq, c.mode,
                   coalesce(c.narrows_kind::text, 'absent: ' || c.narrows_absent)) AS detail
     FROM (
         -- pm:Claim where low = high, at every element that carries one.

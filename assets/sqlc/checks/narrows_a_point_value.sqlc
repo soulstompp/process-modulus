@@ -26,9 +26,9 @@ FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
-    SELECT c.filing, c.owns || ' claim ' || c.seq AS layer,
+    SELECT c.filing, c.layer,
            c.narrows_absent IS DISTINCT FROM 'notApplicable' AS violates,
-           format('%s exactly, and it still answers %s', c.mode,
+           format('%s claim %s: %s exactly, and it still answers %s', c.owns, c.seq, c.mode,
                   coalesce(c.narrows_kind::text, 'absent: ' || c.narrows_absent)) AS detail
     FROM (
         :compose(epistemics/point_claims.sqlc)

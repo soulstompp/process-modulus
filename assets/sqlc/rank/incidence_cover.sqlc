@@ -5,8 +5,17 @@
 #    The three relations a process notation would have drawn as arrows reach almost nothing: D, N
 #    and C touch a handful of layers each, F reaches more, and `nameplate` and `slack` reach every
 #    single one. ⛔ So the INCIDENCE side of this model is sparse and the MAGNITUDE side is total,
-#    and BPMN can carry only the first. `diagrams/domain_objects.sqlc` files nine tables as
-#    elements and fourteen as `none` or `notApplicable`; this says how much each of them holds.
+#    and BPMN can carry only the first. `diagrams/domain_objects.sqlc` says which tables render
+#    as an element and which are refused with a typed reason; this says how much each one holds.
+#    ⚠️ The two figures were written out here as *nine* and *fourteen* and were 13 and 11 when
+#    anybody checked, which is why they are a pointer now and not a pair of numbers.
+#
+# ⭐⭐⭐ AND IT HAS A TRANSPOSE NOW: `rank/layer_cover.sqlc`. This relation counts, per RELATION,
+#    how much of the layer dimension it touches, so it can say `49 of 51` and never WHICH two,
+#    and a layer nothing reaches leaves no row here to be counted. Read down the other axis the
+#    subject is the layer and the shortfall has a name. ⛔ That transpose was unwritable until
+#    `checks/grain.sqlc` grew its `unresolvable` arm: three rules were returning a claim ADDRESS
+#    in the contract's `layer` column, so a cover measured through that key measured the key.
 #
 # ⭐⭐ IT IS WHY A DIAGRAM OF THIS CORPUS LOOKS EMPTY AND IS NOT WRONG. The three largest tables
 #    here are `claim`, `narrowing` and `bound_origin`, one row per filed value, and not one of

@@ -38,7 +38,7 @@ mod tree;
 // start to differ.
 #[path = "../shared/sources/mod.rs"]
 mod sources;
-use tree::{emitted, references, templates};
+use tree::{emitted, references, sql_only, templates};
 
 /// The one composition that is reached by nothing and reaches nothing, with the reason. ⛔ It is
 /// named here rather than tolerated by a count, so that a SECOND orphan fails the build.
@@ -55,6 +55,120 @@ fn main() {
     let edges: BTreeMap<&str, Vec<String>> =
         files.iter().map(|(n, b)| (n.as_str(), references(&emitted(b)))).collect();
     let directives: usize = edges.values().map(Vec::len).sum();
+
+    // ------------------------------------------------------------------
+    // ⭐⭐⭐ AND THE DAG IS EMITTED, BECAUSE WHAT WAS MISSING WAS NEVER THE SCAN. `examples/shared/tree`
+    //    has been the one scanner all along. What no caller could do was JOIN the DAG to
+    //    anything: bounding a rule's reach by the reach of the relations it composes needs both
+    //    sides in SQL, and one of them was a `BTreeMap` in a Rust program. So the fact becomes a
+    //    relation, and the one real duplicate, an inline scan in `examples/graphs/main.rs`, retires.
+    //
+    // ⭐⭐ THIS PROGRAM IS WHERE IT COMES FROM AND IT STILL NEEDS NO DATABASE. The DAG is a fact
+    //    about the SOURCE TREE, so the program that reads the source tree emits it and `ingest`
+    //    loads it, which is the shape `assets/bpmn/` already has: one stage generates, the next
+    //    consumes, and the artifact is tracked so a fresh clone has it.
+    //
+    // ⛔ `splices` AND NOT A BARE EDGE. A parent composing a child twice is ORDINARY here and a
+    //    VIOLATION in `pm.part`, and that one column is where the two graphs differ. Deduping to
+    //    an edge would throw away the only thing the comparison rests on.
+    // ------------------------------------------------------------------
+    {
+        // ⭐⭐⭐ AND THE JOIN KEYWORD IS CLASSIFIED HERE, BECAUSE IT IS IN THE TEXT AND THIS IS THE
+        //    PROGRAM THAT READS THE TEXT. The DAG carried who composes whom and not HOW, so a
+        //    law over it could see that `composition/parts.sqlc` composed the layer dimension
+        //    and not that it INNER-JOINED it, which is the whole difference between asking what
+        //    is missing from the whole and asking whether one pair exists.
+        // ⚠️ TWO CONVENTIONS COEXIST IN THIS TREE AND A NAIVE SCAN MISSES A THIRD OF THE SITES.
+        //    Most write `JOIN (\n :compose(x)\n) alias`, so the keyword is on the previous line;
+        //    four write `FROM ( :compose(x) ) x` inline. ⛔ So the keyword is taken as the LAST
+        //    one before the directive in the whole preceding text, and a site with none is a
+        //    hard failure rather than a guess: a scan that silently misreads is worse than a
+        //    declared list that visibly rots.
+        // ⭐⭐⭐ ONE SHAPE IS DETECTED AND EVERYTHING ELSE DEFAULTS TO *NOT AN INNER JOIN*, and
+        //    the stronger design is not available. ⛔ THERE IS NO CLOSED SET OF CALL-SITE SHAPES:
+        //    a `:compose` legitimately sits after `JOIN (`, after `FROM (`, after `LEFT JOIN (`,
+        //    in a CTE body, after a bare grouping paren inside an `EXCEPT`, after
+        //    `CREATE TEMP TABLE x AS`, and as a whole statement in a psql script after an
+        //    `\echo`. Classifying every site and failing on the rest means enumerating SQL and
+        //    psql, and the guard names more of it on every pass rather than converging.
+        //
+        // ⭐⭐ SO THE HONESTY MOVES FROM EXHAUSTIVENESS TO A POSITIVE CONTROL. The detector looks
+        //    for `JOIN (` immediately before the directive, not qualified by LEFT/RIGHT/FULL/
+        //    CROSS, and the guard is that it still finds some: a detector that silently stopped
+        //    matching would zero this column and take `algebra/dimension_use.sqlc` with it, and
+        //    a law reading all zeros passes loudest.
+        let is_inner_join = |body: &str, upto: usize| -> bool {
+            let flat = body[..upto]
+                .split_whitespace()
+                .rev()
+                .take(4)
+                .collect::<Vec<_>>()
+                .into_iter()
+                .rev()
+                .collect::<Vec<_>>()
+                .join(" ");
+            flat.ends_with("JOIN (")
+                && !["LEFT JOIN (", "RIGHT JOIN (", "FULL JOIN (", "CROSS JOIN ("]
+                    .iter()
+                    .any(|q| flat.ends_with(q))
+        };
+        let mut rows: Vec<String> = Vec::new();
+        for (parent, kids) in &edges {
+            let body = files
+                .iter()
+                .find(|(n, _)| n == parent)
+                .map(|(_, b)| sql_only(b))
+                .unwrap_or_default();
+            let mut counted: BTreeMap<&str, (usize, usize)> = BTreeMap::new();
+            for k in kids {
+                let e = counted.entry(k.as_str()).or_default();
+                e.0 += 1;
+            }
+            // one pass over the directives in text order, so a parent splicing one child at two
+            // call sites has each site classified on its own
+            let mut at = 0usize;
+            while let Some(i) = body[at..].find(":compose(") {
+                let start = at + i;
+                let Some(close) = body[start..].find(')') else { break };
+                let named = body[start + 9..start + close].trim().to_string();
+                let child = named.split(',').next().unwrap_or("").trim().to_string();
+                if is_inner_join(&body, start) {
+                    if let Some(e) = counted.get_mut(child.as_str()) { e.1 += 1 }
+                }
+                at = start + close;
+            }
+            for (child, (n, inner)) in counted {
+                rows.push(format!("  ('{}', '{}', {n}, {inner})",
+                                  parent.replace('\'', "''"), child.replace('\'', "''")));
+            }
+        }
+        let inner_total: usize = rows
+            .iter()
+            .filter_map(|r| r.rsplit(", ").next()?.trim_end_matches(')').parse::<usize>().ok())
+            .sum();
+        assert!(
+            inner_total > 0,
+            "no `:compose` in the tree reads as an inner join, so `inner_joins` is all zeros and \
+             `algebra/dimension_use.sqlc` is reading a column that cannot fire. Either the tree \
+             genuinely has none, or this detector stopped matching `JOIN (`"
+        );
+        fs::create_dir_all("assets/dag").expect("assets/dag is writable");
+        let mut out = String::from(
+            "-- GENERATED by examples/compositions/main.rs from assets/sqlc/. DO NOT EDIT.\n             -- One row per (parent, child) with how many times the parent splices the child.\n             -- Loaded by assets/sql/ingest.sql into public.compose_edge.\n             TRUNCATE public.compose_edge;\n");
+        if rows.is_empty() {
+            panic!("no :compose directive anywhere, so the emitted DAG would be empty");
+        }
+        out.push_str("INSERT INTO public.compose_edge (parent, child, splices, inner_joins) VALUES\n");
+        out.push_str(&rows.join(",\n"));
+        out.push_str(";\n");
+        fs::write("assets/dag/edges.sql", out).expect("assets/dag/edges.sql is writable");
+        println!("THE COMPOSE DAG, EMITTED FOR THE DATABASE");
+        println!("   {} pairs from {directives} directives, into assets/dag/edges.sql", rows.len());
+        println!("   ⭐ A fact about the source tree, so the program that reads the source tree");
+        println!("      emits it. `splices` is carried because a parent composing a child twice is");
+        println!("      ordinary here and `checks/jagged_layer` in `pm.part`: two graphs of one");
+        println!("      shape, and that column is the whole of the difference.\n");
+    }
 
     // ------------------------------------------------------------------
     // The two layers.
@@ -208,9 +322,15 @@ fn main() {
     //   the catalogue is the only honest source for which tables actually exist. A predicate
     //   that looked for `pm.` alone would have filed it as a literal, which is the opposite of
     //   what it is.
+    // ⭐ AND `public.` IS THE THIRD CASE THE COMMENT ABOVE ANTICIPATED. `rank/compose_edges.sqlc`
+    //   reads `public.compose_edge`, this repository's own compose DAG, which is deliberately
+    //   outside `pm` because everything in `pm` descends from a filed document and the DAG
+    //   descends from `assets/sqlc/`. Without this it filed as a VALUES literal, which is the
+    //   opposite of what it is: a base table read, just not of the subject.
     let touches_a_table = |b: &str| {
         let e = emitted(b);
-        ["FROM pm.", "JOIN pm.", "FROM      pm.", "information_schema.", "pg_constraint"]
+        ["FROM pm.", "JOIN pm.", "FROM      pm.", "FROM public.", "JOIN public.",
+         "information_schema.", "pg_constraint"]
             .iter()
             .any(|m| e.contains(m))
     };

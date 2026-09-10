@@ -16,6 +16,12 @@
 # ⭐ IT IS A WINDOW AND NOT A SECOND WALK. descent.sqlc has already done the recursion, so the
 #   rank is one aggregate over its closure. Proposing another recursive CTE for this is proposing
 #   to recompute something the data already carries.
+# ⭐⭐ AND IT IS CARRIED INTO TWO ARTIFACTS NOW, NOT ONE. `examples/diagramming/main.rs` writes it into
+#    each filing's lane, and `examples/graphs/main.rs` writes it into the corpus-wide layer graph's,
+#    through `rank/graph_nodes.sqlc`. ⛔ AN EMITTER THAT WRITES NO RANK LEAVES THE RENDERER ITS
+#    OWN SENTINEL TO DRAW, and this relation is `coalesce(max(depth), 0)`, so a negative rank on
+#    a page is a value the model cannot produce. Every lane count stays exact through that, which
+#    is why it is the emitter's obligation and not a count's.
 -- composition/descent.sqlc aggregated to the deepest arrival under each layer.
 SELECT l.filing, l.layer,
        coalesce(max(d.depth), 0) AS rank,

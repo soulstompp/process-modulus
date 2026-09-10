@@ -12,108 +12,182 @@
     <participant id="pool_layers" name="layers" processRef="proc_layers"/>
   </collaboration>
   <process id="proc_layers" isExecutable="false">
-    <documentation>a part: F : layer -&gt; layer; a cycle here is a MISFILED PARTITION. The cells were one cell. The edges: [assets/sqlc/diagrams/graph_edges.sqlc]; a cycle is ruled on by [assets/sqlc/checks/layers_move_together.sqlc]</documentation>
+    <documentation>a part: F : layer -&gt; layer; a cycle here is a MISFILED PARTITION. The cells were one cell. The edges: [assets/sqlc/rank/graph_edges.sqlc]; a cycle is ruled on by [assets/sqlc/checks/layers_move_together.sqlc]</documentation>
     <laneSet id="lanes_layers" name="layers">
       <lane id="lane_every-absence_mixer" name="every-absence/mixer">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-absence_mixer-b" name="every-absence/mixer-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-absence_oven" name="every-absence/oven">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-absence_oven-b" name="every-absence/oven-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-elimination_baking" name="every-elimination/baking">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 11 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-elimination_baking__every-absence_oven</flowNodeRef>
         <flowNodeRef>edge_every-elimination_baking__every-absence_oven-b</flowNodeRef>
       </lane>
       <lane id="lane_every-elimination_mixing" name="every-elimination/mixing">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 10 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-elimination_mixing__every-absence_mixer</flowNodeRef>
         <flowNodeRef>edge_every-elimination_mixing__every-absence_mixer-b</flowNodeRef>
       </lane>
       <lane id="lane_every-local-part_as-contracted" name="every-local-part/as-contracted">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-local-part_as-filed" name="every-local-part/as-filed">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 13 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-local-part_as-filed__every-absence_oven</flowNodeRef>
       </lane>
       <lane id="lane_every-local-part_both-views" name="every-local-part/both-views">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 12 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-local-part_both-views__every-local-part_as-contracted</flowNodeRef>
         <flowNodeRef>edge_every-local-part_both-views__every-local-part_as-filed</flowNodeRef>
       </lane>
       <lane id="lane_every-nested-conversion_line-batches" name="every-nested-conversion/line-batches">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-nested-conversion_line-batches__every-nested-conversion_line-hours</flowNodeRef>
       </lane>
       <lane id="lane_every-nested-conversion_line-hours" name="every-nested-conversion/line-hours">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-nested-conversion_line-hours__every-nested-conversion_line-runs</flowNodeRef>
       </lane>
       <lane id="lane_every-nested-conversion_line-runs" name="every-nested-conversion/line-runs">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 6 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-partial-elimination_shift-capacity" name="every-partial-elimination/shift-capacity">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 13 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-a</flowNodeRef>
         <flowNodeRef>edge_every-partial-elimination_shift-capacity__every-partial-elimination_team-b</flowNodeRef>
       </lane>
       <lane id="lane_every-partial-elimination_team-a" name="every-partial-elimination/team-a">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-partial-elimination_team-b" name="every-partial-elimination/team-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-unit-cycle_cards" name="every-unit-cycle/cards">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-unit-cycle_cards__every-unit-cycle_node-capacity</flowNodeRef>
       </lane>
       <lane id="lane_every-unit-cycle_node-capacity" name="every-unit-cycle/node-capacity">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-unit-cycle_node-capacity__every-unit-cycle_reserved-hours</flowNodeRef>
       </lane>
       <lane id="lane_every-unit-cycle_reserved-hours" name="every-unit-cycle/reserved-hours">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-unsized-conversion_shift-capacity" name="every-unsized-conversion/shift-capacity">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 13 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-a</flowNodeRef>
         <flowNodeRef>edge_every-unsized-conversion_shift-capacity__every-unsized-conversion_team-b</flowNodeRef>
       </lane>
       <lane id="lane_every-unsized-conversion_team-a" name="every-unsized-conversion/team-a">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_every-unsized-conversion_team-b" name="every-unsized-conversion/team-b">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-group-composition_capacidade-instalada" name="merge-group-composition/capacidade-instalada">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-group-composition_capacidade-instalada__merge-pt-member_capacidade-instalada</flowNodeRef>
       </lane>
       <lane id="lane_merge-group-composition_compute-pt" name="merge-group-composition/compute-pt">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 16 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-group-composition_compute-pt__merge-pt-member_compute</flowNodeRef>
       </lane>
       <lane id="lane_merge-group-composition_compute-us" name="merge-group-composition/compute-us">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 19 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-group-composition_compute-us__merge-us-member_compute</flowNodeRef>
       </lane>
       <lane id="lane_merge-group-composition_labour" name="merge-group-composition/labour">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-group-composition_labour__merge-pt-member_pessoal</flowNodeRef>
         <flowNodeRef>edge_merge-group-composition_labour__merge-us-member_labour</flowNodeRef>
       </lane>
       <lane id="lane_merge-group-composition_on-call" name="merge-group-composition/on-call">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 8 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-group-composition_shift-line" name="merge-group-composition/shift-line">
+        <documentation>rank 1; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-group-composition_shift-line__merge-pt-member_linha-partilhada</flowNodeRef>
         <flowNodeRef>edge_merge-group-composition_shift-line__merge-us-member_shift-line</flowNodeRef>
       </lane>
       <lane id="lane_merge-holding-composition_compute" name="merge-holding-composition/compute">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 16 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-holding-composition_compute__merge-group-composition_compute-pt</flowNodeRef>
         <flowNodeRef>edge_merge-holding-composition_compute__merge-group-composition_compute-us</flowNodeRef>
       </lane>
       <lane id="lane_merge-holding-composition_shift-line" name="merge-holding-composition/shift-line">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 17 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-holding-composition_shift-line__merge-group-composition_shift-line</flowNodeRef>
       </lane>
       <lane id="lane_merge-holding-composition_staff" name="merge-holding-composition/staff">
+        <documentation>rank 2; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 15 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
         <flowNodeRef>edge_merge-holding-composition_staff__merge-group-composition_labour</flowNodeRef>
         <flowNodeRef>edge_merge-holding-composition_staff__merge-group-composition_on-call</flowNodeRef>
       </lane>
       <lane id="lane_merge-pt-member_capacidade-instalada" name="merge-pt-member/capacidade-instalada">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-pt-member_compute" name="merge-pt-member/compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 11 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-pt-member_linha-partilhada" name="merge-pt-member/linha-partilhada">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 8 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-pt-member_pessoal" name="merge-pt-member/pessoal">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 8 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-us-member_compute" name="merge-us-member/compute">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 11 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-us-member_labour" name="merge-us-member/labour">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 7 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
       <lane id="lane_merge-us-member_shift-line" name="merge-us-member/shift-line">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+        <documentation>refutable by 8 rule(s), 0 of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A LOW ONE IS NOT A FAULT: it is how many different questions this repository can put to this layer, so a layer near the bottom is one that a single repair would silence [assets/sqlc/rank/layer_cover.sqlc]</documentation>
       </lane>
     </laneSet>
     <task id="edge_every-elimination_baking__every-absence_oven" name="every-elimination/baking &lt;- every-absence/oven"/>

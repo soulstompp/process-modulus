@@ -12,7 +12,7 @@
     <participant id="pool_units" name="units" processRef="proc_units"/>
   </collaboration>
   <process id="proc_units" isExecutable="false">
-    <documentation>a conversion: phi : unit -&gt; unit; a cycle here is EXPECTED, and required to CLOSE: the weights on it must vanish, so a potential exists. The edges: [assets/sqlc/diagrams/graph_edges.sqlc]; a cycle is ruled on by [assets/sqlc/checks/conversion_cycle_does_not_close.sqlc]</documentation>
+    <documentation>a conversion: phi : unit -&gt; unit; a cycle here is EXPECTED, and required to CLOSE: the weights on it must vanish, so a potential exists. The edges: [assets/sqlc/rank/graph_edges.sqlc]; a cycle is ruled on by [assets/sqlc/checks/conversion_cycle_does_not_close.sqlc]</documentation>
     <laneSet id="lanes_units" name="units">
       <lane id="lane_GPU" name="GPU">
         <flowNodeRef>edge_GPU__GPU-hour</flowNodeRef>
@@ -42,13 +42,13 @@
         <flowNodeRef>edge_turnos_por_semana__shifts_per_week</flowNodeRef>
       </lane>
     </laneSet>
-    <task id="edge_GPU__GPU-hour" name="GPU &lt;- GPU-hour"/>
-    <task id="edge_GPU-hour__node-hour" name="GPU-hour &lt;- node-hour"/>
     <task id="edge_hour__batch" name="hour &lt;- batch"/>
+    <task id="edge_run__hour" name="run &lt;- hour"/>
+    <task id="edge_GPU-hour__node-hour" name="GPU-hour &lt;- node-hour"/>
     <task id="edge_node-hour__GPU" name="node-hour &lt;- GPU"/>
     <task id="edge_pessoas__people" name="pessoas &lt;- people"/>
-    <task id="edge_run__hour" name="run &lt;- hour"/>
     <task id="edge_turnos_por_semana__shifts_per_week" name="turnos por semana &lt;- shifts per week"/>
+    <task id="edge_GPU__GPU-hour" name="GPU &lt;- GPU-hour"/>
   </process>
   <bpmndi:BPMNDiagram id="diagram_units">
     <bpmndi:BPMNPlane id="plane_units" bpmnElement="tns:collab_units">

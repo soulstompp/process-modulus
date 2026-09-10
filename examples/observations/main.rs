@@ -662,6 +662,64 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          is a claim about nothing"
     );
 
+    // ⭐⭐⭐ THE LAYER DIMENSION READ DOWN THE OTHER AXIS. `rank/incidence_cover.sqlc` counts, per
+    //    RELATION, how much of the dimension it touches, so it says `49 of 51` and never which
+    //    two. This is the transpose, where the subject is the layer and the shortfall has a name.
+    //
+    // ⛔⛔ AND THE FIRST MEASUREMENT TAKEN THIS WAY WAS WRONG, WHICH IS WORTH KEEPING. It said
+    //    two layers were unreachable. Three rules were putting a claim ADDRESS in the contract's
+    //    `layer` column, 324 distinct pairs naming no layer, so the join dropped them and the
+    //    shortfall was an artifact of the key. With the subject declared `claim` and the claim's
+    //    own layer reported, it is zero. A cover measured through a key that does not resolve
+    //    measures the key.
+    let cover = sqlx::query_file!("assets/sql/queries/observations/18-layer-cover.sql")
+        .fetch_all(&pool)
+        .await?;
+    let thinnest = cover.first().map(|c| c.examined_by).unwrap_or(0);
+    println!(
+        "\n22. how many rules can say anything about each layer: {} layers, {} to {}",
+        cover.len(),
+        thinnest,
+        cover.last().map(|c| c.examined_by).unwrap_or(0)
+    );
+    for c in cover.iter().take(4) {
+        println!("   {:<26} {:<22} {:>2} rules, {} violated", c.filing, c.layer, c.examined_by, c.violated);
+    }
+    println!("   ⭐ The thin end is the finding and it is not a violation. A layer whose nameplate");
+    println!("      is a typed absence has no row in the vectors most rules compose, so it is");
+    println!("      filed correctly, validates, and is reachable by almost nothing. That is this");
+    println!("      model's boundary measured from inside rather than argued in a paragraph.");
+    assert!(
+        cover.iter().all(|c| c.examined_by > 0),
+        "a filed layer is reached by no rule at all, so nothing in this repository could ever \
+         contradict what it says"
+    );
+    assert!(
+        !cover.is_empty(),
+        "no layer reached this measurement, so the range printed above is about nothing"
+    );
+
+    // ⭐⭐⭐ THE REPOSITORY'S CENTRAL CLAIM ABOUT ITSELF, AS A QUERY RATHER THAN A SENTENCE. A
+    //    parent composing a child twice is ordinary and a fusion reaching a layer twice is a
+    //    violation, and both are one name arriving twice under one fold. Until the compose DAG
+    //    was a relation the two halves were a Rust `BTreeMap` and a SQL table, so the program
+    //    that printed the claim held one of them and could not join the other.
+    let dup = sqlx::query_file!("assets/sql/queries/observations/19-duplication.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n23. the same duplication in two graphs, and the opposite verdict");
+    for d in &dup {
+        println!("   {:<18} {:>3} of {:>4} edges   {}", d.graph, d.duplicated, d.edges, d.verdict);
+    }
+    println!("   ⛔ The COUNTS are not comparable and must not be compared: one graph is however");
+    println!("      much SQL somebody wrote, the other is however many fusions a corpus files.");
+    println!("      What is comparable is the verdict, and it is opposite on one column.");
+    assert!(
+        dup.len() == 2 && dup.iter().all(|d| d.edges > 0),
+        "one of the two graphs has no edges, so this comparison is between a structure and \
+         nothing and the opposite verdicts are about one thing"
+    );
+
     println!("\nAll checks passed.");
     Ok(())
 }

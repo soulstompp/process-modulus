@@ -74,8 +74,55 @@ CREATE TYPE narrowing_kind AS ENUM ('instrument', 'intervention', 'experiment');
 -- Documents.
 -- ---------------------------------------------------------------------------
 
--- The XML as it arrived. Exactly one table touches the filesystem, in sql/ingest.sql,
--- and everything else in this schema is derived from here by ordinary SQL.
+-- ---------------------------------------------------------------------------
+-- ⭐⭐⭐ THE REPOSITORY'S OWN COMPOSE DAG, AND IT IS IN `public` ON PURPOSE. One row per
+-- `(parent, child)` pair of `.sqlc` templates, with how many times the parent splices the
+-- child. `examples/compositions/main.rs` builds it from the source tree, needs no database to do
+-- so, and writes `assets/dag/edges.sql`; `ingest` loads that.
+--
+-- ⛔ IT IS NOT IN `pm` BECAUSE IT IS NOT ABOUT THE SUBJECT. Everything in `pm` descends from a
+-- filed document, which is the strongest property this schema states about itself, and putting
+-- a fact about this repository's own queries in there would end it. The same line
+-- `diagrams/lane_grain.sqlc` crosses when it reads `pg_constraint`.
+--
+-- ⭐⭐ `splices` IS THE COLUMN THE WHOLE THING IS FOR, and deduping to a bare edge throws the
+-- argument away. A parent composing a child twice is ORDINARY: `references/planner.md`
+-- measured it, the repeated relation is read once, shared hit 9,883 and read 0, because a
+-- query is idempotent. The identical shape in `pm.part` is `checks/jagged_layer`, a VIOLATION,
+-- because supply is a conserved carrier and one total closes over both occurrences. ⛔ Two
+-- graphs of one shape with opposite verdicts on one column, which is what this model adds to
+-- `sql-composer`, and a comparison whose two halves are a Rust map and a SQL table is a sentence
+-- a program prints rather than a query anybody can run.
+--
+-- ⚠️ `DROP SCHEMA pm CASCADE` above does not reach `public`, so this is dropped by name.
+-- ---------------------------------------------------------------------------
+DROP TABLE IF EXISTS public.compose_edge;
+CREATE TABLE public.compose_edge (
+    parent  text    NOT NULL,
+    child   text    NOT NULL,
+    -- ⛔ STRICTLY POSITIVE. A row exists because a directive does, so zero is not a state:
+    --   a parent that does not compose a child has no row, which is the sparse reading every
+    --   incidence in this schema uses.
+    splices integer NOT NULL CHECK (splices > 0),
+    -- ⭐⭐⭐ HOW MANY OF THOSE SPLICES ARE AN INNER JOIN, which is the syntax the compose DAG
+    --    could not see and the one that decides whether a bound survives. Composing a relation
+    --    as the driving set or with a `LEFT JOIN` asks *what is missing from the whole*;
+    --    inner-joining it asks *does this one pair exist*, and the second hands the whole of the
+    --    composed relation to every consumer downstream. ⛔ `layers/every_layer.sqlc` is the
+    --    layer dimension, so one inner join of it put the entire dimension into the transitive
+    --    closure of 20 of 29 rules and made every reach-containment bound vacuous.
+    -- ⚠️ A COUNT AND NOT A KIND, because the key is `(parent, child)` and one parent may splice
+    --    one child at several call sites with different keywords. `algebra/dimension_use.sqlc`
+    --    asks whether it is above zero; nothing yet needs to know which site.
+    inner_joins integer NOT NULL CHECK (inner_joins >= 0),
+    CONSTRAINT inner_joins_are_some_of_the_splices CHECK (inner_joins <= splices),
+    PRIMARY KEY (parent, child)
+);
+
+-- The XML as it arrived. Exactly one table in schema `pm` touches the filesystem, in
+-- sql/ingest.sql, and everything else in THIS SCHEMA is derived from here by ordinary SQL.
+-- ⚠️ `public.compose_edge` above is also filesystem-fed and is deliberately outside `pm`, for
+-- the reason its own comment gives: it is a fact about this repository and not about a subject.
 CREATE TABLE source (
     name text PRIMARY KEY,
     body xml  NOT NULL

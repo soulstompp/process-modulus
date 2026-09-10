@@ -207,8 +207,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // ⛔⛔⛔ WHAT ONE EXAMINED ROW OF EACH RULE IS, DECLARED, AGAINST WHAT ITS ROWS ACTUALLY ARE.
     //    `checks/all.sqlc` returns `(rule, filing, layer, violates, detail)` and its header reads
-    //    *which layer of which filing it is*. That is FALSE for seven of the rules: their subject
-    //    is a PART or a SLACK, so `(filing, layer)` is not a key and the item's identity survives
+    //    *which layer of which filing it is*. That is FALSE wherever the examined item is finer
+    //    than a layer, a PART, a SLACK or a CLAIM, so `(filing, layer)` is not a key and survives
     //    only inside the prose `detail`.
     //
     // ⭐⭐ AND IT SPLITS A BAG THAT WAS BEING CALLED ONE THING. `invariance.sqlc` says the
@@ -240,6 +240,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   {subject:<7} {rules:>2} rules   {rows:>4} rows over {layers:>4} layers{}",
                  if rows == layers { "   one row per layer" } else { "   FINER than a layer" });
     }
+    // ⛔⛔⛔ AND THE SECOND ARM, WHICH THE FIRST COULD NOT BE. `finer_than_declared` asks whether
+    //    the key is unique per row. This asks whether the key RESOLVES. Three rules put a claim
+    //    ADDRESS in the `layer` column, `pm:nameplate/pm:amount claim 7`, 523 rows over 324
+    //    distinct values, and the multiplicity arm read false on all three: a value unique per
+    //    row satisfies *one row per key* by construction, so what makes the column wrong is
+    //    exactly what makes the multiplicity arm pass. ⭐ And anything joining a verdict to a
+    //    layer keeps only the pairs that resolve and drops the rest, with the join looking
+    //    perfect either way.
+    let unresolvable: Vec<(&str, i64)> = grain
+        .iter()
+        .filter(|g| g.unresolvable.unwrap_or(0) > 0)
+        .map(|g| (g.slug.as_deref().unwrap_or("?"), g.unresolvable.unwrap_or(0)))
+        .collect();
+    let checked: i64 = grain.iter().map(|g| g.rows.unwrap_or(0)).sum();
+    assert!(
+        unresolvable.is_empty(),
+        "a rule returns a `(filing, layer)` that names no filed layer, so its verdict cannot be \
+         attributed to anything and every join through that key drops it in silence: \
+         {unresolvable:?}"
+    );
+    println!("   {checked} verdict rows, every non-null (filing, layer) a layer somebody filed");
     assert!(!grain.is_empty(), "no rule was examined, so the grain law examined nothing");
     assert!(
         by_subject.len() > 1,
@@ -275,28 +296,52 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   arm; a refactor that routed either through its roster "so the names line up" would take
     //   a real second witness away and every other check here would still pass.
     // ------------------------------------------------------------------
-    let integrity = files
-        .iter()
-        .find(|(n, _)| n == "reports/integrity.sqlc")
-        .map(|(_, b)| sql_only(b))
-        .expect("reports/integrity.sqlc is in the tree");
     let edges: BTreeMap<&str, Vec<String>> = files
         .iter()
         .map(|(n, b)| (n.as_str(), references(&emitted(b))))
         .collect();
 
-    // Each arm of the difference names its contract and composes one of that contract's two
-    // relations on the same line, so the pair falls out of the file that declares it.
-    let mut pairs: BTreeMap<&str, BTreeSet<&str>> = BTreeMap::new();
-    for line in integrity.lines() {
-        let label = line.split_once("SELECT '").and_then(|(_, r)| r.split_once('\'')).map(|(l, _)| l);
-        let rel = line
-            .split_once(":compose(")
-            .and_then(|(_, r)| r.split_once(|c| c == ')' || c == ','))
-            .map(|(t, _)| t.trim());
-        if let (Some(label), Some(rel)) = (label, rel) {
-            pairs.entry(label).or_default().insert(rel);
+    // ⭐⭐⭐ THE PAIR COMES FROM THE TWO OPERANDS AND NOT FROM THE DIFFERENCE, SO THE SIDES ARE
+    //    NAMED. `algebra/declared_subjects.sqlc` is the rosters and
+    //    `algebra/produced_subjects.sqlc` is the populations. ⛔ Read off the difference instead,
+    //    this law gets two relations per contract with no way to say WHICH is the roster, and has
+    //    to test reachability both ways and take whichever answers.
+    // ⚠️ AND IT DETECTS A PROPERTY BY PARSING, WHICH IS THE COST TO KNOW ABOUT. `checks/all.sqlc`
+    //    composing `checks/roster.sqlc` is what makes the property true; this law only sees it
+    //    where it happens to be written. A detector keyed on WHERE a fact is written fails on a
+    //    refactor that keeps the fact true.
+    let arms = |name: &str| -> BTreeMap<String, String> {
+        let body = files
+            .iter()
+            .find(|(n, _)| n == name)
+            .map(|(_, b)| sql_only(b))
+            .unwrap_or_else(|| panic!("{name} is in the tree"));
+        let mut out = BTreeMap::new();
+        let mut label: Option<String> = None;
+        for line in body.lines() {
+            if let Some(l) = line.split_once("SELECT '").and_then(|(_, r)| r.split_once('\'')) {
+                label = Some(l.0.to_string());
+            }
+            if let (Some(lab), Some(rel)) = (
+                label.clone(),
+                line.split_once(":compose(")
+                    .and_then(|(_, r)| r.split_once(|c| c == ')' || c == ','))
+                    .map(|(t, _)| t.trim().to_string()),
+            ) {
+                out.insert(lab, rel);
+                label = None;
+            }
         }
+        out
+    };
+    let rosters = arms("algebra/declared_subjects.sqlc");
+    let populations = arms("algebra/produced_subjects.sqlc");
+    let mut pairs: BTreeMap<&str, BTreeSet<&str>> = BTreeMap::new();
+    for (label, roster) in &rosters {
+        let Some(pop) = populations.get(label) else { continue };
+        let e = pairs.entry(label.as_str()).or_default();
+        e.insert(roster.as_str());
+        e.insert(pop.as_str());
     }
 
     println!("\n5. what stands behind each contract's own difference");
@@ -443,6 +488,57 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     println!("   ⭐ The roster row exists before the population does, which is what makes");
     println!("      \"a bound with nothing to bound passes loudest\" a verdict here instead of a worry.");
+
+    // ------------------------------------------------------------------
+    // ⛔⛔⛔ THE EMITTED DAG CAN GO STALE, WHICH IS WHAT THE GENERATE-THEN-LOAD SHAPE COSTS.
+    //    `examples/compositions/main.rs` writes `assets/dag/edges.sql` from the source tree and
+    //    `ingest` loads it, so a `:compose` added without rerunning the emitter leaves the
+    //    database describing an older tree. Nothing else here would notice: every relation over
+    //    the DAG would be internally consistent and about the wrong repository.
+    //
+    // ⚠️ THIS IS A STALENESS CHECK AND NOT TWO INDEPENDENT ROUTES, and the difference matters.
+    //    It re-derives through the SAME `examples/shared/tree` module the emitter used, so it catches
+    //    the ARTIFACT drifting from the tree and could never catch the scanner being wrong about
+    //    both. Two routes would need a second scanner, which is the duplication this replaced.
+    // ------------------------------------------------------------------
+    let dag_now: BTreeMap<(String, String), usize> = {
+        let sqlc = Path::new("assets/sqlc");
+        let mut fs_files = Vec::new();
+        templates(sqlc, sqlc, &mut fs_files);
+        let mut m: BTreeMap<(String, String), usize> = BTreeMap::new();
+        for (name, body) in &fs_files {
+            for child in references(&emitted(body)) {
+                *m.entry((name.clone(), child)).or_default() += 1;
+            }
+        }
+        // ⚠️ SPLICES ONLY. `inner_joins` is classified by `examples/compositions/main.rs` from the SQL
+        //   text, and re-deriving it here would be a second detector rather than a second route:
+        //   this law's job is that the LOADED artifact matches the tree's edges, and the syntax
+        //   column has its own positive control in the emitter.
+
+        m
+    };
+    let dag_loaded = sqlx::query_file!("assets/sql/rank/compose_edges.sql")
+        .fetch_all(&pool)
+        .await?;
+    let loaded: BTreeMap<(String, String), usize> = dag_loaded
+        .iter()
+        .map(|e| ((e.parent.clone(), e.child.clone()), e.splices as usize))
+        .collect();
+    assert!(!dag_now.is_empty(), "the source tree has no :compose directive, so this law is vacuous");
+    assert_eq!(
+        dag_now, loaded,
+        "public.compose_edge does not match assets/sqlc/ as it stands on disk. Rerun \
+         `cargo run --example compositions` to regenerate assets/dag/edges.sql and reload the \
+         ingest: every relation over the DAG is otherwise describing an older tree, consistently"
+    );
+    println!("\n7. the compose DAG, loaded against the source tree");
+    println!("   {} pairs, {} directives, {} pairs spliced more than once",
+             loaded.len(), loaded.values().sum::<usize>(),
+             loaded.values().filter(|n| **n > 1).count());
+    println!("   ⭐ A parent splicing a child twice is ORDINARY here and `checks/jagged_layer` in");
+    println!("      `pm.part`. Two graphs of one shape, opposite verdicts on one column, and the");
+    println!("      comparison is a query now rather than a sentence in a program's output.");
 
     println!("\nAll checks passed.");
     Ok(())

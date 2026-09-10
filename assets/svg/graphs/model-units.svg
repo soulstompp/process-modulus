@@ -5,86 +5,76 @@
      what *properly layered* means, and it is what lets a reader check the partition
      and the call graph with no BPMN tool present. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 454" width="760">
-  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .refuted{stroke:#b00;stroke-width:2.5} .coverName{font:10px sans-serif;fill:#888} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
   <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
   <g class="pool" data-filing="units" id="pool-units"><title>pool: units</title>
     <rect id="pool-units-box" x="8" y="36" width="744" height="410" class="poolBox"/>
     <path id="pool-units-band" d="M36 36 v410" class="poolBox"/>
     <text id="pool-units-name" transform="translate(26,241) rotate(-90)" text-anchor="middle" class="poolName">units</text>
   </g>
-  <g class="lane" data-layer="GPU" data-rank="-1" id="lane_GPU"><title>lane: GPU</title>
+  <g class="lane" data-layer="GPU" id="lane_GPU"><title>lane: GPU</title>
     <rect id="lane_GPU-box" x="120" y="46" width="620" height="34" class="laneBox"/>
     <text id="lane_GPU-name" x="128" y="62" class="laneName">GPU</text>
-    <text id="lane_GPU-rank" x="732" y="62" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_GPU__GPU-hour" data-kind="task" id="edge_GPU__GPU-hour"><title>task GPU &lt;- GPU-hour</title>
       <rect id="edge_GPU__GPU-hour-box" x="290" y="52" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_GPU__GPU-hour-name" x="296" y="65" class="nodeName">GPU &lt;- GPU-hour</text>
     </g>
   </g>
-  <g class="lane" data-layer="GPU-hour" data-rank="-1" id="lane_GPU-hour"><title>lane: GPU-hour</title>
+  <g class="lane" data-layer="GPU-hour" id="lane_GPU-hour"><title>lane: GPU-hour</title>
     <rect id="lane_GPU-hour-box" x="120" y="86" width="620" height="34" class="laneBox"/>
     <text id="lane_GPU-hour-name" x="128" y="102" class="laneName">GPU-hour</text>
-    <text id="lane_GPU-hour-rank" x="732" y="102" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_GPU-hour__node-hour" data-kind="task" id="edge_GPU-hour__node-hour"><title>task GPU-hour &lt;- node-hour</title>
       <rect id="edge_GPU-hour__node-hour-box" x="290" y="92" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_GPU-hour__node-hour-name" x="296" y="105" class="nodeName">GPU-hour &lt;- node-hour</text>
     </g>
   </g>
-  <g class="lane" data-layer="batch" data-rank="-1" id="lane_batch"><title>lane: batch</title>
+  <g class="lane" data-layer="batch" id="lane_batch"><title>lane: batch</title>
     <rect id="lane_batch-box" x="120" y="126" width="620" height="34" class="laneBox"/>
     <text id="lane_batch-name" x="128" y="142" class="laneName">batch</text>
-    <text id="lane_batch-rank" x="732" y="142" class="rankName" text-anchor="end">rank -1</text>
   </g>
-  <g class="lane" data-layer="hour" data-rank="-1" id="lane_hour"><title>lane: hour</title>
+  <g class="lane" data-layer="hour" id="lane_hour"><title>lane: hour</title>
     <rect id="lane_hour-box" x="120" y="166" width="620" height="34" class="laneBox"/>
     <text id="lane_hour-name" x="128" y="182" class="laneName">hour</text>
-    <text id="lane_hour-rank" x="732" y="182" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_hour__batch" data-kind="task" id="edge_hour__batch"><title>task hour &lt;- batch</title>
       <rect id="edge_hour__batch-box" x="290" y="172" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_hour__batch-name" x="296" y="185" class="nodeName">hour &lt;- batch</text>
     </g>
   </g>
-  <g class="lane" data-layer="node-hour" data-rank="-1" id="lane_node-hour"><title>lane: node-hour</title>
+  <g class="lane" data-layer="node-hour" id="lane_node-hour"><title>lane: node-hour</title>
     <rect id="lane_node-hour-box" x="120" y="206" width="620" height="34" class="laneBox"/>
     <text id="lane_node-hour-name" x="128" y="222" class="laneName">node-hour</text>
-    <text id="lane_node-hour-rank" x="732" y="222" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_node-hour__GPU" data-kind="task" id="edge_node-hour__GPU"><title>task node-hour &lt;- GPU</title>
       <rect id="edge_node-hour__GPU-box" x="290" y="212" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_node-hour__GPU-name" x="296" y="225" class="nodeName">node-hour &lt;- GPU</text>
     </g>
   </g>
-  <g class="lane" data-layer="people" data-rank="-1" id="lane_people"><title>lane: people</title>
+  <g class="lane" data-layer="people" id="lane_people"><title>lane: people</title>
     <rect id="lane_people-box" x="120" y="246" width="620" height="34" class="laneBox"/>
     <text id="lane_people-name" x="128" y="262" class="laneName">people</text>
-    <text id="lane_people-rank" x="732" y="262" class="rankName" text-anchor="end">rank -1</text>
   </g>
-  <g class="lane" data-layer="pessoas" data-rank="-1" id="lane_pessoas"><title>lane: pessoas</title>
+  <g class="lane" data-layer="pessoas" id="lane_pessoas"><title>lane: pessoas</title>
     <rect id="lane_pessoas-box" x="120" y="286" width="620" height="34" class="laneBox"/>
     <text id="lane_pessoas-name" x="128" y="302" class="laneName">pessoas</text>
-    <text id="lane_pessoas-rank" x="732" y="302" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_pessoas__people" data-kind="task" id="edge_pessoas__people"><title>task pessoas &lt;- people</title>
       <rect id="edge_pessoas__people-box" x="290" y="292" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_pessoas__people-name" x="296" y="305" class="nodeName">pessoas &lt;- people</text>
     </g>
   </g>
-  <g class="lane" data-layer="run" data-rank="-1" id="lane_run"><title>lane: run</title>
+  <g class="lane" data-layer="run" id="lane_run"><title>lane: run</title>
     <rect id="lane_run-box" x="120" y="326" width="620" height="34" class="laneBox"/>
     <text id="lane_run-name" x="128" y="342" class="laneName">run</text>
-    <text id="lane_run-rank" x="732" y="342" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_run__hour" data-kind="task" id="edge_run__hour"><title>task run &lt;- hour</title>
       <rect id="edge_run__hour-box" x="290" y="332" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_run__hour-name" x="296" y="345" class="nodeName">run &lt;- hour</text>
     </g>
   </g>
-  <g class="lane" data-layer="shifts per week" data-rank="-1" id="lane_shifts_per_week"><title>lane: shifts per week</title>
+  <g class="lane" data-layer="shifts per week" id="lane_shifts_per_week"><title>lane: shifts per week</title>
     <rect id="lane_shifts_per_week-box" x="120" y="366" width="620" height="34" class="laneBox"/>
     <text id="lane_shifts_per_week-name" x="128" y="382" class="laneName">shifts per week</text>
-    <text id="lane_shifts_per_week-rank" x="732" y="382" class="rankName" text-anchor="end">rank -1</text>
   </g>
-  <g class="lane" data-layer="turnos por semana" data-rank="-1" id="lane_turnos_por_semana"><title>lane: turnos por semana</title>
+  <g class="lane" data-layer="turnos por semana" id="lane_turnos_por_semana"><title>lane: turnos por semana</title>
     <rect id="lane_turnos_por_semana-box" x="120" y="406" width="620" height="34" class="laneBox"/>
     <text id="lane_turnos_por_semana-name" x="128" y="422" class="laneName">turnos por semana</text>
-    <text id="lane_turnos_por_semana-rank" x="732" y="422" class="rankName" text-anchor="end">rank -1</text>
     <g class="node" data-id="edge_turnos_por_semana__shifts_per_week" data-kind="task" id="edge_turnos_por_semana__shifts_per_week"><title>task turnos por semana &lt;- shifts per week</title>
       <rect id="edge_turnos_por_semana__shifts_per_week-box" x="290" y="412" width="450" height="18" rx="4" class="activity task"/>
       <text id="edge_turnos_por_semana__shifts_per_week-name" x="296" y="425" class="nodeName">turnos por semana &lt;- shifts per week</text>

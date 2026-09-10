@@ -1,8 +1,51 @@
--- the unit graph and the layer graph as incidence matrices; rank and cycle space per Strang.
+-- rank/graph_measures.sqlc at the corpus-wide scope: the two graphs as incidence matrices.
+SELECT m.graph, m.n_nodes, m.m_edges, m.c_components, m.cycle_space_dim, m.rank_of_incidence
+FROM (
+    -- rank/graph_edges.sqlc, symmetrised and walked for components, counted at both scopes.
 WITH RECURSIVE
 edges AS (
-    SELECT 'units'  AS graph, c.from_unit AS a, c.to_unit AS b
-    FROM ( -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
+    SELECT DISTINCT g.graph, g.filing, g.from_node AS a, g.to_node AS b
+    FROM ( -- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.
+SELECT 'layers' AS graph,
+       p.composition                            AS filing,
+       p.composition  || '/' || p.composed_layer AS from_node,
+       p.part_filing  || '/' || p.part_layer     AS to_node
+FROM (
+    -- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM      (
+    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+FROM pm.part p
+
+) p
+JOIN      (
+    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+
+) fi ON fi.notation = p.part_filing
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
+
+) p
+UNION ALL
+SELECT 'units', c.filing, c.from_unit, c.to_unit
+FROM (
+    -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        part.unit AS from_unit,
        comp.unit AS to_unit,
@@ -29,12 +72,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 
 ) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
+-- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
+--    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
+--    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
+--    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
+--    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
+--    law over a rule is vacuous the moment the dimension is inside its closure, because the
+--    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
+--    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 
 ) p
 JOIN      (
@@ -144,51 +190,37 @@ WHERE s.low IS NOT NULL
 ) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
       AND comp.quantity = 'nameplate'
 WHERE p.factor_low IS NOT NULL
- ) c
-  UNION
-    SELECT 'layers', p.composition || '/' || p.composed_layer, p.part_filing || '/' || p.part_layer
-    FROM ( -- pm.part joined through pm.filing_identity to pm.layer.
-SELECT p.composition, p.composed_layer,
-       p.part_filing AS part_notation,
-       fi.filing     AS part_filing,
-       p.part_layer,
-       p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM      (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
 
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.notation = p.part_filing
-JOIN      (
-    -- pm:Stack/pm:layer, keyed and nothing more.
-SELECT l.filing, l.layer
-FROM pm.layer l
-
-) l  ON l.filing = fi.filing AND l.layer = p.part_layer
- ) p
+) c
+ ) g
 ),
-nodes AS (SELECT graph, a AS u FROM edges UNION SELECT graph, b FROM edges),
-sym   AS (SELECT graph, a, b FROM edges UNION SELECT graph, b, a FROM edges),
-reach(graph, root, at) AS (
-      SELECT graph, u, u FROM nodes
+scoped AS (
+    SELECT DISTINCT graph, NULL::text AS filing, a, b FROM edges
+  UNION ALL
+    SELECT graph, filing, a, b FROM edges
+),
+nodes AS (SELECT graph, filing, a AS u FROM scoped UNION SELECT graph, filing, b FROM scoped),
+sym   AS (SELECT graph, filing, a, b FROM scoped UNION SELECT graph, filing, b, a FROM scoped),
+reach(graph, filing, root, at) AS (
+      SELECT graph, filing, u, u FROM nodes
     UNION
-      SELECT r.graph, r.root, s.b FROM reach r JOIN sym s ON s.graph = r.graph AND s.a = r.at
+      SELECT r.graph, r.filing, r.root, s.b
+      FROM reach r JOIN sym s ON s.graph = r.graph AND s.filing IS NOT DISTINCT FROM r.filing
+                              AND s.a = r.at
 ),
-comp AS (SELECT graph, root, min(at) AS component FROM reach GROUP BY graph, root)
-SELECT n.graph,
-       count(DISTINCT n.u)                                        AS n_nodes,
-       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)     AS m_edges,
-       count(DISTINCT c.component)                                AS c_components,
-       (SELECT count(*) FROM edges e WHERE e.graph = n.graph)
-         - count(DISTINCT n.u) + count(DISTINCT c.component)      AS cycle_space_dim,
-       count(DISTINCT n.u) - count(DISTINCT c.component)          AS rank_of_incidence
-FROM nodes n JOIN comp c ON c.graph = n.graph AND c.root = n.u
-GROUP BY n.graph
+comp AS (SELECT graph, filing, root, min(at) AS component FROM reach GROUP BY graph, filing, root)
+SELECT n.graph, n.filing,
+       count(DISTINCT n.u)                                         AS n_nodes,
+       (SELECT count(*) FROM scoped w
+         WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing) AS m_edges,
+       count(DISTINCT c.component)                                 AS c_components,
+       (SELECT count(*) FROM scoped w
+         WHERE w.graph = n.graph AND w.filing IS NOT DISTINCT FROM n.filing)
+         - count(DISTINCT n.u) + count(DISTINCT c.component)       AS cycle_space_dim,
+       count(DISTINCT n.u) - count(DISTINCT c.component)           AS rank_of_incidence
+FROM nodes n
+JOIN comp c ON c.graph = n.graph AND c.filing IS NOT DISTINCT FROM n.filing AND c.root = n.u
+GROUP BY n.graph, n.filing
+
+) m
+WHERE m.filing IS NULL

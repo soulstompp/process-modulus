@@ -1,0 +1,42 @@
+# EVERY SUBJECT EVERY CONTRACT IN THIS REPOSITORY DECLARES. One row per (contract, subject):
+# a rule on `checks/roster.sqlc`, a site on `arithmetic/roster.sqlc`, a law on
+# `algebra/roster.sqlc`, a table on `diagrams/domain_objects.sqlc`, a diagram law on
+# `diagrams/roster.sqlc`.
+#
+# ⭐⭐⭐ EXTRACTED TO GOVERN, which is the idiom `composition/remainder_frontier.sqlc` already
+#    records: a difference whose operands are written inline has no countable left operand, so no
+#    law on `algebra/roster.sqlc` can reach it and nobody can ask how big either side was.
+#    `reports/integrity.sqlc` is the largest difference in this tree, and spelling both operands
+#    inline there costs ten arms for two sets: once per side, per direction of the `EXCEPT`.
+#
+# ⛔⛔ AND FOUR RELATIONS SHARE THESE TWO SETS, which is a query over `public.compose_edge` rather
+#    than something a reading finds reliably. `rank/guard_cover.sqlc` and `reports/integrity.sqlc`
+#    compose the IDENTICAL ten children, with `algebra/integrity.sqlc` and
+#    `queries/soundness/4-vacuity.sqlc` as proper subsets. ⚠️ Identical children are necessary and
+#    not sufficient: `guard_cover` then narrows the produced side to rows carrying a verdict, so it
+#    reads a different set and must keep deriving its own.
+#
+# ⚠️ THE DECLARED SIDE IS THE ROSTERS AND NEVER THE POPULATIONS, which is what makes the
+#   difference mean anything. `diagrams/domain_objects.sqlc` states the rule in its own header:
+#   a contract must not be derived from what it governs, or declared, produced and derived could
+#   never disagree and the difference would be an anti-join of a set against itself. Every arm
+#   here is a bare `VALUES` literal one level down, and `examples/compositions/main.rs` asserts it.
+#
+# ⭐ `contract` IS THE CALLER'S LABEL, not each roster's. Neither roster knows which contract it
+#   serves, and a member carrying its own label would be answering a question about the set it
+#   happens to be in. `process-modulus-sql` rule 5.
+-- the five rosters, each labelled with the contract it declares.
+SELECT 'rules' AS contract, r.rule AS subject
+FROM ( :compose(checks/roster.sqlc) ) r
+UNION ALL
+SELECT 'arithmetic', a.site
+FROM ( :compose(arithmetic/roster.sqlc) ) a
+UNION ALL
+SELECT 'algebra', g.law
+FROM ( :compose(algebra/roster.sqlc) ) g
+UNION ALL
+SELECT 'diagrams', d.object
+FROM ( :compose(diagrams/domain_objects.sqlc) ) d
+UNION ALL
+SELECT 'diagram laws', l.slug
+FROM ( :compose(diagrams/roster.sqlc) ) l

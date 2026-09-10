@@ -44,54 +44,22 @@
 SELECT x.contract, 'declared, but nothing produces it' AS problem, x.subject
 FROM (
     (
-        SELECT 'rules' AS contract, r.rule AS subject FROM ( :compose(checks/roster.sqlc) ) r
-        UNION ALL
-        SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
-        UNION ALL
-        SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
-        UNION ALL
-        SELECT 'diagrams', d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d
-        UNION ALL
-        SELECT 'diagram laws', l.slug FROM ( :compose(diagrams/roster.sqlc) ) l
+        :compose(algebra/declared_subjects.sqlc)
     )
     EXCEPT
     (
-        SELECT 'rules', c.rule FROM ( :compose(checks/all.sqlc) ) c
-        UNION ALL
-        SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
-        UNION ALL
-        SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
-        UNION ALL
-        SELECT 'diagrams', k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k
-        UNION ALL
-        SELECT 'diagram laws', e.slug FROM ( :compose(diagrams/expected.sqlc) ) e
+        :compose(algebra/produced_subjects.sqlc)
     )
 ) x
 UNION ALL
 SELECT x.contract, 'produced, but nothing declares it', x.subject
 FROM (
     (
-        SELECT 'rules' AS contract, c.rule AS subject FROM ( :compose(checks/all.sqlc) ) c
-        UNION ALL
-        SELECT 'arithmetic', z.site FROM ( :compose(arithmetic/all.sqlc) ) z
-        UNION ALL
-        SELECT 'algebra', w.law FROM ( :compose(algebra/all.sqlc) ) w
-        UNION ALL
-        SELECT 'diagrams', k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k
-        UNION ALL
-        SELECT 'diagram laws', e.slug FROM ( :compose(diagrams/expected.sqlc) ) e
+        :compose(algebra/produced_subjects.sqlc)
     )
     EXCEPT
     (
-        SELECT 'rules', r.rule FROM ( :compose(checks/roster.sqlc) ) r
-        UNION ALL
-        SELECT 'arithmetic', a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
-        UNION ALL
-        SELECT 'algebra', g.law FROM ( :compose(algebra/roster.sqlc) ) g
-        UNION ALL
-        SELECT 'diagrams', d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d
-        UNION ALL
-        SELECT 'diagram laws', l.slug FROM ( :compose(diagrams/roster.sqlc) ) l
+        :compose(algebra/declared_subjects.sqlc)
     )
 ) x
 UNION ALL

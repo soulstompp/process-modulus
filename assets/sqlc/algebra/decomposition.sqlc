@@ -23,23 +23,18 @@ LEFT JOIN (
                   x.whole, x.per_filing, x.filings, x.graphs) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM (
-                 SELECT c.from_unit AS a, c.to_unit AS b FROM ( :compose(units/conversions.sqlc) ) c
-                 UNION
-                 SELECT p.composition || '/' || p.composed_layer,
-                        p.part_filing || '/' || p.part_layer
-                 FROM ( :compose(composition/parts.sqlc) ) p) e)                     AS whole,
+                 SELECT DISTINCT g.graph, g.from_node, g.to_node
+                 FROM ( :compose(rank/graph_edges.sqlc) ) g) e)                      AS whole,
              (SELECT count(*) FROM (
-                 SELECT c.filing, c.from_unit AS a, c.to_unit AS b
-                 FROM ( :compose(units/conversions.sqlc) ) c
-                 UNION
-                 SELECT p.composition, p.composition || '/' || p.composed_layer,
-                        p.part_filing || '/' || p.part_layer
-                 FROM ( :compose(composition/parts.sqlc) ) p) e)                     AS per_filing,
-             (SELECT count(DISTINCT f) FROM (
-                 SELECT c.filing AS f FROM ( :compose(units/conversions.sqlc) ) c
-                 UNION
-                 SELECT p.composition FROM ( :compose(composition/parts.sqlc) ) p) g) AS filings,
-             2                                                                        AS graphs
+                 SELECT DISTINCT g.graph, g.filing, g.from_node, g.to_node
+                 FROM ( :compose(rank/graph_edges.sqlc) ) g) e)                      AS per_filing,
+             (SELECT count(DISTINCT g.filing)
+              FROM ( :compose(rank/graph_edges.sqlc) ) g)                            AS filings,
+             -- ⛔ `2` WAS A LITERAL HERE, AND A THIRD GRAPH WOULD NOT HAVE MOVED IT. The claimant
+             --    graph has no edges today, so the number was right and unreadable: nothing said
+             --    whether it meant *this model composes two graphs* or *two of them have edges*.
+             (SELECT count(DISTINCT g.graph)
+              FROM ( :compose(rank/graph_edges.sqlc) ) g)                            AS graphs
          ) x
 ) p ON true
 WHERE a.slug = 'decomposition'
