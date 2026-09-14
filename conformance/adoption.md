@@ -1,5 +1,7 @@
 # Recognising a restated set in a corpus you already have
 
+> **Também disponível em português europeu: [`adoption.pt.md`](adoption.pt.md).**
+
 **Guidance, not a schema change.** An adopter cannot act on a rule they do not recognise
 themselves breaking, and the rules this schema is built on are all broken by work that is
 locally correct. Nothing below is a defect in the project it was found in.
@@ -67,6 +69,45 @@ The counter-caveat travels with it. A blank whose meaning is enforced by a rule 
 is still not a reason reachable from the row, but that does not mean the adopter does not
 know what their blanks mean. It means the knowledge is not in the document, which is a
 different and far more fixable problem.
+
+## A third signature, for a role rather than a value
+
+> A repeating element whose emptiness has to mean two things, with no sibling that says
+> which.
+
+The first two signatures are about a value: a term with no authority, a blank with no
+reason. This one is about a role. An adopter who models a role as a bare repeating element,
+or as an unbounded choice at the root of a profile, has written valid and idiomatic XSD, and
+nothing inside their project is wrong. A document carrying none of that role is ordinary and
+frequently the finding.
+
+The cost appears only when something other than the filer assembles the document. A reader
+that goes to sources it does not control has three ordinary ways to come back with nothing:
+the source was not there, the source lacked a field the role requires, or a closed
+vocabulary refused the value by name. Each emits the same empty role as a source that
+genuinely reported nothing, and those are opposite claims. The asymmetry is what prices it:
+a true zero reported as a failure is a false alarm and announces itself, while a failure
+reported as a true zero is false confidence and nobody investigates, because nothing looks
+wrong.
+
+⛔ The remedy is not a schema change. The base schema demonstrates the shape twice, at
+`StatedCouplings` and at `asrt:StatedEliminations`: a choice between the repeating element
+and an `Absence`, each required on its parent, so the position exists before the rows do.
+`Absence` then carries the reason, and its `provenance` separates a reader's gap from a
+filer's zero, because who says a thing is unmeasured is itself information. "Nobody looked"
+and "somebody looked and found none" become two filings rather than one empty list.
+
+Requiring the wrapper is cheap for the reason `AbsenceReason` gives: an element is expensive
+to require only when the sender must invent a value to satisfy it, and once a typed absence
+is a legitimate answer a sender can always answer honestly. The base schema priced the
+alternative once already, at `Coupling/strength`, where an optional element and a typed
+absence said the same thing two ways, and the annotation there records which of the two a
+corpus reached for.
+
+The counter-caveat travels with this one too. A role whose emptiness can only mean one thing
+needs no wrapper, and a corpus nobody assembles does not have the problem at all: a filer
+who writes their own document knows what they left out, and their silence is a statement.
+The signature is worth grepping for in a profile whose documents are built by a program.
 
 ## On the measurements behind this
 

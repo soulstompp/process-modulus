@@ -9,7 +9,7 @@ de o preceder. Este ficheiro explica o que é um perfil, o que pode e não pode 
 regras do modelo um validador não chega por si.
 
 Adotar é uma questão distinta de estar conforme, e tem ficheiro próprio. O
-[`adoption.md`](adoption.md) descreve o que é infringir as regras do `BorrowedTerm` e da
+[`adoption.pt.md`](adoption.pt.md) descreve o que é infringir as regras do `BorrowedTerm` e da
 `Absence` visto de dentro de um conjunto de documentos que já existe, porque um adotante não
 pode agir sobre uma regra que não se reconhece a infringir.
 
