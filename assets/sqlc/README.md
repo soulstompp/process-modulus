@@ -5,7 +5,8 @@
 One claim, and a query for every part of it.
 
 ⛔⛔⛔ **`assets/sql/` IS GENERATED AND WIPED ON EVERY COMPOSE. NEVER EDIT IT.** The sources are
-`assets/sqlc/*.sqlc`; `cargo sqlc compose --source assets/sqlc --target assets/sql` rewrites the
+`assets/sqlc/*.sqlc`; `cargo sqlc compose --source assets/sqlc --target assets/sql --views
+assets/sqlc/views.sqlc` rewrites the
 whole target directory. If you found a query by grepping `assets/sql/`, find its `.sqlc` before
 you touch anything, or your edit is gone on the next run and nothing will tell you.
 
@@ -15,16 +16,20 @@ ingest.sql            Postgres reading assets/corpus/*.xml itself, with no help
 matrices.sql          the matrices, pulled out with joins — a tour, holding no logic
 rules.sql             the rules XSD 1.0 cannot reach — an assembly, holding no logic
 invariance.sql        each shortfall said a second way, and every rule re-run on it
+views.sql             every statement two or more others compose, as a view the composed files read
 queries/              one directory per example, one file per section, each runnable in psql
 ../../examples/matrices/main.rs   the same arithmetic again, in nalgebra, asserting agreement
 ```
+
+[`queries/`](queries/) is the one line above with a page of its own: `queries/`, the examples'
+SQL, as templates.
 
 ⭐ **THE TREE'S OWN SHAPE IS A RELATION.** `public.compose_edge (parent, child, splices,
 inner_joins)` is which template composes which, how many times, and how many of those are inner
 joins. `examples/compositions/main.rs` emits `assets/dag/edges.sql` from the source tree, `ingest`
 loads it, `rank/compose_edges.sqlc` reads it. So **adding a `.sqlc` means: compose, then
-`cargo run --example compositions`, then reload `assets/sql/ingest.sql`, then `cargo sqlx
-prepare`** — and `examples/soundness/main.rs` fails the build if the loaded DAG and the tree disagree.
+`cargo run --example compositions`, then reload `assets/sql/ingest.sql` and `assets/sql/views.sql`,
+then `cargo sqlx prepare`** — and `examples/soundness/main.rs` fails the build if the loaded DAG and the tree disagree.
 
 **Every one of those is composed from smaller queries, and every smaller query runs alone.**
 `assets/sqlc/*.sqlc` are templates; `cargo sqlc compose` turns them into `assets/sql/*.sql`,
@@ -41,11 +46,13 @@ entries/       the sparse matrices                     — D draw, N induction, 
 composition/   F and Φ, the walk, and what it owes     — parts, conversion, descent, leaves
 eliminations/  e, what a composer took out and why     — filed, derived, searched, suspended
 epistemics/    what the documents say about knowing    — absences, searches, widths, edges, roots
-rank/          what well-foundedness gives you         — evaluation order, cycle space, the graphs, reach
+rank/          the order, the graphs, and the fold     — evaluation order, cycle space, reach, the subspaces
 algebra/       one law per set operation the tree uses — and the roster that declares them
+folds/         a population folded to a coarser grain, once, for every reader; views.sql names each
 arithmetic/    one site per computation, with a verdict — every interval, every unit
 diagrams/      the model rendered into BPMN 2.0        — plus the rosters a translation owes
 checks/        one file per rule: every row it examined, with a verdict on each
+identities/    every position an identity may compute, in each arm it may be filed
 relabellings/  what a rule must not notice: the same system, said differently
 reports/       findings a person settles, and the two views of checks/
 ```
@@ -92,11 +99,58 @@ The SQL half needs a Postgres and nothing else. No Rust, no extensions, no super
 createdb process_modulus_proof
 psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
+                              -f assets/sql/views.sql \
                               -f assets/sql/rules.sql
 ```
 
 Run it from the repository root — `ingest.sql` reads `assets/corpus/*.xml` from the client
 side, so paths are relative to wherever you started `psql`.
+
+`views.sql` loads after the ingest and before any query. Every statement two or more others
+compose, and every statement in `folds/`, is a view named `<directory>.<name>`, and the composed
+files read it by that name rather than repeating it in every reader. The templates still compose
+one another, so the tree is the same; `cargo sqlc compose --source assets/sqlc --target <dir>`
+without `--views` writes every statement whole, which is the form for experiments and for tuning
+a plan.
+
+### One relation, three presentations
+
+A statement here exists three ways, and the same rows come out of each.
+
+1. **The composition**, the `.sqlc` file. This is what you read, and what every law and rule
+   argues about. Composed on its own it is a complete query: `assets/sql/layers/remainder.sql`
+   runs against nothing but the schema and the ingest.
+2. **The view**, so that `SELECT * FROM layers.remainder` answers in psql and `\d` describes it.
+3. **The definition**, `:define(...)` in a statement's own `WITH` clause, used where a program
+   reads the columns.
+
+⭐ **The third one exists for a reason worth knowing, because it is a property of Postgres rather
+than a habit of this repository.** A column's origin is fixed when the statement is parsed. Read
+through a view, the origin *is* the view, and a view's `pg_attribute.attnotnull` is always false;
+read through a `WITH` clause or a subquery, Postgres follows the target list down to the base
+table, where the `NOT NULL` actually lives. So a view keeps every row and loses the declaration,
+and a program that reads `filing` gets `Option<String>` for a column the schema says can never be
+absent. The statements `sqlx` reads therefore define their vocabulary instead of borrowing the
+name: see the `WITH` clause at the top of `diagrams/calls.sqlc`, which is three definitions long.
+**A view is a name for a relation; a definition is where the relation is.**
+
+### The directives
+
+The whole grammar, which is smaller than it looks:
+
+| | |
+|---|---|
+| `:compose(path)` | splice that relation in here; where it has a name, the name is written instead |
+| `:define(path)` | splice its body in here *even where it has a name*, and let the name in front of `AS` stand for it everywhere below |
+| `:compose(shape, @slot = path)` | fill a shape's open slot. A template with a slot left open is not a query, so compose emits no file for it |
+| `:union(ALL a, b)` | union sources that are already union-compatible |
+| `:count(a)`, `:count(DISTINCT cols OF a)` | count over the sources |
+| `:bind(name)` | a parameter placeholder, numbered per dialect |
+| `# ...` | stripped at compose. The argument, and there is no length limit on it |
+| `-- ...` | survives into the composed SQL. The provenance, and in a file of this size the only navigation there is |
+
+Slots do not inherit: a shape composed through two levels must be filled at each one. And a
+relation with an open slot or a bind cannot be a view, because a view takes no argument.
 
 `invariance.sql` is a separate run, and it asks a different question: does any rule read a word
 the model says it must not? It rewrites each shortfall a second way, re-runs every rule, and
@@ -277,8 +331,8 @@ your work already.
 
 **That is the entire consolidation, written once.** `FΦx − e` — take the members, put them in one
 unit, add them along the ownership incidence, subtract what was counted twice. → **and it is
-checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), fifteen layers, to
-the digit.**
+checked against the filings in [§3](#3-fφx--e-as-an-actual-matrix-product), every composed layer
+quantity the corpus owes, to the digit.**
 
 ### The chart of accounts is a basis, and two charts are two bases
 
@@ -431,18 +485,25 @@ that are not the ones a number obeys.
 
 Read as linear algebra, a filing declares these.
 
-| | shape | an entry is |
-|---|---|---|
-| `d`, `n`, `q` | L | a layer's demand, committed nameplate, quantum |
-| `r = n − d` | L | the remainder, and the whole subject |
-| `D` | P×L | what operation *p* draws from layer *l*, now |
-| `N` | P×L | what operation *p* commits on layer *l*, later |
-| `C` | L×L | an **observed** dependence between two remainders |
-| `H` | L×5 | who bears layer *l*'s remainder, and how much |
-| `S` | L×3 | how much each of the three buffers holds |
-| `F` | L×L | which layer of another filing composes into which layer of this one |
-| `Φ` | a weight on each entry of `F` | the factor converting that part into the composed unit |
-| `e` | L | quantities double-counted across parts, subtracted once |
+| | shape | an entry is | the relation | run it |
+|---|---|---|---|---|
+| `d` | L | a layer's demand | `layers/demand.sqlc` | `layers.demand` |
+| `n` | L | a layer's committed nameplate | `layers/nameplate.sqlc` | `layers.nameplate` |
+| `q` | L | a lumpy layer's quantum | `layers/lumpy.sqlc` | `layers.lumpy` |
+| `r = n − d` | L | the remainder, and the whole subject | `layers/remainder.sqlc` | `layers.remainder` |
+| `D` | P×L | what operation *p* draws from layer *l*, now | `entries/draws.sqlc` | `entries.draws` |
+| `N` | P×L | what operation *p* commits on layer *l*, later | `entries/inductions.sqlc` | `entries.inductions` |
+| `C` | L×L | an **observed** dependence between two remainders | `entries/couplings.sqlc` | `entries.couplings` |
+| `H` | L×5 | who bears layer *l*'s remainder, and how much | `entries/holders.sqlc` | `entries.holders` |
+| `S` | L×3 | how much each of the three buffers holds | `entries/slacks.sqlc` | `entries.slacks` |
+| `F` | L×L | which layer of another filing composes into which layer of this one | `composition/parts.sqlc` | `composition.parts` |
+| `Φ` | a weight on each entry of `F` | the factor converting that part into the composed unit | `composition/converted.sqlc` | `composition.converted` |
+| `e` | L | quantities double-counted across parts, subtracted once | `eliminations/filed.sqlc` | `eliminations.filed` |
+
+⭐ **The last two columns are the way in.** Every symbol is a file you can read and a relation you
+can query: `psql -c 'SELECT * FROM layers.remainder'` after the load, or
+`assets/sql/layers/remainder.sql` to run the same rows with nothing loaded but the schema. The
+notation is not a description of the model written elsewhere; it is an index of it.
 
 Three things in that table do not behave the way the notation suggests, and each has its own
 subsection below: the product `DᵀN`, which is two rows rather than one; the difference `r = n − d`;
@@ -489,7 +550,9 @@ remainder.** → **checked in [§4](#4-φ-correlated-with-itself)**
 
 ### And the fusion rule checks out
 
-`x_composed = F Φ x_parts − e`, over fifteen composed layers, exact on all three bounds.
+`x_composed = F Φ x_parts − e`, over every composed layer quantity that owes the equality, exact
+on all three bounds. `cargo run --example matrices` §3 prints how many that is, per quantity,
+beside how many are suspended; `composition/owed_equality.sqlc` is the population.
 
 The eliminations are the term that gets dropped, and on one layer that is 90 GPU-hours of
 demand counted in two members' filings at once. Nothing warns you — the totals come out
@@ -679,6 +742,10 @@ arithmetic on top of it is.
 **There is no silent skip.** No `DATABASE_URL` means the example fails to run. A proof that
 passes without executing is the dangerous zero.
 
+⚠️ **The blocks below are a transcript of one run, kept to show the SHAPE of the output.** They are
+not the authority for any number in them, and three of them were materially stale before anybody
+re-ran the program. `cargo run --example matrices` is the authority; read the figures there.
+
 ### 1. The fit, recomputed from the ranges
 
 Builds `d` and `n` as three `DVector`s each — low, mode, high — and does the crossed subtraction
@@ -686,9 +753,12 @@ as vector arithmetic, one line per bound. Then classifies each layer by ISO 286'
 compares to the filed `sign`.
 
 ```
-1. fits recomputed from the ranges: 42 of 46 layers, 0 disagreements
+1. fits recomputed from the ranges: 57 of 61 layers, 0 disagreements
+   ⛔ 4 layer(s) excluded: their parts convert through a factor with width, so n and d are
+   correlated and the difference is a bound rather than the remainder.
+   composition/fused_remainders.sqlc carries theirs.
    observation  26 layers: 11 clearance, 14 interference, 1 transition
-   stipulation  20 layers: 12 clearance, 8 transition
+   stipulation  35 layers: 26 clearance, 1 interference, 8 transition
 ```
 
 ⭐⭐ **The census is split by `evidence` and the split is the content.** The stipulations were
@@ -721,12 +791,18 @@ corpus could have had is missing for exactly the reason the model exists.
 `F` is built as a dense incidence matrix — 1 where a part composes into a layer — and `Φ` as a
 diagonal, which is available because no part layer in this corpus is used twice with two different
 factors. The model permits that, and the factor is filed per edge of `F` rather than per layer, so
-a corpus that exercised it would need the weights on the entries instead. Then the fusion is three real matrix products, one per bound, and each result is
-compared against the demand the composed layer filed.
+a corpus that exercised it would need the weights on the entries instead. Then the fusion is three
+real matrix products, one per bound, and each result is compared against the figure the composed
+layer filed, once per quantity: demand, nameplate and draw each get their own `F`, because a layer
+that files one and not another is in the incidence for one and not the other.
 
 ```
-3. F is 18x27: dense that is 486 entries, the relation stores 27 (5.6%)
-   F.Phi.x - e against the filed composed demand: 15 layers, all agree; 3 suspended
+3. F.Phi.x - e against the filed composed figures, per quantity:
+   demand     F is 24x37, the relation stores 37 of 888: 20 layers agree, 4 suspended
+   draw       F is 13x16, the relation stores 16 of 208: 11 layers agree, 2 suspended
+   nameplate  F is 24x37, the relation stores 37 of 888: 20 layers agree, 4 suspended
+   the matrix product equals the SQL's join and GROUP BY on 51 sums;
+   51 layer quantities agree with their filings, 10 suspended
 ```
 
 ⭐⭐ **This is where "a matrix product is a join with a `GROUP BY`" gets checked.**
@@ -782,7 +858,8 @@ need not come back ordered — and an unordered triple is not an interval at all
 it was computed from is perfectly well formed.
 
 ```
-6. residue census: 25 lumpy corpus layers, 15 sawtoothed, 0 disagreements
+6. residue census: 25 lumpy corpus layers, 17 cross a tooth, 15 of them sawtoothed,
+   0 disagreements
 ```
 
 Postgres computes the verdict with `mod()`; the example recomputes it with `%`. The disagreement
@@ -815,19 +892,28 @@ instead.
    time       13 sized of 28
 ```
 
-⛔⛔ **The interesting number is that every sized capacity slack reads `[0, 0, 0]`.** `capacity`
-carries the shortfall inequality: what a filing's own demand and nameplate say could have gone
-unserved, against what the supply can absorb plus what the document admits turning away. Eleven
-corpus layers size it and every one of them sizes it at zero, which is a filer saying the supply
-cannot be run hot at any price. **That is the tightest possible bound, not a missing one**, and it
-is a different fact from the fifteen that file `unmeasured`.
+⛔⛔ **The interesting rows are the sized ones, and they are not all zero.** `capacity` carries
+the shortfall inequality: what a filing's own demand and nameplate say could have gone unserved,
+against what the supply can absorb plus what the document admits turning away. Most of the sized
+rows sit at `[0, 0, 0]`, which is a filer saying the supply cannot be run hot at any price, and
+**that is the tightest possible bound rather than a missing one**. A minority state a real width,
+and `enterprise-contract/support-cover` is the one to read: it sizes its capacity slack at
+`[0, 16, 40]` engineer-hours per week, filed the same way in the Portuguese twin. The rest of the
+column is `unmeasured`, which is a third state again.
 
-⚠️ **A sentence about this column rots whenever the spelling of a zero moves, and it has.** File
-the zeroes as `absent/reason = none` and they count as absences; narrow `pm:StatedClaim` so a
-measured zero becomes a claim and the column moves under any prose that named a figure. Print
-it rather than writing it down. What is still unexercised is a **non-zero** capacity slack: no
-filing has yet stated one, so the inequality has never had to bind against a real number. Run
-`cargo run --example matrices` for the current census rather than trusting this block.
+⚠️ **A sentence about this column rots whenever the spelling of a zero moves, and it has, twice.**
+File the zeroes as `absent/reason = none` and they count as absences; narrow the wrapper so a
+measured zero becomes a claim and the column moves under any prose that named a figure. So print
+it: `cargo run --example matrices` §7 is the census, and `reports/slack_census.sqlc` is the
+relation behind it.
+
+⛔ **And a stated width is not the same as an exercised inequality, which is the part worth
+separating.** `checks/share_exceeds_slack` still reads ⛔ VACUOUS on this corpus, and not for want
+of a number to bind against: every layer that sizes its absorbing buffer under an `interference`
+fit is then removed because every holder on it is `customer` or `unrealised`, so nothing was
+absorbed at all and the demand was turned away. `entries/borne.sqlc` argues it and
+`algebra/borne.sqlc` holds `Σall = Σkept + Σremoved` per layer so the vacuum is arithmetic rather
+than a claim in a comment.
 
 **Nothing asserts it stays zero**, and that is deliberate. An equality here would make the first
 filer to size a capacity slack break the build for doing exactly what the model wants. The zero is

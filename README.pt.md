@@ -15,37 +15,59 @@ sem executar nada deste código.
 > `https://example.invalid/…` até estar decidido o domínio do autor. O `tests/namespace.rs` faz
 > da sua alteração uma operação verificada. Todo o resto é definitivo.
 
-O modelo parte de uma observação. Uma empresa é uma pilha de ofertas quantizadas a servir
-procuras contínuas. A procura varia de forma suave, ao passo que a oferta chega em unidades
-inteiras: uma pessoa, um bloco reservado de equipamento, um lançamento, uma ronda de
-financiamento. A diferença entre as duas é um **resto**, e não desaparece. A gestão escolhe que
-amortecedor o absorve e quem o suporta. A gestão não escolhe se ele existe.
+O modelo parte de uma divisão. Uma empresa satisfaz procura que varia de forma suave com oferta
+que chega em unidades inteiras: uma pessoa, um turno, um bloco reservado de equipamento, um
+lançamento, uma ronda de financiamento. **A unidade inteira por que é preciso dividir é o
+módulo**, e a divisão deixa sempre um resto.
 
-O que o resto faz a seguir é a parte que demora mais a ver, e não é o que a palavra «sobra»
-sugere. Uma empresa a quem se pede mais do que aquilo a que se comprometeu não estanca. Acomoda.
-A linha corre um pouco acima do previsto, a fila cresce até quem espera desistir, e a partir daí
-uma parcela estável da procura vai-se embora todas as semanas. A empresa está em falta e estável
-ao mesmo tempo, e pode ficar assim durante anos. **Nada falha. O que se produz é um resíduo**,
-semana após semana, e é esse resíduo o objeto deste esquema.
+Veja-se o caso à volta do qual o conjunto de documentos foi construído. Uma equipa de plataforma
+de quatro pessoas a servir uma procura que corre entre 4,5 e 6,0, mais provavelmente 5,2. A falta
+é de 1,2 pessoas, e esse 1,2 divide-se uma vez, de forma limpa:
 
-O que torna a pergunta não «aguentaram?» mas **para onde é que aquilo foi**. Uma parte foi
-absorvida pela equipa a trabalhar acima da sua capacidade nominal. Uma parte foi assumida por uma
-contraparte, que a faturou. Uma parte foi suportada por um cliente que esperou e depois foi a
-outro lado. Uma parte nunca chegou a ser servida. São quatro acontecimentos diferentes com quatro
-consequências diferentes, e só uma das cinco maneiras de suportar um resto deixa transação atrás
-de si.
+```text
+1 pessoa       uma unidade inteira, e UMA DECISÃO.   Contrate mais uma e move-se.
+0,2 pessoas    o resíduo, e NÃO uma decisão.         Nenhum efetivo o remove.
+```
 
-É essa que este modelo acrescenta: a capacidade absorvida por quem faz o trabalho. Nada foi
-comprado, portanto não há transação, portanto nenhum instrumento a regista, portanto é invisível
-para todos os sistemas que partem de transações. O esquema está construído de forma a que
-«ninguém mediu isto» seja uma afirmação que alguém declara, e não uma célula que se deixa em
-branco.
+As duas metades saem da mesma divisão, e é por isso que o nome aponta para a divisão e não para
+aquilo que ela deixa. `Remainder` é como o esquema chama ao resultado; o módulo é o que faz com
+que exista algum.
 
-E, uma vez declarado assim, segue-se algo útil. Se um documento diz quanto foi pedido, quanto foi
-comprometido e até onde a oferta pode ser empurrada acima da sua capacidade nominal, então **a
-parte do resíduo que não tem registo nenhum por trás pode mesmo assim ser calculada** — não como
-argumento sobre trabalho invisível, mas como número, a partir de três campos que o declarante
-teve de preencher de qualquer maneira.
+⛔ **E a distinção é estrutural, não é preciosismo.** *A gestão escolhe que amortecedor absorve o
+resto e quem o suporta; a gestão não escolhe se ele existe* é uma frase verdadeira acerca do 0,2 e
+falsa acerca do 1,2, porque o resto inteiro contém uma decisão. Juntando os dois, um modelo ou
+lisonjeia a empresa, ao chamar lei da natureza a uma escolha de pessoal, ou acusa-a, ao exigir que
+remova aquilo que nada remove.
+
+## Modular é uma escolha, e é por isso que aqui nada é enumerado
+
+A unidade não é dada. A mesma equipa modulada em pessoas e modulada em semanas de piquete são duas
+leituras de uma empresa, ambas verdadeiras, com restos diferentes a cair sobre pessoas diferentes.
+**Escolher a unidade é o ato de modelação.** Por isso o esquema não lista camadas: o que faz de
+algo uma camada é o seu resto poder ser suportado independentemente do de todas as outras, o que é
+um teste que se aplica e não uma lista que se recebe.
+
+⭐ E é o mesmo ato a toda a altura. Uma entidade-mãe que funde as camadas de dois membros numa só
+está a dividir por uma unidade mais grosseira, e deve a mesma prestação de contas sobre o que a
+divisão deixou. É por isso que aqui uma consolidação é um documento que alguém assina e não uma
+junção que alguém executa.
+
+## O resíduo que ninguém comprou
+
+Um resto é suportado de cinco maneiras. Quatro delas deixam para trás uma transação ou um cliente
+que reparou. A quinta não: a capacidade absorvida pelas pessoas que fazem o trabalho, ao
+trabalharem acima da sua classificação. Não se comprou nada, por isso nenhum instrumento o regista,
+por isso é invisível a todos os sistemas que partem das transações.
+
+É para isso que este esquema serve, e é por isso que *ninguém mediu isto* tem de ser algo que um
+emissor **arquiva** e não uma célula que deixa em branco. ⭐ Uma vez arquivado assim, o tamanho do
+resíduo pode mesmo assim ser apurado, a partir de números que o emissor teve de dar de qualquer
+maneira, e aquilo que fica genuinamente por saber encolhe para algo muito mais preciso: não o
+tamanho da diferença, mas como ela se dividiu entre as pessoas que a absorveram e os clientes que
+foram embora em silêncio.
+
+⭐ **A via mais rápida para entrar é essa camada, lida de ponta a ponta**, e há uma secção para
+isso mais abaixo.
 
 Isto é uma exigência real, e vale a pena dizer o preço à cabeça. Escrever contra este esquema
 significa comprometer-se a dizer que espécie de branco é cada branco, a exprimir quantidades como
@@ -54,56 +76,35 @@ outrem. Os conjuntos de dados que já existem tendem a não fazer nenhuma das tr
 migração que dá trabalho. O que se ganha é um documento que continua verdadeiro depois de
 atravessar uma fronteira organizacional, que é o único sítio onde algo disto interessa.
 
-## Funcionalidades
+## O que se escreve
 
-- **Um esquema, não uma biblioteca.** `schema/process-modulus.xsd` é o artefacto. Validar um
-  documento não precisa de Rust nem de nenhuma dependência deste projeto.
-- **XSD 1.0 de propósito**, para que o `xmllint`, o validador que vem com o JDK, o `lxml`, o
-  Nokogiri e tudo o resto que embrulha a libxml2 possam verificar um documento numa máquina sem
-  instalar nada.
-- **Ausência tipificada.** Um branco diz que espécie de branco é: `none`, `unmeasured`,
-  `notApplicable` ou `derived`. A ausência de prova e a prova da ausência deixam de se parecer.
-- **Afirmações de três pontos.** Todas as quantidades são um `low`, um `mostLikely` e um `high`
-  com a sua proveniência e data. Não há nenhum tipo numérico simples em todo o modelo.
-- **Os valores emprestados transportam a sua autoridade.** Tudo aquilo que este modelo não possui
-  viaja como `BorrowedTerm { taxonomy, value }` com a taxonomia obrigatória, portanto um valor
-  chega com a autoridade que o define em vez de chegar como um código solto.
-- **Os regimes separam-se em eixos.** Jurisdição, normativo e a autoridade que codifica o
-  normativo são três perguntas, e uma enumeração que as misture não responde a nenhuma.
-- **As respostas viajam sozinhas.** O `schema/assertion.xsd` permite que um segundo interveniente
-  responda a um conjunto de perguntas e envie as respostas sem executar nada daqui.
-- **As observações entre declarações têm onde ficar.** Uma dependência entre duas entidades que
-  declaram em separado pertence a quem leu as duas declarações, e é um documento e não uma nota
-  de rodapé em qualquer uma delas.
-- **Uma consolidação é um documento que alguém assina.** Duas declarações honestas não podem ser
-  fundidas por heurística nenhuma — juntá-las pelo nome da camada funde coisas sem relação;
-  juntá-las pelos factos declarados falha o par que é genuinamente uma só camada. Portanto quem
-  tem legitimidade declara o mapeamento e assina-o, diz o que tratou como uma só camada e porquê,
-  e regista o que retirou para não contar procura duas vezes. As composições encaixam umas nas
-  outras.
-- **Refutável no seu próprio formato.** O `assets/corpus/refutation.xml` é um documento válido que
-  declara dois contraexemplos ao modelo.
-- **Uma biblioteca Rust gerada.** Todos os tipos e todos os comentários de documentação vêm dos
-  esquemas, portanto o `cargo doc` mostra as anotações do próprio esquema, em inglês e em
-  português.
-- **As regras inalcançáveis, tornadas executáveis.** Os esquemas enunciam em prosa regras que
-  gramática nenhuma guarda, porque o XSD 1.0 não consegue comparar um elemento com outro. A
-  maior parte são junções e comparações. O [`assets/sql/`](assets/sql/)
-  exprime-as como SQL — incluindo aquela que validador nenhum vê, a de que nenhuma camada-folha é
-  alcançável por dois caminhos quando as composições encaixam — e reporta quantas linhas cada
-  regra examinou, porque uma regra sem nada para verificar é a que passa mais alto.
-- **Todo o branco traz uma razão.** Não «o campo está vazio», mas *qual* espécie de vazio: alguém
-  procurou e não há; ninguém mediu; a pergunta não se aplica aqui; ou é calculado a partir de
-  outra coisa. Isso também vale para as listas — uma pilha sem acoplamentos declarados diz se
-  alguém foi procurar, porque «estas camadas foram testadas e são independentes» e «ninguém verificou» são
-  afirmações opostas que uma lista opcional simples grafa da mesma maneira.
+- **Um esquema, não uma biblioteca.** O [`schema/`](schema/) é o artefacto, e validar um documento
+  não precisa de Rust nem de qualquer dependência deste projeto.
+- **Cinco géneros de documento, e quatro deles são assinados por outrem que não a entidade.** Um
+  arquivo, uma resposta de cobertura, uma execução promovida, uma dependência entre arquivos e uma
+  consolidação. Uma afirmação *sobre* um arquivo não pode viver dentro do arquivo que julga.
+- **Ausência tipificada, e alcança também as listas.** Um branco diz que espécie de branco é:
+  `none`, `unmeasured` ou `notApplicable`, e uma posição que alguma identidade calcula transporta o
+  nome dessa identidade. Por isso uma pilha sem acoplamentos declarados diz se alguém foi
+  verificar, porque *estas camadas foram testadas e são independentes* e *ninguém verificou* são
+  afirmações opostas que uma lista opcional vazia escreve da mesma maneira.
+- **Afirmações de três pontos.** Todas as quantidades são um `low`, um `mostLikely` e um `high` com
+  a sua proveniência e data. Não há nenhum tipo numérico simples em todo o modelo.
+- **Os valores emprestados trazem a sua autoridade.** Aquilo que este modelo não possui viaja como
+  `BorrowedTerm { taxonomy, value }` com a taxonomia obrigatória, para que um valor chegue com a
+  autoridade que o define em vez de como um código solto.
+- **Os regimes separam-se em eixos distintos.** Jurisdição, referencial e a autoridade que
+  codifica o referencial são três perguntas, e uma única enumeração que as misture não responde a
+  nenhuma.
+- **Uma biblioteca Rust gerada.** Cada tipo e cada comentário de documentação vem dos esquemas,
+  por isso o `cargo doc` mostra as anotações do próprio esquema.
 
-## Porquê o process-modulus
+## O que se ganha com isto
 
-**O resto é o contributo.** Os amortecedores são os de Hopp e Spearman, fechados em três no
-*Factory Physics*, e este modelo adota-os como estão publicados em vez de acrescentar um quarto.
-O que acrescenta é um eixo separado: quem suporta o resto. `booked`, `counterparty`, `customer`,
-`unrealised` e `people` são os cinco, e só o último não tem instrumento por trás.
+**Os amortecedores são emprestados e os detentores são nossos.** Os amortecedores são os de Hopp
+e Spearman, fechados em três no *Factory Physics*, e este modelo adota-os como estão publicados em
+vez de acrescentar um quarto. O que acrescenta é o eixo separado nomeado acima: `booked`,
+`counterparty`, `customer`, `unrealised` e `people`.
 
 **A procura deteriora-se, e é isso que mantém a aritmética honesta.** Uma fila de que ninguém sai
 cresce para sempre, e um modelo construído sobre isso classificaria como incoerente qualquer
@@ -163,246 +164,30 @@ são documentos válidos.
 
 * Os URI dos espaços de nomes ainda são marcadores de posição. Mais nada no repositório é.
 
-## Exemplo: uma equipa de quatro a servir uma procura de cinco
+## Uma camada, lida de ponta a ponta
 
-A raiz do documento é um `processModulus`: algumas declarações de regime, uma pilha de camadas, e
-quantas operações se quiser a consumir delas.
+O [`assets/corpus/README.md`](assets/corpus/README.md) percorre a camada `labour` do
+[`enterprise-contract.xml`](assets/corpus/enterprise-contract.xml) elemento a elemento: o que
+viaja ao lado de um intervalo e porquê, as duas origens que nunca podem ser fundidas, as duas
+ausências que um recetor também não pode fundir, e porque é que o tamanho do resto é calculável
+enquanto a quota é a única coisa que nenhum instrumento alcança.
 
-```xml
-<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
-  <pm:regime> ... aquilo ao abrigo do qual este documento reporta ... </pm:regime>
-  <pm:stack>
-    ... as camadas ...
-    <pm:couplings>
-      <pm:absent>
-        <pm:reason>unmeasured</pm:reason>
-        <pm:note>ninguém testou se estas camadas se movem em conjunto</pm:note>
-      </pm:absent>
-    </pm:couplings>
-  </pm:stack>
-  <pm:operation> ... o que consome delas ...                          </pm:operation>
-</pm:processModulus>
-```
+## Onde vive o resto do argumento
 
-O `couplings` é obrigatório, e é o único elemento do esquema que pergunta a quem declara se
-**testou** o modelo em vez de perguntar o que mediu. Uma pilha afirma que as suas camadas são
-sítios separados onde uma falta pode assentar; é aqui que quem declara diz se alguém verificou.
-«Aliviou-se uma camada e as outras não se mexeram» e «ninguém foi ver» são afirmações opostas, e
-sem isto eram o mesmo documento vazio.
+Cada linha abaixo é a primeira linha do próprio documento. O documento é onde ela é autoritativa, e
+esta tabela é uma porta de entrada e não uma segunda cópia.
 
-Uma camada é uma procura, uma oferta e o resto entre as duas. Eis a camada de mão de obra do
-[`assets/corpus/enterprise-contract.xml`](assets/corpus/enterprise-contract.xml), que é o caso para
-o qual o modelo inteiro existe. A procura está entre 4,5 e 6 pessoas. A oferta é de quatro
-pessoas, e uma pessoa não é divisível.
+| | |
+|---|---|
+| [`schema/`](schema/) | o próprio artefacto, e os cinco documentos que permite a qualquer um escrever |
+| [`assets/`](assets/) | a prova, a maquinaria que a lê, e o que é gerado a partir das duas |
+| [`conformance/`](conformance/) | o que um perfil pode estreitar, e que regras nenhum validador alcança |
+| [`src/proofs/`](src/proofs/) | As equações que este modelo enuncia, cada uma mostrada válida por um programa que o `cargo test` corre. |
+| [`examples/`](examples/) | Os exemplos, e a pergunta que cada um põe ao modelo |
 
-```xml
-<pm:layer>
-  <pm:name>labour</pm:name>
-
-  <pm:demand>
-    <pm:amount>
-    <pm:claim>
-      <pm:low>4.5</pm:low>
-      <pm:mostLikely>5.2</pm:mostLikely>
-      <pm:high>6.0</pm:high>
-      <pm:unit>people</pm:unit>
-      <pm:narrowsWhen>
-        <pm:narrowing>
-          <pm:condition>support interrupts are time-recorded instead of estimated</pm:condition>
-          <pm:kind>instrument</pm:kind>
-        </pm:narrowing>
-      </pm:narrowsWhen>
-      <pm:boundOrigin>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>nothing sets this bound. The range is where the observations fell</pm:note>
-        </pm:absent>
-      </pm:boundOrigin>
-      <pm:provenance><pm:party>platform</pm:party></pm:provenance>
-      <pm:asOf>2026-08-30</pm:asOf>
-    </pm:claim>
-    </pm:amount>
-    <!-- how long the demand survives unanswered, a second fact and not a bound on the first -->
-    <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
-  </pm:demand>
-```
-
-Dois factos viajam ao lado do intervalo, e respondem a perguntas diferentes. O `narrowsWhen` é o
-que teria de mudar para o intervalo **estreitar** — e o `kind` diz se isso é uma medição a chegar
-ou o próprio processo a mudar, que é a diferença entre não saber e variar genuinamente. O
-`boundOrigin` é **de quem é o limite**: aqui o `none` diz que alguém foi ver e que o limite não é
-de ninguém, porque este intervalo é onde caíram doze meses de observações e não onde uma regra o
-pôs. Uma procura limitada por um contrato diria `contractual`, e isso é uma alavanca.
-
-A oferta tem duas faces. A `nameplate` é o que foi comprometido, e é onde vive a divisibilidade.
-Ficam registadas duas restrições diferentes, e mantê-las separadas é o essencial: `origin` é com
-quem se teria de falar para alterar o **tamanho de uma unidade**, e `intrinsic` quer dizer
-ninguém, porque uma pessoa é uma pessoa. O `amountOrigin` é com quem se teria de falar para deter
-um **número diferente delas**, e `policy` quer dizer quem declara, porque o quadro de pessoal é seu.
-
-São esses dois que fazem com que as afirmações acima respondam `derived` ao `boundOrigin` em vez
-de se repetirem. A pergunta *de quem é este limite* já está respondida um elemento ao lado, e um
-documento que a respondesse duas vezes acabaria por a responder de duas maneiras diferentes.
-
-A `window` é a outra metade da divisibilidade: não como a oferta se divide em **quantidade** mas
-como se divide no **tempo** — uma linha que corre cinco dias em sete, uma máquina parada duas
-horas por dia. Um efetivo não tem ciclo nenhum desses, portanto a resposta é `notApplicable` e a
-razão diz qual das alternativas se quer dizer. Não é um branco.
-
-```xml
-  <pm:supply>
-    <pm:label>the platform team</pm:label>
-    <pm:nameplate>
-      <pm:amount>
-        <pm:claim>
-          <pm:low>4</pm:low><pm:mostLikely>4</pm:mostLikely><pm:high>4</pm:high>
-          <pm:unit>people</pm:unit>
-          ... narrowsWhen: notApplicable, não há aqui intervalo para estreitar ...
-          ... boundOrigin: derived, o amountOrigin abaixo é que o declara ...
-        </pm:claim>
-      </pm:amount>
-      <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
-      <pm:divisibility>
-        <pm:divisibility>
-          <pm:lumpy>
-            <pm:size>
-              <pm:claim>
-                <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
-                <pm:unit>people</pm:unit>
-                ... boundOrigin: derived, a origin abaixo é que o declara ...
-              </pm:claim>
-            </pm:size>
-            <pm:origin>intrinsic</pm:origin>
-          </pm:lumpy>
-          <pm:window>
-            <pm:absent>
-              <pm:reason>notApplicable</pm:reason>
-              <pm:note>`people` is a stock with no period</pm:note>
-            </pm:absent>
-          </pm:window>
-        </pm:divisibility>
-      </pm:divisibility>
-      <pm:capacitySlack>
-        <pm:absent>
-          <pm:reason>unmeasured</pm:reason>
-          <pm:note>a person can work above their rating; how far above, nobody has measured</pm:note>
-        </pm:absent>
-      </pm:capacitySlack>
-      <pm:inventorySlack>
-        <pm:claim>
-          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
-          <pm:unit>people</pm:unit>
-          <pm:provenance>
-            <pm:party>platform</pm:party>
-            <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
-          </pm:provenance>
-        </pm:claim>
-      </pm:inventorySlack>
-    </pm:nameplate>
-```
-
-O `capacitySlack` e o `inventorySlack` dizem quanta folga tem cada amortecedor. Uma pessoa pode ser
-levada acima da sua capacidade nominal, portanto esse amortecedor está aberto e ninguém mediu até
-onde, o que é `unmeasured`. Uma hora não usada não pode ser guardada para a semana seguinte,
-portanto esse
-está fechado, e um `[0, 0, 0]` declarado é como o modelo diz que alguém verificou e não que alguém
-saltou a pergunta. ⛔ Um zero medido é aqui uma AFIRMAÇÃO, nunca uma ausência: tem unidade, dono e
-proveniência, e o ramo da ausência não tem onde pôr nenhuma das três. A
-diferença conta mais à frente: uma parcela só pode ser atribuída a um amortecedor que tenha folga
-para ela.
-
-O `jagged` é a outra face, que é o que aconteceu de facto. É aqui que o argumento fica declarado.
-Nada registou as horas absorvidas acima do quadro de pessoal, portanto o consumo é `unmeasured`
-com uma nota a dizer porquê e um interveniente a responder pela afirmação. Não é um elemento
-vazio.
-
-```xml
-    <pm:jagged>
-      <pm:draw>
-        <pm:absent>
-          <pm:reason>unmeasured</pm:reason>
-          <pm:note>no instrument records hours absorbed above the establishment</pm:note>
-          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:absent>
-      </pm:draw>
-      <pm:measurementBasis>
-        <pm:absent>
-          <pm:reason>notApplicable</pm:reason>
-          <pm:note>there is no valuation here to have a basis</pm:note>
-        </pm:absent>
-      </pm:measurementBasis>
-    </pm:jagged>
-  </pm:supply>
-```
-
-Repare-se em que as duas ausências têm razões diferentes. O consumo é `unmeasured`, o que quer
-dizer que podia existir um instrumento e não existe. A base de mensuração é `notApplicable`, o que
-quer dizer que fazer a pergunta aqui é malformado, porque um efetivo não tem valorimetria de que
-possa ter base. Quem recebesse e tratasse a segunda como uma lacuna reportaria uma deficiência que
-não existe.
-
-O resto é então a conclusão. A procura excedeu a capacidade nominal, portanto o ajustamento é de
-`interference` no sentido mecânico emprestado à ISO 286: funciona por deformação do material, e
-inspecionar o produto não o revela. Uma camada também pode estar em falta numas semanas e com
-sobra noutras, que é a terceira classe, `transition`, e é a condição corrente de uma empresa no
-limite da capacidade. O amortecedor é o `capacity` de Hopp e Spearman, citado à sua taxonomia em
-vez de reescrito.
-
-Os **detentores** são onde o argumento assenta. Uma parte do excesso a equipa absorveu, e outra
-parte ficou em fila, esperou e foi-se embora em silêncio. Nenhuma das duas deixa registo, portanto
-ambas as **parcelas** são `unmeasured` — e note-se o que isso não diz. Não diz que o resto é
-desconhecido: a grandeza é `derived` a partir de números que já estão no documento. Diz que
-ninguém consegue dizer como é que as duas metades se dividem, o que é uma admissão bem mais
-pequena e bem mais afiada.
-
-```xml
-  <pm:remainder>
-    <pm:remainder>
-      <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-      <pm:absorber>
-        <pm:term>
-          <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
-          <pm:value>capacity</pm:value>
-        </pm:term>
-      </pm:absorber>
-      <pm:holder>
-        <pm:holder>
-          <pm:kind>people</pm:kind>
-          <pm:share>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>the absorption has no counterparty and therefore no transaction</pm:note>
-            </pm:absent>
-          </pm:share>
-        </pm:holder>
-      </pm:holder>
-      <pm:holder>
-        <pm:holder>
-          <pm:kind>unrealised</pm:kind>
-          <pm:share>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>work that queued, waited and aged out before anyone got to it</pm:note>
-            </pm:absent>
-          </pm:share>
-        </pm:holder>
-      </pm:holder>
-      <pm:quantity>
-        <pm:absent><pm:reason>derived</pm:reason></pm:absent>
-      </pm:quantity>
-    </pm:remainder>
-  </pm:remainder>
-</pm:layer>
-```
-
-Repare-se em qual das duas está ausente, porque não é a que se espera. A grandeza do resto é
-`derived`: o documento determina-a e quem recebe calcula-a. Aquilo a que instrumento nenhum chega
-é a `share` — quanto daquela diferença a equipa absorveu em vez de ter recusado.
-
-Quatro pessoas, uma procura de cinco, uma unidade indivisível de um, e uma diferença que assentou
-em alguém. O documento diz em quem, diz a grandeza, diz que ninguém mediu a parte que interessa, e
-diz quem responde por essa afirmação. É o modelo inteiro numa camada.
+⭐ Nada do que está acima é repetido aqui, de propósito. Um documento que tivesse de ser resumido
+no documento que o contém passaria a ser resumido duas vezes assim que alguém o alterasse uma, e as
+duas cópias ficariam em desacordo sem que nada o pudesse notar.
 
 ## Começar depressa
 

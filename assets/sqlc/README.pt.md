@@ -7,7 +7,8 @@
 Uma afirmação, e uma consulta para cada parte dela.
 
 ⛔⛔⛔ **O `assets/sql/` É GERADO E APAGADO EM CADA COMPOSIÇÃO. NUNCA O EDITE.** As fontes são os
-`assets/sqlc/*.sqlc`; o `cargo sqlc compose --source assets/sqlc --target assets/sql` reescreve o
+`assets/sqlc/*.sqlc`; o `cargo sqlc compose --source assets/sqlc --target assets/sql --views
+assets/sqlc/views.sqlc` reescreve o
 diretório de destino inteiro. Se encontrou uma consulta a fazer grep em `assets/sql/`, procure o
 `.sqlc` dela antes de mexer em seja o que for, ou a sua edição desaparece na execução seguinte e
 nada lho dirá.
@@ -18,16 +19,20 @@ ingest.sql            o Postgres a ler assets/corpus/*.xml sozinho, sem ajuda ne
 matrices.sql          as matrizes, extraídas com junções — um percurso, sem lógica própria
 rules.sql             as regras a que o XSD 1.0 não chega — uma montagem, sem lógica própria
 invariance.sql        cada falha dita de uma segunda maneira, com todas as regras a correr de novo
+views.sql             cada instrução que duas ou mais outras compõem, como uma vista que os ficheiros compostos leem
 queries/              um diretório por exemplo, um ficheiro por secção, executáveis no psql
 ../../examples/matrices/main.rs   a mesma aritmética outra vez, em nalgebra, a afirmar a concordância
 ```
+
+O [`queries/`](queries/) é a única linha acima com página própria: `queries/`, o SQL dos
+exemplos, como modelos.
 
 ⭐ **A FORMA DA PRÓPRIA ÁRVORE É UMA RELAÇÃO.** O `public.compose_edge (parent, child, splices,
 inner_joins)` é que modelo compõe qual, quantas vezes, e quantas dessas são junções internas. O
 `examples/compositions/main.rs` emite o `assets/dag/edges.sql` a partir da árvore de código, o `ingest`
 carrega-o, e o `rank/compose_edges.sqlc` lê-o. Portanto **acrescentar um `.sqlc` quer dizer:
-compor, depois `cargo run --example compositions`, depois recarregar o `assets/sql/ingest.sql`,
-depois `cargo sqlx prepare`** — e o `examples/soundness/main.rs` falha a compilação se o DAG carregado
+compor, depois `cargo run --example compositions`, depois recarregar o `assets/sql/ingest.sql` e o
+`assets/sql/views.sql`, depois `cargo sqlx prepare`** — e o `examples/soundness/main.rs` falha a compilação se o DAG carregado
 e a árvore discordarem.
 
 **Cada um desses ficheiros é composto a partir de consultas mais pequenas, e cada consulta
@@ -45,11 +50,13 @@ entries/       as matrizes esparsas                   — D consumo, N indução
 composition/   F e Φ, a descida, e o que é devido     — partes, conversão, descida, folhas
 eliminations/  e, o que quem compôs retirou e porquê  — apresentadas, derivadas, buscadas, suspensas
 epistemics/    o que os documentos dizem sobre saber  — ausências, buscas, larguras, bordos, raízes
-rank/          o que a boa fundação dá                — ordem de avaliação, espaço de ciclos, os grafos
+rank/          a ordem, os grafos, e o dobrar         — ordem de avaliação, espaço de ciclos, alcance, os subespaços
 algebra/       uma lei por operação de conjuntos      — e a lista que as declara
+folds/         uma população agregada a um grão mais grosso, uma vez, para todos os leitores; views.sql nomeia cada uma
 arithmetic/    um sítio por cálculo, com um veredicto — cada intervalo, cada unidade
 diagrams/      o modelo representado em BPMN 2.0      — e as listas que uma tradução deve
 checks/        um ficheiro por regra: cada linha examinada, com um veredito em cada uma
+identities/    cada posição que uma identidade pode calcular, em cada braço onde pode ser apresentada
 relabellings/  o que uma regra não pode notar: o mesmo sistema, dito de outra maneira
 reports/       achados que uma pessoa decide, e as duas vistas de checks/
 ```
@@ -98,11 +105,60 @@ superutilizador.
 createdb process_modulus_proof
 psql -d process_modulus_proof -f assets/ddl/schema.ddl \
                               -f assets/sql/ingest.sql \
+                              -f assets/sql/views.sql \
                               -f assets/sql/rules.sql
 ```
 
 Execute-se a partir da raiz do repositório — o `ingest.sql` lê `assets/corpus/*.xml` do lado do
 cliente, portanto os caminhos são relativos ao sítio onde o `psql` foi iniciado.
+
+O `views.sql` carrega-se depois da ingestão e antes de qualquer consulta. Cada instrução que duas
+ou mais outras compõem, e cada instrução de `folds/`, é uma vista chamada `<diretório>.<nome>`, e
+os ficheiros compostos leem-na por esse nome em vez de a repetirem em cada leitor. Os modelos
+continuam a compor-se uns aos outros, portanto a árvore é a mesma; o `cargo sqlc compose --source
+assets/sqlc --target <dir>` sem `--views` escreve cada instrução inteira, que é a forma para
+experiências e para afinar um plano.
+
+### Uma relação, três apresentações
+
+Uma instrução existe aqui de três maneiras, e de cada uma saem as mesmas linhas.
+
+1. **A composição**, o ficheiro `.sqlc`. É o que se lê, e é sobre isto que cada lei e cada regra
+   discutem. Composta sozinha é uma consulta completa: o `assets/sql/layers/remainder.sql` corre
+   sem nada além do esquema e da ingestão.
+2. **A vista**, para que `SELECT * FROM layers.remainder` responda no psql e o `\d` a descreva.
+3. **A definição**, `:define(...)` na cláusula `WITH` da própria instrução, usada onde um programa
+   lê as colunas.
+
+⭐ **A terceira existe por uma razão que vale a pena saber, porque é uma propriedade do Postgres e
+não um hábito deste repositório.** A origem de uma coluna fica fixada quando a instrução é
+analisada. Lida através de uma vista, a origem *é* a vista, e o `pg_attribute.attnotnull` de uma
+vista é sempre falso; lida através de uma cláusula `WITH` ou de uma subconsulta, o Postgres segue
+a lista de seleção até à tabela base, que é onde o `NOT NULL` de facto vive. Portanto uma vista
+guarda todas as linhas e perde a declaração, e um programa que leia `filing` recebe
+`Option<String>` numa coluna que o esquema diz nunca poder faltar. As instruções que o `sqlx` lê
+definem por isso o seu vocabulário em vez de pedirem o nome emprestado: veja-se a cláusula `WITH`
+no topo do `diagrams/calls.sqlc`, com três definições. **Uma vista é um nome para uma relação;
+uma definição é onde a relação está.**
+
+### As diretivas
+
+A gramática toda, que é mais pequena do que parece:
+
+| | |
+|---|---|
+| `:compose(caminho)` | insere aqui essa relação; onde ela tem nome, é o nome que fica escrito |
+| `:define(caminho)` | insere aqui o corpo dela *mesmo onde ela tem nome*, e faz o nome que está antes do `AS` valer por ela em tudo o que vem abaixo |
+| `:compose(forma, @slot = caminho)` | preenche a ranhura aberta de uma forma. Um modelo com uma ranhura por preencher não é uma consulta, e a composição não emite ficheiro nenhum para ele |
+| `:union(ALL a, b)` | une fontes que já são compatíveis para união |
+| `:count(a)`, `:count(DISTINCT cols OF a)` | conta sobre as fontes |
+| `:bind(nome)` | um marcador de parâmetro, numerado conforme o dialeto |
+| `# ...` | retirado na composição. O argumento, e não tem limite de tamanho |
+| `-- ...` | sobrevive para o SQL composto. A proveniência, e num ficheiro desta dimensão a única navegação que existe |
+
+As ranhuras não se herdam: uma forma composta através de dois níveis tem de ser preenchida em cada
+um deles. E uma relação com uma ranhura aberta ou com um `bind` não pode ser uma vista, porque uma
+vista não recebe argumentos.
 
 O `invariance.sql` é uma execução à parte e faz uma pergunta diferente: haverá alguma regra que
 leia uma palavra que o modelo diz que ela não pode ler? Reescreve cada falha de uma segunda
@@ -288,8 +344,8 @@ trabalho.
 
 **É a consolidação inteira, escrita uma vez.** `FΦx − e` — tomar os membros, pô-los numa unidade,
 somá-los ao longo da incidência de participações, subtrair o que foi contado duas vezes. → **e é
-verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), quinze camadas, ao
-dígito.**
+verificado contra as declarações na [§3](#3-fφx--e-como-produto-matricial-a-sério), em cada
+quantidade de camada composta que o conjunto deve, ao dígito.**
 
 ### O plano de contas é uma base, e dois planos são duas bases
 
@@ -448,18 +504,25 @@ número obedece.
 
 Lida como álgebra linear, uma declaração declara isto.
 
-| | forma | uma entrada é |
-|---|---|---|
-| `d`, `n`, `q` | L | a procura, a capacidade nominal comprometida e o quantum de uma camada |
-| `r = n − d` | L | o resto, e todo o assunto |
-| `D` | P×L | o que a operação *p* consome da camada *l*, agora |
-| `N` | P×L | o que a operação *p* compromete na camada *l*, mais tarde |
-| `C` | L×L | uma dependência **observada** entre dois restos |
-| `H` | L×5 | quem suporta o resto da camada *l*, e quanto |
-| `S` | L×3 | quanto cada um dos três amortecedores leva |
-| `F` | L×L | que camada de outra declaração compõe em que camada desta |
-| `Φ` | um peso em cada entrada de `F` | o fator que converte essa parte na unidade composta |
-| `e` | L | quantidades contadas em duplicado entre partes, subtraídas uma vez |
+| | forma | uma entrada é | a relação | correr |
+|---|---|---|---|---|
+| `d` | L | a procura de uma camada | `layers/demand.sqlc` | `layers.demand` |
+| `n` | L | a capacidade nominal comprometida de uma camada | `layers/nameplate.sqlc` | `layers.nameplate` |
+| `q` | L | o quantum de uma camada aos saltos | `layers/lumpy.sqlc` | `layers.lumpy` |
+| `r = n − d` | L | o resto, e todo o assunto | `layers/remainder.sqlc` | `layers.remainder` |
+| `D` | P×L | o que a operação *p* consome da camada *l*, agora | `entries/draws.sqlc` | `entries.draws` |
+| `N` | P×L | o que a operação *p* compromete na camada *l*, mais tarde | `entries/inductions.sqlc` | `entries.inductions` |
+| `C` | L×L | uma dependência **observada** entre dois restos | `entries/couplings.sqlc` | `entries.couplings` |
+| `H` | L×5 | quem suporta o resto da camada *l*, e quanto | `entries/holders.sqlc` | `entries.holders` |
+| `S` | L×3 | quanto cada um dos três amortecedores leva | `entries/slacks.sqlc` | `entries.slacks` |
+| `F` | L×L | que camada de outra declaração compõe em que camada desta | `composition/parts.sqlc` | `composition.parts` |
+| `Φ` | um peso em cada entrada de `F` | o fator que converte essa parte na unidade composta | `composition/converted.sqlc` | `composition.converted` |
+| `e` | L | quantidades contadas em duplicado entre partes, subtraídas uma vez | `eliminations/filed.sqlc` | `eliminations.filed` |
+
+⭐ **As duas últimas colunas são a porta de entrada.** Cada símbolo é um ficheiro que se lê e uma
+relação que se consulta: `psql -c 'SELECT * FROM layers.remainder'` depois da carga, ou
+`assets/sql/layers/remainder.sql` para obter as mesmas linhas sem nada carregado além do esquema.
+A notação não é uma descrição do modelo escrita noutro lado; é um índice dele.
 
 Três coisas nessa tabela não se comportam como a notação sugere, e cada uma tem a sua secção
 mais abaixo: o produto `DᵀN`, que são duas linhas e não uma; a diferença `r = n − d`; e o `Φ`.
@@ -506,7 +569,9 @@ resto.** → **verificado na [§4](#4-φ-correlacionado-consigo-próprio)**
 
 ### E a regra da fusão confere
 
-`x_composta = F Φ x_partes − e`, ao longo de quinze camadas compostas, exata nos três extremos.
+`x_composta = F Φ x_partes − e`, ao longo de cada quantidade de camada composta que deve a
+igualdade, exata nos três extremos. O `cargo run --example matrices` §3 imprime quantas são, por
+quantidade, ao lado de quantas estão suspensas; o `composition/owed_equality.sqlc` é a população.
 
 As eliminações são o termo que se deixa cair, e numa camada isso são 90 GPU-hora de procura
 contadas nas declarações de dois membros ao mesmo tempo. Nada avisa — os totais saem plausíveis
@@ -701,6 +766,11 @@ A aritmética por cima dele é.
 **Não há salto silencioso.** Sem `DATABASE_URL` o exemplo não corre. Uma prova que passa sem
 executar é o zero perigoso.
 
+⚠️ **Os blocos abaixo são a transcrição de uma corrida, guardados para mostrar a FORMA da saída.**
+Não são a autoridade para número nenhum que contenham, e três deles estavam materialmente
+desatualizados antes de alguém voltar a correr o programa. O `cargo run --example matrices` é a
+autoridade; leiam-se ali as figuras.
+
 ### 1. O ajustamento, recalculado a partir dos intervalos
 
 Constrói `d` e `n` como três `DVector` cada — inferior, moda, superior — e faz a subtração cruzada
@@ -708,9 +778,12 @@ como aritmética vetorial, uma linha por extremo. Depois classifica cada camada 
 286 e compara com o `sign` declarado.
 
 ```
-1. ajustamentos recalculados a partir dos intervalos: 42 de 46 camadas, 0 discordâncias
+1. ajustamentos recalculados a partir dos intervalos: 57 de 61 camadas, 0 discordâncias
+   ⛔ 4 camada(s) excluída(s): as suas partes convertem através de um fator com largura, pelo que
+   n e d estão correlacionados e a diferença é um limite e não o resto.
+   composition/fused_remainders.sqlc transporta os delas.
    observation  26 camadas: 11 clearance, 14 interference, 1 transition
-   stipulation  20 camadas: 12 clearance, 8 transition
+   stipulation  35 camadas: 26 clearance, 1 interference, 8 transition
 ```
 
 ⭐⭐ **O recenseamento é separado por `evidence`, e a separação é o conteúdo.** As estipulações
@@ -744,12 +817,18 @@ não](#dᵀn-compõe-se-mas-as-suas-quantidades-não).*
 `F` é construída como matriz de incidência densa — 1 onde uma parte compõe numa camada — e `Φ` como
 diagonal, o que é possível porque nenhuma camada-parte neste corpus é usada duas vezes com fatores
 diferentes. O modelo permite-o, e o fator é declarado por aresta do `F` e não por camada, portanto
-um corpus que exercitasse esse caso precisaria dos pesos nas entradas. Depois a fusão são três produtos matriciais a sério, um por extremo, e cada resultado é
-comparado com a procura que a camada composta declarou.
+um corpus que exercitasse esse caso precisaria dos pesos nas entradas. Depois a fusão são três
+produtos matriciais a sério, um por extremo, e cada resultado é comparado com a figura que a camada
+composta declarou, uma vez por quantidade: demand, nameplate e draw têm cada um o seu `F`, porque
+uma camada que declara uma e não outra está na incidência de uma e não da outra.
 
 ```
-3. F é 18x27: densa são 486 entradas, a relação guarda 27 (5,6%)
-   F.Phi.x - e contra a procura composta declarada: 15 camadas, todas concordam; 3 suspensas
+3. F.Phi.x - e contra as figuras compostas declaradas, por quantidade:
+   demand     F é 24x37, a relação guarda 37 de 888: 20 camadas concordam, 4 suspensas
+   draw       F é 13x16, a relação guarda 16 de 208: 11 camadas concordam, 2 suspensas
+   nameplate  F é 24x37, a relação guarda 37 de 888: 20 camadas concordam, 4 suspensas
+   o produto matricial iguala o join e o GROUP BY do SQL em 51 somas;
+   51 quantidades de camada concordam com as suas declarações, 10 suspensas
 ```
 
 ⭐⭐ **É aqui que «um produto matricial é uma junção com um `GROUP BY`» é verificado.** O
@@ -807,7 +886,8 @@ pontos de um intervalo não tem de voltar ordenada — e um trio desordenado nã
 ao passo que a procura de onde saiu está perfeitamente bem formada.
 
 ```
-6. contagem do resíduo: 25 camadas com quantum no conjunto, 15 com dente de serra, 0 discordâncias
+6. contagem do resíduo: 25 camadas com quantum no conjunto, 17 atravessam um dente,
+   15 delas com dente de serra, 0 discordâncias
 ```
 
 O Postgres calcula o veredicto com `mod()`; o exemplo recalcula-o com `%`. A contagem de
@@ -841,21 +921,29 @@ está em vez disso.
    time       13 dimensionadas de 28
 ```
 
-⛔⛔ **O número interessante é que toda a margem de capacidade dimensionada lê `[0, 0, 0]`.** A
-`capacity` transporta a desigualdade da diferença: o que a procura e a capacidade nominal de um
-documento dizem que podia ter ficado por servir, contra o que a oferta consegue absorver mais o que
-o documento admite recusar. Onze camadas do conjunto dimensionam-na e todas a dimensionam a zero,
-o que é quem declara a dizer que a oferta não pode ser levada ao esforço a preço nenhum. **Esse é o
-limite mais apertado possível, não um limite em falta**, e é um facto diferente das quinze que
-declaram `unmeasured`.
+⛔⛔ **As linhas interessantes são as dimensionadas, e não são todas nulas.** A `capacity`
+transporta a desigualdade da diferença: o que a procura e a capacidade nominal de um documento
+dizem que podia ter ficado por servir, contra o que a oferta consegue absorver mais o que o
+documento admite recusar. A maioria das linhas dimensionadas assenta em `[0, 0, 0]`, o que é quem
+declara a dizer que a oferta não pode ser levada ao esforço a preço nenhum, e **esse é o limite
+mais apertado possível e não um limite em falta**. Uma minoria enuncia uma largura real, e a
+`contrato-empresarial/cobertura-de-suporte` é a que se deve ler: dimensiona a margem de capacidade
+em `[0, 16, 40]` horas-engenheiro por semana, declarada da mesma maneira no gémeo inglês. O resto
+da coluna é `unmeasured`, que é um terceiro estado outra vez.
 
-⚠️ **Uma frase sobre esta coluna apodrece sempre que a grafia de um zero se move, e ela move-se.**
-Declarem-se os zeros como `absent/reason = none` e contam como ausências; estreite-se o
-`pm:StatedClaim` de modo que um zero medido seja uma afirmação e a coluna muda por baixo de
-qualquer prosa que tenha nomeado uma figura. Imprima-se em vez de se escrever. O que continua
-por exercitar é uma margem de capacidade NÃO nula: nenhuma declaração enunciou ainda uma, pelo que
-a desigualdade nunca teve de limitar contra um número real. Corra-se
-`cargo run --example matrices` para o censo atual em vez de confiar neste bloco.
+⚠️ **Uma frase sobre esta coluna apodrece sempre que a grafia de um zero se move, e já se moveu
+duas vezes.** Declarem-se os zeros como `absent/reason = none` e contam como ausências;
+estreite-se o envelope de modo que um zero medido seja uma afirmação e a coluna muda por baixo de
+qualquer prosa que tenha nomeado uma figura. Portanto imprima-se: o `cargo run --example matrices`
+§7 é o censo, e o `reports/slack_census.sqlc` é a relação por trás dele.
+
+⛔ **E uma largura enunciada não é o mesmo que uma desigualdade exercitada, que é a parte que vale
+a pena separar.** O `checks/share_exceeds_slack` continua a ler ⛔ VACUOUS neste conjunto, e não
+por falta de um número contra o qual limitar: toda a camada que dimensiona o seu tampão absorvente
+sob um ajuste `interference` é depois removida porque todos os detentores nela são `customer` ou
+`unrealised`, pelo que nada foi absorvido e a procura foi recusada. O `entries/borne.sqlc`
+argumenta-o e o `algebra/borne.sqlc` sustenta `Σtodos = Σmantidos + Σremovidos` por camada, para que
+o vazio seja aritmética e não uma afirmação num comentário.
 
 **Nada afirma que fique em zero**, e isso é deliberado. Uma igualdade aqui faria com que o primeiro
 a dimensionar uma margem de capacidade partisse a compilação por fazer exatamente aquilo que o

@@ -1,4 +1,4 @@
-# `assets/fixtures/` — um documento por estado, e NÃO um segundo conjunto de documentos
+# `assets/fixtures/`: um documento por estado, e NÃO um segundo conjunto de documentos
 
 > **Grafia do AO90.** A versão inglesa está em [`README.md`](README.md) e é a que o repositório
 > trata como autoritativa quando as duas divergirem. Os nomes dos ficheiros, das tabelas e dos
@@ -36,15 +36,19 @@ ficam em eixos diferentes, que é a divisão que o próprio esquema traça entre
 
 | ficheiro | acende |
 |---|---|
-| `every-absence.xml` | `StatedCouplings/none`, `window/none`, todo o braço de ausência de `StatedFit`, `boundOrigin/notApplicable`, `StatedDivisibility/none` |
+| `every-absence.xml` | `StatedCouplings/none`, `window/none`, todo o braço de ausência de `StatedFit`, `boundOrigin/notApplicable`, `StatedDivisibility/none`; e um plano de contas declarado `none`, um amortecedor, uma procura, um resto e uma base de medição declarados `unmeasured` |
 | `every-elimination.xml` | `StatedEliminations/none` e `/unmeasured`, e as duas somas diferentes que devem |
 | `every-claimed.xml` | `Claimed/partial`, o valor que o `CoverageEntry/complete` não conseguia transportar |
 | `every-local-part.xml` | a construção de três camadas: a deles, a minha, uma feita das duas, e o `StatedNotation/uri` sob uma parte LOCAL |
 | `every-partial-elimination.xml` | o meio da escala de eliminação: um `e` de valor nominal que não é zero nem uma parte inteira, pelo que o `e` se lê como MAGNITUDE e não como espécie de fusão |
+| `every-inverting-elimination.xml` | uma eliminação mais larga do que a soma que corrige: partes pontuais e um bloco partilhado cujo tamanho é um intervalo, pelo que subtrair limite a limite inverte e o valor declarado é o emparelhamento cruzado |
+| `every-derived-elimination.xml` | o terceiro ramo de um valor eliminado, que não é um valor nem uma ausência tipada: quem compõe nomeia o `sharedParts` e deixa a aritmética a quem recebe. Nada calcula uma derivação declarada, pelo que a soma da capacidade nominal fica suspensa e a capacidade nominal composta apoia-se na palavra de quem compõe, enquanto a eliminação da procura ao seu lado está declarada a zero e a sua soma é devida e exata. Uma fusão, um valor verificado e outro não |
+| `every-unserved-excess.xml` | um excesso sem para onde ir: um ajuste de interferência cujos três amortecedores estão todos declarados vazios, pelo que todo o detentor tem de ser um dos dois que suportam procura não servida, e a exposição é confrontada com as quotas que admitem |
 | `every-unsized-conversion.xml` | o braço ausente de `Part/factor`: uma conversão que ninguém mediu, que não é uma parte que não precisa de nenhuma |
 | `every-draft.xml` | `StatedNotation/unmeasured`, `StatedScope/unmeasured` e `StatedEvidence/unmeasured`, o documento que quem adota pela primeira vez tem de facto, incluindo o único estado em que nem chega a dizer se observou alguma coisa |
 | `every-unit-cycle.xml` | um CICLO NO GRAFO DAS UNIDADES: três camadas cujas conversões vão de GPU a GPU-hora a nó-hora e de volta, para que se possa sequer perguntar por uma viagem completa. O grafo das partes fica uma cadeia e nada é composto a partir de si mesmo, são as UNIDADES que dão a volta |
 | `every-nested-conversion.xml` | uma CONVERSÃO COM LARGURA POR BAIXO DE UMA CONVERSÃO COM LARGURA, que é o estado em que um resto composto deixa de ser calculável um nível de cada vez. Três camadas em cadeia, ambas as arestas com um fator com largura, e as quotas de detentor arquivadas a concordar com a figura recursiva e não com a de um nível, pelo que um leitor que pare demasiado cedo acusa um arquivo correto |
+| `every-derived-quantity.xml` | um valor composto declarado `derived`, que o recetor calcula em vez de o ler como uma lacuna. Uma procura composta que é apenas uma saída da sua fusão é parte de uma camada composta que declara a sua, pelo que verificar a soma de fora obriga a calcular primeiro a de dentro; ao lado, um consumo composto declarado `derived` sobre uma parte que ninguém mediu, que não se pode calcular e diz porquê, e uma fusão construída sobre essa camada cuja soma de consumo fica suspensa pela mesma razão e cuja capacidade nominal é ela própria declarada `derived` |
 
 **Um fixture prova alcançabilidade, nunca correção.** Que um documento que arquiva
 `claimed = partial` valide diz que o estado existe; nada diz sobre se um executor reporta `notable`

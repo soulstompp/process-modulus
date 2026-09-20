@@ -12,35 +12,57 @@ organisation can read without running any of this code.
 > `https://example.invalid/…` until the author's hosting domain is settled.
 > `tests/namespace.rs` makes changing them a checked operation. Everything else is real.
 
-The model starts from one observation. A business is a stack of quantized supplies serving
-continuous demands. Demand varies smoothly, while supply arrives in whole units: a person,
-a reserved block of hardware, a launch, a funding round. The difference between the two is
-a **remainder**, and it does not go away. Management chooses which buffer absorbs it and
-who bears it. Management does not choose whether it exists.
+The model starts from a division. A business meets demand that varies smoothly with supply that
+arrives in whole units: a person, a shift, a reserved block of hardware, a launch, a funding
+round. **The whole unit you have to divide by is the modulus**, and the division leaves something
+over every time.
 
-What the remainder does next is the part that takes longest to see, and it is not what the
-word "leftover" suggests. A business asked for more than it committed to does not seize up.
-It settles. The line runs a little hot, the queue backs up until callers stop waiting, and
-from then on a steady portion of the demand leaves every week. The business is short and
-stable at the same time, and it can stay that way for years. **Nothing fails. What it
-produces is a residual**, week after week, and the residual is what this schema is for.
+Take the case the corpus is built around. A platform team of four people serving a demand that
+runs between 4.5 and 6.0, most likely 5.2. The shortfall is 1.2 people, and that 1.2 divides once
+and cleanly:
 
-Which makes the question not "did you cope" but **where did it go**. Some of it the team
-absorbed by working above their rating. Some a counterparty took and invoiced. Some a
-customer bore by waiting and then going elsewhere. Some was never served at all. Those are
-four different events with four different consequences, and only one of the five ways a
-remainder can be borne leaves a transaction behind.
+```text
+1 person      a whole unit, and A DECISION.      Hire one more and it moves.
+0.2 people    the residue, and NOT a decision.   No headcount removes it.
+```
 
-That is the one this model adds: the capacity absorbed by the people doing the work. Nothing
-was bought, so there is no transaction, so no instrument records it, so it is invisible to
-every system that starts from transactions. The schema is built so that "nobody measured
-this" is a claim a sender files rather than a cell they leave blank.
+Both halves come out of the same division, which is why the name points at the division rather
+than at what it leaves. `Remainder` is what the schema calls the result; the modulus is what
+makes one exist at all.
 
-⭐ And once it is filed that way, something useful follows. If a document says how much was
-demanded, how much was committed, and how far the supply can be pushed past its rating, then
-**the part of the residual with no record behind it can be worked out anyway** — not as an
-argument about invisible work, but as a number, from three fields the sender had to fill in
-regardless.
+⛔ **And the distinction is load-bearing rather than pedantic.** *Management chooses which buffer
+absorbs the remainder and who bears it; management does not choose whether it exists* is a true
+sentence about the 0.2 and a false one about the 1.2, because the whole remainder contains a
+decision. Run the two together and a model either flatters the business, by calling a staffing
+choice a law of nature, or accuses it, by demanding it remove something nothing removes.
+
+## Modulation is a choice, which is why nothing here is enumerated
+
+The unit is not handed to you. The same team modulated in people and modulated in on-call weeks
+are two readings of one business, both true, with different remainders landing on different
+people. **Choosing the unit is the modelling act.** So the schema lists no layers: what makes
+something a layer is that its remainder can be held independently of every other layer's, which
+is a test you apply rather than a roster you are given.
+
+⭐ And it is the same act all the way up. A parent fusing two members' layers into one is
+dividing by a coarser unit, and it owes the same account of what the division left over. That is
+why a consolidation here is a document somebody signs rather than a join somebody runs.
+
+## The residue nobody bought
+
+A remainder gets carried in five ways. Four of them leave a transaction behind or a customer who
+noticed. The fifth does not: the capacity absorbed by the people doing the work, by working above
+their rating. Nothing was bought, so no instrument records it, so it is invisible to every system
+that starts from transactions.
+
+That is what this schema is for, and it is why *nobody measured this* has to be something a
+sender **files** rather than a cell they leave blank. ⭐ Once it is filed that way the size of the
+residue can be worked out anyway, from figures the sender had to give regardless, and what stays
+genuinely unknown shrinks to something much sharper: not how big the gap was, but how it split
+between the people who absorbed it and the customers who quietly went away.
+
+⭐ **The fastest way in is that one layer, read end to end**, and there is a section for it
+below.
 
 That is a real ask, and the cost is worth stating up front. Writing this schema means
 committing to say which kind of blank each blank is, to express quantities as ranges rather
@@ -49,58 +71,34 @@ else. Corpora that already exist tend to do none of the three, and that migratio
 work. What you get for it is a document that stays true after it crosses an organisational
 boundary, which is the only place any of this matters.
 
-## Features
+## What you are writing
 
-- **A schema, not a library.** `schema/process-modulus.xsd` is the deliverable. Validating
-  a document needs no Rust and no dependency on this project.
-- **XSD 1.0 on purpose**, so that `xmllint`, the JDK's bundled validator, `lxml`, Nokogiri
-  and everything else that wraps libxml2 can check a document on a stock machine.
-- **Typed absence.** A blank says which kind of blank it is: `none`, `unmeasured`,
-  `notApplicable` or `derived`. An absence of evidence and evidence of absence stop looking
-  alike.
-- **Three-point claims.** Every quantity is a `low`, `mostLikely` and `high` with its
-  provenance and date. There is no bare number type anywhere in the model.
+- **A schema, not a library.** [`schema/`](schema/) is the deliverable, and validating a document
+  needs no Rust and no dependency on this project.
+- **Five kinds of document, and four of them are signed by somebody other than the entity.** A
+  filing, a coverage answer, a promoted run, a cross-filing dependence and a consolidation. A
+  claim *about* a filing cannot live inside the filing it judges.
+- **Typed absence, and it reaches lists too.** A blank says which kind of blank it is: `none`,
+  `unmeasured` or `notApplicable`, with a position some identity computes carrying that identity's
+  name instead. A stack with no couplings filed therefore says whether anybody went looking,
+  because *these layers have been tested and they are independent* and *nobody checked* are
+  opposite claims that a bare optional list spells the same way.
+- **Three-point claims.** Every quantity is a `low`, `mostLikely` and `high` with its provenance
+  and date. There is no bare number type anywhere in the model.
 - **Borrowed values carry their authority.** Anything this model does not own travels as
-  `BorrowedTerm { taxonomy, value }` with the taxonomy required, so a value arrives with
-  the authority that defines it instead of as a bare code.
-- **Regimes split into separate axes.** Jurisdiction, framework and the authority that
-  codes the framework are three questions, and one enumeration mixing them answers none of
-  them.
-- **Answers travel on their own.** `schema/assertion.xsd` lets a second party answer a
-  corpus of questions and send the answers without running anything from here.
-- **Cross-filing observations have a home.** A dependence between two entities that file
-  separately belongs to whoever read both filings, and it is a document rather than a
-  footnote in either one.
-- **A consolidation is a document somebody signs.** Two honest filings cannot be merged by
-  any heuristic — joining on the layer name merges unrelated things, joining on the facts
-  filed misses the pair that is genuinely one layer. So the party with standing files the
-  mapping itself, says what it treated as one layer and why, and records what it removed to
-  avoid counting demand twice. Compositions nest, so a group composes segments with nothing
-  added.
-- **Refutable in its own format.** `assets/corpus/refutation.xml` is a valid document that files
-  two counter-examples to the model.
+  `BorrowedTerm { taxonomy, value }` with the taxonomy required, so a value arrives with the
+  authority that defines it instead of as a bare code.
+- **Regimes split into separate axes.** Jurisdiction, framework and the authority that codes the
+  framework are three questions, and one enumeration mixing them answers none of them.
 - **A generated Rust crate.** Every type and every doc comment comes from the schemas, so
   `cargo doc` shows the schema's own annotations.
-- **The unreachable rules, made runnable.** The schemas state rules in prose that no grammar
-  gates, because XSD 1.0 cannot compare one element against another. Most of them are joins and
-  comparisons. [`assets/sql/`](assets/sql/) expresses them as SQL — including
-  the one no validator can see, that no leaf layer is reachable through two paths once
-  compositions nest — and reports how many rows each rule actually examined, because a rule
-  with nothing to check passes loudest.
-- **Every blank has a reason attached.** Not "the field is empty" but *which* kind of empty:
-  somebody looked and there is none, nobody has measured it, the question does not apply here,
-  or it is computed from something else. That applies to lists too — a stack with no couplings
-  filed says whether anybody went looking, because "these layers have been tested and they are
-  independent" and "nobody checked" are opposite claims that a bare optional list spells the
-  same way.
 
-## Why process-modulus
+## What it buys you
 
-**The remainder is the contribution.** Buffers are Hopp and Spearman's, closed at three in
-*Factory Physics*, and this model adopts them as published rather than adding a fourth.
-What it adds is a separate axis: who holds the remainder. `booked`, `counterparty`,
-`customer`, `unrealised` and `people` are the five, and only the last of them has no
-instrument behind it.
+**The buffers are borrowed and the holders are ours.** Buffers are Hopp and Spearman's, closed
+at three in *Factory Physics*, and this model adopts them as published rather than adding a
+fourth. What it adds is the separate axis named above: `booked`, `counterparty`, `customer`,
+`unrealised` and `people`.
 
 **Demand perishes, and that is what keeps the arithmetic honest.** A queue that nobody ever
 leaves grows for ever, and a model built on one would call every business over capacity
@@ -159,245 +157,30 @@ valid documents.
 
 * The namespace URIs are still placeholders. Nothing else in the repository is.
 
-## Example: a team of four serving a demand of five
+## One layer, read end to end
 
-The document root is a `processModulus`: some regime declarations, one stack of layers, and
-any number of operations that draw on them.
+[`assets/corpus/README.md`](assets/corpus/README.md) walks the labour layer of
+[`enterprise-contract.xml`](assets/corpus/enterprise-contract.xml) element by element: what
+travels beside a range and why, the two origins that must never be merged, the two absences a
+receiver must not merge either, and why the remainder's size is computable while the share is the
+one thing no instrument reaches.
 
-```xml
-<pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
-  <pm:regime> ... what this document reports under ... </pm:regime>
-  <pm:stack>
-    ... the layers ...
-    <pm:couplings>
-      <pm:absent>
-        <pm:reason>unmeasured</pm:reason>
-        <pm:note>nobody has tested whether these layers move together</pm:note>
-      </pm:absent>
-    </pm:couplings>
-  </pm:stack>
-  <pm:operation> ... what draws on them ...            </pm:operation>
-</pm:processModulus>
-```
+## Where the rest of the argument lives
 
-⭐ `couplings` is required, and it is the one element in the schema that asks a filer whether
-they **tested** the model rather than what they measured. A stack claims its layers are separate
-places where a shortfall can land; this is where a filer says whether anybody checked. "One
-layer was relieved and the others did not move" and "nobody looked" are opposite claims, and
-without this element they are the same empty document.
+Each line below is that document's own first line. The document is where it is authoritative, and
+this table is a way in rather than a second copy of it.
 
-A layer is a demand, a supply and the remainder between them. Here is the labour layer from
-[`assets/corpus/enterprise-contract.xml`](assets/corpus/enterprise-contract.xml), which is the case
-the whole model exists for. The demand is between 4.5 and 6 people. The supply is four
-people, and a person is not divisible.
+| | |
+|---|---|
+| [`schema/`](schema/) | the deliverable itself, and the five documents it lets anybody write |
+| [`assets/`](assets/) | the evidence, the machinery that reads it, and what is generated from both |
+| [`conformance/`](conformance/) | what a profile may narrow, and which rules no validator reaches at all |
+| [`src/proofs/`](src/proofs/) | The equations this model states, each shown to hold by a program that `cargo test` runs. |
+| [`examples/`](examples/) | The examples, and the question each one puts to the model |
 
-```xml
-<pm:layer>
-  <pm:name>labour</pm:name>
-
-  <pm:demand>
-    <pm:amount>
-    <pm:claim>
-      <pm:low>4.5</pm:low>
-      <pm:mostLikely>5.2</pm:mostLikely>
-      <pm:high>6.0</pm:high>
-      <pm:unit>people</pm:unit>
-      <pm:narrowsWhen>
-        <pm:narrowing>
-          <pm:condition>support interrupts are time-recorded instead of estimated</pm:condition>
-          <pm:kind>instrument</pm:kind>
-        </pm:narrowing>
-      </pm:narrowsWhen>
-      <pm:boundOrigin>
-        <pm:absent>
-          <pm:reason>none</pm:reason>
-          <pm:note>nothing sets this bound. The range is where the observations fell</pm:note>
-        </pm:absent>
-      </pm:boundOrigin>
-      <pm:provenance><pm:party>platform</pm:party></pm:provenance>
-      <pm:asOf>2026-08-30</pm:asOf>
-    </pm:claim>
-    </pm:amount>
-    <!-- how long the demand survives unanswered, a second fact and not a bound on the first -->
-    <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
-  </pm:demand>
-```
-
-Two facts travel beside the range, and they answer different questions. `narrowsWhen` is what
-would have to change for it to **tighten** — and `kind` says whether that is a measurement
-arriving or the process itself changing, which is the difference between not knowing and
-genuinely varying. `boundOrigin` is **who owns the edge**: `none` here says somebody looked and
-nobody owns it, because this range is where twelve months of observations fell rather than where
-a rule put them. A demand bounded by a contract would say `contractual`, and that is a lever.
-
-The supply has two faces. `nameplate` is what was committed, and it is where divisibility
-lives. Two different constraints are recorded, and keeping them apart is the point:
-`origin` is who you would have to talk to in order to change the **size of one unit**, and
-`intrinsic` means nobody, because one person is one person. `amountOrigin` is who you would
-have to talk to in order to hold a **different number of them**, and `policy` means the filer,
-because the establishment is theirs to set.
-
-⭐ Those two are why the claims above answer `boundOrigin` with `derived` rather than repeating
-themselves. The question *who owns this edge* is already answered one element over, and a
-document that answered it twice would eventually answer it two different ways.
-
-`window` is the other half of divisibility: not how the supply divides in **amount** but how it
-divides in **time** — a line running five days of seven, a machine stopped two hours a day. A
-headcount has no such cycle, so the answer is `notApplicable` and the reason says which of the
-alternatives is meant. It is not a blank.
-
-```xml
-  <pm:supply>
-    <pm:label>the platform team</pm:label>
-    <pm:nameplate>
-      <pm:amount>
-        <pm:claim>
-          <pm:low>4</pm:low><pm:mostLikely>4</pm:mostLikely><pm:high>4</pm:high>
-          <pm:unit>people</pm:unit>
-          ... narrowsWhen: notApplicable, there is no range here to tighten ...
-          ... boundOrigin: derived, amountOrigin below states it ...
-        </pm:claim>
-      </pm:amount>
-      <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
-      <pm:divisibility>
-        <pm:divisibility>
-          <pm:lumpy>
-            <pm:size>
-              <pm:claim>
-                <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
-                <pm:unit>people</pm:unit>
-                ... boundOrigin: derived, the origin below states it ...
-              </pm:claim>
-            </pm:size>
-            <pm:origin>intrinsic</pm:origin>
-          </pm:lumpy>
-          <pm:window>
-            <pm:absent>
-              <pm:reason>notApplicable</pm:reason>
-              <pm:note>`people` is a stock with no period</pm:note>
-            </pm:absent>
-          </pm:window>
-        </pm:divisibility>
-      </pm:divisibility>
-      <pm:capacitySlack>
-        <pm:absent>
-          <pm:reason>unmeasured</pm:reason>
-          <pm:note>a person can work above their rating; how far above, nobody has measured</pm:note>
-        </pm:absent>
-      </pm:capacitySlack>
-      <pm:inventorySlack>
-        <pm:claim>
-          <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
-          <pm:unit>people</pm:unit>
-          <pm:provenance>
-            <pm:party>platform</pm:party>
-            <pm:note>an hour not used today is gone; it cannot be stockpiled for next week</pm:note>
-          </pm:provenance>
-        </pm:claim>
-      </pm:inventorySlack>
-    </pm:nameplate>
-```
-
-`capacitySlack` and `inventorySlack` say how much give each buffer has. A person can be run
-above their rating, so that buffer is open and nobody has measured how far, which is
-`unmeasured`. An
-unused hour cannot be saved for next week, so that one is shut, and a stated `[0, 0, 0]` is how
-the model says somebody checked rather than that somebody skipped it. ⛔ A measured zero is a
-CLAIM here, never an absence: it has a unit, an owner and a provenance, and the absence arm has
-nowhere to put any of the three. ⭐ The difference matters
-later: a share can only be attributed to a buffer that has room for it.
-
-`jagged` is the other face, which is what actually happened. This is where the argument
-gets filed. Nothing recorded the hours absorbed above the establishment, so the draw is
-`unmeasured` with a note saying why and a party standing behind the statement. It is not an
-empty element.
-
-```xml
-    <pm:jagged>
-      <pm:draw>
-        <pm:absent>
-          <pm:reason>unmeasured</pm:reason>
-          <pm:note>no instrument records hours absorbed above the establishment</pm:note>
-          <pm:provenance><pm:party>platform</pm:party></pm:provenance>
-          <pm:asOf>2026-08-30</pm:asOf>
-        </pm:absent>
-      </pm:draw>
-      <pm:measurementBasis>
-        <pm:absent>
-          <pm:reason>notApplicable</pm:reason>
-          <pm:note>there is no valuation here to have a basis</pm:note>
-        </pm:absent>
-      </pm:measurementBasis>
-    </pm:jagged>
-  </pm:supply>
-```
-
-Note that the two absences are different reasons. The draw is `unmeasured`, meaning an
-instrument could exist and does not. The measurement basis is `notApplicable`, meaning
-asking the question is malformed here, because a headcount has no valuation to have a basis
-for. A receiver that treated the second as a gap would report a deficiency that does not
-exist.
-
-The remainder is then the conclusion. Demand exceeded the nameplate, so the fit is
-`interference` in the mechanical sense borrowed from ISO 286: it works by deforming the
-material, and inspecting the output will not reveal it. A layer can also be short in some
-weeks and spare in others, which is the third class, `transition`, and is the ordinary
-condition of a business at capacity. The buffer is Hopp and Spearman's
-`capacity`, cited to their taxonomy rather than restated.
-
-The **holders** are where the point lands. Some of the excess the team absorbed, and some of it
-queued, waited and quietly went away. Neither leaves a record, so both **shares** are
-`unmeasured` — and note what that does not say. It does not say the remainder is unknown: the
-size is `derived` from figures already in the document. It says nobody can tell you how the
-two halves divide, which is a smaller and much sharper thing to admit.
-
-```xml
-  <pm:remainder>
-    <pm:remainder>
-      <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-      <pm:absorber>
-        <pm:term>
-          <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
-          <pm:value>capacity</pm:value>
-        </pm:term>
-      </pm:absorber>
-      <pm:holder>
-        <pm:holder>
-          <pm:kind>people</pm:kind>
-          <pm:share>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>the absorption has no counterparty and therefore no transaction</pm:note>
-            </pm:absent>
-          </pm:share>
-        </pm:holder>
-      </pm:holder>
-      <pm:holder>
-        <pm:holder>
-          <pm:kind>unrealised</pm:kind>
-          <pm:share>
-            <pm:absent>
-              <pm:reason>unmeasured</pm:reason>
-              <pm:note>work that queued, waited and aged out before anyone got to it</pm:note>
-            </pm:absent>
-          </pm:share>
-        </pm:holder>
-      </pm:holder>
-      <pm:quantity>
-        <pm:absent><pm:reason>derived</pm:reason></pm:absent>
-      </pm:quantity>
-    </pm:remainder>
-  </pm:remainder>
-</pm:layer>
-```
-
-Note which of the two is absent, because it is not the one people expect. The remainder's
-size is `derived`: the document determines it and a receiver computes it. What no instrument
-reaches is the `share` — how much of that gap the team absorbed rather than turned away.
-
-Four people, a demand of five, an indivisible unit of one, and a difference that landed on
-somebody. The document says who, says the size, says that nobody measured the part that
-matters, and says who stands behind that statement. That is the whole model in one layer.
+⭐ Nothing above is restated here, on purpose. A document that had to be summarised in its parent
+would be summarised twice as soon as somebody changed it once, and the two copies would then
+disagree with nothing able to notice.
 
 ## Quick start
 
