@@ -1,0 +1,104 @@
+-- §22 What each fusion declared it cannot see: the offsets between its own parts.
+# One row per unordered pair of parts inside one fusion: the rate at which one part's supply
+# substitutes for the other's, and the sentence the composer wrote to license it.
+#
+# What the rate means
+#   A fusion adds its parts after converting each by its own factor, so moving `d` of part A's own
+#   supply out and `d * phi_A / phi_B` of part B's in leaves the composed figure exactly where it
+#   was. `phi_A / phi_B` is that exchange rate, in the parts' own units, and the pair is a
+#   generator of the fusion's block of the composition map's null space.
+#   Proof: `src/proofs/README.md`, entry `composition_kernel`.
+#
+# A report, and it must never become a rule
+#   `asrt:Fusion` says the fungibility judgement is the composer's and that no validator reaches
+#   it: whether a unit of supply in one part can serve demand in the other is a claim about the
+#   world, not about the arithmetic. So this relation carries no verdict and accuses nobody. What
+#   it does is put a magnitude beside the claim, because `asrt:Fusion/observed` asks for the
+#   judgement to be written where a reader can disagree with it, and a reader disagreeing needs
+#   to know how much is being asserted rather than only that something is.
+#
+# The conformance row it answers, which had no relation at all
+#   `conformance/README.md` carries "a fusion's parts are fungible, so their remainders may
+#   offset" with no rule beside it, and `asrt:Fusion` names the damage of getting it wrong: a
+#   group remainder smaller than reality, because one member's excess covered another's shortfall
+#   across a boundary nothing can cross. That sentence is about this rate. Nothing measured it.
+#
+# A one-part fusion has no row, and that is the whole of its claim
+#   With one part there is no sibling to substitute for, so the block is zero and the fusion
+#   asserts no fungibility whatever. Its absence here is the finding, not a gap.
+#
+# ⛔ The row count is NOT the dimension, and today it happens to equal it
+#   This relation returns one row per PAIR, so a fusion of `k` parts gives `C(k, 2)` rows while
+#   its block of the null space has dimension `k - 1`. Those agree at `k` of 1 and 2 and part
+#   company at 3, where three pairs span two dimensions and the third pair is the sum of the other
+#   two. Every fusion in this corpus is binary, so the totals agree here for a reason that is a
+#   fact about the corpus rather than about the arithmetic. `rank/composition_kernel.sqlc` is the
+#   dimension and this relation is not; summing these rows to get one would be right today and
+#   wrong at the first fusion with three parts.
+#   `eliminations/derived.sqlc` pairs the other projection of this incidence and carries the same
+#   caveat, which is why neither relation's row count may be read as a correction.
+#
+# An absent factor leaves the rate undetermined, and says so
+#   `asrt:Part/factor` may be filed as a typed absence, and then the rate is not a number anybody
+#   can write. The pair still exists and the fusion still added them, so the row stays and
+#   `determined` is false with `undetermined_because` naming the part whose factor is missing. A
+#   blank rate and a rate of one are different facts, and collapsing them would report a fusion
+#   as asserting an exchange at par when nobody said so.
+#
+# Corner discipline on a quotient of two factors
+#   The two factors are different parts' and are filed independently, so the quotient takes its
+#   low at `phi_A_low / phi_B_high` and its high at `phi_A_high / phi_B_low` with no symbol
+#   repeated. A part with no factor at all converts at exactly one, which is a point and not a
+#   range, so it contributes no width of its own.
+#
+# Unordered, and the reflexive pair is dropped
+#   A part does not substitute for itself, and naming the pair twice would say the fusion declared
+#   two offsets where it declared one. The row comparison keeps each pair once, the same idiom
+#   `eliminations/derived.sqlc` uses for the other projection of this incidence.
+-- asrt:Fusion/asrt:Part crossed with itself on the fusion, carrying each part's factor.
+WITH
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+fusions AS NOT MATERIALIZED (
+    :define(composition/fusions.sqlc)
+),
+sized AS (
+    SELECT p.composition, p.composed_layer,
+           p.part_filing, p.part_layer, p.factor_state,
+           CASE WHEN p.factor_state = 'omitted' THEN 1 ELSE p.factor_low  END AS lo,
+           CASE WHEN p.factor_state = 'omitted' THEN 1 ELSE p.factor_mode END AS md,
+           CASE WHEN p.factor_state = 'omitted' THEN 1 ELSE p.factor_high END AS hi
+    FROM ( :compose(composition/parts.sqlc) ) p
+)
+SELECT a.composition                                        AS "composition!",
+       a.composed_layer                                     AS "composed_layer!",
+       a.part_filing  || '/' || a.part_layer                AS "part_a!",
+       b.part_filing  || '/' || b.part_layer                AS "part_b!",
+       (a.lo IS NOT NULL AND b.lo IS NOT NULL)              AS "determined!",
+       least(a.lo / b.hi, a.hi / b.lo)::double precision    AS rate_low,
+       (a.md / b.md)::double precision                      AS rate_mode,
+       greatest(a.lo / b.hi, a.hi / b.lo)::double precision AS rate_high,
+       CASE WHEN a.lo IS NOT NULL AND b.lo IS NOT NULL THEN NULL
+            ELSE concat_ws(' and ',
+                     CASE WHEN a.lo IS NULL
+                          THEN 'the factor on ' || a.part_layer || ' is ' || a.factor_state END,
+                     CASE WHEN b.lo IS NULL
+                          THEN 'the factor on ' || b.part_layer || ' is ' || b.factor_state END)
+       END                                                  AS undetermined_because,
+       f.observed                                           AS "observed!"
+FROM      sized a
+JOIN      sized b
+       ON b.composition    = a.composition
+      AND b.composed_layer = a.composed_layer
+      AND (b.part_filing, b.part_layer) > (a.part_filing, a.part_layer)
+JOIN      (
+    :compose(composition/fusions.sqlc)
+) f ON f.filing = a.composition AND f.layer = a.composed_layer
+ORDER BY a.composition, a.composed_layer, "part_a!", "part_b!"

@@ -2,8 +2,8 @@
 SELECT * FROM (VALUES
   ('contrato-empresarial'::text,        'processModulus'::text, true,  NULL::text),
   ('coverage-pt-ncrf-pe',               'coverage',       false, 'ingest does not read a document rooted at `coverage`. `tests/coverage_parse.rs` asserts the property it exists to prove, at the XML level, so the document is checked and not stored'),
-  ('coverage-us-gaap',                  'coverage',       false, 'the same, in the other regime. The PAIR is the subject: two regimes stay comparable exactly where the two witnesses cite one taxonomy'),
-  ('dependence-group-consolidation',    'dependence',     false, 'ingest does not read a document rooted at `dependence`. ⚠️ It carries the only `asrt:DependenceEntry` in the corpus, so `from` and `to` are the two uses of `asrt:FiledLayer` with no apparatus, where `Part/layer` and `Elimination/between` both have one'),
+  ('coverage-us-gaap',                  'coverage',       false, 'the same, in the other regime. The pair is the subject: two regimes stay comparable exactly where the two witnesses cite one taxonomy'),
+  ('dependence-group-consolidation',    'dependence',     false, 'ingest does not read a document rooted at `dependence`. It carries the only `asrt:DependenceEntry` in the corpus, so `from` and `to` are the two uses of `asrt:FiledLayer` with no apparatus, where `Part/layer` and `Elimination/between` both have one'),
   ('enterprise-contract',               'processModulus', true,  NULL),
   ('merge-group-composition',           'composition',    true,  NULL),
   ('merge-holding-composition',         'composition',    true,  NULL),

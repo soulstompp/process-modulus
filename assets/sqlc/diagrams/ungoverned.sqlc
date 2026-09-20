@@ -1,22 +1,38 @@
-# EVERY DECLARED MAPPING, BESIDE WHETHER A LAW ACTUALLY GOVERNS IT. One row per table that names a
+# Every declared mapping, beside whether a law actually governs it. One row per table that names a
 # BPMN element, with the law it claims and whether that law exists.
 #
-# ⭐⭐⭐ THE HOLE THIS CLOSES: A LAW COUNTS AN ELEMENT KIND, AND TWO TABLES CAN NAME ONE KIND.
-#    `draw` and `induction` both map to `laneSet`. One lane set is emitted per document, the law
-#    counting lane sets passes, and NEITHER table is read by it. So a table declared as mapping
-#    and never rendered was invisible to every cardinality law in `diagrams/roster.sqlc`, and
-#    `composition_citation` was exactly that: it claims `documentation`, and no citation is
-#    emitted anywhere. Counting KINDS cannot verify ATTRIBUTION, and this is the repair.
+# Two tables can name one kind
+#   That is the hole this closes: a law counts an element kind, and two tables can name one kind.
+#   `draw` and `induction` both mapped to `laneSet`. One lane set is emitted per document, the law
+#   counting lane sets passed, and neither table was read by it. So a table declared as mapping
+#   and never rendered is invisible to every cardinality law in `diagrams/roster.sqlc`, and
+#   `composition_citation` was exactly that: it claimed `documentation`, and no citation was
+#   emitted anywhere. Counting kinds cannot verify attribution, and this is the repair.
 #
-# ⭐⭐ SO GOVERNANCE IS DECLARED RATHER THAN INFERRED FROM THE ELEMENT. Written down, `draw` turns
-#    out to be governed by `in_a_lane`, whose model side really is the draws, and not by the law
-#    that shares its element name. Inference would have called that a pass.
+# Governance is declared, not inferred
+#   Written down, `draw` turns out to be governed by `in_a_lane`, whose model side really is the
+#   draws, and not by the law that shares its element name. Inference would have called that a
+#   pass.
 #
-# ⛔ A ROW IS UNGOVERNED WHEN IT NAMES A LAW THAT DOES NOT EXIST, or when it names no law and does
-#   not say what it loses. Naming no law is permitted ONLY beside a `loses` that explains it: an
+# When a row is ungoverned
+#   A row is ungoverned when it names a law that does not exist, or when it names no law and does
+#   not say what it loses. Naming no law is permitted only beside a `loses` that explains it: an
 #   element declared, not rendered, and no cardinality law able to see the difference is a fact
 #   this repository is willing to hold, and not one it will hold silently.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- diagrams/domain_objects.sqlc's governance claims against diagrams/roster.sqlc.
+WITH
+domain_objects AS NOT MATERIALIZED (
+    :define(diagrams/domain_objects.sqlc)
+),
+roster AS NOT MATERIALIZED (
+    :define(diagrams/roster.sqlc)
+)
 SELECT d.object, d.element, d.governed_by, d.loses,
        (d.governed_by IS NOT NULL AND l.slug IS NULL)          AS names_a_law_that_is_not_there,
        (d.governed_by IS NULL AND d.loses IS NULL)             AS ungoverned_and_unexplained

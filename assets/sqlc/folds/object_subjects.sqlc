@@ -1,0 +1,19 @@
+# Every table diagrams/domain_objects.sqlc declares or diagrams/catalogue.sqlc finds, with how many
+# catalogue rows name it. One row per table.
+#
+# The same fold as the rules', with no verdict
+#   folds/rule_subjects.sqlc argues it: the roster drives, so a declared table the catalogue does
+#   not list is a row with `rows` at zero, and the outer join is full, so a table that exists and
+#   the roster does not name is a row with `declared` false. The catalogue carries no verdict, so
+#   `rows` is the only box.
+-- diagrams/domain_objects.sqlc against diagrams/catalogue.sqlc, one row per table.
+SELECT coalesce(d.object, k.object) AS subject,
+       d.object IS NOT NULL         AS declared,
+       count(k.object)              AS rows
+FROM      (
+    :compose(diagrams/domain_objects.sqlc)
+) d
+FULL JOIN (
+    :compose(diagrams/catalogue.sqlc)
+) k ON k.object = d.object
+GROUP BY d.object, k.object

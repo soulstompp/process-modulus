@@ -1,52 +1,77 @@
-# Φ F x, THE PARTS PUT INTO THE COMPOSED LAYER'S UNIT. One row per resolved part that states
-# a demand, carrying that demand already multiplied by the factor.
+# Φ x, each part put into the composed layer's unit. One row per resolved part and quantity it
+# states, carrying that figure already multiplied by the part's factor; `F` is the grouping that
+# composition/fused.sqlc applies afterwards.
 #
-# ⭐⭐ THE CONVERSION IS DIAGONAL, WHICH IS WHY IT MULTIPLIES INSTEAD OF MIXING. Each part
-#    converts by its own single factor; nothing here combines two parts' units. That is what
-#    lets the sum downstream be a sum at all.
+# The conversion is diagonal
+#   That is why it multiplies instead of mixing. Each part converts by its own single factor;
+#   nothing here combines two parts' units. That is what lets the sum downstream be a sum at all.
 #
-# ⛔⛔ AN ABSENT FACTOR MEANS ONE, EXACTLY, AND NEVER "UNKNOWN". A part with no factor is a
-#    part whose units already agree. A part whose factor is a TYPED ABSENCE inside the claim
-#    is a different document -- somebody who says nobody measured the conversion -- and
-#    `coalesce` reads only the first. Confusing them would silently assert a conversion no
-#    filer made.
+# The sign picks the corner, and one rule reads both signs
+#   A factor is strictly positive, so it can never reorder a claim, but it does decide which corner
+#   each bound takes. Where the figure is non-negative the low takes the factor's low and the high
+#   takes its high, which is the plain bound-by-bound product. Where the figure is negative that
+#   reverses, because more of a shortfall converted at a larger rate is the smaller number. Taking
+#   the least and the greatest over both corners is one rule that reads both cases, so this relation
+#   and composition/settled_remainders.sqlc convert by the same rule rather than by two.
 #
-# ⛔ AND THE FACTOR IS CORRELATED WITH ITSELF. One factor multiplies both a part's nameplate
-#   and its demand, so the two converted intervals move together. Difference them as though
-#   they were independent and the spread gets counted twice -- which is why a composed
-#   remainder is CONVERTED and never re-derived. See queries/matrices/4-converted-remainder.sql.
-# ⛔ IT IS Φ APPLIED TO DEMAND, AND THE `quantity` COLUMN SAYS SO. The relation composes
-#   layers/demand.sqlc and nothing else, so `d_low/d_mode/d_high` are converted DEMANDS. A
-#   nameplate composition would be the same Φ over layers/nameplate.sqlc and is a sibling file,
-#   not a parameter of this one.
-# ⛔⛔⛔ AND `coalesce(factor, 1)` IS ONLY SOUND FOR AN OMITTED ELEMENT, WHICH IS WHY THE
-#    TYPED ABSENCE IS EXCLUDED ABOVE. The two are different filings and the schema gives them
-#    different words. No `asrt:factor` at all means the part's unit and the composed layer's
-#    already agree, so the conversion is the identity and nothing is being assumed. A factor
-#    filed as `unmeasured` means a composer looked at a REAL unit crossing and could not size
-#    it; converting that by one asserts the units agree, which is the claim they declined to
-#    make. `every-unsized-conversion/shift-capacity` is that filing, and the fixture is named
-#    for it.
+#   ⛔ Bound by bound alone would be correct only while every figure here is non-negative, and
+#   nothing establishes that: the three points are `xs:decimal` with no lower bound and no rule is
+#   about a claim's sign. A margin ratio is a subject this model admits and a loss-making one is
+#   negative, so the figure that would break the plain product is a filing the model should accept,
+#   not one it should refuse. On this corpus the two forms agree everywhere, and
+#   composition/conversion_slopes.sqlc is where which corner each filing took can be read.
 #
-# ⚠️ DROPPING A PART FROM A SUM IS ONLY HONEST IF THE SUM IS NOT OWED, so the same condition is
-#    a suspension ground in `composition/unsized_conversions.sqlc`. Read the two together: one
-#    removes the part, the other removes the obligation.
+# A missing factor means one, exactly
+#   An absent factor means one, exactly, and never "unknown". A part with no factor is a part whose
+#   units already agree. A part whose factor is a typed absence inside the claim is a different
+#   document (somebody who says nobody measured the conversion), and `coalesce` reads only the
+#   first. Confusing them would silently assert a conversion no filer made.
 #
-# ⭐ AND THE IDENTITY CASE IS CHECKED RATHER THAN TRUSTED. `checks/unit_crossing_without_a_factor`
-#    fires where the units differ and no factor is filed, so an omitted element can only ever
-#    mean the units already agree.
--- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       'demand' AS quantity,
-       d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
-       d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
-       d.d_high * coalesce(p.factor_high, 1) AS d_high
+# The factor is correlated with itself
+#   One factor multiplies both a part's nameplate and its demand, so the two converted intervals
+#   move together. Difference them as though they were independent and the spread gets counted
+#   twice, which is why a composed remainder is converted and never re-derived. See
+#   queries/matrices/4-converted-remainder.sql.
+#
+# It is Φ applied to every quantity a fusion sums
+#   One row per part and quantity, from layers/summed_quantities.sqlc: demand, nameplate and draw,
+#   each converted by the same factor, and the `quantity` column says which. A part that leaves a
+#   quantity unstated has no row for it here, and composition/unstated_quantities.sqlc suspends
+#   that quantity's sum rather than letting the part drop out of it.
+#
+# A derived part is read computed
+#   The figures come from composition/resolved_quantities.sqlc, so a part filing its quantity
+#   `derived` enters at the figure its own fusions compute, and a part whose computation cannot
+#   finish has no row, exactly like a part that leaves the quantity unstated.
+#
+# A typed-absent factor is not a factor of one
+#   `coalesce(factor, 1)` is only sound for an omitted element, which is why the last condition of
+#   the join excludes the typed absence. The two are different filings and the schema gives them
+#   different words. No `asrt:factor` at all means the part's unit and the composed layer's
+#   already agree, so the conversion is the identity and nothing is being assumed. A factor filed
+#   as `unmeasured` means a composer looked at a real unit crossing and could not size it;
+#   converting that by one asserts the units agree, which is the claim they declined to make.
+#   `every-unsized-conversion/shift-capacity` is that filing, and the fixture is named for it.
+#
+# Dropping a part is honest only where the sum is not owed
+#   Dropping a part from a sum is only honest if the sum is not owed, so the same condition is a
+#   suspension ground in `composition/unsized_conversions.sqlc`. Read the two together: one
+#   removes the part, the other removes the obligation.
+#
+# The identity case is checked, not trusted
+#   `checks/unit_crossing_without_a_factor` fires where the units differ and no factor is filed,
+#   so an omitted element can only ever mean the units already agree.
+-- asrt:Part/asrt:factor applied to each quantity the part layer states.
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, s.quantity,
+       least(   s.low  * coalesce(p.factor_low, 1), s.low  * coalesce(p.factor_high, 1)) AS low,
+       s.mode * coalesce(p.factor_mode, 1)                                               AS mode,
+       greatest(s.high * coalesce(p.factor_low, 1), s.high * coalesce(p.factor_high, 1)) AS high
 FROM      (
     :compose(composition/parts.sqlc)
 ) p
 JOIN      (
-    :compose(layers/demand.sqlc)
-) d
-       ON d.filing = p.part_filing AND d.layer = p.part_layer
-  -- ⛔ A TYPED-ABSENT FACTOR IS NOT A FACTOR OF ONE. See the header.
-  AND p.factor_absent IS NULL
+    :compose(composition/resolved_quantities.sqlc)
+) s
+       ON s.filing = p.part_filing AND s.layer = p.part_layer
+  AND s.low IS NOT NULL
+  AND p.factor_state IN ('omitted', 'stated')

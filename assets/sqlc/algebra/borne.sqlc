@@ -1,23 +1,27 @@
-# WHAT EVERY HOLDER HOLDS, SPLIT INTO WHAT A BUFFER ABSORBED AND WHAT WENT UNSERVED. One row per
+# What every holder holds, split into what a buffer absorbed and what went unserved. One row per
 # layer: whether the two sum back to the whole.
 #
-# ⭐⭐⭐ THE ANTI-JOIN IS INSIDE A `GROUP BY`, SO THE LAW IS ADDITIVE RATHER THAN CARDINAL.
-#    entries/borne.sqlc removes unserved holders and then sums per (filing, layer, buffer):
-#    removing SOME leaves the group standing with a smaller total, removing ALL drops the group.
-#    So counting rows says nothing here, and once produced a confident false finding. Σ is what
-#    must balance: Σall = Σkept + Σremoved.
+# Additive, not cardinal
+#   The anti-join is inside a `GROUP BY`, so the law is additive rather than cardinal.
+#   entries/borne.sqlc removes unserved holders and then sums per (filing, layer, buffer):
+#   removing some leaves the group standing with a smaller total, removing all drops the group.
+#   So counting rows says nothing here, and a row count can report a confident false finding. Σ
+#   is what must balance: Σall = Σkept + Σremoved.
 #
-# ⛔ AND THIS IS THE LAW BEHIND A ⛔ VACUOUS VERDICT. Every interference layer in this corpus that
-#   sizes its absorbing buffer has ALL of its holders unserved, so Σkept is zero and
-#   share_exceeds_slack examines nothing. The law still holds -- the sum balances at zero -- which
-#   is exactly the point: the vacuum is a finding about the evidence, not a broken operator.
-# ⛔⛔ THE LAW COMPOSES BOTH SIDES RATHER THAN RE-DERIVING THE SPLIT, WHICH IS WHAT MAKES IT A
-#    LAW ABOUT THEM. Compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over an anti-join
-#    written here and the law asserts that ITS COPY of the split is exhaustive, and goes on
-#    passing when entries/served_holders.sqlc changes underneath it. A law that re-derives its
-#    subject is the one failure a soundness contract cannot afford, because it is invisible.
+# The law behind a vacuous verdict
+#   Every interference layer in this corpus that sizes its absorbing buffer has all of its
+#   holders unserved, so Σkept is zero and share_exceeds_slack examines nothing. The law still
+#   holds, because the sum balances at zero, and that is the point: the vacuum is a finding about
+#   the evidence, not a broken operator.
+#
+# Both sides composed, never re-derived
+#   The law composes both sides rather than re-deriving the split, which is what makes it a law
+#   about them. Compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over an anti-join written
+#   here and the law asserts that its own copy of the split is exhaustive, and goes on passing
+#   when entries/served_holders.sqlc changes underneath it. A law that re-derives its subject is
+#   the one failure a soundness contract cannot afford, because it is invisible.
 -- entries/served_holders.sqlc and entries/unserved_holders.sqlc against pm:Remainder/pm:holder.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

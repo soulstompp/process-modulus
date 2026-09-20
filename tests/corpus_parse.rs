@@ -1,19 +1,21 @@
 //! Reads every document in `assets/corpus/` with the generated types.
 //!
-//! These are not tests of the schema. The schema is checked by a validator, and a
-//! validator is the thing other parties will run. They test the CRATE: that the
-//! reference implementation can actually read a conforming document, and that the
-//! facts the examples were written to demonstrate survive being read into Rust.
+//! These are not tests of the schema. The schema is checked by a validator, and a validator is
+//! what other parties will run. They test the crate: that the reference implementation can read
+//! a conforming document, and that the facts the examples were written to demonstrate survive
+//! being read into Rust.
 //!
-//! ⚠️ READING IS ALL THIS FILE DOES, and the line above said "round trip" for a long
-//! time while nothing in this repository had ever written a document back out.
-//! `tests/roundtrip.rs` is the other half, and it holds the crate to writing what it
-//! was handed. Neither file is a validator and neither claims to be.
+//! ## Reading only
 //!
-//! ⚠️ `assert_layer_references_resolve` deliberately re-implements the schema's
-//! `xs:keyref` in Rust. That is not redundancy: the two checks answer to different
-//! authorities, and a document reaching this crate through some other path (an API,
-//! a database, a hand-built value) was never validated at all.
+//! This file reads documents and never writes one. `tests/roundtrip.rs` is the other half: it
+//! holds the crate to writing back what it was handed. Neither file is a validator, and neither
+//! claims to be.
+//!
+//! ## Why the key references are checked twice
+//!
+//! `assert_layer_references_resolve` re-implements the schema's `xs:keyref` in Rust on purpose.
+//! The two checks answer to different authorities, and a document that reaches this crate by
+//! another path (an API, a database, a hand-built value) was never validated at all.
 
 use std::collections::HashSet;
 use std::fs;
@@ -21,11 +23,12 @@ use std::fs;
 use process_modulus::asrt::CompositionType;
 use process_modulus::pm;
 use process_modulus::pm::{
-    AbsenceReasonType, ClaimAbsenceReasonType, ConstraintOriginType, FitType, HolderKindType,
-    NarrowingKindType,
-    OperationTypeContent, ProcessModulusElementType, StatedBorrowedTermType, StatedClaimType,
+    AbsenceReasonType, ClaimAbsenceReasonType, ClaimType, ConstraintOriginType, FitType,
+    HolderKindType, IdentityType, NarrowingKindType, OperationTypeContent,
+    ProcessModulusElementType, StatedBorrowedTermType, StatedClaimType,
     StatedConstraintOriginType, StatedDivisibilityType, StatedFitType, StatedHolderType,
-    StatedLumpyQuantumType, StatedNarrowingType, StatedRemainderType,
+    StatedLumpyQuantumType, StatedMagnitudeType, StatedNarrowingType, StatedRemainderType,
+    StatedShareType, StatedSummedQuantityType, StatedTimeSlackType,
 };
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
@@ -64,17 +67,14 @@ fn assert_layer_references_resolve(doc: &ProcessModulusElementType, what: &str) 
     }
 }
 
-/// ⛔⛔ EVERY FILING IN `assets/corpus/`, INCLUDING THE ONES INSIDE A COMPOSITION.
+/// Every filing in `assets/corpus/`, including the ones inside a composition.
 ///
-/// `load` deserializes a `pm:processModulus` ROOT, so it cannot read a composition at all —
-/// and a composition's stack is an ordinary filing that happens to be embedded. Leaving
-/// those two out is how a corpus check comes to read as coverage while exempting the newest
-/// documents in the repository, which is `no_example_is_exempt_from_the_namespace_gate`'s
-/// argument one layer down.
-///
-/// ⚠️ IT IS NOT HYPOTHETICAL. `assert_holder_rules` below was written after a `party`
-/// landed on a `booked` holder inside `merge-group-composition.xml`, where no test in this
-/// crate was looking.
+/// `load` deserializes a `pm:processModulus` root, so it cannot read a composition at all, and
+/// a composition's stack is an ordinary filing that happens to be embedded. Leaving those out
+/// would let a corpus check read as coverage while exempting the newest documents, which is
+/// `no_example_is_exempt_from_the_namespace_gate`'s argument one layer down. A `party` on a
+/// `booked` holder inside `merge-group-composition.xml` is the kind of defect only this
+/// inclusion catches.
 fn corpus() -> Vec<(&'static str, ProcessModulusElementType)> {
     let filings = [
         "enterprise-contract.xml",
@@ -202,11 +202,49 @@ fn party_and_as_of_belong_to_a_counterparty_and_to_nothing_else() {
     );
 }
 
+/// What a value wrapper files.
+///
+/// The XSD gives every position that may be computed a wrapper of its own, so the generated types
+/// are several of one shape: a claim, a derivation naming what computes it, or a typed absence
+/// whose reason is a `ClaimAbsenceReason`. A test reading a claim wants the first; one reading
+/// why there is none wants the third.
+trait Filed {
+    fn filed(&self) -> Option<&ClaimType>;
+    fn absence(&self) -> Option<&ClaimAbsenceReasonType>;
+}
+
+macro_rules! filed {
+    ($($t:ident),*) => {$(
+        impl Filed for $t {
+            fn filed(&self) -> Option<&ClaimType> {
+                match self {
+                    $t::Claim(c) => Some(c),
+                    _ => None,
+                }
+            }
+            fn absence(&self) -> Option<&ClaimAbsenceReasonType> {
+                match self {
+                    $t::Absent(a) => Some(&a.reason),
+                    _ => None,
+                }
+            }
+        }
+    )*};
+}
+
+filed!(
+    StatedClaimType,
+    StatedSummedQuantityType,
+    StatedMagnitudeType,
+    StatedTimeSlackType,
+    StatedShareType
+);
+
 /// A three-point claim's bounds, for the rules the schemas state in prose and no
 /// XSD 1.0 validator can reach.
-fn bounds(c: &StatedClaimType, what: &str) -> (f64, f64, f64) {
-    let StatedClaimType::Claim(c) = c else {
-        panic!("{what}: expected a stated claim, found a typed absence");
+fn bounds(c: &impl Filed, what: &str) -> (f64, f64, f64) {
+    let Some(c) = c.filed() else {
+        panic!("{what}: expected a stated claim, found a derivation or a typed absence");
     };
     (c.low, c.most_likely, c.high)
 }
@@ -264,7 +302,7 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
         let StatedHolderType::Holder(h) = h else {
             continue;
         };
-        let StatedClaimType::Absent(share) = &h.share else {
+        let StatedShareType::Absent(share) = &h.share else {
             panic!(
                 "the `{:?}` share is the thing with no instrument behind it, and a figure \
                  here would be one somebody invented to split a total nobody measured",
@@ -280,12 +318,12 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
         );
     }
 
-    let StatedClaimType::Absent(q) = &r.quantity else {
+    let StatedMagnitudeType::Derivation(q) = &r.quantity else {
         panic!("demand and nameplate are both stated, so a carried total duplicates them");
     };
     assert_eq!(
-        q.reason,
-        ClaimAbsenceReasonType::Derived,
+        q.identity,
+        IdentityType::Magnitude,
         "the receiver computes it; a stored copy can disagree with its own inputs"
     );
 }
@@ -693,7 +731,7 @@ fn provenance_separates_the_three_parties_and_carries_standing() {
     let doc = load("unstated.xml");
     let l = layer(&doc, "margin-ratio");
 
-    let StatedClaimType::Claim(c) = &l.demand.amount else {
+    let StatedSummedQuantityType::Claim(c) = &l.demand.amount else {
         panic!("this example states its demand");
     };
     let p = c
@@ -733,7 +771,7 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
     let doc = load("unstated.xml");
     let l = layer(&doc, "margin-ratio");
 
-    let StatedClaimType::Claim(c) = &l.demand.amount else {
+    let StatedSummedQuantityType::Claim(c) = &l.demand.amount else {
         panic!("this example states its demand");
     };
     let StatedConstraintOriginType::Origin(o) = &c.bound_origin else {
@@ -790,12 +828,9 @@ fn coupling_absence(s: &pm::StackType) -> Option<&pm::AbsenceType> {
     })
 }
 
-/// A layer's demand claim, when it is stated.
-fn stated(c: &StatedClaimType) -> Option<(f64, f64, f64, &str)> {
-    match c {
-        StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high, c.unit.as_str())),
-        StatedClaimType::Absent(_) => None,
-    }
+/// A claim's bounds and unit, when it is stated.
+fn stated(c: &impl Filed) -> Option<(f64, f64, f64, &str)> {
+    c.filed().map(|c| (c.low, c.most_likely, c.high, c.unit.as_str()))
 }
 
 /// The `lumpy` arm of a divisibility, ignoring any `window` beside it.
@@ -870,7 +905,7 @@ fn runs_the_whole_period(l: &pm::LayerType) -> bool {
     let StatedClaimType::Claim(size) = &w.size else {
         return false;
     };
-    let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount else {
+    let StatedSummedQuantityType::Claim(amount) = &l.supply.nameplate.amount else {
         return false;
     };
     let pm::StatedDenominatorType::Period(p) = &amount.denominator else {
@@ -936,14 +971,13 @@ fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
 /// "assumes point values" was wrong about the part that matters, and the first half of this
 /// test is that correction executed rather than asserted.
 ///
-/// ⛔⛔ WHAT IS ACTUALLY FRAGILE IS THE SPLIT, AND IT IS FRAGILE IN HALF THIS CORPUS RATHER
-/// THAN AT SOME EXOTIC EDGE. `d mod q` jumps at every multiple of `q`, so evaluated at a
-/// demand range's three points it need not be ordered at all — and in exactly ten of the
-/// twenty lumpy layers here it is not. `refutation.xml#compute` has demand
-/// `(11, 13.2, 16.4)` at `q = 8` and residues `(3.0, 5.2, 0.4)`; that file predates every
-/// pass that discussed this and nobody noticed. A residue like that violates
-/// `low ≤ mostLikely ≤ high`, the FIRST rule in the conformance table, while the demand
-/// that produced it is perfectly well formed.
+/// What is actually fragile is the split, and it is fragile in a large share of this corpus
+/// rather than at some exotic edge. `d mod q` jumps at every multiple of `q`, so a demand range
+/// that crosses one need not give ordered residues at its three points, while one inside a
+/// single tooth always does. `refutation.xml#compute` has demand `(11, 13.2, 16.4)` at `q = 8`,
+/// crosses 16, and has residues `(3.0, 5.2, 0.4)`. A residue like that violates
+/// `low ≤ mostLikely ≤ high`, the first rule in the conformance table, while the demand that
+/// produced it is perfectly well formed. Proven in `src/proofs/README.md`, entry `sawtooth`.
 ///
 /// ⭐⭐ AND THE SCHEMA IS ALREADY SAFE, WHICH IS THE HAPPY PART. `Remainder` carries
 /// `quantity`, `sign`, `absorber` and `holder` — the TOTAL and never the two components.
@@ -988,11 +1022,18 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
 
             let r = |d: f64| d - (d / qm).floor() * qm;
             let (rl, rm, rh) = (r(dl), r(dm), r(dh));
-            if !((rl <= rm && rm <= rh) || (rl >= rm && rm >= rh)) {
+            if (dl / qm).floor() != (dh / qm).floor() {
                 sawtooth.push(format!(
                     "{name}#{} residues ({:.4}, {:.4}, {:.4})",
                     l.name, rl, rm, rh
                 ));
+            } else {
+                assert!(
+                    rl <= rm && rm <= rh,
+                    "{name} `{}`: a demand inside one tooth of {qm} gave residues \
+                     ({rl}, {rm}, {rh}), which must be ordered",
+                    l.name
+                );
             }
             checked += 1;
         }
@@ -1003,11 +1044,11 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
         "only {checked} lumpy layers were reachable; an identity with nothing to check \
          passes loudest"
     );
-    // ⚠️ HALF, NOT A HANDFUL, AND THE NUMBER IS THE ARGUMENT. A rule broken by one exotic
-    // document is an outlier; one broken by half the corpus is a rule nobody can follow.
+    // A share, not a handful, and the share is the argument. A rule broken by one exotic
+    // document is an outlier; one that a third of the corpus crosses is a rule nobody can follow.
     assert!(
         sawtooth.len() * 3 >= checked,
-        "the un-filable residue is supposed to be pervasive, which is what stops anyone \
+        "the demand crossing a tooth is supposed to be pervasive, which is what stops anyone \
          treating the split as generally available. Only {} of {checked}:\n  {}",
         sawtooth.len(),
         sawtooth.join("\n  ")
@@ -1027,13 +1068,12 @@ fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
     let StatedBorrowedTermType::Term(t) = &r.absorber else {
         return None;
     };
-    let c = match t.value.as_str() {
-        "capacity" => &l.supply.nameplate.capacity_slack,
-        "inventory" => &l.supply.nameplate.inventory_slack,
-        "time" => &l.time_slack,
-        _ => return None,
-    };
-    stated(c)
+    match t.value.as_str() {
+        "capacity" => stated(&l.supply.nameplate.capacity_slack),
+        "inventory" => stated(&l.supply.nameplate.inventory_slack),
+        "time" => stated(&l.time_slack),
+        _ => None,
+    }
 }
 
 /// ⛔⛔⛔ A WINDOW IS A NOTE ON THE UNIT'S DENOMINATOR, SO THE UNIT MUST HAVE ONE.
@@ -1077,7 +1117,7 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
             if window(l).is_none() {
                 continue;
             }
-            let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount else {
+            let StatedSummedQuantityType::Claim(amount) = &l.supply.nameplate.amount else {
                 panic!(
                     "{name} `{}`: a window on a nameplate with no stated amount",
                     l.name
@@ -1198,12 +1238,12 @@ fn a_sized_slack_says_who_can_move_it() {
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
             for (what, c) in [
-                ("capacitySlack", &l.supply.nameplate.capacity_slack),
-                ("inventorySlack", &l.supply.nameplate.inventory_slack),
-                ("timeSlack", &l.time_slack),
+                ("capacitySlack", l.supply.nameplate.capacity_slack.filed()),
+                ("inventorySlack", l.supply.nameplate.inventory_slack.filed()),
+                ("timeSlack", l.time_slack.filed()),
             ] {
-                let StatedClaimType::Claim(claim) = c else {
-                    continue; // an absent slack constrains nothing, so it sets nothing
+                let Some(claim) = c else {
+                    continue; // an unsized slack constrains nothing, so it sets nothing
                 };
                 let StatedConstraintOriginType::Origin(origin) = &claim.bound_origin else {
                     panic!(
@@ -1609,38 +1649,46 @@ fn a_supply_that_cannot_run_hot_names_whose_demand_went_unserved() {
     );
 }
 
-/// ⭐⭐⭐ THE ONE PLACE THIS MODEL MEASURES SOMETHING WITH NO INSTRUMENT BEHIND IT.
+/// The one place this model measures something with no instrument behind it.
 ///
-/// Everywhere else a slack BOUNDS shares that were already filed. Here it closes an equation
-/// over quantities a filer had to supply anyway:
+/// Everywhere else a slack bounds shares that were already filed. Here the three buffers close an
+/// inequality over quantities a filer had to supply anyway:
 ///
 /// ```text
-/// max(0, demand.high - nameplate.low)  ≤  capacitySlack.high + SUM(unserved share highs)
+/// max(0, demand.high - nameplate.low)  ≤  Σ buffers slack.high + Σ unserved share highs
 /// ```
 ///
-/// In words: what your own numbers say could have gone wrong is at most what you can absorb
-/// plus what you admit went unserved. The SHORTFALL is the interesting number — the part of
-/// a remainder that happened and that nothing recorded.
+/// In words: what your own numbers say could have gone wrong is at most what the buffers could
+/// absorb plus what you admit went unserved. The buffers are substitutes (running hot, drawing on
+/// stock, making the demand wait), so all three are summed, and one whose room nobody sized
+/// suspends the check: that route's ceiling is unknown, not zero. `notApplicable` is a route that
+/// does not arise and contributes nothing. Proven in `src/proofs/README.md`, entry
+/// `exposure_bound`.
 ///
-/// ⚠️ EVALUATED AT ONE CORNER, deliberately. The clearance and interference sides are
-/// anti-correlated — clearance falls as demand rises and interference rises — so anything
-/// summed across the range pairs the slack week's spare with the busy week's unserved demand and
-/// reports a state that occurs in no week. At a single demand there is one value each.
+/// Evaluated at one corner, deliberately. The clearance and interference sides are
+/// anti-correlated, so anything summed across the range pairs the slack week's spare with the busy
+/// week's unserved demand and reports a state that occurs in no week.
 ///
-/// ⛔⛔ AND IT CANNOT BE TESTED NON-VACUOUSLY AGAINST THIS CORPUS, WHICH IS RECORDED HERE
-/// RATHER THAN LEFT TO BE DISCOVERED. Thirteen of twenty-one layers file `capacitySlack` as
-/// `unmeasured` and six more are `none` with zero exposure, so the check is silent on
-/// nineteen. NOT ONE LAYER FILES A NUMERIC `capacitySlack`. The single reachable case,
-/// `enterprise-contract#capability`, passes exactly — `[1,2,3] + [1,1,2]` against an exposure
-/// of `[2,3,5]` — but it is a PURE INTERFERENCE fit, where the exposure IS the magnitude's
-/// high bound, so it is the sum rule at Holder wearing different clothes and proves nothing
-/// new. ⭐ The guard below is therefore `1`, and a guard of `1` is the S-15 trap in progress.
-/// The cure is a filer measuring how far a supply can run hot, not a figure invented to give
-/// this rule something to chew on.
+/// No corpus layer reaches it. The one with every buffer stated leaves its unserved share
+/// unmeasured, which suspends the sum. `assets/fixtures/every-unserved-excess.xml` exists to put
+/// the state in front of this test, so the test reads it beside the corpus.
 #[test]
 fn the_unserved_share_does_not_exceed_the_derived_exposure() {
+    let excess = {
+        let path = format!(
+            "{}/assets/fixtures/every-unserved-excess.xml",
+            env!("CARGO_MANIFEST_DIR")
+        );
+        let xml = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"));
+        let mut reader = SliceReader::new(&xml);
+        ProcessModulusElementType::deserialize(&mut reader)
+            .unwrap_or_else(|e| panic!("{path}: {e}"))
+    };
+    let mut documents = corpus();
+    documents.push(("every-unserved-excess.xml", excess));
+
     let mut checked = 0;
-    for (name, doc) in corpus() {
+    for (name, doc) in &documents {
         for l in &doc.stack.layer {
             let StatedRemainderType::Remainder(r) = &l.remainder else {
                 continue;
@@ -1653,16 +1701,27 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
                 continue;
             }
 
-            // An ABSENT slack suspends the check: the ceiling is unknown, not zero. A
-            // slack STATED at zero contributes nothing, which is the case that makes the
-            // inequality bite, and it now has only the one spelling.
-            let absorbable = match &l.supply.nameplate.capacity_slack {
-                StatedClaimType::Claim(c) => c.high,
-                StatedClaimType::Absent(_) => continue,
-            };
+            let mut absorbable = 0.0;
+            let mut known = true;
+            let slacks: [&dyn Filed; 3] = [
+                &l.supply.nameplate.capacity_slack,
+                &l.supply.nameplate.inventory_slack,
+                &l.time_slack,
+            ];
+            for slack in slacks {
+                match (slack.filed(), slack.absence()) {
+                    (Some(c), _) => absorbable += c.high,
+                    (None, Some(ClaimAbsenceReasonType::NotApplicable)) => {}
+                    // Unmeasured, or the clearance this bound does not compute.
+                    (None, _) => known = false,
+                }
+            }
+            if !known {
+                continue;
+            }
 
-            // One unstated unserved share suspends the sum, exactly as at Holder: what
-            // went unserved is unknown, not zero.
+            // One unstated unserved share suspends the sum, exactly as at Holder: what went
+            // unserved is unknown, not zero.
             let mut unserved = 0.0;
             let mut all_stated = true;
             for h in &r.holder {
@@ -1684,7 +1743,7 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
             assert!(
                 expo <= absorbable + unserved + 1e-9,
                 "{name} `{}`: demand reaches {} against a nameplate of {}, so {expo:.4} could \
-                 have gone unserved. The supply can absorb {absorbable} and the document \
+                 have gone unserved. The buffers can absorb {absorbable} and the document \
                  says {unserved} went unserved. The difference happened and nothing here \
                  records it",
                 l.name,
@@ -1697,8 +1756,8 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
 
     assert!(
         checked >= 1,
-        "no layer pairs a positive exposure with a decidable capacity slack and stated \
-         unserved shares; see this test's own note on why that number is 1"
+        "no layer pairs a positive exposure with every buffer decidable and stated unserved \
+         shares, so this test checked nothing"
     );
 }
 
@@ -1732,13 +1791,13 @@ fn the_corpus_exercises_every_narrowing_kind() {
     for (_, doc) in corpus() {
         for l in &doc.stack.layer {
             for c in [
-                &l.demand.amount,
-                &l.time_slack,
-                &l.supply.nameplate.amount,
-                &l.supply.nameplate.capacity_slack,
-                &l.supply.nameplate.inventory_slack,
+                l.demand.amount.filed(),
+                l.time_slack.filed(),
+                l.supply.nameplate.amount.filed(),
+                l.supply.nameplate.capacity_slack.filed(),
+                l.supply.nameplate.inventory_slack.filed(),
             ] {
-                let StatedClaimType::Claim(c) = c else {
+                let Some(c) = c else {
                     continue;
                 };
                 match &c.narrows_when {
@@ -1753,6 +1812,9 @@ fn the_corpus_exercises_every_narrowing_kind() {
                         AbsenceReasonType::Unmeasured => unmeasured += 1,
                         _ => {}
                     },
+                    // A claim computed from others narrows as their terms do; none of these
+                    // counters is about it.
+                    StatedNarrowingType::Derivation(_) => {}
                 }
             }
         }
@@ -1816,7 +1878,7 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
                 );
                 // ⭐ `notApplicable` is a claim about the STACK's shape rather than about
                 // anybody's diligence: one layer, so there is no pair to couple.
-                if a.reason == AbsenceReasonType::NotApplicable {
+                if a.reason == pm::AbsenceReasonType::NotApplicable {
                     assert_eq!(
                         doc.stack.layer.len(),
                         1,
@@ -1892,7 +1954,7 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
             // malformed there.
             if let Some(a) = absence {
                 if a.reason == ClaimAbsenceReasonType::NotApplicable {
-                    if let StatedClaimType::Claim(amount) = &l.supply.nameplate.amount {
+                    if let Some(amount) = l.supply.nameplate.amount.filed() {
                         assert!(
                             !matches!(&amount.denominator, pm::StatedDenominatorType::Period(_)),
                             "{name} `{}`: the window question is malformed only where the unit \
@@ -1915,16 +1977,13 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 .is_some_and(|a| a.reason == ClaimAbsenceReasonType::NotApplicable)
                 || runs_the_whole_period(l);
             if !derivable {
-                if let StatedClaimType::Absent(a) = &l.time_slack {
-                    assert_ne!(
-                        a.reason,
-                        ClaimAbsenceReasonType::Derived,
-                        "{name} `{}`: the supply is intermittent, or nobody has said it is not, \
-                         so the spare is not spread evenly across the denominator and a time \
-                         slack cannot be computed from the clearance",
-                        l.name
-                    );
-                }
+                assert!(
+                    !matches!(l.time_slack, StatedTimeSlackType::Derivation(_)),
+                    "{name} `{}`: the supply is intermittent, or nobody has said it is not, \
+                     so the spare is not spread evenly across the denominator and a time \
+                     slack cannot be computed from the clearance",
+                    l.name
+                );
                 checked += 1;
             }
         }
@@ -1957,9 +2016,9 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
 ///
 /// ⭐⭐ THE MODEL ALREADY ANSWERS THIS QUESTION IN A SIBLING ELEMENT FOR HALF THE CORPUS.
 /// `Nameplate/amountOrigin` says who could hold a different number; `LumpyQuantum/origin` says
-/// who sets the size of one. Where a sibling states it, the claim files `derived` and points
-/// there rather than restating it — which is the same argument `Absence` makes about `derived`
-/// generally: a value sent here could disagree with its own inputs.
+/// who sets the size of one. Where a sibling states it, the claim names that sibling as the
+/// identity computing its edge (`amountOrigin`, `quantumOrigin`) rather than restating it: a
+/// value sent here could disagree with its own inputs, and a name a receiver follows cannot.
 #[test]
 fn every_claim_says_who_owns_the_edge_of_its_range() {
     let mut origins = Vec::new();
@@ -1968,21 +2027,25 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
 
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
-            let mut check = |what: &str, c: &StatedClaimType, sibling: bool| {
-                let StatedClaimType::Claim(c) = c else { return };
+            let mut check = |what: &str, c: Option<&ClaimType>, sibling: Option<IdentityType>| {
+                let Some(c) = c else { return };
                 match &c.bound_origin {
                     StatedConstraintOriginType::Origin(o) => origins.push(format!("{o:?}")),
-                    StatedConstraintOriginType::Absent(a) => {
-                        if a.reason == AbsenceReasonType::Derived {
-                            assert!(
-                                sibling,
-                                "{name} `{}` {what}: `derived` says the author of this edge is \
-                                 stated elsewhere, and there is no sibling element here that \
-                                 states one. A receiver following the pointer finds nothing",
-                                l.name
+                    StatedConstraintOriginType::Derivation(d) => {
+                        if matches!(d.identity, IdentityType::AmountOrigin | IdentityType::QuantumOrigin) {
+                            assert_eq!(
+                                Some(&d.identity),
+                                sibling.as_ref(),
+                                "{name} `{}` {what}: `{:?}` says the author of this edge is \
+                                 stated in a sibling element, and this claim sits beside no such \
+                                 element. A receiver following the name finds nothing",
+                                l.name,
+                                d.identity
                             );
                             derived_beside_a_sibling += 1;
                         }
+                    }
+                    StatedConstraintOriginType::Absent(a) => {
                         assert!(
                             a.note.as_deref().is_some_and(|n| n.len() > 15),
                             "{name} `{}` {what}: a typed reason with no words beside it makes a \
@@ -1996,13 +2059,14 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
 
             // ⭐ `amount` sits beside `amountOrigin`, and a lumpy `size` beside its own
             // `origin`; `demand` and a `draw` sit beside nothing at all.
-            check("demand", &l.demand.amount, false);
-            check("timeSlack", &l.time_slack, false);
-            check("nameplate", &l.supply.nameplate.amount, true);
-            check("capacitySlack", &l.supply.nameplate.capacity_slack, false);
-            check("inventorySlack", &l.supply.nameplate.inventory_slack, false);
+            check("demand", l.demand.amount.filed(), None);
+            check("draw", l.supply.jagged.draw.filed(), None);
+            check("timeSlack", l.time_slack.filed(), None);
+            check("nameplate", l.supply.nameplate.amount.filed(), Some(IdentityType::AmountOrigin));
+            check("capacitySlack", l.supply.nameplate.capacity_slack.filed(), None);
+            check("inventorySlack", l.supply.nameplate.inventory_slack.filed(), None);
             if let Some(q) = lumpy(l) {
-                check("quantum", &q.size, true);
+                check("quantum", q.size.filed(), Some(IdentityType::QuantumOrigin));
             }
         }
     }

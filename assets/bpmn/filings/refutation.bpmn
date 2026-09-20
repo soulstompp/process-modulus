@@ -30,6 +30,9 @@
     <textAnnotation id="note_refutation_dependence">
       <text>A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion. [assets/sqlc/diagrams/dependences.sqlc]</text>
     </textAnnotation>
+    <textAnnotation id="note_refutation_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
     <textAnnotation id="note_refutation_scope">
       <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -57,11 +60,14 @@
       <bpmndi:BPMNShape id="shape_refutation_note_refutation_dependence" bpmnElement="tns:note_refutation_dependence">
         <dc:Bounds x="20" y="174" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_refutation_note_refutation_scope" bpmnElement="tns:note_refutation_scope">
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_lane" bpmnElement="tns:note_refutation_lane">
         <dc:Bounds x="20" y="204" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_refutation_note_refutation_search" bpmnElement="tns:note_refutation_search">
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_scope" bpmnElement="tns:note_refutation_scope">
         <dc:Bounds x="20" y="234" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_refutation_note_refutation_search" bpmnElement="tns:note_refutation_search">
+        <dc:Bounds x="20" y="264" width="720" height="28"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge_refutation_compute_labour" bpmnElement="tns:dep_refutation_compute_labour">
         <di:waypoint x="120" y="63"/>

@@ -1,0 +1,77 @@
+# Every contract's fold held to the rows it counts. One row per contract whose population does
+# not reach algebra/all.sqlc: whether each subject's boxes add up to its rows, and whether the rows
+# add up to the population counted without the fold.
+#
+# The fibres sum to the whole
+#   A fold counts a population's rows into its subjects and, for a contract with a verdict, into
+#   the verdict's boxes. Each box is its own FILTER, so nothing makes the boxes a partition except
+#   their predicates: two that overlap count a row twice, two that leave a gap count it nowhere, and
+#   `rows` alone notices neither. So every subject's `rows` must be answered + silent + vacuous, and
+#   its `answered` the sum of the verdict's values. For a population with no verdict `rows` is the
+#   only box and there is nothing to add up.
+#
+# And the whole needs a second route
+#   The boxes can add up while the rows are wrong: a roster row written twice doubles every count
+#   of its subject, and a population row naming no subject is joined to nothing and counted nowhere.
+#   So the rows summed over every subject are held to count(*) of the population, taken without the
+#   fold.
+#
+# Six of the seven
+#   The laws' own contract is not here: its population is algebra/all.sqlc, and this law is one of
+#   its arms. folds/law_subjects.sqlc says what holds that fold instead.
+#
+# Probe
+#   examples/probes runs it as `subject_boxes`: in the composed text the rules fold's `silent` box
+#   stops asking whether a filing was examined, so it takes the roster's own rows too, and the law
+#   must fail for `rules` alone.
+-- every fold in folds/ whose population does not reach algebra/all.sqlc, its boxes against its rows and its rows against its population.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT x.contract AS subject,
+           x.unbalanced = 0 AND x.counted = x.population AS holds,
+           format('%s rows over %s subjects, %s in the population; %s subjects whose boxes do not add up',
+                  x.counted, x.subjects, x.population, x.unbalanced) AS detail
+    FROM (
+        SELECT 'rules' AS contract, f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(checks/all.sqlc) ) c) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      count(*) FILTER (WHERE s.rows <> s.answered + s.silent + s.vacuous
+                                         OR s.answered <> s.violated + s.passed) AS unbalanced
+               FROM ( :compose(folds/rule_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'arithmetic', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(arithmetic/all.sqlc) ) z) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      count(*) FILTER (WHERE s.rows <> s.answered + s.silent + s.vacuous
+                                         OR s.answered <> s.computable + s.suspended + s.not_comparable) AS unbalanced
+               FROM ( :compose(folds/site_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'diagrams', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(diagrams/catalogue.sqlc) ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( :compose(folds/object_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'diagram laws', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(diagrams/expected.sqlc) ) e) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( :compose(folds/diagram_law_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'absences', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(epistemics/absence_columns.sqlc) ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( :compose(folds/absence_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'derivations', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(*) FROM ( :compose(epistemics/derivation_columns.sqlc) ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( :compose(folds/derivation_subjects.sqlc) ) s ) f
+    ) x
+) p ON true
+WHERE a.slug = 'subject_boxes'

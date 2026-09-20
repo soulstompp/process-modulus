@@ -1,65 +1,146 @@
-# EVERYTHING A BPMN EMISSION OWES A `documentation` ELEMENT. One row per document, one per lane,
-# one per category, one per lane SET, and one per dependence.
+# Everything a BPMN emission owes a `documentation` element. One row per document, one per lane,
+# one per category, one per lane set, and one per dependence.
 #
-# ⭐⭐⭐ IT EXISTS BECAUSE `documentation` WAS FILED AS A CONTAINER AND IS NOT ONE.
-#    `definitions`, `collaboration`, `process` and `laneSet` frame a document and must appear
-#    exactly once in it. `documentation` is an ANNOTATION: BPMN admits it on any base element, so
-#    counting it as one-per-document is a law that happens to be true and is wrong about the
-#    kind of thing it governs: it fires the instant a lane is annotated.
+# `documentation` is not a container
+#   `definitions`, `collaboration`, `process` and `laneSet` frame a document and must appear
+#   exactly once in it. `documentation` is an annotation: BPMN admits it on any base element, so
+#   counting it as one per document is a law that happens to be true and is wrong about the kind
+#   of thing it governs. It fires the instant a lane is annotated.
 #
-# ⭐⭐ PROVENANCE IS OWED BY BOTH, AND FOR THE SAME REASON THE `--` LINE IS OWED BY GENERATED SQL.
-#    A document says which filing it came from; a lane says its rank, which is not recoverable
-#    from anything else in the artifact because `calledElement` names a PROCESS and `F` links
-#    LAYERS. ⛔ A lane with no documentation is a lane whose evaluation order nobody can read.
+# Provenance is owed by both
+#   For the same reason the `--` line is owed by generated SQL. A document says which filing it
+#   came from; a lane says its rank, which is not recoverable from anything else in the artifact
+#   because `calledElement` names a process and `F` links layers. A lane with no documentation is
+#   a lane whose evaluation order nobody can read.
 #
-# ⭐⭐⭐ AND A CATEGORY OWES ONE FOR THE REASON THIS WHOLE FILE TREE EXISTS. The only visual
-#    difference between a `group` and a `lane` is a DASHED border, and the reader of a diagram is
-#    the brilliant analyst who reads a box as a container. BPMN's semantics do say a group implies
-#    no containment, and semantics are not what somebody reads off a picture in a deck. ⛔ A
-#    category with no documentation is a cover that will be read as a partition, which is the
-#    falsifier of pm:Layer drawn by accident.
+# A category owes one
+#   For the reason this whole file tree exists. The only visual difference between a `group` and
+#   a `lane` is a dashed border, and the reader of a diagram is the brilliant analyst who reads a
+#   box as a container. BPMN's semantics do say a group implies no containment, and semantics are
+#   not what somebody reads off a picture in a deck. A category with no documentation is a cover
+#   that will be read as a partition, which is the falsifier of pm:Layer drawn by accident.
 #
-# ⭐⭐⭐ AND THE `laneSet` ROW IS THE ONE THAT CARRIES A FACT NOTHING ELSE COULD. A matrix and the
-#    search beside it are filed as a PAIR, and 12 of 15 filings here state no coupling, so a
-#    diagram drawing only the matrix is silent about them in a way a reader resolves as
-#    independence. The laneSet IS the partition the search is about, `tLaneSet` extends
-#    `tBaseElement`, and so the answer fits an element already spent. ⛔ An absent line is not
-#    independence, and this is the only place the artifact can say so.
+# The `laneSet` row carries the search
+#   It carries a fact nothing else could. A matrix and the search beside it are filed as a pair,
+#   and most filings here state no coupling, so a diagram drawing only the matrix is silent about
+#   them in a way a reader resolves as independence. The laneSet is the partition the search is
+#   about, `tLaneSet` extends `tBaseElement`, and so the answer fits an element already spent. An
+#   absent line is not independence, and this is the only place the artifact can say so.
 #
-# ⭐⭐⭐ AND `states` IS THE `--` LINE, CARRIED INTO THE ARTIFACT. A generated `.sql` file names
-#    the template it came from on one line, because a reader of seven thousand generated lines
-#    otherwise cannot get back to the argument. A `documentation` element is in exactly that
-#    position and was in exactly that state: the sentence is on the page, the relation that
-#    states it is not, and no reader of a `.bpmn` had a route back. ⛔ A sentence about a filing
-#    with nothing naming its source is a claim the EMITTER made, which is the `invents` state
-#    this roster already caught once in a hardcoded scope.
+# `states` is the `--` line
+#   Carried into the artifact. A generated `.sql` file names the template it came from on one
+#   line, because a reader of thousands of generated lines otherwise cannot get back to the
+#   argument. A `documentation` element is in exactly that position: without `states` the sentence
+#   is on the page, the relation that states it is not, and no reader of a `.bpmn` has a route
+#   back. A sentence about a filing with nothing naming its source is a claim the emitter made,
+#   which is the `invents` state this roster already caught once in a hardcoded scope.
 #
-# ⛔⛔ AND THE `lane` ROW POINTS SOMEWHERE ELSE THAN ITS OWN ARM, WHICH IS THE INTERESTING ONE.
-#   `layers/every_layer.sqlc` says a lane is OWED one; the sentence it carries states a RANK, and
+# The `lane` row cites another relation
+#   It points somewhere else than its own arm, which makes it the interesting one.
+#   `layers/every_layer.sqlc` says a lane is owed one; the sentence it carries states a rank, and
 #   that comes from `rank/evaluation_order.sqlc`. Owed by and stated by are two different
-#   questions and only one of them is what a reader chasing a number needs. Every other row here
+#   questions, and only one of them is what a reader chasing a number needs. Every other row here
 #   answers both with the same relation, which is why writing it down was easy to skip.
 #
-# ⭐⭐⭐ AND A TASK OWES ONE WHEREVER THE FILING NAMED A NOTATION POSITION, WHICH IS THE ONE
-#    SENTENCE IN THESE DOCUMENTS THAT POINTS OUT OF THE NOTATION RATHER THAN INTO THE MODEL.
-#    `pm:Operation/foreignId` names a node in a BPMN document that travels beside the filing and
-#    is NOT this one: this document is a rendering of the model, and that id belongs to the
-#    process notation the filer was actually reading. ⛔ So it must not become the task's own
-#    `id`, which would claim the two documents are one, and it cannot be a `relationship`, whose
-#    `source` and `target` are QNames and need an `import` that needs a location nobody filed.
-#    A `documentation` is what is left, and `demoted` is the honest word for it: a person can
-#    read the id and a tool cannot resolve it, which is the state `pm:ForeignId` intends, because
-#    no authority publishes the list a tool would resolve against.
+# A task naming a position owes one
+#   That is the one sentence in these documents that points out of the notation rather than into
+#   the model. `pm:Operation/foreignId` names a node in a BPMN document that travels beside the
+#   filing and is not this one: this document is a rendering of the model, and that id belongs to
+#   the process notation the filer was actually reading. So it must not become the task's own
+#   `id`, which would claim the two documents are one, and it cannot be a `relationship`, whose
+#   `source` and `target` are QNames and need an `import` that needs a location nobody filed. A
+#   `documentation` is what is left, and `demoted` is the honest word for it: a person can read the
+#   id and a tool cannot resolve it, which is the state `pm:ForeignId` intends, because no
+#   authority publishes the list a tool would resolve against.
 #
-# ⭐⭐⭐ AND THE TASK THAT NAMES NO POSITION OWES ONE TOO, WHICH IS THE `coupling_search` ARGUMENT
-#    AT A SECOND ADDRESS. A lane set carries whether anybody looked for a dependence, because an
-#    absent line reads as independence. A task with no position reads as *this model does not
-#    reach the notation*, and `notationPosition` is REQUIRED now precisely so the filing can say
-#    which of three things it means: in no notation and somebody looked, in a notation nobody has
-#    located it in, or no notation to point into at all. ⛔ Emitting the stated arm alone would
-#    put the answer on the page for the operations that cross and leave the far more common case
-#    looking like a gap in the model rather than an answer in the document.
+# A task naming no position owes one too
+#   This is the `coupling_search` argument at a second address. A lane set carries whether anybody
+#   looked for a dependence, because an absent line reads as independence. A task with no position
+#   reads as *this model does not reach the notation*, and `notationPosition` is required precisely
+#   so the filing can say which of three things it means: in no notation and somebody looked, in a
+#   notation nobody has located it in, or no notation to point into at all. Emitting the stated arm
+#   alone would put the answer on the page for the operations that cross and leave the far more
+#   common case looking like a gap in the model rather than an answer in the document.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- the pools, the lanes and the categories, which are the three places provenance is owed.
+WITH
+composition_citations AS NOT MATERIALIZED (
+    :define(composition/citations.sqlc)
+),
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+calls AS NOT MATERIALIZED (
+    :define(diagrams/calls.sqlc)
+),
+inductions AS NOT MATERIALIZED (
+    :define(entries/inductions.sqlc)
+),
+categories AS NOT MATERIALIZED (
+    :define(diagrams/categories.sqlc)
+),
+diagrams_citations AS NOT MATERIALIZED (
+    :define(diagrams/citations.sqlc)
+),
+couplings AS NOT MATERIALIZED (
+    :define(entries/couplings.sqlc)
+),
+dependences AS NOT MATERIALIZED (
+    :define(diagrams/dependences.sqlc)
+),
+descents AS NOT MATERIALIZED (
+    :define(diagrams/descents.sqlc)
+),
+every_filing AS NOT MATERIALIZED (
+    :define(scope/every_filing.sqlc)
+),
+documents AS NOT MATERIALIZED (
+    :define(epistemics/documents.sqlc)
+),
+pools AS NOT MATERIALIZED (
+    :define(diagrams/pools.sqlc)
+),
+epistemics_scopes AS NOT MATERIALIZED (
+    :define(epistemics/scopes.sqlc)
+),
+diagrams_scopes AS NOT MATERIALIZED (
+    :define(diagrams/scopes.sqlc)
+),
+coupling_searches AS NOT MATERIALIZED (
+    :define(epistemics/coupling_searches.sqlc)
+),
+searches AS NOT MATERIALIZED (
+    :define(diagrams/searches.sqlc)
+),
+eliminations_between AS NOT MATERIALIZED (
+    :define(eliminations/between.sqlc)
+),
+eliminations_references AS NOT MATERIALIZED (
+    :define(eliminations/references.sqlc)
+),
+resolved AS NOT MATERIALIZED (
+    :define(eliminations/resolved.sqlc)
+),
+operations AS NOT MATERIALIZED (
+    :define(entries/operations.sqlc)
+),
+notation_references AS NOT MATERIALIZED (
+    :define(entries/notation_references.sqlc)
+),
+every_layer AS NOT MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+)
 SELECT 'document' AS annotated, d.filing AS subject,
        'diagrams/pools.sqlc' AS states
 FROM ( :compose(diagrams/pools.sqlc) ) d
@@ -85,8 +166,8 @@ FROM ( :compose(diagrams/descents.sqlc) ) d
 UNION ALL
 SELECT 'relationship, an attribution',
        b.composition || '/' || b.composed_layer || '<>' || b.resolved_filing || '/' || b.layer,
-       'eliminations/resolved.sqlc'
-FROM ( :compose(eliminations/resolved.sqlc) ) b
+       'diagrams/attributions.sqlc'
+FROM ( :compose(diagrams/attributions.sqlc) ) b
 UNION ALL
 SELECT 'dependence', d.filing || '/' || d.from_layer || '->' || d.to_layer,
        'diagrams/dependences.sqlc'

@@ -1,0 +1,87 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  What each layer actually filed, per quantity, and the elimination to subtract from it.\n-- layers/summed_quantities.sqlc minus composition/suspended_quantities.sqlc, with eliminations/filed.sqlc.\nSELECT d.filing                     AS \"filing!\",\n       d.layer                      AS \"layer!\",\n       d.quantity::text             AS \"quantity!\",\n       d.low::float8                AS \"x_low!\",\n       d.mode::float8               AS \"x_mode!\",\n       d.high::float8               AS \"x_high!\",\n       coalesce(e.low, 0)::float8   AS \"e_low!\",\n       coalesce(e.mode, 0)::float8  AS \"e_mode!\",\n       coalesce(e.high, 0)::float8  AS \"e_high!\"\nFROM      (\n    SELECT * FROM layers.summed_quantities\n) d\nLEFT JOIN (\n    SELECT * FROM composition.suspended_quantities\n) s\n       ON s.composition = d.filing AND s.composed_layer = d.layer\n      AND s.quantity = d.quantity\nLEFT JOIN (\n    SELECT * FROM eliminations.filed\n) e\n       ON e.composition = d.filing AND e.composed_layer = d.layer\n      AND e.quantity = d.quantity\nWHERE s.composition IS NULL\n  AND d.low IS NOT NULL\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.summed_quantities",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.summed_quantities",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "x_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "x_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "x_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "e_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "e_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "e_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "46d40b391bbee3cc0eaefde928ef46797151999b42dfc244b36c97abb74b505f"
+}

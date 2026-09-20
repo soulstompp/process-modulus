@@ -1,23 +1,24 @@
 -- §19 The same shape in two graphs, and the opposite verdict on it.
-#
-# ONE ROW PER GRAPH: how often a parent reaches the same child twice, and what this repository
+# One row per graph: how often a parent reaches the same child twice, and what this repository
 # rules about it there.
 #
-# ⭐⭐⭐ THIS IS THE REPOSITORY'S CENTRAL CLAIM ABOUT ITSELF, AS A QUERY. A parent
-# composing a child twice is ordinary; a fusion reaching a layer twice is a violation. Both are
-# a name arriving twice under one fold, and the difference is that **a query is idempotent and a
-# supply is not**: `references/planner.md` measured the first, the repeated relation is read once
-# without being re-read, and `checks/jagged_layer` rules on the second because supply
-# is a conserved carrier and one total closes over both occurrences.
+# The repository's central claim about itself
+#   As a query. A parent composing a child twice is ordinary; a fusion reaching a layer twice is a
+#   violation. Both are a name arriving twice under one fold, and the difference is that **a query
+#   is idempotent and a supply is not**: the first is measured, the repeated relation is read once
+#   without being re-read, and `checks/jagged_layer` rules on the second because supply is a
+#   conserved carrier and one total closes over both occurrences.
 #
-# ⛔⛔ BOTH SIDES HAVE TO BE RELATIONS FOR THIS TO BE A COMPARISON AT ALL. A claim whose two
-# halves live in a Rust map and a SQL table is printed by a program that holds one of them and
-# cannot join the other, which is the shape of every defect this repository's laws refuse.
+# Both sides have to be relations
+#   Otherwise this is not a comparison at all. A claim whose two halves live in a Rust map and a
+#   SQL table is printed by a program that holds one of them and cannot join the other, which is
+#   the shape of every defect this repository's laws refuse.
 #
-# ⚠️ THE COUNTS ARE NOT COMPARABLE AND MUST NOT BE COMPARED. The compose DAG has hundreds of
-# templates and the corpus has tens of fusions, so a ratio here would be a fact about how much
-# SQL somebody wrote. What is comparable is the VERDICT column: same structure, opposite ruling,
-# and neither number is evidence about the other.
+# Compare the verdicts, not the counts
+#   The counts are not comparable and must not be compared. The compose DAG has hundreds of
+#   templates and the corpus has tens of fusions, so a ratio here would be a fact about how much
+#   SQL somebody wrote. What is comparable is the verdict column: same structure, opposite ruling,
+#   and neither number is evidence about the other.
 -- rank/compose_edges.sqlc beside composition/parts.sqlc, the same duplication in two graphs.
 SELECT 'compose DAG'                                   AS "graph!",
        'a parent splicing one child twice'             AS "duplication!",
@@ -33,4 +34,4 @@ SELECT 'F, the part graph',
        'one fusion reaching one layer twice',
        (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j),
        (SELECT count(*) FROM ( :compose(composition/parts.sqlc) ) p),
-       '⛔ a violation: supply is conserved, so one total closes over both occurrences'
+       'a violation: supply is conserved, so one total closes over both occurrences'

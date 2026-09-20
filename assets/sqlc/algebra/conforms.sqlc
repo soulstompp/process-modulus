@@ -1,0 +1,41 @@
+# Every conformance rule, against the documents loaded. One row per rule on checks/roster.sqlc:
+# whether any row it examined violates it.
+#
+# The corpus is held to its own rules
+#   The rules report; nothing required them to be quiet. `rules.sql` prints violations and fails
+#   on none, so a corpus that contradicted the model would still build, and every sentence in this
+#   repository that cites a filing as correct would rest on nobody having looked. This law turns
+#   the empty violations table into an assertion: the soundness run fails the moment a loaded
+#   document, corpus or fixture, is found in breach of a rule.
+#
+# Not a defect in the machinery, and why it is a law anyway
+#   Every other law here says a query computes what it claims to. This one says the documents obey
+#   what the queries check, which is a claim about the evidence. It sits on the same roster because
+#   it has the same failure mode: a green run that meant nothing, here because a violating document
+#   was printed and not read.
+#
+# Examined is carried beside the verdict
+#   A rule that examined nothing passes this law trivially, and reports/coverage.sqlc is where that
+#   is judged. The detail carries the count so the two readings sit side by side.
+#
+# Probe
+#   examples/probes runs it as `conforms`.
+#   Inside a transaction that rolls back, move `enterprise-contract`'s `support-cover` nameplate
+#   from 168 to 100. `nameplate_not_a_multiple` must fail here, with every rule the edit reaches.
+-- folds/rule_subjects.sqlc for every rule checks/roster.sqlc declares, one verdict per rule.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT r.slug AS subject,
+           f.violated = 0 AS holds,
+           format('%s examined, %s violating', f.answered, f.violated) AS detail
+    FROM (
+        :compose(checks/roster.sqlc)
+    ) r
+    JOIN (
+        :compose(folds/rule_subjects.sqlc)
+    ) f ON f.subject = r.rule
+) p ON true
+WHERE a.slug = 'conforms'

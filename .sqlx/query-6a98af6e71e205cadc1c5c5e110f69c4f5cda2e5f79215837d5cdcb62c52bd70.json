@@ -1,0 +1,47 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/fusions.sqlc against the fusions that are a row of F Phi.\nSELECT f.filing                                         AS composition,\n       count(*)                                         AS declared,\n       count(k.composition)                             AS rank,\n       count(*) - count(k.composition)                  AS left_null\nFROM      (\n    SELECT * FROM composition.fusions\n) f\nLEFT JOIN (\n    SELECT * FROM rank.composition_kernel\n) k ON k.composition = f.filing AND k.composed_layer = f.layer\nGROUP BY f.filing\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fusions",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "declared",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "rank",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "left_null",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "6a98af6e71e205cadc1c5c5e110f69c4f5cda2e5f79215837d5cdcb62c52bd70"
+}

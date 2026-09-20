@@ -1,20 +1,26 @@
-# THE LAYERS THAT ARE BUILT FROM PARTS. One row per (filing, layer) that names at least one
-# part -- the set of layers for which a composition rule can be owed at all.
+# The layers that are built from parts. One row per `asrt:Fusion`, keyed (filing, layer): the set
+# of layers for which a composition rule can be owed at all, and what the composer observed that
+# makes the parts one layer.
 #
-# ⭐ RUN THIS AGAINST layers/remainder.sqlc AND THE DIFFERENCE IS THE ATOMS: layers somebody
-#   measured directly rather than assembled. Every fusion arithmetic in this repository
-#   ranges over this relation and stops at that boundary.
+# Read from the fusion, not reassembled from its parts
+#   A fusion names at least one part, so the parts' distinct composed layers are this set too; that
+#   is the XSD's `minOccurs` and algebra/fusions_have_parts.sqlc holds it. The fusion is where
+#   `observed` lives, which no part carries.
 #
-# ⛔ ITS COMPLEMENT WITHIN A DESCENT IS A LEAF, and that is how composition/leaves.sqlc is
-#   defined: a reached layer with no row here is where a SUM's walk bottoms out. Written as an
-#   anti-join rather than a NOT EXISTS, because "the layers that are fusions" is the object
-#   and "the layers that are not" is what falls out.
+# The difference is the atoms
+#   Run this against layers/remainder.sqlc and the difference is the atoms: layers somebody
+#   measured directly rather than assembled. Every fusion arithmetic in this repository ranges
+#   over this relation and stops at that boundary.
 #
-#   ⚠️ A REMAINDER'S WALK BOTTOMS OUT EARLIER AND THIS RELATION DOES NOT NAME THAT BOUNDARY.
+# Its complement within a descent is a leaf
+#   That is how composition/leaves.sqlc is defined: a reached layer with no row here is where a
+#   sum's walk bottoms out. Written as an anti-join rather than a `NOT EXISTS`, because "the layers
+#   that are fusions" is the object and "the layers that are not" is what falls out.
+#
+# A remainder's walk stops elsewhere
+#   A remainder's walk bottoms out earlier, and this relation does not name that boundary;
 #   composition/unsettled.sqlc does. A row here is a fusion whatever quantity is being folded;
 #   whether a descent should stop on it depends on the quantity.
--- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    :compose(composition/part_references.sqlc)
-) p
+-- asrt:Fusion: the composed layer it names, and asrt:observed.
+SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
+FROM pm.fusion f

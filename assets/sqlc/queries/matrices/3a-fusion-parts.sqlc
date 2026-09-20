@@ -1,26 +1,35 @@
--- §3  The parts going into each composed layer, with their conversion factors.
+-- §3  The parts going into each composed layer, with their conversion factors, per quantity.
+# `F` and `Φ` in one result set. One row per incidence entry and quantity: this part composes into
+# that layer, carrying the factor that puts it into the composed layer's unit, beside the part's own
+# figure for the quantity. The example multiplies them in Rust and checks the total against 3b and
+# against the SQL sum in 3c.
 #
-# `F` AND `Φ` IN ONE RESULT SET. Each row is an incidence entry -- this part composes into that
-# layer -- carrying the factor that puts it into the composed layer's unit, beside the part's
-# own demand. The example multiplies them in Rust and checks the total against 3b.
+# Absent means one, exactly
+#   Never "unknown". See `asrt:Part`. A conversion nobody measured is a typed absence inside the
+#   claim, which is a different document from a part with no factor at all, and `coalesce` here
+#   reads only the second: a part whose factor is a typed absence has no row, as in
+#   composition/converted.sqlc, and its fusion owes no sum.
 #
-# ⛔ ABSENT MEANS ONE, EXACTLY, AND NEVER "UNKNOWN". See `asrt:Part`. A conversion nobody
-# measured is a typed absence inside the claim, which is a different document from a part with
-# no factor at all, and `coalesce` here is reading the second.
--- composition/parts.sqlc against layers/demand.sqlc; F and Phi live in one table.
+# Stated quantities only
+#   A part that leaves a quantity unstated has no row for it, and composition/unstated_quantities.sqlc
+#   suspends that quantity's sum, so 3b has no row to compare either.
+-- composition/parts.sqlc against composition/resolved_quantities.sqlc; F and Phi live in one table.
 SELECT p.composition                      AS "composition!",
        p.composed_layer                   AS "composed!",
+       s.quantity::text                   AS "quantity!",
        coalesce(p.factor_low, 1)::float8  AS "f_low!",
        coalesce(p.factor_mode, 1)::float8 AS "f_mode!",
        coalesce(p.factor_high, 1)::float8 AS "f_high!",
-       d.d_low::float8                    AS "d_low!",
-       d.d_mode::float8                   AS "d_mode!",
-       d.d_high::float8                   AS "d_high!"
+       s.low::float8                      AS "x_low!",
+       s.mode::float8                     AS "x_mode!",
+       s.high::float8                     AS "x_high!"
 FROM (
     :compose(composition/parts.sqlc)
 ) p
 JOIN (
-    :compose(layers/demand.sqlc)
-) d
-  ON d.filing = p.part_filing AND d.layer = p.part_layer
-ORDER BY p.composition, p.composed_layer, p.part_layer
+    :compose(composition/resolved_quantities.sqlc)
+) s
+  ON s.filing = p.part_filing AND s.layer = p.part_layer
+ AND s.low IS NOT NULL
+WHERE p.factor_state IN ('omitted', 'stated')
+ORDER BY s.quantity, p.composition, p.composed_layer, p.part_layer

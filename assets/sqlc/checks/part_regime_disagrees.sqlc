@@ -1,30 +1,31 @@
-# EVERY PART WHOSE COMPOSER NAMED A REGIME AND WHOSE FILING DECLARES ONE, BESIDE WHETHER THE TWO
-# AGREE. One row per such part, `violates` where the framework the composer assigned is not one
+# Every part whose composer named a regime and whose filing declares one, beside whether the two
+# agree. One row per such part, `violates` where the framework the composer assigned is not one
 # the part's own filing declares.
 #
-# ⭐⭐⭐ THE RULE IS THE ONE A KEYREF HANDS OVER. XSD 1.0 checks that a part's regime handle
-#    resolves inside its own document, which is the strongest thing a grammar can do, and the
-#    schema says where that stops: "⛔ A keyref that appears to reach across documents. An XSD
-#    identity constraint is [scoped to one document]." So the composer can name any of its own
-#    regimes for any part and the validator is content. Whether the claim is TRUE of the other
-#    document is this rule.
+# The rule a keyref hands over
+#   XSD 1.0 checks that a part's regime handle resolves inside its own document, which is the
+#   strongest thing a grammar can do, and the schema says where that stops: "A keyref that
+#   appears to reach across documents. An XSD identity constraint is [scoped to one document]."
+#   So the composer can name any of its own regimes for any part and the validator is content.
+#   Whether the claim is true of the other document is this rule.
 #
-# ⭐⭐ TWO PARTIES, TWO CLAIMS, AND NEITHER IS THE OTHER'S. A composer saying a part reports under
-#    us-gaap and that part's filing saying so are different assertions with different authors, and
-#    keeping them apart is what this model is for. The composer may be right and the filing stale,
-#    or the reverse; the rule reports the disagreement and names both sides rather than picking.
+# Two parties, two claims
+#   Neither is the other's. A composer saying a part reports under us-gaap and that part's filing
+#   saying so are different assertions with different authors, and keeping them apart is what
+#   this model is for. The composer may be right and the filing stale, or the reverse; the rule
+#   reports the disagreement and names both sides rather than picking.
 #
-# ⛔ MEMBERSHIP, NOT EQUALITY. `refutation` declares the same entity under two authorities'
-#   codings on purpose, so a filing states a SET of frameworks and the composer's must be in it.
-#   Equality would accuse a document for the very thing the tall `regime` table exists to permit.
+# Membership, not equality
+#   `refutation` declares the same entity under two authorities' codings on purpose, so a filing
+#   states a set of frameworks and the composer's must be in it. Equality would accuse a document
+#   for the very thing the tall `regime` table exists to permit.
 #
-# ⚠️ THE POPULATION EXCLUDES A TYPED ABSENCE ON EITHER SIDE, and that is not a technicality. Six
-#   fixtures declare a `stipulated` regime whose framework is `notApplicable` because a fixture
-#   reports under no framework, and their parts point at it. They have not agreed and they have
-#   not disagreed: the question does not arise, and counting them as passing would inflate this
-#   rule's denominator with rows it never asked about.
--- composition/part_regimes.sqlc; conformance rule "a composer's regime for a part is one that
--- part's own filing declares".
+# A typed absence on either side is excluded
+#   That is not a technicality. Six fixtures declare a `stipulated` regime whose framework is
+#   `notApplicable` because a fixture reports under no framework, and their parts point at it.
+#   They have not agreed and they have not disagreed: the question does not arise, and counting
+#   them as passing would inflate this rule's denominator with rows it never asked about.
+-- composition/part_regimes.sqlc; conformance rule "a composer's regime for a part is one that part's own filing declares".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

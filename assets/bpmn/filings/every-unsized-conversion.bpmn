@@ -30,6 +30,9 @@
         </childLaneSet>
       </lane>
     </laneSet>
+    <textAnnotation id="note_every-unsized-conversion_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
     <textAnnotation id="note_every-unsized-conversion_scope">
       <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -51,11 +54,14 @@
       <bpmndi:BPMNShape id="shape_every-unsized-conversion_lane_every-unsized-conversion_team-b" bpmnElement="tns:lane_every-unsized-conversion_team-b">
         <dc:Bounds x="134" y="106" width="600" height="34"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_scope" bpmnElement="tns:note_every-unsized-conversion_scope">
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_lane" bpmnElement="tns:note_every-unsized-conversion_lane">
         <dc:Bounds x="20" y="164" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_search" bpmnElement="tns:note_every-unsized-conversion_search">
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_scope" bpmnElement="tns:note_every-unsized-conversion_scope">
         <dc:Bounds x="20" y="194" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unsized-conversion_note_every-unsized-conversion_search" bpmnElement="tns:note_every-unsized-conversion_search">
+        <dc:Bounds x="20" y="224" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

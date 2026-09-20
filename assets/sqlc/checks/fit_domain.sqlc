@@ -1,0 +1,81 @@
+# Where each rule that reads the fit stands in every cell of its axis. One row per (rule, cell):
+# the rule's slug, the fit (NULL where the layer has none on that axis), the standing, and the
+# argument for a cell nothing examines.
+#
+# Every cell is declared
+#   The cells are the three fits and the case where there is no fit to read: no filed sign, or no
+#   demand and nameplate to derive one from. Each rule on checks/fit_axes.sqlc with an axis owes
+#   all four, and each is one of three things:
+#     exercised  a loaded document reaches the cell and the rule examines it.
+#     outside    the rule's own population excludes the cell. The reason names where.
+#     open       the cell is in the domain and nothing loaded reaches it. The reason says what a
+#                document there would be.
+#
+# Both directions are held
+#   algebra/fit_domain.sqlc fails when an exercised cell examines nothing and when an outside or
+#   open cell examines something. So an open cell that a new document fills stops the build until
+#   it is declared exercised, and filing one is a deliberate act; an outside cell that fills means
+#   the rule's population moved and its reason is no longer true.
+#
+# An open cell is a request for a document
+#   It is where a witness or a fixture would add evidence the corpus cannot. The reasons say which
+#   document is missing, not that anything is wrong with the rule.
+#
+# The filed axis reads the sign, the derived axis the figures
+#   A cell is read on the rule's own axis from checks/fit_axes.sqlc, so `outside` is a statement
+#   about the rule's population and never about checks/fit_disagrees.sqlc: a filed clearance whose
+#   figures give an interference is still in the clearance cell of a filed-sign rule.
+-- the declared standing of each rule on checks/fit_axes.sqlc in each cell of its axis.
+SELECT * FROM (VALUES
+  ('fit_disagrees', 'clearance'::pm.fit, 'exercised'::public.fit_standing, NULL::text),
+  ('fit_disagrees', 'transition',   'exercised', NULL),
+  ('fit_disagrees', 'interference', 'exercised', NULL),
+  ('fit_disagrees', NULL,           'outside',
+   'layers/signed.sqlc reads layers/remainder.sqlc, which needs a demand and a nameplate to derive the fit a filed sign is compared with'),
+
+  ('shares_do_not_sum', 'clearance',    'exercised', NULL),
+  ('shares_do_not_sum', 'transition',   'open',
+   'a transition whose shares sum to the magnitude of its larger side is a legitimate filing; nothing loaded states shares on a transition'),
+  ('shares_do_not_sum', 'interference', 'exercised', NULL),
+  ('shares_do_not_sum', NULL,           'outside',
+   'the magnitude the shares sum to comes from layers/remainder.sqlc, which needs a demand and a nameplate'),
+
+  ('stated_quantity_is_not_the_magnitude', 'clearance',    'exercised', NULL),
+  ('stated_quantity_is_not_the_magnitude', 'transition',   'exercised', NULL),
+  ('stated_quantity_is_not_the_magnitude', 'interference', 'open',
+   'a remainder under interference may state its quantity; nothing loaded does'),
+  ('stated_quantity_is_not_the_magnitude', NULL,           'outside',
+   'layers/filed_against_derived.sqlc compares against the magnitude layers/remainder.sqlc derives from a demand and a nameplate'),
+
+  ('nobody_named_as_unserved', 'clearance',    'outside',
+   'layers/exposure_scope.sqlc keeps a positive exposure, and a clearance has none: nothing went unserved'),
+  ('nobody_named_as_unserved', 'transition',   'exercised', NULL),
+  ('nobody_named_as_unserved', 'interference', 'exercised', NULL),
+  ('nobody_named_as_unserved', NULL,           'outside',
+   'there is no exposure without a remainder to take it from'),
+
+  ('exposure_unaccounted', 'clearance',    'outside',
+   'layers/exposure_scope.sqlc keeps a positive exposure, and a clearance has none'),
+  ('exposure_unaccounted', 'transition',   'open',
+   'refutation/compute reaches it with every buffer empty, and the rule suspends because its unserved share is unmeasured; a transition stating every unserved share would be examined'),
+  ('exposure_unaccounted', 'interference', 'exercised', NULL),
+  ('exposure_unaccounted', NULL,           'outside',
+   'there is no exposure without a remainder to take it from'),
+
+  ('share_exceeds_slack', 'clearance',    'outside',
+   'layers/pressed.sqlc keeps a filed interference or transition'),
+  ('share_exceeds_slack', 'transition',   'outside',
+   'entries/borne.sqlc keeps interference alone: under a transition the shares and the slack bound opposite edges of one buffer'),
+  ('share_exceeds_slack', 'interference', 'open',
+   'a served share under interference, every served share stated, whose absorbing buffer states its slack; every such layer loaded leaves that slack unsized'),
+  ('share_exceeds_slack', NULL,           'outside',
+   'layers/pressed.sqlc keeps a filed sign'),
+
+  ('clearance_with_unserved', 'clearance',    'exercised', NULL),
+  ('clearance_with_unserved', 'transition',   'outside',
+   'its population is a filed clearance'),
+  ('clearance_with_unserved', 'interference', 'outside',
+   'its population is a filed clearance'),
+  ('clearance_with_unserved', NULL,           'outside',
+   'its population is a filed clearance')
+) AS d(slug, fit, standing, reason)

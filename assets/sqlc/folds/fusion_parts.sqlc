@@ -1,0 +1,24 @@
+# How many parts name each fusion. One row per (composition, composed layer) some part in
+# composition/part_references.sqlc names.
+#
+# The parts into their fusion, read onto the image
+#   A part reference names the fusion it goes into, so the references are balls and the fusions are
+#   the boxes, and this is the size of each box a ball landed in. A fusion no part names has no row
+#   here, and every reader but one wants exactly that: they ask how many parts a fusion has, and
+#   carry a missing count as zero or leave the fusion out. The one that asks whether every declared
+#   fusion has a part, algebra/fusions_have_parts.sqlc, drives from composition/fusions.sqlc itself,
+#   which is where that question is answerable. Driving from the fusions here as well would put a
+#   join into every relation that composes this one, and some of those sit at the bottom of the
+#   deepest statements in the tree, where a plan nested one level deeper cannot be read back at
+#   compile time.
+#
+# References, not resolved parts
+#   `parts` counts what the composer filed, resolved here or not. A fusion whose part names a filing
+#   this corpus does not hold still has that part, and every reader asking whether a sum is whole
+#   compares against the parts filed, not the parts that happened to resolve.
+-- composition/part_references.sqlc folded to one row per fusion it names.
+SELECT r.composition, r.composed_layer, count(*) AS parts
+FROM (
+    :compose(composition/part_references.sqlc)
+) r
+GROUP BY r.composition, r.composed_layer

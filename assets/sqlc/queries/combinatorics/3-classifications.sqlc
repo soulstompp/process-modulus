@@ -1,0 +1,95 @@
+-- §3  Every classification this tree makes, against the set of classes it declares.
+# One row per (relation, class): the relation that classifies, the type its classes belong to, the
+# class, and how many rows landed in it. Every member of every declared set has a row, including
+# the members nothing landed in.
+#
+# The classes are part of the function
+#   A classification is a function from rows to classes. The partition laws in algebra/ prove that
+#   each row landed in exactly one class, which survives any renaming of the classes. Which classes
+#   there are is the type's job: each set here is an enum, so a misspelt class fails when the query
+#   is parsed. Neither can show which classes are empty, and an empty class is often the finding;
+#   the exposure standing nobody holds is one.
+#
+# Driven from `enum_range`
+#   Grouping the classified rows can only list the classes some row took, so it reads the function
+#   onto its image and a zero has nowhere to be. Driving from the declared set and `LEFT JOIN`ing
+#   the rows reads the function onto its codomain, and the zero is a row. Count `z.<key>`, never
+#   `*`, which would count the class's own row and print 1 for an empty class.
+#
+# An empty class is a referral
+#   `not comparable` is empty because every pair of magnitudes this corpus puts together shares a
+#   unit, which is the good outcome. The program prints the empty classes and asserts nothing about
+#   them.
+#
+# Printed in the declared order
+#   Each type's members come out in the order the type declares them, which is the `CASE`
+#   precedence of the relation that assigns them. Grouping alone would print them in whatever
+#   order the planner's aggregate happened to produce.
+#
+# Why `codomain` is `pg_typeof`
+#   Taking the type from the class itself lets the program hold every enum in schema `public`
+#   against this relation using the catalog, which Postgres writes. A query-side class set added to
+#   schema.ddl without a row here fails `examples/combinatorics/main.rs`.
+-- public.* and pm.fit, each member against the relation whose classes it declares.
+SELECT u.relation AS "relation!", u.codomain AS "codomain!", u.class AS "class!",
+       u.balls AS "balls!"
+FROM (
+    SELECT 'arithmetic/all.sqlc' AS relation, pg_typeof(c.class)::text AS codomain,
+           c.class::text AS class, count(z.site) AS balls, c.ord
+    FROM unnest(enum_range(NULL::public.arithmetic_verdict)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(arithmetic/all.sqlc)
+    ) z ON z.verdict = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'layers/remainder_scope.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord
+    FROM unnest(enum_range(NULL::public.remainder_standing)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(layers/remainder_scope.sqlc)
+    ) z ON z.standing = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'layers/exposure_scope.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord
+    FROM unnest(enum_range(NULL::public.exposure_standing)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(layers/exposure_scope.sqlc)
+    ) z ON z.standing = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'layers/remainder.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord
+    FROM unnest(enum_range(NULL::pm.fit)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(layers/remainder.sqlc)
+    ) z ON z.derived_fit = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'checks/fit_axes.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.slug), c.ord
+    FROM unnest(enum_range(NULL::public.fit_axis)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(checks/fit_axes.sqlc)
+    ) z ON z.axis = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'checks/fit_domain.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.slug), c.ord
+    FROM unnest(enum_range(NULL::public.fit_standing)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(checks/fit_domain.sqlc)
+    ) z ON z.standing = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'composition/part_references.sqlc', pg_typeof(c.class)::text, c.class::text,
+           count(z.part_layer), c.ord
+    FROM unnest(enum_range(NULL::public.factor_state)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(composition/part_references.sqlc)
+    ) z ON z.factor_state = c.class
+    GROUP BY c.class, c.ord
+    UNION ALL
+    SELECT 'layers/quantities.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord
+    FROM unnest(enum_range(NULL::public.layer_quantity)) WITH ORDINALITY AS c(class, ord)
+    LEFT JOIN (
+        :compose(layers/quantities.sqlc)
+    ) z ON z.quantity = c.class
+    GROUP BY c.class, c.ord
+) u
+ORDER BY u.relation, u.ord

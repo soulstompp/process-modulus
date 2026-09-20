@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §6  The residue's three points, whether they came back in order, and whether the demand crossed a tooth.\n-- layers/lumpy.sqlc at corpus scope; the sawtooth is mod(d, q) at the three points.\nSELECT l.filing               AS \"filing!\",\n       l.layer                AS \"layer!\",\n       l.d_low::float8        AS \"d_low!\",\n       l.d_mode::float8       AS \"d_mode!\",\n       l.d_high::float8       AS \"d_high!\",\n       l.quantum_low::float8  AS \"q_low!\",\n       l.quantum_mode::float8 AS \"q_mode!\",\n       l.quantum_high::float8 AS \"q_high!\",\n       (NOT (mod(l.d_low,  l.quantum_mode) <= mod(l.d_mode, l.quantum_mode)\n         AND mod(l.d_mode, l.quantum_mode) <= mod(l.d_high, l.quantum_mode)))\n                              AS \"sawtoothed!\",\n       (floor(l.d_low / l.quantum_mode) <> floor(l.d_high / l.quantum_mode))\n                              AS \"crosses_tooth!\"\nFROM (\n    SELECT * FROM layers.lumpy\n) l\nJOIN (\n    SELECT * FROM scope.corpus\n) f USING (filing)\nWHERE l.d_low IS NOT NULL\nORDER BY l.filing, l.layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.lumpy",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.lumpy",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "q_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "q_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "q_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "sawtoothed!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 9,
+        "name": "crosses_tooth!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "ae799609814e70111e7380f273af306150cf5f0939e0bf5246f21373d763f77e"
+}

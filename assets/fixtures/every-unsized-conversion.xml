@@ -105,7 +105,7 @@
                 <pm:period>week</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
             </pm:amount>
             <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
@@ -120,7 +120,7 @@
                 <pm:period>week</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
                   </pm:size>
                   <pm:origin>intrinsic</pm:origin>
@@ -138,7 +138,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -196,7 +196,7 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -235,7 +235,7 @@
                 <pm:period>semana</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
             </pm:amount>
             <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
@@ -250,7 +250,7 @@
                 <pm:period>semana</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
                   </pm:size>
                   <pm:origin>intrinsic</pm:origin>
@@ -268,7 +268,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>não há aqui intervalo para estreitar</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -326,7 +326,7 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -365,7 +365,7 @@
                 <pm:period>week</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
             </pm:amount>
             <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
@@ -380,7 +380,7 @@
                 <pm:period>week</pm:period>
               </pm:denominator>
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-              <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>the origin beside it states this bound</pm:note></pm:absent></pm:boundOrigin>
+              <pm:boundOrigin><pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>the origin beside it states this bound</pm:note></pm:derivation></pm:boundOrigin>
             </pm:claim>
                   </pm:size>
                   <pm:origin>intrinsic</pm:origin>
@@ -398,7 +398,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -456,7 +456,7 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>

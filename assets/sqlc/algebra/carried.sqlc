@@ -1,24 +1,26 @@
-# THE ONE-PART FUSIONS THAT COULD CARRY, AGAINST THE ONES THAT DO. One row: whether
+# The one-part fusions that could carry, against the ones that do. One row: whether
 # |carriable| = |carried| + |carriable ⋉ (eliminated ∪ suspended)|.
 #
-# ⛔⛔ A DIFFERENCE NEEDS TWO THINGS BEFORE ANY LAW CAN GOVERN IT, AND THIS ONE NEEDED BOTH.
-#    Its operator must be one examples/soundness/main.rs recognises, which for an anti-semijoin means
-#    `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`; and its left operand must be a FILE, so
-#    there is an A to count. Miss either and the `unclaimed` guard reports nothing, because it
-#    walks for syntax and cannot see an operand that was never named.
-#    composition/carriable.sqlc is the A here.
+# What a difference needs before a law can govern it
+#   Two things, and this one needed both. Its operator must be one examples/soundness/main.rs
+#   recognises, which for an anti-semijoin means `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`;
+#   and its left operand must be a file, so there is an A to count. Miss either and the
+#   `unclaimed` guard reports nothing, because it walks for syntax and cannot see an operand that
+#   was never named. composition/carriable.sqlc is the A here.
 #
-# ⭐ THE `OR` IS DE MORGAN AND NOT A DISJUNCTION SOMEBODY SHOULD HAVE UNIONED. `carried` keeps
+# The `OR` is De Morgan
+#   It is not a disjunction somebody should have unioned. `carried` keeps
 #   ¬eliminated ∧ ¬suspended; the complement it is being checked against is therefore
 #   eliminated ∨ suspended, the same two named relations read from the other side.
 #
-# ⭐ THE LEFT OPERAND IS A BAG ON THE COMPARED ATTRIBUTES and the identity still holds, because
+# A bag on the compared attributes
+#   The left operand is a bag on the compared attributes and the identity still holds, because
 #   both terms are anti-joins rather than `EXCEPT`. `carriable` is keyed (filing, layer,
 #   quantity) and the exclusions compare (filing, layer), so a fusion contributes one row per
 #   quantity to whichever side it lands on. Rewriting either term as `EXCEPT` would deduplicate
 #   one side and not the other, and the two would stop adding up.
--- composition/carriable.sqlc partitioned by eliminations/filed.sqlc and composition/suspended_fusions.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+-- composition/carriable.sqlc partitioned by eliminations/filed.sqlc and composition/suspended_quantities.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
@@ -33,8 +35,9 @@ LEFT JOIN (
              (SELECT count(*) FROM ( :compose(composition/carriable.sqlc) ) c
                WHERE EXISTS (SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
                               WHERE e.composition = c.filing AND e.composed_layer = c.layer)
-                  OR EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
-                              WHERE s.composition = c.filing AND s.composed_layer = c.layer)) AS removed
+                  OR EXISTS (SELECT 1 FROM ( :compose(composition/suspended_quantities.sqlc) ) s
+                              WHERE s.composition = c.filing AND s.composed_layer = c.layer
+                                AND s.quantity::text = c.quantity::text)) AS removed
          ) x
 ) p ON true
 WHERE a.slug = 'carried'

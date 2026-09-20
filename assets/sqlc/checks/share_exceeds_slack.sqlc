@@ -1,15 +1,25 @@
-# EVERY PRESSED LAYER WHOSE ABSORBING BUFFER IS SIZED, BESIDE WHAT IT WAS ASKED TO HOLD. One
-# row per examined layer, `violates` where the shares exceed the slack.
+# Every pressed layer whose absorbing buffer is sized and whose served shares are all stated, beside
+# what it was asked to hold. One row per examined layer, `violates` where the shares exceed the
+# slack.
 #
-# ⭐⭐ THE RULE: a share does not exceed the slack of the buffer that absorbed it. The
-#    remainder names an absorber; the absorber names a buffer; the buffer has a size. Shares
-#    attributed to it have to fit inside it, which is the inequality that makes a buffer a
-#    quantity rather than a label.
+# A share fits inside its buffer
+#   The rule: a share does not exceed the slack of the buffer that absorbed it. The remainder
+#   names an absorber; the absorber names a buffer; the buffer has a size. Shares attributed to
+#   it have to fit inside it, which is the inequality that makes a buffer a quantity rather than
+#   a label.
 #
-# ⛔ `customer` AND `unrealised` ARE EXEMPT BECAUSE THEY ARE THE OVERFLOW rather than a load,
-#   and a `transition` layer is not examined at all -- see entries/borne.sqlc, where both are
-#   argued. It exempted `unrealised` alone until refutation#compute filed a stated capacity
-#   zero and the inequality read a clearance-side share against an interference-side bound.
+# `customer` and `unrealised` are exempt
+#   They are the overflow rather than a load, and a `transition` layer is not examined at all;
+#   see entries/borne.sqlc, where both are argued. Exempting `unrealised` alone is not enough:
+#   where a filing states a capacity of zero, as refutation#compute does, the inequality reads a
+#   clearance-side share against an interference-side bound.
+#
+# One unstated share leaves the layer unexamined
+#   A share filed `unmeasured`, or as `sharesSum`'s output, is not in the sum, so a layer carrying
+#   one sums to less than the buffer holds. A sum that fits proves nothing then, and a verdict of
+#   passing would be the check supplying the missing share as zero. So the layer is left out, as
+#   checks/shares_do_not_sum.sqlc and checks/exposure_unaccounted.sqlc leave theirs, and
+#   arithmetic/shares_bounded.sqlc says it is suspended.
 -- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber through pm.buffer_term.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -23,5 +33,6 @@ LEFT JOIN (
     FROM (
         :compose(entries/borne.sqlc)
     ) b
+    WHERE b.unstated = 0
 ) p ON true
 WHERE r.slug = 'share_exceeds_slack'

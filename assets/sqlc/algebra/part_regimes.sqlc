@@ -1,17 +1,19 @@
-# THE PARTS WHOSE REGIMES CAN BE COMPARED, AGAINST THE ONES THAT CANNOT, CHECKED AS A PARTITION.
+# The parts whose regimes can be compared, against the ones that cannot, checked as a partition.
 # One row: whether |part_regimes| = |askable| + |part_regimes ⋉ unaskable|.
 #
-# ⭐⭐⭐ THE DIFFERENCE IS THE POPULATION OF A RULE AND GETTING IT BACKWARDS INVERTS THE VERDICT.
-#    `checks/part_regime_disagrees` asks only where BOTH sides stated a framework. Six fixtures
-#    declare a `stipulated` regime whose framework is `notApplicable` because a fixture reports
-#    under no framework, and their parts point at it. Those have not agreed and have not
-#    disagreed; the question does not arise. Read the other way, every one of them becomes a
-#    silent pass and the rule's denominator doubles with rows it never asked about.
+# Backwards inverts the verdict
+#   The difference is the population of a rule, and getting it backwards inverts the verdict.
+#   `checks/part_regime_disagrees` asks only where both sides stated a framework. Six fixtures
+#   declare a `stipulated` regime whose framework is `notApplicable` because a fixture reports
+#   under no framework, and their parts point at it. Those have not agreed and have not
+#   disagreed; the question does not arise. Read the other way, every one of them becomes a
+#   silent pass and the rule's denominator doubles with rows it never asked about.
 #
-# ⛔ THE LEFT OPERAND IS A SET ON THE COMPARED ATTRIBUTES: `composition/part_regimes.sqlc` is one
-#   row per resolved part carrying a handle, and `pm.part`'s primary key makes that a key.
+# The left operand is a set on the compared attributes
+#   `composition/part_regimes.sqlc` is one row per resolved part carrying a handle, and
+#   `pm.part`'s primary key makes that a key.
 -- composition/part_regimes.sqlc partitioned by whether both sides state a framework.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

@@ -1,0 +1,35 @@
+# Every fusion owes each quantity's sum or is suspended from it, and never both. One row: whether
+# |fusions × quantities| = |pairs no ground reaches| + |composition/suspended_quantities|.
+#
+# The expansion written the long way, on purpose
+#   composition/suspended_quantities.sqlc expands each ground that names no quantity onto every
+#   quantity by a join. This law finds the pairs no ground reaches by `NOT EXISTS` against
+#   composition/suspended_fusions.sqlc with the match spelled out, `quantity IS NULL OR quantity =`,
+#   so the two routes to the suspended pairs share no code and a fault in either leaves the sum
+#   short or over.
+#
+# Probe
+#   examples/probes runs it as `suspended_quantities`: in the composed text the expansion forgets
+#   that a NULL quantity means every quantity, and the law must fail.
+-- composition/fusions.sqlc × pm.summed_quantity, against composition/suspended_quantities.sqlc and its complement.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/suspended_quantities' AS subject,
+           x.total = x.owing + x.suspended AS holds,
+           format('%s fusion quantities = %s no ground reaches + %s suspended',
+                  x.total, x.owing, x.suspended) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
+               CROSS JOIN unnest(enum_range(NULL::pm.summed_quantity)) AS q(quantity)) AS total,
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
+               CROSS JOIN unnest(enum_range(NULL::pm.summed_quantity)) AS q(quantity)
+               WHERE NOT EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
+                                  WHERE s.composition = f.filing AND s.composed_layer = f.layer
+                                    AND (s.quantity IS NULL OR s.quantity = q.quantity)))    AS owing,
+             (SELECT count(*) FROM ( :compose(composition/suspended_quantities.sqlc) ) s)       AS suspended
+         ) x
+) p ON true
+WHERE a.slug = 'suspended_quantities'

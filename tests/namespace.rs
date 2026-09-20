@@ -37,7 +37,7 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 const BUILD_RS: &str = include_str!("../build.rs");
 
 /// Every instance, and the prefix whose namespace it must match.
-const INSTANCES: [(&str, &str, &str); 21] = [
+const INSTANCES: [(&str, &str, &str); 25] = [
     // The same filing in European Portuguese: same three layers, same argument, declared
     // by a microentity under IES's AnexoASNC instead of US-GAAP.
     (
@@ -118,6 +118,11 @@ const INSTANCES: [(&str, &str, &str); 21] = [
         include_str!("../assets/fixtures/every-draft.xml"),
     ),
     (
+        "assets/fixtures/every-unserved-excess.xml",
+        "pm",
+        include_str!("../assets/fixtures/every-unserved-excess.xml"),
+    ),
+    (
         "assets/fixtures/every-claimed.xml",
         "asrt",
         include_str!("../assets/fixtures/every-claimed.xml"),
@@ -137,6 +142,19 @@ const INSTANCES: [(&str, &str, &str); 21] = [
         "asrt",
         include_str!("../assets/fixtures/every-partial-elimination.xml"),
     ),
+    (
+        "assets/fixtures/every-inverting-elimination.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-inverting-elimination.xml"),
+    ),
+    // An eliminated quantity filed as a DERIVATION: the third arm of
+    // `pm:StatedEliminatedQuantity`, which the grammar admitted and no document reached, so the
+    // nameplate sum is suspended while the demand sum beside it is owed and exact.
+    (
+        "assets/fixtures/every-derived-elimination.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-derived-elimination.xml"),
+    ),
     // A part whose conversion nobody measured: `asrt:Part/factor` filed as a typed absence
     // rather than omitted. The third state of an optional `pm:StatedClaim`, which `pm.part`
     // could not store until `factor_absent` existed.
@@ -154,6 +172,11 @@ const INSTANCES: [(&str, &str, &str); 21] = [
         "assets/fixtures/every-nested-conversion.xml",
         "asrt",
         include_str!("../assets/fixtures/every-nested-conversion.xml"),
+    ),
+    (
+        "assets/fixtures/every-derived-quantity.xml",
+        "asrt",
+        include_str!("../assets/fixtures/every-derived-quantity.xml"),
     ),
 ];
 

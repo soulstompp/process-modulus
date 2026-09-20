@@ -1,0 +1,72 @@
+# The law rank/cycle_space.sqlc owes: the layer graph carries an undirected cycle exactly when some
+# fusion's parts fail to partition what they compose. One row, the two instruments held against each
+# other.
+#
+# Which cycle, because the tree uses the word both ways
+#   Here it is the undirected one, `m - n + c` over the edges symmetrised in
+#   rank/graph_measures.sqlc. composition/descent.sqlc means the directed one, SQL:2016's `CYCLE`
+#   clause stopping on a layer that repeats within its own path, and its header says a diamond is
+#   not one. Both are right about the same diamond: nothing composes itself, and a layer is still
+#   reached twice. Unqualified, the word names neither, and this tree has a second graph whose
+#   cycle space is not zero.
+#
+# Two instruments, neither reading the other
+#   rank/graph_measures.sqlc counts nodes, edges and components and reports `m - n + c`.
+#   checks/jagged_layer.sqlc asks a different question of a different relation: whether any layer
+#   arrives at a fusion through two paths. They share no code. An undirected cycle in `F` IS a
+#   layer arriving twice under one fold, so the two cannot disagree, and a green agreement here is
+#   evidence rather than two sentences agreeing.
+#
+# Zero versus nonzero, never the two counts
+#   The cycle space counts INDEPENDENT cycles; the rule counts VIOLATING FUSIONS, and one cycle can
+#   accuse more than one fusion. Holding the numbers equal would pass today and break on the first
+#   document where one cycle implicates two fusions, which is a coincidence rather than a law.
+#
+# Its own non-vacuity is a column, not a comment
+#   `0 = 0` is true of an empty graph and of a rule that examined nothing, so the node count, the
+#   edge count and the examined count are in `holds`. A graph with no edges has a cycle space of
+#   zero for the wrong reason, and this law refuses to call that a pass.
+#
+# The cut side of the decomposition
+#   The edge space is the cut space plus the cycle space, and this model puts one rule in each. A
+#   sum round a loop is the cycle condition, which is the unit graph and
+#   checks/conversion_cycle_does_not_close. A balance at a node is the cut condition, which is the
+#   fusion rule. This law is the statement that the composition graph has nothing in its cycle half.
+#   Proof: `src/proofs/README.md`, entries `incidence_subspaces` and `fusion_adds_no_cycle`.
+#
+# Why a fusion cannot move it
+#   A fusion is one new node and one edge per part, so parts drawn from `k` distinct components
+#   leave `m - n + c` where it was, and two parts inside one component raise it by one. That is why
+#   the rule is about a partition and not about an arity: no legitimate filing moves this dimension.
+#
+# examples/graphs/main.rs keeps its own assertion
+#   It is the only reader that takes these measures as a program rather than as rows, and it names
+#   the mutation that moves both instruments together. Removing it would leave this law as the sole
+#   witness to its own claim.
+-- rank/graph_measures.sqlc's layer row at the corpus scope against checks/jagged_layer.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/cycle_space' AS subject,
+           x.nodes > 0 AND x.edges > 0 AND x.examined > 0
+           AND (x.dim = 0) = (x.violations = 0)                                      AS holds,
+           format('dim %s over %s node(s), %s edge(s), %s component(s); %s of %s fusion(s) '
+                  'examined violate the partition',
+                  x.dim, x.nodes, x.edges, x.components, x.violations, x.examined)   AS detail
+    FROM (
+        SELECT m.cycle_space_dim AS dim, m.n_nodes AS nodes, m.m_edges AS edges,
+               m.c_components AS components, j.violations, j.examined
+        FROM      (
+            :compose(rank/graph_measures.sqlc)
+        ) m
+        CROSS JOIN (
+            SELECT count(*) FILTER (WHERE k.violates)             AS violations,
+                   count(*) FILTER (WHERE k.violates IS NOT NULL) AS examined
+            FROM ( :compose(checks/jagged_layer.sqlc) ) k
+        ) j
+        WHERE m.graph = 'layers' AND m.filing IS NULL
+    ) x
+) p ON true
+WHERE a.slug = 'cycle_space'

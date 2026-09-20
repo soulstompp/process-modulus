@@ -15,18 +15,21 @@ so the page you read here, the page `cargo doc --examples` renders and the page 
 source sees are the same files, in both languages. A program with no header does not compile, and
 neither does one with no Portuguese header.
 
-`shared/` is not a program. It holds the modules several of these import, and it deliberately
+[`shared/`](shared/) holds shared modules, not programs: several of these import from it, and it deliberately
 holds no `main.rs`, which is exactly how cargo decides what is an example and how `build.rs`
 decides what belongs in the table below.
 
 | example | the question it answers | database |
 |---|---|---|
+| [`combinatorics`](combinatorics/) | What can be read off a classification, and does each law here read what it is trusted to? | yes |
+| [`columns`](columns/) | Which matrix in this repository has a column space, and what lives in the half of it no potential explains? | no |
 | [`compositions`](compositions/) | The compositions this repository has, and the three preconditions that make them an algebra. | no |
 | [`diagramming`](diagramming/) | The model, translated into BPMN 2.0, and the laws that say the translation was faithful. | yes |
 | [`generation`](generation/) | Does a run of the model file at all? | yes |
 | [`graphs`](graphs/) | The three graphs this model composes, as the lane sets of one pool. | yes |
 | [`matrices`](matrices/) | The second witness: the same arithmetic, computed a different way. | yes |
 | [`observations`](observations/) | What the corpus actually says, and whether anything is looking. | yes |
+| [`probes`](probes/) | Whether each law has ever been SEEN TO FAIL, and each correct filing seen to survive an edit that must not accuse it. | yes |
 | [`readiness`](readiness/) | Before the arithmetic: may you compute here at all? | yes |
 | [`rendering`](rendering/) | The layered SVG, which is the `.sqlx` of this pipeline. | no |
 | [`resolution`](resolution/) | What does a lossy instrument cost, in the units the schema files? | no |

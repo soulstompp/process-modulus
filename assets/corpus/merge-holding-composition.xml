@@ -220,10 +220,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -249,10 +249,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -388,10 +388,10 @@
                  shares sum to exactly that. ⭐ At the mode the holding accounts for 0.7 of
                  2.3 people across two countries, two consolidations and one instrument. -->
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -575,10 +575,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -602,10 +602,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -637,10 +637,10 @@
                           </pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent>
-                            <pm:reason>derived</pm:reason>
+                          <pm:derivation>
+                            <pm:identity>quantumOrigin</pm:identity>
                             <pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note>
-                          </pm:absent>
+                          </pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -765,10 +765,10 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -871,10 +871,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>fusionSum</pm:identity>
                     <pm:note>this figure was converted by `asrt:Part/factor`, whose own bounds are the calendar's; the author of this edge is the author of that one and is stated there</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
                 <pm:provenance><pm:party>holding-company</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
@@ -891,7 +891,7 @@
                  it is not quite the truth: nobody failed to measure this, it has no
                  answer. Filing a lump here would invent one.
                  ⭐ AND THE RULES INTERLOCK WITH NO HELP: with the quantum absent, the
-                 remainder is no longer `derived` and must be STATED, which is what
+                 remainder can no longer be a derivation and must be STATED, which is what
                  forces the composer to publish the figure below rather than leave a
                  receiver to compute the wrong one. -->
             <pm:divisibility>
@@ -962,10 +962,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>fusionSum</pm:identity>
                     <pm:note>this figure was converted by `asrt:Part/factor`, whose own bounds are the calendar's; the author of this edge is the author of that one and is stated there</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
                 <pm:provenance><pm:party>holding-company</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
@@ -1067,10 +1067,10 @@
                   </pm:narrowing>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>magnitude</pm:identity>
                     <pm:note>the bounds follow from this layer's demand and nameplate, whose own origins are stated there</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
                 <pm:provenance><pm:party>holding-company</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>

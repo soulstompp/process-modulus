@@ -1,0 +1,51 @@
+-- §3  What each layer actually filed, per quantity, and the elimination to subtract from it.
+# The filed side of `x_composed = F Φ x_parts − e`, beside the `e` it subtracts. One row per layer
+# and quantity it states, where that quantity's sum is not suspended, carrying the filed figure
+# and the elimination to remove. The example compares this against the matrix product built from
+# 3a. A layer built from no parts has `e = 0` and no product to compare, and the example reads only
+# the composed ones.
+#
+# Fusions that owe no equality are excluded
+#   That exclusion is the whole of it. A composer who states they never looked for double counting
+#   has not claimed their figure equals the sum of its parts, and asserting it anyway is the exact
+#   defect `StatedEliminations` was added to prevent, arriving in the checker instead of in the
+#   document. `none` and `notApplicable` still owe the sum exactly. Only `unmeasured` suspends it.
+#
+# It suspends at both levels
+#   A fusion may file an elimination and declare its quantity `unmeasured`, "these hours are double
+#   counted and nobody can say by how much", which is a different filing from an unsearched list
+#   and owes no equality either. `coalesce(e.low, 0)` reads that as a zero and asserts a sum the
+#   composer declined, and `tests/composition.rs::expected` returns `None` for exactly that case.
+#   Two witnesses, one rule, and one relation, composition/suspended_quantities.sqlc, which this
+#   anti-joins.
+#
+# Probe the exclusion rather than trusting the count
+#   `s.composition IS NULL` is safe only because `composition` is NOT NULL on every arm of
+#   suspension_grounds, which composition/suspended_quantities.sqlc carries; a nullable column would
+#   keep matched rows silently. The law is recomputed rather than recorded, in algebra/composed_quantities.sqlc,
+#   every run.
+-- layers/summed_quantities.sqlc minus composition/suspended_quantities.sqlc, with eliminations/filed.sqlc.
+SELECT d.filing                     AS "filing!",
+       d.layer                      AS "layer!",
+       d.quantity::text             AS "quantity!",
+       d.low::float8                AS "x_low!",
+       d.mode::float8               AS "x_mode!",
+       d.high::float8               AS "x_high!",
+       coalesce(e.low, 0)::float8   AS "e_low!",
+       coalesce(e.mode, 0)::float8  AS "e_mode!",
+       coalesce(e.high, 0)::float8  AS "e_high!"
+FROM      (
+    :compose(layers/summed_quantities.sqlc)
+) d
+LEFT JOIN (
+    :compose(composition/suspended_quantities.sqlc)
+) s
+       ON s.composition = d.filing AND s.composed_layer = d.layer
+      AND s.quantity = d.quantity
+LEFT JOIN (
+    :compose(eliminations/filed.sqlc)
+) e
+       ON e.composition = d.filing AND e.composed_layer = d.layer
+      AND e.quantity = d.quantity
+WHERE s.composition IS NULL
+  AND d.low IS NOT NULL

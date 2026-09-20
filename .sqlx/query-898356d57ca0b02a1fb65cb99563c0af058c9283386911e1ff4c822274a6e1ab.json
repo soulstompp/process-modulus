@@ -1,0 +1,62 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §2  Every computation this corpus declines to perform, and what stopped it.\n-- arithmetic/all.sqlc restricted to the rows no site could compute.\nSELECT z.site                    AS \"site!\",\n       z.filing                  AS \"filing!\",\n       z.layer                   AS \"layer!\",\n       z.detail                  AS \"detail!\"\nFROM (\n    SELECT * FROM arithmetic.all\n) z\nWHERE z.verdict = 'suspended'\nORDER BY z.site, z.filing, z.layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "site!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "arithmetic.\"all\"",
+            "name": "site"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "arithmetic.\"all\"",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "arithmetic.\"all\"",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "detail!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "arithmetic.\"all\"",
+            "name": "detail"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "898356d57ca0b02a1fb65cb99563c0af058c9283386911e1ff4c822274a6e1ab"
+}

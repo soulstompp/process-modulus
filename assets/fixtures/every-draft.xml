@@ -8,7 +8,7 @@
     notation  absent unmeasured   nobody has assigned this filing a URN yet
     scope     absent unmeasured   the question of how much of the system it holds was never put
 
-  ⚠️ NEITHER IS A DEFECT AND BOTH WOULD HAVE BEEN A BLANK BEFORE 0.3.0. Somebody sat down,
+  ⚠️ NEITHER IS A DEFECT AND BOTH WOULD BE A BLANK WITHOUT THEIR WRAPPERS. Somebody sat down,
   wrote one layer of their process, and stopped. They have not published it, so nothing can
   compose it — and that is the honest consequence rather than a gap: a composition asserting a
   relationship to a filing nobody can identify is asserting a relationship to nothing.
@@ -91,8 +91,8 @@
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent><pm:reason>derived</pm:reason>
-                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                  <pm:note>amountOrigin below states it</pm:note></pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -112,8 +112,8 @@
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason>
-                        <pm:note>the origin below states it</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                        <pm:note>the origin below states it</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -132,7 +132,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -190,8 +190,8 @@
             </pm:holder>
           </pm:holder>
           <pm:quantity>
-            <pm:absent><pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            <pm:derivation><pm:identity>magnitude</pm:identity>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>

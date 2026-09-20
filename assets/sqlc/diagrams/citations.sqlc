@@ -1,23 +1,35 @@
-# THE INSTRUMENT EACH COMPOSITION IS FILED UNDER, ONE ROW PER CITATION, RENDERED AS ONE STRING.
+# The instrument each composition is filed under, rendered as one string. One row per citation.
 #
-# ⭐⭐⭐ IT IS THE LAST DECLARED MAPPING THAT RENDERED NOTHING. `composition_citation` named
-#    `documentation` on diagrams/domain_objects.sqlc, emitted not one element, and was invisible
-#    to every cardinality law because element KINDS are not one to one: `documentation` was
-#    already spent by the pools and the lanes, so its count was exact while this table's share of
-#    it was zero. That is the defect diagrams/ungoverned.sqlc exists for, and it is the last row
-#    that was still in it.
+# A declared mapping must render something
+#   `composition_citation` names `documentation` on diagrams/domain_objects.sqlc. No cardinality
+#   law can see whether it renders, because element kinds are not one to one: `documentation` is
+#   already spent by the pools and the lanes, so its count can be exact while this table's share
+#   of it is zero. A mapping declared and never rendered once hid exactly there, and that is the
+#   defect diagrams/ungoverned.sqlc exists for.
 #
-# ⛔⛔ WHAT IT LOSES IS THE STRUCTURE AND NOT THE WORDS, WHICH THE COLUMNS SETTLE:
-#   `pm.composition_citation` is `(taxonomy, instrument, clause, version)`, four typed fields, not
-#   free prose. A `documentation` element carries all four and carries them as ONE STRING, so a
-#   reader can read the citation and a tool cannot resolve it. ⭐ Narrower than *everything* and
-#   worth being exact about, because the two states owe different repairs.
+# It loses the structure, not the words
+#   The columns settle it: `pm.composition_citation` is `(taxonomy, instrument, clause, version)`,
+#   four typed fields, not free prose. A `documentation` element carries all four and carries them
+#   as one string, so a reader can read the citation and a tool cannot resolve it. That is
+#   narrower than *everything* and worth being exact about, because the two states owe different
+#   repairs.
 #
-# ⚠️ THE OPEN QUESTION IS THE SCHEMA'S AND NOT THE DIAGRAM'S. `(composition, seq)` is a bare
-#   document ordinal where both sibling children of a composition carry a regime handle, and
-#   `merge-group-composition` cites ONE instrument while crossing SEVEN regime boundaries. The
-#   emission cannot fix that and must not paper over it.
+# The open question is the schema's
+#   Not the diagram's. `(composition, seq)` is a bare document ordinal where both sibling children
+#   of a composition carry a regime handle, and `merge-group-composition` cites one instrument
+#   while crossing several regime boundaries. The emission cannot fix that and must not paper over
+#   it.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- asrt:Composition/asrt:citation, flattened to the one string a documentation element can hold.
+WITH
+citations AS NOT MATERIALIZED (
+    :define(composition/citations.sqlc)
+)
 SELECT c.composition,
        c.instrument
          || coalesce(' clause ' || c.clause, '')

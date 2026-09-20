@@ -1,0 +1,101 @@
+# The law rank/composition_row_space.sqlc owes: the part space splits into the row space and the
+# null space, block by block, and the two sides of the map agree about the rank. Two rows, one per
+# half of that sentence.
+#
+# The direct sum, per fibre
+#   A fusion's block of the row space and its block of the null space are orthogonal complements
+#   inside that fusion's own coordinates, so their dimensions sum to the number of parts in it and
+#   neither is free to move alone. The first subject holds that on every fusion, against the parts
+#   rank/composition_kernel.sqlc counted, so a fold that changed its population on one side and not
+#   the other fails here rather than going quiet.
+#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+#
+# The rank, from the part side and from the fusion side
+#   The second subject is the one that crosses. `Σ row_dim` is the rank counted one block at a time
+#   along the parts; `Σ rank` in rank/composition_image.sqlc is the same number counted as rows of
+#   the matrix along the fusions. They are arrived at through different folds of different
+#   relations, so an agreement is evidence, and a disagreement says one side is folding a
+#   population the other is not.
+#
+# ⛔ The join to the fold is OUTER, and an inner one would have been the green that means nothing
+#   Putting the part counts into an inner join's ON makes a disagreement DROP the row, so the two
+#   relations would part company and this law would see a smaller population rather than a fault.
+#   `IS DISTINCT FROM` on an outer join is what turns a missing row and a wrong number into the
+#   same finding.
+#
+# `row_dim = 1` is a claim and it is held here
+#   The column is a literal in the relation, because a non-empty fibre's generator is a non-zero
+#   vector and nothing in a fold can see that. This is where it is refused any other value, which
+#   is what makes the literal a claim rather than a decoration.
+#
+# Non-vacuity needs a fusion with a sibling
+#   `1 + 0 = 1` holds on every one-part fusion whatever either dimension means, so a corpus of
+#   one-part fusions would pass this law while saying nothing. The floor requires that some fusion
+#   has a null space at all.
+#
+# Probe
+#   examples/probes runs it as `composition_row_space` and `composition_row_space / the rank`.
+#   The first reads `row_dim` as two in the relation, so no fibre sums to its own part count and
+#   the rank doubles, and both subjects fail together. The second leaves the part side alone and
+#   adds one to the fusion side's count per composition, which only the crossing can see.
+-- rank/composition_row_space.sqlc against rank/composition_kernel.sqlc, then against rank/composition_image.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/composition_row_space' AS subject,
+           count(*) > 0
+           AND count(*) FILTER (WHERE x.kernel_dim > 0) > 0
+           AND count(*) FILTER (WHERE x.row_dim <> 1) = 0
+           AND count(*) FILTER (WHERE x.row_dim + x.kernel_dim <> x.parts) = 0
+           AND count(*) FILTER (WHERE x.kernel_dim IS DISTINCT FROM x.kernel_by_fold) = 0
+           AND count(*) FILTER (WHERE x.parts IS DISTINCT FROM x.parts_by_fold) = 0     AS holds,
+           format('%s fusion(s), %s with a null space; %s report a row space other than one '
+                  'dimension, %s do not sum to their own part count, %s disagree with the fold%s',
+                  count(*), count(*) FILTER (WHERE x.kernel_dim > 0),
+                  count(*) FILTER (WHERE x.row_dim <> 1),
+                  count(*) FILTER (WHERE x.row_dim + x.kernel_dim <> x.parts),
+                  count(*) FILTER (WHERE x.kernel_dim IS DISTINCT FROM x.kernel_by_fold
+                                         OR x.parts IS DISTINCT FROM x.parts_by_fold),
+                  coalesce(': ' || string_agg(x.composition || '/' || x.composed_layer, ', '
+                                              ORDER BY x.composition, x.composed_layer)
+                                   FILTER (WHERE x.row_dim <> 1
+                                                 OR x.row_dim + x.kernel_dim <> x.parts
+                                                 OR x.kernel_dim IS DISTINCT FROM x.kernel_by_fold
+                                                 OR x.parts IS DISTINCT FROM x.parts_by_fold), ''))
+                                                                                     AS detail
+    FROM (
+        SELECT r.composition, r.composed_layer, r.parts, r.row_dim, r.kernel_dim,
+               k.parts      AS parts_by_fold,
+               k.kernel_dim AS kernel_by_fold
+        FROM      (
+            :compose(rank/composition_row_space.sqlc)
+        ) r
+        LEFT JOIN (
+            :compose(rank/composition_kernel.sqlc)
+        ) k ON k.composition = r.composition AND k.composed_layer = r.composed_layer
+    ) x
+    UNION ALL
+    SELECT 'rank/composition_row_space / the rank',
+           y.blocks > 0 AND z.matrix_rows > 0 AND y.blocks = z.matrix_rows
+           AND y.parts = y.blocks + y.kernel                                         AS holds,
+           format('rank %s summed over the part-side blocks and %s counted as fusion rows; '
+                  '%s part(s) over %s block(s) leaves %s dimension(s) of null space',
+                  y.blocks, z.matrix_rows, y.parts, y.blocks, y.kernel)
+    FROM       (
+        SELECT coalesce(sum(s.row_dim),    0) AS blocks,
+               coalesce(sum(s.parts),      0) AS parts,
+               coalesce(sum(s.kernel_dim), 0) AS kernel
+        FROM (
+            :compose(rank/composition_row_space.sqlc)
+        ) s
+    ) y
+    CROSS JOIN (
+        SELECT coalesce(sum(i.rank), 0) AS matrix_rows
+        FROM (
+            :compose(rank/composition_image.sqlc)
+        ) i
+    ) z
+) p ON true
+WHERE a.slug = 'composition_row_space'

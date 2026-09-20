@@ -1,28 +1,31 @@
-# WHO OWNS EACH BOUND. One row per claim, classified by who chose the edge of its range.
+# Who owns each bound. One row per claim, classified by who chose the edge of its range.
 #
-# ⭐⭐ THE PAIR WITH `narrowsWhen` IS THE POINT: one says what would make a range SMALLER, the
-#    other says who owns the edge it would have to move. A bound somebody NEGOTIATED moves by
-#    renegotiating; a bound that is simply where the measurements fell moves by measuring
-#    again; an INTRINSIC bound does not move at all. Same width, three different courses of
-#    action.
+# The pair with `narrowsWhen` is the point
+#   One says what would make a range smaller, the other says who owns the edge it would have to
+#   move. A bound somebody negotiated moves by renegotiating; a bound that is simply where the
+#   measurements fell moves by measuring again; an intrinsic bound does not move at all. Same
+#   width, three different courses of action.
 #
-# ⛔⛔ AS AN OPTIONAL BARE ENUMERATION THIS WAS FILED ONCE ACROSS THE CORPUS, so it looked like an
-#    attribute of the two sized slacks rather than a question about every claim. Required and
-#    typed, the two commonest answers are `none` -- NOTHING sets this edge, the range is
-#    simply where the measurements fell -- and close behind it `derived`, where the model
-#    ALREADY states the author in a sibling element and had no way to point at it. Neither is
-#    a finding the single column could have produced.
-#    ⚠️ `derived` LED FOR A WHILE AND THIS COMMENT SAID SO AS THOUGH IT WERE SETTLED. The
-#      corpus grew and `none` passed it. A count in a comment is a claim with a date on it.
+# Required and typed, not an optional enumeration
+#   As an optional bare enumeration it was almost never filed across the corpus, so it looked like
+#   an attribute of the two sized slacks rather than a question about every claim. Required and
+#   typed, the commonest answers are `none` (nothing sets this edge; the range is simply where the
+#   measurements fell) and a derivation, where the model already states the author in a sibling
+#   element or the claim is an identity's output, and the derivation names which. Neither is a
+#   finding the single column could have produced.
 -- pm:Claim/pm:boundOrigin, wherever a claim appears.
 SELECT b.filing, b.seq, b.owns, b.origin, b.origin_absent AS absent,
        CASE
          WHEN b.origin IS NOT NULL   THEN 'somebody owns it: ' || b.origin::text
-         WHEN b.origin_absent = 'derived'   THEN 'stated in a sibling element (amountOrigin, quantum origin)'
+         WHEN b.origin_derivation IN ('amountOrigin', 'quantumOrigin')
+              THEN format('stated in a sibling element (`%s`)', b.origin_derivation)
+         WHEN b.origin_derivation IS NOT NULL
+              THEN format('the edge of the terms `%s` computes the claim from', b.origin_derivation)
          WHEN b.origin_absent = 'none'      THEN 'NOTHING sets it -- the range is where the measurements fell'
          WHEN b.origin_absent = 'unmeasured' THEN 'nobody has asked'
          ELSE 'not a bound on a committed quantity'
-       END AS who_owns_the_edge
+       END AS who_owns_the_edge,
+       b.origin_derivation AS derivation
 FROM (
     :compose(epistemics/claims.sqlc)
 ) b

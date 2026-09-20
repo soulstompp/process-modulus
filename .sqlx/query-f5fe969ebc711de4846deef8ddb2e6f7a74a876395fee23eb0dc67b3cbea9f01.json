@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.\nSELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,\n       min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,\n       count(*) OVER w                                                    AS members\nFROM (\n    SELECT DISTINCT a.root_filing AS filing, a.root_layer AS layer,\n           a.filing AS co_moves_with_filing, a.layer AS co_moves_with_layer\n    FROM      (\n        SELECT * FROM composition.descent\n    ) a\n    JOIN      (\n        SELECT * FROM composition.descent\n    ) b ON  b.root_filing = a.filing      AND b.root_layer = a.layer\n        AND b.filing      = a.root_filing AND b.layer      = a.root_layer\n) p\nWINDOW w AS (PARTITION BY p.filing, p.layer)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.descent",
+            "name": "root_filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.descent",
+            "name": "root_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "co_moves_with_filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.descent",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "co_moves_with_layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.descent",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "class",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "members",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "f5fe969ebc711de4846deef8ddb2e6f7a74a876395fee23eb0dc67b3cbea9f01"
+}

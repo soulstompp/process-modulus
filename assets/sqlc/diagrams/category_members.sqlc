@@ -1,20 +1,33 @@
-# N, THE INDUCTION INCIDENCE, PROJECTED TO WHAT A `categoryValueRef` CARRIES. One row per
+# N, the induction incidence, projected to what a `categoryValueRef` carries. One row per
 # (filing, operation, layer): this operation induces into this layer, and the flow node says so
 # itself rather than being collected by a container.
 #
-# ⭐⭐⭐ THE DIRECTION IS THE WHOLE DIFFERENCE. A `lane` collects its members and a flow node can
-#    be collected once. A `categoryValue` collects nobody: the MEMBER declares which categories it
-#    is in, unbounded, so the cover may overlap and no container has to be enlarged to say so.
-#    That is why this relation can be many-to-many where diagrams/lane_membership.sqlc cannot.
+# The direction is the whole difference
+#   A `lane` collects its members and a flow node can be collected once. A `categoryValue` collects
+#   nobody: the member declares which categories it is in, unbounded, so the cover may overlap and
+#   no container has to be enlarged to say so. That is why this relation can be many-to-many where
+#   diagrams/lane_membership.sqlc cannot.
 #
-# ⭐⭐ MEASURED, AND EXERCISED RATHER THAN HYPOTHETICAL. In this corpus one operation both draws
-#    from `labour` and induces into `capability`, so it belongs to two layers, and a lane set can
-#    hold it in one. ⛔ With no relation for the cover, an emitter puts the operation in the
-#    draw lane and the induction is absent from the artifact entirely.
+# Exercised, not hypothetical
+#   In this corpus an operation both draws from `labour` and induces into `capability`, so it
+#   belongs to two layers, and a lane set can hold it in one. With no relation for the cover, an
+#   emitter puts the operation in the draw lane and the induction is absent from the artifact
+#   entirely.
 #
-# ⛔ INCIDENCE ONLY. The wider relation carries three points, a unit, a typed absence and
-#   `decider`; none of it composes here, for the reason diagrams/lane_members.sqlc gives.
+# Incidence only
+#   The wider relation carries three points, a unit, a typed absence and `decider`; none of it
+#   composes here, for the reason diagrams/lane_members.sqlc gives.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
+WITH
+inductions AS NOT MATERIALIZED (
+    :define(entries/inductions.sqlc)
+)
 SELECT i.filing, i.operation, i.layer
 FROM (
     :compose(entries/inductions.sqlc)

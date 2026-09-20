@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §4b  Every question the absence census actually files a row under.\n-- epistemics/absences.sqlc, its questions.\nSELECT DISTINCT a.question AS \"question!\"\nFROM (\n    SELECT * FROM epistemics.absences\n) a\nORDER BY a.question\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "question!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absences",
+            "name": "question"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "2a8ed0f745f8f36bd94d1896591bf9dfbfed29160fd0175da01d98884a09c45a"
+}

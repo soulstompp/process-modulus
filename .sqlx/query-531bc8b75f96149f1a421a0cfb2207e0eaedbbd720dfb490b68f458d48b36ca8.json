@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  Every classification this tree makes, against the set of classes it declares.\n-- public.* and pm.fit, each member against the relation whose classes it declares.\nSELECT u.relation AS \"relation!\", u.codomain AS \"codomain!\", u.class AS \"class!\",\n       u.balls AS \"balls!\"\nFROM (\n    SELECT 'arithmetic/all.sqlc' AS relation, pg_typeof(c.class)::text AS codomain,\n           c.class::text AS class, count(z.site) AS balls, c.ord\n    FROM unnest(enum_range(NULL::public.arithmetic_verdict)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM arithmetic.all\n    ) z ON z.verdict = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'layers/remainder_scope.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord\n    FROM unnest(enum_range(NULL::public.remainder_standing)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM layers.remainder_scope\n    ) z ON z.standing = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'layers/exposure_scope.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord\n    FROM unnest(enum_range(NULL::public.exposure_standing)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM layers.exposure_scope\n    ) z ON z.standing = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'layers/remainder.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord\n    FROM unnest(enum_range(NULL::pm.fit)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM layers.remainder\n    ) z ON z.derived_fit = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'checks/fit_axes.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.slug), c.ord\n    FROM unnest(enum_range(NULL::public.fit_axis)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM checks.fit_axes\n    ) z ON z.axis = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'checks/fit_domain.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.slug), c.ord\n    FROM unnest(enum_range(NULL::public.fit_standing)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM checks.fit_domain\n    ) z ON z.standing = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'composition/part_references.sqlc', pg_typeof(c.class)::text, c.class::text,\n           count(z.part_layer), c.ord\n    FROM unnest(enum_range(NULL::public.factor_state)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM composition.part_references\n    ) z ON z.factor_state = c.class\n    GROUP BY c.class, c.ord\n    UNION ALL\n    SELECT 'layers/quantities.sqlc', pg_typeof(c.class)::text, c.class::text, count(z.layer), c.ord\n    FROM unnest(enum_range(NULL::public.layer_quantity)) WITH ORDINALITY AS c(class, ord)\n    LEFT JOIN (\n        SELECT * FROM layers.quantities\n    ) z ON z.quantity = c.class\n    GROUP BY c.class, c.ord\n) u\nORDER BY u.relation, u.ord\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "relation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "codomain!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "class!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "balls!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "531bc8b75f96149f1a421a0cfb2207e0eaedbbd720dfb490b68f458d48b36ca8"
+}

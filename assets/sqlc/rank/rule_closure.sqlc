@@ -1,0 +1,26 @@
+# Every template each rule reads, directly or through what it composes. One row per (rule,
+# template), the rule's own file included.
+#
+# A rule's population is decided in files its author never opened
+#   Most rules write no narrowing predicate of their own; they compose a population and inherit
+#   every filter inside it. This is the list of those files, taken from the compose DAG rather
+#   than from reading the rule, so a question about what a rule depends on is a join here.
+#
+# A set, because a closure forgets how often
+#   A rule reaching one template by two paths reaches it once here. How many times a parent
+#   splices a child is rank/compose_edges.sqlc's `splices`, and a question about repetition
+#   belongs there.
+-- rank/compose_edges.sqlc walked from each rule on checks/roster.sqlc.
+WITH RECURSIVE closure(slug, template) AS (
+    SELECT r.slug, 'checks/' || r.slug || '.sqlc'
+    FROM (
+        :compose(checks/roster.sqlc)
+    ) r
+    UNION
+    SELECT c.slug, e.child
+    FROM closure c
+    JOIN (
+        :compose(rank/compose_edges.sqlc)
+    ) e ON e.parent = c.template
+)
+SELECT slug, template FROM closure

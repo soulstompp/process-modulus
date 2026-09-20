@@ -40,13 +40,16 @@ const RUST_ONLY: &[(&str, &str)] = &[
     ("every-draft", "a draft-state fixture; tests/fixtures.rs"),
 ];
 
+#[path = "../shared/database/mod.rs"]
+mod database;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL").map_err(|_| {
         "DATABASE_URL is unset. This example reports what the corpus says, and it cannot do \
          that without the rows. Load them with assets/ddl/schema.ddl and ingest.sql."
     })?;
-    let pool = sqlx::postgres::PgPool::connect(&url).await?;
+    let pool = database::connect(&url).await?;
 
     // ------------------------------------------------------------------
     // 1. Nothing unobserved: every relation, and every document.
@@ -60,7 +63,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // A root is reached by no other template. It earns its place by being run: as a psql entry
     // point, or by an example naming its composed output.
     let examples = sources::all();
-    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc"];
+    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc", "views.sqlc"];
 
     let mut unobserved: Vec<&str> = Vec::new();
     for (name, _) in &files {
@@ -401,14 +404,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("      `(none named)` above: the schema REFUSES a keyref that would force the subset,");
     println!("      because a group eliminating against a member that files nothing is ordinary.");
 
-    // ⭐ The greatest element of the intersection of the parts' divisor sets, where the parts
-    //   share a unit. Where they do not, divisibility is a relation on one ordered set and there
-    //   is nothing to intersect, so the row reports `notApplicable` rather than a number the fold
-    //   would happily have produced.
+    // The greatest element of the intersection of the parts' divisor sets, each quantum converted
+    // into the composed layer's unit first. Where a factor is unmeasured, or the converted quanta
+    // still sit in different units, the row carries the typed absence rather than a number the
+    // fold would happily have produced. Proven in `src/proofs/README.md`, entry `composed_quantum`.
     let quanta = sqlx::query_file!("assets/sql/queries/observations/11-composed-quantum.sql")
         .fetch_all(&pool)
         .await?;
-    let unanswerable = quanta.iter().filter(|q| q.unit == "(incommensurable)").count();
+    let unanswerable = quanta.iter().filter(|q| q.quantum.starts_with('(')).count();
     println!(
         "\n12. does a fused supply still arrive in whole units? {} of {} have no common quantum",
         unanswerable,
@@ -420,13 +423,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             q.composition, q.composed_layer, q.parts, q.unit, q.quantum
         );
     }
-    println!("   ⛔ `(notApplicable)` is the question being malformed, not unanswered: two quanta");
-    println!("      in different units have no common divisor to find.");
+    println!("   `(unmeasured)` is a conversion nobody sized. `(notApplicable)` is the question being");
+    println!("   malformed, not unanswered: two quanta in different units have no common divisor.");
 
-    // ⭐⭐⭐ TWO WAYS TO THE SAME NUMBER, AND THE CONTROLS ARE WHAT MAKE THE DIFFERENCE MEAN
-    //    ANYTHING. Every composed layer whose parts convert at one must agree exactly; only a
-    //    spread factor can separate the two figures, because only then is one factor
-    //    multiplying both the nameplate and the demand that get differenced.
+    // Two ways to the same number, and the controls are what make the difference mean anything.
+    // A composed layer whose remainder walk passes no factor with width agrees exactly; only a
+    // spread factor can separate the two figures, because only then is one factor multiplying
+    // both the nameplate and the demand that get differenced. `algebra/composed_remainder` holds
+    // this on every run; here it is asserted row by row, and both kinds of row must occur.
     let rem = sqlx::query_file!("assets/sql/queries/observations/13-composed-remainder.sql")
         .fetch_all(&pool)
         .await?;
@@ -440,20 +444,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for r in &rem {
         println!(
             "   {} {:<26} {:<22} {} part(s)  pivot [{}, {}, {}]  differenced [{}, {}, {}] {}",
-            if r.agrees { "  " } else { "⛔" },
+            if r.agrees { "  " } else { "≠ " },
             r.composition, r.composed_layer, r.parts,
             r.pivoted_low, r.pivoted_mode, r.pivoted_high,
             r.derived_low, r.derived_mode, r.derived_high,
             r.unit
         );
     }
+    for r in &rem {
+        assert_eq!(
+            r.agrees, !r.spread,
+            "{}/{}: the two figures {} while a factor on the walk {} width",
+            r.composition,
+            r.composed_layer,
+            if r.agrees { "agree" } else { "differ" },
+            if r.spread { "has" } else { "has no" }
+        );
+    }
     assert!(
-        rem.len() - apart > 0,
-        "every composed layer disagrees, so there is no control here and the difference \
-         demonstrates nothing. A layer whose parts convert at one MUST agree exactly."
+        apart > 0 && apart < rem.len(),
+        "{apart} of {} composed layers disagree. Without both kinds of row there is no control \
+         and no case, and the comparison demonstrates nothing.",
+        rem.len()
     );
-    println!("   ⭐ The agreeing rows are the control: their parts convert at one, so nothing");
-    println!("      could separate the two figures. Only a spread factor can, and it does.");
+    println!("   The agreeing rows are the control: no factor on their walk has width, so nothing");
+    println!("   could separate the two figures. Only a spread factor can, and it does.");
 
     // ⭐⭐⭐ THE ONE OBSERVATION THAT IS ABOUT THE SCHEMA RATHER THAN THE BUSINESS. Every other
     //    section here asks what the filings say; this asks which STATES they have ever reached.
@@ -532,8 +547,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "the incidence reaches as far as the magnitudes, so the claim that a notation carries \
          only the sparse half has lost its subject and this section demonstrates nothing"
     );
-    println!("   ⭐ Nine tables render as a BPMN element and fourteen do not; this is how much");
-    println!("      each of them holds. The largest tables here have no element at all.");
+    println!("   ⭐ `diagrams/domain_objects.sqlc` says which tables render as a BPMN element and");
+    println!("      which are refused with a typed reason; this is how much each of them holds.");
+    println!("      The largest tables here have no element at all.");
 
     // ⭐⭐⭐ THE ORDINAL RANK, WHICH IS WHAT WELL-FOUNDEDNESS GIVES YOU. `rank(x) = sup{rank(y)+1}`
     //    exists exactly when nothing expands to itself, so a cycle is the case where there is no
@@ -552,10 +568,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("      They agree on this corpus by luck; a jagged partition separates them.");
 
     // ⭐⭐⭐ THE PARAMETER THE GRAPHS ACTUALLY DIFFER ON. `rank = n - c`, cycle space `= m - n + c`.
-    //    A graph with cycles has no ORDINAL rank and always has a MATRIX rank, and a well-founded
-    //    relation is simply one whose cycle space is zero. The layer graph's comes out at 0,
-    //    which is its well-foundedness measured rather than assumed; the unit graph's is 1, and
-    //    that is the subspace `checks/conversion_cycle_does_not_close` is really testing.
+    //    A graph with cycles has no ORDINAL rank and always has a MATRIX rank.
+    //
+    // ⛔ AND SAY WHICH CYCLE, BECAUSE THE TWO SENSES DO NOT COINCIDE. `m - n + c` counts UNDIRECTED
+    //    cycles, so a zero says FOREST, which is strictly stronger than well-founded: a diamond is
+    //    four edges over four nodes in one component, cycle space 1, and nothing in it descends
+    //    forever. So the layer graph's 0 measures MORE than its well-foundedness, and what holds it
+    //    there is `checks/jagged_layer` rather than an identity. The unit graph's is 1, and that is
+    //    the subspace `checks/conversion_cycle_does_not_close` is really testing.
     let cyc = sqlx::query_file!("assets/sql/rank/cycle_space.sql").fetch_all(&pool).await?;
     println!("\n19. the graphs this model composes, as incidence matrices");
     for c in &cyc {
@@ -564,13 +584,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                  c.c_components.unwrap_or(0), c.rank_of_incidence.unwrap_or(0),
                  c.cycle_space_dim.unwrap_or(0));
     }
-    println!("   ⭐ A well-founded relation is one whose cycle space is ZERO, and the ordinal rank");
-    println!("      is what you get free when it is. The unit graph's is not, and its rule is that");
-    println!("      the weights on it vanish: a potential exists, per Strang's decomposition.");
+    println!("   ⭐ A ZERO cycle space says the graph is a FOREST, which is stronger than");
+    println!("      well-founded: a diamond descends nowhere forever and still carries a cycle");
+    println!("      here. So the layer graph's zero is `checks/jagged_layer` holding it, and the");
+    println!("      ordinal rank above is what a forest gives you free. The unit graph's is not");
+    println!("      zero, and its rule is that the weights on it vanish: a potential exists.");
 
-    // ⭐⭐ AND THE OTHER RANK, IN THE OTHER ALGEBRA. Composition is the linear map `F Phi - E`,
-    //    and two layers on a loop have linearly dependent rows in it: ordinal rank stops existing
-    //    and matrix rank falls at the same moment. `pm:Layer` calls the pair one layer.
+    // ⭐⭐ AND THE OTHER RANK, IN THE OTHER ALGEBRA. Read composition as the map `F Phi - E` and
+    //    two layers on a loop have linearly dependent rows in it: ordinal rank stops existing and
+    //    matrix rank falls at the same moment. `pm:Layer` calls the pair one layer.
+    //
+    // ⛔ `F Phi - E` IS THE DIAGNOSTIC AND NOT THE ARITHMETIC ANY FILING STATES HERE. An
+    //    elimination's quantity is a `pm:StatedEliminatedQuantity`, which admits a claim, a typed
+    //    absence OR a derivation, so a computed `e` is a document the schema allows and
+    //    `pm.elimination.derivation` is the column that holds it. A FIXTURE REACHES THAT ARM and no
+    //    corpus document does, so on every document about a business `e` is a figure somebody wrote
+    //    down, which is why it is a magnitude `checks/fusion_sum_disagrees` compares against rather
+    //    than a term a rule solves for.
+    //
+    // ⚠️ AND REACHING THE ARM IS NOT COMPUTING IT. Nothing here derives the figure the identity
+    //    names, so a derived elimination SUSPENDS its quantity's sum under that name rather than
+    //    sizing it: `eliminations/unsized.sqlc` is where it is lifted. The linear map is reachable,
+    //    the grammar has been reached, and the computation behind it is not wired in. Count the
+    //    column rather than trusting this comment:
+    //    `SELECT count(*) FROM pm.elimination WHERE derivation IS NOT NULL`.
+    //
+    // ⭐⭐⭐ AND WHAT MAKES THE DIAGNOSTIC LEGITIMATE AT ANY DEPTH IS THAT A PATH OF CONVERSIONS IS
+    //    ONE CONVERSION. A factor is strictly positive, so it cannot change its operand's sign, so
+    //    the corner the operand takes is the same at every level and a chain of factors collapses
+    //    into their product. That is what lets `composition/settled_remainders.sqlc` multiply the
+    //    path's factors in and read one row per settled node instead of recursing, and it is why
+    //    depth costs the rank nothing: nesting adds witnesses, never arithmetic. Proof:
+    //    `src/proofs/README.md`, entry `conversion_collapses`.
     let comoving = sqlx::query_file!("assets/sql/rank/co_moving_layers.sql").fetch_all(&pool).await?;
     println!("\n18. layers whose remainders must move together, the fourth falsifier computed: {}",
              comoving.len());
@@ -591,7 +636,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⚠️ `ok` IS TWO DIFFERENT FACTS. `diagrams` earns it from a population the contract did not
     //    write, `information_schema`; `arithmetic` and `algebra` are built exactly like `rules`
     //    and are merely populated everywhere on this corpus.
-    let guards = sqlx::query_file!("assets/sql/queries/observations/16-guard-cover.sql")
+    let guards = sqlx::query_file!("assets/sql/queries/observations/16-guard-reach.sql")
         .fetch_all(&pool)
         .await?;
     println!("\n20. what each contract's own guard can be about");
@@ -609,10 +654,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          grades printed above are about nothing"
     );
 
-    // ⭐⭐⭐ THE THIRD `pm:ForeignId`, AND THE ONE THAT COULD NOT BE REPORTED AT ALL UNTIL THE
-    //    COLUMN EXISTED. `pm:Operation/foreignId` is the whole BPMN interface and the ingest
-    //    discarded it, so the corpus filed a node id, the database held none, and every relation
-    //    that could have shown the crossing was derived from a table that had thrown it away.
+    // ⭐⭐⭐ THE THIRD `pm:ForeignId`, AND A RELATION SHOWS ONLY WHAT THE INGEST KEEPS.
+    //    `pm:Operation/foreignId` is the whole BPMN interface, and an ingest that drops it leaves
+    //    the corpus filing a node id, the database holding none, and every relation that could
+    //    show the crossing derived from a table that threw it away. The column is this section's
+    //    only source, so the report exists exactly as far as the ingest carries the field.
     //
     // ⛔ REPORTED, NEVER ASSERTED, and for a sharper reason than `between`. A `between` MAY
     //    resolve and happens not to; this one CANNOT, because the document it names is not in
@@ -649,7 +695,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          is a claim about nothing"
     );
 
-    // ⭐⭐⭐ THE LAYER DIMENSION READ DOWN THE OTHER AXIS. `rank/incidence_cover.sqlc` counts, per
+    // ⭐⭐⭐ THE LAYER DIMENSION READ DOWN THE OTHER AXIS. `rank/incidence_reach.sqlc` counts, per
     //    RELATION, how much of the dimension it touches, so it says `49 of 51` and never which
     //    two. This is the transpose, where the subject is the layer and the shortfall has a name.
     //
@@ -659,7 +705,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    shortfall was an artifact of the key. With the subject declared `claim` and the claim's
     //    own layer reported, it is zero. A cover measured through a key that does not resolve
     //    measures the key.
-    let cover = sqlx::query_file!("assets/sql/queries/observations/18-layer-cover.sql")
+    let cover = sqlx::query_file!("assets/sql/queries/observations/18-layer-reach.sql")
         .fetch_all(&pool)
         .await?;
     let thinnest = cover.first().map(|c| c.examined_by).unwrap_or(0);
@@ -688,9 +734,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ⭐⭐⭐ THE REPOSITORY'S CENTRAL CLAIM ABOUT ITSELF, AS A QUERY RATHER THAN A SENTENCE. A
     //    parent composing a child twice is ordinary and a fusion reaching a layer twice is a
-    //    violation, and both are one name arriving twice under one fold. Until the compose DAG
-    //    was a relation the two halves were a Rust `BTreeMap` and a SQL table, so the program
-    //    that printed the claim held one of them and could not join the other.
+    //    violation, and both are one name arriving twice under one fold. The comparison needs
+    //    both halves in one relation: a claim whose two graphs live in a Rust `BTreeMap` and a
+    //    SQL table is one a program can hold a single side of and never join.
     let dup = sqlx::query_file!("assets/sql/queries/observations/19-duplication.sql")
         .fetch_all(&pool)
         .await?;
@@ -705,6 +751,125 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         dup.len() == 2 && dup.iter().all(|d| d.edges > 0),
         "one of the two graphs has no edges, so this comparison is between a structure and \
          nothing and the opposite verdicts are about one thing"
+    );
+
+    // ⭐⭐ THE ONE WIDTH IN THIS MODEL THAT NARROWS WHAT IT TOUCHES. Every other term widens the
+    //    figure it enters. An elimination subtracted bound by bound sends its own width the other
+    //    way, because the low rises and the high falls together, so a composer LESS sure how much
+    //    was double counted files a MORE precise composed figure. Neither reading is a defect and
+    //    no rule is owed; what was missing was any way to count which filings are in which arm.
+    let mono = sqlx::query_file!("assets/sql/queries/observations/20-elimination-monotonicity.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n24. what a wider elimination would do to the figure it comes off");
+    for m in &mono {
+        let w = m.width.map_or_else(|| "        ".to_string(), |w| format!("{w:>8}"));
+        println!(
+            "   {:<16} {:<10} width {w}   {}",
+            m.composed_layer, m.quantity, m.what_a_wider_elimination_does
+        );
+        if m.width.is_some_and(|w| w > 0.0) {
+            println!("   {:<28}    {}", "", m.what_the_bound_rests_on);
+        }
+    }
+    println!("   ⛔ The crossed reading is reached only where bound by bound would leave the claim");
+    println!("      disordered, so it is rare BY CONSTRUCTION. Its arm emptying would mean the");
+    println!("      fixture that exercises it had stopped, not that the model had changed.");
+    assert!(
+        mono.iter().any(|m| m.isotone == Some(true)) && mono.iter().any(|m| m.isotone == Some(false)),
+        "one arm of this classification is empty, so the column reports the corpus rather than \
+         the two readings the arithmetic actually has"
+    );
+    // ⛔⛔ THE KEY IS CHECKED BY THE FIGURES AND COULD NOT BE CHECKED BY A COUNT. `claim_seq` is a
+    //    document ordinal, so a join on it returns one claim per elimination whether or not it is
+    //    the right claim: shifted by one it still returns a row for every elimination and almost
+    //    none of the figures agree. So the claim's own three points ride along and are compared.
+    let placed: Vec<_> = mono.iter().filter(|m| m.low.is_some()).collect();
+    assert!(
+        !placed.is_empty()
+            && placed.iter().all(|m| m.claim_low == m.low
+                && m.claim_high == m.high
+                && m.claim_mode.is_some()),
+        "an eliminated quantity's `claim_seq` points at a claim that is not the one stating it, so \
+         every bound origin read through it is read off the wrong claim"
+    );
+    let width_bearing: Vec<_> = mono.iter().filter(|m| m.width.is_some_and(|w| w > 0.0)).collect();
+    assert!(
+        width_bearing.iter().any(|m| m.licensed == Some(true))
+            && width_bearing.iter().any(|m| m.licensed == Some(false)),
+        "every elimination with width answers the licence question the same way, so the column \
+         reports this corpus rather than the two answers a filing may give"
+    );
+
+    // ⭐⭐⭐ AND THE CONVERSION'S OTHER BRANCH, WHICH NO FILING REACHES. A demand cannot be
+    //    negative so it converts bound by bound; a remainder can, so it converts by corners. The
+    //    corner rule changes a figure only where a factor has width AND the operand is negative at
+    //    that bound, and the two populations here do not overlap. Both asserts below are the point:
+    //    an empty intersection is a fact about the evidence only while both sides are sizeable.
+    let slopes = sqlx::query_file!("assets/sql/queries/observations/21-conversion-slopes.sql")
+        .fetch_all(&pool)
+        .await?;
+    let spread = slopes.iter().filter(|c| c.spread_factor).count();
+    let negative = slopes.iter().filter(|c| c.operand_low.is_some_and(|v| v < 0.0)).count();
+    let bites = slopes.iter().filter(|c| c.corner_rule_bites == Some(true)).count();
+    println!("\n25. which corner of the factor each bound of a carried remainder took");
+    println!("   {:>3} settled nodes carried up", slopes.len());
+    println!("   {spread:>3} under a factor with width");
+    println!("   {negative:>3} whose remainder is negative at its low, so that bound takes the factor's HIGH");
+    println!("   {bites:>3} where taking corners gave a different figure from multiplying bound by bound");
+    println!("   ⛔ Zero is not a reason to simplify the arithmetic. It says the two populations");
+    println!("      above do not overlap in this corpus. A negative remainder is the interference");
+    println!("      case the model exists to measure and a factor with width is ordinary; what is");
+    println!("      empty is the intersection, and the identity is proved against a constructed");
+    println!("      operand precisely because no filing reaches it.");
+    assert!(
+        spread > 0 && negative > 0,
+        "one side of this intersection is empty, so `{bites} bites` is vacuous for a reason that \
+         has nothing to do with the corner rule"
+    );
+
+    // ⭐⭐⭐ THE CONFORMANCE ROW THAT HAS NO RULE, GIVEN A MAGNITUDE AT LAST. A fusion adds its
+    //    converted parts, so moving supply from one part to another at the rate below leaves the
+    //    composed figure exactly where it was. That invisibility is not a side effect of the
+    //    arithmetic, it IS the claim the fusion makes, and `asrt:Fusion` is explicit that no
+    //    validator reaches the judgement behind it. What a validator CAN do is say how much is
+    //    being asserted, so that the reader the schema invites to disagree has something to
+    //    disagree with. Nothing measured this before.
+    let offsets = sqlx::query_file!("assets/sql/queries/observations/22-declared-offsets.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n26. what each fusion declared it cannot see");
+    for o in &offsets {
+        match (o.determined, o.rate_mode) {
+            (true, Some(rate)) => println!(
+                "   {:<16} {} -> {}   1 : {rate:.4}",
+                o.composed_layer, o.part_a, o.part_b
+            ),
+            _ => println!(
+                "   {:<16} {} -> {}   {}",
+                o.composed_layer,
+                o.part_a,
+                o.part_b,
+                o.undetermined_because.as_deref().unwrap_or("undetermined")
+            ),
+        }
+    }
+    println!("   ⛔ One row per PAIR, which is not the dimension. A fusion of k parts licenses");
+    println!("      C(k,2) pairs and k-1 independent offsets, and those agree only up to k = 2.");
+    println!("      Every fusion filed here is binary, so the two totals match for a reason that");
+    println!("      is a fact about this corpus. rank/composition_kernel is the dimension.");
+    // ⛔ Both arms, because a rate column that is everywhere 1 reports that no fusion converts
+    //    rather than that conversion leaves the offset at par, and an empty absence arm would
+    //    mean the undetermined case is being asserted rather than exercised.
+    assert!(
+        offsets.iter().any(|o| o.determined && o.rate_mode.is_some_and(|r| (r - 1.0).abs() > 1e-9)),
+        "every declared offset is at par, so this relation cannot distinguish a fusion that \
+         converts from one whose parts already share a unit"
+    );
+    assert!(
+        offsets.iter().any(|o| !o.determined),
+        "no fusion leaves an offset undetermined, so the typed-absence arm is a claim about the \
+         corpus that nothing here exercises"
     );
 
     println!("\nAll checks passed.");

@@ -1,0 +1,32 @@
+# Every part's quantities beside the same quantities of the layer it is composed into. One row per
+# (part, quantity) that layers/quantities.sqlc has on both the part's layer and the composed layer.
+#
+# The two ends of a part, per quantity
+#   A part carries a figure in its own layer's unit into a composed layer that files the same
+#   quantity in its own. Every question about the crossing reads the two side by side:
+#   checks/unit_crossing_without_a_factor.sqlc asks whether the units differ with nothing filed to
+#   convert, composition/carriable.sqlc whether a one-part fusion carries its part unchanged, and
+#   units/conversions.sqlc which unit a stated factor converts from and to. The part's factor and its
+#   state travel with the row, so no reader joins the part again.
+#
+# `quantity` is layers/quantities.sqlc's
+#   Demand, nameplate and the three buffer slacks, the quantities a layer carries in a unit. A part
+#   that files one its composed layer does not has no row, because there is nothing to set it
+#   beside; algebra/part_quantities.sqlc counts those rows too.
+-- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed layer.
+SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
+       p.factor_state, p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
+       part.quantity,
+       part.low  AS part_low,  part.mode AS part_mode,  part.high AS part_high,  part.unit AS part_unit,
+       comp.low  AS composed_low, comp.mode AS composed_mode, comp.high AS composed_high,
+       comp.unit AS composed_unit
+FROM      (
+    :compose(composition/parts.sqlc)
+) p
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) part ON part.filing = p.part_filing AND part.layer = p.part_layer
+JOIN      (
+    :compose(layers/quantities.sqlc)
+) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
+      AND comp.quantity = part.quantity

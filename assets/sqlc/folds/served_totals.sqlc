@@ -1,0 +1,30 @@
+# The served shares of a layer, totalled. One row per layer holding at least one `booked`,
+# `counterparty` or `people` share: how many such holders, how many left their share unstated, the
+# three points summed over the ones that stated it, the units they used, and which kinds they are.
+#
+# The third of three folds of one relation
+#   entries/holder_totals.sqlc folds every holder of a layer and entries/unserved_totals.sqlc the
+#   `customer` and `unrealised` ones. This is the rest, the holders a buffer absorbed. The kinds are
+#   a partition of `pm.holder_kind` into served and unserved, so per layer the three agree:
+#   everything held is what was served plus what went unserved, which algebra/served_totals.sqlc
+#   holds.
+#
+# An unstated share is not a zero share
+#   As in entries/unserved_totals.sqlc: `unstated` is a count and not a filter, because `sum()` skips
+#   NULLs silently, and a reader bounding the shares suspends where any is unstated rather than
+#   reading half a total as the whole. `derived` counts the unstated shares filed as `sharesSum`'s
+#   output, as in entries/holder_totals.sqlc, so that reader can name the identity it waits on.
+-- entries/served_holders.sqlc folded to one row per layer.
+SELECT h.filing, h.layer,
+       count(*)                                        AS holders,
+       count(*) FILTER (WHERE h.share_mode IS NULL)     AS unstated,
+       count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
+       sum(h.share_low)                                 AS served_low,
+       sum(h.share_mode)                                AS served_mode,
+       sum(h.share_high)                                AS served_high,
+       array_agg(DISTINCT h.share_unit)                 AS share_units,
+       string_agg(DISTINCT h.kind::text, ' and ')       AS kinds
+FROM (
+    :compose(entries/served_holders.sqlc)
+) h
+GROUP BY h.filing, h.layer

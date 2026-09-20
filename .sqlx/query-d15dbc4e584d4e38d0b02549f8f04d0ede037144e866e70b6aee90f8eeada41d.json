@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §7b  How many remainders the arithmetic can reach at all, which is §7's denominator.\n-- layers/remainder.sqlc, counted.\nSELECT count(*) AS \"computable!\"\nFROM (\n    SELECT * FROM layers.remainder\n) r\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "computable!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "d15dbc4e584d4e38d0b02549f8f04d0ede037144e866e70b6aee90f8eeada41d"
+}

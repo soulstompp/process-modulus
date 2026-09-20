@@ -150,10 +150,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -181,10 +181,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -300,10 +300,10 @@
                pessoas. Disso, m·q = 1 pessoa é a decisão de quadro (amountOrigin =
                policy) e 0,2 é o resíduo que efetivo nenhum remove. -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -392,10 +392,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -424,10 +424,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -564,10 +564,10 @@
                lá chega, portanto m·q não contribui com nada que uma compra menor pudesse
                remover: o resto desta camada é do tipo irredutível. -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -642,10 +642,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -693,10 +693,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -908,10 +908,10 @@
                resto e um compromisso que alguem podia ter assumido de outra maneira. A
                camada com o maior resto deste documento não tem nada de irredutível. -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -1044,10 +1044,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter tido um número diferente destes, um elemento ao lado</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -1074,7 +1074,7 @@
                       <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>não há aqui intervalo para estreitar</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason><pm:note>o `LumpyQuantum/origin` diz quem fixa este tamanho, neste mesmo elemento</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>o `LumpyQuantum/origin` diz quem fixa este tamanho, neste mesmo elemento</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -1101,7 +1101,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>não há aqui intervalo para estreitar</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -1224,10 +1224,10 @@
                     <pm:period>semana</pm:period>
                   </pm:denominator>
                   <pm:narrowsWhen>
-                    <pm:absent><pm:reason>derived</pm:reason><pm:note>o que estreitaria isto não é um ato mas um cálculo: esta quota é o intervalo da procura subtraído a uma placa fixa, portanto quem receba, tendo ambos, deriva a sua largura em vez de esperar que alguém volte a medir</pm:note></pm:absent>
+                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o que estreitaria isto não é um ato mas um cálculo: esta quota é o intervalo da procura subtraído a uma placa fixa, portanto quem receba, tendo ambos, deriva a sua largura em vez de esperar que alguém volte a medir</pm:note></pm:derivation>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
-                    <pm:absent><pm:reason>derived</pm:reason><pm:note>o limite é o limite da procura, subtraído a uma placa fixa</pm:note></pm:absent>
+                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o limite é o limite da procura, subtraído a uma placa fixa</pm:note></pm:derivation>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>padaria-do-largo</pm:party>
                     <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
@@ -1240,10 +1240,10 @@
           </pm:holder>
 
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da placa desta camada; quem recebe calcula-o</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>

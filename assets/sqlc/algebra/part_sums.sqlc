@@ -1,0 +1,40 @@
+# The fold loses no part. One row per quantity: whether the parts summed in folds/part_sums.sqlc
+# add up, at all three points and in number, to composition/converted.sqlc taken whole.
+#
+# Totals survive any grouping
+#   Summing the per-fusion sums gives the same total however the parts were grouped, so this law
+#   cannot see a regrouping, only a part that fell out of the fold or entered it twice. The
+#   grouping is held per fusion by algebra/fusion_sum.sqlc, which recomputes each sum from its own
+#   route.
+#
+# Probe
+#   examples/probes runs it as `part_sums`: in the composed text the fold drops the parts whose
+#   figure has width, and the law must fail for the quantities where such parts are.
+-- folds/part_sums.sqlc summed over every fusion, against composition/converted.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT c.quantity::text AS subject,
+           c.parts = f.parts AND c.low = f.low AND c.mode = f.mode AND c.high = f.high AS holds,
+           format('%s parts summing to [%s, %s, %s]; the fold holds %s summing to [%s, %s, %s]',
+                  c.parts, c.low, c.mode, c.high, f.parts, f.low, f.mode, f.high) AS detail
+    FROM (
+        SELECT v.quantity, count(*) AS parts, sum(v.low) AS low, sum(v.mode) AS mode,
+               sum(v.high) AS high
+        FROM (
+            :compose(composition/converted.sqlc)
+        ) v
+        GROUP BY v.quantity
+    ) c
+    LEFT JOIN (
+        SELECT s.quantity, sum(s.parts) AS parts, sum(s.sum_low) AS low, sum(s.sum_mode) AS mode,
+               sum(s.sum_high) AS high
+        FROM (
+            :compose(folds/part_sums.sqlc)
+        ) s
+        GROUP BY s.quantity
+    ) f ON f.quantity = c.quantity
+) p ON true
+WHERE a.slug = 'part_sums'

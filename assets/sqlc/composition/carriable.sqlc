@@ -1,37 +1,43 @@
-# THE ONE-PART FUSIONS WHOSE CONVERSION IS STATED, BESIDE THE PART AND THE FIGURE FILED AGAINST
-# IT. One row per such fusion per quantity. This is the population the identity test applies to,
-# BEFORE the fusions that eliminate something, or that owe no sum, are taken out.
+# The one-part fusions whose conversion is stated, beside the part and the figure filed against
+# it. One row per such fusion per quantity. This is the population the identity test applies to,
+# before the fusions that eliminate something, or that owe no sum, are taken out.
 #
-# ⭐⭐⭐ IT EXISTS BECAUSE A DIFFERENCE NEEDS A NAMED LEFT OPERAND. |A ∖ B| = |A| - |A ⋉ B| is
-#    checkable only where somebody can count A, so a difference taken against a candidate set
-#    spelled inline cannot carry a law however plainly it is written. That is the second way a
-#    difference goes ungoverned, and examples/soundness/main.rs looks for the first: it walks the
-#    tree for difference SYNTAX, and an unnamed OPERAND is invisible to it.
+# Why it exists: a difference needs a named left operand
+#   |A ∖ B| = |A| - |A ⋉ B| is checkable only where somebody can count A, so a difference taken
+#   against a candidate set spelled inline cannot carry a law however plainly it is written. That
+#   is the second way a difference goes ungoverned, and examples/soundness/main.rs looks for the
+#   first: it walks the tree for difference syntax, and an unnamed operand is invisible to it.
 #
-# ⛔ THE TWO RESTRICTIONS HERE ARE NOT THE DIFFERENCE AND BELONG ON THIS SIDE OF IT. A stated
-#   factor and a single part are what make identity ASKABLE at all; a filed elimination and a
-#   suspension are answers to it. Folding all four into one WHERE is what hid the operator.
--- asrt:Fusion with one asrt:Part and a stated factor, against layers/quantities.sqlc.
-SELECT p.composition AS filing, p.composed_layer AS layer, part.quantity,
-       part.low  * coalesce(p.factor_low,  1) AS part_low,
-       part.mode * coalesce(p.factor_mode, 1) AS part_mode,
-       part.high * coalesce(p.factor_high, 1) AS part_high,
-       part.unit AS part_unit,
-       filed.low AS filed_low, filed.mode AS filed_mode, filed.high AS filed_high,
-       filed.unit AS filed_unit
+# The restrictions here come before the difference
+#   The two restrictions here are not the difference and belong on this side of it. A stated
+#   factor and a single part are what make identity askable at all; a filed elimination and a
+#   suspension are answers to it. Folding all four into one `WHERE` is what hid the operator.
+#
+# The conversion is the same one rule
+#   The part is converted at the corner its sign picks, which is what composition/converted.sqlc
+#   does on the route the identity test compares this population against. Two expressions for one
+#   operator would have this population disagree with the figure it is the population for, on any
+#   filing whose quantity went negative. Proof: `src/proofs/README.md`, entry `two_slopes`.
+#
+# One part filed, not one part resolved
+#   The single part is counted by folds/fusion_parts.sqlc, over the parts the composer filed. A
+#   fusion filing two parts, one naming a document this corpus does not hold, is not a one-part
+#   fusion, and counting only the parts that resolve here would test it as though it were.
+-- composition/part_quantities.sqlc for a fusion that files one part, where the factor has a figure.
+SELECT q.composition AS filing, q.composed_layer AS layer, q.quantity,
+       least(   q.part_low  * coalesce(q.factor_low, 1),
+                q.part_low  * coalesce(q.factor_high, 1)) AS part_low,
+       q.part_mode * coalesce(q.factor_mode, 1)           AS part_mode,
+       greatest(q.part_high * coalesce(q.factor_low, 1),
+                q.part_high * coalesce(q.factor_high, 1)) AS part_high,
+       q.part_unit,
+       q.composed_low AS filed_low, q.composed_mode AS filed_mode, q.composed_high AS filed_high,
+       q.composed_unit AS filed_unit
 FROM      (
-    :compose(composition/parts.sqlc)
-) p
+    :compose(composition/part_quantities.sqlc)
+) q
 JOIN      (
-    :compose(layers/quantities.sqlc)
-) part ON part.filing = p.part_filing AND part.layer = p.part_layer
-JOIN      (
-    :compose(layers/quantities.sqlc)
-) filed ON filed.filing = p.composition AND filed.layer = p.composed_layer
-       AND filed.quantity = part.quantity
-WHERE p.factor_absent IS NULL
-  AND (p.composition, p.composed_layer) IN (
-        SELECT composition, composed_layer
-        FROM ( :compose(composition/parts.sqlc) ) one
-        GROUP BY composition, composed_layer
-        HAVING count(*) = 1)
+    :compose(folds/fusion_parts.sqlc)
+) f ON f.composition = q.composition AND f.composed_layer = q.composed_layer
+WHERE q.factor_state IN ('omitted', 'stated')
+  AND f.parts = 1

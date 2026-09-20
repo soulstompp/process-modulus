@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/every-derived-quantity.bpmn by examples/rendering/main.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 480" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .refuted{stroke:#b00;stroke-width:2.5} .coverName{font:10px sans-serif;fill:#888} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="every-derived-quantity" id="pool-every-derived-quantity"><title>pool: every-derived-quantity</title>
+    <rect id="pool-every-derived-quantity-box" x="8" y="36" width="744" height="332" class="poolBox"/>
+    <path id="pool-every-derived-quantity-band" d="M36 36 v332" class="poolBox"/>
+    <text id="pool-every-derived-quantity-name" transform="translate(26,202) rotate(-90)" text-anchor="middle" class="poolName">every-derived-quantity</text>
+  </g>
+  <g class="lane" data-layer="plant" data-rank="2" id="lane_every-derived-quantity_plant"><title>lane: plant</title>
+    <rect id="lane_every-derived-quantity_plant-box" x="120" y="46" width="620" height="136" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_plant"><text id="lane_every-derived-quantity_plant-name" x="128" y="62" class="laneName">plant</text></a>
+    <text id="lane_every-derived-quantity_plant-rank" x="732" y="62" class="rankName" text-anchor="end">rank 2</text>
+  <g class="lane" data-layer="line-e" data-rank="0" id="lane_every-derived-quantity_line-e"><title>lane: line-e</title>
+    <rect id="lane_every-derived-quantity_line-e-box" x="134" y="68" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_line-e"><text id="lane_every-derived-quantity_line-e-name" x="142" y="84" class="laneName">line-e</text></a>
+    <text id="lane_every-derived-quantity_line-e-rank" x="726" y="84" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="single" data-rank="1" id="lane_every-derived-quantity_single"><title>lane: single</title>
+    <rect id="lane_every-derived-quantity_single-box" x="134" y="106" width="600" height="66" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_single"><text id="lane_every-derived-quantity_single-name" x="142" y="122" class="laneName">single</text></a>
+    <text id="lane_every-derived-quantity_single-rank" x="726" y="122" class="rankName" text-anchor="end">rank 1</text>
+  <g class="lane" data-layer="line-d" data-rank="0" id="lane_every-derived-quantity_line-d"><title>lane: line-d</title>
+    <rect id="lane_every-derived-quantity_line-d-box" x="148" y="128" width="580" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_line-d"><text id="lane_every-derived-quantity_line-d-name" x="156" y="144" class="laneName">line-d</text></a>
+    <text id="lane_every-derived-quantity_line-d-rank" x="720" y="144" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  </g>
+  </g>
+  <g class="lane" data-layer="site" data-rank="2" id="lane_every-derived-quantity_site"><title>lane: site</title>
+    <rect id="lane_every-derived-quantity_site-box" x="120" y="188" width="620" height="174" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_site"><text id="lane_every-derived-quantity_site-name" x="128" y="204" class="laneName">site</text></a>
+    <text id="lane_every-derived-quantity_site-rank" x="732" y="204" class="rankName" text-anchor="end">rank 2</text>
+  <g class="lane" data-layer="line-c" data-rank="0" id="lane_every-derived-quantity_line-c"><title>lane: line-c</title>
+    <rect id="lane_every-derived-quantity_line-c-box" x="134" y="210" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_line-c"><text id="lane_every-derived-quantity_line-c-name" x="142" y="226" class="laneName">line-c</text></a>
+    <text id="lane_every-derived-quantity_line-c-rank" x="726" y="226" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="pair" data-rank="1" id="lane_every-derived-quantity_pair"><title>lane: pair</title>
+    <rect id="lane_every-derived-quantity_pair-box" x="134" y="248" width="600" height="104" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_pair"><text id="lane_every-derived-quantity_pair-name" x="142" y="264" class="laneName">pair</text></a>
+    <text id="lane_every-derived-quantity_pair-rank" x="726" y="264" class="rankName" text-anchor="end">rank 1</text>
+  <g class="lane" data-layer="line-a" data-rank="0" id="lane_every-derived-quantity_line-a"><title>lane: line-a</title>
+    <rect id="lane_every-derived-quantity_line-a-box" x="148" y="270" width="580" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_line-a"><text id="lane_every-derived-quantity_line-a-name" x="156" y="286" class="laneName">line-a</text></a>
+    <text id="lane_every-derived-quantity_line-a-rank" x="720" y="286" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="line-b" data-rank="0" id="lane_every-derived-quantity_line-b"><title>lane: line-b</title>
+    <rect id="lane_every-derived-quantity_line-b-box" x="148" y="308" width="580" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-derived-quantity_line-b"><text id="lane_every-derived-quantity_line-b-name" x="156" y="324" class="laneName">line-b</text></a>
+    <text id="lane_every-derived-quantity_line-b-rank" x="720" y="324" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  </g>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 376 h-8 v88 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="388" class="noteText">AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one.</text>
+    <text id="legend-0-source" x="26" y="400" class="noteCite">assets/sqlc/diagrams/lane_grain.sqlc</text>
+    <text id="legend-1-says" x="26" y="418" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="430" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="448" class="noteText">COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="460" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

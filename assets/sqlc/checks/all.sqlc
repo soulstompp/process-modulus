@@ -1,35 +1,38 @@
-# EVERY CHECKABLE ROW IN THE CORPUS, WITH ITS VERDICT. One row per (rule, examined item):
-# which rule looked at it, which layer of which filing it is, whether it breaches the rule,
-# and a sentence saying what it says.
+# Every checkable row in the corpus, with its verdict. One row per (rule, examined item): which
+# rule looked at it, which layer of which filing it is, whether it breaches the rule, and a
+# sentence saying what it says.
 #
-# ⭐⭐⭐ THIS IS THE RELATION THE VIOLATIONS TABLE AND THE COVERAGE TABLE ARE BOTH VIEWS OF,
-#    AND THAT IS THE ENTIRE POINT OF ASSEMBLING IT. A violations table is
-#    `WHERE violates`; a coverage table is `GROUP BY rule`. Because they read ONE relation,
-#    a coverage number cannot be about a different population than the rule it reports on --
-#    which is what happens when each population is written twice, in two dialects of itself:
-#    the restatements disagree, and one counting four rows where its rule examines one crosses
-#    a threshold and reports a thin rule as well covered.
+# One relation, two views
+#   This is the relation the violations table and the coverage table are both views of, and that
+#   is the entire point of assembling it. A violations table is `WHERE violates`; a coverage
+#   table is `GROUP BY rule`. Because they read one relation, a coverage number cannot be about a
+#   different population than the rule it reports on. That is what happens when each population
+#   is written twice, in two dialects of itself: the restatements disagree, and one counting four
+#   rows where its rule examines one crosses a threshold and reports a thin rule as well covered.
 #
-# ⭐⭐ AND IT IS THE MOST USEFUL THING HERE TO RUN ON ITS OWN. An empty violations table is
-#    the good outcome and tells a reader nothing at all. THIS shows every rule working on real
-#    rows -- what it looked at, what each row said, and why it passed -- which is the only way
-#    to see that a rule is doing something rather than merely finding nothing.
+# The most useful thing here to run on its own
+#   An empty violations table is the good outcome and tells a reader nothing at all. This shows
+#   every rule working on real rows: what it looked at, what each row said, and why it passed.
+#   That is the only way to see that a rule is doing something rather than merely finding
+#   nothing.
 #
-# ⛔⛔ AND A RULE THAT EXAMINES NOTHING STILL APPEARS HERE, WITH A NULL VERDICT. That is not
-#    a quirk; it is the reason every check starts by joining checks/roster.sqlc. A check that
-#    merely filtered its population would vanish from a `GROUP BY` when the population was
-#    empty -- so the one verdict that matters most, ⛔ VACUOUS, is precisely the one a grouping
-#    cannot produce. The roster row exists before the population does, so the rule reports
-#    that it ran even when it had nothing to look at.
+# A rule that examines nothing still appears
+#   It appears with a NULL verdict. That is not a quirk; it is the reason every check starts by
+#   joining checks/roster.sqlc. A check that merely filtered its population would vanish from a
+#   `GROUP BY` when the population was empty, so the one verdict that matters most, vacuous, is
+#   precisely the one a grouping cannot produce. The roster row exists before the population
+#   does, so the rule reports that it ran even when it had nothing to look at.
 #
-# ⛔ THE CONTRACT EVERY CHECK KEEPS: one plain SELECT, no leading WITH, returning exactly
-#   `(rule, filing, layer, violates, detail)`, with `violates` NULL only on the row that says
-#   a rule examined nothing. A leading WITH cannot appear after UNION ALL, so a check needing
-#   recursion puts the walk in its own relation under composition/ and joins it -- which is
-#   better anyway, because the walk is then runnable by itself.
+# The contract every check keeps
+#   One plain SELECT, no leading WITH, returning exactly `(rule, filing, layer, violates,
+#   detail)`, with `violates` NULL only on the row that says a rule examined nothing. A leading
+#   WITH cannot appear after UNION ALL, so a check needing recursion puts the walk in its own
+#   relation under composition/ and joins it, which is better anyway, because the walk is then
+#   runnable by itself.
 -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
 :union(ALL checks/fit_disagrees.sqlc,
            checks/shares_do_not_sum.sqlc,
+           checks/stated_quantity_is_not_the_magnitude.sqlc,
            checks/nobody_named_as_unserved.sqlc,
            checks/exposure_unaccounted.sqlc,
            checks/share_exceeds_slack.sqlc,
@@ -45,9 +48,11 @@
            checks/narrows_a_point_value.sqlc,
            checks/range_says_no_range.sqlc,
            checks/bound_fell_with_no_range.sqlc,
+           checks/identity_does_not_compute_the_claim.sqlc,
            checks/window_lost_or_summed.sqlc,
            checks/derived_slack_over_a_window.sqlc,
            checks/window_not_applicable_on_a_rate.sqlc,
+           checks/window_size_not_applicable.sqlc,
            checks/elimination_not_applicable_with_parts.sqlc,
            checks/fusion_sum_disagrees.sqlc,
            checks/local_part_dangles.sqlc,

@@ -83,7 +83,8 @@ qual o vetor de eliminação `e_x` corre sobre procura, valor nominal e draw e n
 componente. O `checks/window_lost_or_summed` é a regra; a sonda 3 é a razão pela qual existe.
 
 ⛔ **O grão da variação em si continua sem elemento, e esta é a pergunta aberta.** Um `period` no
-`Claim` toca quinze sítios de chamada; uma marca `ignorance | variation` é uma falsa escolha, já
+`Claim` toca cada sítio que lê a largura de uma afirmação; uma marca `ignorance | variation` é
+uma falsa escolha, já
 que a resposta honesta é normalmente ambas; e qualquer das duas é um eixo de tempo a entrar num
 modelo que deliberadamente não transporta nenhum. **Se vê uma quarta opção, é a coisa mais útil que
 nos pode devolver.**

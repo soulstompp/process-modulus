@@ -1,0 +1,60 @@
+# Every fusion names at least one part, and every part belongs to one fusion. One row per
+# composition: its fusions, how many of them a part names, and its parts.
+#
+# The parts partition into fusions, with no empty class
+#   `asrt:Fusion/part` is `minOccurs="1"`. The foreign key from `part` to `fusion` makes every part
+#   belong to exactly one fusion, a function from parts to fusions; nothing in the schema makes
+#   that function onto, because a key cannot say "at least one row over there". A fusion no part
+#   names is a composed layer with nothing composed into it, and composition/fusions.sqlc would
+#   still list it, as the layers a composition rule is owed on.
+#
+# The declared fusions drive
+#   folds/fusion_parts.sqlc counts each fusion some part names, so it has no row for a fusion no
+#   part names. Driven from composition/fusions.sqlc, that fusion is a row here with no count, which
+#   is the empty box this law refuses.
+#
+# The whole needs a second route
+#   The counts can be right fusion by fusion while a reference naming no declared fusion is counted
+#   nowhere, so each composition's parts summed over its declared fusions are held to its references
+#   counted directly.
+#
+# Probe
+#   examples/probes runs it as `fusions_have_parts` and `fusions_have_parts / the references`.
+#   In a rolled-back transaction, delete every part of one fusion: this law must fail for that
+#   composition alone. And in the composed text, let the fold drop the parts that state their
+#   factor: the sums fall short of the references and the law must fail where such parts are.
+-- folds/fusion_parts.sqlc per composition, against composition/part_references.sqlc counted directly.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT x.composition AS subject,
+           x.empty = 0 AND x.parts = coalesce(y.references_filed, 0) AS holds,
+           format('%s fusion(s), %s named by a part, %s part(s), %s filed%s',
+                  x.fusions, x.fusions - x.empty, x.parts, coalesce(y.references_filed, 0),
+                  coalesce(': none names ' || x.unnamed, '')) AS detail
+    FROM (
+        SELECT d.filing                                   AS composition,
+               count(*)                                   AS fusions,
+               count(*) FILTER (WHERE f.parts IS NULL)    AS empty,
+               coalesce(sum(f.parts), 0)                  AS parts,
+               string_agg(d.layer, ', ' ORDER BY d.layer)
+                   FILTER (WHERE f.parts IS NULL)         AS unnamed
+        FROM      (
+            :compose(composition/fusions.sqlc)
+        ) d
+        LEFT JOIN (
+            :compose(folds/fusion_parts.sqlc)
+        ) f ON f.composition = d.filing AND f.composed_layer = d.layer
+        GROUP BY d.filing
+    ) x
+    LEFT JOIN (
+        SELECT pr.composition, count(*) AS references_filed
+        FROM (
+            :compose(composition/part_references.sqlc)
+        ) pr
+        GROUP BY pr.composition
+    ) y ON y.composition = x.composition
+) p ON true
+WHERE a.slug = 'fusions_have_parts'

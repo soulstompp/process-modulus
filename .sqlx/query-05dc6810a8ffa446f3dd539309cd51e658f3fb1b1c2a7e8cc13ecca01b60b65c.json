@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §4  How long each layer's demand survives being unanswered.\n-- layers/patience.sqlc, beside the demand each patience qualifies.\nSELECT p.filing                            AS \"filing!\",\n       p.layer                             AS \"layer!\",\n       coalesce(p.patience_absent::text, 'filed') AS \"state!\",\n       p.patience_mode::float8             AS \"mode\",\n       coalesce(p.patience_unit, '')       AS \"unit!\",\n       coalesce(p.demand_unit, '')         AS \"demand_unit!\"\nFROM (\n    SELECT * FROM layers.patience\n) p\nORDER BY p.patience_absent NULLS FIRST, p.filing, p.layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.patience",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.patience",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "state!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "mode",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "unit!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "demand_unit!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "05dc6810a8ffa446f3dd539309cd51e658f3fb1b1c2a7e8cc13ecca01b60b65c"
+}

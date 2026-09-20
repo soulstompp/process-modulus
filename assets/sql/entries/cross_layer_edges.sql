@@ -6,16 +6,8 @@ SELECT d.filing, d.operation,
     || coalesce(n.unit, '(unmeasured)') AS the_unit_that_warns_you,
        d.mode * n.mode                    AS the_product_nobody_should_use
 FROM      (
-    -- pm:Operation/pm:Draw.
-SELECT d.filing, d.operation, d.layer,
-       d.low, d.mode, d.high, d.unit, d.absent
-FROM pm.draw d
-
+    SELECT * FROM entries.draws
 ) d
 JOIN      (
-    -- pm:Operation/pm:Induction, carrying pm:decidedBy.
-SELECT n.filing, n.operation, n.layer,
-       n.low, n.mode, n.high, n.unit, n.absent, n.decider
-FROM pm.induction n
-
+    SELECT * FROM entries.inductions
 ) n USING (filing, operation)

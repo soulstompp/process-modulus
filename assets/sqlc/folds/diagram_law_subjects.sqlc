@@ -1,0 +1,19 @@
+# Every diagram law diagrams/roster.sqlc declares or diagrams/expected.sqlc counts, with how many
+# expected counts name it. One row per law.
+#
+# The same fold as the rules', with no verdict
+#   folds/rule_subjects.sqlc argues it: the roster drives, so a declared law with no expected count
+#   is a row with `rows` at zero, and the outer join is full, so a count no roster row declares is
+#   a row with `declared` false. diagrams/expected.sqlc names each law in its own arm and carries
+#   no verdict, so `rows` is the only box.
+-- diagrams/roster.sqlc against diagrams/expected.sqlc, one row per diagram law.
+SELECT coalesce(l.slug, e.slug)     AS subject,
+       l.slug IS NOT NULL           AS declared,
+       count(e.slug)                AS rows
+FROM      (
+    :compose(diagrams/roster.sqlc)
+) l
+FULL JOIN (
+    :compose(diagrams/expected.sqlc)
+) e ON e.slug = l.slug
+GROUP BY l.slug, e.slug

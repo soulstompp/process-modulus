@@ -1,14 +1,15 @@
-# EVERY LAYER WHOSE REMAINDER HAS TO BE ACCOUNTED FOR BY ITS HOLDERS, AND WHETHER THE SUM CAN
-# BE TAKEN. One row per layer with a computable remainder and at least one holder.
+# Every layer whose remainder has to be accounted for by its holders, and whether the sum can be
+# taken. One row per layer with a computable remainder and at least one holder.
 #
-# ⭐⭐ ONE UNSTATED SHARE SUSPENDS THE SUM RATHER THAN BREAKING IT, and checks/shares_do_not_sum
-#    already knows that -- its HAVING clause drops the layer. This relation says which layers
-#    it dropped and why, which the check cannot: sixteen of thirty-six, every one of them for
-#    a share somebody declined to measure.
+# One unstated share suspends the sum
+#   It does not break it, and checks/shares_do_not_sum already knows that: it examines only the
+#   layers with no unstated share. This relation says which layers it leaves out and why, which
+#   the check cannot. A share filed as `sharesSum`'s output is unstated too, and the detail names
+#   the identity, because nothing here computes a share from the others.
 #
-# ⛔ THE UNIT PAIR HERE IS `share_unit` AGAINST THE LAYER'S OWN. H is a distribution over the
-#   magnitude of `r`, so a share quoted in another unit is not a smaller share, it is not a
-#   share of this. Nothing compares them today.
+# The unit pair is `share_unit` against the layer's own
+#   H is a distribution over the magnitude of `r`, so a share quoted in another unit is not a
+#   smaller share, it is not a share of this. No unit rule compares them.
 -- pm:Remainder/pm:holder against the layer the magnitude belongs to.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
@@ -16,10 +17,13 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT r.filing, r.layer,
-           CASE WHEN h.unstated > 0                  THEN 'suspended'
-                WHEN h.share_units <> ARRAY[r.unit]  THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           format('%s holders, %s unstated', h.holders, h.unstated) AS detail
+           CASE WHEN h.unstated > 0                  THEN 'suspended'::public.arithmetic_verdict
+                WHEN h.share_units <> ARRAY[r.unit]  THEN 'not comparable'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           format('%s holders, %s unstated%s', h.holders, h.unstated,
+                  CASE WHEN h.derived > 0
+                       THEN format(', %s of them filed as `sharesSum`''s output, which nothing here computes', h.derived)
+                       ELSE '' END) AS detail
     FROM      (
         :compose(layers/remainder.sqlc)
     ) r

@@ -1,0 +1,121 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §21 Which corner of the path's factor each bound of a carried remainder took, and whether it mattered.\n-- composition/conversion_slopes.sqlc, ordered so any biting row reads first.\nSELECT c.composition                AS \"composition!\",\n       c.composed_layer             AS \"composed_layer!\",\n       c.node_filing                AS \"node_filing!\",\n       c.node_layer                 AS \"node_layer!\",\n       c.depth                      AS \"depth!\",\n       c.spread_factor              AS \"spread_factor!\",\n       c.operand_low::float8        AS operand_low,\n       c.operand_high::float8       AS operand_high,\n       c.low_took                   AS \"low_took!\",\n       c.high_took                  AS \"high_took!\",\n       c.corner_rule_bites          AS corner_rule_bites\nFROM (\n    -- composition/settled_remainders.sqlc against layers/differenced_remainder.sqlc at the node the\n-- walk stops on, one row per settled node.\nSELECT s.composition, s.composed_layer, s.node_filing, s.node_layer, s.depth,\n       s.factor_low, s.factor_mode, s.factor_high, s.spread_factor,\n       b.r_low  AS operand_low,\n       b.r_mode AS operand_mode,\n       b.r_high AS operand_high,\n       s.r_low  AS converted_low,\n       s.r_mode AS converted_mode,\n       s.r_high AS converted_high,\n       b.r_low  * s.factor_low  AS bound_by_bound_low,\n       b.r_high * s.factor_high AS bound_by_bound_high,\n       CASE WHEN b.r_low  < 0 THEN 'the factor high' ELSE 'the factor low'  END AS low_took,\n       CASE WHEN b.r_high < 0 THEN 'the factor low'  ELSE 'the factor high' END AS high_took,\n       (abs(s.r_low  - b.r_low  * s.factor_low)  > 1e-9\n        OR abs(s.r_high - b.r_high * s.factor_high) > 1e-9) AS corner_rule_bites\nFROM      (\n    SELECT * FROM composition.settled_remainders\n) s\nJOIN      (\n    SELECT * FROM layers.differenced_remainder\n) b ON b.filing = s.node_filing AND b.layer = s.node_layer\n\n) c\nORDER BY c.corner_rule_bites DESC NULLS LAST, c.spread_factor DESC, 1, 2, 4\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "node_filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "node_filing"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "node_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "node_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "depth!",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "depth"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "spread_factor!",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "composition.settled_remainders",
+            "name": "spread_factor"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "operand_low",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "operand_high",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "low_took!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 9,
+        "name": "high_took!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 10,
+        "name": "corner_rule_bites",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "21e2e1d8b2f77aa8a69a8548118d75e496e0f40bfbd0381ed6f6b3a3b4505012"
+}

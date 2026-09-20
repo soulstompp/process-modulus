@@ -1,16 +1,30 @@
-# EVERY PART AS FILED, RESOLVED OR NOT. One row per (composition, composed layer, part) --
-# the raw incidence matrix F, before anybody has checked that the thing it points at exists.
+# Every part as filed, resolved or not. One row per (composition, composed layer, part): the raw
+# incidence matrix F, before anybody has checked that the thing it points at exists.
 #
-# ⭐⭐ A PART IS AN INCIDENCE ENTRY AND A CONVERSION FACTOR AT ONCE, which is why F and Φ
-#    live in one table. The entry says WHICH layer of WHICH document goes into which layer of
-#    the composer's own; the factor says what to multiply it by to reach that layer's unit.
+# An incidence entry and a conversion factor at once
+#   A part is both, which is why F and Φ live in one table. The entry says which layer of which
+#   document goes into which layer of the composer's own; the factor says what to multiply it by
+#   to reach that layer's unit.
 #
-# ⛔ A PART NAMES ITS TARGET BY A NOTATION, NOT BY A FILENAME. Until a document declared its
-#   own notation, nothing in the corpus could resolve one of these rows at all -- so the
-#   conformance rule "a dependence end's filing exists, and the layer named is in it"
-#   presupposed a lookup the model did not provide. Writing the query is what surfaced that:
-#   a foreign key needs something to point at, and there was nothing.
+# A part names its target by a notation
+#   Not by a filename. A row resolves only where a document declares its own notation, so the
+#   conformance rule "a dependence end's filing exists, and the layer named is in it" presupposes
+#   that lookup: a foreign key needs something to point at.
+#
+# The factor's state, assigned once
+#   `asrt:Part/factor` is optional and its choice has three arms, so a part files its conversion in
+#   one of four ways, which `public.factor_state` declares: omitted (the units already agree, and the
+#   factor is one), stated, absent, or a derivation. Three nullable columns carry them, and every
+#   reader asking which kind of factor a part has asks this column rather than testing the three
+#   again. `pm.part`'s CHECKs let at most one of the columns be set, so the arms cannot overlap and
+#   the omitted arm is exactly the part with none of them. algebra/factor_state.sqlc holds each
+#   part's state to the column it names.
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
+       CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state
+            WHEN p.factor_absent     IS NOT NULL THEN 'absent'::public.factor_state
+            WHEN p.factor_derivation IS NOT NULL THEN 'derivation'::public.factor_state
+            ELSE                                      'omitted'::public.factor_state END AS factor_state,
+       p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version
 FROM pm.part p

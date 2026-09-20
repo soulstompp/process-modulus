@@ -1,0 +1,37 @@
+# Every layer's three summed quantities as a fusion sum reads them. One row per (filing, layer,
+# quantity), as layers/summed_quantities.sqlc has it, with a figure filed as a derivation replaced
+# by the figure composition/derived_quantities.sqlc computes for it.
+#
+# The only difference from what was filed
+#   A stated figure is read as stated and a typed absence stays absent. A derivation is an
+#   output the receiver computes, so where its computation finishes the row carries the result and
+#   `derived` says it was computed; where it cannot finish the row keeps no figure and
+#   `blocked_because` says why. Nothing else is filled, and no absence is read as a zero.
+#
+# Two arms, not an outer join
+#   A figure is stated or it is computed, never both: a row of layers/summed_quantities.sqlc files
+#   a claim, an absence or a derivation and nothing else, and composition/derived_quantities.sqlc
+#   has exactly one row for each derivation. So the relation is the rows filed without a derivation
+#   beside the rows computed for one, a disjoint union. Written as an outer join the figure would
+#   be a `coalesce` over two sides, and every reader keeping only the rows with a figure would be
+#   testing an outer-joined column, which is re-planned above every relation that composes it.
+#   As two arms, that test reaches each arm by itself. layers/demand.sqlc, layers/nameplate.sqlc
+#   and layers/drawn.sqlc are this relation restricted to one quantity.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
+       false                  AS derived,
+       s.derivation,
+       NULL::text             AS blocked_because
+FROM (
+    :compose(layers/summed_quantities.sqlc)
+) s
+WHERE s.derivation IS NULL
+UNION ALL
+SELECT d.filing, d.layer, d.quantity, d.low, d.mode, d.high, d.unit,
+       NULL::pm.absence_reason,
+       d.low IS NOT NULL,
+       d.derivation,
+       d.blocked_because
+FROM (
+    :compose(composition/derived_quantities.sqlc)
+) d

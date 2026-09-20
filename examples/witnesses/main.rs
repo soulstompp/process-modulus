@@ -12,7 +12,7 @@
 #![doc = include_str!("README.md")]
 #![doc = include_str!("README.pt.md")]
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::fs;
 use std::path::PathBuf;
@@ -121,12 +121,28 @@ const WITNESSES: &[Witness] = &[
         says: "a point slack says its bound is where the measurements fell, and a point has no spread",
     },
     Witness {
+        rule: "identity_does_not_compute_the_claim",
+        doc: "assets/corpus/enterprise-contract.xml",
+        from_: "<pm:boundOrigin>\n              <pm:origin>contractual</pm:origin>\n            </pm:boundOrigin>",
+        to: "<pm:boundOrigin><pm:derivation><pm:identity>fusionSum</pm:identity></pm:derivation></pm:boundOrigin>",
+        nth: 1,
+        says: "a demand's patience says its edge is a fusion's sum, and no identity computes a patience",
+    },
+    Witness {
         rule: "window_not_applicable_on_a_rate",
         doc: "assets/corpus/merge-group-composition.xml",
         from_: "<pm:reason>unmeasured</pm:reason>\n                    <pm:note>`turnos por semana` has a period and nobody has said which days of it the packing line runs</pm:note>",
         to: "<pm:reason>notApplicable</pm:reason>\n                    <pm:note>stipulated for this witness</pm:note>",
         nth: 1,
         says: "the duty-cycle question is called malformed on a unit that has a period",
+    },
+    Witness {
+        rule: "window_size_not_applicable",
+        doc: "assets/corpus/merge-us-member.xml",
+        from_: "<pm:size>\n                    <pm:claim>\n                      <pm:low>5</pm:low>\n                      <pm:mostLikely>5</pm:mostLikely>\n                      <pm:high>5</pm:high>\n                      <pm:unit>days</pm:unit>\n                      <pm:denominator>\n                        <pm:absent>\n                          <pm:reason>notApplicable</pm:reason>\n                        </pm:absent>\n                      </pm:denominator>\n                      <pm:narrowsWhen>\n                        <pm:absent>\n                          <pm:reason>notApplicable</pm:reason>\n                          <pm:note>there is no range here to tighten</pm:note>\n                        </pm:absent>\n                      </pm:narrowsWhen>\n                      <pm:boundOrigin>\n                        <pm:derivation>\n                          <pm:identity>quantumOrigin</pm:identity>\n                          <pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note>\n                        </pm:derivation>\n                      </pm:boundOrigin>\n                    </pm:claim>\n                  </pm:size>",
+        to: "<pm:size><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:size>",
+        nth: 1,
+        says: "a window filed as five days of each week calls the size of those days malformed",
     },
     Witness {
         rule: "derived_slack_over_a_window",
@@ -151,6 +167,22 @@ const WITNESSES: &[Witness] = &[
         to: "<pm:low>0.5</pm:low>\n            <pm:mostLikely>0.9</pm:mostLikely>\n            <pm:high>1.2</pm:high>",
         nth: 1,
         says: "the elimination moves, so the parts less the eliminations stop equalling the composed figure",
+    },
+    Witness {
+        rule: "fusion_sum_disagrees",
+        doc: "assets/fixtures/every-partial-elimination.xml",
+        from_: "<pm:low>17</pm:low><pm:mostLikely>17</pm:mostLikely><pm:high>17</pm:high>",
+        to: "<pm:low>18</pm:low><pm:mostLikely>18</pm:mostLikely><pm:high>18</pm:high>",
+        nth: 1,
+        says: "a composed nameplate of 18 where two parts of 10 less a shared block of 3 give 17",
+    },
+    Witness {
+        rule: "fusion_sum_disagrees",
+        doc: "assets/fixtures/every-inverting-elimination.xml",
+        from_: "<pm:low>2</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>5</pm:high>",
+        to: "<pm:low>2</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>4</pm:high>",
+        nth: 1,
+        says: "the shared block tops out at 4, so the crossed pairing starts at 16 and the filed 15 is wrong",
     },
     Witness {
         rule: "unresolved_part",
@@ -183,6 +215,32 @@ const WITNESSES: &[Witness] = &[
         to: "<pm:kind>people</pm:kind>",
         nth: 1,
         says: "0.4 GPU could not be served and the only holder left absorbed it rather than going without",
+    },
+    Witness {
+        rule: "nobody_named_as_unserved",
+        doc: "assets/fixtures/every-unserved-excess.xml",
+        from_: "<pm:kind>unrealised</pm:kind>",
+        to: "<pm:kind>booked</pm:kind>",
+        nth: 1,
+        says: "every buffer is empty and a booked holder says part of the excess was absorbed",
+    },
+    Witness {
+        rule: "exposure_unaccounted",
+        doc: "assets/fixtures/every-unserved-excess.xml",
+        from_: "<pm:low>1</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>4</pm:high>",
+        to: "<pm:low>1</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>3</pm:high>",
+        nth: 1,
+        says: "6 could not be served and the unserved shares admit at most 5",
+    },
+    Witness {
+        rule: "stated_quantity_is_not_the_magnitude",
+        doc: "assets/corpus/refutation.xml",
+        from_: "<pm:mostLikely>2.8</pm:mostLikely>",
+        to: "<pm:mostLikely>2.9</pm:mostLikely>",
+        // The first occurrence is the booked holder's share, which would trip `shares_do_not_sum`
+        // instead; the second is the remainder's own `quantity`.
+        nth: 2,
+        says: "the remainder is stated as 2.9 GPU at the mode, where 16 less a demand of 13.2 is 2.8",
     },
     Witness {
         rule: "local_part_dangles",
@@ -319,7 +377,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         script,
         "WITH v AS (\n{checks}\n) SELECT '__examined', rr.slug, count(*) FILTER (WHERE          v.violates IS NOT NULL)::text FROM v JOIN ({roster}) rr ON rr.rule = v.rule          GROUP BY rr.slug;"
     )?;
-    for w in WITNESSES {
+    for (i, w) in WITNESSES.iter().enumerate() {
         let src = fs::read_to_string(w.doc)?;
         let found = src.matches(w.from_).count();
         if found < w.nth {
@@ -338,7 +396,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         idx -= 1;
         let mutant = format!("{}{}{}", &src[..idx], w.to, &src[idx + w.from_.len()..]);
 
-        let path = dir.join(format!("{}.xml", w.rule));
+        let path = dir.join(format!("{}-{i}.xml", w.rule));
         fs::write(&path, &mutant)?;
 
         // ⛔ THE MUTANT MUST STILL VALIDATE. A document the grammar rejects says nothing about
@@ -368,9 +426,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         writeln!(script, "{one}")?;
         writeln!(
             script,
-            "WITH v AS (\n{checks}\n) SELECT '{}', rr.slug FROM v JOIN ({roster}) rr \
-             ON rr.rule = v.rule WHERE v.violates GROUP BY rr.slug;",
-            w.rule
+            "WITH v AS (\n{checks}\n) SELECT 'w{i}', rr.slug FROM v JOIN ({roster}) rr \
+             ON rr.rule = v.rule WHERE v.violates GROUP BY rr.slug;"
         )?;
         writeln!(script, "ROLLBACK;\n")?;
     }
@@ -379,6 +436,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(&script_path, &script)?;
 
     let psql = Command::new("psql")
+        // examples/shared/database/mod.rs says why: a plan this deep costs more to compile
+        // than to run.
+        .env("PGOPTIONS", "-c jit=off")
         .arg(&url)
         .args(["-q", "-v", "ON_ERROR_STOP=1", "-tA", "-F", "|", "-f"])
         .arg(&script_path)
@@ -389,10 +449,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let stdout = String::from_utf8_lossy(&psql.stdout);
-    let mut fired: BTreeMap<&str, Vec<String>> = BTreeMap::new();
+    // Keyed by witness, not by rule: a rule may have more than one witness, one per state of
+    // the rule worth seeing fire.
+    let mut fired: BTreeMap<usize, Vec<String>> = BTreeMap::new();
     let mut examined: BTreeMap<String, i64> = BTreeMap::new();
-    for w in WITNESSES {
-        fired.insert(w.rule, Vec::new());
+    for i in 0..WITNESSES.len() {
+        fired.insert(i, Vec::new());
     }
     for line in stdout.lines() {
         let mut f = line.split('|');
@@ -401,7 +463,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 examined.insert(slug.to_string(), n.parse().unwrap_or(0));
             }
             (Some(target), Some(slug), _) => {
-                if let Some(v) = fired.get_mut(target) {
+                let at = target.strip_prefix('w').and_then(|n| n.parse::<usize>().ok());
+                if let Some(v) = at.and_then(|at| fired.get_mut(&at)) {
                     v.push(slug.to_string());
                 }
             }
@@ -410,19 +473,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     println!("{:<38} {:<9} {}", "rule", "witness", "what the edit says");
-    let mut proven = 0usize;
-    let mut collateral = 0usize;
+    // Counted per rule, however many witnesses it has.
+    let mut proven_rules: BTreeSet<&str> = BTreeSet::new();
+    let mut collateral_rules: BTreeSet<&str> = BTreeSet::new();
     let mut failed: Vec<&str> = Vec::new();
-    for w in WITNESSES {
-        let f = &fired[w.rule];
+    for (i, w) in WITNESSES.iter().enumerate() {
+        let f = &fired[&i];
         let hit = f.iter().any(|s| s == w.rule);
         let extra = f.iter().filter(|s| s.as_str() != w.rule).count();
         let mark = if hit && extra == 0 {
-            proven += 1;
+            proven_rules.insert(w.rule);
             "fires".to_string()
         } else if hit {
-            proven += 1;
-            collateral += 1;
+            proven_rules.insert(w.rule);
+            collateral_rules.insert(w.rule);
             format!("fires +{extra}")
         } else {
             failed.push(w.rule);
@@ -430,6 +494,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         println!("{:<38} {:<9} {}", w.rule, mark, w.says);
     }
+    let (proven, collateral) = (proven_rules.len(), collateral_rules.len());
 
     // ⭐⭐⭐ THE RULES NO WITNESS REACHES, WHICH IS WHAT THIS FILE IS FOR. Read from the roster
     //    rather than from a constant, so a rule added tomorrow arrives here unwitnessed

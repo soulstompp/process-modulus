@@ -1,0 +1,112 @@
+# Every figure filed `derived`, recomputed one level at a time. One row per (filing, layer, quantity)
+# in composition/derived_quantities.sqlc: whether the figure the flat walk computed is what one level
+# of the recursion gives, and whether the two agree on which figures cannot be computed at all.
+#
+# Two routes that share no code
+#   composition/derived_quantities.sqlc flattens the descent: every stated node at the bottom of a
+#   path, times the product of the factors above it, less every elimination on the way. This law
+#   takes one step instead: the layer's direct parts, each at the figure
+#   composition/resolved_quantities.sqlc gives it (stated, or computed if it is derived in turn),
+#   times its own factor, less the layer's own elimination. Linear in every term, so where both
+#   finish they must agree at all three points.
+#
+# Which is why the second route is driven from the filings and not from the first
+#   The population this law recomputes is `layers/summed_quantities.sqlc` where a derivation is
+#   named, which is the same set composition/derived_quantities.sqlc starts from and three columns
+#   wide instead of nine. Driving it from the relation under test would have made the sentence
+#   above false: a guard that shares a code path with what it guards is a staleness check, not a
+#   second route. The two sides now meet only at the key.
+#
+# Blocked must mean blocked both ways
+#   A figure the walk cannot compute must be one the single step cannot compute either: a direct
+#   part with no figure, a conversion never sized, a search never made, an elimination that cannot
+#   be sized or that inverts the sum, a part that resolves to nothing here, or no parts at all. A
+#   figure one route computes and the other refuses fails here, in either direction.
+#
+# The conversion is one rule here too
+#   Each part is converted at the corner its own sign picks, the same operator
+#   composition/converted.sqlc and composition/settled_remainders.sqlc apply. The two routes are
+#   held apart by what they read and never by how they multiply; a law converting bound by bound
+#   would accuse a correct filing the moment a part's figure went negative.
+#   Proof: `src/proofs/README.md`, entry `two_slopes`. ⛔ No document exercises it, for the reason
+#   composition/derived_quantities.sqlc records: every part of the one filing that derives a
+#   quantity omits its factor, so the corner is a no-op on every row here.
+#
+# Probe
+#   examples/probes runs it as `derived_quantities`.
+#   In the composed composition/derived_quantities.sql drop the root's own elimination from the
+#   result: this law must fail for `every-derived-quantity / pair / demand` alone, which is the one
+#   derived figure filed against an elimination.
+-- composition/derived_quantities.sqlc against composition/parts.sqlc, composition/resolved_quantities.sqlc and eliminations/filed.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT d.filing || ' / ' || d.layer || ' / ' || d.quantity AS subject,
+           (d.low IS NULL) = (x.low IS NULL)
+           AND (d.low IS NULL
+                OR (abs(d.low  - x.low)  < 1e-9 AND abs(d.mode - x.mode) < 1e-9
+                    AND abs(d.high - x.high) < 1e-9))                          AS holds,
+           CASE WHEN d.low IS NOT NULL
+                THEN format('walked [%s, %s, %s], one level [%s, %s, %s]',
+                            d.low, d.mode, d.high, x.low, x.mode, x.high)
+                ELSE format('not computable: %s; one level %s', d.blocked_because,
+                            CASE WHEN x.low IS NULL THEN 'cannot compute it either'
+                                 ELSE format('gives [%s, %s, %s]', x.low, x.mode, x.high) END)
+           END                                                                 AS detail
+    FROM (
+        :compose(composition/derived_quantities.sqlc)
+    ) d
+    LEFT JOIN (
+        SELECT s.filing, s.layer, s.quantity,
+               CASE WHEN ok THEN s_low  - e_low  END AS low,
+               CASE WHEN ok THEN s_mode - e_mode END AS mode,
+               CASE WHEN ok THEN s_high - e_high END AS high
+        FROM (
+            SELECT t.*,
+                   t.parts > 0 AND t.parts = t.resolved_parts AND t.figures = t.parts
+                   AND t.searched_ok AND t.e_ok
+                   AND t.s_low - t.e_low <= t.s_mode - t.e_mode
+                   AND t.s_mode - t.e_mode <= t.s_high - t.e_high AS ok
+            FROM (
+                SELECT f.filing, f.layer, f.quantity,
+                       coalesce(r.parts, 0) AS parts,
+                       count(p.part_layer) AS resolved_parts,
+                       count(q.low) FILTER (WHERE p.factor_state IN ('omitted', 'stated')) AS figures,
+                       sum(least(   q.low  * coalesce(p.factor_low, 1),
+                                    q.low  * coalesce(p.factor_high, 1))) AS s_low,
+                       sum(q.mode * coalesce(p.factor_mode, 1))           AS s_mode,
+                       sum(greatest(q.high * coalesce(p.factor_low, 1),
+                                    q.high * coalesce(p.factor_high, 1))) AS s_high,
+                       coalesce(max(e.low),  0) AS e_low,
+                       coalesce(max(e.mode), 0) AS e_mode,
+                       coalesce(max(e.high), 0) AS e_high,
+                       bool_and(e.absent IS NULL AND e.derivation IS NULL) IS NOT FALSE AS e_ok,
+                       coalesce(max(es.answer::text), '') <> 'unmeasured' AS searched_ok
+                FROM      (
+                    SELECT s.filing, s.layer, s.quantity
+                    FROM ( :compose(layers/summed_quantities.sqlc) ) s
+                    WHERE s.derivation IS NOT NULL
+                ) f
+                LEFT JOIN (
+                    :compose(folds/fusion_parts.sqlc)
+                ) r ON r.composition = f.filing AND r.composed_layer = f.layer
+                LEFT JOIN (
+                    :compose(composition/parts.sqlc)
+                ) p ON p.composition = f.filing AND p.composed_layer = f.layer
+                LEFT JOIN (
+                    :compose(composition/resolved_quantities.sqlc)
+                ) q ON q.filing = p.part_filing AND q.layer = p.part_layer AND q.quantity = f.quantity
+                LEFT JOIN (
+                    :compose(eliminations/filed.sqlc)
+                ) e ON e.composition = f.filing AND e.composed_layer = f.layer AND e.quantity = f.quantity
+                LEFT JOIN (
+                    :compose(eliminations/searched.sqlc)
+                ) es ON es.composition = f.filing AND es.composed_layer = f.layer
+                GROUP BY f.filing, f.layer, f.quantity, r.parts
+            ) t
+        ) s
+    ) x ON x.filing = d.filing AND x.layer = d.layer AND x.quantity = d.quantity
+) p ON true
+WHERE a.slug = 'derived_quantities'

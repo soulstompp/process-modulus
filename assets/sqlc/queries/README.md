@@ -11,33 +11,38 @@ without Rust; each is a single statement.
 | `readiness/` | [`examples/readiness/main.rs`](../../../examples/readiness/main.rs) | may you compute here at all? |
 | `observations/` | [`examples/observations/main.rs`](../../../examples/observations/main.rs) | what does the corpus say? |
 | `soundness/` | [`examples/soundness/main.rs`](../../../examples/soundness/main.rs) | does the machinery do what it claims? |
+| `combinatorics/` | [`examples/combinatorics/main.rs`](../../../examples/combinatorics/main.rs) | what can be read off a classification, and does each law read what it is trusted to? |
 
 ⭐ **The directory is the correspondence, rather than something a reader has to remember.** A
 query added to `readiness/` and never read by `examples/readiness/main.rs` shows up as an orphan in
 `examples/observations/main.rs`, which asserts that nothing in `assets/sqlc/` is reached by nothing at all.
 
-⚠️ `matrices/` answers the numbered sections of [`../README.md`](../README.md). The other three
+⚠️ `matrices/` answers the numbered sections of [`../README.md`](../README.md). The others
 do not map onto it: `readiness/` is a view of `arithmetic/all.sqlc`, `observations/` is a tour of
 relations whose product is knowledge rather than a verdict, and `soundness/` is the one that
 reads several: the set-algebraic laws in `algebra/all.sqlc`, the roster contracts in
 `reports/integrity.sqlc`, and what each roster's population emits when the corpus is empty.
+`combinatorics/` reads every classification against the classes it declares, and the compose DAG,
+the absence census and the two self-joins of `F` as functions from rows to classes.
 
-⭐⭐ **`soundness/` is the only one that can accuse nobody's filing.** The other three ask about
-the arithmetic, the data and the corpus; that one asks whether the QUERIES compute what they say.
-It is where a difference that fails to a plausible table gets caught.
+⭐⭐ **`soundness/` and `combinatorics/` are the only two that can accuse nobody's filing.** The
+other three ask about the arithmetic, the data and the corpus; those two ask whether the QUERIES
+compute what they say, and which part of a classification each law can see.
+`soundness/` is where a difference that fails to a plausible table gets caught.
 
 ⭐ **Each one composes the same relations the rules do**, rather than restating the joins.
 `1-fit-from-ranges` composes `layers/signed.sqlc`, which is also the population the sign rule
-examines; `3b-composed-demand` anti-joins `composition/suspended_fusions.sqlc`, which is also
+examines; `3b-composed-quantities` anti-joins `composition/suspended_fusions.sqlc`, which is also
 what `matrices.sql` anti-joins. So the example and the checker range over the same rows by
 construction rather than by two authors agreeing — and if you want to see what one of these
 queries is built from, follow its `:compose()` lines.
 
 These are `.sqlc` templates. `cargo sqlc compose` writes the runnable SQL to
-`assets/sql/queries/`, and that is what `psql` and `sqlx` read:
+`assets/sql/queries/`, and that is what `psql` and `sqlx` read, once `assets/sql/views.sql` is
+loaded: a statement several queries share is read from its view.
 
 ```
-cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
+cargo sqlc compose --source assets/sqlc --target assets/sql --views assets/sqlc/views.sqlc --skip-prepare
 psql -d process_modulus_proof -f assets/sql/queries/matrices/1-fit-from-ranges.sql
 ```
 
@@ -58,7 +63,7 @@ reads the composed output with `sqlx::query_file!`, which checks the columns and
 against a live database at build time. After editing a template, recompose and regenerate:
 
 ```
-cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
+cargo sqlc compose --source assets/sqlc --target assets/sql --views assets/sqlc/views.sqlc --skip-prepare
 cargo sqlx prepare -- --all-targets   # every example reads query_file!; one target prunes the rest
 ```
 

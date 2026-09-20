@@ -1,0 +1,47 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §12  Every absence-bearing question as a four-bit word: n·u·a·d.\nSELECT m.question       AS \"question!\",\n       m.mask           AS \"mask!\",\n       m.filings        AS \"filings!\",\n       m.as_none        AS \"as_none!\"\nFROM (\n    -- epistemics/absences.sqlc folded to one three-bit word per question.\nSELECT a.question,\n       (CASE WHEN bool_or(a.reason = 'none')          THEN 'n' ELSE '.' END) ||\n       (CASE WHEN bool_or(a.reason = 'unmeasured')    THEN 'u' ELSE '.' END) ||\n       (CASE WHEN bool_or(a.reason = 'notApplicable') THEN 'a' ELSE '.' END) AS mask,\n       count(*)                                                             AS filings,\n       count(*) FILTER (WHERE a.reason = 'none')                            AS as_none\nFROM (\n    SELECT * FROM epistemics.absences\n) a\nWHERE a.reason IS NOT NULL\nGROUP BY a.question\n\n) m\nORDER BY (m.mask LIKE 'n%') DESC, m.filings DESC, m.question\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "question!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absences",
+            "name": "question"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "mask!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "filings!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "as_none!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "ca6589a2e5d0cc8ca703abbfcb479e56b3eaf2c3f96202d42bfb11924fab4656"
+}

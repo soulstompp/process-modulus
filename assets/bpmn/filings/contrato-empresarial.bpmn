@@ -46,6 +46,9 @@
     <textAnnotation id="note_contrato-empresarial_cover">
       <text>A DASHED BOX is a COVER, not a container: an operation may be in several and is in exactly one lane. [assets/sqlc/diagrams/categories.sqlc]</text>
     </textAnnotation>
+    <textAnnotation id="note_contrato-empresarial_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
     <textAnnotation id="note_contrato-empresarial_scope">
       <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -83,11 +86,14 @@
       <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_cover" bpmnElement="tns:note_contrato-empresarial_cover">
         <dc:Bounds x="20" y="214" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_scope" bpmnElement="tns:note_contrato-empresarial_scope">
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_lane" bpmnElement="tns:note_contrato-empresarial_lane">
         <dc:Bounds x="20" y="244" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_search" bpmnElement="tns:note_contrato-empresarial_search">
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_scope" bpmnElement="tns:note_contrato-empresarial_scope">
         <dc:Bounds x="20" y="274" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_contrato-empresarial_note_contrato-empresarial_search" bpmnElement="tns:note_contrato-empresarial_search">
+        <dc:Bounds x="20" y="304" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

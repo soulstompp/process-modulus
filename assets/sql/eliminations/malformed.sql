@@ -1,18 +1,11 @@
--- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
-SELECT es.composition, es.composed_layer, count(*) AS parts
+-- eliminations/searched.sqlc answering "notApplicable", beside folds/fusion_parts.sqlc.
+SELECT es.composition, es.composed_layer, f.parts
 FROM (
-    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
-SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
-FROM pm.elimination_search es
-
+    SELECT * FROM eliminations.searched
 ) es
 JOIN (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-  ON p.composition = es.composition AND p.composed_layer = es.composed_layer
+    SELECT * FROM folds.fusion_parts
+) f
+  ON f.composition = es.composition AND f.composed_layer = es.composed_layer
 WHERE es.answer = 'notApplicable'
-GROUP BY es.composition, es.composed_layer
+  AND f.parts > 0

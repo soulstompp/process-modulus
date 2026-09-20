@@ -1,39 +1,52 @@
-# n − d TAKEN FROM THE TWO FILED TOTALS, WITH THE BOUNDS CROSSED. One row per layer that
-# states BOTH a demand and a nameplate, so both operands exist. The key is (filing, layer).
+# n − d taken from the two filed totals, with the bounds crossed. One row per layer that states
+# both a demand and a nameplate, so both operands exist. The key is (filing, layer).
 #
-# ⛔⛔ SUBTRACTING TWO INTERVALS REVERSES THE BOUNDS. The low of n − d pairs n's LOW
-#    against d's HIGH, because the smallest remainder is the smallest supply meeting the
-#    largest demand. Get it backwards and every remainder in the corpus comes out inside
-#    out while every individual number still looks plausible.
+# The operands are one relation's pair
+#   layers/figures.sqlc sets each layer's demand beside its nameplate; this keeps the rows where
+#   both are present.
 #
-# ⛔⛔⛔ AND THE CROSSING ASSUMES THE TWO OPERANDS ARE INDEPENDENT, WHICH ON A COMPOSED LAYER
-#    THEY NEED NOT BE. Where one conversion factor multiplied both the nameplate and the demand
-#    of a part, pairing `n_low` against `d_high` counts that factor's spread twice and the
-#    result is WIDER than the remainder. This relation is therefore a BOUND on such a layer and
-#    not its remainder; `composition/fused_remainders.sqlc` computes the remainder by converting
-#    each part's own, and `layers/remainder.sqlc` is the one that chooses between them.
+# Subtracting two intervals reverses the bounds
+#   The low of n − d pairs n's low against d's high, because the smallest remainder is the
+#   smallest supply meeting the largest demand. Get it backwards and every remainder in the corpus
+#   comes out inside out while every individual number still looks plausible.
 #
-# ⭐ EVERY OTHER LAYER IS THE SAME UNDER BOTH READINGS, because a point factor or no factor
-#   leaves nothing to decorrelate. Observation 13 prints the pair and the agreeing rows are the
-#   control.
--- from pm.layer and pm.nameplate; pm:Layer/pm:Remainder/sign carries the filed classification.
-SELECT d.filing, d.layer,
-       l.sign, l.sign_absent,
-       l.absorber_taxonomy, l.absorber_value,
-       d.d_low, d.d_mode, d.d_high, d.d_unit AS unit,
-       n.n_low, n.n_mode, n.n_high, n.n_unit AS amount_unit,
-       n.n_low  - d.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.HIGH
-       n.n_mode - d.d_mode AS r_mode,
-       n.n_high - d.d_low  AS r_high,
-       CASE WHEN n.n_low  - d.d_high >= 0 THEN 'clearance'
-            WHEN n.n_high - d.d_low  <= 0 THEN 'interference'
-            ELSE 'transition' END AS derived_fit,
-       greatest(d.d_high - n.n_low, 0) AS exposure,
-       n.lumpy, n.quantum_mode, n.quantum_unit
+# A bound, not the remainder, on a composed layer
+#   The crossing assumes the two operands are independent, which on a composed layer they need not
+#   be. Where one conversion factor multiplied both the nameplate and the demand of a part, pairing
+#   `n_low` against `d_high` counts that factor's spread twice and the result is wider than the
+#   remainder. This relation is therefore a bound on such a layer and not its remainder;
+#   `composition/fused_remainders.sqlc` computes the remainder by converting each part's own, and
+#   `layers/remainder.sqlc` is the one that chooses between them.
+#
+# Every other layer agrees under both readings
+#   A point factor or no factor leaves nothing to decorrelate. Observation 13 prints the pair and
+#   the agreeing rows are the control.
+#
+# The filed sign beside the derived one
+#   The sign and the absorber are what the filing says, from layers/filed_remainders.sqlc. The join
+#   is a LEFT JOIN because a layer may deny having a remainder and still state both operands; the
+#   schema empties every part of a denied remainder, so such a layer carries the difference with
+#   nothing filed beside it.
+-- layers/figures.sqlc where both figures are present, beside the sign and absorber of
+-- layers/filed_remainders.sqlc.
+SELECT x.filing, x.layer,
+       f.sign, f.sign_absent,
+       f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
+       x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
+       x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
+       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_mode - x.d_mode AS r_mode,
+       x.n_high - x.d_low  AS r_high,
+       CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
+            WHEN x.n_high - x.d_low  <= 0 THEN 'interference'::pm.fit
+            ELSE 'transition'::pm.fit END AS derived_fit,
+       greatest(x.d_high - x.n_low, 0) AS exposure,
+       x.lumpy, x.quantum_mode, x.quantum_unit
 FROM      (
-    :compose(layers/demand.sqlc)
-) d
-JOIN      (
-    :compose(layers/nameplate.sqlc)
-) n USING (filing, layer)
-JOIN pm.layer l USING (filing, layer)
+    :compose(layers/figures.sqlc)
+) x
+LEFT JOIN (
+    :compose(layers/filed_remainders.sqlc)
+) f USING (filing, layer)
+WHERE x.d_low IS NOT NULL
+  AND x.n_low IS NOT NULL

@@ -4,7 +4,7 @@
      with the BPMN glyph for its kind, thin for a task and thick for a call. That is
      what *properly layered* means, and it is what lets a reader check the partition
      and the call graph with no BPMN tool present. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 278" width="760">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 308" width="760">
   <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .refuted{stroke:#b00;stroke-width:2.5} .coverName{font:10px sans-serif;fill:#888} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
   <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
   <g class="pool" data-filing="refutation" id="pool-refutation"><title>pool: refutation</title>
@@ -31,12 +31,14 @@
     <path id="dep-lane_refutation_compute-lane_refutation_labour-line" d="M120 63 H94 V103 H120" class="depLine" marker-end="url(#depArrow)"/>
   </g>
   <g class="note" id="legend"><title>legend</title>
-    <path id="legend-bracket" d="M20 174 h-8 v88 h8" class="noteBox"/>
+    <path id="legend-bracket" d="M20 174 h-8 v118 h8" class="noteBox"/>
     <text id="legend-0-says" x="26" y="186" class="noteText">A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion.</text>
     <text id="legend-0-source" x="26" y="198" class="noteCite">assets/sqlc/diagrams/dependences.sqlc</text>
-    <text id="legend-1-says" x="26" y="216" class="noteText">SCOPE: unbounded. This pool is a PROJECTION of one system and not the system.</text>
-    <text id="legend-1-source" x="26" y="228" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
-    <text id="legend-2-says" x="26" y="246" class="noteText">COUPLING SEARCH: stated. An absent dependence line is NOT independence.</text>
-    <text id="legend-2-source" x="26" y="258" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+    <text id="legend-1-says" x="26" y="216" class="noteText">AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one.</text>
+    <text id="legend-1-source" x="26" y="228" class="noteCite">assets/sqlc/diagrams/lane_grain.sqlc</text>
+    <text id="legend-2-says" x="26" y="246" class="noteText">SCOPE: unbounded. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-2-source" x="26" y="258" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-3-says" x="26" y="276" class="noteText">COUPLING SEARCH: stated. An absent dependence line is NOT independence.</text>
+    <text id="legend-3-source" x="26" y="288" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
   </g>
 </svg>

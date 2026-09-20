@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- epistemics/documents.sqlc projected to the filing alone; one pool per document.\nWITH\nnotations AS NOT MATERIALIZED (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n),\nevery_filing AS NOT MATERIALIZED (\n    -- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.\nSELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,\n       f.prov_party, f.prov_entered_by, f.prov_approved_by,\n       f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note\nFROM pm.filing f\n\n),\ndocuments AS NOT MATERIALIZED (\n    -- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.\nSELECT s.name AS filing,\n       x.root, x.ns,\n       fi.notation, fi.absent AS notation_absent,\n       f.evidence, f.evidence_absent,\n       x.witness, x.observed_at, x.ran_at\nFROM      pm.source s\nCROSS JOIN XMLTABLE(XMLNAMESPACES('https://example.invalid/assertion/1.0' AS asrt),\n       '/*' PASSING s.body\n       COLUMNS root        text PATH 'local-name(.)',\n               ns          text PATH 'namespace-uri(.)',\n               witness     text PATH 'asrt:witness',\n               observed_at text PATH 'asrt:observedAt',\n               ran_at      text PATH 'asrt:ranAt') x\nLEFT JOIN (\n    SELECT * FROM notations\n) fi ON fi.filing = s.name\nLEFT JOIN (\n    SELECT * FROM every_filing\n) f ON f.filing = s.name\n\n)\nSELECT d.filing\nFROM (\n    SELECT * FROM documents\n) d\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.source",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "68c43ea77b129830670a4ad6f2bebd898f8fc7bf3913dd56ff3835089dc0f7e5"
+}

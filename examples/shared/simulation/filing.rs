@@ -146,8 +146,10 @@ fn layer(run: &Run, r: &Reading, instrument: Instrument, as_of: &str) -> String 
     x.push_str(&claim(
         r.nameplate,
         Narrowing::NotApplicable,
-        BoundOrigin::Derived("`Nameplate/amountOrigin` says who could have set a different \
-                              rating, one element over"),
+        BoundOrigin::Derivation(
+            "amountOrigin",
+            "`Nameplate/amountOrigin` says who could have set a different rating, one element over",
+        ),
         as_of,
         12,
         "",
@@ -301,13 +303,13 @@ fn remainder(r: &Reading, as_of: &str) -> String {
 
     x.push_str(&holders(r, sign, magnitude, as_of));
 
-    // ⭐ DERIVED, WHICH IS THE CORPUS'S OWN CONVENTION: the magnitude follows from the nameplate
-    //   and the demand, and filing it again is reading the same fact twice.
+    // ⭐ A `magnitude` DERIVATION, WHICH IS THE CORPUS'S OWN CONVENTION: the magnitude follows
+    //   from the nameplate and the demand, and filing it again is reading the same fact twice.
     x.push_str(&format!(
-        "          <pm:quantity>\n            <pm:absent>\n              \
-<pm:reason>derived</pm:reason>\n              \
+        "          <pm:quantity>\n            <pm:derivation>\n              \
+<pm:identity>magnitude</pm:identity>\n              \
 <pm:note>|nameplate - demand| = {magnitude:.2} {UNIT}</pm:note>\n            \
-</pm:absent>\n          </pm:quantity>\n"
+</pm:derivation>\n          </pm:quantity>\n"
     ));
     x.push_str("        </pm:remainder>\n      </pm:remainder>\n\n");
     x
@@ -534,7 +536,8 @@ enum BoundOrigin<'a> {
     Intrinsic,
     Policy,
     NotApplicable(&'a str),
-    Derived(&'a str),
+    /// The identity that names the author, and a note.
+    Derivation(&'a str, &'a str),
 }
 
 impl BoundOrigin<'_> {
@@ -554,7 +557,10 @@ impl BoundOrigin<'_> {
                 format!("{p}<pm:boundOrigin><pm:origin>policy</pm:origin></pm:boundOrigin>\n")
             }
             BoundOrigin::NotApplicable(note) => absent("notApplicable", note),
-            BoundOrigin::Derived(note) => absent("derived", note),
+            BoundOrigin::Derivation(identity, note) => format!(
+                "{p}<pm:boundOrigin><pm:derivation><pm:identity>{identity}</pm:identity>\
+                 <pm:note>{note}</pm:note></pm:derivation></pm:boundOrigin>\n"
+            ),
         }
     }
 }
@@ -696,8 +702,10 @@ fn divisibility(run: &Run, as_of: &str) -> String {
         &claim(
             Bounded::point(s.lot),
             Narrowing::NotApplicable,
-            BoundOrigin::Derived("`LumpyQuantum/origin` says who sets the size of one unit, in \
-                                  this same element"),
+            BoundOrigin::Derivation(
+                "quantumOrigin",
+                "`LumpyQuantum/origin` says who sets the size of one unit, in this same element",
+            ),
             as_of,
             0,
             "",

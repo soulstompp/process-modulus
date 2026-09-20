@@ -1,0 +1,33 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation.\nWITH\ncoupling_searches AS NOT MATERIALIZED (\n    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n\n)\nSELECT s.filing,\n       coalesce(s.answer::text, 'stated') AS answer\nFROM (\n    SELECT * FROM coupling_searches\n) s\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.coupling_search",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "answer",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "a7c2cc989f01a1180a2418afddf135c032d9e7d05ce0e5dfcce0ee526673ea03"
+}

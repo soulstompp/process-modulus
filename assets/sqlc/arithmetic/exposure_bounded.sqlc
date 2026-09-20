@@ -1,12 +1,14 @@
-# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS, AND WHETHER ITS EXPOSURE CAN BE SET AGAINST WHO
-# WENT WITHOUT. One row per layer whose every buffer is accounted for and empty.
+# Every supply with nowhere to put its excess, and whether its exposure can be set against who
+# went without. One row per layer whose every buffer is accounted for and empty.
 #
-# ⭐⭐ `exposure` IS THE ONLY FIGURE IN THIS MODEL WITH NO INSTRUMENT BEHIND IT -- the ceiling
-#    the filer's own demand and nameplate imply -- and the shares it is compared against ARE
-#    measured, by somebody else, possibly in another unit. Nothing compares the two.
+# The one figure with no instrument behind it
+#   `exposure` is the only figure in this model with no instrument behind it: the ceiling the
+#   filer's own demand and nameplate imply. The shares it is compared against are measured, by
+#   somebody else, possibly in another unit. Nothing compares the two.
 #
-# ⛔ AN UNSTATED UNSERVED SHARE SUSPENDS THE INEQUALITY. checks/exposure_unaccounted drops
-#   those layers with a WHERE; this relation reports them as suspended instead of as absent.
+# An unstated unserved share suspends the inequality
+#   checks/exposure_unaccounted drops those layers with a WHERE; this relation reports them as
+#   suspended instead of as absent, and names `sharesSum` where a share is filed as its output.
 -- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
@@ -14,11 +16,14 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT x.filing, x.layer,
-           CASE WHEN u.unstated > 0                        THEN 'suspended'
-                WHEN u.share_units <> ARRAY[x.unit]        THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           format('exposure %s in %s against %s unserved holder(s)',
-                  round(x.exposure, 3), x.unit, u.holders) AS detail
+           CASE WHEN u.unstated > 0                        THEN 'suspended'::public.arithmetic_verdict
+                WHEN u.share_units <> ARRAY[x.unit]        THEN 'not comparable'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           format('exposure %s in %s against %s unserved holder(s)%s',
+                  round(x.exposure, 3), x.unit, u.holders,
+                  CASE WHEN u.derived > 0
+                       THEN format(', %s of them filed as `sharesSum`''s output, which nothing here computes', u.derived)
+                       ELSE '' END) AS detail
     FROM      (
         :compose(layers/unabsorbed_exposure.sqlc)
     ) x

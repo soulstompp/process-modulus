@@ -1,40 +1,48 @@
-# EVERY SUPPLY WHOSE CAPACITY BUFFER IS SIZED AND WHICH SAYS WHAT IT SERVED, BESIDE THE MOST IT
-# COULD HAVE SERVED. One row per examined layer, `violates` where the draw is over the line.
+# Every supply whose capacity buffer is sized and which says what it served, beside the most it
+# could have served. One row per examined layer, `violates` where the draw is over the line.
 #
-# ⭐⭐ THE RULE: a supply cannot serve more than its rating plus the headroom it filed. The
-#    nameplate is what it committed, the capacity buffer is how far it can run above that, and
-#    the draw is what came out. `draw > nameplate + capacitySlack` is a supply that produced
-#    more than it can produce, which is a filing error and never a fact.
+# A supply cannot serve more than it can make
+#   The rule: a supply cannot serve more than its rating plus the headroom it filed. The
+#   nameplate is what it committed, the capacity buffer is how far it can run above that, and the
+#   draw is what came out. `draw > nameplate + capacitySlack` is a supply that produced more than
+#   it can produce, which is a filing error and never a fact.
 #
-# ⛔ IT IS THE SUPPLY'S BOUND AND NEVER THE DEMAND'S. "A draw does not exceed what was asked"
-#   is the rule this one is NOT, because a shared line's output is partly somebody else's
-#   demand -- see layers/drawn.sqlc, where the corpus's one instance is quoted. Bounding the
-#   draw by the demand fires on a correct document, which is a rule spending the reader's
-#   trust to say nothing.
+# The supply's bound, never the demand's
+#   "A draw does not exceed what was asked" is the rule this one is not, because a shared line's
+#   output is partly somebody else's demand; see layers/drawn.sqlc, where the corpus's one
+#   instance is quoted. Bounding the draw by the demand fires on a correct document, which is a
+#   rule spending the reader's trust to say nothing.
 #
-# ⭐⭐⭐ THREE ANSWERS AND NOT TWO, BORROWED FROM `pm:Fit` RATHER THAN INVENTED HERE. This
-#    compared `draw_mode > n_mode + capacity_slack`: two POINTS, in a model whose thesis is
-#    that a quantity is a range. `Fit`'s own annotation settles the shape and ends the argument
-#    -- "clearance: nameplate.low ≥ demand.high, the WHOLE range clears; transition: the ranges
-#    overlap; interference: nameplate.high ≤ demand.low, the WHOLE range interferes. Total and
-#    exhaustive ... `mostLikely` DECIDES NOTHING HERE." A rule deciding on the mode was
-#    deciding on the one number the schema had already ruled out for this shape of question.
+# Three answers, borrowed from `pm:Fit`
+#   Three answers and not two, borrowed from `pm:Fit` rather than invented here. Comparing
+#   `draw_mode > n_mode + capacity_slack` compares two points, in a model whose thesis is that a
+#   quantity is a range. `Fit`'s own annotation settles the shape and ends the argument:
+#   "clearance: nameplate.low ≥ demand.high, the whole range clears; transition: the ranges
+#   overlap; interference: nameplate.high ≤ demand.low, the whole range interferes. Total and
+#   exhaustive ... `mostLikely` decides nothing here." A rule deciding on the mode decides on the
+#   one number the schema has already ruled out for this shape of question.
 #
-# ⛔⛔ SO "DID IT EXCEED" AND "COULD IT HAVE" ARE SEPARATE ANSWERS AND ONLY THE FIRST IS A
-#    VIOLATION. The whole draw range above the whole available range is a filing error with no
-#    defence. Ranges that OVERLAP are a document that cannot settle its own question, and
-#    reporting that as a breach would accuse a filer of something their figures do not say --
-#    which is the fault this file already names twice, above and below.
+# Only a whole-range excess is a violation
+#   "Did it exceed" and "could it have" are separate answers, and only the first is a violation.
+#   The whole draw range above the whole available range is a filing error with no defence.
+#   Ranges that overlap are a document that cannot settle its own question, and reporting that as
+#   a breach would accuse a filer of something their figures do not say, which is the fault this
+#   file already names twice, above and below.
 #
-# ⚠️ THE MIDDLE ANSWER HAS NO POPULATION TODAY, and that is worth knowing rather than hiding.
-#    Of twelve examined rows only three carry a ranged draw or rating at all, and two of those
-#    arrived with `support-cover`; all three clear outright. `examples/witnesses/main.rs` is where
-#    the other two states are exercised.
+# The middle answer has no population on this corpus
+#   That is worth knowing rather than hiding. Few examined rows carry a ranged draw or rating at
+#   all, and those that do clear outright. `examples/witnesses/main.rs` is where the other two
+#   states are exercised.
 #
-# ⛔ AN UNMEASURED CAPACITY BUFFER SUSPENDS THE RULE rather than passing it. Six layers do not
-#   know how far they can stretch; coalescing that to zero would turn "nobody looked" into
-#   "there is no headroom" and manufacture violations out of a gap. A nameplate becomes a
-#   ceiling only once somebody says the buffer is empty.
+# In one unit, or not at all
+#   The draw, the rating and the capacity slack are added and compared, so all three must be in
+#   one unit; a row where any differs is left out, and arithmetic/draw_bounded.sqlc names it
+#   `not comparable`. Proof: `src/proofs/README.md`, entry `draw_bound`.
+#
+# An unmeasured capacity buffer suspends the rule
+#   It does not pass it. Some layers do not know how far they can stretch; coalescing that to
+#   zero would turn "nobody looked" into "there is no headroom" and manufacture violations out of
+#   a gap. A nameplate becomes a ceiling only once somebody says the buffer is empty.
 -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount plus pm:Nameplate/pm:capacitySlack.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -42,7 +50,7 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           -- the WHOLE draw above the WHOLE of what the supply could make
+           -- the whole draw above the whole of what the supply could make
            d.draw_low > d.n_high + d.capacity_high + 1e-9              AS violates,
            CASE WHEN d.draw_low  > d.n_high + d.capacity_high + 1e-9
                 THEN format('served [%s, %s] against at most %s: the whole range is over the '
@@ -60,5 +68,7 @@ LEFT JOIN (
         :compose(layers/drawn.sqlc)
     ) d
     WHERE d.capacity_slack IS NOT NULL
+      AND d.draw_unit = d.n_unit
+      AND d.capacity_unit = d.n_unit
 ) p ON true
 WHERE r.slug = 'draw_exceeds_the_supply'

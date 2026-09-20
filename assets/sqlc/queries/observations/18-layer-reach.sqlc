@@ -1,0 +1,34 @@
+-- §18 Every filed layer by how many of this repository's rules can say anything about it.
+# One row per layer, thinnest first, because the thin end is the whole point of the measurement.
+#
+# Reported, never asserted
+#   The threshold is the reader's. `reports/coverage.sqlc` grades a rule `thin` under three
+#   examined rows, and the mirror of that would be a rule about layers: *a layer under N rules is
+#   under-checked*. There is no N. A layer that files a demand, a nameplate, a quantum and five
+#   holders is reachable by more questions than one that files a nameplate and nothing else, and
+#   neither is a defect. What the number says is how much of this repository would have to be
+#   wrong before that layer's figures went unchallenged.
+#
+# The thin end is worth looking at
+#   And it is not a violation. `every-absence/counter` is the kind of layer that sits there: its
+#   nameplate is `notApplicable`, so the vectors that most rules compose have no row for it and
+#   only a claim-grained rule reaches it. That is the corpus demonstrating its own boundary: a
+#   layer may be filed correctly, validate, and be almost entirely unrefutable, because a typed
+#   absence removes it from nearly every population.
+#
+# An all-zero `violated` means clean
+#   `violated = 0` everywhere is the corpus being clean, not the measurement being blind.
+#
+# Probe
+#   `examples/witnesses/main.rs` holds the smallest edit to a real document that makes each rule
+#   say no; run one and a layer's `violated` must move. That is the difference between this
+#   column and a column nobody has ever seen change.
+-- rank/layer_reach.sqlc, thinnest first.
+SELECT c.filing        AS "filing!",
+       c.layer         AS "layer!",
+       c.examined_by   AS "examined_by!",
+       c.violated      AS "violated!"
+FROM (
+    :compose(rank/layer_reach.sqlc)
+) c
+ORDER BY c.examined_by, c.filing, c.layer

@@ -1,9 +1,16 @@
-# EVERY LUMPY LAYER, BESIDE WHETHER ITS QUANTUM IS IN THE SAME UNIT AS THE NAMEPLATE IT
-# DIVIDES. One row per lumpy layer, `violates` where they differ.
+# Every lumpy layer, beside whether its quantum is in the same unit as the nameplate it divides.
+# One row per lumpy layer that states its nameplate and its quantum's size, `violates` where they
+# differ.
 #
-# ⭐ THE RULE: a quantum is expressed in the unit of the nameplate it divides. "Is the
-#   nameplate a whole multiple of the quantum?" is a division, and a division across units is
-#   not a wrong answer, it is not an answer.
+# A size filed absent is outside the question
+#   A supply may come in lumps of a size nobody measured, and `LumpyQuantum/size` files that as a
+#   typed absence. There is then no unit to compare, so the layer is not in the population; read
+#   as `IS DISTINCT FROM` against a NULL unit, it would be accused of a mismatch it cannot have.
+#
+# A quantum is in the nameplate's unit
+#   The rule: a quantum is expressed in the unit of the nameplate it divides. "Is the nameplate a
+#   whole multiple of the quantum?" is a division, and a division across units is not a wrong
+#   answer, it is not an answer.
 -- pm:LumpyQuantum/size unit against pm:Nameplate/amount unit.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -16,5 +23,6 @@ LEFT JOIN (
     FROM (
         :compose(layers/lumpy.sqlc)
     ) l
+    WHERE l.quantum_low IS NOT NULL
 ) p ON true
 WHERE r.slug = 'quantum_unit_mismatch'

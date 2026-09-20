@@ -133,8 +133,8 @@
                     <pm:note>there is no range here to tighten</pm:note></pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent><pm:reason>derived</pm:reason>
-                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                  <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                    <pm:note>amountOrigin below states it</pm:note></pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -154,8 +154,8 @@
                           <pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason>
-                          <pm:note>the origin below states it</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                          <pm:note>the origin below states it</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -174,7 +174,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -233,8 +233,8 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason>
-                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -283,8 +283,8 @@
                     <pm:note>there is no range here to tighten</pm:note></pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent><pm:reason>derived</pm:reason>
-                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                  <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                    <pm:note>amountOrigin below states it</pm:note></pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -304,8 +304,8 @@
                           <pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason>
-                          <pm:note>the origin below states it</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                          <pm:note>the origin below states it</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -324,7 +324,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -383,8 +383,8 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason>
-                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -433,8 +433,8 @@
                     <pm:note>there is no range here to tighten</pm:note></pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent><pm:reason>derived</pm:reason>
-                    <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                  <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                    <pm:note>amountOrigin below states it</pm:note></pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -454,8 +454,8 @@
                           <pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason>
-                          <pm:note>the origin below states it</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                          <pm:note>the origin below states it</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -474,7 +474,7 @@
                           <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                          <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -533,8 +533,8 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent><pm:reason>derived</pm:reason>
-                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+              <pm:derivation><pm:identity>magnitude</pm:identity>
+                <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -625,8 +625,8 @@
                         demand tightens this — and nobody has said what that is</pm:note></pm:absent>
             </pm:narrowsWhen>
             <pm:boundOrigin>
-              <pm:absent><pm:reason>derived</pm:reason>
-                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:absent>
+              <pm:derivation><pm:identity>sharedParts</pm:identity>
+                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:derivation>
             </pm:boundOrigin>
           </pm:claim>
         </asrt:quantity>
@@ -646,8 +646,8 @@
                 <pm:note>this is one view removed whole; there is no range to tighten</pm:note></pm:absent>
             </pm:narrowsWhen>
             <pm:boundOrigin>
-              <pm:absent><pm:reason>derived</pm:reason>
-                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:absent>
+              <pm:derivation><pm:identity>sharedParts</pm:identity>
+                <pm:note>it is a copy of a figure stated in the part it removes</pm:note></pm:derivation>
             </pm:boundOrigin>
           </pm:claim>
         </asrt:quantity>

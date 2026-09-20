@@ -1,0 +1,61 @@
+# Every place a document files a value as an identity's output, read from the columns. One row per
+# derivation anywhere in the corpus: the filing, what it is about, the position it fills, and the
+# identity it names.
+#
+# The mirror of the absence census
+#   epistemics/absences.sqlc gathers every typed reason from the column on the table of the thing
+#   it is about; this gathers every identity the same way. The two arms of a wrapper that are not
+#   its value are two different facts, a blank with a reason and a figure with a rule, and a census
+#   that folded them together would count a computed figure as something nobody knows.
+#
+# One arm per column, keyed by position
+#   Each arm reads one `*_derivation` column and labels it with the position it fills, spelled as
+#   the elements spell it, `parent/wrapper`. identities/roster.sqlc declares the same columns, and
+#   reports/integrity.sqlc holds that roster against the columns Postgres records, so a column
+#   added to the schema without an arm here fails the build.
+#
+# A claim's edge and narrowing, at the claim's position
+#   Those two derivations sit at elements every claim shares, so their arm is
+#   epistemics/claim_derivations.sqlc, which keys them by the position of the claim itself and
+#   carries the element beside it. Every other arm fills its own position, and there the element
+#   is the position.
+-- every pm:derivation/identity in the schema, from every column that keeps one.
+SELECT filing, subject, owns, coalesce(element, owns) AS element, identity FROM (
+    SELECT filing, layer AS subject, 'pm:demand/pm:amount' AS owns, NULL::text AS element,
+           derivation AS identity FROM (
+        :compose(layers/summed_quantities.sqlc)
+    ) sq WHERE sq.quantity = 'demand'
+    UNION ALL SELECT filing, layer, 'pm:nameplate/pm:amount', NULL, derivation FROM (
+        :compose(layers/summed_quantities.sqlc)
+    ) sq WHERE sq.quantity = 'nameplate'
+    UNION ALL SELECT filing, layer, 'pm:jagged/pm:draw', NULL, derivation FROM (
+        :compose(layers/summed_quantities.sqlc)
+    ) sq WHERE sq.quantity = 'draw'
+    UNION ALL SELECT filing, layer, 'pm:remainder/pm:sign', NULL, sign_derivation FROM (
+        :compose(layers/filed_remainders.sqlc)
+    ) fr
+    UNION ALL SELECT filing, layer, 'pm:remainder/pm:quantity', NULL, qty_derivation FROM (
+        :compose(layers/filed_remainders.sqlc)
+    ) fr
+    UNION ALL SELECT filing, layer || ' / ' || buffer::text,
+                     CASE s.buffer WHEN 'time'     THEN 'pm:layer/pm:timeSlack'
+                                   WHEN 'capacity' THEN 'pm:nameplate/pm:capacitySlack'
+                                   ELSE 'pm:nameplate/pm:inventorySlack' END,
+                     NULL, derivation FROM (
+        :compose(entries/slacks.sqlc)
+    ) s
+    UNION ALL SELECT filing, layer || ' / ' || kind::text, 'pm:holder/pm:share', NULL, share_derivation FROM (
+        :compose(entries/holders.sqlc)
+    ) h
+    UNION ALL SELECT filing, owns || ' claim ' || seq::text, owns, element, identity FROM (
+        :compose(epistemics/claim_derivations.sqlc)
+    ) c
+    UNION ALL SELECT composition, composed_layer || ' / ' || quantity, 'asrt:elimination/asrt:quantity', NULL, derivation FROM (
+        :compose(eliminations/filed.sqlc)
+    ) e
+    UNION ALL SELECT composition, composed_layer || ' / ' || part_filing || ' ' || part_layer,
+                     'asrt:part/asrt:factor', NULL, factor_derivation FROM (
+        :compose(composition/part_references.sqlc)
+    ) pr
+) d
+WHERE identity IS NOT NULL

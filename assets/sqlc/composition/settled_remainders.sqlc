@@ -1,33 +1,42 @@
-# EVERY SETTLED NODE UNDER A COMPOSED LAYER, WITH ITS REMAINDER CARRIED UP. One row per
-# (composed layer, settled node) pair, the factors along the path already multiplied in.
+# Every settled node under a composed layer, with its remainder carried up. One row per (composed
+# layer, settled node) pair, the factors along the path already multiplied in.
 #
-# ⭐⭐⭐ THIS IS THE RECURSION TAKEN AS A JOIN, AND THE STOPPING RULE IS THE WHOLE CONTENT. A
-#    fusion's remainder is defined by recursion on `F`, and the natural form needs a SUM in the
-#    recursive term, which SQL forbids. The recursion FLATTENS instead: substitute it into
-#    itself and the intermediate layers cancel, leaving one sum with the factors multiplied
-#    along each path. A running product is a scalar per row and IS allowed in a recursive term,
-#    so composition/descent.sqlc's walk carries it and this is a join.
+# The recursion taken as a join
+#   The stopping rule is the whole content. A fusion's remainder is defined by recursion on `F`,
+#   and the natural form needs a sum in the recursive term, which SQL forbids. The recursion
+#   flattens instead: substitute it into itself and the intermediate layers cancel, leaving one sum
+#   with the factors multiplied along each path. A running product is a scalar per row and is
+#   allowed in a recursive term, so composition/descent.sqlc's walk carries it and this is a join.
 #
-# ⛔⛔ IT STOPS AT THE FIRST SETTLED NODE AND NOT AT A LEAF, AND THE DIFFERENCE IS NOT AN
-#    OPTIMISATION. A settled node's `n` and `d` were never scaled by one factor with width, so
-#    differencing them is legitimate and its filed totals are a claim its composer stands
-#    behind. Descend past one and those totals are bypassed, along with every correction that
-#    composer already applied, which then has to be rebuilt from below and can fail for reasons
-#    the filed figure had already settled. `merge-group-composition/compute-pt` is that case:
-#    it files a demand, its own conversion is a point, and one of its eliminations is unsized.
-#    Stopping there reads a figure; running past it reaches a correction nobody sized.
+# The path product needs there to be one path
+#   "The factors multiplied along each path" is a single number per node only where each node is
+#   reached one way. Which it is, is a measurement and not a property of multiplication: it is the
+#   layer graph's cycle space being zero, which rank/cycle_space.sqlc reports and
+#   checks/jagged_layer is the rule for. Two paths to one node give two products and the arithmetic
+#   chooses neither, which is why the guard below declines rather than picking one.
+#   Proof: `src/proofs/README.md`, entry `path_product_needs_one_path`.
 #
-# ⭐ composition/unsettled.sqlc is the predicate, and a leaf satisfies it trivially by having
-#   no parts at all. The leaf is the special case of the base case, not the base case.
+# It stops at the first settled node, not at a leaf
+#   The difference is not an optimisation. A settled node's `n` and `d` were never scaled by one
+#   factor with width, so differencing them is legitimate and its filed totals are a claim its
+#   composer stands behind. Descend past one and those totals are bypassed, along with every
+#   correction that composer already applied, which then has to be rebuilt from below and can fail
+#   for reasons the filed figure had already settled. `merge-group-composition/compute-pt` is that
+#   case: it files a demand, its own conversion is a point, and one of its eliminations is unsized.
+#   Stopping there reads a figure; running past it reaches a correction nobody sized.
 #
-# ⛔ THE CORNER RULE IS THE SAME ONE WITH THE PATH PRODUCT AS THE DRIVER: for a strictly
-#   positive product the bounds are the two corners on each side, which collapses to the
-#   component-wise form when the node's remainder is non-negative and reverses when it is not.
+# A leaf is the special case
+#   composition/unsettled.sqlc is the predicate, and a leaf satisfies it trivially by having no
+#   parts at all. The leaf is the special case of the base case, not the base case.
 #
-# ⚠️ `NOT w.is_cycle` HERE IS A GUARD AND NOT A DETECTOR. It keeps a looped path out of an
-#   arithmetic and reports nothing about one. A document whose parts loop has no evaluation
-#   order at all, and `checks/layers_move_together` is what says so; this relation simply declines to
-#   return a number for it.
+# The same corner rule, with the path product as the driver
+#   For a strictly positive product the bounds are the two corners on each side, which collapses to
+#   the component-wise form when the node's remainder is non-negative and reverses when it is not.
+#
+# `NOT w.is_cycle` is a guard, not a detector
+#   It keeps a looped path out of an arithmetic and reports nothing about one. A document whose
+#   parts loop has no evaluation order at all, and `checks/layers_move_together` is what says so;
+#   this relation simply declines to return a number for it.
 -- composition/remainder_frontier.sqlc less the nodes composition/unsettled.sqlc names,
 -- against layers/differenced_remainder.sqlc at the node the walk stops on.
 SELECT w.root_filing AS composition, w.root_layer AS composed_layer,
@@ -46,6 +55,5 @@ JOIN      (
 LEFT JOIN (
     :compose(composition/unsettled.sqlc)
 ) o ON o.filing = w.filing AND o.layer = w.layer
-WHERE w.factor_absent = false
-  AND NOT w.is_cycle
+WHERE w.usable
   AND o.filing IS NULL

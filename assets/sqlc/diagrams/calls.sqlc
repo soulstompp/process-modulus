@@ -1,14 +1,34 @@
-# ⭐⭐⭐ INCIDENCE ONLY, AND THE OMISSION IS THE POINT. examples/diagramming/main.rs composes this and
-#    nothing wider, so the emitter is STRUCTURALLY UNABLE to read a magnitude. The
-#    incidence composes and the quantities do not, and a diagram carries incidence. An emitter
-#    that could see a figure could render one, and a rendered figure in a notation with no unit
-#    is the nonsense product that file already names `the_product_nobody_should_use`.
+# F alone, with Phi dropped. One row per part: the composed layer, the part it is composed from,
+# and whether the part is local to the composing document.
 #
-# ⛔ IT WAS NOT A DESIGN DECISION, IT WAS A TYPE ERROR. Reading the wider relation failed to
-#   compile: sqlx has no mapping for `pm.absence_reason` and needs a feature for NUMERIC. The
-#   schema refused to hand a magnitude to a program with no use for one, which is the DDL's typed
-#   absences paying out in a second language.
+# Incidence only, and the omission is the point
+#   examples/diagramming/main.rs composes this and nothing wider, so the emitter is structurally
+#   unable to read a magnitude. The incidence composes and the quantities do not, and a diagram
+#   carries incidence. An emitter that could see a figure could render one, and a rendered figure
+#   in a notation with no unit is the nonsense product entries/cross_layer_edges.sqlc already
+#   names `the_product_nobody_should_use`.
+#
+# A type error, not a design decision
+#   Reading the wider relation failed to compile: sqlx has no mapping for `pm.absence_reason` and
+#   needs a feature for NUMERIC. The schema refused to hand a magnitude to a program with no use
+#   for one, which is the DDL's typed absences paying out in a second language.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+WITH
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+)
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (

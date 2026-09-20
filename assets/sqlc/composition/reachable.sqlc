@@ -1,0 +1,31 @@
+# F*, every layer a part reaches through the composition, itself included. One row per (layer,
+# layer it reaches), and a layer always reaches itself.
+#
+# The third closure, and the tree already names the other two
+#   `composition/descent.sqlc` is F+, the layers reachable in one step or more.
+#   `rank/co_moving_layers.sqlc` is F+ meeting its own transpose, the layers that move together.
+#   This is F* = F+ ∪ I, and it is the one an inclusion question needs: asking whether two parts
+#   reach a common layer has to count a part that IS that layer, because naming a layer directly
+#   while a sibling composes it is the commonest way for two parts to overlap.
+#
+# The identity arm is the parts, not the layer dimension
+#   The reflexive half is the identity on the layers that appear as parts, taken from
+#   `composition/parts.sqlc`. Taking it from `layers/every_layer.sqlc` would read the same on this
+#   corpus and be a different relation: the dimension reaches everything by construction, so
+#   composing it here would put every filed layer into the closure of every reader, and
+#   `algebra/dimension_use.sqlc` is the law that refuses exactly that.
+#
+# UNION, not UNION ALL
+#   A closure forgets how often. A layer reached by two routes is reached, and the question this
+#   relation answers is whether, never how many times. Counting routes is `composition/descent`'s
+#   job, where each route is still a row.
+-- composition/descent.sqlc unioned with the identity on composition/parts.sqlc: F* = F+ ∪ I.
+SELECT DISTINCT root_filing, root_layer, filing, layer
+FROM (
+    :compose(composition/descent.sqlc)
+) w
+  UNION
+SELECT DISTINCT part_filing, part_layer, part_filing, part_layer
+FROM (
+    :compose(composition/parts.sqlc)
+) p

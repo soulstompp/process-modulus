@@ -1,0 +1,106 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §1  The remainder and its fit, read off the ranges rather than off a point.\n-- layers/signed.sqlc, with the evidence axis from pm.filing.\nSELECT s.filing              AS \"filing!\",\n       s.layer               AS \"layer!\",\n       s.d_low::float8       AS \"d_low!\",\n       s.d_mode::float8      AS \"d_mode!\",\n       s.d_high::float8      AS \"d_high!\",\n       s.n_low::float8       AS \"n_low!\",\n       s.n_mode::float8      AS \"n_mode!\",\n       s.n_high::float8      AS \"n_high!\",\n       s.sign::text          AS \"sign!\",\n       f.evidence            AS \"evidence!\",\n       (u.filing IS NULL)    AS \"differenceable!\"\nFROM (\n    SELECT * FROM layers.signed\n) s\nJOIN (\n    SELECT * FROM scope.every_filing\n) f USING (filing)\nLEFT JOIN (\n    SELECT * FROM composition.unsettled\n) u ON u.filing = s.filing AND u.layer = s.layer\nORDER BY s.filing, s.layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.signed",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "layers.signed",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "n_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "n_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "n_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "sign!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 9,
+        "name": "evidence!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "scope.every_filing",
+            "name": "evidence"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "differenceable!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      true,
+      null
+    ]
+  },
+  "hash": "f8e73fb9fa88b215683067c80676a6ef2205b7a3db80ad7769b1d170b1a304d4"
+}

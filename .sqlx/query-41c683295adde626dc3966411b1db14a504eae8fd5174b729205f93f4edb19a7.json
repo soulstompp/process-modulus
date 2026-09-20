@@ -1,0 +1,49 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §19 The same shape in two graphs, and the opposite verdict on it.\n-- rank/compose_edges.sqlc beside composition/parts.sqlc, the same duplication in two graphs.\nSELECT 'compose DAG'                                   AS \"graph!\",\n       'a parent splicing one child twice'             AS \"duplication!\",\n       count(*) FILTER (WHERE e.splices > 1)           AS \"duplicated!\",\n       count(*)                                        AS \"edges!\",\n       'ordinary: a query is idempotent, so the repeated relation is read once'\n                                                       AS \"verdict!\"\nFROM (\n    SELECT * FROM rank.compose_edges\n) e\nUNION ALL\nSELECT 'F, the part graph',\n       'one fusion reaching one layer twice',\n       (SELECT count(*) FROM ( SELECT * FROM composition.jagged_layers ) j),\n       (SELECT count(*) FROM ( SELECT * FROM composition.parts ) p),\n       'a violation: supply is conserved, so one total closes over both occurrences'\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "duplication!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "duplicated!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "edges!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "verdict!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "41c683295adde626dc3966411b1db14a504eae8fd5174b729205f93f4edb19a7"
+}

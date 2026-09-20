@@ -49,6 +49,16 @@ const PERMITTED: &[&str] = &[
     // layer that sits above it in the wild is exactly what must NOT be taken, because
     // that layer is somebody else's answer to the question this crate asks, and two
     // answers only corroborate while they are two. `serde` rides along because the
+    // ⭐⭐ dev only, for examples/columns/main.rs, and it passes the test above rather than
+    // being excused from it. AN ENGINE IS NOT A MODEL. What this list exists to keep out is
+    // the model this crate corroborates, which is a model of process: stocks, flows, and an
+    // opinion about what a shortfall is. Polars has none of those, and it is the same genus
+    // as the database above, whose planner is far larger.
+    // ⭐ It is taken for the half nalgebra has no type for: a validity bitmap beside the
+    // values, so a filed zero and a value nobody filed stop being the same bytes. That is
+    // the shape of every `Stated*` wrapper in the schema, and it is why three matrices in
+    // `examples/matrices/main.rs` are described in comments and built nowhere.
+    "polars",
 ];
 
 /// Every `key = value` line inside a `[…dependencies]` table.
@@ -142,23 +152,37 @@ fn this_crate_has_no_path_dependency_at_all() {
 
 #[test]
 fn no_source_file_imports_an_unlisted_crate() {
-    // `src/lib.rs` is a single `include!` of generated code today and has no
-    // imports at all, so this currently passes with nothing to check. It is
-    // here to fail closed the moment hand-written imports appear.
-    #[allow(clippy::single_element_loop)]
-    for (name, src) in [("lib.rs", include_str!("../src/lib.rs"))] {
+    // `src/lib.rs` is an `include!` of generated code and has no imports of its own.
+    // The proofs page does: its blocks and the file they share read documents with this
+    // crate's types, so `process_modulus` itself is a permitted root there. The Portuguese
+    // page carries the same code and is scanned too, since it is published beside it.
+    let sources = [
+        ("lib.rs", include_str!("../src/lib.rs")),
+        ("proofs/support.rs", include_str!("../src/proofs/support.rs")),
+        ("proofs/README.md", include_str!("../src/proofs/README.md")),
+        ("proofs/README.pt.md", include_str!("../src/proofs/README.pt.md")),
+    ];
+    let mut scanned = 0;
+    for (name, src) in sources {
         for line in src.lines() {
             let l = line.trim().trim_start_matches("pub ");
             let Some(path) = l.strip_prefix("use ") else {
                 continue;
             };
+            scanned += 1;
             let root = path.split([':', ';', ' ', '{']).next().unwrap_or("").trim();
-            let permitted = matches!(root, "std" | "core" | "alloc" | "crate" | "self" | "super")
-                || PERMITTED.iter().any(|p| p.replace('-', "_") == root);
+            let permitted = matches!(
+                root,
+                "std" | "core" | "alloc" | "crate" | "self" | "super" | "process_modulus"
+            ) || PERMITTED.iter().any(|p| p.replace('-', "_") == root);
             assert!(
                 permitted,
                 "{name} imports `{root}`, which is not on the permitted list"
             );
         }
     }
+    assert!(
+        scanned > 0,
+        "no `use` line was found in any scanned source, so the scan checked nothing"
+    );
 }

@@ -1,0 +1,21 @@
+# Every derivation as its document filed it. One row per derivation element: where it sits, the
+# layer it sits in, the identity it names, the note beside it, the date it holds at, and who filed
+# it and on what standing.
+#
+# The relation for the type, beside the census for the positions
+#   epistemics/derivations.sqlc reads each position's identity from the column on the table of the
+#   thing it computes, and that column holds the identity alone. This is the same set read from the
+#   elements, with everything a filer wrote beside it. algebra/derivations_filed.sqlc holds the two
+#   routes against each other.
+#
+# `owns` is the position the identity computes
+#   It is spelled as epistemics/claims.sqlc and epistemics/filed_absences.sqlc spell it,
+#   `parent/wrapper`, and `element` is where the derivation sits. They differ only for a claim's
+#   edge and narrowing, whose elements every claim shares: there `owns` is the claim's own position,
+#   which the document states two levels above the element.
+-- pm:Derivation and its restrictions, every one, with pm:note, pm:asOf and pm:provenance.
+SELECT d.filing, d.seq, coalesce(d.claim_owns, d.owns) AS owns, d.owns AS element, d.layer,
+       d.identity, d.note, d.as_of,
+       d.prov_party, d.prov_entered_by, d.prov_approved_by,
+       d.prov_standing_taxonomy, d.prov_standing_value, d.prov_standing_absent, d.prov_note
+FROM pm.derivation d

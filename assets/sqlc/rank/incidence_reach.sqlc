@@ -1,0 +1,62 @@
+# How much of the layer dimension each relation actually reaches. One row per relation: the
+# layers it touches, against every layer there is.
+#
+# A zero column is a layer outside the image
+#   The measurement is the boundary itself. The three relations a process notation would have
+#   drawn as arrows reach almost nothing: D, N and C touch a handful of layers each, F reaches
+#   more, and `nameplate` and `slack` reach every layer that states them, which is nearly all; a
+#   layer with no stated nameplate is outside them, and `queries/observations/18-layer-reach.sqlc`
+#   names it. So the incidence
+#   side of this model is sparse and the magnitude side is nearly total, and BPMN can carry only
+#   the first.
+#   `diagrams/domain_objects.sqlc` says which tables render as an element and which are refused
+#   with a typed reason; this says how much each one holds.
+#
+# Its transpose is `rank/layer_reach.sqlc`
+#   This relation counts, per relation, how much of the layer dimension it touches, so it can say
+#   how many and never which, and a layer nothing reaches leaves no row here to be counted. Read
+#   down the other axis the subject is the layer and the shortfall has a name. The transpose
+#   depends on `checks/grain.sqlc`'s `unresolvable` arm: a rule returning a claim address in the
+#   contract's `layer` column makes a cover measured through that key measure the key.
+#
+# Why a diagram of this corpus looks empty and is not wrong
+#   The three largest tables here are `claim`, `narrowing` and `bound_origin`, one row per filed
+#   value, and not one of them has a BPMN element. A reader who concludes "there is nothing here"
+#   has read a faithful rendering of the part a notation can hold.
+#
+# The denominator is a column here
+#   Not in the observation that reads it. `reaches` alone is a bare count, and a count is not a
+#   cover until something says of how many; the `--` line claims the comparison, so the relation
+#   owes it rather than each caller bolting it on. `guard_reach` carries `subjects` beside
+#   `witnessed` and `layer_reach` is driven from the dimension, so without this column this
+#   would be the one member of the family a reader had to supply the other half of.
+#
+# The dimension in the one role that propagates nothing
+#   `algebra/dimension_use.sqlc` permits a denominator that drives the query or is left-joined,
+#   and forbids an inner join because every consumer would inherit the whole dimension. Read as
+#   a scalar it joins to no row here at all, so nothing downstream can inherit a bound from it.
+#
+# The numbers
+#   Run this relation for them; the corpus moves and a sentence does not.
+-- each incidence and each magnitude, counted against layers/every_layer.sqlc as the denominator.
+SELECT x.relation, x.kind, x.reaches,
+       (SELECT count(*) FROM ( :compose(layers/every_layer.sqlc) ) l) AS of_layers
+FROM      (
+    SELECT 'D draw'      AS relation, 'incidence' AS kind, count(DISTINCT (d.filing, d.layer)) AS reaches
+    FROM ( :compose(entries/draws.sqlc) ) d
+    UNION ALL
+    SELECT 'N induction', 'incidence', count(DISTINCT (n.filing, n.layer))
+    FROM ( :compose(entries/inductions.sqlc) ) n
+    UNION ALL
+    SELECT 'C coupling',  'incidence', count(DISTINCT (c.filing, c.from_layer))
+    FROM ( :compose(entries/couplings.sqlc) ) c
+    UNION ALL
+    SELECT 'F part',      'incidence', count(DISTINCT (p.composition, p.composed_layer))
+    FROM ( :compose(composition/parts.sqlc) ) p
+    UNION ALL
+    SELECT 'nameplate',   'magnitude', count(DISTINCT (n.filing, n.layer))
+    FROM ( :compose(layers/nameplate.sqlc) ) n
+    UNION ALL
+    SELECT 'slack',       'magnitude', count(DISTINCT (s.filing, s.layer))
+    FROM ( :compose(entries/slacks.sqlc) ) s
+) x

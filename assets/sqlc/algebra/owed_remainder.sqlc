@@ -1,32 +1,45 @@
-# THE FUSIONS THAT OWE AN EXACT COMPOSED REMAINDER, AGAINST THE ONES THAT DO NOT, CHECKED AS A
-# PARTITION OF ALL OF THEM. One row: whether |fusions| = |owed_remainder| + |fusions ⋉ suspended|.
+# The fusions that owe an exact composed remainder, against the ones that do not, checked as a
+# partition of all of them. One row: whether |fusions| = |owed_remainder| + |fusions ⋉ suspended|,
+# and whether no more fusions owe a remainder than have their demand answered.
 #
-# ⭐ IT IS composition/owed_equality.sqlc's LAW AT A SECOND POPULATION. That one partitions on a
-#   demand suspension; a remainder needs BOTH the demand and the nameplate answered, so the two
-#   populations differ and each needs its own count.
+# The same law at a second population
+#   It is composition/owed_equality.sqlc's law at a second population. That one partitions each
+#   quantity's sum on that quantity's suspensions; a remainder needs both the demand and the
+#   nameplate answered, so the two populations differ and each needs its own count.
 #
-# ⛔ THE `IS NULL` ARM IS NOT DECORATION. Two of this corpus's three suspensions are list-level
-#   and carry no quantity at all, so a membership test written with `IN` alone silently misses
-#   the suspension that is BROADER than either named one. The left side would then come out
-#   larger than composition/owed_equality's. ⭐ THAT IS THE INVARIANT TO CHECK AFTER ANY EDIT
-#   HERE: a condition needing BOTH quantities answered cannot own more fusions than one needing
-#   demand alone, so |owed_remainder| <= |owed_equality| always, and a violation of that is a
-#   dropped suspension rather than a disagreement about the corpus.
--- composition/fusions.sqlc partitioned by composition/suspended_remainders.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+# The `IS NULL` arm is not decoration
+#   A list-level suspension carries no quantity at all, so a membership test written with `IN`
+#   alone silently misses the suspension that is broader than either named one. The left side
+#   would then come out larger than composition/owed_equality's.
+#
+# The invariant to check after any edit
+#   A condition needing both quantities answered cannot own more fusions than one needing demand
+#   alone, so the fusions owing a remainder are never more than those whose demand is answered, and
+#   a violation of that is a dropped suspension rather than a disagreement about the corpus. A
+#   demand is answered where its sum is owed, or where it is filed `derived` and read at the figure
+#   its fusion computes; composition/owed_equality.sqlc leaves the second out, so the two counts
+#   are disjoint and add. The law holds it on every run.
+-- composition/fusions.sqlc partitioned by composition/suspended_remainders.sqlc, bounded by
+-- composition/owed_equality.sqlc and composition/derived_fusions.sqlc on the demand.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT 'composition/owed_remainder' AS subject,
-           x.total = x.kept + x.removed AS holds,
-           format('%s fusions = %s owing a remainder + %s suspended', x.total, x.kept, x.removed) AS detail
+           x.total = x.kept + x.removed AND x.kept <= x.demand_owed + x.demand_derived AS holds,
+           format('%s fusions = %s owing a remainder + %s suspended; %s owe a demand sum and %s file it derived',
+                  x.total, x.kept, x.removed, x.demand_owed, x.demand_derived) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f)        AS total,
              (SELECT count(*) FROM ( :compose(composition/owed_remainder.sqlc) ) o) AS kept,
              (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
                WHERE EXISTS (SELECT 1 FROM ( :compose(composition/suspended_remainders.sqlc) ) s
-                              WHERE s.composition = f.filing AND s.composed_layer = f.layer)) AS removed
+                              WHERE s.composition = f.filing AND s.composed_layer = f.layer)) AS removed,
+             (SELECT count(*) FROM ( :compose(composition/owed_equality.sqlc) ) o
+               WHERE o.quantity = 'demand')                                          AS demand_owed,
+             (SELECT count(*) FROM ( :compose(composition/derived_fusions.sqlc) ) d
+               WHERE d.quantity = 'demand')                                          AS demand_derived
          ) x
 ) p ON true
 WHERE a.slug = 'owed_remainder'

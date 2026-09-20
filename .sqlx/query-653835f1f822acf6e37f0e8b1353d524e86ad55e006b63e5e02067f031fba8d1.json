@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.\nSELECT 'layers' AS graph,\n       p.composition                            AS filing,\n       p.composition  || '/' || p.composed_layer AS from_node,\n       p.part_filing  || '/' || p.part_layer     AS to_node\nFROM (\n    SELECT * FROM composition.parts\n) p\nUNION ALL\nSELECT 'units', c.filing, c.from_unit, c.to_unit\nFROM (\n    SELECT * FROM units.conversions\n) c\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "from_node",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "to_node",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "653835f1f822acf6e37f0e8b1353d524e86ad55e006b63e5e02067f031fba8d1"
+}

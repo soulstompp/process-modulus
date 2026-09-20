@@ -117,6 +117,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(&script_path, &script)?;
 
     let psql = Command::new("psql")
+        // examples/shared/database/mod.rs says why: a plan this deep costs more to compile
+        // than to run.
+        .env("PGOPTIONS", "-c jit=off")
         .arg(&url)
         .args(["-v", "ON_ERROR_STOP=1", "-tA", "-F", "|", "-f"])
         .arg(&script_path)

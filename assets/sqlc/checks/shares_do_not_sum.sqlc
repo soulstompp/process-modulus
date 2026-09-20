@@ -1,42 +1,48 @@
-# EVERY LAYER WHOSE HOLDER SHARES ARE ALL STATED, BESIDE THE MAGNITUDE THEY MUST ADD UP TO.
-# One row per examined layer, `violates` where the sum misses.
+# Every layer whose holder shares are all stated, beside the magnitude they must add up to. One
+# row per examined layer, `violates` where the sum misses.
 #
-# ⭐⭐ THE RULE: the stated shares sum to the magnitude of the remainder. H is a DISTRIBUTION,
-#    so its row must account for the whole of what there was to bear -- no more, no less.
+# The shares sum to the magnitude
+#   The rule: the stated shares sum to the magnitude of the remainder. H is a distribution, so
+#   its row must account for the whole of what there was to bear: no more, no less.
 #
-# ⛔⛔ ONE UNSTATED SHARE SUSPENDS THE CHECK RATHER THAN BREAKING IT, and the difference is
-#    the whole discipline. If a filer says one party's share is `unmeasured`, the sum is
-#    UNKNOWN -- not wrong. Treating the absence as a zero would manufacture a shortfall and
-#    report the document for a defect the checker introduced.
-# ⛔⛔⛔ THE UNIT GUARD IS HALF OF THIS RULE, AND ITS OWN SITE CARRIES THE OTHER.
-#    arithmetic/shares_sum.sqlc reports `not comparable` where a holder's share is quoted in a
-#    unit other than its layer's; without that branch here the rule sums across units and
-#    compares the total to |r|. H is a distribution over the magnitude of `r`, so a
-#    share in a foreign unit is not a smaller share, it is not a share of this at all.
-#    arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule stands there,
-#    which left this check as the only thing between it and a wrong number. It agreed with the
-#    site on today's corpus only because no such document exists yet.
-# ⭐⭐⭐ AND IT READS THE WHOLE INTERVAL, NOT THE MIDDLE NUMBER. This compared `abs(r_mode)`
-#    against `shares_mode` and nothing else, in a model whose entire thesis is that a quantity
-#    is a RANGE. Demonstrated 2026-09-06: widening `enterprise-contract/support-cover`'s only
-#    share from [21, 50, 76] to [21, 50, 300] -- on a layer whose whole nameplate is 168 -- was
-#    accepted by all 24 rules, because the mode did not move. Three other rules still do
-#    arithmetic on the mode alone.
+# One unstated share suspends the check
+#   It does not break it, and the difference is the whole discipline. If a filer says one party's
+#   share is `unmeasured`, the sum is unknown, not wrong. Treating the absence as a zero would
+#   manufacture a shortfall and report the document for a defect the checker introduced.
 #
-# ⛔⛔ CONTAINMENT AT THE ENDS AND EQUALITY AT THE MODE, AND THE ASYMMETRY IS NOT A COMPROMISE.
-#    Requiring equality at the ends would accuse a MORE careful filing. Checked over every
-#    layer this rule examines: 21 of 22 have shares equal to the magnitude at all three points,
-#    and one does not -- `merge-holding-composition/compute`, whose shares [1414, 4085.6] sit
-#    INSIDE a magnitude of [1092, 4198.8]. That is the cross-unit fusion, and a narrower
-#    interval is what composing per-part and converting gives you: `(Σn) − (Σd)` treats the two
-#    sums as independent, and `Σ(nᵢ − dᵢ)` does not. The naive bound is the loose one, so a
-#    rule demanding equality with it would report the accurate document.
+# The unit guard is half of this rule
+#   Its own site carries the other half. arithmetic/shares_sum.sqlc reports `not comparable`
+#   where a holder's share is quoted in a unit other than its layer's; without that branch here
+#   the rule sums across units and compares the total to |r|. H is a distribution over the
+#   magnitude of `r`, so a share in a foreign unit is not a smaller share, it is not a share of
+#   this at all. arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule
+#   stands there, which leaves this check as the only thing between it and a wrong number. It
+#   agrees with the site on this corpus only because no such document exists yet.
 #
-# ⭐ |r| OVER AN INTERVAL NEEDS THE STRADDLE CASE. Where `r` crosses zero the magnitude reaches
-#   0, which is the transition fit stated as arithmetic: short at the top of the demand range
-#   and spare at the bottom, both at once. Taking `least(|r_low|, |r_high|)` there would invent
-#   a floor the layer does not have.
--- pm:Remainder/pm:holder summed against |r| at the mode, via entries/holder_totals.sqlc.
+# The whole interval, not the middle number
+#   Comparing `abs(r_mode)` against `shares_mode` and nothing else ignores that a quantity is a
+#   range, which is this model's entire thesis. Three other rules still do arithmetic on the mode
+#   alone.
+#
+# Containment at the ends, equality at the mode
+#   The asymmetry is not a compromise: requiring equality at the ends would accuse a more careful
+#   filing. The magnitude is read from layers/remainder.sqlc, which is the remainder in force, so on
+#   a composed layer it is the pivoted `F Φ r - e_n + e_d` and not `(Σn) − (Σd)`.
+#   `merge-holding-composition/compute`'s shares [1414, 2857, 4085.6] therefore equal its magnitude
+#   at all three points. The crossed difference of its composed totals, [1092, 2857, 4198.8], treats
+#   the two sums as independent and is looser at both ends; a rule reading it would accept shares
+#   the remainder does not allow. Proof: `src/proofs/README.md`, entries `share_sum` and
+#   `magnitude`.
+#
+# |r| over an interval needs the straddle case
+#   Where `r` crosses zero the magnitude reaches 0, which is the transition fit stated as
+#   arithmetic: short at the top of the demand range and spare at the bottom, both at once.
+#   Taking `least(|r_low|, |r_high|)` there would invent a floor the layer does not have.
+#
+# Probe
+#   Widen `enterprise-contract/support-cover`'s only share from [21, 50, 76] to [21, 50, 300],
+#   on a layer whose whole nameplate is 168, leaving the mode where it is. This rule must fire.
+-- pm:Remainder/pm:holder summed against |r| from layers/remainder.sqlc, via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -51,16 +57,11 @@ LEFT JOIN (
                   x.mag_low, x.magnitude, x.mag_high)                 AS detail
     FROM (
         SELECT r.filing, r.layer,
-               abs(r.r_mode)  AS magnitude,
+               r.m_mode       AS magnitude,
                h.shares_mode  AS shares,
                h.shares_low, h.shares_high,
-               -- ⭐ |r| OVER AN INTERVAL, AND THE STRADDLE IS THE CASE THAT NEEDS SAYING. A
-               --   remainder whose range crosses zero has a magnitude that reaches 0, which is
-               --   the transition fit: short at the top of the demand range and spare at the
-               --   bottom, both at once.
-               CASE WHEN r.r_low <= 0 AND r.r_high >= 0 THEN 0
-                    ELSE least(abs(r.r_low), abs(r.r_high)) END       AS mag_low,
-               greatest(abs(r.r_low), abs(r.r_high))                  AS mag_high
+               r.m_low        AS mag_low,
+               r.m_high       AS mag_high
         FROM      (
             :compose(layers/remainder.sqlc)
         ) r

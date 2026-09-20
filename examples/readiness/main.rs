@@ -12,13 +12,16 @@
 #![doc = include_str!("README.md")]
 #![doc = include_str!("README.pt.md")]
 
+#[path = "../shared/database/mod.rs"]
+mod database;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL").map_err(|_| {
         "DATABASE_URL is unset. This example reports which computations are available, and \
          it cannot do that without the rows. Load them with assets/ddl/schema.ddl and ingest.sql."
     })?;
-    let pool = sqlx::postgres::PgPool::connect(&url).await?;
+    let pool = database::connect(&url).await?;
 
     // ------------------------------------------------------------------
     // 1. The roster, and what guards each site.

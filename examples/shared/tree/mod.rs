@@ -5,7 +5,7 @@
 //! expands to itself, `observations.rs` finds the templates nothing composes, and
 //! `soundness.rs` asks whether a population reaches the roster it is differenced against.
 //! Different questions, one graph. They were a parser each until 2026-09-08, and
-//! `AGENTS.md` §6 already names what that is: restating a closed set in a foreign namespace
+//! that is restating a closed set in a foreign namespace, which
 //! forks it, and a fork drifts with nothing here able to notice.
 //!
 //! ⛔⛔ THE FORK HAD ALREADY DRIFTED ON THE INPUT RATHER THAN ON THE PARSER. Three copies of
@@ -61,8 +61,15 @@ pub fn sql_only(body: &str) -> String {
         .join("\n")
 }
 
-/// The `.sqlc` paths a template names, from either directive. Three forms occur:
-/// `:compose(path)`, `:union(ALL a, b)`, and a slot fill, `:compose(shape, @scope = path)`.
+/// The `.sqlc` paths a template READS. Three forms occur: `:compose(path)`, `:union(ALL a, b)`,
+/// and a slot fill, `:compose(shape, @scope = path)`.
+///
+/// ⛔ `:define` IS NOT ONE OF THEM, AND THAT IS THE WHOLE POINT OF THE DAG. This tree's edges are
+/// the model's own derivation order: a remainder reads a demand and a nameplate because a
+/// remainder IS their difference. A `:define` says only where a body is written, so a statement
+/// that fences its plan by defining its vocabulary derives from nothing new and must not appear
+/// to. Counting them put six hundred edges into `public.compose_edge` and slowed every relation
+/// that reads the DAG. `definitions` is how to ask the other question.
 ///
 /// ⛔ THE THIRD IS THE ONE WORTH BEING CAREFUL ABOUT: the filler is the only reference a
 /// `scope/` relation ever gets, so a parser that stopped at the `@` would report every scope
@@ -71,8 +78,19 @@ pub fn sql_only(body: &str) -> String {
 /// ⛔ A DIRECTIVE SPELLING THIS FUNCTION DOES NOT KNOW IS AN EDGE NOBODY SEES. Every spelling
 /// the composer has is here. Add one here before adding it to the tree.
 pub fn references(sql: &str) -> Vec<String> {
+    paths(sql, &[":compose(", ":union("])
+}
+
+/// The `.sqlc` paths a template defines for itself: its own vocabulary, written at the top so
+/// that everything below says a name instead of repeating a relation. A statement only ever
+/// defines what its body composes, so these are never new relations in the tree.
+pub fn definitions(sql: &str) -> Vec<String> {
+    paths(sql, &[":define("])
+}
+
+fn paths(sql: &str, opens: &[&str]) -> Vec<String> {
     let mut out = Vec::new();
-    for open in [":compose(", ":union("] {
+    for open in opens {
         let mut rest = sql;
         while let Some(i) = rest.find(open) {
             rest = &rest[i + open.len()..];

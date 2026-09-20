@@ -1,46 +1,61 @@
-# THE COMPOSED LAYERS THAT DO OWE THE DEMAND SUM EXACTLY. One row per fusion not suspended on
-# either ground: their filed demand must equal the sum of their converted parts, less the
-# demand eliminations they filed.
+# The composed layers that owe a sum exactly, and in which quantity. One row per (fusion,
+# quantity) not suspended on any ground and not filed `derived`: the filed figure must equal the
+# sum of the converted parts, less the eliminations filed against that quantity.
 #
-# ⛔⛔ THE `quantity` COLUMN READS `demand` AND THAT IS A DECLARATION, NOT DECORATION. This
-#    relation answers one quantity's question, because composition/suspended_fusions.sqlc is
-#    per-quantity and this file chooses which grain it wants. ⭐ It reads the SET rather than
-#    composition/suspension_grounds.sqlc, and the `EXCEPT` would have been immune either way --
-#    which is exactly how a bag goes unnoticed for revisions. Take the whole suspension set with
-#    no such choice and that is correct only while demand is the only sum anybody computes. A
-#    nameplate sibling filters the same union on `'nameplate'`, and the point of the column is
-#    that whoever writes it cannot forget to.
+# A derived composed figure owes no equality
+#   It declares itself the sum, so there is nothing filed to compare it with.
+#   composition/derived_fusions.sqlc names those pairs and they leave beside the suspensions; the
+#   figure is computed in composition/derived_quantities.sqlc instead.
 #
-# ⭐⭐ AN ANTI-JOIN IS A FILTER, AND THIS ONE IS THE FILTER THE WHOLE COMPOSITION ARGUMENT
-#    TURNS ON. `x_composed = F Φ x_parts − e` is not a law of the model; it is an obligation
-#    a document takes on by saying it looked. This relation is the set of documents that took
-#    it on, so it is the honest denominator for every claim that the composition rule holds.
+# The `quantity` column is the grain
+#   Every fusion is paired with every quantity `pm.summed_quantity` declares, the set itself rather
+#   than whichever quantities some layer happens to file, and the suspended pairs are removed:
+#   composition/suspended_quantities.sqlc, where a ground naming no quantity has already been
+#   expanded onto all of them. It reads that set rather than composition/suspension_grounds.sqlc,
+#   and the `EXCEPT` would have been immune either way, which is exactly how a bag can go
+#   unnoticed.
 #
-# ⭐⭐⭐ AND IT IS WRITTEN AS `EXCEPT`, WHICH IS WHAT THE SENTENCE MEANS. "pm.part MINUS the two
-#    suspensions" written as a LEFT JOIN with a NULL test is an idiom that names the left
-#    operand and buries the right one inside an ON clause. `EXCEPT` names both, in the order the sentence reads, and the set difference is
-#    exact here because both arms are the bare key: fusions is already `SELECT DISTINCT`, and
-#    EXCEPT deduplicates.
+# The filter the composition argument turns on
+#   An anti-join is a filter, and this one is the filter the whole composition argument turns on.
+#   `x_composed = F Φ x_parts − e` is not a law of the model; it is an obligation a document takes
+#   on by saying it looked. This relation is the set of documents that took it on, so it is the
+#   honest denominator for every claim that the composition rule holds.
 #
-# ⛔ THIS IS NOT A GENERAL SUBSTITUTION FOR THE ANTI-JOIN. `composition/leaves.sqlc` projects
-#   `d.*` and carries the left row's payload through, which EXCEPT cannot do: it compares whole
-#   rows and returns only what both arms can spell. Key-only difference is the case that
-#   converts, and there are three of them in this tree.
+# Written as `EXCEPT`, which is what the sentence means
+#   "pm.part minus the two suspensions" written as a `LEFT JOIN` with a NULL test is an idiom that
+#   names the left operand and buries the right one inside an `ON` clause. `EXCEPT` names both, in
+#   the order the sentence reads, and the set difference is exact here because both arms are the
+#   bare key: fusions is already `SELECT DISTINCT`, and `EXCEPT` deduplicates.
 #
-# ⚠️ AN EMPTY OR SHORT RESULT IS NOT EVIDENCE HERE ON ITS OWN. `EXCEPT` shares precedence with
-#   `UNION` in Postgres and associates left, so a missing pair of parentheses returns the wrong
-#   set rather than an error, and a wrong set of composed layers is a perfectly ordinary table.
-#   ⭐ THE LAW IS RECOMPUTED RATHER THAN RECORDED. algebra/owed_equality.sqlc asserts
-#   |A| = |A∖B| + |A⋉B| over these operands on every run, so a number written here would be a
-#   number nobody recounts. Read it there.
--- composition/fusions.sqlc minus the suspensions that lift the demand sum.
-SELECT f.filing, f.layer, 'demand' AS quantity
-FROM (
+# Not a general substitute for the anti-join
+#   `composition/leaves.sqlc` projects `d.*` and carries the left row's payload through, which
+#   `EXCEPT` cannot do: it compares whole rows and returns only what both arms can spell. Key-only
+#   difference is the case that converts.
+#
+# A short result is not evidence on its own
+#   An empty or short result is not evidence here on its own. ⚠️ `EXCEPT` shares precedence with
+#   `UNION` in Postgres and associates left, so a missing pair of parentheses returns the wrong set
+#   rather than an error, and a wrong set of composed layers is a perfectly ordinary table.
+#
+# The law is recomputed, not recorded
+#   algebra/owed_equality.sqlc asserts |A| = |A∖B| + |A⋉B| over these operands on every run, so a
+#   number written here would be a number nobody recounts. Read it there.
+-- composition/fusions.sqlc for every quantity, minus the suspensions that lift each sum and the
+-- composed figures filed `derived`.
+SELECT f.filing, f.layer, q.quantity
+FROM      (
     :compose(composition/fusions.sqlc)
 ) f
+CROSS JOIN unnest(enum_range(NULL::pm.summed_quantity)) AS q(quantity)
 EXCEPT
-SELECT s.composition, s.composed_layer, 'demand'
-FROM (
-    :compose(composition/suspended_fusions.sqlc)
-) s
-WHERE s.quantity IS NULL OR s.quantity = 'demand'
+(
+    SELECT s.composition, s.composed_layer, s.quantity
+    FROM (
+        :compose(composition/suspended_quantities.sqlc)
+    ) s
+    UNION
+    SELECT d.filing, d.layer, d.quantity
+    FROM (
+        :compose(composition/derived_fusions.sqlc)
+    ) d
+)

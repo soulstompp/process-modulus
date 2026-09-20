@@ -1,0 +1,25 @@
+# The composed layers whose remainder has no figure at all. One row per composed layer whose own
+# `n - d` is not its remainder and whose pivot is not owed.
+#
+# Two ways to have a remainder, and neither is open
+#   A composed layer's remainder is its own crossed `n - d` where that difference is legitimate, or
+#   the pivot `F Φ r - e_n + e_d` where it is owed. composition/unsettled.sqlc names the layers
+#   where the first is not legitimate: a conversion with width scales both totals, so the
+#   difference counts the factor's spread twice (`asrt:Part`: a converted remainder is "never
+#   re-derived"). composition/suspended_remainders.sqlc names the layers where the second is
+#   lifted. A layer in both has no figure the model can stand behind, and a fallback to `n - d`
+#   would hand every remainder rule the figure `asrt:Part` refuses.
+#
+# A set of its own, for the depth of the plan
+#   layers/remainder.sqlc drops these rows and arithmetic/remainder.sqlc says why. A filter there
+#   that tested the pivot join itself re-plans every rule above it several levels deeper, past what
+#   a plan read back when those statements are checked at compile time can nest; testing against
+#   this set does not.
+-- composition/unsettled.sqlc within composition/suspended_remainders.sqlc.
+SELECT o.filing, o.layer
+FROM      (
+    :compose(composition/unsettled.sqlc)
+) o
+JOIN      (
+    :compose(composition/suspended_remainders.sqlc)
+) l ON l.composition = o.filing AND l.composed_layer = o.layer

@@ -27,6 +27,9 @@
         <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
       </lane>
     </laneSet>
+    <textAnnotation id="note_merge-us-member_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
     <textAnnotation id="note_merge-us-member_scope">
       <text>SCOPE: unbounded. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -48,11 +51,14 @@
       <bpmndi:BPMNShape id="shape_merge-us-member_lane_merge-us-member_shift-line" bpmnElement="tns:lane_merge-us-member_shift-line">
         <dc:Bounds x="120" y="126" width="620" height="34"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-us-member_note_merge-us-member_scope" bpmnElement="tns:note_merge-us-member_scope">
+      <bpmndi:BPMNShape id="shape_merge-us-member_note_merge-us-member_lane" bpmnElement="tns:note_merge-us-member_lane">
         <dc:Bounds x="20" y="174" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_merge-us-member_note_merge-us-member_search" bpmnElement="tns:note_merge-us-member_search">
+      <bpmndi:BPMNShape id="shape_merge-us-member_note_merge-us-member_scope" bpmnElement="tns:note_merge-us-member_scope">
         <dc:Bounds x="20" y="204" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_merge-us-member_note_merge-us-member_search" bpmnElement="tns:note_merge-us-member_search">
+        <dc:Bounds x="20" y="234" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

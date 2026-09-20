@@ -1,0 +1,53 @@
+# Every part's factor state is the one its own columns file. One row: how many parts
+# composition/part_references.sqlc holds, how many landed in each state, and how many carry a state
+# their columns contradict.
+#
+# Attribution, not a count per state
+#   The state is a `CASE` in a SELECT list, so every part keeps its row whatever the arms say, and a
+#   count of parts cannot see an arm go wrong. A count per state sees a part change states only
+#   where the totals happen to move. So each part is held to its own columns: `stated` exactly
+#   where a figure is filed, `absent` where a reason is, `derivation` where an identity is, and
+#   `omitted` where none of the three is. A part with no state at all is counted with the rest.
+#
+# Why this needs a law of its own
+#   Every reader asking which kind of factor a part has asks this column, and none of them looks at
+#   the three columns again. An arm that called an absent factor a derivation would move all of them
+#   together and leave each looking consistent with the others.
+#
+# The empty state is a finding, not a fault
+#   Which states the corpus fills is printed in the detail and, driven from the declared set, by
+#   queries/combinatorics/3-classifications.sqlc. A state no part files is a referral.
+#
+# Probe
+#   examples/probes runs it as `factor_state`: in the composed text the arm for a typed absence
+#   names the derivation state instead, and the law must fail.
+-- composition/part_references.sqlc, each part's factor_state against the factor columns it carries.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/part_references' AS subject,
+           count(*) FILTER (WHERE x.mislabelled) = 0 AS holds,
+           format('%s parts: %s omitted, %s stated, %s absent, %s derivation; %s whose state is not the column they file',
+                  count(*),
+                  count(*) FILTER (WHERE x.factor_state = 'omitted'),
+                  count(*) FILTER (WHERE x.factor_state = 'stated'),
+                  count(*) FILTER (WHERE x.factor_state = 'absent'),
+                  count(*) FILTER (WHERE x.factor_state = 'derivation'),
+                  count(*) FILTER (WHERE x.mislabelled)) AS detail
+    FROM (
+        SELECT r.factor_state,
+               r.factor_state IS NULL
+                 OR (r.factor_state = 'stated')     <> (r.factor_low IS NOT NULL)
+                 OR (r.factor_state = 'absent')     <> (r.factor_absent IS NOT NULL)
+                 OR (r.factor_state = 'derivation') <> (r.factor_derivation IS NOT NULL)
+                 OR (r.factor_state = 'omitted')
+                      <> (num_nonnulls(r.factor_low, r.factor_absent, r.factor_derivation) = 0)
+                   AS mislabelled
+        FROM (
+            :compose(composition/part_references.sqlc)
+        ) r
+    ) x
+) p ON true
+WHERE a.slug = 'factor_state'

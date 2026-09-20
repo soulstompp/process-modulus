@@ -1,0 +1,87 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  The parts going into each composed layer, with their conversion factors, per quantity.\n-- composition/parts.sqlc against composition/resolved_quantities.sqlc; F and Phi live in one table.\nSELECT p.composition                      AS \"composition!\",\n       p.composed_layer                   AS \"composed!\",\n       s.quantity::text                   AS \"quantity!\",\n       coalesce(p.factor_low, 1)::float8  AS \"f_low!\",\n       coalesce(p.factor_mode, 1)::float8 AS \"f_mode!\",\n       coalesce(p.factor_high, 1)::float8 AS \"f_high!\",\n       s.low::float8                      AS \"x_low!\",\n       s.mode::float8                     AS \"x_mode!\",\n       s.high::float8                     AS \"x_high!\"\nFROM (\n    SELECT * FROM composition.parts\n) p\nJOIN (\n    SELECT * FROM composition.resolved_quantities\n) s\n  ON s.filing = p.part_filing AND s.layer = p.part_layer\n AND s.low IS NOT NULL\nWHERE p.factor_state IN ('omitted', 'stated')\nORDER BY s.quantity, p.composition, p.composed_layer, p.part_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.parts",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.parts",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "f_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "f_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "f_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "x_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "x_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "x_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "0d6789392a36fcf483a536e7bdbf47eabf2e812ea286f86fc56c059d5f8f08f1"
+}

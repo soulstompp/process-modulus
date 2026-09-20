@@ -1,9 +1,10 @@
-# EVERY LUMPY SUPPLY WHOSE RATING HAS TO DIVIDE BY ITS QUANTUM, AND WHETHER THE DIVISION IS
-# AVAILABLE. One row per lumpy layer with a stated remainder.
+# Every lumpy supply whose rating has to divide by its quantum, and whether the division is
+# available. One row per lumpy layer with a stated remainder.
 #
-# ⭐ THE SECOND GUARDED SITE. checks/quantum_unit_mismatch says it plainly: a division across
-#   units is not a wrong answer, it is not an answer. That sentence is true of every row in
-#   this roster and is written at exactly two of them.
+# The second guarded site
+#   checks/quantum_unit_mismatch says it plainly: a division across units is not a wrong answer,
+#   it is not an answer. That sentence is true of every row in this roster and is written at
+#   exactly two of them.
 -- pm:Divisibility/pm:quantum against pm:Nameplate/pm:amount.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
@@ -11,10 +12,10 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT l.filing, l.layer,
-           CASE WHEN l.quantum_mode IS NULL                            THEN 'suspended'
-                WHEN l.quantum_unit IS DISTINCT FROM l.amount_unit     THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           CASE WHEN l.quantum_mode IS NULL THEN 'no quantum stated'
+           CASE WHEN l.quantum_mode IS NULL                            THEN 'suspended'::public.arithmetic_verdict
+                WHEN l.quantum_unit IS DISTINCT FROM l.amount_unit     THEN 'not comparable'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           CASE WHEN l.quantum_mode IS NULL THEN format('quantum %s', l.quantum_absent)
                 ELSE format('%s of %s against a rating in %s',
                             l.quantum_mode, l.quantum_unit, l.amount_unit) END AS detail
     FROM (

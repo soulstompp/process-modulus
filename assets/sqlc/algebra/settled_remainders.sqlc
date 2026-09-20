@@ -1,28 +1,63 @@
-# THE NODES A REMAINDER DESCENT REACHES, AGAINST THE ONES IT STOPS ON. One row: whether
-# |frontier| = |settled| + |frontier ⋉ unsettled|.
+# The nodes a remainder descent reaches, against the ones it stops on. One row: whether
+# |frontier| = |settled| + |frontier ⋉ unsettled| + |stopped with no figure|, and whether every node
+# in the third class sits under a remainder that is lifted.
 #
-# ⭐ THE DESCENT PRUNES AND THE DIFFERENCE SELECTS, AND THIS COUNTS THE SECOND. Every row the
-#   walk emits is either a stopping point, which carries a remainder up, or an unsettled node
-#   the walk continued through, which carries nothing and is corrected by
-#   composition/carried_eliminations.sqlc instead. A row in neither would be a subtree silently
-#   dropped from a sum, and the two figures would still look like quantities.
--- composition/remainder_frontier.sqlc partitioned by composition/unsettled.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+# The descent prunes and the difference selects
+#   This counts the second. Every row the walk emits is either a stopping point, which carries a
+#   remainder up, or an unsettled node the walk continued through, composition/passed_nodes.sqlc,
+#   which carries nothing and is corrected by composition/carried_eliminations.sqlc instead. A row in neither would be a
+#   subtree silently dropped from a sum, and the two figures would still look like quantities.
+#
+# A stopping point with no figure is dropped, and only a lift makes that legal
+#   A node whose demand or nameplate is not stated (`unmeasured`, `notApplicable`, or `derived` with
+#   nothing to derive it) is a stopping point with no remainder to difference, so
+#   composition/settled_remainders.sqlc has no row for it: it is dropped from the pivot. That is
+#   correct only because the remainder above it is not owed, which composition/suspended_remainders.sqlc
+#   says of every walk that reaches such a node. So the third class is counted, and each of its rows
+#   must sit under a lifted remainder; one that does not is the silent drop this law exists to catch,
+#   and the pivot above it runs short with nothing else failing.
+#
+# Probe
+#   examples/probes runs it as `settled_remainders`: file a part's demand `derived` with no fusion
+#   behind it, so a walk stops on it with no figure, and remove the lift that answers that stop;
+#   the law must fail naming the remainder above it.
+-- composition/remainder_frontier.sqlc partitioned into composition/settled_remainders.sqlc, composition/passed_nodes.sqlc and the stops layers/differenced_remainder.sqlc has no row for,
+-- the figureless stops held to composition/suspended_remainders.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
 LEFT JOIN (
+    WITH stops AS (
+        SELECT w.root_filing, w.root_layer
+        FROM ( :compose(composition/remainder_frontier.sqlc) ) w
+        WHERE w.usable
+          AND NOT EXISTS (SELECT 1 FROM ( :compose(composition/unsettled.sqlc) ) o
+                          WHERE o.filing = w.filing AND o.layer = w.layer)
+          AND NOT EXISTS (SELECT 1 FROM ( :compose(layers/differenced_remainder.sqlc) ) r
+                          WHERE r.filing = w.filing AND r.layer = w.layer)
+    ),
+    x AS (
+        SELECT
+          (SELECT count(*) FROM ( :compose(composition/remainder_frontier.sqlc) ) w
+            WHERE w.usable)                                                          AS total,
+          (SELECT count(*) FROM ( :compose(composition/settled_remainders.sqlc) ) s) AS kept,
+          (SELECT count(*) FROM ( :compose(composition/passed_nodes.sqlc) ) w
+            WHERE w.usable)                                                          AS removed,
+          (SELECT count(*) FROM stops)                                               AS figureless,
+          (SELECT string_agg(DISTINCT s.root_filing || ' / ' || s.root_layer, ', ')
+           FROM stops s
+           WHERE NOT EXISTS (SELECT 1 FROM ( :compose(composition/suspended_remainders.sqlc) ) l
+                             WHERE l.composition = s.root_filing
+                               AND l.composed_layer = s.root_layer))                 AS unlifted
+    )
     SELECT 'composition/settled_remainders' AS subject,
-           x.total = x.kept + x.removed AS holds,
-           format('%s frontier rows = %s settled + %s walked through', x.total, x.kept, x.removed) AS detail
-    FROM ( SELECT
-             (SELECT count(*) FROM ( :compose(composition/remainder_frontier.sqlc) ) w
-               WHERE w.factor_absent = false AND NOT w.is_cycle)                       AS total,
-             (SELECT count(*) FROM ( :compose(composition/settled_remainders.sqlc) ) s) AS kept,
-             (SELECT count(*) FROM ( :compose(composition/remainder_frontier.sqlc) ) w
-               WHERE w.factor_absent = false AND NOT w.is_cycle
-                 AND EXISTS (SELECT 1 FROM ( :compose(composition/unsettled.sqlc) ) o
-                              WHERE o.filing = w.filing AND o.layer = w.layer))        AS removed
-         ) x
+           x.total = x.kept + x.removed + x.figureless AND x.unlifted IS NULL AS holds,
+           format('%s frontier rows = %s settled + %s walked through + %s stopped with no figure%s',
+                  x.total, x.kept, x.removed, x.figureless,
+                  CASE WHEN x.unlifted IS NOT NULL
+                       THEN format('; owed although a node it reaches has none: %s', x.unlifted) END)
+               AS detail
+    FROM x
 ) p ON true
 WHERE a.slug = 'settled_remainders'

@@ -1,0 +1,47 @@
+# The fusions that owe no sum in one quantity because a layer the sum reads leaves it unstated.
+# One row per (composed layer, quantity), shaped like the other suspension grounds so the union
+# stays a union, with the unstated layers named in `note`.
+#
+# A missing term is not a zero
+#   `Σ converted parts` joins each part's figure, so a part that files its draw as `unmeasured`
+#   would simply drop out of the draw sum, and the sum would come out short by exactly the figure
+#   nobody measured. A composed layer that files no draw has nothing to compare a sum with. Either
+#   way the equality is not owed, for that quantity and no other, which is the same argument an
+#   unsized elimination makes.
+#
+# A derived figure is not unstated
+#   A layer filing the quantity as its fusion's sum files an output, which the receiver computes, so it is
+#   not a gap and nothing here reads it as one. A part's is computed through its own fusion by
+#   composition/derived_quantities.sqlc, and composition/underived_parts.sqlc lifts the sum where
+#   that computation cannot finish. A composed layer's owes no equality, and
+#   composition/derived_fusions.sqlc says so.
+#
+# Per quantity, never for the whole fusion
+#   A fusion whose parts file no draw still owes its demand and nameplate sums exactly, so
+#   `quantity` is always set here. A caller computing one quantity's sum reads
+#   `quantity IS NULL OR quantity = <that one>`, and this arm answers only for its own.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+SELECT u.composition, u.composed_layer, u.quantity,
+       'the quantity is not stated on every layer the sum reads' AS suspended_because,
+       string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
+           AS note
+FROM (
+    SELECT p.composition, p.composed_layer, s.quantity,
+           p.part_filing || '/' || p.part_layer AS layer, s.absent
+    FROM      (
+        :compose(composition/parts.sqlc)
+    ) p
+    JOIN      (
+        :compose(layers/summed_quantities.sqlc)
+    ) s ON s.filing = p.part_filing AND s.layer = p.part_layer
+    WHERE s.low IS NULL
+      AND s.derivation IS NULL
+    UNION ALL
+    SELECT q.filing, q.layer, q.quantity, 'the composed layer', q.absent
+    FROM (
+        :compose(composition/fusion_quantities.sqlc)
+    ) q
+    WHERE q.low IS NULL
+      AND q.derivation IS NULL
+) u
+GROUP BY u.composition, u.composed_layer, u.quantity

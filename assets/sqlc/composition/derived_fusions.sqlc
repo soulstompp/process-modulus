@@ -1,0 +1,16 @@
+# The fusions whose composed figure is filed as the fusion's sum, per quantity. One row per (composed layer,
+# quantity) where the composing document states no figure of its own and declares it the output of
+# the fusion.
+#
+# Not owed, and not suspended either
+#   The sum rule compares a filed figure with the sum of the parts. A figure filed as a `fusionSum`
+#   derivation has declared itself that sum, so there is nothing to compare and the equality is not owed; nor has
+#   anything gone missing, so nothing is suspended. composition/derived_quantities.sqlc computes the
+#   figure, or names why it cannot, and composition/owed_equality.sqlc leaves these pairs out beside
+#   the suspensions.
+-- composition/fusion_quantities.sqlc filed as a derivation.
+SELECT q.filing, q.layer, q.quantity
+FROM (
+    :compose(composition/fusion_quantities.sqlc)
+) q
+WHERE q.derivation IS NOT NULL

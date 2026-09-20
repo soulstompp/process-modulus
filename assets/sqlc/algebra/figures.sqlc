@@ -1,0 +1,32 @@
+# The layers with a demand or a nameplate are those with one, plus those with the other, less those
+# with both. One row: whether |layers/figures| = |demand| + |nameplate| - |both|.
+#
+# Inclusion and exclusion, with the intersection found another way
+#   layers/figures.sqlc joins the two vectors fully on the layer. Counted from the two vectors
+#   themselves, the union is their sizes added less the layers in both, and the layers in both are
+#   found here by `EXISTS`, not by the join. A join key that stopped matching would put every layer
+#   with both figures in twice, and one that matched too much would pair a layer with another's.
+#
+# Probe
+#   examples/probes runs it as `figures`: in the composed text the pair becomes an inner join, so a
+#   layer with one figure has no row, and the law must fail.
+-- layers/figures.sqlc against layers/demand.sqlc and layers/nameplate.sqlc counted by themselves.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'layers/figures' AS subject,
+           x.pairs = x.demands + x.nameplates - x.both AS holds,
+           format('%s layers with a figure = %s with a demand + %s with a nameplate - %s with both',
+                  x.pairs, x.demands, x.nameplates, x.both) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/figures.sqlc) ) f)     AS pairs,
+             (SELECT count(*) FROM ( :compose(layers/demand.sqlc) ) d)      AS demands,
+             (SELECT count(*) FROM ( :compose(layers/nameplate.sqlc) ) n)   AS nameplates,
+             (SELECT count(*) FROM ( :compose(layers/demand.sqlc) ) d
+               WHERE EXISTS (SELECT 1 FROM ( :compose(layers/nameplate.sqlc) ) n
+                              WHERE n.filing = d.filing AND n.layer = d.layer))  AS both
+         ) x
+) p ON true
+WHERE a.slug = 'figures'

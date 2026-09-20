@@ -1,30 +1,32 @@
-# EVERY REMAINDER THIS MODEL CAN COMPUTE, BESIDE WHAT ITS FILING ESTABLISHED ABOUT THE SET IT
-# SITS IN. One row per computable remainder: the extent its stack declared, what its coupling
+# Every remainder this model can compute, beside what its filing established about the set it
+# sits in. One row per computable remainder: the extent its stack declared, what its coupling
 # search reported, and any spillover somebody else observed into it.
 #
-# ⭐⭐⭐ A REMAINDER IS ONLY MEANINGFUL IF THE LAYER SET IS CLOSED. `r = n - d` is a fact about
-#    one layer, and the model then treats the stack as a set of independent quantizations. Two
-#    things break that, and only one of them is about this document: nobody bounded the set, or
-#    a pair it holds spills over. Nineteen of thirty-six remainders here sit in a set somebody
-#    established; twelve sit in one nobody has asked about.
+# A remainder needs a closed layer set
+#   A remainder is only meaningful if the layer set is closed. `r = n - d` is a fact about one
+#   layer, and the model then treats the stack as a set of independent quantizations. Two things
+#   break that, and only one of them is about this document: nobody bounded the set, or a pair it
+#   holds spills over. Count this relation by `standing` for how many remainders sit in a set
+#   somebody established and how many in one nobody has asked about.
 #
-# ⛔⛔ THE VERDICT IS COMPUTED FOR EVERY REMAINDER, AND THAT IS THE ASSERTION RATHER THAN THE
-#    ANSWER. `unbounded` is the honest state for a filing written to argue about three layers,
-#    and it must never fail anything. What must fail is a remainder that reaches the arithmetic
-#    without this question having been put to it at all.
+# The verdict is the assertion, not the answer
+#   The verdict is computed for every remainder, and that is the assertion rather than the answer.
+#   `unbounded` is the honest state for a filing written to argue about three layers, and it must
+#   never fail anything. What must fail is a remainder that reaches the arithmetic without this
+#   question having been put to it at all.
 #
-# ⭐ `unbounded` IS NOT A SMALLER `scoped`. epistemics/scopes.sqlc has the argument: `scoped`
-#   says somebody established what lies outside, `unbounded` says nobody looked. Folding them
-#   would count a silence as a boundary.
+# `unbounded` is not a smaller `scoped`
+#   epistemics/scopes.sqlc has the argument: `scoped` says somebody established what lies outside,
+#   `unbounded` says nobody looked. Folding them would count a silence as a boundary.
 -- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent and entries/spillovers.sqlc.
 SELECT r.filing, r.layer,
        sc.extent,
        cs.answer AS search,
        sp.observed_in AS spilled_from,
-       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'
-            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'
-            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'
-            ELSE 'bounded and the pairs answered' END AS standing
+       CASE WHEN sp.observed_in IS NOT NULL THEN 'takes a spillover'::public.remainder_standing
+            WHEN sc.extent = 'unbounded'    THEN 'nobody bounded the set'::public.remainder_standing
+            WHEN cs.answer  = 'unmeasured'  THEN 'set bounded, pairs untested'::public.remainder_standing
+            ELSE 'bounded and the pairs answered'::public.remainder_standing END AS standing
 FROM      (
     :compose(layers/remainder.sqlc)
 ) r

@@ -1,25 +1,35 @@
-# WHAT EACH COMPOSER REMOVED FROM A COMPOSED LAYER, PER QUANTITY. One row per
+# What each composer removed from a composed layer, per quantity. One row per
 # (composition, composed layer, quantity): the amount taken out because two parts counted it
-# twice, or the typed reason it could not be sized.
+# twice, the typed reason it could not be sized, or the identity that computes it.
 #
-# ⭐⭐⭐ AN ELIMINATION IS THE ONLY ENTRY IN THIS MODEL THAT MAKES A NUMBER SMALLER, and this is
-#    the wrapper the rest of this directory is built on. Before it existed,
-#    `composition/fused.sqlc` and `queries/matrices/3b-composed-demand.sqlc` reached into
-#    `pm.elimination` with the same three-clause join -- composition, composed layer,
-#    `quantity = 'demand'` -- character for character, in two files, differing only in which
-#    alias they bound it to.
+# The only entry that makes a number smaller
+#   An elimination is the only entry in this model that makes a number smaller, and this is the
+#   wrapper the rest of this directory is built on. `composition/fused.sqlc` and
+#   `queries/matrices/3b-composed-quantities.sqlc` both need the same three-clause join into
+#   `pm.elimination` (composition, composed layer, quantity); written out in each
+#   file, it is the same join character for character, differing only in which alias it binds to.
 #
-# ⛔⛔ THE ZERO-FILL IS NOT HERE, AND THAT IS DELIBERATE. `coalesce(low, 0)` reads "nothing was
-#    eliminated", which is true only after `composition/owed_equality.sqlc` has already removed
-#    the fusions that owe no sum. A composer who says "these hours are double counted and
-#    cannot say by how much" files `absent = 'unmeasured'`, and coalescing that to zero asserts a
-#    reconciliation they explicitly declined to make. The absence is carried; the caller decides.
+# The zero-fill is deliberately absent
+#   `coalesce(low, 0)` reads "nothing was eliminated", which is true only after
+#   `composition/owed_equality.sqlc` has already removed the fusions that owe no sum. A composer who
+#   says "these hours are double counted and cannot say by how much" files `absent = 'unmeasured'`,
+#   and coalescing that to zero asserts a reconciliation they explicitly declined to make. The
+#   absence is carried; the caller decides.
 #
-# ⭐ `quantity` IS A COLUMN BECAUSE AN ELIMINATION IS PER-QUANTITY. Demand may be double counted
-#   while the nameplate is not -- two teams sharing one machine overlap in what they ask of it and
-#   not in what it can make. Filtering to `'demand'` is a caller's question, not this relation's.
+# `quantity` is a column
+#   An elimination is per quantity. Demand may be double counted while the nameplate is not: two
+#   teams sharing one machine overlap in what they ask of it and not in what it can make. Filtering
+#   to `'demand'` is a caller's question, not this relation's.
+#
+# `claim_seq` is how an elimination reaches its own edge
+#   A claim's `narrowsWhen` and `boundOrigin` are keyed on the claim's position in the document, and
+#   this table is keyed on a fusion and a quantity, so the ordinal is the only join between an
+#   eliminated figure and what its filer said about who set its bound. It is NULL exactly where the
+#   quantity is not a claim. Carried here rather than looked up by a reader, because the figures
+#   cannot recover it: two eliminations of one filing may hold the same three points in the same
+#   unit.
 -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
+       e.absent, e.derivation, e.reason, e.claim_seq
 FROM pm.elimination e

@@ -1,0 +1,69 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent\nFROM pm.operation o\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "label",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "label"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "foreign_notation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "foreign_notation"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "foreign_id",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "foreign_id"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "foreign_absent",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "3bf8403ee9088338e83760125313ddb9081120446201216ba9b470e9e06097ef"
+}

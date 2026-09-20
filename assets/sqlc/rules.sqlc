@@ -2,23 +2,24 @@
 #
 #   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/rules.sql
 #
-# ⭐⭐ WHY THIS FILE EXISTS. Forty-one rules in this model are stated in the schemas' own
-#    prose and gated by nothing, because XSD 1.0 has no `xs:assert` and cannot compare one
-#    element against another. Look at what they actually ARE, though: "the shares sum to the
-#    magnitude", "the sign agrees with the range comparison", "no leaf is reachable by two
-#    paths". Those are joins, aggregates and comparisons. They are unreachable in a grammar
-#    and ordinary in a query language.
+# Why this file exists
+#   Many rules in this model are stated in the schemas' own prose and gated by nothing, because
+#   XSD 1.0 has no `xs:assert` and cannot compare one element against another. Look at what they
+#   actually are, though: "the shares sum to the magnitude", "the sign agrees with the range
+#   comparison", "no leaf is reachable by two paths". Those are joins, aggregates and
+#   comparisons. They are unreachable in a grammar and ordinary in a query language.
 #
-# ⭐⭐⭐ THIS FILE IS AN ASSEMBLY AND HOLDS NO LOGIC OF ITS OWN. Every rule is a file under
-#    assets/sqlc/checks/, every population is a relation those files compose, and each one is
-#    a complete query somebody can run by itself. Read `checks/all.sqlc` to see what a rule
-#    IS here: one row per examined item with a verdict on it, so the violations table below is
-#    `WHERE violates` and the coverage table is `GROUP BY rule` -- two views of one relation
-#    that cannot disagree about what was examined.
+# An assembly with no logic of its own
+#   Every rule is a file under assets/sqlc/checks/, every population is a relation those files
+#   compose, and each one is a complete query somebody can run by itself. Read `checks/all.sqlc`
+#   to see what a rule is here: one row per examined item with a verdict on it, so the violations
+#   table below is `WHERE violates` and the coverage table is `GROUP BY rule`, two views of one
+#   relation that cannot disagree about what was examined.
 #
-# ⛔ EMPTY OUTPUT MEANS EVERY RULE HELD, AND IS WORTH WHAT THE COVERAGE TABLE SAYS IT IS.
-#   To see the rules actually working rather than merely finding nothing, run
-#   `assets/sql/checks/all.sql` on its own: every row every rule looked at, and why it passed.
+# Empty output means every rule held
+#   And it is worth what the coverage table says it is. To see the rules actually working rather
+#   than merely finding nothing, run `assets/sql/checks/all.sql` on its own: every row every rule
+#   looked at, and why it passed.
 
 SET search_path TO pm, public;
 \pset border 2
@@ -29,103 +30,109 @@ SET search_path TO pm, public;
 :compose(reports/violations.sqlc);
 
 \echo
-\echo === Referrals. ⚠️ Not violations: things a QUERY can find and only a PERSON can settle. =
+\echo === Referrals. Not violations: things a query can find and only a person can settle. ====
 \echo 'Detecting the structure is mechanical. Judging the prose is not, so these are handed over'
 \echo 'rather than passed or failed. A clean run has rows here and that is correct.'
 :compose(reports/coupling_absorbed_by_a_fusion.sqlc);
 
 \echo
-\echo '⚠️ And the correction nobody filed: a layer built into TWO composed layers. Summing those'
-\echo '  two counts its supply twice. Derived rather than observed, because the overlap IS a part'
-\echo '  and a part carries its own figures. An elimination corrects a composition somebody did;'
-\echo '  this one is about a composition nobody has done yet.'
+\echo 'And the correction nobody filed: a layer built into two composed layers. Summing those'
+\echo 'two counts its supply twice. Derived rather than observed, because the overlap is a part'
+\echo 'and a part carries its own figures. An elimination corrects a composition somebody did;'
+\echo 'this one is about a composition nobody has done yet.'
 :compose(reports/derived_eliminations.sqlc);
 
 \echo
-\echo '⭐ And what a receiver is entitled to say about narrowsWhen, as a number rather than'
-\echo '  an opinion. The annotation: "a claim without it is weaker, and a receiver is'
-\echo '  entitled to say so". Judging whether the sentence would ACTUALLY narrow the range'
-\echo '  is prose. Counting which ranges decline to say anything is not.'
+\echo 'And what a receiver is entitled to say about narrowsWhen, as a number rather than'
+\echo 'an opinion. The annotation: "a claim without it is weaker, and a receiver is'
+\echo 'entitled to say so". Judging whether the sentence would actually narrow the range'
+\echo 'is prose. Counting which ranges decline to say anything is not.'
 :compose(reports/narrowing_declared.sqlc);
 
 \echo
-\echo '⭐⭐ AND THE GRAIN QUESTION, ANSWERABLE FOR THE FIRST TIME. How much of the width in'
-\echo '   this corpus is IGNORANCE (a better instrument reveals it) and how much is the'
-\echo '   world actually MOVING (only changing the process reduces it)? Before narrowsWhen'
-\echo '   carried a kind there was nothing to group by, and the schema simply asserted the'
-\echo '   first reading throughout.'
+\echo 'And the grain question, answerable for the first time. How much of the width in'
+\echo 'this corpus is ignorance (a better instrument reveals it) and how much is the'
+\echo 'world actually moving (only changing the process reduces it)? Before narrowsWhen'
+\echo 'carried a kind there was nothing to group by, and the schema simply asserted the'
+\echo 'first reading throughout.'
 :compose(reports/width_composition.sqlc);
 
 \echo
 \echo
-\echo '⛔⛔⛔ HAS ANYBODY TESTED THE MODEL? The single most important number in this file, and'
-\echo '   it is unaskable while `Stack/couplings` is a bare empty list. `pm:Coupling`'
-\echo '   says a document with no couplings "is not evidence of independence; it is a document'
-\echo '   where nobody looked" -- and for two revisions the element it says that about could'
-\echo '   only write the ambiguous thing. This is a fact about THE EVIDENCE rather than about'
-\echo '   any one filing, which is why it is a report and not a rule.'
+\echo 'Has anybody tested the model? The single most important number in this file, and'
+\echo 'it is unaskable while `Stack/couplings` is a bare empty list. `pm:Coupling`'
+\echo 'says a document with no couplings "is not evidence of independence; it is a document'
+\echo 'where nobody looked", and for two revisions the element it says that about could'
+\echo 'only write the ambiguous thing. This is a fact about the evidence rather than about'
+\echo 'any one filing, which is why it is a report and not a rule.'
 :compose(reports/independence_tested.sqlc);
 
 \echo
-\echo '⛔⛔ AND THE SAME QUESTION ONE LEVEL UP, ABOUT THE STACK ITSELF. `scoped` says somebody'
-\echo '   established what lies outside and excluded it; `unbounded` says nobody looked. As'
-\echo '   one boolean those are the same row. Note what NO filing here claims: a stack is a'
-\echo '   projection of one system held by whoever filed it, never an enumeration of it.'
+\echo 'And the same question one level up, about the stack itself. `scoped` says somebody'
+\echo 'established what lies outside and excluded it; `unbounded` says nobody looked. As'
+\echo 'one boolean those are the same row. Note what no filing here claims: a stack is a'
+\echo 'projection of one system held by whoever filed it, never an enumeration of it.'
 :compose(reports/scope_declared.sqlc);
 
 \echo
-\echo '⛔⛔⛔ AND THE OTHER CLAIM A DOCUMENT CAN REFUTE IN THIS FORMAT. The model says EVERY'
-\echo '   LAYER HAS A REMAINDER, and `StatedRemainder` is a choice -- a remainder, or a typed'
-\echo '   reason there is none -- so a sender who disagrees has to say so rather than leave a'
-\echo '   field empty. Two layers do. Until `ingest.sql` read that second branch they arrived'
-\echo '   as five NULLs and read as documents that had said nothing, which is precisely what'
-\echo '   one of the notes below says it must not be taken for.'
+\echo 'And the other claim a document can refute in this format. The model says every'
+\echo 'layer has a remainder, and `StatedRemainder` is a choice, a remainder or a typed'
+\echo 'reason there is none, so a sender who disagrees has to say so rather than leave a'
+\echo 'field empty. Two layers do. Until `ingest.sql` read that second branch they arrived'
+\echo 'as five NULLs and read as documents that had said nothing, which is precisely what'
+\echo 'one of the notes below says it must not be taken for.'
 :compose(reports/model_contradicted.sqlc);
 
 \echo
-\echo '⭐⭐ WHO OWNS THE EDGE, BESIDE WHAT WOULD NARROW IT. The pair is the point: narrowsWhen'
-\echo '   says what would make a range SMALLER, boundOrigin says who owns the edge it would'
-\echo '   move. As an optional bare enumeration it was filed ONCE across the corpus; required'
-\echo '   and typed, the answer that leads is that NOTHING sets the edge -- the range is'
-\echo '   simply where the measurements fell -- with `derived` close behind it, where the'
-\echo '   model already states the author in a sibling element and no bare column points at it.'
+\echo 'Who owns the edge, beside what would narrow it. The pair is the point: narrowsWhen'
+\echo 'says what would make a range smaller, boundOrigin says who owns the edge it would'
+\echo 'move. As an optional bare enumeration it was filed once across the corpus; required'
+\echo 'and typed, the answer that leads is that nothing sets the edge, the range being'
+\echo 'simply where the measurements fell, with `derived` close behind it, where the'
+\echo 'model already states the author in a sibling element and no bare column points at it.'
 :compose(reports/bound_ownership.sqlc);
 
 \echo
-\echo '⛔⛔⛔ AND THE TWO HALVES CROSSED, WHICH IS THE QUESTION BOTH COLUMNS EXIST FOR. Read'
-\echo '   apart they are two censuses. Read together they are advice -- or, in the largest'
-\echo '   cell, an indictment: a claim that answers "nobody has said what would narrow this"'
-\echo '   AND "nothing sets this bound" has no course of action and no owner -- a bare number'
-\echo '   pair wearing the clothes of a three-point estimate, and neither census alone can'
-\echo '   see it. The ingest aligns the two columns; this is the relation that joins them.'
+\echo 'And the two halves crossed, which is the question both columns exist for. Read'
+\echo 'apart they are two censuses. Read together they are advice, or, in the largest'
+\echo 'cell, an indictment: a claim that answers "nobody has said what would narrow this"'
+\echo 'and "nothing sets this bound" has no course of action and no owner, a bare number'
+\echo 'pair wearing the clothes of a three-point estimate, and neither census alone can'
+\echo 'see it. The ingest aligns the two columns; this is the relation that joins them.'
 :compose(reports/what_would_move_it.sqlc);
 
 \echo
-\echo '⭐ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? Same shape, one document up -- and the'
-\echo '  answer decides which arithmetic is owed. `none` or `notApplicable`: the composed'
-\echo '  figure must equal the sum of its converted parts EXACTLY. `unmeasured`: no equality'
-\echo '  is owed at all, and a checker reporting one is reporting about nothing.'
+\echo 'Did the composer look for double counting? Same shape, one document up, and the'
+\echo 'answer decides which arithmetic is owed. `none` or `notApplicable`: the composed'
+\echo 'figure must equal the sum of its converted parts exactly. `unmeasured`: no equality'
+\echo 'is owed at all, and a checker reporting one is reporting about nothing.'
 :compose(reports/double_counting_searched.sqlc);
 
 \echo
-\echo '⛔⛔ AND WHAT NOBODY HAS MEASURED, GATHERED FROM EVERY ELEMENT THAT ADMITS AN ABSENCE.'
-\echo '   Scattered, a typed absence looks like a nullable field. In one relation it is a map'
-\echo '   of what this corpus does not know -- and the four reasons are four different facts.'
+\echo 'And what nobody has measured, gathered from every element that admits an absence.'
+\echo 'Scattered, a typed absence looks like a nullable field. In one relation it is a map'
+\echo 'of what this corpus does not know, and the four reasons are four different facts.'
 :compose(reports/absences_in_the_corpus.sqlc);
 
 \echo
-\echo '⛔ And every roster against itself: something declared with nothing behind it, or produced'
-\echo '  and never declared. Three contracts are checked: the conformance rules, the arithmetic'
-\echo '  sites, and the set-algebraic laws. An empty table is the correct outcome and the only one.'
+\echo 'And every roster against itself: something declared with nothing behind it, or produced'
+\echo 'and never declared. Every contract folds/contract_subjects.sqlc counts is checked.'
+\echo 'An empty table is the correct outcome and the only one.'
 :compose(reports/integrity.sqlc);
 
 \echo
-\echo === Coverage. ⛔ A rule that examined nothing is not a rule that passed. =========
+\echo === Coverage. A rule that examined nothing is not a rule that passed. ===========
 \echo 'This repository names the trap: "a bound with nothing to bound passes loudest".'
 \echo 'An empty violations table above is worth exactly as much as this table says.'
-# ⛔⛔⛔ THIS IS `GROUP BY rule` OVER THE SAME RELATION THE VIOLATIONS ARE FILTERED FROM.
-#    Nothing here restates a population, so nothing here can report on a different set of
-#    rows than the rule it describes. The previous version wrote each population twice and
-#    three of the twenty-two restatements disagreed with the rule they reported on -- one of
-#    them loudly enough to call a rule that examines a single row `ok`.
+# One relation, no restated population
+#   This is folds/rule_subjects.sqlc, the fold of the relation the violations are filtered from.
+#   Nothing here restates a population, so nothing here can report on a different set of rows than
+#   the rule it describes. Writing each population twice once let a restatement disagree with the
+#   rule it reported on, loudly enough to call a rule that examines a single row `ok`.
 :compose(reports/coverage.sqlc);
+
+\echo
+\echo 'And where along the fit each rule that reads it examined anything. A cell is exercised,'
+\echo 'outside the rule by its own population, or open: in its domain with nothing loaded there.'
+\echo 'An open cell asks for a document; algebra/fit_domain holds every standing both ways.'
+:compose(reports/fit_coverage.sqlc);

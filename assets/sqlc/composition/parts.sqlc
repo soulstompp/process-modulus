@@ -1,40 +1,41 @@
-# F AND Φ, RESOLVED ALL THE WAY TO A LAYER THAT IS ACTUALLY HERE. One row per part whose
-# notation names a document in this corpus AND whose layer is in that document.
+# F and Φ, resolved all the way to a layer that is actually here. One row per part whose notation
+# names a document in this corpus and whose layer is in that document.
 #
-# ⭐⭐ THIS IS THE JOIN THAT WAS WRITTEN TEN TIMES. Every question about composition --
-#    convert the parts, walk the descent, find a leaf, attenuate a coupling -- starts by
-#    turning a notation into a filing and a filing plus a layer into a row. Written once,
-#    the resolution rule is one thing that can be corrected in one place.
+# One resolution, written once
+#   Every question about composition (convert the parts, walk the descent, find a leaf, attenuate
+#   a coupling) starts by turning a notation into a filing and a filing plus a layer into a row.
+#   Written once, the resolution rule is one thing that can be corrected in one place.
 #
-# ⛔ A ROW MISSING FROM HERE THAT IS PRESENT IN composition/part_references.sqlc IS A
-#   DANGLING REFERENCE, and the difference between the two relations is exactly the
-#   violation set of that rule. The rule is an ANTI-JOIN rather than a NOT EXISTS, because
-#   "the parts that resolve" is the relation worth naming and "the parts that do not" is
-#   its complement.
+# A missing row is a dangling reference
+#   A row present in composition/part_references.sqlc and missing from here is a dangling
+#   reference, and the difference between the two relations is exactly the violation set of that
+#   rule. The rule is an anti-join rather than a `NOT EXISTS`, because "the parts that resolve" is
+#   the relation worth naming and "the parts that do not" is its complement.
 #
-# ⛔⛔ AND THE RESOLUTION IS A READER'S ASSERTION ONE STEP REMOVED. `filing_identity` says
-#    which document claims which notation, and `asserted_by` records who said it. Three of
-#    "the reader, from the filename" would be a guess dressed as data. These are read out of
-#    the documents.
+# Resolution is a reader's assertion one step removed
+#   `filing_identity` says which document claims which notation, and `asserted_by` records who
+#   said it. Filled in as "the reader, from the filename", that would be a guess dressed as data;
+#   these are read out of the documents.
+#
+# `pm.layer` directly, not `layers/every_layer.sqlc`
+#   The last join is a membership test: does the layer this reference names exist.
+#   `layers/every_layer.sqlc` is the layer dimension, reserved for denominators. Composed here it
+#   would drag the entire dimension into the transitive closure of most of the checker's rules,
+#   and any reach-containment law over a rule is vacuous the moment the dimension is inside its
+#   closure, because the dimension reaches everything by construction. `algebra/dimension_use.sqlc`
+#   states the rule and enforces it over the compose DAG.
 -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
        p.part_layer,
        p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
+       p.factor_state
 FROM      (
     :compose(composition/part_references.sqlc)
 ) p
 JOIN      (
     :compose(composition/notations.sqlc)
 ) fi ON fi.notation = p.part_filing
--- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
---    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
---    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
---    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
---    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
---    law over a rule is vacuous the moment the dimension is inside its closure, because the
---    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
---    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer

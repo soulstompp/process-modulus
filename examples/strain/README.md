@@ -77,7 +77,8 @@ days a week. It is a property rather than a quantity, which is also why the elim
 is the rule; probe 3 is the reason it exists.
 
 ⛔ **The variation grain itself still has no element, and this is the open question.** A
-`period` on `Claim` touches fifteen call sites; an `ignorance | variation` flag is a false
+`period` on `Claim` touches every site that reads a claim's width; an `ignorance | variation`
+flag is a false
 choice, since the honest answer is usually both; and either is a time axis entering a model
 that deliberately carries none. **If you see a fourth option, that is the most useful thing
 you could send back.**

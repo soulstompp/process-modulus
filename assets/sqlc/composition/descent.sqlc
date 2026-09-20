@@ -1,34 +1,84 @@
-# THE TRANSITIVE CLOSURE OF F: every layer reachable from a composition through parts, at any
-# depth, with the route that reached it. One row per (root, reached layer, path) -- so a layer
-# reachable two ways appears twice, on purpose, because the duplication IS the finding.
+# The transitive closure of F: every layer reachable from a composition through parts, at any
+# depth, with the route that reached it. One row per (root, reached layer, path), so a layer
+# reachable two ways appears twice, on purpose, because the duplication is the finding.
 #
-# ⭐⭐⭐ COMPOSITIONS NEST, AND THE SECOND LEVEL IS WHERE THE MODEL STOPS BEING CHECKABLE BY
-#    ANY VALIDATOR. A holding composes a group, which composes its members. At one level "no
-#    part used twice" is a key. At two it becomes "no leaf reachable by two paths", and the
-#    second path runs through a document the first does not contain.
+# The second level escapes every validator
+#   Compositions nest, and the second level is where the model stops being checkable by any
+#   validator. A holding composes a group, which composes its members. At one level "no part used
+#   twice" is a key. At two it becomes "no leaf reachable by two paths", and the second path runs
+#   through a document the first does not contain.
 #
-# ⭐⭐ NO DEPTH BOUND AND NO GUESS. SQL:2016's `CYCLE` clause stops the recursion exactly when
-#    a layer repeats WITHIN ITS OWN PATH -- which is the definition of the thing that would
-#    hang a reader -- and hands back the route that closed the loop as data. A depth bound is
-#    a guess about how deep a legitimate composition goes; this is the actual question.
-#    ⛔ A DIAMOND IS NOT A CYCLE. One leaf reached down two different branches is not a
-#      repeat within a path, so it still comes back twice, which is what the leaf rule needs.
-#      The two walks that preceded this one disagreed about that: one truncated at depth ten
-#      and the other did not return at all on a document that closed a loop.
+# No depth bound and no guess
+#   SQL:2016's `CYCLE` clause stops the recursion exactly when a layer repeats within its own path,
+#   which is the definition of the thing that would hang a reader, and `path` records the route
+#   that closed the loop as data. A depth bound is a guess about how deep a legitimate composition goes;
+#   this is the actual question.
 #
-# ⭐⭐⭐ IT CARRIES THE PRODUCT OF THE FACTORS ALONG EACH PATH, WHICH IS WHAT TURNS A RECURSION
-#    INTO A JOIN. A composed layer's remainder is defined by recursion on `F`, and the natural
-#    form needs a SUM in the recursive term, which SQL forbids outright. A running PRODUCT is a
-#    scalar per row and is allowed, so the closure can accumulate `Π φ` on the way down and one
-#    `GROUP BY` at the end replaces the recursion entirely.
+# A diamond is not a cycle in the sense this walk stops on
+#   One leaf reached down two different branches is not a repeat within a path, so it still comes
+#   back twice, which is what the leaf rule needs. A depth-bounded walk truncates, and a walk
+#   without the clause never returns on a document that closes a loop.
+#   ⚠️ It IS a cycle in another sense, the undirected one `rank/graph_measures.sqlc` counts as
+#   `m - n + c`, and there it is the double count itself. Both readings are about the same
+#   diamond and neither is wrong: this walk must carry it, and `checks/jagged_layer` must accuse
+#   it. Say which cycle is meant wherever the word is used.
 #
-# ⛔ `factor_absent` IS CARRIED AS A DISJUNCTION AND NOT COALESCED AWAY. A part whose conversion
-#   nobody sized poisons every path through it: the product is unknown rather than one, and a
-#   caller that reads the number without the flag has asserted the units already agree.
-# ⚠️ `composition/remainder_frontier.sqlc` IS THIS WALK WITH A STOP CONDITION, and a reader who
+# Which is four senses, not two, and they are four kinds of object
+#   The instruction above is right and its count was short. The word carries four referents here,
+#   and the first three are not readings of one thing, they are different kinds:
+#     1. UNDIRECTED, a SUBSPACE of the edge space at dimension `m - n + c`. `rank/cycle_space.sqlc`
+#        measures it; `checks/jagged_layer` holds the layer graph's at zero and
+#        `checks/conversion_cycle_does_not_close` makes the unit graph's close.
+#     2. DIRECTED, a PARTITION of the nodes into the classes of `F+ ∩ (F+)ᵀ`. That is
+#        `checks/layers_move_together`, and it is also SQL's own word: the `CYCLE ... SET is_cycle`
+#        clause below is the standard's, and it stops on this sense and not on the first.
+#     3. A DUTY CYCLE, a RATIO, the fraction of a period a supply is live. It is a quantity rather
+#        than a shape, it is normative in the schema, and it is the only one of the four that can
+#        say the question does not apply: a stock has no cycle to be live in, so it takes
+#        `notApplicable` rather than an omission.
+#     4. THE LOOP YOU CAN WALK, a TRAVERSAL, which is what the other three compose to. The first
+#        says an independent loop exists, the second says it can be traversed in the direction the
+#        arrows point, the third supplies the period it returns after.
+#
+# Whether the fourth CLOSES is a question about the codomain and not about the graph
+#   Walk the unit graph's one loop and you arrive back at the unit you started from, multiplied.
+#   In the codomain of units it closed; in the codomain of unit-sizes it did not, and the quotient
+#   between the two is what makes it look closed. So "does it close" is unanswerable until the
+#   codomain is named, which is the same discipline every classification here owes.
+#   ⭐ `checks/conversion_cycle_does_not_close` is where that is decided for the unit graph, and it
+#   decides it without adjusting a filed number: it asks whether the failure to close is
+#   distinguishable from zero given the width each factor was filed with.
+#
+# The product of the factors turns a recursion into a join
+#   It carries the product of the factors along each path. A composed layer's remainder is defined
+#   by recursion on `F`, and the natural form needs a sum in the recursive term, which SQL forbids
+#   outright. A running product is a scalar per row and is allowed, so the closure can accumulate
+#   `Π φ` on the way down and one `GROUP BY` at the end replaces the recursion entirely.
+#
+# `factor_absent` is a disjunction, not coalesced away
+#   A part whose conversion nobody sized, or filed as an identity's output that nothing here
+#   computes, poisons every path through it: the product is unknown rather than one, and a caller that reads the number without the flag has asserted the units
+#   already agree.
+#
+# Where the product is actually consumed, which is not here
+#   The relations composing this walk take its keys, its depth, its path and its cycle flag:
+#   `composition/leaves.sqlc`, `composition/reachable.sqlc`, `composition/jagged_layers.sqlc`,
+#   `rank/co_moving_layers.sqlc`, `rank/evaluation_order.sqlc` and `matrices.sql`'s tour. The
+#   accumulation is read in `composition/remainder_frontier.sqlc`, the same walk carrying a stop
+#   condition, and from there in `composition/settled_remainders.sqlc` and
+#   `composition/carried_eliminations.sqlc`. So the two sections above argue for a capability this
+#   relation offers a reader of the view rather than one its own consumers use, and the argument
+#   is kept here because this is where the columns are.
+#
+# Do not merge it with the remainder frontier
+#   `composition/remainder_frontier.sqlc` is this walk with a stop condition, and a reader who
 #   finds the two nearly identical should read that file's header rather than merge them: a
-#   remainder bottoms out EARLIER than a sum does, and stopping inside a recursion is not a
-#   filter over this relation's result.
+#   remainder bottoms out earlier than a sum does, and stopping inside a recursion is not a filter
+#   over this relation's result.
+#
+# The cycle clause's own path is not returned
+#   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type, which a view
+#   cannot hold. The walk returns `is_cycle` and every column of its own, and not that one.
 -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
@@ -40,7 +90,7 @@ walk(root_filing, root_layer, filing, layer, depth, path,
                ARRAY[p.composition  || '/' || p.composed_layer,
                      p.part_filing  || '/' || p.part_layer],
                coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
-               (p.factor_absent IS NOT NULL)
+               p.factor_state IN ('absent', 'derivation')
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
@@ -48,8 +98,10 @@ walk(root_filing, root_layer, filing, layer, depth, path,
                w.factor_low  * coalesce(p.factor_low,  1),
                w.factor_mode * coalesce(p.factor_mode, 1),
                w.factor_high * coalesce(p.factor_high, 1),
-               w.factor_absent OR (p.factor_absent IS NOT NULL)
+               w.factor_absent OR p.factor_state IN ('absent', 'derivation')
         FROM walk w
         JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT * FROM walk
+SELECT root_filing, root_layer, filing, layer, depth, path,
+       factor_low, factor_mode, factor_high, factor_absent, is_cycle
+FROM walk

@@ -1,0 +1,66 @@
+# The dimension of each fusion's block of the composition map's null space. One row per fusion
+# that has at least one resolved part: how many parts it has, and how many independent offsets
+# between them the composed figure cannot see.
+#
+# What the number is
+#   `F` is the part incidence, one row per composed layer and one column per part, and `Phi` is
+#   the diagonal of conversion factors. A part belongs to exactly one fusion, so every column of
+#   `F` holds a single 1, the rows have disjoint supports, and the rank is the number of fusions
+#   that have a part. The null space is what is left: `parts - 1` per fusion. Summed over the
+#   corpus it is `dim ker(F Phi)`.
+#   Proof: `src/proofs/README.md`, entries `kernel_is_the_excess` and `composition_kernel`.
+#
+# A dimension, never a count of the offsets themselves
+#   `parts - 1` is the dimension of a subspace, and the offsets a composer could actually make
+#   are a continuum. Two parts license one dimension and infinitely many transfers along it.
+#   Reading this column as "how many ways supply can move" is the same error as reading a cycle
+#   space dimension as the number of loops a walker could take.
+#
+# What a row says a fusion declared
+#   `pm:Layer` defines a layer as a place where a remainder can be held independently of every
+#   other layer, and `asrt:Fusion` turns that into FUSE ONLY WHAT IS FUNGIBLE. A fusion with two
+#   parts adds their converted figures, so moving one unit of composed supply from one part to
+#   the other leaves the composed figure exactly where it was. That invisibility is not a side
+#   effect of the arithmetic; it IS the claim the fusion makes, and this relation is how much of
+#   it there is. `asrt:Fusion/observed` is where the composer argues for it in prose, and
+#   `queries/observations/22-declared-offsets.sqlc` puts the two beside each other.
+#
+# The direction is an interval and the dimension is not
+#   A generator of the block is one unit of composed supply at one part against one unit at
+#   another, which in the parts' own units is `1/phi_p` against `1/phi_q`. The dimension is
+#   decided by the incidence alone and is a whole number; the direction is decided by the factors
+#   and carries their width. So this relation is exact and a basis built from it is known only to
+#   the width the factors leave.
+#
+# Resolved parts, because those are the matrix's columns
+#   `folds/fusion_parts.sqlc` is the same fold over `composition/part_references.sqlc`, which
+#   counts what the composer FILED whether or not this corpus holds the filing it names. A part
+#   that does not resolve has no figures, so it is no column of `F Phi` and contributes no
+#   dimension. The two relations agree exactly where nothing is unresolved, and
+#   `composition/unresolved_parts.sqlc` is the set where they would part. Read that relation
+#   before concluding the two folds are interchangeable.
+#
+# A one-part fusion contributes nothing, and that is the injective case
+#   With one part there is nothing to offset against and the block is zero, which is why a
+#   one-part fusion asserts no fungibility at all. `checks/one_part_fusion_alters_its_part.sqlc`
+#   is the rule that holds its figures to its part's, and it is scoped to exactly that case.
+#
+# A fusion with no resolved part has no row
+#   The fold is onto its image, as `folds/fusion_parts.sqlc` is, and for the same reason plus one
+#   of its own: a box with no balls would contribute `-1` to a dimension.
+#   `algebra/fusions_have_parts.sqlc` is what holds that no declared fusion is in that state, so
+#   this relation depends on that law rather than re-asking its question.
+#
+# Probe
+#   `algebra/composition_kernel.sqlc` holds the sum against the layer graph's own `n` and `c`.
+#   Add a part to a two-part fusion and the sum must rise by one while the layer graph's node
+#   count rises by one too; a change that moves one and not the other is reading the wrong fold.
+-- asrt:Fusion/asrt:Part folded onto its fusion: the fibre size, and the block dimension it fixes.
+SELECT p.composition,
+       p.composed_layer,
+       count(*)     AS parts,
+       count(*) - 1 AS kernel_dim
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+GROUP BY p.composition, p.composed_layer

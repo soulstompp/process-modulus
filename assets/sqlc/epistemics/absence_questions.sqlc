@@ -1,0 +1,59 @@
+# Every question epistemics/absences.sqlc asks, and the one column it reads the answer from. One
+# row per column of type `absence_reason` in schema `pm`: the question as the census names it, the
+# table, the column.
+#
+# What makes the census a bijection
+#   The census is a function from questions to columns. epistemics/absences.sqlc claims every typed
+#   absence in the schema. That claim has two halves and each fails silently: a column with no arm
+#   leaves its absences out of every fold of the census, and an arm reading a column nobody
+#   declared is a question nobody can trace. reports/integrity.sqlc holds this roster against
+#   epistemics/absence_columns.sqlc, which Postgres writes, in both directions;
+#   examples/combinatorics/main.rs counts each question in the census against the filed absences
+#   in the column named here, which is the only way to see an arm that names the right question and
+#   reads the wrong column.
+#
+# A bare values literal
+#   A contract must not be derived from what it governs. Reading the questions out of the census
+#   would make every census its own roster, and the catalog side would then be the only thing
+#   standing behind the contract.
+-- epistemics/absences.sqlc's arms, each against the pm column of type absence_reason it reads.
+SELECT * FROM (VALUES
+  ('demand',                               'layer',              'demand_absent'),
+  ('remainder',                            'layer',              'remainder_absent'),
+  ('remainder sign',                       'layer',              'sign_absent'),
+  ('remainder quantity',                   'layer',              'qty_absent'),
+  ('remainder absorber',                   'layer',              'absorber_absent'),
+  ('patience',                             'layer',              'patience_absent'),
+  ('nameplate amount',                     'nameplate',          'amount_absent'),
+  ('divisibility',                         'nameplate',          'divisibility_absent'),
+  ('lump size',                            'nameplate',          'quantum_absent'),
+  ('duty-cycle period',                    'nameplate',          'window_size_absent'),
+  ('measurement basis',                    'nameplate',          'measurement_basis_absent'),
+  ('who committed the amount',             'nameplate',          'amount_origin_absent'),
+  ('duty-cycle window',                    'nameplate',          'window_absent'),
+  ('draw',                                 'nameplate',          'draw_absent'),
+  ('buffer slack',                         'slack',              'absent'),
+  ('holder share',                         'holder',             'share_absent'),
+  ('operation draw',                       'draw',               'absent'),
+  ('operation induction',                  'induction',          'absent'),
+  ('where the operation is in a notation', 'operation',          'foreign_absent'),
+  ('narrowsWhen',                          'narrowing',          'absent'),
+  ('boundOrigin',                          'bound_origin',       'absent'),
+  ('denominator',                          'claim',              'denominator_absent'),
+  ('provenance standing',                  'claim',              'prov_standing_absent'),
+  ('provenance standing, on an absence',   'absence',            'prov_standing_absent'),
+  ('provenance standing, on a derivation', 'derivation',         'prov_standing_absent'),
+  ('how much of the system',               'stack_scope',        'absent'),
+  ('did anybody look for couplings',       'coupling_search',    'absent'),
+  ('coupling strength',                    'coupling',           'strength_absent'),
+  ('its own notation',                     'filing_identity',    'absent'),
+  ('what it is evidence for',              'filing',             'evidence_absent'),
+  ('assertion standing',                   'filing',             'prov_standing_absent'),
+  ('did anybody look for double counting', 'elimination_search', 'absent'),
+  ('eliminated quantity',                  'elimination',        'absent'),
+  ('part factor',                          'part',               'factor_absent'),
+  ('regime framework',                     'regime',             'framework_absent'),
+  ('regime chart',                         'regime',             'chart_absent'),
+  ('part regime framework',                'composition_regime', 'framework_absent'),
+  ('part regime chart',                    'composition_regime', 'chart_absent')
+) AS q(question, table_name, column_name)

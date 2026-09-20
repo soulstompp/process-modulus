@@ -1,0 +1,69 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §1  Every site the model does arithmetic at, and what guards the join.\n-- arithmetic/roster.sqlc beside folds/site_subjects.sqlc, one row per declared site.\nSELECT r.site                        AS \"site!\",\n       coalesce(r.guarded_by, '')    AS \"guarded_by!\",\n       f.computable                  AS \"computable!\",\n       f.suspended                   AS \"suspended!\",\n       f.not_comparable              AS \"not_comparable!\"\nFROM (\n    SELECT * FROM arithmetic.roster\n) r\nJOIN (\n    SELECT * FROM folds.site_subjects\n) f ON f.subject = r.site\nORDER BY r.slug\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "site!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "arithmetic.roster",
+            "name": "site"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "guarded_by!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "computable!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "folds.site_subjects",
+            "name": "computable"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "suspended!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "folds.site_subjects",
+            "name": "suspended"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "not_comparable!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "folds.site_subjects",
+            "name": "not_comparable"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "7f052ed5250eeff646cfa62502b652234a53eaa04594714089cf41e3a4edf4b1"
+}

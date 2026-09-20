@@ -1,13 +1,19 @@
-# ⭐⭐⭐ THE COMPOSED REMAINDER, COMPUTED TWO WAYS, AND THE TWO THAT DISAGREE ARE EXACTLY THE TWO
-#    WITH A SPREAD CONVERSION FACTOR. Every other composed layer converts at one or at a point
-#    value, so there is no correlation to remove and the figures must agree exactly; those are
-#    the controls, and without them a difference here would prove nothing.
+# The composed remainder, computed two ways. One row per composed layer, with the figure pivoted
+# through its parts beside the one derived from its totals, and whether they agree.
 #
-# ⛔ WHAT DISAGREEMENT MEANS HERE IS NOT THAT A DOCUMENT IS WRONG. `layers/remainder.sqlc`
-#   differences the composed totals, and one conversion factor multiplied both of them, so its
-#   figure counts that factor's spread twice. The pivot converts each part's own remainder, so
-#   the factor appears once per term. Both are arithmetically correct; only one is the
-#   remainder. This section is a REFERRAL, not a violation.
+# The disagreements are the spread conversions
+#   The layers that disagree are exactly those whose remainder walk passes a conversion factor with
+#   width, and `spread` says which those are. Every other composed layer converts at one or at a
+#   point value, so there is no correlation to remove and the figures agree exactly; those are the
+#   controls, and without them a difference here would prove nothing. algebra/composed_remainder
+#   holds both halves on every run. Proof: `src/proofs/README.md`, entry `composed_remainder`.
+#
+# Disagreement does not mean a document is wrong
+#   layers/differenced_remainder.sqlc differences the composed totals, and one conversion factor
+#   multiplied both of them, so its figure counts that factor's spread twice. The pivot converts
+#   each part's own remainder, so the factor appears once per term. Both are arithmetically
+#   correct; only the pivot is the remainder, and layers/remainder.sqlc carries it. This section
+#   is a referral, not a violation.
 -- composition/fused_remainders.sqlc, with the two figures set against each other.
 SELECT f.composition                                             AS "composition!",
        f.composed_layer                                          AS "composed_layer!",
@@ -19,6 +25,7 @@ SELECT f.composition                                             AS "composition
        f.derived_low::float8                                     AS "derived_low!",
        f.derived_mode::float8                                    AS "derived_mode!",
        f.derived_high::float8                                    AS "derived_high!",
+       f.spread                                                  AS "spread!",
        (f.pivoted_low = f.derived_low
     AND f.pivoted_mode = f.derived_mode
     AND f.pivoted_high = f.derived_high)                         AS "agrees!"

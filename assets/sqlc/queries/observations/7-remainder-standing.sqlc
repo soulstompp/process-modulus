@@ -1,17 +1,26 @@
 -- §7  Every remainder, and what its filing established about the set it sits in.
+# One row per remainder standing, with how many remainders take it and the filings they sit in.
 #
-# ⭐⭐⭐ A REMAINDER IS ONLY MEANINGFUL IF THE LAYER SET IS CLOSED, and this is where the model
-# says whether anybody closed it. Twelve of thirty-six sit in a set nobody bounded -- which is
-# the honest state for a filing written to argue about three layers, and must never fail
-# anything.
+# A remainder needs a closed layer set
+#   A remainder is only meaningful if the layer set is closed, and this is where the model says
+#   whether anybody closed it. Some remainders sit in a set nobody bounded, which is the honest
+#   state for a filing written to argue about three layers, and must never fail anything.
 #
-# ⛔ THE ASSERTION IS THAT THE QUESTION WAS PUT, NOT THAT IT WAS ANSWERED WELL. A remainder
-# reaching the arithmetic without appearing here at all is the failure; `unbounded` is not.
--- layers/remainder_scope.sqlc, folded to its four standings.
-SELECT z.standing AS "standing!", count(*) AS "remainders!",
-       string_agg(DISTINCT z.filing, ', ' ORDER BY z.filing) AS "filings!"
-FROM (
+# The question was put
+#   The assertion is that the question was put, not that it was answered well. A remainder
+#   reaching the arithmetic without appearing here at all is the failure; `unbounded` is not.
+#
+# Driven from the type, not from the rows
+#   So a standing nobody holds is a row reading zero. A `GROUP BY` over the remainders can only
+#   list the standings some remainder took, and an empty one is exactly the finding a reader of
+#   this section would want. `public.remainder_standing` is the declared set, so every member gets
+#   a line whether or not the corpus reaches it.
+-- public.remainder_standing, each member against layers/remainder_scope.sqlc.
+SELECT s.standing::text AS "standing!", count(z.layer) AS "remainders!",
+       coalesce(string_agg(DISTINCT z.filing, ', ' ORDER BY z.filing), '') AS "filings!"
+FROM unnest(enum_range(NULL::public.remainder_standing)) AS s(standing)
+LEFT JOIN (
     :compose(layers/remainder_scope.sqlc)
-) z
-GROUP BY z.standing
-ORDER BY count(*) DESC
+) z ON z.standing = s.standing
+GROUP BY s.standing
+ORDER BY count(z.layer) DESC, s.standing

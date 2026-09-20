@@ -1,0 +1,64 @@
+# Every remainder, recomputed from the two totals it was differenced from. One row per layer in
+# layers/remainder.sqlc: whether its `r`, its fit and its magnitude are what the definitions give.
+#
+# A value law
+#   The other laws on the roster count rows. This one compares numbers. It reads demand and
+#   nameplate from layers/demand.sqlc and layers/nameplate.sqlc rather than from
+#   layers/differenced_remainder.sqlc, so a pairing changed there, the low of `n - d` taken
+#   against `d_low` rather than `d_high`, fails here instead of narrowing every range silently.
+#
+# What it asserts
+#   - where `r` is not pivoted, `r = [n_low - d_high, n_mode - d_mode, n_high - d_low]`;
+#   - `r_low <= r_mode <= r_high`, which the crossed pairing owes from two ordered claims;
+#   - `derived_fit` is `clearance` exactly where `r_low >= 0`, `interference` exactly where
+#     `r_high <= 0` and `r_low < 0`, and `transition` everywhere else;
+#   - `|r|` is `[greatest(r_low, -r_high, 0), |r_mode|, greatest(r_high, -r_low)]`.
+#   Proof: `src/proofs/README.md`, entries `crossed_subtraction`, `fit_criteria` and `magnitude`.
+#
+# The magnitude is written differently on purpose
+#   layers/remainder.sqlc computes the bounds of `|r|` by cases, on whether `r` straddles zero.
+#   Here they are the lowest and highest `|x|` over `[r_low, r_high]` in closed form. The two
+#   agree whenever `r` is ordered, so each checks the other, and a copy of one would check
+#   nothing.
+#
+# A pivoted `r` is not a crossed difference
+#   On a composed layer whose remainder composition/fused_remainders.sqlc computes, `r` is the
+#   pivoted sum of the parts and not `n - d`, so the first clause does not apply there. The other
+#   three do: they are about any `r`, wherever it came from.
+#
+# Probe
+#   examples/probes runs it as `crossed_remainder`.
+#   Pair `n.n_low - d.d_low` in layers/differenced_remainder.sqlc. Every remainder differenced from
+#   a demand that is not a point, its own or a part's, must fail here.
+-- layers/remainder.sqlc against layers/demand.sqlc and layers/nameplate.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT r.filing || ' / ' || r.layer AS subject,
+           (r.pivoted OR (r.r_low  = n.n_low  - d.d_high
+                      AND r.r_mode = n.n_mode - d.d_mode
+                      AND r.r_high = n.n_high - d.d_low))
+           AND r.r_low <= r.r_mode AND r.r_mode <= r.r_high
+           AND (r.derived_fit = 'clearance')    = (r.r_low >= 0)
+           AND (r.derived_fit = 'interference') = (r.r_high <= 0 AND r.r_low < 0)
+           AND (r.derived_fit = 'transition')   = (r.r_low < 0 AND r.r_high > 0)
+           AND r.m_low  = greatest(r.r_low, -r.r_high, 0)
+           AND r.m_mode = abs(r.r_mode)
+           AND r.m_high = greatest(r.r_high, -r.r_low) AS holds,
+           format('%s [%s, %s, %s] from n [%s, %s, %s] and d [%s, %s, %s]; %s; |r| [%s, %s, %s]',
+                  CASE WHEN r.pivoted THEN 'pivoted r' ELSE 'r' END,
+                  r.r_low, r.r_mode, r.r_high, n.n_low, n.n_mode, n.n_high,
+                  d.d_low, d.d_mode, d.d_high, r.derived_fit, r.m_low, r.m_mode, r.m_high) AS detail
+    FROM      (
+        :compose(layers/remainder.sqlc)
+    ) r
+    JOIN      (
+        :compose(layers/demand.sqlc)
+    ) d ON d.filing = r.filing AND d.layer = r.layer
+    JOIN      (
+        :compose(layers/nameplate.sqlc)
+    ) n ON n.filing = r.filing AND n.layer = r.layer
+) p ON true
+WHERE a.slug = 'crossed_remainder'

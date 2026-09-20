@@ -1,45 +1,46 @@
 -- §4  Every declared rule and site, and how many rows its check actually emits.
+# One row per declared rule and site, with how many rows its check emits and how many of those
+# carry a verdict.
 #
-# ⭐⭐⭐ THE ROW THIS COUNTS IS THE ONE THE ROSTER JOIN EXISTS TO PRODUCE. A check that merely
-# filtered its population would vanish from a `GROUP BY` when the population was empty, so
-# ⛔ VACUOUS would be delivered by silence. Every arm joins its roster with `LEFT JOIN … ON true`
-# so the row exists before the population does, and this counts it.
+# The row the roster join exists to produce
+#   That is the row this counts. A check that merely filtered its population would vanish from a
+#   `GROUP BY` when the population was empty, so `VACUOUS` would be delivered by silence. Every
+#   arm joins its roster with `LEFT JOIN … ON true` so the row exists before the population does,
+#   and this counts it.
 #
-# ⛔⛔ IT IS ONLY A LAW ON AN EMPTY CORPUS, WHICH IS WHY examples/soundness/main.rs EMPTIES ONE. With
-# rows on hand an arm emits `1 + examined` either way and a broken join is invisible; with none
-# it emits exactly one row, or zero if the join stopped carrying the roster. That is the whole
-# finding this closes: the guard's reach was a property of the corpus, and the corpus is
-# something this repository can construct.
+# A law only on an empty corpus
+#   Which is why examples/soundness/main.rs empties one. With rows on hand an arm emits
+#   `1 + examined` either way and a broken join is invisible; with none it emits exactly one row,
+#   or zero if the join stopped carrying the roster. That is the whole finding this closes: the
+#   guard's reach was a property of the corpus, and the corpus is something this repository can
+#   construct.
 #
-# ⛔ AND THE VERDICT COUNT IS NOT DECORATION BESIDE THE ROW COUNT. `violates` is NULL only on the
-# row that says a rule examined nothing, so over an empty corpus a non-NULL verdict is a check
-# answering a question about rows it does not have. One row carrying an answer and no row at all
-# are different defects and the row count alone cannot tell them apart.
+# The verdict count is not decoration
+#   `violates` is NULL only on the row that says a rule examined nothing, so over an empty corpus
+#   a non-NULL verdict is a check answering a question about rows it does not have. One row
+#   carrying an answer and no row at all are different defects, and the row count alone cannot
+#   tell them apart.
 #
-# ⛔ ALGEBRA IS NOT HERE AND COULD NOT BE. Its subjects are the governed RELATIONS named on
-# algebra/roster.sqlc, not rows of the corpus, so emptying the corpus does not empty them. Its
-# subject rows survive an empty database untouched and this law would say nothing about them.
+# Algebra is not here and could not be
+#   Its subjects are the governed relations named on algebra/roster.sqlc, not rows of the corpus,
+#   so emptying the corpus does not empty them. Its subject rows survive an empty database
+#   untouched and this law would say nothing about them.
 #
-# ⛔ AND IT COUNTS ROWS RATHER THAN VERDICTS, which is what separates it from
-# rank/guard_cover.sqlc. That relation counts `violates IS NOT NULL` on purpose, so the roster
-# row is invisible to it and a join that stopped carrying the roster leaves its output byte for
-# byte identical. The two read the same relation and cannot substitute for each other.
--- checks/roster.sqlc and arithmetic/roster.sqlc against the rows their populations emit.
-SELECT 'rules' AS "contract!", r.rule AS "subject!", count(c.rule) AS "rows!",
-       count(c.violates) AS "verdicts!"
-FROM      (
-    :compose(checks/roster.sqlc)
-) r
-LEFT JOIN (
-    :compose(checks/all.sqlc)
-) c ON c.rule = r.rule
-GROUP BY r.rule
+# Rows, not verdicts
+#   It counts rows rather than verdicts, which is what separates it from rank/guard_reach.sqlc.
+#   That relation counts `violates IS NOT NULL` on purpose, so the roster row is invisible to it
+#   and a join that stopped carrying the roster leaves its output byte for byte identical. The two
+#   read the same relation and cannot substitute for each other.
+-- folds/rule_subjects.sqlc and folds/site_subjects.sqlc, restricted to what each roster declares.
+SELECT 'rules' AS "contract!", f.subject AS "subject!", f.rows AS "rows!",
+       f.answered AS "verdicts!"
+FROM (
+    :compose(folds/rule_subjects.sqlc)
+) f
+WHERE f.declared
 UNION ALL
-SELECT 'arithmetic', a.site, count(z.site), count(z.verdict)
-FROM      (
-    :compose(arithmetic/roster.sqlc)
-) a
-LEFT JOIN (
-    :compose(arithmetic/all.sqlc)
-) z ON z.site = a.site
-GROUP BY a.site
+SELECT 'arithmetic', f.subject, f.rows, f.answered
+FROM (
+    :compose(folds/site_subjects.sqlc)
+) f
+WHERE f.declared

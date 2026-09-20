@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A STIPULATION, NOT A FILING. See assets/fixtures/README.md.
+
+  A composed figure filed as a `fusionSum` derivation: an output of its fusion, which the receiver
+  computes.
+
+    pair     line-a + line-b, less one order both lines count     demand DERIVED  [29, 34, 41]
+    site     pair + line-c                                         demand stated   [34, 40, 49]
+    single   line-d alone                                          draw DERIVED, over a draw
+                                                                   nobody metered
+    plant    single + line-e                                       draw stated, over a part
+                                                                   whose draw cannot be computed;
+                                                                   nameplate DERIVED  [6 + 8 = 14]
+
+  `site`'s demand can only be checked by computing `pair`'s, which is a part of it and states no
+  demand of its own: [10 + 20 - 1, 12 + 24 - 2, 14 + 30 - 3] = [29, 34, 41], then
+  [29 + 5, 34 + 6, 41 + 8] = [34, 40, 49]. `single`'s draw cannot be computed at all, because the
+  one part it would come from files its draw `unmeasured`, and that has to be said rather than
+  read as a gap in `single`. So `plant`, which is built on `single`, owes no draw sum: the sum
+  would read a part with no figure, and it is lifted with that part's reason. Its demand sum is
+  owed as usual, and its nameplate is itself a derivation, so it is computed from its parts'
+  ratings rather than checked against them.
+
+  Every figure is in orders per day, every nameplate is a point, and every layer is a clearance.
+-->
+<asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
+                  xmlns:pm="https://example.invalid/process-flow/1.0">
+
+  <asrt:witness>reviewer</asrt:witness>
+  <asrt:observedAt>2026-09-18</asrt:observedAt>
+  <asrt:provenance>
+    <pm:party>reviewer</pm:party>
+    <pm:standing>
+      <pm:term>
+        <pm:taxonomy>urn:example:engagement:standing</pm:taxonomy>
+        <pm:value>external-reviewer</pm:value>
+      </pm:term>
+    </pm:standing>
+    <pm:note>stipulated standing; this document is a fixture and attests to nothing</pm:note>
+  </asrt:provenance>
+
+  <asrt:regime>
+    <pm:id>stipulated</pm:id>
+    <pm:framework>
+      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>a fixture reports under no framework</pm:note></pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>no positions are coded here</pm:note></pm:absent>
+    </pm:chart>
+  </asrt:regime>
+
+  <pm:processModulus>
+    <pm:notation>
+      <pm:uri>urn:example:fixture:reviewer:every-derived-quantity</pm:uri>
+    </pm:notation>
+    <pm:evidence>
+      <pm:attests>stipulation</pm:attests>
+    </pm:evidence>
+
+    <pm:stack>
+      <pm:scope>
+        <pm:scope>
+          <pm:extent>scoped</pm:extent>
+          <pm:basis>stipulated: five lines and the four layers composed from them</pm:basis>
+        </pm:scope>
+      </pm:scope>
+      <pm:layer>
+        <pm:name>line-a</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>10</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>14</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the first line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>14</pm:low><pm:mostLikely>14</pm:mostLikely><pm:high>14</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>11</pm:low><pm:mostLikely>12</pm:mostLikely><pm:high>13</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>line-b</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>20</pm:low><pm:mostLikely>24</pm:mostLikely><pm:high>30</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the second line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>30</pm:low><pm:mostLikely>30</pm:mostLikely><pm:high>30</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>22</pm:low><pm:mostLikely>24</pm:mostLikely><pm:high>26</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>line-c</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>5</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>8</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the third line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>10</pm:low><pm:mostLikely>10</pm:mostLikely><pm:high>10</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody metered this line</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>line-d</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>2</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>4</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the fourth line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>6</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>6</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody metered this line</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>pair</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:derivation><pm:identity>fusionSum</pm:identity><pm:note>stipulated: the output of this layer's fusion, which the receiver computes</pm:note></pm:derivation>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the first two lines, one pool</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>44</pm:low><pm:mostLikely>44</pm:mostLikely><pm:high>44</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>33</pm:low><pm:mostLikely>36</pm:mostLikely><pm:high>39</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>site</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>34</pm:low><pm:mostLikely>40</pm:mostLikely><pm:high>49</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the pool and the third line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>54</pm:low><pm:mostLikely>54</pm:mostLikely><pm:high>54</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: the third line is not metered, so neither is this</pm:note></pm:absent>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>single</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>2</pm:low><pm:mostLikely>3</pm:mostLikely><pm:high>4</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the fourth line, carried</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>6</pm:low><pm:mostLikely>6</pm:mostLikely><pm:high>6</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:derivation><pm:identity>fusionSum</pm:identity><pm:note>stipulated: the output of this layer's fusion, which the receiver computes</pm:note></pm:derivation>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>line-e</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>3</pm:low><pm:mostLikely>4</pm:mostLikely><pm:high>6</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the fifth line</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:claim>
+                <pm:low>8</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>8</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:derivation><pm:identity>amountOrigin</pm:identity><pm:note>amountOrigin states it</pm:note></pm:derivation></pm:boundOrigin>
+              </pm:claim>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>4</pm:low><pm:mostLikely>5</pm:mostLikely><pm:high>6</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:layer>
+        <pm:name>plant</pm:name>
+        <pm:demand>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>5</pm:low><pm:mostLikely>7</pm:mostLikely><pm:high>10</pm:high>
+              <pm:unit>orders per day</pm:unit>
+              <pm:denominator><pm:period>day</pm:period></pm:denominator>
+              <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+              <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:patience><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:patience>
+        </pm:demand>
+        <pm:timeSlack>
+          <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+        </pm:timeSlack>
+        <pm:supply>
+          <pm:label>the carried line and the fifth</pm:label>
+          <pm:nameplate>
+            <pm:amount>
+              <pm:derivation><pm:identity>fusionSum</pm:identity><pm:note>stipulated: the plant's rating is the sum of its two parts' ratings, and nothing was eliminated</pm:note></pm:derivation>
+            </pm:amount>
+            <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
+            <pm:divisibility>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said how this supply divides</pm:note></pm:absent>
+            </pm:divisibility>
+            <pm:capacitySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:capacitySlack>
+            <pm:inventorySlack>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:inventorySlack>
+          </pm:nameplate>
+          <pm:jagged>
+            <pm:draw>
+              <pm:claim>
+                <pm:low>7</pm:low><pm:mostLikely>8</pm:mostLikely><pm:high>10</pm:high>
+                <pm:unit>orders per day</pm:unit>
+                <pm:denominator><pm:period>day</pm:period></pm:denominator>
+                <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+                <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+              </pm:claim>
+            </pm:draw>
+            <pm:measurementBasis>
+              <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no valuation here to have a basis</pm:note></pm:absent>
+            </pm:measurementBasis>
+          </pm:jagged>
+        </pm:supply>
+        <pm:remainder>
+          <pm:remainder>
+            <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
+            <pm:absorber>
+              <pm:term>
+                <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
+                <pm:value>capacity</pm:value>
+              </pm:term>
+            </pm:absorber>
+            <pm:holder>
+              <pm:holder>
+                <pm:kind>booked</pm:kind>
+                <pm:share><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent></pm:share>
+              </pm:holder>
+            </pm:holder>
+            <pm:quantity>
+              <pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated</pm:note></pm:absent>
+            </pm:quantity>
+          </pm:remainder>
+        </pm:remainder>
+      </pm:layer>
+      <pm:couplings>
+        <pm:absent>
+          <pm:reason>notApplicable</pm:reason>
+          <pm:note>stipulated: the composed layers are made of the lines, so there is no pair of independent layers to couple</pm:note>
+        </pm:absent>
+      </pm:couplings>
+    </pm:stack>
+  </pm:processModulus>
+
+  <asrt:fusion>
+    <asrt:name>pair</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>line-a</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>line-b</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>stipulated: either line fills the other's orders, so the two are one pool.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:elimination>
+        <asrt:quantity>
+          <pm:claim>
+            <pm:low>1</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>3</pm:high>
+            <pm:unit>orders per day</pm:unit>
+            <pm:denominator><pm:period>day</pm:period></pm:denominator>
+            <pm:narrowsWhen><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>stipulated: nobody has said what would tighten this</pm:note></pm:absent></pm:narrowsWhen>
+            <pm:boundOrigin><pm:absent><pm:reason>none</pm:reason><pm:note>stipulated: nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+          </pm:claim>
+        </asrt:quantity>
+        <asrt:against>demand</asrt:against>
+        <asrt:observed>stipulated: some orders are booked on both lines until one of them takes them.</asrt:observed>
+      </asrt:elimination>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>site</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>pair</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>line-c</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>stipulated: the pool and the third line serve one queue.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent><pm:reason>none</pm:reason><pm:note>stipulated: looked, and the pool and the third line count nothing in common</pm:note></asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>single</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>line-d</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>stipulated: the fourth line carried through unchanged.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent><pm:reason>notApplicable</pm:reason><pm:note>a one-part fusion. Nothing can be counted twice between a set of one</pm:note></asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+  <asrt:fusion>
+    <asrt:name>plant</asrt:name>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>single</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:part>
+      <asrt:layer>
+        <asrt:party>reviewer</asrt:party>
+        <asrt:filing>
+          <pm:notation>urn:example:fixture:reviewer:every-derived-quantity</pm:notation>
+          <pm:id>line-e</pm:id>
+        </asrt:filing>
+        <asrt:version>2026-09-18</asrt:version>
+        <asrt:regime>stipulated</asrt:regime>
+      </asrt:layer>
+    </asrt:part>
+    <asrt:observed>stipulated: the carried line and the fifth line share one dispatcher.</asrt:observed>
+    <asrt:eliminations>
+      <asrt:absent><pm:reason>none</pm:reason><pm:note>stipulated: looked, and the two lines count nothing in common</pm:note></asrt:absent>
+    </asrt:eliminations>
+  </asrt:fusion>
+
+</asrt:composition>

@@ -1,15 +1,16 @@
-# THE TIME SLACKS SOMEBODY DERIVED RATHER THAN MEASURED. One row per layer filing its time
-# buffer as `absent/reason = derived`, beside the window that would have to license it.
+# The time slacks somebody derived rather than measured. One row per layer filing its time
+# buffer as a `clearance` derivation, beside the window that would have to license it.
 #
-# ⭐⭐ `derived` MEANS "THE ANSWER IS ALREADY STATED ELSEWHERE AND REPEATING IT HERE WOULD BE
-#    A RESTATEMENT" -- here, that the time slack falls out of the clearance as q / clearance.
-#    That division assumes the spare is spread EVENLY across the denominator.
+# What the derivation assumes
+#   `clearance` says the time slack is the clearance, `n - d` read as a quantity in the layer's
+#   unit. Reading that quantity as a wait, `q / clearance`, assumes the spare is spread
+#   evenly across the denominator.
 #
-# ⛔ A STATED WINDOW IS THE STATEMENT THAT IT IS NOT. A machine running 02:00 to 05:00 has its
-#   spare concentrated, so dividing by the whole period computes over a base that does not
-#   exist -- and `unmeasured` is worse than a stated window, because it hides the same
-#   assumption behind a number.
--- pm:Layer/pm:timeSlack with pm:absent/reason = derived, beside pm:Divisibility/pm:window.
+# A stated window says it is not
+#   A machine running 02:00 to 05:00 has its spare concentrated, so dividing by the whole period
+#   computes over a base that does not exist. `unmeasured` is worse than a stated window, because
+#   it hides the same assumption behind a number.
+-- pm:Layer/pm:timeSlack filed as a clearance derivation, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (
     :compose(layers/windows.sqlc)
@@ -17,4 +18,4 @@ FROM      (
 JOIN      (
     :compose(entries/slacks.sqlc)
 ) s USING (filing, layer)
-WHERE s.buffer = 'time' AND s.absent = 'derived'
+WHERE s.buffer = 'time' AND s.derivation = 'clearance'

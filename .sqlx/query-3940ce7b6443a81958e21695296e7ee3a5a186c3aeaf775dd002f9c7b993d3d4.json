@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.\nWITH\nscopes AS NOT MATERIALIZED (\n    -- pm:Stack/pm:scope, with its pm:basis.\nSELECT ss.filing, ss.extent, ss.basis, ss.absent\nFROM pm.stack_scope ss\n\n)\nSELECT s.filing, s.extent, s.basis\nFROM (\n    SELECT * FROM scopes\n) s\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.stack_scope",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "extent",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.stack_scope",
+            "name": "extent"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "basis",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.stack_scope",
+            "name": "basis"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "3940ce7b6443a81958e21695296e7ee3a5a186c3aeaf775dd002f9c7b993d3d4"
+}

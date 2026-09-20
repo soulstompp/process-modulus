@@ -13,7 +13,7 @@
 #![doc = include_str!("README.pt.md")]
 
 use nalgebra::{DMatrix, DVector};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// One layer's demand and nameplate, with the fit the document filed.
 struct Layer {
@@ -79,13 +79,49 @@ fn classify(r_low: f64, r_high: f64) -> &'static str {
     }
 }
 
+#[path = "../shared/database/mod.rs"]
+mod database;
+
+/// The rank of a rectangular matrix by elimination with partial pivoting.
+///
+/// ⭐ Elimination and not a decomposition, on purpose. The rank of `F Phi` is a fact about which
+/// parts share a fusion, so it must not depend on the size of the factors; a route that asked
+/// about magnitudes would give an answer that moved when a filing restated its units.
+fn elimination_rank(mut a: DMatrix<f64>) -> usize {
+    let (rows, cols) = (a.nrows(), a.ncols());
+    let mut rank = 0;
+    for col in 0..cols {
+        if rank == rows {
+            break;
+        }
+        let pivot = (rank..rows)
+            .max_by(|&i, &j| a[(i, col)].abs().partial_cmp(&a[(j, col)].abs()).expect("finite"))
+            .expect("rank < rows, so the range is not empty");
+        if a[(pivot, col)].abs() < 1e-9 {
+            continue;
+        }
+        a.swap_rows(rank, pivot);
+        let p = a[(rank, col)];
+        for i in 0..rows {
+            if i != rank && a[(i, col)].abs() > 0.0 {
+                let f = a[(i, col)] / p;
+                for j in col..cols {
+                    a[(i, j)] -= f * a[(rank, j)];
+                }
+            }
+        }
+        rank += 1;
+    }
+    rank
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL").map_err(|_| {
         "DATABASE_URL is unset. This example proves two computations agree, and it cannot \
          do that without the rows. Load them with assets/ddl/schema.ddl and ingest.sql."
     })?;
-    let pool = sqlx::postgres::PgPool::connect(&url).await?;
+    let pool = database::connect(&url).await?;
 
     // ------------------------------------------------------------------
     // 1. r = n - d, and the fit read off the ranges.
@@ -300,102 +336,344 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let parts = sqlx::query_file!("assets/sql/queries/matrices/3a-fusion-parts.sql")
         .fetch_all(&pool)
         .await?;
-
-    let mut composed: Vec<(String, String)> = parts
-        .iter()
-        .map(|p| (p.composition.clone(), p.composed.clone()))
-        .collect();
-    composed.dedup();
-    let (rows_n, cols_n) = (composed.len(), parts.len());
-
-    // ⭐ F IS AN INCIDENCE MATRIX: 1 where this part composes into that layer, 0 elsewhere.
-    //   Phi is DIAGONAL, one conversion factor per part. Dense is fine at this size, and it
-    //   makes what follows a product rather than a join.
-    let mut f = DMatrix::<f64>::zeros(rows_n, cols_n);
-    for (j, p) in parts.iter().enumerate() {
-        let i = composed
-            .iter()
-            .position(|(c, l)| *c == p.composition && *l == p.composed)
-            .unwrap();
-        f[(i, j)] = 1.0;
-    }
-    // ⛔⛔ SPARSITY, AND THE ONE THING THE MATRIX CANNOT SAY. Dense, `F` is rows×cols entries;
-    //    the relation stores one row per part. The figures are printed rather than written down,
-    //    because a figure carried in a note is right on the day it is written and not after.
-    //
-    //    IN THE MATRIX, A ZERO ENTRY AND AN ABSENT ENTRY ARE THE SAME VALUE. In the relation they
-    //    are a row that says zero and no row at all, and the difference between those two is this
-    //    model's entire subject. A `0` in `F` says the composer considered these two layers and
-    //    judged them not fungible. A missing row says nothing whatever. Linear algebra has one
-    //    symbol for both, which is what §5 pays for.
-    let dense = rows_n * cols_n;
-    println!(
-        "3. F is {rows_n}x{cols_n}: dense that is {dense} entries, the relation stores {cols_n} \
-         ({:.1}%)",
-        100.0 * cols_n as f64 / dense as f64
-    );
-
-    let diag = |g: fn(&_) -> f64| {
-        DMatrix::from_diagonal(&DVector::from_iterator(cols_n, parts.iter().map(g)))
-    };
-    let vect = |g: fn(&_) -> f64| DVector::from_iterator(cols_n, parts.iter().map(g));
-
-    // ⭐⭐ THE CLAIM UNDER TEST. assets/sql/matrices.sql does this with a JOIN and a SUM.
-    //    Here it is three matrix products. Agreement makes "a matrix product is a join with
-    //    a GROUP BY" a checked statement instead of a sentence in a README.
-    let fused = [
-        &f * (diag(|p| p.f_low) * vect(|p| p.d_low)),
-        &f * (diag(|p| p.f_mode) * vect(|p| p.d_mode)),
-        &f * (diag(|p| p.f_high) * vect(|p| p.d_high)),
-    ];
-
-    let expected = sqlx::query_file!("assets/sql/queries/matrices/3b-composed-demand.sql")
+    let expected = sqlx::query_file!("assets/sql/queries/matrices/3b-composed-quantities.sql")
+        .fetch_all(&pool)
+        .await?;
+    let sums = sqlx::query_file!("assets/sql/queries/matrices/3c-fused-sums.sql")
         .fetch_all(&pool)
         .await?;
 
-    let mut checked = 0;
-    let mut suspended = 0;
-    for (i, (comp, lay)) in composed.iter().enumerate() {
-        let Some(w) = expected
+    let quantities: BTreeSet<&str> = parts.iter().map(|p| p.quantity.as_str()).collect();
+    println!("3. F.Phi.x - e against the filed composed figures, per quantity:");
+    let (mut checked, mut suspended, mut joined) = (0, 0, 0);
+    for q in &quantities {
+        // 3a is ordered by quantity and composed layer, so each composed layer's parts are
+        // contiguous and one pass builds the incidence.
+        let these: Vec<_> = parts.iter().filter(|p| p.quantity == *q).collect();
+        let mut composed: Vec<(String, String)> = these
             .iter()
-            .find(|e| e.filing == *comp && e.layer == *lay)
-        else {
-            suspended += 1; // the composer never looked; no equality is owed
-            continue;
-        };
-        for (k, (want, elim, what)) in [
-            (w.d_low, w.e_low, "low"),
-            (w.d_mode, w.e_mode, "mode"),
-            (w.d_high, w.e_high, "high"),
-        ]
-        .into_iter()
-        .enumerate()
-        {
-            // x_composed = F Phi x_parts - e
-            let got = fused[k][i] - elim;
-            assert!(
-                (got - want).abs() < 1e-9,
-                "{comp}/{lay} {what}: F.Phi.x - e = {got} but the filing says {want}"
-            );
+            .map(|p| (p.composition.clone(), p.composed.clone()))
+            .collect();
+        composed.dedup();
+        let (rows_n, cols_n) = (composed.len(), these.len());
+
+        // F is an incidence matrix: 1 where this part composes into that layer, 0 elsewhere.
+        // Phi is diagonal, one conversion factor per part. Dense is fine at this size, and it
+        // makes what follows a product rather than a join.
+        let mut f = DMatrix::<f64>::zeros(rows_n, cols_n);
+        for (j, p) in these.iter().enumerate() {
+            let i = composed
+                .iter()
+                .position(|(c, l)| *c == p.composition && *l == p.composed)
+                .unwrap();
+            f[(i, j)] = 1.0;
         }
-        checked += 1;
+        // In the matrix a zero entry and an absent entry are the same value. In the relation
+        // they are a row that says zero and no row at all, and the difference between those
+        // two is this model's entire subject; §5 pays for it.
+        let dense = rows_n * cols_n;
+
+        let diag = |g: fn(&&_) -> f64| {
+            DMatrix::from_diagonal(&DVector::from_iterator(cols_n, these.iter().map(g)))
+        };
+        let vect = |g: fn(&&_) -> f64| DVector::from_iterator(cols_n, these.iter().map(g));
+        let fused = [
+            &f * (diag(|p| p.f_low) * vect(|p| p.x_low)),
+            &f * (diag(|p| p.f_mode) * vect(|p| p.x_mode)),
+            &f * (diag(|p| p.f_high) * vect(|p| p.x_high)),
+        ];
+
+        let (mut agree, mut held_back) = (0, 0);
+        for (i, (comp, lay)) in composed.iter().enumerate() {
+            // A matrix product is a join with a GROUP BY: the product here against the SQL's
+            // sum over the same parts, before any elimination. Proven in
+            // `src/proofs/README.md`, entry `product_is_join`.
+            if let Some(s) = sums
+                .iter()
+                .find(|s| s.composition == *comp && s.composed == *lay && s.quantity == *q)
+            {
+                for (k, sql) in [s.sum_low, s.sum_mode, s.sum_high].into_iter().enumerate() {
+                    assert!(
+                        (fused[k][i] - sql).abs() < 1e-9,
+                        "{comp}/{lay} {q}: the matrix product gives {} and the SQL sum {sql}",
+                        fused[k][i]
+                    );
+                }
+                joined += 1;
+            }
+
+            let Some(w) = expected
+                .iter()
+                .find(|e| e.filing == *comp && e.layer == *lay && e.quantity == *q)
+            else {
+                held_back += 1; // the sum is suspended for this quantity; no equality is owed
+                continue;
+            };
+            // x_composed = F Phi x_parts - e, bound by bound unless that inverts, and then the
+            // crossed pairing. Proven in `src/proofs/README.md`, entry `elimination_componentwise`.
+            let bound_by_bound = [
+                fused[0][i] - w.e_low,
+                fused[1][i] - w.e_mode,
+                fused[2][i] - w.e_high,
+            ];
+            let got = if bound_by_bound[0] <= bound_by_bound[1] && bound_by_bound[1] <= bound_by_bound[2] {
+                bound_by_bound
+            } else {
+                [fused[0][i] - w.e_high, fused[1][i] - w.e_mode, fused[2][i] - w.e_low]
+            };
+            for (k, (want, what)) in [(w.x_low, "low"), (w.x_mode, "mode"), (w.x_high, "high")]
+                .into_iter()
+                .enumerate()
+            {
+                assert!(
+                    (got[k] - want).abs() < 1e-9,
+                    "{comp}/{lay} {q} {what}: F.Phi.x - e = {} but the filing says {want}",
+                    got[k]
+                );
+            }
+            agree += 1;
+        }
+        println!(
+            "   {q:<10} F is {rows_n}x{cols_n}, the relation stores {cols_n} of {dense}: \
+             {agree} layers agree, {held_back} suspended"
+        );
+        checked += agree;
+        suspended += held_back;
     }
     println!(
-        "   F.Phi.x - e against the filed composed demand: {checked} layers, all agree; \
-         {suspended} suspended"
+        "   the matrix product equals the SQL's join and GROUP BY on {joined} sums; \
+         {checked} layer quantities agree with their filings, {suspended} suspended"
+    );
+    // Suspended is a third outcome beside passed and failed. A composer who states they never
+    // looked has not claimed their figure equals the sum of its parts, and reporting a pass
+    // there is the same failure as a rule that examined no rows.
+    assert!(
+        checked >= 5 && joined >= checked,
+        "only {checked} composed layer quantities were reachable, and {joined} sums joined"
+    );
+
+    // ------------------------------------------------------------------
+    // 3d. The null space of `F Phi`, which is what each fusion declared it cannot see.
+    //
+    // Forward, `F Phi x` says what the parts add up to. Backward, the question nobody had asked
+    // here: which part vectors does it send to ZERO? Move one unit of composed supply out of one
+    // part and into another of the same fusion and the composed figure does not move, so that
+    // offset is invisible to every figure above it. `pm:Layer` defines a layer as a place whose
+    // remainder is held INDEPENDENTLY, and `asrt:Fusion` turns that into FUSE ONLY WHAT IS
+    // FUNGIBLE, so the null space is not a by-product of the arithmetic: it is the extent of the
+    // claim the composer made, and `asrt:Fusion/observed` is where they argue for it in prose.
+    //
+    // ⛔ RANK BY ELIMINATION, NEVER BY A SINGULAR VALUE. This is an incidence fact about which
+    //    parts share a fusion, and reaching for a decomposition that asks about magnitudes would
+    //    make the answer depend on the factors, which is exactly what it must not do.
+    let kparts = sqlx::query_file!("assets/sql/queries/matrices/3d-kernel-incidence.sql")
+        .fetch_all(&pool)
+        .await?;
+    let kdims = sqlx::query_file!("assets/sql/rank/composition_kernel.sql")
+        .fetch_all(&pool)
+        .await?;
+
+    let mut boxes: Vec<(String, String)> = kparts
+        .iter()
+        .map(|p| (p.composition.clone(), p.composed_layer.clone()))
+        .collect();
+    boxes.dedup();
+    let (krows, kcols) = (boxes.len(), kparts.len());
+    let mut fk = DMatrix::<f64>::zeros(krows, kcols);
+    let mut bare = DMatrix::<f64>::zeros(krows, kcols);
+    for (j, p) in kparts.iter().enumerate() {
+        let i = boxes
+            .iter()
+            .position(|(c, l)| *c == p.composition && *l == p.composed_layer)
+            .expect("every part names a fusion, because the boxes were read off the parts");
+        // A factor that is not a number is still an edge. Reading it as one is safe HERE and
+        // nowhere else, because the rank cannot depend on a positive factor's size at all.
+        fk[(i, j)] = p.factor.unwrap_or(1.0);
+        bare[(i, j)] = 1.0;
+    }
+    let rank_fk = elimination_rank(fk.clone());
+    let kernel_here = kcols - rank_fk;
+    let kernel_sql: i64 = kdims.iter().map(|k| k.kernel_dim.unwrap_or(0)).sum();
+
+    println!("\n3d. the null space of F.Phi: the offsets a fusion declared immaterial");
+    println!("   F is {krows}x{kcols}, rank {rank_fk} by elimination, so dim ker = {kernel_here}");
+    println!("   rank/composition_kernel sums the same dimension to {kernel_sql}");
+    // ⭐⭐ `A -> DA` FOR A POSITIVE DIAGONAL LEAVES THE RANK WHERE IT WAS, RUN RATHER THAN
+    //    REPEATED. The factors here span three orders of magnitude, so if the rank were reading
+    //    magnitudes at all these two would part company.
+    assert_eq!(
+        rank_fk,
+        elimination_rank(bare),
+        "the incidence and the scaled incidence have different ranks, so the factors are moving \
+         a fact that depends only on which parts share a fusion"
+    );
+    // ⭐⭐ TWO ROUTES THAT SHARE NO CODE. One is Gaussian elimination over a dense matrix, the
+    //    other a GROUP BY folding parts onto fusions. They can only agree if every part sits in
+    //    exactly one fusion and every factor is strictly positive, which is what the DDL's
+    //    `factor_low > 0` CHECK is for; a zero factor would drop the rank and nothing else here
+    //    would notice.
+    assert_eq!(
+        kernel_here as i64, kernel_sql,
+        "elimination puts dim ker(F.Phi) at {kernel_here} and the relation at {kernel_sql}; \
+         either a part names two fusions or a factor is not positive"
+    );
+    // ⭐⭐ THE OTHER HALF OF THE MAP, AND IT IS THE HALF WITH NOTHING IN IT. `F Phi` has four
+    //    subspaces: the row space and the null space on the part side, the column space and the
+    //    left null space on the fusion side. Full ROW rank says the left null space is empty and
+    //    the column space is the whole fusion space, so every combination of composed figures is
+    //    reachable from some assignment to the parts and there is exactly ONE side of this map a
+    //    declared fungibility can live on. ⛔ It is also the only statement in this section that
+    //    can see a fusion counted twice: a repeated box is a row of zeros, which leaves both
+    //    `kcols - rank` and the relation's sum exactly where they were while the shape printed
+    //    above is wrong by one.
+    assert_eq!(
+        rank_fk, krows,
+        "F.Phi has rank {rank_fk} over {krows} fusion row(s), so a row is zero: either a fusion \
+         is among the boxes twice or one of them drew no part"
     );
     println!(
-        "   ⛔ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED, and this example asserted\n   \
-            the equality on all of them until a document filed `eliminations` as `unmeasured`.\n   \
-            A composer who states they never looked has not claimed their figure equals the sum\n   \
-            of its parts. Reporting a pass there is the same failure as a rule that examined no\n   \
-            rows — and before the wrapper existed, an unchecked fusion and a checked-clean one\n   \
-            were the same bytes."
+        "   rank {rank_fk} is every one of the {krows} fusion rows, so the left null space is \
+         empty: {kernel_here} dimension(s) on the part side and 0 on the fusion side"
     );
+    // ⛔ A FLOOR ABOUT THE SHAPE, NOT ABOUT THE POPULATION. `rank > 0` would pass on a corpus of
+    //    one-part fusions, where the kernel is zero and the agreement above is `0 == 0`. What has
+    //    to be true for this to be a test is that some fusion actually has a sibling pair.
     assert!(
-        checked >= 5,
-        "only {checked} composed layers were reachable"
+        kernel_here > 0 && krows > 0,
+        "every fusion here has one part, so the null space is zero and the two routes agree \
+         about nothing"
     );
+    // ⭐ And the fibre profile itself, because `C(k,2)` pairs and `k-1` dimensions agree up to
+    //   k = 2 and part company at 3. Saying which side of that the corpus sits on is the only
+    //   honest way to report the agreement above.
+    let widest = kdims.iter().filter_map(|k| k.parts).max().unwrap_or(0);
+    println!("   the widest fusion has {widest} part(s), so pairs and dimensions still agree here");
+    assert!(
+        widest >= 2,
+        "no fusion has two parts, so there is no offset in this corpus to be invisible"
+    );
+
+    // ------------------------------------------------------------------
+    // 3e. The other two subspaces, and then the closure once compositions nest.
+    //
+    // ⭐⭐ THE RANK ABOVE WAS TAKEN AGAINST THE BOXES THE PARTS THEMSELVES NAMED, which is the
+    //    one thing that assertion cannot check: a fusion a composer DECLARED and no resolved part
+    //    reaches is not among those boxes at all, so the matrix is short a row and every count
+    //    taken off it agrees with every other. `rank/composition_image.sqlc` counts the declared
+    //    fusions instead, from the composition rather than from the parts, so this is the rank
+    //    held against a population the matrix never saw.
+    let image = sqlx::query_file!("assets/sql/rank/composition_image.sql")
+        .fetch_all(&pool)
+        .await?;
+    let rows_of_the_row_space = sqlx::query_file!("assets/sql/rank/composition_row_space.sql")
+        .fetch_all(&pool)
+        .await?;
+    let declared: i64 = image.iter().map(|i| i.declared.unwrap_or(0)).sum();
+    let left_null: i64 = image.iter().map(|i| i.left_null.unwrap_or(0)).sum();
+    let row_blocks: i64 = rows_of_the_row_space.iter().map(|r| r.row_dim.unwrap_or(0)).sum();
+
+    println!("\n3e. the other two subspaces, and the closure over the levels");
+    println!(
+        "   {declared} declared fusion(s), {left_null} dimension(s) of left null space, \
+         {row_blocks} row space block(s) against rank {rank_fk}"
+    );
+    assert_eq!(
+        rank_fk as i64, declared,
+        "elimination puts the rank at {rank_fk} and {declared} fusion(s) are declared, so a \
+         declared fusion is not a row: every part it names resolves to nothing"
+    );
+    assert_eq!(left_null, 0, "the fusion side has {left_null} dimension(s) nothing can reach");
+    assert_eq!(
+        row_blocks, rank_fk as i64,
+        "the part side sums to {row_blocks} block(s) of row space and the rank is {rank_fk}"
+    );
+
+    // ⭐⭐⭐ AND NOW THE SQUARE ONE, WHICH IS A DIFFERENT MATRIX WITH A DIFFERENT JOB. `F Phi`
+    //    above is fusions by parts, short and wide, and it has no inverse. Indexed by LAYER on
+    //    both sides the same filed facts give a square operator, and because a composition is
+    //    well founded it is NILPOTENT: some power of it is zero. That is what makes the closure
+    //    terminate, and it is why `composition/descent.sqlc` can be a finite walk rather than a
+    //    fixed point somebody has to argue converges.
+    let mut nodes: Vec<String> = Vec::new();
+    for p in &kparts {
+        for n in [format!("{}/{}", p.composition, p.composed_layer), p.part.clone()] {
+            if !nodes.contains(&n) {
+                nodes.push(n);
+            }
+        }
+    }
+    let dn = nodes.len();
+    let at = |n: &str| nodes.iter().position(|x| x == n).expect("the nodes were read off these rows");
+    let mut descent = DMatrix::<f64>::zeros(dn, dn);
+    for p in &kparts {
+        // ⚠️ `+=`, never `=`. One fusion naming one layer twice is what `checks/jagged_layer`
+        //    refuses, and an assignment would quietly keep only the second of the two.
+        let (i, j) = (at(&format!("{}/{}", p.composition, p.composed_layer)), at(&p.part));
+        descent[(i, j)] += p.factor.unwrap_or(1.0);
+    }
+
+    // `I + A + A^2 + ...`, summed until the power is zero. The loop terminating IS the claim.
+    let identity = DMatrix::<f64>::identity(dn, dn);
+    let mut power = descent.clone();
+    let mut series = identity.clone();
+    let mut steps = 0usize;
+    while power.iter().any(|x| x.abs() > 1e-9) {
+        series += &power;
+        power = &power * &descent;
+        steps += 1;
+        assert!(
+            steps <= dn,
+            "the descent has not reached zero after {steps} power(s) over {dn} layer(s), so some \
+             layer is composed from itself and no order exists in which to evaluate the stack"
+        );
+    }
+
+    // ⭐⭐ `(I - A)^-1 = I + A + A^2 + ...` and the series is FINITE, so this is an identity to
+    //    check rather than a limit to trust. This is `composition/descent.sqlc` as arithmetic.
+    let back = (&identity - &descent) * &series;
+    let drift = (&back - &identity).iter().fold(0.0_f64, |m, x| m.max(x.abs()));
+    assert!(
+        drift < 1e-9,
+        "(I - F.Phi) times the series is {drift} away from the identity, so the closure is not \
+         the inverse it is written as"
+    );
+    assert_eq!(
+        elimination_rank(&identity - &descent),
+        dn,
+        "I - F.Phi is singular over {dn} layer(s), which is a loop in the composition"
+    );
+
+    // The nilpotency index is the deepest descent, which is the same number the closure relation
+    // reports, arrived at by multiplying matrices rather than by walking rows.
+    let closure = sqlx::query_file!("assets/sql/rank/composition_closure.sql")
+        .fetch_all(&pool)
+        .await?;
+    let deepest = closure.iter().map(|c| c.deepest.unwrap_or(0)).max().unwrap_or(0);
+    println!(
+        "   the descent is {dn}x{dn} and nilpotent: A^{} is zero, and the closure relation reports \
+         a deepest descent of {deepest}",
+        steps + 1
+    );
+    assert_eq!(
+        steps as i64, deepest,
+        "the matrix goes to zero after {steps} step(s) and the closure relation reports {deepest}"
+    );
+    assert!(steps >= 2, "nothing here nests, so the closure is one level and proves nothing");
+
+    // ⭐ And the closure's own identity, per root, against the sum of the blocks beneath it.
+    //   `leaves - 1` is the composite map's null space; the sum is the blocks it is made of.
+    for c in &closure {
+        assert_eq!(
+            c.closure_kernel.unwrap_or(-1),
+            c.sum_kernel.unwrap_or(-2),
+            "under {}/{} the composite map has {:?} dimension(s) of null space and its levels sum \
+             to {:?}, so a layer beneath it is reached twice",
+            c.composition.as_deref().unwrap_or("?"),
+            c.composed_layer.as_deref().unwrap_or("?"),
+            c.closure_kernel,
+            c.sum_kernel
+        );
+    }
 
     // ------------------------------------------------------------------
     // 5. What densifying costs. The interesting failure, kept for the end.
@@ -412,14 +690,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⭐⭐⭐ THE SAME GAP RUNS THROUGH EVERY QUANTITY, AND IT IS WHY THE TABLES ARE SPARSE. A
     //    matrix entry is drawn from R. A relation's cell here is drawn from
     //
-    //        R  ⊎  {none, unmeasured, notApplicable, derived}
+    //        R  ⊎  {none, unmeasured, notApplicable}  ⊎  pm:Identity
     //
-    //    a coproduct, not a number with a sentinel. And the right-hand set is not fixed: at a
-    //    `pm:StatedClaim` position it narrows to the three-member subset WITHOUT `none`, because
-    //    a measured zero carries a unit, an observer and a provenance and the absence arm has a
-    //    home for none of them. A zero there is a claim of `[0, 0, 0]`. That distinction is
-    //    unrepresentable in R, it is the reason `NULL` is refused throughout, and nine `CHECK`
-    //    constraints hold it in the database.
+    //    a coproduct, not a number with a sentinel. And the arms are not fixed: at a
+    //    `pm:StatedClaim` position the absence set narrows to the two-member subset WITHOUT
+    //    `none`, because a measured zero carries a unit, an observer and a provenance and the
+    //    absence arm has a home for none of them. A zero there is a claim of `[0, 0, 0]`. The
+    //    third arm appears only at the positions an identity computes, `pm:StatedFactor`,
+    //    `pm:StatedTimeSlack` and `pm:StatedEliminatedQuantity` among them, and it carries the
+    //    identity's NAME rather than a value, so a receiver recomputes instead of trusting. That
+    //    distinction is unrepresentable in R, it is the reason `NULL` is refused throughout, and
+    //    the `CHECK` constraints in `assets/ddl/schema.ddl` hold it in the database.
     // ------------------------------------------------------------------
     let couplings = sqlx::query_file!("assets/sql/queries/matrices/5-coupling-presence.sql")
         .fetch_all(&pool)
@@ -488,12 +769,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    and BOTH eliminations appear because they act on `r` in opposite directions: removing
     //    double-counted demand RAISES the remainder, removing double-counted nameplate LOWERS it.
     //
-    // ⛔ AN IDENTITY STATED IN PROSE AND EVALUATED NOWHERE CAN LOSE A WHOLE TERM WITHOUT ANYTHING
-    //   NOTICING, and that one lost `+ e_d` for exactly as long as it lived in a document.
-    //   `composition/fused_remainders.sqlc` evaluates it, observation 13 in `examples/observations`
-    //   prints it beside the figure `layers/remainder` derives from the composed totals, and the
-    //   two agree on every composed layer whose parts convert at a point value and differ on
-    //   exactly those carrying a factor with spread. This section is the differing pair.
+    // An identity stated in prose and evaluated nowhere can lose a whole term without anything
+    // noticing, and that one lost `+ e_d` for as long as it lived in a document.
+    // `composition/fused_remainders.sqlc` evaluates it, observation 13 in `examples/observations`
+    // prints it beside the figure `layers/differenced_remainder` derives from the composed totals,
+    // and `algebra/composed_remainder` holds the two equal wherever no factor on the walk has width
+    // and the pivot inside the other where one does. This section is the differing pair. Proven in
+    // `src/proofs/README.md`, entry `composed_remainder`.
     // ------------------------------------------------------------------
     let c = sqlx::query_file!("assets/sql/queries/matrices/4-converted-remainder.sql")
         .fetch_one(&pool)
@@ -551,37 +833,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 6. The residue census: how often the sawtooth defeats a filed demand.
     //
-    // THE DECOMPOSITION. With `m = k - floor(d/q)`:      r = mq - (d mod q)
+    // With `m = k - floor(d/q)`, `r = mq - (d mod q)`: whole quanta, which a procurement decision
+    // moves, and a residue, which no choice of `k` removes. The model's claim is that the residue
+    // is conserved and the integer part is chosen, so the document records who may change each:
+    // the quantum's origin and the amount's origin.
     //
-    // `mq` is whole quanta and a procurement decision -- hold one more unit and it moves.
-    // `(d mod q)` is a residue and no choice of `k` removes it; the closest any decision reaches
-    // is `min(d mod q, q - d mod q)`. Since `n` is a multiple of `q`, `r ≡ -d (mod q)` always:
-    // rounding up leaves `(-d) mod q` in `[0, q)`, rounding down leaves `-(d mod q)` in `(-q, 0]`,
-    // additive inverses in R/qR summing to `q`. Clearance and interference are one division read
-    // from opposite sides. The model's claim is that the residue is CONSERVED and the integer part
-    // is CHOSEN, so the document records who may change each: the quantum's origin and the
-    // amount's origin, each one of `intrinsic`/`contractual`/`policy`.
+    // The floors cancel, so the total is exact for any demand, interval or not. The split is not:
+    // `d mod q` is a sawtooth, and a demand range that crosses a multiple of `q` need not give
+    // ordered residues, while one inside a single tooth always does. The census counts the corpus
+    // layers whose demand crosses a tooth, and among them those whose residues come back
+    // unordered. The schema carries only the total, so nothing is broken; read the decomposition
+    // as a derivation of `r`, never as a filing instruction for its two halves.
     //
-    // ⛔ TWO THINGS ABOUT THAT IDENTITY THAT A FINDINGS PASS GOT WRONG. First, substituting
-    //   `k = n/q` collapses it: `r = (n/q - floor(d/q))q - (d - floor(d/q)q) = n - d`. The floors
-    //   appear twice with opposite signs and cancel, so `r` is exact for ANY `d` and ANY `n`,
-    //   interval or not. A finding claiming the decomposition "assumes point values" was wrong
-    //   about the total.
-    //
-    // ⛔⛔ SECOND, AND WORSE: `d mod q` IS A SAWTOOTH, so evaluated at an interval's three points
-    //    it need not be ordered. `d = (4.5, 5.2, 6.7)` at `q = 1` gives residues `(0.5, 0.2, 0.7)`,
-    //    which is not a valid three-point interval at all, while `d` is perfectly well formed.
-    //    The census below counts how many corpus layers are in that state. The TOTAL is an
-    //    identity; the SPLIT is not representable as two intervals in general. The schema happens
-    //    to carry only the total, so nothing is broken -- but read the decomposition as a
-    //    derivation of `r`, never as a filing instruction for its two halves.
+    // Proven in `src/proofs/README.md`, entries `floors_cancel`, `congruence`, `two_readings` and
+    // `sawtooth`; `assets/sqlc/layers/decomposed.sqlc` carries the split.
     // ------------------------------------------------------------------
     let residue = sqlx::query_file!("assets/sql/queries/matrices/6-residue-census.sql")
         .fetch_all(&pool)
         .await?;
 
     let mut residue_disagreements = 0;
-    let mut sawtoothed = 0;
+    let (mut sawtoothed, mut crossing) = (0, 0);
     for row in &residue {
         // ⛔ A QUANTUM WITH A SPREAD WOULD MAKE `d mod q` THREE DIFFERENT DIVISIONS, and the
         //    query divides by the mode. Every filed quantum in this corpus is a point value,
@@ -597,39 +869,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             row.q_low,
             row.q_high
         );
-        // The second witness: Postgres computed `mod`, this recomputes it with `%`.
+        // The second witness: Postgres computed `mod` and `floor`; this recomputes both.
         let q = row.q_mode;
         let (lo, md, hi) = (row.d_low % q, row.d_mode % q, row.d_high % q);
-        let computed = !(lo <= md && md <= hi);
-        if computed != row.sawtoothed {
+        let unordered = !(lo <= md && md <= hi);
+        let crosses = (row.d_low / q).floor() != (row.d_high / q).floor();
+        if unordered != row.sawtoothed || crosses != row.crosses_tooth {
             eprintln!(
-                "  ⛔ {}/{}: SQL says {}, Rust says {computed}",
-                row.filing, row.layer, row.sawtoothed
+                "  {}/{}: SQL says sawtoothed {} and crossing {}, Rust says {unordered} and {crosses}",
+                row.filing, row.layer, row.sawtoothed, row.crosses_tooth
             );
             residue_disagreements += 1;
         }
-        if computed {
+        // Inside one tooth the residue rises with the demand, so only a crossing can unorder it.
+        assert!(
+            crosses || !unordered,
+            "{}/{}: residues ({lo}, {md}, {hi}) are unordered inside a single tooth of {q}",
+            row.filing,
+            row.layer
+        );
+        if unordered {
             sawtoothed += 1;
+        }
+        if crosses {
+            crossing += 1;
         }
     }
     println!(
-        "6. residue census: {} lumpy corpus layers, {sawtoothed} sawtoothed, \
-         {residue_disagreements} disagreements",
+        "6. residue census: {} lumpy corpus layers, {crossing} cross a tooth, {sawtoothed} of \
+         them sawtoothed, {residue_disagreements} disagreements",
         residue.len()
     );
     assert_eq!(
         residue_disagreements, 0,
         "Postgres `mod` and Rust `%` disagree about a residue"
     );
-    // ⭐ BOUNDED ON BOTH SIDES, because both vacuous ends are reachable and neither is
-    //   interesting. All-clean would mean the corpus files only demands sitting on the
-    //   lattice; all-sawtoothed would mean the ordered case is unexercised. The claim is
-    //   that this is the ORDINARY state of a real filing, and that needs both to occur.
+    // Bounded on both sides, because both vacuous ends are reachable and neither is interesting.
+    // No crossing would mean the corpus files only demands inside one tooth; all crossing would
+    // mean the ordered case is unexercised. The claim is that a crossing is the ordinary state of
+    // a real filing, and that needs both to occur, and at least one crossing that unorders.
     assert!(
-        sawtoothed > 0 && sawtoothed < residue.len(),
-        "{sawtoothed} of {} lumpy layers sawtooth. At either extreme this census demonstrates \
-         nothing: the note's claim is that an unordered residue is ordinary rather than \
-         universal.",
+        crossing > 0 && crossing < residue.len() && sawtoothed > 0,
+        "{crossing} of {} lumpy layers cross a tooth and {sawtoothed} sawtooth. At either \
+         extreme this census demonstrates nothing: the claim is that a crossing is ordinary \
+         rather than universal.",
         residue.len()
     );
 
@@ -740,11 +1023,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   {buffer:<10} {sized} sized of {total}{flag}");
     }
 
-    // ⛔⛔ NO ASSERTION PINS `capacity` AT ZERO, and that is deliberate. An equality here
-    //     would turn today's gap into tomorrow's failure: the first filer to size a capacity
-    //     slack would break the build for doing the thing the model wants. The zero is
-    //     REPORTED, loudly, and the paragraph above says the bound is unexercised on the
-    //     strength of this line rather than on somebody's memory.
+    // ⛔⛔ NO ASSERTION PINS ANY BUFFER AT ZERO, and that is deliberate. An equality here would
+    //     turn today's figure into tomorrow's failure: a filer sizing a slack differently would
+    //     break the build for doing the thing the model wants. The census is REPORTED, loudly, and
+    //     the `unexercised` flag is computed from this run rather than from somebody's memory.
+    //
+    // ⚠️ A SIZED SLACK AND AN EXERCISED INEQUALITY ARE TWO DIFFERENT CLAIMS. The corpus sizes
+    //     slacks and some of them carry a real width, so the COLUMN is exercised; the share-sum
+    //     bound over it still examines nothing, because `entries/borne.sqlc`'s served filter
+    //     removes every candidate once every holder on the layer is `customer` or `unrealised`.
+    //     That file argues it and `algebra/borne.sqlc` holds the vacuum as arithmetic. Do not read
+    //     a sized column as a bound that bound.
     let sized_total: usize = per_buffer.values().map(|(s, _)| s).sum();
     assert!(
         sized_total > 0,

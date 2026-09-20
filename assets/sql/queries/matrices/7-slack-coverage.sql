@@ -6,20 +6,9 @@ SELECT s.filing            AS "filing!",
        s.sized             AS "sized!",
        s.absent::text      AS "absent"
 FROM (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
+    SELECT * FROM entries.slacks
 ) s
 JOIN (
-    -- from pm.filing where evidence = 'observation' and the kind attests to a world.
-SELECT f.name AS filing, f.kind, f.evidence
-FROM pm.filing f
-WHERE f.evidence = 'observation'
-  AND f.kind IN ('processModulus', 'composition', 'dependence')
-
+    SELECT * FROM scope.corpus
 ) f USING (filing)
 ORDER BY s.filing, s.layer, s.buffer

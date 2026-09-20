@@ -1,31 +1,50 @@
-# EVERY ELIMINATION A REMAINDER DESCENT PASSED THROUGH, CARRIED INTO THE ROOT'S UNIT. One row
-# per (composed layer, quantity), summed over every intermediate the descent ran through.
+# Every elimination a remainder walk passed through, carried into the root's unit. One row per
+# (composed layer, quantity), summed over every intermediate the walk ran through, read at the
+# corner of the quantity it was counted in.
 #
-# ⭐⭐ IT IS EMPTY WHENEVER EVERY DESCENT STOPS AT DEPTH ONE, WHICH IS ALMOST ALWAYS. A settled
-#    node's filed totals already carry every correction its own composer applied, so stopping
-#    there needs nothing from this relation. Rows appear only where a descent ran PAST a node,
-#    which happens exactly where that node's own conversions have width, and the corrections it
-#    applied were bypassed with its filed figures.
+# Empty when every walk stops at depth one
+#   It is empty whenever every walk stops at depth one, which is almost always. A settled node's
+#   filed totals already carry every correction its own composer applied, so stopping there needs
+#   nothing from this relation. Rows appear only where a walk ran past a node, which happens
+#   exactly where that node's own conversions have width, and the corrections it applied were
+#   bypassed with its filed figures.
 #
-# ⛔ SO ITS EMPTINESS IS A FACT ABOUT THE CORPUS AND NOT ABOUT THE MODEL. A document nesting one
-#   spread conversion under another puts rows here, and a sum that omitted them would be short
-#   by exactly the corrections the intermediate composer made.
--- eliminations/filed.sqlc at the unsettled nodes composition/descent.sqlc runs through, times
--- that path's factor product.
+# The pruned walk, not the whole descent
+#   composition/remainder_frontier.sqlc is the walk the remainder takes: it stops at the first
+#   settled node on each path. composition/descent.sqlc runs on to the leaves, so an unsettled node
+#   below a settled one would contribute an elimination the remainder never passed. The frontier
+#   is the population algebra/settled_remainders.sqlc assigns to this relation, and it is what the
+#   join reads.
+#
+# At the corner of its own quantity
+#   `e_low` is the elimination where the quantity it was counted in is at its low, and `e_high`
+#   where it is at its high. For a sum taken bound by bound those are the elimination's own low and
+#   high; where that node's sum inverted and took the crossed pairing, they swap.
+#   eliminations/paired.sqlc decides it, so the carried figure pairs exactly as the sum it was
+#   subtracted from did.
+#
+# An unsized elimination is not a zero
+#   An elimination filed as a typed absence has no figure, and `sum()` would skip it and report
+#   the rest as the total. `unsized` says one was passed; composition/suspended_remainders.sqlc
+#   suspends every remainder whose walk passes a node whose demand or nameplate sum owes nothing,
+#   which covers this case and the unsearched one beside it.
+#
+# The emptiness is a fact about the corpus
+#   So its emptiness is a fact about the corpus and not about the model. A document nesting one
+#   spread conversion under another puts rows here, and a sum that omitted them would be short by
+#   exactly the corrections the intermediate composer made.
+-- eliminations/paired.sqlc at the nodes composition/passed_nodes.sqlc names, along a usable path.
 SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
-       count(*)                                                     AS through_layers,
-       sum(least(   e.low  * w.factor_low, e.low  * w.factor_high)) AS e_low,
-       sum(e.mode * w.factor_mode)                                  AS e_mode,
-       sum(greatest(e.high * w.factor_low, e.high * w.factor_high)) AS e_high
+       count(*)                                                        AS through_layers,
+       sum(least(   e.at_low  * w.factor_low, e.at_low  * w.factor_high)) AS e_low,
+       sum(e.mode * w.factor_mode)                                     AS e_mode,
+       sum(greatest(e.at_high * w.factor_low, e.at_high * w.factor_high)) AS e_high,
+       bool_or(e.absent IS NOT NULL OR e.derivation IS NOT NULL)       AS unsized
 FROM      (
-    :compose(composition/descent.sqlc)
+    :compose(composition/passed_nodes.sqlc)
 ) w
 JOIN      (
-    :compose(composition/unsettled.sqlc)
-) o ON o.filing = w.filing AND o.layer = w.layer
-JOIN      (
-    :compose(eliminations/filed.sqlc)
+    :compose(eliminations/paired.sqlc)
 ) e ON e.composition = w.filing AND e.composed_layer = w.layer
-WHERE w.factor_absent = false
-  AND NOT w.is_cycle
+WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity

@@ -1,45 +1,57 @@
-# THE FUSIONS OF ONE PART THAT ELIMINATE NOTHING, BESIDE THE PART THEY CARRY. One row per such
+# The fusions of one part that eliminate nothing, beside the part they carry. One row per such
 # fusion per quantity, with the part's figure and the composed figure side by side.
 #
-# ⭐⭐⭐ IDENTITY IS THE ONE CASE WHERE COMPOSITION NEEDS NO ARITHMETIC AT ALL, which is what
-#    makes it the sharpest test in the file. A fusion of one part that eliminates nothing must
-#    reproduce that part: there is nothing to sum, nothing to subtract, and no judgement to
-#    make. So any difference is a defect with no defence, and it can be asked of EVERY quantity
-#    rather than only the one the sum rule composes.
+# Identity needs no arithmetic
+#   Identity is the one case where composition needs no arithmetic at all, which is what makes it
+#   the sharpest test in the file. A fusion of one part that eliminates nothing must reproduce that
+#   part: there is nothing to sum, nothing to subtract, and no judgement to make. So any difference
+#   is a defect with no defence, and it can be asked of every quantity rather than only the one the
+#   sum rule composes.
 #
-# ⛔⛔ AND THAT IS FIVE QUANTITIES AGAINST THE SUM RULE'S ONE. `checks/fusion_sum_disagrees`
-#    reads `composition/fused.sqlc`, which answers `'demand' AS quantity` as a literal;
-#    `checks/window_lost_or_summed` covers the calendar. Nothing composes a nameplate TOTAL or
-#    any of the three buffer slacks. The nameplate ELIMINATIONS are read, by
-#    composition/fused_remainders.sqlc, which needs both `e_n` and `e_d` to correct a composed
-#    remainder; the draw eliminations are read by nothing, so a composer did that work and
-#    nothing consumes it.
+# Five quantities, the sum rule's three and the slacks
+#   `checks/fusion_sum_disagrees` reads composition/fused.sqlc, which sums demand, nameplate and
+#   draw; `checks/window_lost_or_summed` covers the calendar. Nothing sums the three buffer slacks,
+#   so this relation is where a one-part fusion is held to them.
 #
-# ⚠️ A ONE-PART FUSION IS NOT DEGENERATE, and `every-local-part` says so in its own words:
-#    "A one-part fusion is not degenerate: it says this reviewer read that layer and carried
-#    it." Carrying is an assertion, so it is a thing that can be got wrong.
+# A suspension removes only the quantity it names
+#   A fusion suspended for its draw alone still carries its demand and nameplate, so the
+#   anti-join matches on the quantity, or on a NULL quantity, which suspends them all.
 #
-# ⭐ THE FACTOR STILL APPLIES. A single part may be converted into the composed layer's unit,
-#   so identity is "the part, converted" rather than "the part, copied".
+# A one-part fusion is not degenerate
+#   `every-local-part` says so in its own words: "A one-part fusion is not degenerate: it says this
+#   reviewer read that layer and carried it." Carrying is an assertion, so it is a thing that can
+#   be got wrong.
 #
-# ⛔⛔ AND A FACTOR FILED AS ABSENT IS EXCLUDED RATHER THAN READ AS ONE. `coalesce(factor, 1)`
-#    is the fill this directory warns about wherever it appears: 1 is the multiplicative
-#    identity, and filling an absence with an identity element is only sound where the absence
-#    means MEASURED AND EMPTY. `asrt:factor` is a `pm:StatedClaim`, so its absent arm carries a
-#    typed reason, and `every-unsized-conversion/shift-capacity` files `unmeasured` on one of
-#    its parts -- a composer saying nobody measured the conversion. Read as 1 that becomes "the
-#    units are the same", which is a claim they declined to make. Identity cannot be asserted
-#    across a conversion nobody sized, so those parts leave this relation.
+# The factor still applies
+#   A single part may be converted into the composed layer's unit, so identity is "the part,
+#   converted" rather than "the part, copied".
 #
-# ⚠️ THE OMITTED ELEMENT IS A DIFFERENT STATE AND IT STAYS. `minOccurs="0"` and no factor means
-#    no conversion is needed, which is the sender asserting the units already agree. That is a
-#    filing; `unmeasured` is a gap.
+# A factor filed as absent is excluded, not read as one
+#   `coalesce(factor, 1)` is the fill this directory warns about wherever it appears: 1 is the
+#   multiplicative identity, and filling an absence with an identity element is only sound where
+#   the absence means measured and empty. `asrt:factor` is a `pm:StatedFactor`, so its absent arm
+#   carries a typed reason, and `every-unsized-conversion/shift-capacity` files `unmeasured` on one
+#   of its parts: a composer saying nobody measured the conversion. Read as 1 that becomes "the
+#   units are the same", which is a claim they declined to make. Identity cannot be asserted across
+#   a conversion nobody sized, so those parts leave this relation.
 #
-# ⭐⭐ THE CANDIDATE SET IS NOW A FILE, composition/carriable.sqlc, AND THIS IS THE DIFFERENCE
-#    TAKEN AGAINST IT. Both operands are named, so algebra/carried.sqlc can count them. ⛔ Fold
-#    the two `NOT EXISTS` back into a `WHERE` over an inline candidate set and the law loses its
-#    A: the SQL still runs, the rows are identical, and nothing on algebra/roster.sqlc can be
-#    written about it.
+# An omitted factor is a different state, and it stays
+#   `minOccurs="0"` and no factor means no conversion is needed, which is the sender asserting the
+#   units already agree. That is a filing; `unmeasured` is a gap.
+#
+# Two quantity codomains meet here
+#   A suspension names its quantity as `pm.summed_quantity`, the three a fusion sums; a candidate
+#   carries `public.layer_quantity`, the five a layer states. Both are declared types and they are
+#   not the same domain: they agree on `demand` and `nameplate` and on nothing else. So both sides
+#   cast to text, which is not a workaround but the statement that the NAME is the whole of what
+#   the two sets share. Drop either cast and Postgres refuses the comparison, which is the right
+#   refusal: nothing implicitly converts one codomain into the other.
+#
+# The difference against a named candidate set
+#   The candidate set is a file, composition/carriable.sqlc, and this is the difference taken
+#   against it. Both operands are named, so algebra/carried.sqlc can count them. Fold the two
+#   `NOT EXISTS` back into a `WHERE` over an inline candidate set and the law loses its A: the SQL
+#   still runs, the rows are identical, and nothing on algebra/roster.sqlc can be written about it.
 -- composition/carriable.sqlc less the fusions that eliminate or owe no sum.
 SELECT c.*
 FROM      (
@@ -49,5 +61,6 @@ WHERE NOT EXISTS (
         SELECT 1 FROM ( :compose(eliminations/filed.sqlc) ) e
         WHERE e.composition = c.filing AND e.composed_layer = c.layer)
   AND NOT EXISTS (
-        SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
-        WHERE s.composition = c.filing AND s.composed_layer = c.layer)
+        SELECT 1 FROM ( :compose(composition/suspended_quantities.sqlc) ) s
+        WHERE s.composition = c.filing AND s.composed_layer = c.layer
+          AND s.quantity::text = c.quantity::text)

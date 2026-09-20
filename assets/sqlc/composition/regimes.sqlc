@@ -1,0 +1,19 @@
+# Every regime a filing declares for itself. One row per `pm:Regime` in a filing: its handle, its
+# jurisdiction, and the framework and chart it reports under, each a borrowed term or the typed
+# reason there is none.
+#
+# Tall, because one filing may report under two
+#   `refutation` reports one microentity to two authorities, `NC-ME` to one and `M` to the other,
+#   and the pair is that document's subject. So no row is "the" regime of a filing: `seq` keeps
+#   the declarations apart in document order and `id` is the handle a part names.
+#
+# A term is whole or absent
+#   A framework is a taxonomy and a value, and the value alone is the ambiguous half: SAF-T PT's
+#   `S` and IES's `NCRF-PE` come from lists that do not line up. The schema keeps every term whole,
+#   so "this filing states a framework" is `framework_value IS NOT NULL` and asking it of the
+#   taxonomy gives the same rows. Every reader here spells it the one way.
+-- pm:Regime, one row per declaration in document order.
+SELECT r.filing, r.seq, r.id, r.jurisdiction,
+       r.framework_taxonomy, r.framework_value, r.framework_absent,
+       r.chart_taxonomy, r.chart_value, r.chart_absent
+FROM pm.regime r

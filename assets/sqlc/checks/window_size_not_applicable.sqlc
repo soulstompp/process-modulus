@@ -1,0 +1,31 @@
+# Every window filed as a quantum, beside whether its size is called malformed. One row per nameplate
+# that files the live part of its period, `violates` where that part's size is filed `notApplicable`.
+#
+# A window that files its live part has a size to ask about
+#   Filing `quantum` says the supply is live for some part of each period. Calling that part's size
+#   malformed contradicts the element it sits in, and the case it would mean, a unit with no period
+#   to be live in part of, already has its spelling one level up: `window` filed `notApplicable`,
+#   which checks/window_not_applicable_on_a_rate.sqlc holds against the unit. Spelled one level
+#   down it is a second door, and one that rule does not read.
+#
+# Only `notApplicable`
+#   An unmeasured size is a different claim, somebody knowing the window exists and not how long it
+#   is, and it is not refused here.
+-- pm:Divisibility/pm:window/pm:quantum/pm:size with pm:absent/pm:reason = notApplicable.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT w.filing, w.layer,
+           w.window_size_absent IS NOT DISTINCT FROM 'notApplicable' AS violates,
+           CASE WHEN w.window_size_absent IS NOT NULL
+                THEN format('the window is filed as a quantum and its size as %s', w.window_size_absent)
+                ELSE format('the window is filed as %s %s', w.window_low, w.window_unit)
+           END AS detail
+    FROM (
+        :compose(layers/windows.sqlc)
+    ) w
+    WHERE w.window_low IS NOT NULL OR w.window_size_absent IS NOT NULL
+) p ON true
+WHERE r.slug = 'window_size_not_applicable'

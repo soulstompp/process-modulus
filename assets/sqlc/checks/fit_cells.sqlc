@@ -1,0 +1,33 @@
+# Every row a fit-reading rule examined, with the cell of its axis it sits in. One row per
+# examined row of checks/all.sqlc whose rule declares an axis on checks/fit_axes.sqlc.
+#
+# The cell is read on the rule's own axis
+#   A filed-sign rule's row sits in the cell of the sign the layer filed, and a derived-fit rule's
+#   row in the fit its demand and nameplate give. `fit` is NULL where the layer has none on that
+#   axis: no sign filed, or no demand and nameplate to derive one from. `filed against derived`
+#   compares the two, and its rows are placed by the derived fit, which is the side it can only
+#   examine where it exists.
+#
+# Examined means a verdict
+#   A row whose `violates` is NULL is a roster row with nothing behind it, or a row the rule
+#   suspended; neither examined the cell.
+-- checks/all.sqlc per checks/fit_axes.sqlc against layers/filed_remainders.sqlc and layers/remainder.sqlc.
+SELECT a.slug, a.axis, c.filing, c.layer,
+       CASE WHEN a.axis = 'filed sign' THEN f.sign ELSE x.derived_fit END AS fit
+FROM      (
+    :compose(checks/all.sqlc)
+) c
+JOIN      (
+    :compose(checks/roster.sqlc)
+) r ON r.rule = c.rule
+JOIN      (
+    :compose(checks/fit_axes.sqlc)
+) a ON a.slug = r.slug
+LEFT JOIN (
+    :compose(layers/filed_remainders.sqlc)
+) f ON f.filing = c.filing AND f.layer = c.layer
+LEFT JOIN (
+    :compose(layers/remainder.sqlc)
+) x ON x.filing = c.filing AND x.layer = c.layer
+WHERE c.violates IS NOT NULL
+  AND a.axis <> 'not read'

@@ -168,12 +168,12 @@
                     <pm:unit>run</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
                     <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent></pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's parts and their conversions</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>
@@ -256,13 +256,13 @@
                     <pm:low>1.6</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>2.5</pm:high>
                     <pm:unit>hour</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
-                    <pm:narrowsWhen><pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:absent></pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:narrowsWhen><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:derivation></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's parts and their conversions</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>
@@ -345,13 +345,13 @@
                     <pm:low>0.8</pm:low><pm:mostLikely>2</pm:mostLikely><pm:high>5</pm:high>
                     <pm:unit>batch</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
-                    <pm:narrowsWhen><pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:absent></pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:narrowsWhen><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>what would narrow this is a computation rather than an act: the share is this layer's remainder, so a receiver holding the parts derives its width</pm:note></pm:derivation></pm:narrowsWhen>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's parts and their conversions</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's parts and their conversions</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>

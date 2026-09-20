@@ -1,27 +1,37 @@
-# WHAT THE DOCUMENT SAYS ITS REMAINDER IS, BESIDE THE ONE THE ARITHMETIC DERIVES. One row per
-# layer that both FILES a remainder and can have one computed from its own `n - d`, carrying
-# both figures so a caller can set them against each other.
+# What the document says its remainder is, beside the one the arithmetic derives. One row per
+# layer that both files a remainder and can have one computed from its own `n - d`, carrying both
+# figures so a caller can set them against each other.
 #
-# ⭐⭐⭐ THIS IS THE JOIN THREE CALLERS WROTE OUT SEPARATELY, AND IT IS A RELATION SOMEBODY IN
-#    THIS DOMAIN WOULD NAME. `arithmetic/filed_remainder.sqlc`, `matrices.sqlc` and
-#    `queries/matrices/4-converted-remainder.sqlc` each spelled `filed_remainders` joined to
-#    `remainder` on (filing, layer), in three idioms, for three different questions about the
-#    same pair of numbers. The pair is the object; the questions are the callers'.
+# One pair, three questions
+#   This is a relation somebody in this domain would name. `arithmetic/filed_remainder.sqlc`,
+#   `matrices.sqlc` and `queries/matrices/4-converted-remainder.sqlc` each need
+#   `filed_remainders` joined to `remainder` on (filing, layer), for three different questions
+#   about the same pair of numbers. The pair is the object; the questions are the callers'.
 #
-# ⛔ IT IS AN INNER JOIN AND THE ROWS IT DROPS ARE TWO DIFFERENT KINDS OF ABSENCE. A layer that
+# What the inner join drops
+#   It is an inner join, and the rows it drops are two different kinds of absence. A layer that
 #   files no remainder at all is not here (layers/filed_remainders.sqlc keeps
 #   `remainder_absent IS NULL`), and neither is one whose demand or nameplate is unstated, so
 #   nothing could be derived. Both are honest and both are somebody else's question:
 #   epistemics/absences.sqlc holds the first, arithmetic/remainder.sqlc the second.
 #
-# ⭐ THE FILED FIGURE IS NOT THE DERIVED ONE AND MUST NOT BE COALESCED INTO IT. Where a
-#   conversion factor multiplies both the nameplate and the demand of a part, the two converted
-#   intervals are CORRELATED, and differencing them as if independent counts the factor's spread
-#   twice. They agree at the mode and nowhere else. Only the filed figure is the remainder.
+# The derived figure is the remainder in force
+#   `r` and its magnitude come from layers/remainder.sqlc: the pivoted `F Φ r - e_n + e_d` on a
+#   composed layer that owes an exact remainder, the crossed `n - d` everywhere else. So a stated
+#   quantity is compared with the remainder the model actually holds, and
+#   checks/stated_quantity_is_not_the_magnitude can require them equal.
+#
+# The composed totals are carried too
+#   `d_*` and `n_*` are the layer's own composed totals. Where a conversion factor multiplies both
+#   the nameplate and the demand of a part, the two converted totals are correlated, and
+#   differencing them as if independent counts the factor's spread twice.
+#   `queries/matrices/4-converted-remainder.sqlc` re-derives that crossed difference from these
+#   columns to show where it departs from the remainder: equal at the mode, wider at both bounds.
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
        l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
        r.r_low, r.r_mode, r.r_high, r.unit,
+       r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,
        r.n_low, r.n_mode, r.n_high, r.amount_unit,
        r.sign, r.derived_fit
@@ -29,5 +39,5 @@ FROM      (
     :compose(layers/filed_remainders.sqlc)
 ) l
 JOIN      (
-    :compose(layers/differenced_remainder.sqlc)
+    :compose(layers/remainder.sqlc)
 ) r USING (filing, layer)

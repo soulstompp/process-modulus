@@ -1,34 +1,44 @@
-# WHO MAY COMPOSE THE LAYER DIMENSION, AND WHETHER ANYBODY ELSE DOES. One row per law, with the
+# Who may compose the layer dimension, and whether anybody else does. One row per law, with the
 # templates that compose `layers/every_layer.sqlc` and are not declared as denominators.
 #
-# ⭐⭐⭐ A DIMENSION REACHES EVERYTHING BY CONSTRUCTION, SO COMPOSING IT DESTROYS EVERY BOUND
-#    DOWNSTREAM. `layers/every_layer.sqlc` is every filed layer, which is what makes it the
-#    denominator a `LEFT JOIN` can find a gap against. The moment a relation composes it for any
-#    other reason, every consumer of THAT relation inherits the whole dimension, and any law of
-#    the form *this rule's reach is inside the reach of what it composes* becomes vacuous.
+# A dimension reaches everything
+#   It does so by construction, so composing it destroys every bound downstream.
+#   `layers/every_layer.sqlc` is every filed layer, which is what makes it the denominator a
+#   `LEFT JOIN` can find a gap against. The moment a relation composes it for any other reason,
+#   every consumer of that relation inherits the whole dimension, and any law of the form *this
+#   rule's reach is inside the reach of what it composes* becomes vacuous.
 #
-# ⛔⛔ AND ONE EDGE IS ENOUGH TO DO IT. `composition/parts.sqlc` is composed by more relations
-#    than anything else here, so an inner join of the dimension there puts the whole dimension
-#    into the closure of most of the checker. A membership test reads `pm.layer`; the dimension
-#    is for denominators. Same rows, opposite roles, and only one of the two is safe to
-#    propagate.
+# One edge is enough
+#   `composition/parts.sqlc` is composed by more relations than anything else here, so an inner
+#   join of the dimension there puts the whole dimension into the closure of most of the checker.
+#   A membership test reads `pm.layer`; the dimension is for denominators. Same rows, opposite
+#   roles, and only one of the two is safe to propagate.
 #
-# ⭐⭐ THE THREE ROLES, BECAUSE A BLANKET RULE WOULD FORBID SOMETHING CORRECT. A denominator drives
-#    the query or is left-joined, and that is what this relation permits. A membership test asks
-#    whether one pair exists and belongs on the base table. And `entries/spillovers.sqlc` is a
-#    third: it self-joins the dimension with `filing <> filing` to find the same layer NAME in
-#    another filing, so its subject genuinely IS the whole dimension. That is why the permitted
-#    set is DECLARED here rather than inferred from the join direction, which the compose DAG
-#    cannot see.
+# The three roles
+#   A blanket rule would forbid something correct. A denominator drives the query or is
+#   left-joined, and that is what this relation permits. A membership test asks whether one pair
+#   exists and belongs on the base table. And `entries/spillovers.sqlc` is a third: it self-joins
+#   the dimension with `filing <> filing` to find the same layer name in another filing, so its
+#   subject genuinely is the whole dimension. That is why the permitted set is declared here
+#   rather than inferred from the join direction, which the compose DAG cannot see.
 #
-# ⚠️ IT CANNOT SEE HOW A PERMITTED PARENT USES IT, only that it is permitted. So a file on this
-#   list that later starts inner-joining the dimension passes, and the law's reach is the
-#   BOUNDARY of the list rather than of the usage. ⭐ The join DIRECTION is in the SQL text, so
-#   the program that reads the text classifies it and carries it in
+# What it cannot see
+#   It cannot see how a permitted parent uses the dimension, only that it is permitted. So a file
+#   on this list that later starts inner-joining the dimension passes, and the law's reach is the
+#   boundary of the list rather than of the usage. The join direction is in the SQL text, so the
+#   program that reads the text classifies it and carries it in
 #   `public.compose_edge.inner_joins`, which is what keeps this list to the genuine exceptions
 #   rather than to every permitted parent.
+#
+# One exception, by name
+#   `inner_joins` carries the syntax, so the list is one row. Permitting parents by name would
+#   mean adding every ordinary denominator use by hand, and a list like that rots on changes that
+#   are fine. Driving from the dimension or left-joining it passes without being declared; only an
+#   inner join needs an argument. `entries/spillovers.sqlc` is the one that has one, for the
+#   reason under the three roles: the whole dimension genuinely is its subject rather than a
+#   lookup.
 -- algebra/roster.sqlc against public.compose_edge: who composes the layer dimension.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
@@ -43,13 +53,6 @@ LEFT JOIN (
         FROM ( :compose(rank/compose_edges.sqlc) ) e
         WHERE e.child = 'layers/every_layer.sqlc'
           AND e.inner_joins > 0
-          -- ⭐⭐⭐ ONE ROW, BECAUSE `inner_joins` CARRIES THE SYNTAX. Permitting parents by NAME
-          --    would mean adding every ordinary denominator use by hand, and a list like that
-          --    rots on changes that are fine. Driving from the dimension or left-joining it
-          --    passes without being declared; only an INNER join needs an argument. ⛔ This is
-          --    the one that has one: it
-          --    self-joins the dimension with `filing <> filing` to find one layer NAME in two
-          --    filings, so the whole dimension genuinely is its subject rather than a lookup.
           AND e.parent NOT IN ('entries/spillovers.sqlc')
     ) u
 ) p ON true

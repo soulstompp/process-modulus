@@ -1,0 +1,54 @@
+# What this repository's own compose DAG loses when it is cut up by directory. One row: its cycle
+# space taken whole, the sum of its cycle spaces taken one directory at a time, and whether the
+# first survives the second.
+#
+# The sibling of `rank/decomposition.sqlc`, and the third row of a two-row table
+#   That relation asks the same question of the graphs the MODEL composes, cut by filing. This
+#   asks it of the graph this REPOSITORY composes, cut by directory. Same arithmetic, and the
+#   verdicts differ: the layer graph survives its cut because it is a forest either way, the unit
+#   graph does not because its only cycle spans two filings, and this graph does not because most
+#   of its cycles span two directories.
+#
+# It answers a navigation question rather than raising an accusation
+#   Nothing here is a defect. The compose graph's cycle space is large and free, because a query
+#   is idempotent and composing a relation twice reads it once. `rank/compose_edges.sqlc` states
+#   that and `rank/cycle_space.sqlc` states the opposite verdict for `pm.part`, where the same
+#   shape is `checks/jagged_layer`. What the cut measures is whether the directory tree is where
+#   the composition lives, and the answer is that it mostly is not.
+#
+# A directory is a partition, a filing is a cover
+#   A template lives in exactly one directory, so `sum(n_nodes)` over the scopes equals the whole
+#   graph's `n`. A layer may be filed under two documents, so the per-filing node counts in
+#   `rank/graph_measures.sqlc` sum to MORE than its graph's. The two relations look alike and
+#   their sums are not comparable, which `rank/compose_measures.sqlc`'s header argues.
+#
+# Why the sum can only fall
+#   Cutting throws away every edge whose endpoints are in different directories and keeps every
+#   node, so each scope's walk sees a subgraph of the whole. An edge that closed a loop across a
+#   boundary closes nothing inside one, so the summed cycle space is at most the whole graph's and
+#   the difference is the count of independent loops that need two directories to exist.
+#
+# Probe
+#   Move a template into the directory of everything it composes and recompose: the summed cycle
+#   space must rise, and `corpus_wide` must not move at all.
+-- rank/compose_measures.sqlc at both scopes: the whole against the sum of the parts.
+WITH
+compose_edges AS NOT MATERIALIZED (
+    :define(rank/compose_edges.sqlc)
+),
+compose_measures AS NOT MATERIALIZED (
+    :define(rank/compose_measures.sqlc)
+)
+SELECT w.cycle_space_dim                                                   AS corpus_wide,
+       coalesce(sum(p.cycle_space_dim), 0)::bigint                         AS summed_per_directory,
+       w.cycle_space_dim = coalesce(sum(p.cycle_space_dim), 0)::bigint     AS survives_the_cut,
+       count(p.scope)                                                      AS directories,
+       w.cycle_space_dim - coalesce(sum(p.cycle_space_dim), 0)::bigint     AS loops_that_cross
+FROM      (
+    :compose(rank/compose_measures.sqlc)
+) w
+LEFT JOIN (
+    :compose(rank/compose_measures.sqlc)
+) p ON p.scope IS NOT NULL
+WHERE w.scope IS NULL
+GROUP BY w.cycle_space_dim

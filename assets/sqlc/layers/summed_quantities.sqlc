@@ -1,0 +1,31 @@
+# The three quantities a fusion sums, for every layer. One row per (filing, layer, quantity), for
+# `demand`, `nameplate` and `draw`: the three points and the unit where the layer states the
+# quantity, the typed absence where it does not, and the identity where it is computed.
+#
+# The three a fusion adds up
+#   `x_composed = F Φ x_parts - e` holds for each of these separately, and an elimination names
+#   exactly one of them. They are the quantities `asrt:Elimination/against` ranges over, so this is
+#   the set a composed layer owes a sum in, read from the layer rather than restated beside it.
+#
+# A derivation stays a row too
+#   `derivation` names the identity a layer files the quantity as the output of, which on these
+#   three is always its fusion's sum. composition/derived_quantities.sqlc computes it.
+#
+# The absence stays a row
+#   A layer that files its draw as `unmeasured` keeps its row here with no figure, because the
+#   absence is what suspends a sum that would otherwise drop that part and come out short.
+#   composition/unstated_quantities.sqlc reads it.
+-- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
+SELECT l.filing, l.layer, 'demand'::pm.summed_quantity AS quantity,
+       l.demand_low AS low, l.demand_mode AS mode, l.demand_high AS high, l.demand_unit AS unit,
+       l.demand_absent AS absent, l.demand_derivation AS derivation
+FROM pm.layer l
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate'::pm.summed_quantity,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_derivation
+FROM pm.nameplate n
+UNION ALL
+SELECT n.filing, n.layer, 'draw'::pm.summed_quantity,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent, n.draw_derivation
+FROM pm.nameplate n

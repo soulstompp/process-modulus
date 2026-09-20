@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- algebra/roster.sqlc against algebra/all.sqlc, one row per law.\nSELECT coalesce(g.slug, w.law)                                                AS subject,\n       g.slug IS NOT NULL                                                     AS declared,\n       count(w.law)                                                           AS rows,\n       count(w.law) FILTER (WHERE w.holds IS NOT NULL)                        AS answered,\n       count(w.law) FILTER (WHERE w.holds)                                    AS holding,\n       count(w.law) FILTER (WHERE NOT w.holds)                                AS failing,\n       count(w.law) FILTER (WHERE w.holds IS NULL AND w.subject IS NOT NULL)  AS silent,\n       count(w.law) FILTER (WHERE w.holds IS NULL AND w.subject IS NULL)      AS vacuous\nFROM      (\n    SELECT * FROM algebra.roster\n) g\nFULL JOIN (\n    SELECT * FROM algebra.all\n) w ON w.law = g.slug\nGROUP BY g.slug, w.law\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "subject",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "declared",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "rows",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "answered",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "holding",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "failing",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "silent",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "vacuous",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "adf35697cb62fbcfc412f5cf57c72fbbea8744254ec77cd0a43eb510100b4f87"
+}

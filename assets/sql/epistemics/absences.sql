@@ -1,153 +1,174 @@
 -- every pm:absent/reason in the schema, from every element that admits one.
 SELECT filing, subject, question, reason FROM (
-    SELECT filing, layer AS subject, 'demand'              AS question, demand_absent         AS reason FROM pm.layer
-    UNION ALL SELECT filing, layer, 'demand narrowsWhen',  demand_narrows_absent FROM pm.layer
+    SELECT filing, layer AS subject, 'demand'              AS question, absent                AS reason FROM (
+        SELECT * FROM layers.summed_quantities
+    ) sq WHERE sq.quantity = 'demand'
     UNION ALL SELECT filing, layer, 'remainder sign',      sign_absent           FROM (
-        -- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
-SELECT l.filing, l.layer,
-       l.sign, l.sign_absent,
-       l.absorber_taxonomy, l.absorber_value,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent
-FROM pm.layer l
-WHERE l.remainder_absent IS NULL
-
+        SELECT * FROM layers.filed_remainders
     ) fr
     UNION ALL SELECT filing, layer, 'remainder quantity',  qty_absent            FROM (
-        -- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
-SELECT l.filing, l.layer,
-       l.sign, l.sign_absent,
-       l.absorber_taxonomy, l.absorber_value,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent
-FROM pm.layer l
-WHERE l.remainder_absent IS NULL
-
+        SELECT * FROM layers.filed_remainders
     ) fr
-    UNION ALL SELECT filing, layer, 'nameplate amount',    amount_absent         FROM pm.nameplate
-    UNION ALL SELECT filing, layer, 'divisibility',        divisibility_absent   FROM pm.nameplate
-    UNION ALL SELECT filing, layer, 'duty-cycle window',   window_absent         FROM (
-        -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
-SELECT n.filing, n.layer,
-       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent,
-       n.amount_unit
+    UNION ALL SELECT filing, layer, 'remainder absorber',  absorber_absent       FROM (
+        SELECT * FROM layers.filed_remainders
+    ) fr
+    UNION ALL SELECT filing, layer, 'nameplate amount',    absent                FROM (
+        SELECT * FROM layers.summed_quantities
+    ) sq WHERE sq.quantity = 'nameplate'
+    UNION ALL SELECT filing, layer, 'divisibility',        divisibility_absent   FROM (
+        -- pm:Layer/pm:supply, pm:Facility with its pm:Nameplate and pm:Jagged, one row per layer.
+SELECT n.filing, n.layer, n.facility_label,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_origin, n.amount_origin_absent,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit, n.quantum_absent,
+       n.quantum_origin,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_origin, n.window_absent,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent,
+       n.measurement_basis_contributed, n.measurement_basis_taxonomy, n.measurement_basis_value,
+       n.measurement_basis_absent
 FROM pm.nameplate n
 
+    ) f
+    UNION ALL SELECT filing, layer, 'who committed the amount', amount_origin_absent FROM (
+        -- pm:Layer/pm:supply, pm:Facility with its pm:Nameplate and pm:Jagged, one row per layer.
+SELECT n.filing, n.layer, n.facility_label,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_origin, n.amount_origin_absent,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit, n.quantum_absent,
+       n.quantum_origin,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_origin, n.window_absent,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent,
+       n.measurement_basis_contributed, n.measurement_basis_taxonomy, n.measurement_basis_value,
+       n.measurement_basis_absent
+FROM pm.nameplate n
+
+    ) f
+    UNION ALL SELECT filing, layer, 'lump size',           quantum_absent        FROM (
+        -- pm:Layer/pm:supply, pm:Facility with its pm:Nameplate and pm:Jagged, one row per layer.
+SELECT n.filing, n.layer, n.facility_label,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_origin, n.amount_origin_absent,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit, n.quantum_absent,
+       n.quantum_origin,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_origin, n.window_absent,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent,
+       n.measurement_basis_contributed, n.measurement_basis_taxonomy, n.measurement_basis_value,
+       n.measurement_basis_absent
+FROM pm.nameplate n
+
+    ) f
+    UNION ALL SELECT filing, layer, 'measurement basis',   measurement_basis_absent FROM (
+        -- pm:Layer/pm:supply, pm:Facility with its pm:Nameplate and pm:Jagged, one row per layer.
+SELECT n.filing, n.layer, n.facility_label,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_origin, n.amount_origin_absent,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit, n.quantum_absent,
+       n.quantum_origin,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_origin, n.window_absent,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent,
+       n.measurement_basis_contributed, n.measurement_basis_taxonomy, n.measurement_basis_value,
+       n.measurement_basis_absent
+FROM pm.nameplate n
+
+    ) f
+    UNION ALL SELECT filing, layer, 'duty-cycle window',   window_absent         FROM (
+        SELECT * FROM layers.windows
     ) w
-    UNION ALL SELECT filing, layer, 'draw',                draw_absent           FROM pm.nameplate
+    UNION ALL SELECT filing, layer, 'duty-cycle period',   window_size_absent    FROM (
+        SELECT * FROM layers.windows
+    ) w
+    UNION ALL SELECT filing, layer, 'draw',                absent                FROM (
+        SELECT * FROM layers.summed_quantities
+    ) sq WHERE sq.quantity = 'draw'
     UNION ALL SELECT filing, layer || ' / ' || buffer::text, 'buffer slack',      absent    FROM (
-        -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-    ) s
-    UNION ALL SELECT filing, layer || ' / ' || buffer::text, 'who owns the bound', bound_origin_absent FROM (
-        -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
+        SELECT * FROM entries.slacks
     ) s
     UNION ALL SELECT filing, layer || ' / ' || kind::text,   'holder share',      share_absent FROM (
-        -- pm:Remainder/pm:holder; kind is pm:HolderKind.
-SELECT h.filing, h.layer, h.kind,
-       h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
-       h.party, h.as_of
-FROM pm.holder h
-
+        SELECT * FROM entries.holders
     ) h
     UNION ALL SELECT filing, operation || ' / ' || layer, 'operation draw',       absent    FROM (
-        -- pm:Operation/pm:Draw.
-SELECT d.filing, d.operation, d.layer,
-       d.low, d.mode, d.high, d.unit, d.absent
-FROM pm.draw d
-
+        SELECT * FROM entries.draws
     ) d
     UNION ALL SELECT filing, operation || ' / ' || layer, 'operation induction',  absent    FROM (
-        -- pm:Operation/pm:Induction, carrying pm:decidedBy.
-SELECT n.filing, n.operation, n.layer,
-       n.low, n.mode, n.high, n.unit, n.absent, n.decider
-FROM pm.induction n
-
+        SELECT * FROM entries.inductions
     ) i
     UNION ALL SELECT filing, label, 'where the operation is in a notation',
                      foreign_absent::pm.absence_reason FROM (
-        -- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.
--- ⚠️ `foreign_absent` AS TEXT, for `diagrams/searches.sqlc`'s reason: an emitter reads this and
---    a Postgres enum has no built-in mapping on the Rust side. The type still guards the INSERT,
---    which is where a wrong word has to be caught. `epistemics/absences.sqlc` casts it back.
-SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent
-FROM pm.operation o
-
+        SELECT * FROM entries.operations
     ) o
     UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'narrowsWhen',      narrows_absent FROM (
-        -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns, c.layer,
-       c.low, c.mode, c.high, c.unit,
-       c.denominator, c.denominator_kind, c.denominator_absent,
-       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
-       c.low = c.high AS is_a_point,
-       n.condition    AS narrows_condition,
-       n.kind         AS narrows_kind,
-       n.absent       AS narrows_absent,
-       b.origin,
-       b.absent       AS origin_absent
-FROM pm.claim c
-JOIN pm.narrowing    n USING (filing, seq)
-JOIN pm.bound_origin b USING (filing, seq)
-
+        SELECT * FROM epistemics.claims
     ) c
     UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'boundOrigin',      origin_absent  FROM (
-        -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
-SELECT c.filing, c.seq, c.owns, c.layer,
-       c.low, c.mode, c.high, c.unit,
-       c.denominator, c.denominator_kind, c.denominator_absent,
-       c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
-       c.low = c.high AS is_a_point,
-       n.condition    AS narrows_condition,
-       n.kind         AS narrows_kind,
-       n.absent       AS narrows_absent,
-       b.origin,
-       b.absent       AS origin_absent
-FROM pm.claim c
-JOIN pm.narrowing    n USING (filing, seq)
-JOIN pm.bound_origin b USING (filing, seq)
-
+        SELECT * FROM epistemics.claims
     ) c
     UNION ALL SELECT filing, '(the stack)',   'how much of the system',           absent    FROM (
-        -- pm:Stack/pm:scope, with its pm:basis.
-SELECT ss.filing, ss.extent, ss.basis, ss.absent
-FROM pm.stack_scope ss
-
+        SELECT * FROM epistemics.scopes
     ) sc
     UNION ALL SELECT filing, '(the stack)',   'did anybody look for couplings',   answer    FROM (
-        -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
+        SELECT * FROM epistemics.coupling_searches
     ) cs
     UNION ALL SELECT filing, '(the document)', 'its own notation',                absent    FROM (
-        -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
+        SELECT * FROM composition.notations
     ) n
     UNION ALL SELECT composition, composed_layer, 'did anybody look for double counting', answer FROM (
-        -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
-SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
-FROM pm.elimination_search es
-
+        SELECT * FROM eliminations.searched
     ) es
     UNION ALL SELECT composition, composed_layer || ' / ' || quantity, 'eliminated quantity', absent FROM (
-        -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
-FROM pm.elimination e
-
+        SELECT * FROM eliminations.filed
     ) e
+    UNION ALL SELECT filing, layer, 'remainder',                        reason           FROM (
+        SELECT * FROM layers.denied_remainders
+    ) dr
+    UNION ALL SELECT filing, layer, 'patience',                         patience_absent  FROM (
+        SELECT * FROM layers.patience
+    ) pa
+    UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'denominator',         denominator_absent   FROM (
+        SELECT * FROM epistemics.claims
+    ) c
+    UNION ALL SELECT filing, owns || ' claim ' || seq::text, 'provenance standing', prov_standing_absent FROM (
+        SELECT * FROM epistemics.claims
+    ) c
+    UNION ALL SELECT filing, owns || ' absence ' || seq::text, 'provenance standing, on an absence',
+                     prov_standing_absent FROM (
+        SELECT * FROM epistemics.filed_absences
+    ) fa
+    UNION ALL SELECT filing, owns || ' derivation ' || seq::text,
+                     'provenance standing, on a derivation', prov_standing_absent FROM (
+        SELECT * FROM epistemics.filed_derivations
+    ) fd
+    UNION ALL SELECT filing, from_layer || ' -> ' || to_layer, 'coupling strength', strength_absent FROM (
+        SELECT * FROM entries.couplings
+    ) cp
+    UNION ALL SELECT composition, composed_layer || ' / ' || part_filing || ' ' || part_layer,
+                     'part factor', factor_absent FROM (
+        SELECT * FROM composition.part_references
+    ) pr
+    UNION ALL SELECT filing,      'regime ' || id,      'regime framework',      framework_absent FROM (
+        SELECT * FROM composition.regimes
+    ) r
+    UNION ALL SELECT filing,      'regime ' || id,      'regime chart',          chart_absent     FROM (
+        SELECT * FROM composition.regimes
+    ) r
+    UNION ALL SELECT composition, 'part regime ' || id, 'part regime framework', framework_absent FROM (
+        SELECT * FROM composition.composer_regimes
+    ) cr
+    UNION ALL SELECT composition, 'part regime ' || id, 'part regime chart',     chart_absent     FROM (
+        SELECT * FROM composition.composer_regimes
+    ) cr
+    UNION ALL SELECT filing,      '(the document)',     'what it is evidence for', evidence_absent FROM (
+        SELECT * FROM scope.every_filing
+    ) f
+    UNION ALL SELECT filing,      '(the document)',     'assertion standing',    prov_standing_absent FROM (
+        SELECT * FROM scope.every_filing
+    ) f
 ) a
 WHERE reason IS NOT NULL

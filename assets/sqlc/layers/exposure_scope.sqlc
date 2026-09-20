@@ -1,36 +1,37 @@
-# EVERY LAYER WHOSE OWN TWO MEASUREMENTS IMPLY DEMAND THAT COULD HAVE GONE UNSERVED, BESIDE
-# WHETHER ANYBODY CAN SAY WHAT HAPPENED TO IT. One row per exposed layer, in exactly one of
-# three standings.
+# Every layer whose own two measurements imply demand that could have gone unserved, beside
+# whether anybody can say what happened to it. One row per exposed layer, in exactly one of three
+# standings.
 #
-# ⭐⭐⭐ THE THREE BUFFERS ARE SUBSTITUTES, SO THE QUESTION IS ASKED OF THE ROW AND NEVER OF ONE
-#    COLUMN. An excess above the nameplate can be absorbed by running hot, by drawing on stock,
-#    or by making the demand wait. A layer whose capacity buffer is empty has ONE route closed,
-#    which is not the same fact as having nowhere to go, and the two were the same fact here
-#    until this relation existed.
+# The question is asked of the row
+#   The three buffers are substitutes, so the question is asked of the row and never of one
+#   column. An excess above the nameplate can be absorbed by running hot, by drawing on stock, or
+#   by making the demand wait. A layer whose capacity buffer is empty has one route closed, which
+#   is not the same fact as having nowhere to go.
 #
-#      a buffer nobody sized          SUSPENDED. One route is unmeasured, so the ceiling is
-#                                     unknown and no conclusion about it is available. An
-#                                     excess the filer says was absorbed by running hot is
-#                                     not contradicted by an empty stock room.
-#      a buffer with room in it       The exposure had somewhere to go. Nothing is owed.
-#      every buffer sized and empty   Every route accounted for, none with room. The demand
-#                                     above the nameplate had nowhere to go, so somebody
-#                                     went without and somebody has to be named.
+#     a buffer nobody sized          Suspended. One route is unmeasured, so the ceiling is
+#                                    unknown and no conclusion about it is available. An
+#                                    excess the filer says was absorbed by running hot is
+#                                    not contradicted by an empty stock room.
+#     a buffer with room in it       The exposure had somewhere to go. Nothing is owed.
+#     every buffer sized and empty   Every route accounted for, none with room. The demand
+#                                    above the nameplate had nowhere to go, so somebody
+#                                    went without and somebody has to be named.
 #
-# ⛔⛔ ONLY THE THIRD LICENSES A RULE, AND SAYING SO IS THE WHOLE POINT OF CLASSIFYING THE OTHER
-#    TWO RATHER THAN FILTERING THEM AWAY. A suspended layer and a satisfied layer are the same
-#    row to a `WHERE`, and they are opposite facts: one says the filing is fine, the other says
-#    nobody looked. algebra/exposure_standing.sqlc holds the three to a partition so a layer
-#    cannot fall out of all of them and quietly shrink the population.
+# Only the third licenses a rule
+#   Saying so is the whole point of classifying the other two rather than filtering them away. A
+#   suspended layer and a satisfied layer are the same row to a `WHERE`, and they are opposite
+#   facts: one says the filing is fine, the other says nobody looked.
+#   algebra/exposure_standing.sqlc holds the three to a partition so a layer cannot fall out of
+#   all of them and quietly shrink the population.
 #
-# ⛔ THE ORDER OF THE ARMS IS THE PRECEDENCE AND IT IS DELIBERATE. Ignorance outranks room: a
-#   layer with stock to spare AND an unmeasured queue is SUSPENDED, because the spare stock
-#   does not tell you whether the queue held anything.
+# The arm order is the precedence
+#   It is deliberate. Ignorance outranks room: a layer with stock to spare and an unmeasured queue
+#   is suspended, because the spare stock does not tell you whether the queue held anything.
 -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.
 SELECT r.*, a.absorbable, a.unknown,
-       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'
-            WHEN a.absorbable > 0 THEN 'a buffer with room in it'
-            ELSE                       'every buffer sized and empty' END AS standing
+       CASE WHEN a.unknown    > 0 THEN 'a buffer nobody sized'::public.exposure_standing
+            WHEN a.absorbable > 0 THEN 'a buffer with room in it'::public.exposure_standing
+            ELSE                       'every buffer sized and empty'::public.exposure_standing END AS standing
 FROM      (
     :compose(layers/remainder.sqlc)
 ) r

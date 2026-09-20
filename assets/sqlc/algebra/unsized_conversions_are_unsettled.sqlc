@@ -1,0 +1,48 @@
+# Every composed layer whose conversion could not be sized is a layer whose own totals cannot be
+# differenced. One row: the containment, with the size of each side and whatever falls outside.
+#
+# Two predicates, one of them inside the other
+#   `composition/unsized_conversions.sqlc` keeps the parts whose factor is `absent` or names a
+#   derivation. `composition/unsettled.sqlc` keeps those and, in a second arm, the parts whose
+#   stated factor has width. So the first is the second with one arm dropped, and its composed
+#   layers are inside the second's by construction.
+#
+# Which is why it is worth a law and not a sentence
+#   "By construction" is an argument about two files that nothing reads together, and each states
+#   its predicate from scratch without citing the other. Either can grow an arm alone. If the
+#   narrow one did, a fusion would have its sum lifted as unsized while the remainder walk still
+#   treated its totals as differenceable, and the two suspension grounds would disagree about the
+#   same layer with no rule able to see it.
+#
+# A containment, because equality would fire on a correct filing
+#   The second arm is real and populated: a fusion whose factors are all stated but wide is
+#   unsettled and has no unsized conversion at all. `every-unsized-conversion/shift-capacity` is
+#   the layer on the narrow side; `every-nested-conversion/line-batches`, `line-hours`,
+#   `every-unit-cycle/cards` and `merge-holding-composition/compute` are the difference, and they
+#   are what an equality here would accuse.
+#
+# Probe
+#   examples/probes runs it as `unsized_conversions_are_unsettled`.
+-- composition/unsized_conversions.sqlc projected onto its composed layers, inside composition/unsettled.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/unsized_conversions' AS subject,
+           count(*) FILTER (WHERE u.filing IS NULL) = 0 AS holds,
+           format('%s composed layer(s) cannot size a conversion, %s cannot be differenced, %s outside%s',
+                  count(*), (SELECT count(*) FROM ( :compose(composition/unsettled.sqlc) ) t),
+                  count(*) FILTER (WHERE u.filing IS NULL),
+                  coalesce(': ' || string_agg(c.composition || '/' || c.composed_layer, ', '
+                                              ORDER BY c.composition, c.composed_layer)
+                                   FILTER (WHERE u.filing IS NULL), '')) AS detail
+    FROM      (
+        SELECT DISTINCT composition, composed_layer
+        FROM ( :compose(composition/unsized_conversions.sqlc) ) x
+    ) c
+    LEFT JOIN (
+        :compose(composition/unsettled.sqlc)
+    ) u ON u.filing = c.composition AND u.layer = c.composed_layer
+) p ON true
+WHERE a.slug = 'unsized_conversions_are_unsettled'

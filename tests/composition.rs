@@ -43,10 +43,11 @@ use process_modulus::asrt::{
 };
 use process_modulus::pm;
 use process_modulus::pm::{
-    AbsenceReasonType, AbsenceType, ClaimAbsenceReasonType, FitType, HolderKindType, LayerType,
-    ProcessModulusElementType,
-    RemainderType, StatedBorrowedTermType, StatedClaimType, StatedFitType, StatedHolderType,
-    StatedRemainderType,
+    ClaimAbsenceReasonType, ClaimType, FitType, HolderKindType, LayerType,
+    ProcessModulusElementType, RemainderType, StatedBorrowedTermType, StatedClaimType,
+    StatedEliminatedQuantityType, StatedFactorType, StatedFitType, StatedHolderType,
+    StatedMagnitudeType, StatedRemainderType, StatedShareType, StatedSummedQuantityType,
+    StatedTimeSlackType,
 };
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
@@ -124,12 +125,44 @@ fn layer<'a>(doc: &'a ProcessModulusElementType, name: &str) -> &'a LayerType {
         .unwrap_or_else(|| panic!("no layer named `{name}`"))
 }
 
+/// The claim a value wrapper files, where it files one.
+///
+/// The XSD gives every position that may be computed a wrapper of its own, so the generated types
+/// are several of one shape: a claim, a derivation naming what computes it, or a typed absence.
+/// Every reader here wants the first. A computed figure is one this file does not compute, and an
+/// absent one is no figure, so both are `None`.
+trait Filed {
+    fn filed(&self) -> Option<&ClaimType>;
+}
+
+macro_rules! filed {
+    ($($t:ident),*) => {$(
+        impl Filed for $t {
+            fn filed(&self) -> Option<&ClaimType> {
+                match self {
+                    $t::Claim(c) => Some(c),
+                    _ => None,
+                }
+            }
+        }
+    )*};
+}
+
+filed!(
+    StatedClaimType,
+    StatedSummedQuantityType,
+    StatedMagnitudeType,
+    StatedShareType,
+    StatedEliminatedQuantityType
+);
+
 /// The layer's unit, taken from its demand. Every quantity on a layer is in it.
 fn unit(l: &LayerType) -> &str {
-    match &l.demand.amount {
-        StatedClaimType::Claim(c) => c.unit.as_str(),
-        StatedClaimType::Absent(_) => panic!("`{}`: demand is not stated", l.name),
-    }
+    l.demand
+        .amount
+        .filed()
+        .map(|c| c.unit.as_str())
+        .unwrap_or_else(|| panic!("`{}`: demand is not stated", l.name))
 }
 
 fn remainder(l: &LayerType) -> &RemainderType {
@@ -142,6 +175,7 @@ fn remainder(l: &LayerType) -> &RemainderType {
 fn fit(l: &LayerType) -> &FitType {
     match &remainder(l).sign {
         StatedFitType::Fit(f) => f,
+        StatedFitType::Derivation(_) => panic!("`{}`: the fit is computed, not stated", l.name),
         StatedFitType::Absent(_) => panic!("`{}`: the fit is not stated", l.name),
     }
 }
@@ -362,9 +396,22 @@ fn joining_two_filings_on_the_layer_name_produces_a_false_positive() {
 /// property of the supply. The reason is the fact this namespace owns; the note is not.
 fn slack_fact(s: &StatedClaimType) -> String {
     match s {
-        StatedClaimType::Claim(c) => format!("{},{},{},{}", c.low, c.most_likely, c.high, c.unit),
+        StatedClaimType::Claim(c) => claim_fact(c),
         StatedClaimType::Absent(a) => format!("{:?}", a.reason),
     }
+}
+
+/// The time slack's fact, which may also be the identity that computes it.
+fn time_slack_fact(s: &StatedTimeSlackType) -> String {
+    match s {
+        StatedTimeSlackType::Claim(c) => claim_fact(c),
+        StatedTimeSlackType::Derivation(d) => format!("{:?}", d.identity),
+        StatedTimeSlackType::Absent(a) => format!("{:?}", a.reason),
+    }
+}
+
+fn claim_fact(c: &ClaimType) -> String {
+    format!("{},{},{},{}", c.low, c.most_likely, c.high, c.unit)
 }
 
 /// The same fingerprint with the unit dropped from each of the three slack facts.
@@ -387,7 +434,7 @@ fn fingerprint(l: &LayerType) -> String {
     format!(
         "{:?}|{}|{}|{}|{}",
         fit(l),
-        slack_fact(&l.time_slack),
+        time_slack_fact(&l.time_slack),
         slack_fact(&l.supply.nameplate.capacity_slack),
         slack_fact(&l.supply.nameplate.inventory_slack),
         kinds.join(",")
@@ -479,23 +526,27 @@ fn add(a: Triple, b: Triple) -> Triple {
     (a.0 + b.0, a.1 + b.1, a.2 + b.2)
 }
 
-/// ⭐⭐ COMPONENT-WISE, AND IT DOES NOT REVERSE BOUNDS, WHICH IS THE OPPOSITE OF
-/// `magnitude` below. An elimination removes a COMPONENT OF the figure it is taken from,
-/// so the low case of the total already carries the low case of the component. A
-/// remainder subtracts an INDEPENDENT quantity, so there the bounds do reverse.
+/// Component-wise, which is the opposite of `magnitude` below. An elimination removes a
+/// component of the figure it is taken from, so the low case of the total already carries the
+/// low case of the component. A remainder subtracts an independent quantity, so there the
+/// bounds reverse. The exception is a total with no width for the component to move with: point
+/// parts and an elimination of width invert bound by bound, and the crossed pairing is then the
+/// only ordered reading. `src/proofs/README.md`, entry `elimination_componentwise`.
 fn eliminate(total: Triple, removed: Triple) -> Triple {
-    (
+    let bound_by_bound = (
         total.0 - removed.0,
         total.1 - removed.1,
         total.2 - removed.2,
-    )
+    );
+    if bound_by_bound.0 <= bound_by_bound.1 && bound_by_bound.1 <= bound_by_bound.2 {
+        bound_by_bound
+    } else {
+        (total.0 - removed.2, total.1 - removed.1, total.2 - removed.0)
+    }
 }
 
-fn triple(s: &StatedClaimType) -> Option<Triple> {
-    match s {
-        StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high)),
-        StatedClaimType::Absent(_) => None,
-    }
+fn triple(s: &impl Filed) -> Option<Triple> {
+    s.filed().map(|c| (c.low, c.most_likely, c.high))
 }
 
 fn demand(l: &LayerType) -> Triple {
@@ -561,7 +612,7 @@ fn eliminations(f: &FusionType) -> Vec<&EliminationType> {
 }
 
 /// The typed reason a fusion filed no eliminations, if that is what it filed.
-fn elimination_absence(f: &FusionType) -> Option<&AbsenceType> {
+fn elimination_absence(f: &FusionType) -> Option<&pm::AbsenceType> {
     f.eliminations.content.iter().find_map(|e| match e {
         StatedEliminationsTypeContent::Absent(a) => Some(a),
         StatedEliminationsTypeContent::Elimination(_) => None,
@@ -778,7 +829,7 @@ fn a_composed_layer_with_no_fusion_is_one_the_composer_originated() {
 fn convert(t: Triple, p: &PartType) -> Option<Triple> {
     match &p.factor {
         None => Some(t),
-        Some(StatedClaimType::Claim(c)) => {
+        Some(StatedFactorType::Claim(c)) => {
             assert!(
                 c.low > 0.0,
                 "a unit conversion is strictly positive; the component-wise product below \
@@ -786,7 +837,9 @@ fn convert(t: Triple, p: &PartType) -> Option<Triple> {
             );
             Some((t.0 * c.low, t.1 * c.most_likely, t.2 * c.high))
         }
-        Some(StatedClaimType::Absent(_)) => None,
+        // A factor nobody sized, or one filed as the output of an identity nothing here computes,
+        // is not a number, and reading it as one asserts the units agree.
+        Some(StatedFactorType::Derivation(_) | StatedFactorType::Absent(_)) => None,
     }
 }
 
@@ -821,19 +874,25 @@ fn expected(
     // the wrapper it is unavoidable, because an unchecked fusion and a checked-clean one are
     // one shape.
     if let Some(a) = elimination_absence(f) {
-        if a.reason == AbsenceReasonType::Unmeasured {
+        if a.reason == pm::AbsenceReasonType::Unmeasured {
             return None;
         }
     }
 
+    let mut removed = (0.0, 0.0, 0.0);
     for e in eliminations(f).into_iter().filter(|e| e.against == against) {
         match &e.quantity {
-            StatedClaimType::Claim(c) => total = eliminate(total, (c.low, c.most_likely, c.high)),
-            // A zero elimination is `[0, 0, 0]` and eliminates nothing; `none` is gone.
-            StatedClaimType::Absent(_) => return None,
+            StatedEliminatedQuantityType::Claim(c) => {
+                removed = add(removed, (c.low, c.most_likely, c.high))
+            }
+            // A zero elimination is `[0, 0, 0]` and eliminates nothing; `none` is gone. A computed
+            // one is lifted as `eliminations/unsized.sqlc` lifts it: nothing here computes it.
+            StatedEliminatedQuantityType::Derivation(_) | StatedEliminatedQuantityType::Absent(_) => {
+                return None
+            }
         }
     }
-    Some(total)
+    Some(eliminate(total, removed))
 }
 
 /// ⭐⭐⭐ THE RULE `Elimination` IS WHAT MAKES WRITABLE.
@@ -897,8 +956,8 @@ fn an_elimination_nobody_could_size_is_not_a_zero() {
     let reasons: Vec<&ClaimAbsenceReasonType> = eliminations(f)
         .into_iter()
         .filter_map(|e| match &e.quantity {
-            StatedClaimType::Absent(a) => Some(&a.reason),
-            StatedClaimType::Claim(_) => None,
+            StatedEliminatedQuantityType::Absent(a) => Some(&a.reason),
+            _ => None,
         })
         .collect();
     assert!(
@@ -1008,7 +1067,7 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
         (labour, EliminationAgainstType::Nameplate),
         (line, EliminationAgainstType::Demand),
     ] {
-        let StatedClaimType::Claim(c) = &elimination_against(f, a).quantity else {
+        let StatedEliminatedQuantityType::Claim(c) = &elimination_against(f, a).quantity else {
             panic!("a reconciliation that was run and returned zero is a claim, not an absence")
         };
         assert!(
@@ -1274,9 +1333,25 @@ fn an_inherited_coupling_is_weaker_than_the_one_it_came_from() {
     let lower = find(&g.process_modulus, "labour", "shift-line");
     let upper = find(&h.process_modulus, "staff", "shift-line");
 
-    // `labour` is 10 of `staff`'s 12 nameplate.
-    let share = nameplate(layer(&g.process_modulus, "labour")).1
-        / nameplate(layer(&h.process_modulus, "staff")).1;
+    // A's share of X is A's nameplate, converted into X's unit, over X's filed nameplate, read
+    // where it is largest because the ceiling accuses when exceeded: `labour`'s high at its
+    // factor's high over `staff`'s low. Both are points here, so it is 10 of 12.
+    // `assets/sqlc/composition/attenuated.sqlc` reads the same share.
+    let part = fusion(&h, "staff")
+        .part
+        .iter()
+        .find(|p| p.layer.filing.id == "labour")
+        .expect("`staff` takes `labour`");
+    let factor_high = match &part.factor {
+        None => 1.0,
+        Some(StatedFactorType::Claim(c)) => c.high,
+        Some(StatedFactorType::Derivation(_) | StatedFactorType::Absent(_)) => {
+            panic!("a factor with no figure has no share")
+        }
+    };
+    let share = nameplate(layer(&g.process_modulus, "labour")).2 * factor_high
+        / nameplate(layer(&h.process_modulus, "staff")).0;
+    assert!((share - 10.0 / 12.0).abs() < TOLERANCE, "the share is {share}");
     assert!(
         share < 1.0,
         "the fused layer must be strictly larger than the part"
@@ -1326,11 +1401,12 @@ fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
     let (g, h) = (composition(), composed(HOLDING));
 
     let slack = |l: &LayerType| match &l.time_slack {
-        StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high)),
+        StatedTimeSlackType::Claim(c) => Some((c.low, c.most_likely, c.high)),
         // ⛔ AN ABSENT SLACK IS NOT A ZERO ONE. Collapsing them is the defect `Absence`
         // exists to prevent, and it is reachable wherever a zero can be spelled `none`.
-        // `pm:ClaimAbsence` has no `none`, so a zero arrives here as a claim.
-        StatedClaimType::Absent(_) => None,
+        // `pm:ClaimAbsence` has no `none`, so a zero arrives here as a claim. A computed slack
+        // is the clearance, which this bound does not compute.
+        StatedTimeSlackType::Derivation(_) | StatedTimeSlackType::Absent(_) => None,
     };
 
     let parts = [
@@ -1554,7 +1630,7 @@ fn a_converted_remainder_is_converted_and_never_re_derived() {
 
     // What the composer filed.
     let stated = triple(&remainder(composed_layer).quantity)
-        .expect("with the quantum absent this remainder cannot be `derived` and must be stated");
+        .expect("with the quantum absent this remainder cannot be a derivation and must be stated");
 
     // Right: each part's own remainder, converted, plus the demand the elimination removed
     // — capacity that was counted as consumed twice and is therefore spare.
@@ -1567,7 +1643,7 @@ fn a_converted_remainder_is_converted_and_never_re_derived() {
         .into_iter()
         .filter(|e| e.against == EliminationAgainstType::Demand)
     {
-        if let StatedClaimType::Claim(c) = &e.quantity {
+        if let StatedEliminatedQuantityType::Claim(c) = &e.quantity {
             correct = add(correct, (c.low, c.most_likely, c.high));
         }
     }
@@ -1627,7 +1703,7 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
             // set of one the question has no population rather than a zero answer.
             assert_eq!(
                 a.reason,
-                AbsenceReasonType::NotApplicable,
+                pm::AbsenceReasonType::NotApplicable,
                 "{name} `{}`: {} parts and no eliminations",
                 f.name,
                 f.part.len()

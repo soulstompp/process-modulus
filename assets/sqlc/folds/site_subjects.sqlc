@@ -1,0 +1,31 @@
+# Every site arithmetic/roster.sqlc declares or arithmetic/all.sqlc emits, with that site's rows
+# counted by verdict. One row per site.
+#
+# The same fold as the rules'
+#   folds/rule_subjects.sqlc argues it: the roster drives, so a declared site no row names is a row
+#   with every count at zero, and the outer join is full, so a site the population names and the
+#   roster does not is a row with `declared` false.
+#
+# The boxes
+#   `answered` is a row with a verdict, and splits into `computable`, `suspended` and
+#   `not_comparable`, the three values of `public.arithmetic_verdict`, each literal cast by the
+#   parser to that type. `silent` is a row that examined a layer and returned no verdict; `vacuous`
+#   is the roster's own row, emitted when the site has nothing to compute. Each box is counted by
+#   its own predicate, and algebra/subject_boxes.sqlc holds both sums.
+-- arithmetic/roster.sqlc against arithmetic/all.sqlc, one row per site.
+SELECT coalesce(a.site, z.site)                                                AS subject,
+       a.site IS NOT NULL                                                      AS declared,
+       count(z.site)                                                           AS rows,
+       count(z.site) FILTER (WHERE z.verdict IS NOT NULL)                      AS answered,
+       count(z.site) FILTER (WHERE z.verdict = 'computable')                   AS computable,
+       count(z.site) FILTER (WHERE z.verdict = 'suspended')                    AS suspended,
+       count(z.site) FILTER (WHERE z.verdict = 'not comparable')               AS not_comparable,
+       count(z.site) FILTER (WHERE z.verdict IS NULL AND z.filing IS NOT NULL) AS silent,
+       count(z.site) FILTER (WHERE z.verdict IS NULL AND z.filing IS NULL)     AS vacuous
+FROM      (
+    :compose(arithmetic/roster.sqlc)
+) a
+FULL JOIN (
+    :compose(arithmetic/all.sqlc)
+) z ON z.site = a.site
+GROUP BY a.site, z.site

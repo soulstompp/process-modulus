@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §10  What each filed elimination says it is BETWEEN, which is the evidence for the number.\n-- eliminations/filed.sqlc with eliminations/between.sqlc folded per elimination.\nSELECT e.composition                              AS \"composition!\",\n       e.composed_layer                           AS \"composed_layer!\",\n       e.quantity::text                           AS \"quantity!\",\n       -- ⛔ THREE ARMS, NOT TWO. `pm:StatedEliminatedQuantity` admits a figure, a typed absence AND\n       -- a derivation, and reading only the first two returned NULL for the third against a column\n       -- declared NOT NULL. No document could reach it until `every-derived-elimination` filed one,\n       -- so the omission was invisible rather than harmless.\n       coalesce(e.mode::text,\n                '(' || e.absent || ')',\n                '(computed: ' || e.derivation || ')')  AS \"size!\",\n       count(b.seq)                               AS \"named!\",\n       coalesce(string_agg(b.party || '/' || b.layer, ', ' ORDER BY b.seq), '(none named)')\n                                                  AS \"between!\"\nFROM (\n    SELECT * FROM eliminations.filed\n) e\nLEFT JOIN (\n    SELECT * FROM eliminations.between\n) b USING (composition, composed_layer, quantity)\nGROUP BY e.composition, e.composed_layer, e.quantity, e.mode, e.absent, e.derivation\nORDER BY count(b.seq) DESC, 1, 2, 3\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.filed",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.filed",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "size!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "named!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "between!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "51a2350d4dd7be0ac72e06478c8ef4eb8b4a8385948eeb3ed2eb4ef6bc6b4922"
+}

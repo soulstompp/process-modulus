@@ -138,10 +138,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -167,10 +167,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -320,10 +320,10 @@
           </pm:holder>
           <!-- derived: |6 - [6.4, 7.1, 8.2]| = [0.4, 1.1, 2.2] pessoas -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -412,10 +412,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -442,10 +442,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -576,10 +576,10 @@
           </pm:holder>
           <!-- derived: |720 - [430, 545, 690]| = [30, 175, 290] GPU-hour -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -652,10 +652,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -679,10 +679,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -828,10 +828,10 @@
           </pm:holder>
           <!-- derived: |10 - [11, 12.5, 14]| = [1.0, 2.5, 4.0] turnos por semana -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -909,10 +909,10 @@
                 </pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent>
-                  <pm:reason>derived</pm:reason>
+                <pm:derivation>
+                  <pm:identity>amountOrigin</pm:identity>
                   <pm:note>o `Nameplate/amountOrigin` diz quem poderia ter detido um número diferente destas, um elemento ao lado. Registar o mesmo facto duas vezes é como os dois acabam por divergir</pm:note>
-                </pm:absent>
+                </pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -936,10 +936,10 @@
                       </pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent>
-                        <pm:reason>derived</pm:reason>
+                      <pm:derivation>
+                        <pm:identity>quantumOrigin</pm:identity>
                         <pm:note>o `LumpyQuantum/origin` diz quem fixa o tamanho de uma unidade, neste mesmo elemento</pm:note>
-                      </pm:absent>
+                      </pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -969,10 +969,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>o `LumpyQuantum/origin` diz quem fixa esta janela, neste mesmo elemento</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -1075,10 +1075,10 @@
           </pm:holder>
           <!-- derivado: |10 - [6.2, 7.1, 8.0]| = [2.0, 2.9, 3.8] turnos por semana -->
           <pm:quantity>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>magnitude</pm:identity>
               <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>

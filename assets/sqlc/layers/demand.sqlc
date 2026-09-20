@@ -1,26 +1,45 @@
-# d, THE DEMAND VECTOR. One row per (filing, layer) that states a demand as a three-point
-# claim. A layer whose demand is a typed absence has NO ROW HERE, which is the sparse
-# reading: the vector has no entry there rather than an entry of zero.
+# d, the demand vector. One row per (filing, layer) whose demand is a three-point claim, stated or
+# computed.
 #
-# ⭐ THE THREE POINTS ARE NOT AN ERROR BAR. `low` and `high` are the edges somebody owns
-#   and `mode` is the figure they would quote. Every arithmetic downstream carries all
-#   three, because collapsing to the mode is exactly the flattening this model exists to
-#   refuse.
+# A derived demand is read computed
+#   A layer that files its demand `derived` files an output, and composition/derived_quantities.sqlc
+#   computes it through its fusion. So the vector holds that figure, and `d_derived` says it was
+#   computed rather than filed. Every rule reading the demand then examines a layer declared
+#   `derived` exactly as it examines one that states the figure.
 #
-# ⭐⭐ AND THE TWO NARROWING COLUMNS SAY WHAT THE WIDTH IS MADE OF. `instrument` means the
-#    width is IGNORANCE and a better measurement removes it; `intervention` means the width
-#    is VARIATION and only changing the process does. They answer different questions and
-#    a range without them is weaker -- which a receiver is now entitled to say with a
-#    number. See epistemics/widths.sqlc for the census.
--- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
-SELECT l.filing, l.layer,
-       l.demand_low  AS d_low,
-       l.demand_mode AS d_mode,
-       l.demand_high AS d_high,
-       l.demand_unit AS d_unit,
-       l.demand_low = l.demand_high AS is_a_point,
-       l.demand_narrows,
-       l.demand_narrows_kind,
-       l.demand_narrows_absent
-FROM pm.layer l
-WHERE l.demand_low IS NOT NULL
+# One quantity of the resolved figures
+#   composition/resolved_quantities.sqlc is every layer's demand, nameplate and draw, stated or
+#   computed, as two disjoint arms. This vector is its demand, restricted to the rows with a figure,
+#   and the restriction reaches each arm by itself. Reading the two through one outer join with a
+#   filter on the joined side would re-plan every rule above this vector several levels deeper,
+#   past what a plan read back when those statements are checked at compile time can nest.
+#
+# A typed absence has no row
+#   A layer whose demand is a typed absence has no row here, which is the sparse reading: the
+#   vector has no entry there rather than an entry of zero. A derived demand that cannot be
+#   computed is one of them.
+#
+# The three points are not an error bar
+#   `low` and `high` are the edges somebody owns and `mode` is the figure they would quote. Every
+#   arithmetic downstream that compares, sums or subtracts carries all three, because collapsing
+#   to the mode is exactly the flattening this model exists to refuse. A referral that only names
+#   a figure, as eliminations/derived.sqlc does, may read the mode, and says so.
+#
+# What the width is made of is the claim's, not the vector's
+#   `narrowsWhen` says what the width is made of: `instrument` means ignorance a better measurement
+#   removes, `intervention` means variation only changing the process removes. It is required on
+#   every claim and lives with every claim, in epistemics/claims.sqlc, whose `owns` of
+#   `pm:demand/pm:amount` is this demand. epistemics/widths.sqlc is the census.
+-- composition/resolved_quantities.sqlc's pm:Layer/pm:Demand, where it has a figure.
+SELECT q.filing, q.layer,
+       q.low  AS d_low,
+       q.mode AS d_mode,
+       q.high AS d_high,
+       q.unit AS d_unit,
+       q.low = q.high AS is_a_point,
+       q.derived AS d_derived
+FROM (
+    :compose(composition/resolved_quantities.sqlc)
+) q
+WHERE q.quantity = 'demand'
+  AND q.low IS NOT NULL

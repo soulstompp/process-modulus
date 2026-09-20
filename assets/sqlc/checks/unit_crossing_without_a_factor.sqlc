@@ -1,26 +1,28 @@
-# EVERY FUSION PART WHOSE UNIT DIFFERS FROM THE LAYER IT IS COMPOSED INTO, BESIDE WHETHER IT
-# FILES A CONVERSION. One row per crossing, `violates` where no factor is filed at all.
+# Every fusion part whose unit differs from the layer it is composed into, beside whether it
+# files a conversion. One row per crossing, `violates` where no factor is filed at all.
 #
-# ⭐⭐ THE RULE: cross a unit boundary and you must say what converts. `asrt:factor` is
-#    `minOccurs="0"` and stays that way, because a part already quoted in the composed layer's
-#    unit has nothing to convert and a factor of one there would be boilerplate with no author.
-#    The moment the units DIFFER that stops being true: somebody is asserting the two are
-#    interchangeable, and an assertion needs a filer.
+# Crossing a unit boundary needs a conversion
+#   The rule: cross a unit boundary and you must say what converts. `asrt:factor` is
+#   `minOccurs="0"` and stays that way, because a part already quoted in the composed layer's
+#   unit has nothing to convert and a factor of one there would be boilerplate with no author.
+#   The moment the units differ that stops being true: somebody is asserting the two are
+#   interchangeable, and an assertion needs a filer.
 #
-# ⛔⛔⛔ AND WITHOUT THIS RULE THE ASSERTION WAS MADE BY THE QUERY. `composition/converted.sqlc`
-#    reads a missing factor as one. Two parts crossed a unit boundary with no factor at all --
-#    `pessoas` to `people`, and `turnos por semana` to `shifts per week` -- so the SQL asserted
-#    that a Portuguese person and an English person are one unit, on nobody's authority. That
-#    is a judgement this repository has twice refused to make in a query, arriving through the
-#    back door as a `coalesce`.
+# Without this rule the query makes the assertion
+#   `composition/converted.sqlc` reads a missing factor as one. A part crossing from `pessoas` to
+#   `people`, or from `turnos por semana` to `shifts per week`, with no factor at all, makes the
+#   SQL assert that a Portuguese person and an English person are one unit, on nobody's
+#   authority. That is a judgement this repository has twice refused to make in a query,
+#   arriving through the back door as a `coalesce`.
 #
-# ⚠️ AND IT IS NOT AN IDLE JUDGEMENT. If one member counts heads and the other counts full-time
-#    equivalents, the factor is not one and every composed figure above it is wrong by the
-#    difference. Filing [1, 1, 1] with a `boundOrigin` and a provenance says a person checked.
+# Not an idle judgement
+#   If one member counts heads and the other counts full-time equivalents, the factor is not one
+#   and every composed figure above it is wrong by the difference. Filing [1, 1, 1] with a
+#   `boundOrigin` and a provenance says a person checked.
 #
-# ⭐ A TYPED-ABSENT FACTOR SATISFIES THIS RULE and suspends the sum instead, via
-#   `composition/unsized_conversions.sqlc`. "Somebody looked at the crossing and cannot size it"
-#   is an answer; saying nothing is not.
+# A typed-absent factor satisfies this rule
+#   It suspends the sum instead, via `composition/unsized_conversions.sqlc`. "Somebody looked at
+#   the crossing and cannot size it" is an answer; saying nothing is not.
 -- asrt:Part against its composed pm:Layer's unit, per quantity they both file.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -30,24 +32,18 @@ LEFT JOIN (
     SELECT DISTINCT x.filing, x.layer, x.violates, x.detail
     FROM (
         SELECT p.composition AS filing, p.composed_layer AS layer,
-               (p.factor_low IS NULL AND p.factor_absent IS NULL) AS violates,
+               p.factor_state = 'omitted' AS violates,
                format('the part %s/%s is quoted in %s and this layer in %s, and the conversion '
-                      'is %s', p.part_filing, p.part_layer, part.unit, comp.unit,
-                      CASE WHEN p.factor_low IS NOT NULL THEN 'filed'
-                           WHEN p.factor_absent IS NOT NULL
-                           THEN format('filed as `%s`', p.factor_absent)
-                           ELSE 'NOT FILED, so a reader supplies one' END) AS detail
-        FROM      (
-            :compose(composition/parts.sqlc)
+                      'is %s', p.part_filing, p.part_layer, p.part_unit, p.composed_unit,
+                      CASE p.factor_state
+                           WHEN 'stated'     THEN 'filed'
+                           WHEN 'absent'     THEN format('filed as `%s`', p.factor_absent)
+                           WHEN 'derivation' THEN format('filed as the output of `%s`', p.factor_derivation)
+                           WHEN 'omitted'    THEN 'NOT FILED, so a reader supplies one' END) AS detail
+        FROM (
+            :compose(composition/part_quantities.sqlc)
         ) p
-        JOIN      (
-            :compose(layers/quantities.sqlc)
-        ) part ON part.filing = p.part_filing AND part.layer = p.part_layer
-        JOIN      (
-            :compose(layers/quantities.sqlc)
-        ) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
-              AND comp.quantity = part.quantity
-        WHERE part.unit IS DISTINCT FROM comp.unit
+        WHERE p.part_unit IS DISTINCT FROM p.composed_unit
     ) x
 ) p ON true
 WHERE r.slug = 'unit_crossing_without_a_factor'

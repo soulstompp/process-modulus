@@ -1,0 +1,42 @@
+# Every lane a translation draws, and whether any flow node lands in it. One row per
+# (filing, layer) that becomes a lane, carrying the verdict rather than only the occupied ones.
+#
+# The empty lane is the fifth wrong reading
+#   It is the only one a correct drawing produces by being complete. The other four legends answer
+#   a glyph that means something else in BPMN; this one answers the absence of a glyph, so no care
+#   in the emitter can prevent it. A lane drawn empty reads as an idle part of the system, and
+#   `rank/incidence_reach.sqlc` is why it is not: the incidence side of this model is sparse and
+#   the magnitude side is total, so most lanes are correctly empty and every one of them carries a
+#   figure the notation cannot hold.
+#
+# The mechanism is already stated
+#   `diagrams/lane_grain.sqlc` states it and this is the population it implies: *what the engines
+#   do explain is why a lane is empty*, because `pm.slack` holds three rows per layer and every one
+#   renders as `none`. A substitute is not a glyph.
+#
+# The verdict is a column, not a `WHERE`
+#   That is the whole shape of this file. Filtering to the empty ones would make this a set
+#   difference, and `examples/soundness/main.rs` §2 is right to demand a law for one: a difference
+#   drops its own denominator, so a reader cannot see whether a count of empty lanes is most of the
+#   lanes or all of them. Carrying every lane with `occupied` beside it is
+#   `rank/layer_reach.sqlc`'s answer to the same question and `checks/roster.sqlc`'s argument for
+#   `VACUOUS` one directory over: the row exists before the population does.
+#
+# Driven from the dimension
+#   That is the permitted use and not the forbidden one. This is a cover question, which members of
+#   the layer dimension the lane set reaches, so the dimension drives and the population is
+#   `LEFT JOIN`ed, exactly as in `rank/layer_reach.sqlc`. `diagrams/lane_membership.sqlc` reads
+#   `pm.layer` directly and says at length why: that one is a membership test, where the dimension
+#   must not propagate. Same two relations, opposite roles, and `algebra/dimension_use.sqlc` is
+#   what tells them apart.
+-- layers/every_layer.sqlc against diagrams/lane_membership.sqlc; every lane, occupied or not.
+SELECT l.filing,
+       l.layer,
+       count(m.node_kind) > 0 AS occupied
+FROM      (
+    :compose(layers/every_layer.sqlc)
+) l
+LEFT JOIN (
+    :compose(diagrams/lane_membership.sqlc)
+) m ON m.filing = l.filing AND m.layer = l.layer
+GROUP BY l.filing, l.layer

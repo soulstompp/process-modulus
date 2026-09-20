@@ -1,35 +1,38 @@
-# WHAT EVERY RANGE'S WIDTH IS MADE OF. One row per narrowing statement anywhere in a filing,
+# What every range's width is made of. One row per narrowing statement anywhere in a filing,
 # classified into the thing that would actually reduce it.
 #
-# ⭐⭐⭐ THE GRAIN QUESTION, AND IT IS ASKABLE ONLY BECAUSE `narrowsWhen` CARRIES A KIND. How
-#    much of the uncertainty in this corpus is IGNORANCE -- a better instrument reveals the
-#    number that was always there -- and how much is the world actually MOVING, where no
-#    measurement helps and only changing the process does? With no kind to group by, a schema
-#    asserts the first reading everywhere, which is the assumption that makes people buy
-#    instruments for variation problems.
+# Ignorance or variation
+#   The grain question, askable only because `narrowsWhen` carries a kind. How much of the
+#   uncertainty in this corpus is ignorance, where a better instrument reveals the number that was
+#   always there, and how much is the world actually moving, where no measurement helps and only
+#   changing the process does? With no kind to group by, a schema asserts the first reading
+#   everywhere, which is the assumption that makes people buy instruments for variation problems.
 #
-# ⭐⭐ AND `absent/reason = none` IS THE SECOND WAY TO SAY VARIATION. "Somebody looked and
-#    nothing would narrow this" is not missing information; it is a finding, and it belongs
-#    with `intervention` rather than with the rows nobody has considered.
+# `absent/reason = none` is variation too
+#   It is the second way to say variation. "Somebody looked and nothing would narrow this" is not
+#   missing information; it is a finding, and it belongs with `intervention` rather than with the
+#   rows nobody has considered.
 #
-# ⭐⭐⭐ AND `absent/reason = derived` IS A THIRD READING THAT IS NEITHER. The width is not in the
-#    world at all: it is a function of a SIBLING claim's width, so nothing needs measuring and
-#    nothing needs changing, and a receiver holding both already has it. A `booked` share under
-#    a clearance is the nameplate less the demand, so it narrows exactly as far as the demand
-#    does and never one step further.
-#    ⛔ IT WENT UNFILED FOR THE WHOLE OF 0.3.0 AND FIVE CLAIMS SAID IT IN PROSE INSTEAD, typed
-#    `instrument` -- a width made of ignorance that a better instrument reveals -- when no
-#    instrument is involved and nothing is unmeasured. `tests/state_coverage.rs` had the cell
-#    marked incoherent on the ground that there is nothing in a document to derive a narrowing
-#    from; there is, whenever a claim is computed from the claims beside it.
+# A derivation is neither
+#   A third reading. The width is not in the world at all: it is a function of the widths of the
+#   terms an identity computes the claim from, so nothing needs measuring and nothing needs
+#   changing, and a receiver holding the terms already has it. A `booked` share under a clearance
+#   is the nameplate less the demand, so it narrows exactly as far as the demand does and never one
+#   step further, and it names `sharesSum`.
 #
-# ⛔ THE ROWS ARE SCATTERED ACROSS DEMANDS, NAMEPLATES, QUANTA, SLACKS, SHARES, FACTORS AND
-#   COUPLING STRENGTHS, because `narrowsWhen` sits on `Claim` and claims are everywhere.
-#   Gathering them is what makes the question answerable at the level of a document.
+#   Left unfiled, a computed width gets said in prose instead and typed `instrument` (a width made
+#   of ignorance that a better instrument reveals) when no instrument is involved and nothing is
+#   unmeasured.
 #
-# ⭐ AND IT CARRIES THE ELEMENT AND THE MEASURED WIDTH BESIDE THE FILER'S OWN ANSWER,
-#   which is what turns a census into something checkable. `no range to narrow` on the last
-#   line is the FILER saying so; `is_a_point` is the arithmetic. Two rules compare them.
+# The rows are scattered
+#   They sit across demands, nameplates, quanta, slacks, shares, factors and coupling strengths,
+#   because `narrowsWhen` sits on `Claim` and claims are everywhere. Gathering them is what makes the
+#   question answerable at the level of a document.
+#
+# The filer's answer beside the measured width
+#   It carries the element and the measured width beside the filer's own answer, which is what turns
+#   a census into something checkable. `no range to narrow` in the CASE below is the filer saying
+#   so; `is_a_point` is the arithmetic. Two rules compare them.
 -- pm:Claim/pm:narrowsWhen, wherever a claim appears.
 SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
        n.narrows_kind AS kind, n.narrows_absent AS absent, n.narrows_condition AS condition,
@@ -39,8 +42,11 @@ SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
          WHEN n.narrows_kind = 'experiment'      THEN 'unknown, deliberately: an experiment would say'
          WHEN n.narrows_absent = 'none'          THEN 'VARIATION: somebody looked, nothing would narrow it'
          WHEN n.narrows_absent = 'notApplicable' THEN 'no range to narrow (a point value)'
+         WHEN n.narrows_derivation IS NOT NULL
+              THEN format('computed: it narrows as the terms of `%s` do', n.narrows_derivation)
          ELSE 'nobody has said'
-       END AS what_the_width_is_made_of
+       END AS what_the_width_is_made_of,
+       n.narrows_derivation AS derivation
 FROM (
     :compose(epistemics/claims.sqlc)
 ) n

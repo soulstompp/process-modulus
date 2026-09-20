@@ -1,25 +1,47 @@
-# THE FUSIONS THAT OWE A SUM, AGAINST THE ONES THAT DO NOT, CHECKED AS A PARTITION OF ALL OF
-# THEM. One row: whether |fusions| = |owed_equality| + |fusions ⋉ suspended|.
+# The (fusion, quantity) pairs that owe a sum, against the ones that do not, checked as a
+# partition of all of them. One row: whether |fusions × quantities| = |owed_equality| +
+# |(fusions × quantities) ⋉ (suspended ∪ derived)|, where derived is the composed figures filed
+# `derived`.
 #
-# ⭐ THE ONLY DIFFERENCE IN THIS TREE WRITTEN AS `EXCEPT` OVER A SET. composition/fusions.sqlc is
-#   `SELECT DISTINCT` over the bare key, so bag and set semantics coincide and the law is exact.
+# One semijoin, over the union
+#   The two removal sets are unioned first and tested with a single `EXISTS`. Two `EXISTS` joined
+#   by `OR` cannot become a semijoin, so each would run once per (fusion, quantity) pair, and the
+#   suspensions now include a ground that walks the whole derived descent.
+#
+# An `EXCEPT` over a set
+#   composition/fusions.sqlc is `SELECT DISTINCT` over the bare key and the quantities are
+#   distinct, so their product is a set, bag and set semantics coincide, and the law is exact.
 #   Change fusions to carry duplicates and this law fails before the silence does.
--- composition/fusions.sqlc partitioned by composition/suspended_fusions.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+#
+# Probe
+#   examples/probes runs it as `owed_equality`: leave a composed figure filed `derived` owing its
+#   equality, and the law must fail.
+-- composition/fusions.sqlc for every quantity, partitioned by composition/suspended_quantities.sqlc and composition/derived_fusions.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT 'composition/owed_equality' AS subject,
            x.total = x.kept + x.removed AS holds,
-           format('%s fusions = %s owing + %s suspended', x.total, x.kept, x.removed) AS detail
+           format('%s fusion quantities = %s owing + %s suspended or derived', x.total, x.kept,
+                  x.removed)
+               AS detail
     FROM ( SELECT
-             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f)        AS total,
-             (SELECT count(*) FROM ( :compose(composition/owed_equality.sqlc) ) o)  AS kept,
              (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
-               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/suspended_fusions.sqlc) ) s
-                              WHERE s.composition = f.filing AND s.composed_layer = f.layer
-                                AND coalesce(s.quantity, 'demand') = 'demand')) AS removed
+               CROSS JOIN unnest(enum_range(NULL::pm.summed_quantity)) AS q(quantity)) AS total,
+             (SELECT count(*) FROM ( :compose(composition/owed_equality.sqlc) ) o)   AS kept,
+             (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f
+               CROSS JOIN unnest(enum_range(NULL::pm.summed_quantity)) AS q(quantity)
+               WHERE EXISTS (SELECT 1
+                             FROM ( SELECT s.composition AS filing, s.composed_layer AS layer,
+                                           s.quantity
+                                    FROM ( :compose(composition/suspended_quantities.sqlc) ) s
+                                    UNION ALL
+                                    SELECT d.filing, d.layer, d.quantity
+                                    FROM ( :compose(composition/derived_fusions.sqlc) ) d ) b
+                             WHERE b.filing = f.filing AND b.layer = f.layer
+                               AND b.quantity = q.quantity)) AS removed
          ) x
 ) p ON true
 WHERE a.slug = 'owed_equality'

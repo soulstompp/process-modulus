@@ -1,0 +1,35 @@
+# Every lumpy demand that stays inside one tooth, beside whether its residues come back ordered.
+# One row per layer in layers/decomposed.sqlc that does not cross a tooth.
+#
+# What it asserts
+#   Inside one tooth, `d mod q = d - q * floor(d / q)` with the floor fixed, so the residue rises
+#   with the demand and the three residues are ordered like the three demands. Across a tooth there
+#   is no such promise, which is the case layers/decomposed.sqlc names with `crosses_tooth`.
+#   Proof: `src/proofs/README.md`, entry `sawtooth`.
+#
+# Why the tooth and not the order
+#   An ordered triple of residues does not mean the demand stayed in one tooth: `(0.2, 1.5, 2.7)`
+#   with `q = 1` gives `(0.2, 0.5, 0.7)` and crosses two. So the census counts crossings, and this
+#   law holds the one direction that is true.
+#
+# Probe
+#   examples/probes runs it as `sawtooth`.
+#   Compute `crosses_tooth` in layers/decomposed.sqlc from `d_low` and `d_mode` only. A demand
+#   that stays in one tooth to its mode and crosses after it joins this population, and fails.
+-- layers/decomposed.sqlc, restricted to demands inside one tooth.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT x.filing || ' / ' || x.layer AS subject,
+           x.d_low_residue <= x.d_mode_residue AND x.d_mode_residue <= x.d_high_residue AS holds,
+           format('demand [%s, %s, %s] inside tooth %s of %s, residues [%s, %s, %s]',
+                  x.d_low, x.d_mode, x.d_high, x.d_low_tooth, x.q,
+                  x.d_low_residue, x.d_mode_residue, x.d_high_residue) AS detail
+    FROM (
+        :compose(layers/decomposed.sqlc)
+    ) x
+    WHERE NOT x.crosses_tooth
+) p ON true
+WHERE a.slug = 'sawtooth'

@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.\nWITH\ndraws AS NOT MATERIALIZED (\n    -- pm:Operation/pm:Draw.\nSELECT d.filing, d.operation, d.layer,\n       d.low, d.mode, d.high, d.unit, d.absent\nFROM pm.draw d\n\n)\nSELECT d.filing, d.operation, d.layer\nFROM (\n    SELECT * FROM draws\n) d\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "operation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "operation"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.draw",
+            "name": "layer"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "7aecc721133070b9f6560d5bf5f4eac28e6a86807188a1aaa7a0766b3f084067"
+}

@@ -1,41 +1,56 @@
-# WHAT EACH LAYER'S BUFFERS COULD HAVE ABSORBED, AND WHETHER ANYBODY KNOWS. One row per
+# What each layer's buffers could have absorbed, and whether anybody knows. One row per
 # (filing, layer): the total the sized buffers can take, and how many buffers nobody sized.
 #
-# ⭐⭐⭐ THE BUFFER INDEX WAS NEVER PART OF THIS QUESTION'S KEY. `S` is an L x 3 matrix and
-#    the three buffers are SUBSTITUTES: an excess above the nameplate can be absorbed by
-#    running hot, by drawing on stock, or by making the demand wait. So "could this layer
-#    absorb it" is a fact about the LAYER, summed across the row, and a relation that answers
-#    it one buffer at a time is answering a different question.
+# The buffer index is not part of the key
+#   The buffer index was never part of this question's key. `S` is an L x 3 matrix and the three
+#   buffers are substitutes: an excess above the nameplate can be absorbed by running hot, by
+#   drawing on stock, or by making the demand wait. So "could this layer absorb it" is a fact about
+#   the layer, summed across the row, and a relation that answers it one buffer at a time is
+#   answering a different question.
 #
-# ⛔⛔⛔ AND THAT IS WHY THE TYPED ABSENCE IS READ HERE RATHER THAN COALESCED. The four
-#    reasons are not one nullable field, and two of them mean opposite things to this sum:
-#      sized             the buffer holds this much. Add it.
-#      notApplicable     the route does not arise here. It absorbs nothing, and that is KNOWN.
-#      unmeasured        nobody looked. The ceiling is unknown, and a conclusion drawn over it
-#                        would be turning "nobody looked" into "there is no room".
-#      derived           the receiver computes it. Not computed here, so also unknown.
-#    Densifying `unmeasured` into 0 is the exact defect checks/draw_exceeds_the_supply names
-#    in its own comments: it manufactures violations out of a gap.
+# The typed absence is read, not coalesced
+#   That is why the typed absence is read here rather than coalesced. The four reasons are not one
+#   nullable field, and two of them mean opposite things to this sum:
+#     sized             the buffer holds this much. Add it.
+#     notApplicable     the route does not arise here. It absorbs nothing, and that is known.
+#     unmeasured        nobody looked. The ceiling is unknown, and a conclusion drawn over it
+#                       would be turning "nobody looked" into "there is no room".
+#     derived           the receiver computes it. Not computed here, so also unknown.
+#   Densifying `unmeasured` into 0 is the exact defect checks/draw_exceeds_the_supply names in its
+#   own comments: it manufactures violations out of a gap.
 #
-# ⛔ A ZERO IS THE SMALLEST SLACK, NOT THE ABSENCE OF ONE, which is why a zero row carries a
-#   unit and a `boundOrigin` like any other claim and is summed here rather than skipped.
-#   ⭐ Group the zeros by `boundOrigin` and none of the capacity ones was ever MEASURED: they
-#   are `contractual`, a reserved block somebody negotiated, and `intrinsic`, a material limit.
-#   All three origins bind as hard as a counted one, which is why the population downstream
-#   rests on `stated` and not on `measured`. reports/slack_census.sqlc counts them per buffer.
+# A zero is the smallest slack
+#   A zero is the smallest slack, not the absence of one, which is why a zero row carries a unit
+#   and a `boundOrigin` like any other claim and is summed here rather than skipped. Group the
+#   zeros by `boundOrigin` and none of the capacity ones was ever measured: they are
+#   `contractual`, a reserved block somebody negotiated, and `intrinsic`, a material limit. All
+#   three origins bind as hard as a counted one, which is why the population downstream rests on
+#   `stated` and not on `measured`. reports/slack_census.sqlc counts them per buffer.
 #
-# ⛔⛔ `unknown = 0 AND absorbable = 0` IS THE ONLY STATE THAT LICENSES "SOMEBODY WENT
-#    WITHOUT". Every route is accounted for and none of them has room, so demand above the
-#    nameplate had nowhere to go. One route left unmeasured suspends the argument entirely,
-#    however empty the others are: an excess the filer says was absorbed by running hot is
-#    not contradicted by an empty stock room.
--- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row.
+# A slack in another unit is not a figure this sum can read
+#   The three slacks are added across the row, and a sum demands one unit. The excess they absorb
+#   is measured in the demand's unit, so a slack sized in any other is counted as unknown rather
+#   than added: it says how much room there is, in terms the excess is not measured in, and a
+#   layer with no stated demand has no unit to add in at all. checks/slack_unit_mismatch.sqlc
+#   reports the filing.
+#
+# The only state that licenses "somebody went without"
+#   `unknown = 0 AND absorbable = 0` is that state. Every route is accounted for and none of them
+#   has room, so demand above the nameplate had nowhere to go. One route left unmeasured suspends
+#   the argument entirely, however empty the others are: an excess the filer says was absorbed by
+#   running hot is not contradicted by an empty stock room.
+-- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row in the demand's unit.
 SELECT s.filing, s.layer,
        sum(coalesce(s.high, 0))
-         FILTER (WHERE s.sized OR s.absent = 'notApplicable')            AS absorbable,
+         FILTER (WHERE (s.sized AND s.unit IS NOT DISTINCT FROM d.d_unit)
+                    OR s.absent = 'notApplicable')                                 AS absorbable,
        count(*)
-         FILTER (WHERE NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable') AS unknown
-FROM (
+         FILTER (WHERE (NOT s.sized AND s.absent IS DISTINCT FROM 'notApplicable')
+                    OR (s.sized AND s.unit IS DISTINCT FROM d.d_unit))        AS unknown
+FROM      (
     :compose(entries/slacks.sqlc)
 ) s
+LEFT JOIN (
+    :compose(layers/demand.sqlc)
+) d ON d.filing = s.filing AND d.layer = s.layer
 GROUP BY s.filing, s.layer

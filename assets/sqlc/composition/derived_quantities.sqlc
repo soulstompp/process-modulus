@@ -1,0 +1,206 @@
+# Every figure filed as its fusion's sum, computed, or every reason it cannot be. One row per
+# (filing, layer, quantity) whose demand, nameplate or draw is a `fusionSum` derivation: the
+# computed three points, or NULL with `blocked_because` naming each thing that stops the
+# computation.
+#
+#     x_derived = F Φ x_parts − e_x,   with any part that is itself derived computed the same way
+#
+# Flattened, and exact because a chain of conversions collapses
+#   composition/derived_frontier.sqlc walks down to the first node on each path that states the
+#   figure. A path of conversions is one conversion: a positive factor cannot move a sign, so the
+#   corner is the same at every level and the product of the factors is the conversion the whole
+#   path performs. That is what makes the nested sum the flat one: each stated node converted at the
+#   corner its sign picks by the product of the factors above it, less each elimination filed at the
+#   root or at a derived node passed on the way, converted the same way by the product above that
+#   node. Proof: `src/proofs/README.md`, entries `conversion_collapses` and `two_slopes`.
+#   ⛔ That collapse is about A path, and this walk needs THE path. Which it is, is a measurement and
+#   not a property of multiplication: it is the layer graph's cycle space being zero, which
+#   rank/cycle_space.sqlc reports and checks/jagged_layer is the rule for. Two paths to one node give
+#   two products and the arithmetic chooses neither.
+#   Proof: `src/proofs/README.md`, entry `path_product_needs_one_path`.
+#
+# The corner is a no-op here, and that is a fact about the corpus
+#   ⛔ Every part of the only filing that derives a quantity from its fusion's sum omits its
+#   factor, and an omitted factor is one exactly. So every conversion on this walk multiplies by
+#   one, the corner picks the same number either way, and swapping the least for the greatest moves
+#   no row. The form is here because the operator is one operator and not because this corpus
+#   tests it: a derived quantity under a conversion is a state nobody has filed. That is the same
+#   shape of empty intersection composition/conversion_slopes.sqlc reports for a corner that bites,
+#   and it is a gap in the evidence rather than in the arithmetic. algebra/derived_quantities.sqlc checks the flat figure against one
+#   level of the recursion, which shares no code with the walk.
+#
+# Every reason is kept, and none is read as a zero
+#   A computation that cannot finish is not a sum of what it could find. It is blocked where any
+#   node on the walk files the quantity `unmeasured` or `notApplicable` or not at all; where a
+#   derived node is built by no fusion, so nothing derives it; where a conversion on the path is
+#   typed absent, named once by the part and the layer it converts into; where the root or a
+#   derived node it passes never searched for double counting, or found some and could not size
+#   it; where a part of one of them resolves to no filing here; where the walk closes a cycle; and
+#   where an elimination would invert its own level's sum, because the crossed pairing that
+#   answers an inversion needs that level's sum, which a flat walk does not keep. Each is named,
+#   with the layer it happened at, and a node with two reasons gives both. An inversion is laid at a
+#   layer's own elimination only where the sum beneath it is still ordered; where an elimination
+#   further down already inverted it, the layer that did it is named, and the root says only that
+#   it came from below.
+#
+# One fence, for the depth of the plan
+#   `unresolved` is materialised, which changes no row: it sets its plan beside the walk instead of
+#   beneath the list of reasons. This relation is composed at the bottom of the deepest statements
+#   in the tree, every rule and law included, and a plan nested too deep cannot be read back when
+#   those statements are checked at compile time.
+#
+# It does not read eliminations/paired.sqlc
+#   That relation decides its pairing from composition/converted.sqlc, which reads the figures
+#   this relation computes; composing it here would close a cycle. The eliminations are read from
+#   eliminations/filed.sqlc and paired bound by bound, and an inversion blocks rather than guesses.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+WITH
+root AS (
+    SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
+    FROM      ( :compose(layers/summed_quantities.sqlc) ) s
+    LEFT JOIN (
+        :compose(folds/fusion_parts.sqlc)
+    ) b ON b.composition = s.filing AND b.composed_layer = s.layer
+    WHERE s.derivation IS NOT NULL
+),
+node AS (
+    SELECT w.root_filing, w.root_layer, w.quantity, w.filing, w.layer, w.depth,
+           w.factor_low, w.factor_mode, w.factor_high, w.part_of, w.conversion_absent,
+           w.conversion_derivation, w.is_cycle,
+           w.low, w.mode, w.high, w.unit, w.absent, w.derivation, w.is_fusion
+    FROM ( :compose(composition/derived_frontier.sqlc) ) w
+),
+passed AS (
+    SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity, r.filing, r.layer,
+           1::numeric AS factor_low, 1::numeric AS factor_mode, 1::numeric AS factor_high,
+           false AS below
+    FROM root r
+    UNION ALL
+    SELECT n.root_filing, n.root_layer, n.quantity, n.filing, n.layer,
+           n.factor_low, n.factor_mode, n.factor_high, true
+    FROM node n
+    WHERE n.derivation IS NOT NULL AND n.is_fusion AND NOT n.is_cycle
+),
+elimination AS (
+    SELECT p.root_filing, p.root_layer, p.quantity, p.filing, p.layer, p.below,
+           least(   e.low  * p.factor_low, e.low  * p.factor_high) AS e_low,
+           e.mode * p.factor_mode                                  AS e_mode,
+           greatest(e.high * p.factor_low, e.high * p.factor_high) AS e_high,
+           e.absent AS e_absent, e.derivation AS e_derivation,
+           es.answer AS searched
+    FROM      passed p
+    LEFT JOIN ( :compose(eliminations/filed.sqlc) ) e
+           ON e.composition = p.filing AND e.composed_layer = p.layer AND e.quantity = p.quantity
+    LEFT JOIN ( :compose(eliminations/searched.sqlc) ) es
+           ON es.composition = p.filing AND es.composed_layer = p.layer
+),
+unresolved AS MATERIALIZED (
+    SELECT DISTINCT u.composition, u.composed_layer
+    FROM ( :compose(composition/unresolved_parts.sqlc) ) u
+),
+reason AS (
+    SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity,
+           format('no fusion here builds `%s`', r.layer) AS why
+    FROM root r
+    WHERE r.parts = 0
+    UNION ALL
+    SELECT n.root_filing, n.root_layer, n.quantity,
+           CASE WHEN n.is_cycle THEN format('the walk closes a cycle at `%s`', n.layer)
+                WHEN n.low IS NULL AND n.derivation IS NULL
+                     THEN format('`%s` files its %s %s', n.layer, n.quantity,
+                                 coalesce(n.absent::text, 'nowhere'))
+                ELSE format('`%s` files its %s as its fusion''s sum and no fusion builds it',
+                            n.layer, n.quantity) END
+    FROM node n
+    WHERE n.is_cycle
+       OR (n.low IS NULL AND (n.derivation IS NULL OR NOT n.is_fusion))
+    UNION ALL
+    SELECT n.root_filing, n.root_layer, n.quantity,
+           format('the conversion of `%s` into `%s` is %s', n.layer, n.part_of,
+                  coalesce(n.conversion_absent::text,
+                           format('filed as `%s`, and no computation of it is wired in',
+                                  n.conversion_derivation)))
+    FROM node n
+    WHERE n.conversion_absent IS NOT NULL OR n.conversion_derivation IS NOT NULL
+    UNION ALL
+    SELECT e.root_filing, e.root_layer, e.quantity,
+           CASE WHEN e.searched = 'unmeasured'
+                THEN format('`%s` never searched for double counting', e.layer)
+                ELSE format('the %s elimination at `%s` is %s', e.quantity, e.layer,
+                            coalesce(e.e_absent::text,
+                                     format('filed as `%s`, and no computation of it is wired in',
+                                            e.e_derivation))) END
+    FROM elimination e
+    WHERE e.searched = 'unmeasured' OR e.e_absent IS NOT NULL OR e.e_derivation IS NOT NULL
+    UNION ALL
+    SELECT p.root_filing, p.root_layer, p.quantity,
+           format('a part of `%s` resolves to no filing here', p.layer)
+    FROM passed p
+    JOIN unresolved u ON u.composition = p.filing AND u.composed_layer = p.layer
+),
+level AS (
+    SELECT r.filing, r.layer, r.quantity, r.derivation,
+           coalesce(st.x_low, 0)  - coalesce(pb.e_low, 0)  AS s_low,
+           coalesce(st.x_mode, 0) - coalesce(pb.e_mode, 0) AS s_mode,
+           coalesce(st.x_high, 0) - coalesce(pb.e_high, 0) AS s_high,
+           coalesce(er.e_low, 0) AS e_low, coalesce(er.e_mode, 0) AS e_mode,
+           coalesce(er.e_high, 0) AS e_high,
+           st.unit
+    FROM root r
+    LEFT JOIN (
+        SELECT n.root_filing, n.root_layer, n.quantity,
+               sum(least(   n.low  * n.factor_low, n.low  * n.factor_high)) AS x_low,
+               sum(n.mode * n.factor_mode)                                  AS x_mode,
+               sum(greatest(n.high * n.factor_low, n.high * n.factor_high)) AS x_high,
+               CASE WHEN count(DISTINCT n.unit) = 1
+                         AND bool_and(n.factor_low = 1 AND n.factor_high = 1)
+                    THEN min(n.unit) END AS unit
+        FROM node n
+        WHERE n.low IS NOT NULL
+        GROUP BY n.root_filing, n.root_layer, n.quantity
+    ) st ON st.root_filing = r.filing AND st.root_layer = r.layer AND st.quantity = r.quantity
+    LEFT JOIN (
+        SELECT e.root_filing, e.root_layer, e.quantity,
+               sum(e.e_low) AS e_low, sum(e.e_mode) AS e_mode, sum(e.e_high) AS e_high
+        FROM elimination e
+        WHERE e.below
+        GROUP BY e.root_filing, e.root_layer, e.quantity
+    ) pb ON pb.root_filing = r.filing AND pb.root_layer = r.layer AND pb.quantity = r.quantity
+    LEFT JOIN elimination er
+           ON er.root_filing = r.filing AND er.root_layer = r.layer AND er.quantity = r.quantity
+          AND NOT er.below
+),
+inverts AS (
+    SELECT l.filing, l.layer, l.quantity,
+           (l.s_low <= l.s_mode AND l.s_mode <= l.s_high) AS own
+    FROM level l
+    WHERE NOT (l.s_low - l.e_low <= l.s_mode - l.e_mode AND l.s_mode - l.e_mode <= l.s_high - l.e_high)
+),
+blocked AS (
+    SELECT root_filing, root_layer, quantity, why FROM reason
+    UNION ALL
+    SELECT i.filing, i.layer, i.quantity,
+           CASE WHEN i.own
+                THEN format('the %s elimination at `%s` is wider than its sum and inverts it',
+                            i.quantity, i.layer)
+                ELSE format('an elimination below `%s` inverts the %s sum', i.layer, i.quantity) END
+    FROM inverts i
+    UNION ALL
+    SELECT p.root_filing, p.root_layer, p.quantity,
+           format('the %s elimination at `%s` is wider than its sum and inverts it', p.quantity, p.layer)
+    FROM passed p
+    JOIN inverts i ON i.filing = p.filing AND i.layer = p.layer AND i.quantity = p.quantity
+    WHERE p.below
+)
+SELECT l.filing, l.layer, l.quantity, l.derivation,
+       CASE WHEN b.why IS NULL THEN l.s_low  - l.e_low  END AS low,
+       CASE WHEN b.why IS NULL THEN l.s_mode - l.e_mode END AS mode,
+       CASE WHEN b.why IS NULL THEN l.s_high - l.e_high END AS high,
+       CASE WHEN b.why IS NULL THEN l.unit END AS unit,
+       b.why AS blocked_because
+FROM level l
+LEFT JOIN (
+    SELECT root_filing, root_layer, quantity, string_agg(DISTINCT why, '; ' ORDER BY why) AS why
+    FROM blocked
+    GROUP BY root_filing, root_layer, quantity
+) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity

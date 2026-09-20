@@ -7,9 +7,9 @@
   ⭐ IT LIGHTS THE FIVE DARK STATES THE COVERAGE MATRIX FOUND, and the sharpest is the FIRST:
 
     couplings  absent none        somebody looked and the layers ARE independent
-    window     absent none        a supply that runs continuously against a rate unit
+    window     one whole period   a supply that runs continuously against a rate unit
     sign       absent unmeasured  nobody compared demand against the nameplate
-    sign       absent derived     both are stated, so the fit is computable
+    sign       derivation fit     both are stated, so the fit is computable
     boundOrigin absent notApplicable  the claim is not a bound on a committed quantity
 
   ⭐ AND TWO MORE SINCE, both at `notationPosition`, which is where an operation says where it
@@ -17,6 +17,15 @@
 
     notationPosition absent unmeasured     a notation exists and nobody located this operation
     notationPosition absent notApplicable  this filing has no process notation at all
+
+  ⭐ AND FIVE THAT THE SCHEMA ADMITS AND NOTHING HAD FILED, found by building every cell the
+  wrappers admit rather than the ones documents happen to use:
+
+    chart          absent none        somebody looked and the bakery keeps no chart
+    absorber       absent unmeasured  nobody watched which buffer the counter's shortfall took
+    demand         absent unmeasured  nobody counted what waits for the proofer
+    remainder      absent unmeasured  so nobody can say whether the proofer has one
+    measurementBasis absent unmeasured  nobody said what kind of figure the proofer's draw is
 
   ⚠️ `sign` is the one worth reading twice. `StatedFit`'s annotation spends four paragraphs
   defending the wrapper's existence and the CORPUS FILES TWENTY-ONE VALUES AND NOT ONE
@@ -32,6 +41,26 @@
   <pm:evidence>
     <pm:attests>stipulation</pm:attests>
   </pm:evidence>
+
+  <!-- ⭐ A BAKERY THAT KEEPS NO BOOKS. `Regime/chart` reserves `none` for "somebody who looked
+       and found there is no chart", which is a different fact from a chart nobody has named
+       (`unmeasured`) and from a witness with no accounts to ask about (`notApplicable`). -->
+  <pm:regime>
+    <pm:id>till-roll</pm:id>
+    <pm:framework>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>stipulated: the bakery reports under no framework; its only record is the till roll</pm:note>
+      </pm:absent>
+    </pm:framework>
+    <pm:chart>
+      <pm:absent>
+        <pm:reason>none</pm:reason>
+        <pm:note>stipulated: somebody looked, and there is no chart of accounts at all, published
+                 or kept</pm:note>
+      </pm:absent>
+    </pm:chart>
+  </pm:regime>
 
   <pm:stack>
     <pm:scope>
@@ -81,13 +110,13 @@
       </pm:demand>
 
       <pm:timeSlack>
-        <pm:absent>
-          <pm:reason>derived</pm:reason>
+        <pm:derivation>
+          <pm:identity>clearance</pm:identity>
           <pm:note>stipulated: the line runs continuously and the window says so, so the
                    spare IS spread evenly across the denominator and the clearance
                    converts. This is the ONLY combination that licenses a derived time
                    slack, and it is here to prove the rule has a passing side</pm:note>
-        </pm:absent>
+        </pm:derivation>
       </pm:timeSlack>
 
       <pm:supply>
@@ -107,8 +136,8 @@
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent><pm:reason>derived</pm:reason>
-                  <pm:note>amountOrigin below states who could hold a different number</pm:note></pm:absent>
+                <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                  <pm:note>amountOrigin below states who could hold a different number</pm:note></pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -129,8 +158,8 @@
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason>
-                        <pm:note>the origin below states who sets the tray size</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                        <pm:note>the origin below states who sets the tray size</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -139,7 +168,7 @@
               <!-- ⭐⭐ THE STATE `assets/corpus/` CANNOT REACH. Its units are almost all
                    stocks, and of the three with a denominator two have an unmeasured duty
                    cycle and one is the shared line. A supply that genuinely runs continuously
-                   against a RATE unit is the `none` case, and it is here. -->
+                   against a RATE unit files one whole period, and it is here. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -153,7 +182,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -201,16 +230,16 @@
 
       <pm:remainder>
         <pm:remainder>
-          <!-- ⭐⭐ `derived`, WHICH THE CORPUS NEVER FILES. Demand and nameplate are both
+          <!-- ⭐⭐ A `fit` DERIVATION, WHICH THE CORPUS NEVER FILES. Demand and nameplate are both
                stated, so the fit is computable and sending a value here could disagree with
                its own inputs. `StatedFit`'s annotation makes exactly this argument and had
                nothing exercising it. -->
           <pm:sign>
-            <pm:absent>
-              <pm:reason>derived</pm:reason>
+            <pm:derivation>
+              <pm:identity>fit</pm:identity>
               <pm:note>demand and nameplate are both stated, so the receiver computes the fit
                        rather than reading a value that could contradict them</pm:note>
-            </pm:absent>
+            </pm:derivation>
           </pm:sign>
           <pm:absorber>
             <pm:term>
@@ -228,8 +257,8 @@
             </pm:holder>
           </pm:holder>
           <pm:quantity>
-            <pm:absent><pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            <pm:derivation><pm:identity>magnitude</pm:identity>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -345,11 +374,14 @@
                        above or below and the comparison has no second operand</pm:note>
             </pm:absent>
           </pm:sign>
+          <!-- ⭐ `unmeasured`: the shortfall is real and somebody bore it, and nobody watched
+               which buffer took it. Not `none`, which says no buffer did. -->
           <pm:absorber>
-            <pm:term>
-              <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
-              <pm:value>time</pm:value>
-            </pm:term>
+            <pm:absent>
+              <pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: nobody has watched whether a slow counter queues its customers
+                       or loses them</pm:note>
+            </pm:absent>
           </pm:absorber>
           <pm:holder>
             <pm:holder>
@@ -423,8 +455,8 @@
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent><pm:reason>derived</pm:reason>
-                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                  <pm:note>amountOrigin below states it</pm:note></pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -444,8 +476,8 @@
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason>
-                        <pm:note>the origin below states it</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                        <pm:note>the origin below states it</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -464,7 +496,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -527,8 +559,8 @@
             </pm:holder>
           </pm:holder>
           <pm:quantity>
-            <pm:absent><pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            <pm:derivation><pm:identity>magnitude</pm:identity>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -538,7 +570,7 @@
          DELIVERY. One layer whose RATING nobody has measured, which is
          the only honest home for `sign absent unmeasured`: with the
          nameplate absent the fit cannot be derived, and nobody compared.
-         ⚠️ Where both figures ARE stated the honest filing is `derived`,
+         ⚠️ Where both figures ARE stated the honest filing is a `fit` derivation,
          not `unmeasured` — a receiver can compute it, so claiming nobody
          knows would be false. That is why this needs its own layer.
          ============================================================ -->
@@ -725,8 +757,8 @@
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent><pm:reason>derived</pm:reason>
-                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                  <pm:note>amountOrigin below states it</pm:note></pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -746,8 +778,8 @@
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason>
-                        <pm:note>the origin below states it</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                        <pm:note>the origin below states it</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -766,7 +798,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -825,8 +857,8 @@
             </pm:holder>
           </pm:holder>
           <pm:quantity>
-            <pm:absent><pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            <pm:derivation><pm:identity>magnitude</pm:identity>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -875,8 +907,8 @@
                   <pm:note>there is no range here to tighten</pm:note></pm:absent>
               </pm:narrowsWhen>
               <pm:boundOrigin>
-                <pm:absent><pm:reason>derived</pm:reason>
-                  <pm:note>amountOrigin below states it</pm:note></pm:absent>
+                <pm:derivation><pm:identity>amountOrigin</pm:identity>
+                  <pm:note>amountOrigin below states it</pm:note></pm:derivation>
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
@@ -896,8 +928,8 @@
                         <pm:note>there is no range here to tighten</pm:note></pm:absent>
                     </pm:narrowsWhen>
                     <pm:boundOrigin>
-                      <pm:absent><pm:reason>derived</pm:reason>
-                        <pm:note>the origin below states it</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>quantumOrigin</pm:identity>
+                        <pm:note>the origin below states it</pm:note></pm:derivation>
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
@@ -916,7 +948,7 @@
                         <pm:absent><pm:reason>notApplicable</pm:reason><pm:note>there is no range here to tighten</pm:note></pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent><pm:reason>derived</pm:reason><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:absent>
+                        <pm:derivation><pm:identity>quantumOrigin</pm:identity><pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note></pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -975,8 +1007,8 @@
             </pm:holder>
           </pm:holder>
           <pm:quantity>
-            <pm:absent><pm:reason>derived</pm:reason>
-              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent>
+            <pm:derivation><pm:identity>magnitude</pm:identity>
+              <pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -990,6 +1022,89 @@
          about any business.
          ⚠️ `Absence/note` says HOW it was established, because `none` without that is a
          bolder silence than the blank it replaced. -->
+    <!-- ============================================================
+         A PROOFER NOBODY HAS COUNTED FOR. Its rating is known and what
+         waits for it is not, so there is no remainder anybody can take.
+         ============================================================ -->
+    <pm:layer>
+      <pm:name>proofer</pm:name>
+
+      <pm:demand>
+        <pm:amount>
+          <pm:absent>
+            <pm:reason>unmeasured</pm:reason>
+            <pm:note>stipulated: nobody has counted the trays waiting for the proofer</pm:note>
+          </pm:absent>
+        </pm:amount>
+        <pm:patience>
+          <pm:absent><pm:reason>unmeasured</pm:reason></pm:absent>
+        </pm:patience>
+      </pm:demand>
+
+      <pm:timeSlack>
+        <pm:absent><pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated</pm:note></pm:absent>
+      </pm:timeSlack>
+
+      <pm:supply>
+        <pm:label>the proofer</pm:label>
+        <pm:nameplate>
+          <pm:amount>
+            <pm:claim>
+              <pm:low>40</pm:low><pm:mostLikely>40</pm:mostLikely><pm:high>40</pm:high>
+              <pm:unit>trays per shift</pm:unit>
+              <pm:denominator>
+                <pm:period>shift</pm:period>
+              </pm:denominator>
+              <pm:narrowsWhen>
+                <pm:absent><pm:reason>notApplicable</pm:reason>
+                  <pm:note>there is no range here to tighten</pm:note></pm:absent>
+              </pm:narrowsWhen>
+              <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
+            </pm:claim>
+          </pm:amount>
+          <pm:amountOrigin><pm:origin>intrinsic</pm:origin></pm:amountOrigin>
+          <pm:divisibility>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:divisibility>
+          <pm:capacitySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:capacitySlack>
+          <pm:inventorySlack>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:inventorySlack>
+        </pm:nameplate>
+        <pm:jagged>
+          <pm:draw>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated</pm:note></pm:absent>
+          </pm:draw>
+          <!-- ⭐ `unmeasured`, not `notApplicable`: there is a figure to have a basis, and
+               nobody has said whether it is a count, a cost or a charge. -->
+          <pm:measurementBasis>
+            <pm:absent><pm:reason>unmeasured</pm:reason>
+              <pm:note>stipulated: the proofer's throughput is quoted from a supplier sheet that
+                       does not say what kind of figure it is</pm:note></pm:absent>
+          </pm:measurementBasis>
+        </pm:jagged>
+      </pm:supply>
+
+      <!-- ⭐ `StatedRemainder` as `unmeasured`, the state its annotation calls "the honest and
+           commonest answer on a labour layer": with the demand uncounted there is nothing to
+           difference, and whether the proofer has a remainder is a question nobody can answer
+           yet. -->
+      <pm:remainder>
+        <pm:absent>
+          <pm:reason>unmeasured</pm:reason>
+          <pm:note>stipulated: the demand is uncounted, so nobody has looked at whether the proofer
+                   runs short or idle</pm:note>
+        </pm:absent>
+      </pm:remainder>
+    </pm:layer>
+
     <pm:couplings>
       <pm:absent>
         <pm:reason>none</pm:reason>

@@ -1,23 +1,28 @@
--- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
-SELECT n.filing, n.layer,
-       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit,
-       n.amount_low  AS n_low,
-       n.amount_mode AS n_mode,
-       n.amount_high AS n_high,
-       n.amount_unit AS n_unit,
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+SELECT dr.filing, dr.layer,
+       dr.low  AS draw_low,
+       dr.mode AS draw_mode,
+       dr.high AS draw_high,
+       dr.unit AS draw_unit,
+       n.low   AS n_low,
+       n.mode  AS n_mode,
+       n.high  AS n_high,
+       n.unit  AS n_unit,
        s.low    AS capacity_low,
        s.mode   AS capacity_slack,
        s.high   AS capacity_high,
+       s.unit   AS capacity_unit,
        s.absent AS capacity_absent
-FROM pm.nameplate n
+FROM      (
+    SELECT q.filing, q.layer, q.low, q.mode, q.high, q.unit
+    FROM ( SELECT * FROM composition.resolved_quantities ) q
+    WHERE q.quantity = 'draw'
+      AND q.low IS NOT NULL
+) dr
+JOIN      (
+    SELECT n.filing, n.layer, n.n_low AS low, n.n_mode AS mode, n.n_high AS high, n.n_unit AS unit
+    FROM ( SELECT * FROM layers.nameplate ) n
+) n ON n.filing = dr.filing AND n.layer = dr.layer
 LEFT JOIN (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
-) s ON s.filing = n.filing AND s.layer = n.layer AND s.buffer = 'capacity'
-WHERE n.draw_mode   IS NOT NULL
-  AND n.amount_mode IS NOT NULL
+    SELECT * FROM entries.slacks
+) s ON s.filing = dr.filing AND s.layer = dr.layer AND s.buffer = 'capacity'

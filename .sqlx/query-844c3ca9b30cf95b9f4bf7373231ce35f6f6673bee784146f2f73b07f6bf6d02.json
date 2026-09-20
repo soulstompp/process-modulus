@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §2  How often a claim says where it came from.\n-- epistemics/standing.sqlc, folded to its three verdicts.\nSELECT s.what_the_claim_says AS \"says!\", count(*) AS \"claims!\"\nFROM (\n    -- pm:Claim/pm:provenance, with pm:StatedBorrowedTerm at pm:standing.\nSELECT c.filing, c.seq, c.owns, c.layer,\n       c.prov_party AS party,\n       c.prov_standing_taxonomy AS taxonomy,\n       c.prov_standing_value    AS standing,\n       c.prov_standing_absent   AS standing_absent,\n       CASE WHEN c.prov_standing_value  IS NOT NULL THEN 'claimed'\n            WHEN c.prov_standing_absent IS NOT NULL THEN 'asked and refused'\n            ELSE 'no provenance filed' END AS what_the_claim_says\nFROM      (\n    SELECT * FROM epistemics.claims\n) c\n\n) s\nGROUP BY s.what_the_claim_says\nORDER BY count(*) DESC\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "says!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "claims!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "844c3ca9b30cf95b9f4bf7373231ce35f6f6673bee784146f2f73b07f6bf6d02"
+}

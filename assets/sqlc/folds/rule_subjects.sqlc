@@ -1,0 +1,52 @@
+# Every rule checks/roster.sqlc declares or checks/all.sqlc emits, with that rule's rows counted by
+# verdict. One row per rule.
+#
+# The rows into their rule, and into their verdict
+#   checks/all.sqlc is a bag of rows, each naming a rule and carrying a verdict: a function from
+#   rows to rules, and under it a function from rows to verdicts. Counting the rows per rule and per
+#   verdict is the fibre-size reading of both, the rows as balls and the roster's rules as named
+#   boxes, which is why the roster drives: a declared rule no row names is a row here with every
+#   count at zero, where a `GROUP BY` over checks/all.sqlc alone would have no row for it at all.
+#   The outer join is full, so a ball outside the declared boxes is kept too: a rule a check names
+#   and the roster does not is a row here with `declared` false.
+#
+# The boxes partition the rows
+#   `answered` is a row with a verdict, and splits into `violated` and `passed`. `silent` is a row
+#   that examined a filing and returned no verdict, which the check contract forbids. `vacuous` is
+#   the roster's own row, the one a check emits when its population is empty, so a rule with
+#   nothing to examine still says so. Every row is answered, silent or vacuous, and every answered
+#   row violated or passed, each box counted by its own predicate; algebra/subject_boxes.sqlc holds
+#   both sums, and holds the sum of `rows` against checks/all.sqlc counted directly.
+#
+# The three regions are the grouping key
+#   The rows are grouped on both sides' keys, not on one key read from either side. A rule both
+#   sides name is one group; a rule only the roster names, or only a check, is a group with the
+#   other side NULL. So the outer join's three kinds of row are the three shapes of the key, and a
+#   join condition that stopped matching splits every rule into a declared rule with no rows and an
+#   undeclared one with all of them, where merging on one key would put them back together and
+#   hide it.
+#
+# The roster is taken as it is written
+#   checks/roster.sqlc is keyed on the rule, and a second row naming one would double that rule's
+#   counts here. Deduplicating it would hide exactly that, so it is joined as it stands and the sum
+#   against checks/all.sqlc is what disagrees.
+#
+# One reading among several
+#   folds/contract_subjects.sqlc unites this with the other six contracts, and says what each of
+#   its readers asks of the same counts.
+-- checks/roster.sqlc against checks/all.sqlc, one row per rule.
+SELECT coalesce(r.rule, c.rule)                                                 AS subject,
+       r.rule IS NOT NULL                                                       AS declared,
+       count(c.rule)                                                            AS rows,
+       count(c.rule) FILTER (WHERE c.violates IS NOT NULL)                      AS answered,
+       count(c.rule) FILTER (WHERE c.violates)                                  AS violated,
+       count(c.rule) FILTER (WHERE NOT c.violates)                              AS passed,
+       count(c.rule) FILTER (WHERE c.violates IS NULL AND c.filing IS NOT NULL) AS silent,
+       count(c.rule) FILTER (WHERE c.violates IS NULL AND c.filing IS NULL)     AS vacuous
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+FULL JOIN (
+    :compose(checks/all.sqlc)
+) c ON c.rule = r.rule
+GROUP BY r.rule, c.rule

@@ -166,13 +166,16 @@ fn lane(
     writeln!(x, "{p}</lane>")
 }
 
+#[path = "../shared/database/mod.rs"]
+mod database;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL").map_err(|_| {
         "DATABASE_URL is unset. This example translates the loaded corpus and cannot do that \
          without the rows."
     })?;
-    let pool = sqlx::postgres::PgPool::connect(&url).await?;
+    let pool = database::connect(&url).await?;
 
     // ------------------------------------------------------------------
     // The model. Every relation here is composed; none is spelled inline.
@@ -238,7 +241,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //   same reference shape as a part. ⛔ Only the RESOLVED ones can be emitted: a QName needs a
     //   prefix and a prefix needs an import, so a `between` naming a document nobody filed is
     //   unreferenceable here, and the schema calls that filing ORDINARY.
-    let attributions = ordered(sqlx::query_file!("assets/sql/eliminations/resolved.sql").fetch_all(&pool).await?);
+    let attributions = ordered(sqlx::query_file!("assets/sql/diagrams/attributions.sql").fetch_all(&pool).await?);
     let induction_count: i64 = sqlx::query_scalar("SELECT count(*) FROM pm.induction")
         .fetch_one(&pool).await?;
     let draw_count: i64 = sqlx::query_scalar("SELECT count(*) FROM pm.draw").fetch_one(&pool).await?;
@@ -267,12 +270,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let governance = ordered(sqlx::query_file!("assets/sql/diagrams/ungoverned.sql").fetch_all(&pool).await?);
 
     // notation -> filing, which is what an `import` resolves.
-    // ⭐ Every column read here is NOT NULL in `assets/ddl/schema.ddl`, so sqlx types them
-    //   `String` rather than `Option<String>`. That is the DDL's typed-absence discipline paying
-    //   out in a second language: a nullable column would arrive as an `Option` and force this
-    //   program to say what it meant by the absence.
-    let by_notation: BTreeMap<&str, &str> =
-        notations.iter().map(|n| (n.notation.as_str(), n.filing.as_str())).collect();
+    // ⭐ The notation is nullable in `assets/ddl/schema.ddl`, because a filing may decline to name
+    //   itself and say why, so sqlx types it `Option<String>`. That is the DDL's typed-absence
+    //   discipline paying out in a second language: this program has to say what it means by the
+    //   absence, and what it means is that a filing with no notation is nothing an `import` can
+    //   name, so it has no entry here.
+    let by_notation: BTreeMap<&str, &str> = notations
+        .iter()
+        .filter_map(|n| Some((n.notation.as_deref()?, n.filing.as_str())))
+        .collect();
     let notation_of: BTreeMap<&str, &str> =
         by_notation.iter().map(|(n, f)| (*f, *n)).collect();
 
@@ -545,8 +551,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //
         // ⛔ A NOTE IS OWED WHEREVER THE NOTATION'S DEFAULT READING IS WRONG, and nowhere else. A
         //   pool reads as *the system*, an absent line reads as INDEPENDENCE, a dotted arrow reads
-        //   as FLOW, a dashed box reads as a CONTAINER. Four wrong readings, four notes, and a
-        //   legend for a glyph the page does not carry is noise.
+        //   as FLOW, a dashed box reads as a CONTAINER, and an empty lane reads as an IDLE part of
+        //   it. A legend for a glyph the page does not carry is noise.
+        //
+        // ⭐ THE FIFTH IS THE ONE A CORRECT DRAWING PRODUCES BY BEING COMPLETE. The other four
+        //   come from a glyph meaning something else here; that one comes from there being no
+        //   glyph, so the emitter cannot prevent it and can only say what it means.
         for l in legends.iter().filter(|l| l.filing.as_deref() == Some(filing)) {
             let body = match l.note.as_deref().unwrap_or("") {
                 "scope" => format!(
@@ -562,6 +572,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                  not a supply edge, and never evidence for a fusion.".to_string(),
                 "cover" => "A DASHED BOX is a COVER, not a container: an operation may be in \
                             several and is in exactly one lane.".to_string(),
+                "lane" => "AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every \
+                           layer here carries a magnitude and BPMN has no glyph for one.".to_string(),
                 other => format!("{other}"),
             };
             // ⛔ THE ONE PLACE THE POINTER IS READ OFF THE ROW RATHER THAN THE KIND. A legend is
@@ -629,7 +641,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //    carries no x or y for anything; DERIVING one into an artifact is what both stages do
         //    for every box here. So the derivation belongs upstream of the document that carries
         //    it, and the same numbers reach both stages instead of one recomputing them from the
-        //    other's output. Nothing new is filed. docs/plans/FINDINGS-2026-09-10 finding 2.
+        //    other's output. Nothing new is filed.
         //
         // ⚠️ THE MATH IS `rendering.rs`'s OWN, ON PURPOSE, so the picture does not move: a cover
         //   is the bounding box of its members inflated by 6, a dependence runs out of the source
@@ -728,12 +740,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //    defect takes here: the emitter knew the constraint and wrote it down.
         // ⛔ NOTHING IN THIS REPOSITORY COULD SEE IT. `roster.sqlc` counts elements and this
         //    changes no count; the read-back laws below find the elements wherever they sit;
-        //    `xmllint` is never run on the output. It took a BPMN 2.0 reader in another
-        //    checkout, deserializing against the OMG schemas, and the four documents it refused
-        //    are exactly the four that emit a `relationship`.
-        // ⚠️ Those four are also the only four carrying a `callActivity`, so no cross-document
-        //    call in this corpus had ever reached that reader's semantic checks: it stopped at
-        //    the ordering error and never ran them. docs/plans/FINDINGS-2026-09-10.
+        //    `xmllint` is never run on the output. Deserialized against the OMG schemas, the four
+        //    documents refused are exactly the four that emit a `relationship`.
+        // ⚠️ Those four are also the only four carrying a `callActivity`, so a validating
+        //    processor that stops at the ordering error never reaches a cross-document call.
         // ⭐⭐⭐ `F`, AT LAYER GRAIN, AS A REFERENCE RATHER THAN AS A NAME. `tDefinitions` puts
         //    `relationship` LAST, after the root elements and the diagrams, which is where a
         //    fact about the document rather than about its contents belongs. ⛔ It is not a
@@ -938,9 +948,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // ⛔⛔⛔ THE ATTRIBUTION LAW, AND IT IS NOT A COUNT BECAUSE IT CANNOT BE ONE. Every law above
     //    asks HOW MANY of an element the artifact carries, and a sentence is not that kind of
-    //    fact: fifteen documents can carry fifteen correctly counted `documentation` elements and
-    //    each of them say something no relation states, with the count exact the whole way. The
-    //    only question worth asking of prose in an artifact is WHAT STATES IT.
+    //    fact: every document can carry exactly the right number of `documentation` elements and
+    //    each of them say something no relation states, with the count exact the whole way. ⛔ The
+    //    count is exact for any corpus size, which is what makes it the wrong instrument. The only
+    //    question worth asking of prose in an artifact is WHAT STATES IT.
     //
     // ⭐⭐⭐ THREE OBLIGATIONS, AND THE THIRD IS THE ONE WITH TEETH. A pointer must be THERE, it
     //    must RESOLVE to a relation in this tree, and it must name a relation THIS PROGRAM
@@ -1078,7 +1089,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //    staleness needed: a position is not assertable from inside the thing being positioned,
     //    but the RESULT is readable off the artifact. Every `relationship` must open after the
     //    diagram closes. ⚠️ It cannot stand in for a schema processor and is not meant to; it
-    //    holds the one ordering this emitter has been wrong about. docs/plans/FINDINGS-2026-09-10.
+    //    holds the one ordering this emitter has been wrong about.
     // ------------------------------------------------------------------
     let mut misordered = Vec::new();
     let mut ordered_checked = 0usize;
@@ -1381,11 +1392,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // ⛔⛔⛔ THE SCOPE EACH DOCUMENT STATES, AGAINST THE SCOPE ITS FILING CLAIMS. THE COUNT ABOVE
     //    CANNOT DO THIS AND NEITHER CAN ANY OTHER LAW IN THIS FILE. An emitter writing *a
-    //    partition of layers claimed exhaustive* into all 15 documents from a string literal
-    //    says it of 14 that decline to, because the corpus holds 1 `complete`, 9 `scoped` and 5
-    //    `unbounded`. Fifteen scope sentences reach fifteen documents either way, so
-    //    `|scopes| = |filing|` is 15 = 15 and true
-    //    throughout.
+    //    partition of layers claimed exhaustive* into every document from a string literal says
+    //    it of every document but the handful that claim `complete`, and the rest of the corpus
+    //    files `scoped` or `unbounded` instead. ⛔ One scope sentence reaches one document either
+    //    way, so `|scopes| = |filing|` is an equality that stays TRUE whichever word is in the
+    //    sentence, however the corpus grows. The census below prints the split; do not write it
+    //    down here, because the point survives the numbers and the numbers do not.
     //
     // ⭐⭐ THE THIRD TIME ATTRIBUTION HAS BEEN THE REPAIR AND A BIGGER COUNT HAS NOT.
     //    `diagrams/ungoverned.sqlc` for a table declared and never rendered, the per-kind law in

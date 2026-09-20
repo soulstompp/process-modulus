@@ -1,0 +1,19 @@
+# Every column in schema `pm` whose type is `identity`. One row per column: its table and its name,
+# as Postgres records them.
+#
+# The outside set, as for the absences
+#   epistemics/absence_columns.sqlc makes the argument: `information_schema` is written by Postgres
+#   from schema.ddl, so a column added there arrives here with nobody restating it, and a census
+#   that claims every derivation is a claim about a set it cannot see from the inside.
+#
+# One column is not a position
+#   `derivation.identity` is every derivation at once, read from the elements. It is the census's
+#   second route, held against the first by algebra/derivations_filed.sqlc.
+-- information_schema.columns, restricted to schema pm and type pm.identity.
+SELECT c.table_name::text  AS table_name,
+       c.column_name::text AS column_name
+FROM information_schema.columns c
+WHERE c.table_schema = 'pm'
+  AND c.udt_schema   = 'pm'
+  AND c.udt_name     = 'identity'
+  AND (c.table_name, c.column_name) <> ('derivation', 'identity')

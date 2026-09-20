@@ -41,7 +41,7 @@
            xmlns:pm="https://example.invalid/process-flow/1.0"
            targetNamespace="https://example.invalid/assertion/1.0"
            elementFormDefault="qualified"
-           version="0.3.0">
+           version="0.0.1">
 
   <xs:import namespace="https://example.invalid/process-flow/1.0"
              schemaLocation="process-modulus.xsd"/>
@@ -591,7 +591,7 @@
       for the same reason they are there: one witness may answer under a framework coded by
       two authorities that do not line up.
 
-      ⚠️ `regime` is optional, and its absence is a real state rather than an oversight. A
+      ⚠️ `regime` is optional, and its absence is a real state. A
       witness that is not an accounting model — a register census, a spreadsheet-formula
       checker — reports under no framework and must not be made to invent one.
 
@@ -630,7 +630,7 @@
       mesma razão que o são lá: uma testemunha pode responder sob um referencial codificado por duas
       autoridades que não coincidem.
 
-      ⚠️ O `regime` é opcional, e a sua ausência é um estado real e não um esquecimento. Uma
+      ⚠️ O `regime` é opcional, e a sua ausência é um estado real. Uma
       testemunha que não seja um modelo contabilístico — um recenseamento de registo, um verificador
       de fórmulas de folha de cálculo — reporta sob referencial nenhum e não deve ser obrigada a
       inventar um.
@@ -1099,7 +1099,9 @@
         from      one end.
         to        the other end.
         observed  what was seen. Required.
-        strength  how much, as a `pm:StatedClaim`. Optional.
+        strength  how much, as a `pm:StatedClaim`. Required, and the VALUE may be
+                  declined: the element is sent either way, with an `absent` and a reason
+                  where nobody sized it.
 
       `from` and `to` are DIRECTED, and the direction is a claim. "Relieving the supplier's
       quantum reduced the customer's remainder" is a different statement from its reverse,
@@ -1157,7 +1159,9 @@
         from      uma ponta.
         to        a outra ponta.
         observed  o que foi observado. Obrigatório.
-        strength  quanto, como `pm:StatedClaim`. Opcional.
+        strength  quanto, como `pm:StatedClaim`. Obrigatório, e o VALOR pode ser
+                  declinado: o elemento é enviado de qualquer forma, com um `absent` e uma
+                  razão quando ninguém o dimensionou.
 
       O `from` e o `to` são DIRIGIDOS, e a direção é uma afirmação. «Aliviar o quantum do fornecedor
       reduziu o resto do cliente» é uma declaração diferente da inversa, e quem observe e declare a
@@ -1637,12 +1641,14 @@
 
       WHAT IT CONTAINS
 
-        quantity    how much was double counted, as a `pm:StatedClaim` and not a bare
-                    `pm:Claim`. "There is intra-group demand here and nobody can size it" is
-                    the honest state of most consolidations, and a required number would be
-                    answered by writing zero. An `unmeasured` elimination says the composer
-                    looked, found double counting and could not measure it, and a receiver
-                    then knows the fused figure is overstated by an unknown amount.
+        quantity    how much was double counted, as a `pm:StatedEliminatedQuantity` and not
+                    a bare `pm:Claim`: the figure stated, or the name of an identity the
+                    receiver computes it from, or a typed reason there is none. "There is
+                    intra-group demand here and nobody can size it" is the honest state of most
+                    consolidations, and a required number would be answered by writing zero. An
+                    `unmeasured` elimination says the composer looked, found double counting and
+                    could not measure it, and a receiver then knows the fused figure is
+                    overstated by an unknown amount.
         against     which of the three quantities it comes off. Required.
         observed    what was seen. Required.
         between     the filed layers the double counting runs between, so the attribution
@@ -1658,10 +1664,15 @@
       part of it is low too. Reversing bounds here widens an interval by pairing a scenario
       against itself.
 
+      The exception is a sum with less width than the elimination. Point parts less an
+      elimination of width, bound by bound, give a low above the high, and an overlap cannot move
+      with a total that does not move; there the crossed pairing, the most overlap against the
+      least total, is the figure.
+
       `quantity` filed as `[0, 0, 0]` says THIS NAMED PAIR has a double-counting relation that
       sizes to zero this period: a commission agreement that existed all year and was never
       exercised. It is a statement about one relation, not about the search, and it is a CLAIM
-      rather than an absence, because `pm:StatedClaim`'s absent branch carries
+      rather than an absence, because `pm:StatedEliminatedQuantity`'s absent branch carries
       `pm:ClaimAbsenceReason` and that type has no `none`. Whatever this element's absent
       branch does say, it SUSPENDS the sum for the quantity it was filed against.
 
@@ -1703,7 +1714,9 @@
 
       O QUE CONTÉM
 
-        quantity    quanto foi contado duas vezes, como `pm:StatedClaim` e não como `pm:Claim` nu.
+        quantity    quanto foi contado duas vezes, como `pm:StatedEliminatedQuantity` e não como
+                    `pm:Claim` nu: a figura declarada, ou o nome de uma identidade a partir da
+                    qual quem recebe a calcula, ou uma razão tipada para não haver nenhuma.
                     «Há procura intragrupo aqui e ninguém a consegue dimensionar» é o estado honesto
                     da maioria das consolidações, e um número obrigatório seria respondido escrevendo
                     zero. Uma eliminação `unmeasured` diz que quem compôs foi ver, encontrou dupla
@@ -1724,10 +1737,15 @@
       também é baixa. Inverter aqui os limites alarga um intervalo emparelhando um cenário consigo
       mesmo.
 
+      A exceção é uma soma com menos largura do que a eliminação. Partes pontuais menos uma
+      eliminação com largura, limite a limite, dão um mínimo acima do máximo, e uma sobreposição
+      não se pode mover com um total que não se move; aí o emparelhamento cruzado, a maior
+      sobreposição contra o menor total, é o valor.
+
       Uma `quantity` declarada como `[0, 0, 0]` diz que ESTE PAR NOMEADO tem uma relação de dupla
       contagem que dimensiona a zero neste período: um acordo de comissão que existiu todo o ano e
       nunca foi exercido. É uma declaração sobre uma relação, não sobre a procura, e é uma AFIRMAÇÃO
-      e não uma ausência, porque o ramo de ausência da `pm:StatedClaim` carrega o
+      e não uma ausência, porque o ramo de ausência da `pm:StatedEliminatedQuantity` carrega o
       `pm:ClaimAbsenceReason` e esse tipo não tem `none`. O que quer que o ramo de ausência deste
       elemento diga, SUSPENDE a soma para a quantidade contra a qual foi declarado.
 
@@ -1756,7 +1774,7 @@
       compôs chegou a procurar. A `Fusion` para a regra da soma que isto torna exata.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="quantity" type="pm:StatedClaim"/>
+      <xs:element name="quantity" type="pm:StatedEliminatedQuantity"/>
       <xs:element name="against"  type="asrt:EliminationAgainst"/>
       <xs:element name="observed" type="xs:string"/>
       <xs:element name="between"  type="asrt:FiledLayer" minOccurs="0" maxOccurs="unbounded"/>
@@ -1780,8 +1798,9 @@
       WHAT IT CONTAINS
 
         layer     the filed layer going in.
-        factor    the conversion into the composed layer's unit, as a `pm:StatedClaim`.
-                  Optional, and absent means ONE.
+        factor    the conversion into the composed layer's unit, as a `pm:StatedFactor`:
+                  the figure stated, or the name of an identity the receiver computes it
+                  from, or a typed reason there is none. Optional, and absent means ONE.
 
       `factor` sits BESIDE the filed layer and never inside it: `FiledLayer` is shared with
       `dependence`, and a document type does not widen a shared type for its own
@@ -1816,7 +1835,7 @@
       ⛔ An absent `factor` read as "unknown". Absent means ONE, exactly. The overwhelming
       majority of parts need no conversion and must not file a ceremonial 1, and a
       conversion nobody has measured is `absent/reason = unmeasured` INSIDE the
-      `pm:StatedClaim` — a different document from a part carrying no `factor` at all.
+      `pm:StatedFactor` — a different document from a part carrying no `factor` at all.
 
       ⛔ A factor at or below zero, which would reorder the bounds the component-wise
       product assumes.
@@ -1857,8 +1876,10 @@
       O QUE CONTÉM
 
         layer     a camada declarada que entra.
-        factor    a conversão para a unidade da camada composta, como `pm:StatedClaim`. Opcional, e
-                  ausente quer dizer UM.
+        factor    a conversão para a unidade da camada composta, como `pm:StatedFactor`: a
+                  figura declarada, ou o nome de uma identidade a partir da qual quem recebe a
+                  calcula, ou uma razão tipada para não haver nenhuma. Opcional, e ausente quer
+                  dizer UM.
 
       O `factor` fica AO LADO da camada declarada e nunca dentro dela: o `FiledLayer` é partilhado
       com a `dependence`, e um tipo de documento não alarga um tipo partilhado por sua conveniência.
@@ -1891,7 +1912,7 @@
       ⛔ Um `factor` ausente lido como «desconhecido». Ausente quer dizer UM, exatamente. A esmagadora
       maioria das partes não precisa de conversão nenhuma e não deve ser obrigada a declarar um 1
       cerimonial, e uma conversão que ninguém mediu é `absent/reason = unmeasured` DENTRO do
-      `pm:StatedClaim` — um documento diferente de uma parte sem `factor` nenhum.
+      `pm:StatedFactor` — um documento diferente de uma parte sem `factor` nenhum.
 
       ⛔ Um fator igual ou inferior a zero, que reordenaria os limites que o produto componente a
       componente pressupõe.
@@ -1915,7 +1936,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="layer"  type="asrt:FiledLayer"/>
-      <xs:element name="factor" type="pm:StatedClaim" minOccurs="0"/>
+      <xs:element name="factor" type="pm:StatedFactor" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -2046,7 +2067,13 @@
       `pm:StatedCouplings` são esta forma um documento abaixo.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="elimination" type="asrt:Elimination" maxOccurs="unbounded"/>
+      <xs:element name="elimination" type="asrt:Elimination" maxOccurs="unbounded">
+        <xs:key name="betweenLayer">
+          <xs:selector xpath="asrt:between"/>
+          <xs:field    xpath="asrt:filing/pm:notation"/>
+          <xs:field    xpath="asrt:filing/pm:id"/>
+        </xs:key>
+      </xs:element>
       <xs:element name="absent"      type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
@@ -2411,6 +2438,16 @@
       tem outro teste de testemunha e seria outra raiz. Não é este, e este não deve ser declarado no
       lugar dele.
 
+      ⭐⭐ ESSA RECUSA É O QUE PERMITE A UMA DESCIDA PARAR CEDO, E AS DUAS SÃO UM FACTO VISTO DE
+      PONTAS OPOSTAS. Como toda a composição transporta figuras, quem dobre uma quantidade para
+      cima pode parar em qualquer nível cujas figuras próprias sirvam e ler o que esse compositor
+      assinou, em vez de reconstruir a partir do fundo. Que nível serve depende da quantidade: uma
+      SOMA tem de alcançar as camadas de que nada é composto, porque abaixo delas não resta nada
+      para somar, ao passo que um RESTO para no primeiro nível cuja procura e nameplate não foram
+      ambas escaladas pelo mesmo fator de conversão com largura, porque aí diferenciá-las é
+      legítimo. Passar além desse nível deita fora a edição que esta recusa existe para garantir, e
+      com ela todas as correções que esse compositor já aplicou.
+
       ONDE É VERIFICADO
 
       O `xmllint` obriga o `provenance` e o `witness`, e valida a declaração embebida contra o esquema
@@ -2428,7 +2465,12 @@
       <xs:element name="regime"     type="pm:Regime"     minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="citation"   type="asrt:Citation" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element ref="pm:processModulus"/>
-      <xs:element name="fusion"     type="asrt:Fusion"   maxOccurs="unbounded"/>
+      <xs:element name="fusion"     type="asrt:Fusion"   maxOccurs="unbounded">
+        <xs:key name="eliminationAgainst">
+          <xs:selector xpath="asrt:eliminations/asrt:elimination"/>
+          <xs:field    xpath="asrt:against"/>
+        </xs:key>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
@@ -2597,20 +2639,7 @@
 
     <!-- ⭐ The one reference in a cross-filing document that is genuinely local: the
          composed layer is in this file, so a fusion cannot name a layer nobody filed.
-
-         ⛔ AND IT IS LOCAL ONLY BECAUSE `composition` EMBEDS THE WHOLE `pm:processModulus`
-         ELEMENT RATHER THAN A `pm:Stack`. The base declares its identity constraints on that
-         element, so embedding the element brings them into scope and embedding the type does
-         not. Swap the `xs:element ref` above for a `type` and this key selects nothing, which
-         does not fail quietly: every composition is then refused for naming a layer that is
-         present and correctly spelled. `xmllint` blames the document; Xerces says `refers to a
-         key or unique that is out of scope` and is the faster way to read it.
-
-         ⚠️ Restating the path here, rather than `refer="pm:layerName"`, is deliberate and was
-         measured both ways. The base's own key IS in scope at this element and both validators
-         accept a keyref against it, so an embedder may point at the base's constraints with
-         nothing restated. This file does not, so that it depends on the base's ELEMENT names
-         and never on the names the base gave its constraints. -->
+ -->
     <xs:key name="composedLayerName">
       <xs:selector xpath="pm:processModulus/pm:stack/pm:layer"/>
       <xs:field    xpath="pm:name"/>

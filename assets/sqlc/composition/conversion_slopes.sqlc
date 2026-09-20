@@ -1,0 +1,75 @@
+# One row per settled node a remainder walk carries up, saying which corner of the path's factor
+# each bound of that node's remainder took, and whether taking corners changed the figure at all.
+# The conversion of a signed quantity is two slopes and a sign, and this is the sign.
+#
+# One rule at both call sites, and only the sign varies
+#   composition/converted.sqlc and composition/settled_remainders.sqlc both take the least and the
+#   greatest over the factor's two corners, so a conversion is one operator wherever it appears and
+#   the operand's sign is the only thing deciding which corner a bound uses. Where the figure is
+#   non-negative that collapses to the plain bound-by-bound product; where it is negative it
+#   reverses, because more of a shortfall converted at a larger rate is the smaller number. Nothing
+#   until now said which of the two any filing actually reached.
+#
+# Two slopes and a sign are the operator's whole form
+#   A continuous map of one variable that is positively homogeneous and piecewise linear with a
+#   single fold is exactly two slopes joined at that fold, so a conversion has two degrees of freedom
+#   and the sign of its operand, and there is nothing else about one to state. The fold sits at zero
+#   and cannot be moved, which is also why a path of conversions collapses into a single conversion:
+#   positive scaling cannot move a sign, so the corner is the same at every level and a chain of
+#   factors is their product. Gilbert Strang's chapter on functions built by composition is the
+#   reference. Proof: `src/proofs/README.md`, entries `two_slopes` and `conversion_collapses`.
+#
+# What `corner_rule_bites` is for
+#   It is true only where the corners give a different figure from multiplying bound by bound, which
+#   needs a factor with width AND an operand that is negative at that bound. Either alone is not
+#   enough. So the column is the conjunction, and counting it is how a reader learns whether the
+#   least and the greatest in settled_remainders are doing any work on this corpus or are standing
+#   ready for a document nobody has filed.
+#
+# Reading it all false
+#   All false does not mean the corner rule is unnecessary. It means the two populations that would
+#   exercise it, nodes under a factor with width and nodes whose remainder is negative, do not
+#   currently overlap. Both are sizeable and the intersection is what is empty, which is a fact
+#   about the evidence and not about the arithmetic. The identity itself is proved in
+#   `src/proofs/README.md`, entries `positive_factor_componentwise` and `two_slopes`, against a
+#   constructed operand rather than a filed one.
+#
+# It reports and never accuses
+#   A negative remainder is ordinary: it is a layer whose demand exceeds its supply, which is the
+#   interference case the model exists to measure. A factor with width is ordinary. There is nothing
+#   here for a rule to find, which is why this is a relation and there is no check beside it.
+#
+# The arithmetic behind the verdict is carried, not just the verdict
+#   `corner_rule_bites` is a comparison, so the two figures it compares ride beside it: the converted
+#   bounds this walk produced and what multiplying bound by bound would have produced instead. No
+#   reader in the tree needs them, and they stay because this relation runs alone and a verdict whose
+#   inputs are not in the row can only be trusted. The factor and the operand's mode are here for the
+#   same reason, which is that a conversion is read at three points and showing two of them invites
+#   the question of what the third did.
+#
+# The operand is read unconverted
+#   The sign has to come from before the multiplication, so the node's own difference is joined
+#   rather than recovered by dividing the converted figure back out. A positive factor preserves
+#   sign, so the two agree, and joining is the reading that does not depend on that.
+-- composition/settled_remainders.sqlc against layers/differenced_remainder.sqlc at the node the
+-- walk stops on, one row per settled node.
+SELECT s.composition, s.composed_layer, s.node_filing, s.node_layer, s.depth,
+       s.factor_low, s.factor_mode, s.factor_high, s.spread_factor,
+       b.r_low  AS operand_low,
+       b.r_mode AS operand_mode,
+       b.r_high AS operand_high,
+       s.r_low  AS converted_low,
+       s.r_mode AS converted_mode,
+       s.r_high AS converted_high,
+       b.r_low  * s.factor_low  AS bound_by_bound_low,
+       b.r_high * s.factor_high AS bound_by_bound_high,
+       CASE WHEN b.r_low  < 0 THEN 'the factor high' ELSE 'the factor low'  END AS low_took,
+       CASE WHEN b.r_high < 0 THEN 'the factor low'  ELSE 'the factor high' END AS high_took,
+       (abs(s.r_low  - b.r_low  * s.factor_low)  > 1e-9
+        OR abs(s.r_high - b.r_high * s.factor_high) > 1e-9) AS corner_rule_bites
+FROM      (
+    :compose(composition/settled_remainders.sqlc)
+) s
+JOIN      (
+    :compose(layers/differenced_remainder.sqlc)
+) b ON b.filing = s.node_filing AND b.layer = s.node_layer

@@ -40,8 +40,8 @@ não pode conseguir dizer a mesma coisa.** Uma folga de zero é a menor folga e 
 `[0, 0, 0]` na unidade em que é zero. Uma oferta que corre continuamente tem fração de serviço de
 um e é arquivada como um período inteiro, citado na unidade do próprio período, transportando a
 origem que diz quem o poderia encurtar. Um resto de zero é um ajuste de folga, arquivado com sinal
-e quantidade `[0, 0, 0]`, porque o caso linha-a-linha da ISO 286 é uma folga cuja folga mínima é
-zero.
+e quantidade `[0, 0, 0]`, porque o `Fit` o lê como folga, estendendo o caso linha a linha da
+ISO 286, em que a folga mínima é zero, ao único par que as cláusulas da ISO não separam.
 
 Um elemento neutro pode viver numa ausência, mas só quando o neutro é **forçado**. Duas condições,
 e ambas exigidas: o neutro tem de decorrer de estrutura que o documento já declara, para que não

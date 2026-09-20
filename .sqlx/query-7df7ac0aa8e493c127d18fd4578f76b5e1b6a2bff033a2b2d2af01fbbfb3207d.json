@@ -1,0 +1,123 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/fused_remainders.sqlc, with the two figures set against each other.\nSELECT f.composition                                             AS \"composition!\",\n       f.composed_layer                                          AS \"composed_layer!\",\n       f.parts                                                   AS \"parts!\",\n       f.unit                                                    AS \"unit!\",\n       f.pivoted_low::float8                                     AS \"pivoted_low!\",\n       f.pivoted_mode::float8                                    AS \"pivoted_mode!\",\n       f.pivoted_high::float8                                    AS \"pivoted_high!\",\n       f.derived_low::float8                                     AS \"derived_low!\",\n       f.derived_mode::float8                                    AS \"derived_mode!\",\n       f.derived_high::float8                                    AS \"derived_high!\",\n       f.spread                                                  AS \"spread!\",\n       (f.pivoted_low = f.derived_low\n    AND f.pivoted_mode = f.derived_mode\n    AND f.pivoted_high = f.derived_high)                         AS \"agrees!\"\nFROM (\n    SELECT * FROM composition.fused_remainders\n) f\nORDER BY \"agrees!\", f.composition, f.composed_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fused_remainders",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fused_remainders",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "parts!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "composition.fused_remainders",
+            "name": "parts"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "unit!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fused_remainders",
+            "name": "unit"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "pivoted_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "pivoted_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "pivoted_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "derived_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "derived_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 9,
+        "name": "derived_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 10,
+        "name": "spread!",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "composition.fused_remainders",
+            "name": "spread"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "agrees!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      true,
+      null
+    ]
+  },
+  "hash": "7df7ac0aa8e493c127d18fd4578f76b5e1b6a2bff033a2b2d2af01fbbfb3207d"
+}

@@ -1,13 +1,24 @@
-# EVERY PART THAT FILES A DUTY CYCLE, BESIDE THE WINDOW ITS COMPOSED LAYER FILES. One row per
+# Every part that files a duty cycle, beside the window its composed layer files. One row per
 # examined part, `violates` where the composed layer dropped the calendar or changed it.
 #
-# ⭐⭐ THE RULE: a window is carried through a fusion and never summed. The schema states the
-#    failure in one sentence -- "two members naming one machine file one calendar between
-#    them; summing gives ten days a week." Amounts add because two supplies are two supplies.
-#    Calendars do not, because they are the same week seen twice.
+# A window is carried, never summed
+#   The rule: a window is carried through a fusion and never summed. The schema states the
+#   failure in one sentence: "two members naming one machine file one calendar between them;
+#   summing gives ten days a week." Amounts add because two supplies are two supplies. Calendars
+#   do not, because they are the same week seen twice.
 #
-# ⛔ BOTH HALVES WERE UNENFORCEABLE WHILE A DROPPED WINDOW AND A SUPPLY THAT RUNS CONTINUOUSLY
-#   WERE THE SAME DOCUMENT, and the holding level in this corpus had dropped one.
+# A dropped window is not a continuous supply
+#   Both halves are unenforceable while a dropped window and a supply that runs continuously are
+#   the same document, and a holding level in this corpus dropped one.
+#
+# All three points, and the unit where it must agree
+#   A calendar carried through a fusion is the same calendar, so its low, mode and high all come
+#   through unchanged; comparing the low alone passes a window whose high was summed. The unit is
+#   compared only where the part omits its conversion factor, which is the filing that says its
+#   units already agree. A factor stated, or filed as a typed absence, says they differ:
+#   `merge-pt-member`'s part files its window in `dias` under a factor, and the group carries it as
+#   `days`, the same five days spelled in the composed layer's language.
+#   Proof: `src/proofs/README.md`, entry `window_carried`.
 -- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -16,13 +27,19 @@ FROM      (
 LEFT JOIN (
     SELECT w.composition AS filing, w.composed_layer AS layer,
            (w.composed_window_low IS NULL
-            OR w.composed_window_low <> w.window_low) AS violates,
+            OR w.composed_window_low  <> w.window_low
+            OR w.composed_window_mode <> w.window_mode
+            OR w.composed_window_high <> w.window_high
+            OR (w.units_agree AND w.composed_window_unit <> w.window_unit)) AS violates,
            CASE WHEN w.composed_window_low IS NULL
                 THEN format('the part %s/%s files a %s-%s duty cycle and the composed '
                             'layer files `%s`', w.part_filing, w.part_layer, w.window_low,
                             w.window_unit, w.composed_window_absent)
-                ELSE format('composed window %s against a part''s %s -- carried, never summed',
-                            w.composed_window_low, w.window_low)
+                ELSE format('composed window [%s, %s, %s] %s against a part''s [%s, %s, %s] %s, '
+                            'carried and never summed',
+                            w.composed_window_low, w.composed_window_mode, w.composed_window_high,
+                            w.composed_window_unit, w.window_low, w.window_mode, w.window_high,
+                            w.window_unit)
            END AS detail
     FROM (
         :compose(composition/windowed_parts.sqlc)

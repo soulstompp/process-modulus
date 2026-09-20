@@ -1,30 +1,67 @@
-# THE ORDINAL RANK OF EVERY LAYER IN `F`: the order in which a fusion may be evaluated. One row
-# per layer, `rank` 0 where nothing lies beneath it.
+# The ordinal rank of every layer in `F`: the order in which a fusion may be evaluated. One row
+# per layer, `rank` 0 where nothing lies beneath it and NULL where its descent reaches a cycle.
 #
-# ⭐⭐⭐ THIS IS WHAT WELL-FOUNDEDNESS ACTUALLY GIVES YOU. A well-founded relation has a rank
-#    function, `rank(x) = sup{rank(y)+1 : y R x}`, and the precondition that
-#    *no name expands to itself* IS the guarantee that one exists. A cycle is exactly the case
-#    where it does not, which is what "no order exists in which to evaluate the stack" means.
+# What well-foundedness gives you
+#   A well-founded relation has a rank function, `rank(x) = sup{rank(y)+1 : y R x}`, and the
+#   precondition that *no name expands to itself* is the guarantee that one exists. A cycle is
+#   exactly the case where it does not, which is what "no order exists in which to evaluate the
+#   stack" means.
 #
-# ⛔⛔ RANK IS THE EVALUATION ORDER AND `depth` IS NOT. composition/descent.sqlc's `depth` is per
-#    PATH; the rank is the MAXIMUM over all paths. A layer reachable at depth 1 and at depth 2
-#    must not be evaluated until both arrivals are ready, so a walk that evaluates in depth order
-#    can compute a fusion before one of its parts exists. ⭐ On this corpus min and max agree on
-#    every row, so the difference is unexercised BY LUCK: a jagged partition is what separates
-#    them, and checks/jagged_layer is the same phenomenon in the other algebra.
+# Rank is the evaluation order, and `depth` is not
+#   composition/descent.sqlc's `depth` is per path; the rank is the maximum over all paths. A
+#   layer reachable at depth 1 and at depth 2 must not be evaluated until both arrivals are
+#   ready, so a walk that evaluates in depth order can compute a fusion before one of its parts
+#   exists. The minimum and the maximum differ exactly where a layer is reached by paths of two
+#   lengths, a jagged partition, and checks/jagged_layer is the same phenomenon in the other
+#   algebra.
 #
-# ⭐ IT IS A WINDOW AND NOT A SECOND WALK. descent.sqlc has already done the recursion, so the
-#   rank is one aggregate over its closure. Proposing another recursive CTE for this is proposing
-#   to recompute something the data already carries.
-# ⭐⭐ AND IT IS CARRIED INTO TWO ARTIFACTS NOW, NOT ONE. `examples/diagramming/main.rs` writes it into
-#    each filing's lane, and `examples/graphs/main.rs` writes it into the corpus-wide layer graph's,
-#    through `rank/graph_nodes.sqlc`. ⛔ AN EMITTER THAT WRITES NO RANK LEAVES THE RENDERER ITS
-#    OWN SENTINEL TO DRAW, and this relation is `coalesce(max(depth), 0)`, so a negative rank on
-#    a page is a value the model cannot produce. Every lane count stays exact through that, which
-#    is why it is the emitter's obligation and not a count's.
+# A cycle has no rank
+#   Where a descent reaches a cycle the supremum does not exist, for the layers on it and every
+#   layer above them, so those get NULL, never the depth the cycle guard happened to stop at.
+#   checks/layers_move_together reports the cycle.
+#
+# A window, not a second walk
+#   composition/descent.sqlc has already done the recursion, so the rank is one aggregate over
+#   its closure.
+#   Proposing another recursive CTE for this is proposing to recompute something the data already
+#   carries.
+#
+# Carried into two artifacts
+#   `examples/diagramming/main.rs` writes it into each filing's lane, and
+#   `examples/graphs/main.rs` writes it into the corpus-wide layer graph's, through
+#   `rank/graph_nodes.sqlc`.
+#
+# An emitter must write the rank
+#   An emitter that writes no rank leaves the renderer its own sentinel to draw, and this relation
+#   gives either a rank of at least 0 or NULL, so a negative rank on a page is a value the model
+#   cannot produce. Every lane count stays exact through that, which is why it is the emitter's
+#   obligation and not a count's.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- composition/descent.sqlc aggregated to the deepest arrival under each layer.
+WITH
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+descent AS NOT MATERIALIZED (
+    :define(composition/descent.sqlc)
+),
+every_layer AS NOT MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+)
 SELECT l.filing, l.layer,
-       coalesce(max(d.depth), 0) AS rank,
+       CASE WHEN coalesce(bool_or(d.is_cycle), false) THEN NULL
+            ELSE coalesce(max(d.depth), 0) END AS rank,
        count(d.filing)           AS arrivals
 FROM      (
     :compose(layers/every_layer.sqlc)

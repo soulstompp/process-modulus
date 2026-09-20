@@ -1,0 +1,63 @@
+# How much of each contract's roster the population reaches on its own. One row per contract
+# folds/contract_subjects.sqlc counts: the subjects it declares, and the subjects some row other
+# than the roster's own answers for.
+#
+# The other side of the principle
+#   diagrams/domain_objects.sqlc states the principle for one side and this measures the other.
+#   "A contract must not be derived from what it governs", and examples/compositions/main.rs
+#   asserts it: every roster here is a bare VALUES literal. Nothing says the converse, and some
+#   of the populations below take their subject's name from the very roster they are compared
+#   against: `checks/all.sqlc` reads `r.rule`, `arithmetic/all.sqlc` reads `a.site`,
+#   `algebra/all.sqlc` reads `a.law`. examples/soundness/main.rs §5 prints which, and gates it.
+#
+# A trade, not a defect
+#   That is why it wants a number. The roster join is what buys the vacuous verdict: a rule with
+#   nothing to examine still emits a row, so the verdict that matters most is a row a reader can
+#   see rather than a silence. The price is that the subject is then on both sides of the
+#   difference by construction. `diagrams/catalogue.sqlc` pays no such price and could not: its
+#   population is `information_schema`, written by Postgres, and `diagrams/expected.sqlc` names
+#   each law in its own arm as a literal.
+#
+# What the shortfall is and is not
+#   A subject counted short is one the population reached with nothing of its own, so every
+#   branch of the difference sees it only through the roster. It is not a count of failures a
+#   guard would miss; read that way it imports a perturbation this relation never names. Delete
+#   an arm from a population outright and branch one reports that subject whether it was short
+#   here or not.
+#
+# SQL cannot see which populations take their key from their roster
+#   It sees only where a corpus happens to make it visible. A contract built exactly like `rules`
+#   shows no shortfall here while its population is complete, so a full column is not evidence
+#   of a second witness. That property is a fact about the template, and
+#   examples/soundness/main.rs §5 is where it lives.
+#
+# One row per subject, so a count of rows is a count of subjects
+#   folds/contract_subjects.sqlc is keyed on (contract, subject), and every contract's subject is
+#   its roster key: the rule, the site, the law slug, the domain object, the diagram law, the
+#   absence or derivation column. Laws are keyed by slug and not by formula, because several laws
+#   share one formula, and a count over formulas could not see one of them go missing from
+#   algebra/all.sqlc.
+#
+# Witnessed is an answered row
+#   A subject is witnessed when some row of its population answers for it: a verdict, for the three
+#   contracts that carry one, and for the four that do not, the row itself. The roster's own row,
+#   the one a check emits when it has nothing to examine, answers nothing, which is exactly the
+#   shortfall this counts.
+#
+# The numbers
+#   Run this relation for them; the corpus moves and a sentence does not.
+#
+# One fence, for the depth of the plan
+#   The union is materialised, which changes no row: its plan hangs under this query's top node
+#   instead of beneath the grouping, one level shallower. folds/contract_subjects.sqlc reaches
+#   algebra/all.sqlc, the deepest relation in the tree, and queries/observations/16-guard-reach.sqlc
+#   is read back at compile time, where a plan nested one level deeper cannot be.
+-- folds/contract_subjects.sqlc counted per contract: what each roster declares, and what answers it.
+WITH v AS MATERIALIZED (
+    :compose(folds/contract_subjects.sqlc)
+)
+SELECT v.contract,
+       count(*) FILTER (WHERE v.declared)                    AS subjects,
+       count(*) FILTER (WHERE v.declared AND v.answered > 0) AS witnessed
+FROM v
+GROUP BY v.contract

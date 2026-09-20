@@ -1,39 +1,44 @@
-# HOW LONG EACH LAYER'S DEMAND SURVIVES BEING UNANSWERED, OR THE TYPED REASON NOBODY KNOWS.
-# One row per layer: the span a queued order stays an order, and who owns its edge.
+# How long each layer's demand survives being unanswered, or the typed reason nobody knows. One
+# row per layer: the span a queued order stays an order.
 #
-# ⭐⭐⭐ IT IS THE HALF OF THE TIME AXIS THE SCHEMA FILED AS MISSING. `pm:Divisibility` sits on
-#    `Nameplate`, so `window` is the SUPPLY's duty cycle, and its own annotation says the
-#    mirror -- demand with a lifetime -- is a fact about DEMAND and names `Layer/timeSlack` as
-#    where it would go "if demand ever gains structure". `pm:Demand/patience` is that
-#    structure, and this relation is the half of the axis it makes askable.
+# The half of the time axis the schema filed as missing
+#   `pm:Divisibility` sits on `Nameplate`, so `window` is the supply's duty cycle, and its own
+#   annotation says the mirror, demand with a lifetime, is a fact about demand and names
+#   `Layer/timeSlack` as where it would go "if demand ever gains structure". `pm:Demand/patience`
+#   is that structure, and this relation is the half of the axis it makes askable.
 #
-# ⛔⛔ A PATIENCE IS NOT A TIME SLACK AND THE UNITS ARE HOW YOU TELL. A slack is quoted in the
-#    unit of the shares it bounds -- `slack_unit_mismatch` requires it -- and a patience is a
-#    span of time that bounds no shares. `merge-holding-composition`'s `shift-line` files both
-#    and they carry the SAME NUMBERS in different units, because that layer's unit is service
-#    time so the wait and the queue ahead of you are one quantity. The document argues exactly
-#    that in a comment. It is a fact about that layer and not a licence to fold the two.
+# A patience is not a time slack
+#   The units are how you tell. A slack is quoted in the unit of the shares it bounds
+#   (`slack_unit_mismatch` requires it), and a patience is a span of time that bounds no shares.
+#   `merge-holding-composition`'s `shift-line` files both and they carry the same numbers in
+#   different units, because that layer's unit is service time, so the wait and the queue ahead of
+#   you are one quantity. The document argues exactly that in a comment. It is a fact about that
+#   layer and not a licence to fold the two.
 #
-# ⭐⭐ THE RANGE AND ITS LICENCE ARE TWO COLUMNS. A shop knows the impatient customer leaves at
-#    three minutes and the last at ten; that is the claim. "Service within five minutes" is a
-#    NEGOTIATED EDGE on it, and `boundOrigin` is where an edge says whose it is. Reading the
-#    two together is the difference between renegotiating a term and measuring again.
+# The range and its licence are two relations
+#   A shop knows the impatient customer leaves at three minutes and the last at ten; that is the
+#   claim. "Service within five minutes" is a negotiated edge on it, and `boundOrigin` is where an
+#   edge says whose it is. Reading the two together is the difference between renegotiating a
+#   term and measuring again. The edge's owner is the patience claim's own, in
+#   epistemics/claims.sqlc where `owns` is `pm:demand/pm:patience`, beside every other claim's.
 #
-# ⛔ ZERO PATIENCE IS A CLAIM OF ZERO, NEVER `absent/reason = none`. Demand that leaves the
-#   moment it is not served has a patience of zero, and a measured zero is a claim: `patience`
-#   is a `pm:StatedClaim`, whose absent arm carries `pm:ClaimAbsenceReason`, and that type has
-#   no `none`. So `patience_absent` can honestly hold three reasons and not four. The validator
-#   refuses the fourth and `a_patience_absence_has_no_none` refuses it again on the way in.
+# Zero patience is a claim of zero
+#   Never `absent/reason = none`. Demand that leaves the moment it is not served has a patience of
+#   zero, and a measured zero is a claim: `patience` is a `pm:StatedClaim`, whose absent arm
+#   carries `pm:ClaimAbsenceReason`, and that type has no `none`. So `patience_absent` can
+#   honestly hold three reasons and not four. The validator refuses the fourth and
+#   `a_patience_absence_has_no_none` refuses it again on the way in.
 #
-# ⚠️ AND THE SPELLING IT REPLACES IS WHY THE ELEMENT EXISTS. `merge-group-composition`'s `on-call`
-#   layer "does not survive being held at all", and with no patience element that fact has
-#   nowhere to go but the time slack's `absent/reason = none`, which is a different claim. It
-#   is a `timeSlack` of [0, 0, 0] and a patience beside it. ⭐ Its patience is still `unmeasured`, and the gap
-#   between the two is worth a query: a slack of zero is a buffer nobody funded, a patience of
-#   zero is demand that would not use one even if somebody did.
+# The spelling it replaces
+#   That spelling is why the element exists. `merge-group-composition`'s `on-call` layer "does not
+#   survive being held at all", and with no patience element that fact has nowhere to go but the
+#   time slack's `absent/reason = none`, which is a different claim. It is a `timeSlack` of
+#   [0, 0, 0] and a patience beside it. Its patience is `unmeasured`, and the gap between the two
+#   is worth a query: a slack of zero is a buffer nobody funded, a patience of zero is demand that
+#   would not use one even if somebody did.
 -- pm:Demand/pm:patience, beside the demand it qualifies.
 SELECT l.filing, l.layer,
        l.patience_low, l.patience_mode, l.patience_high, l.patience_unit,
-       l.patience_origin, l.patience_absent,
+       l.patience_absent,
        l.demand_unit
 FROM pm.layer l

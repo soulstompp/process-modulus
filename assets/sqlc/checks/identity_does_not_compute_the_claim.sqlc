@@ -1,0 +1,40 @@
+# Every claim whose edge or narrowing is filed as an identity's output, beside whether that identity
+# computes the claim. One row per such derivation, `violates` where the identity does not compute
+# the claim's own position.
+#
+# A claim's edge is the edge of the terms that compute it
+#   `boundOrigin` filed as a derivation says the bound was not set by anybody: the claim is an
+#   identity's output, and its edge is the edge of that identity's terms. `narrowsWhen` filed as one
+#   says the claim narrows as those terms do. Both are true only of the identity that computes the
+#   claim: a share's edge can be `sharesSum`'s, a patience's cannot, because no identity computes a
+#   patience. The two sibling origins are the one exception, and only for an edge: `amountOrigin`
+#   on a nameplate amount and `quantumOrigin` on a lump or window size, where the claim's holder
+#   states the author in an element of its own.
+#
+# The schema cannot say it
+#   A `Claim` is one type wherever it sits, so `BoundDerivation` and `NarrowingDerivation` admit the
+#   members of every position at once, and a validator passes a patience whose edge is a fusion
+#   sum. identities/roster.sqlc lists the cells, one per identity, position and element, and a
+#   derivation at a claim that is no cell is the claim naming the wrong equation. The roster lists
+#   no cell twice, so joining it keeps one row per derivation.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking pm:derivation, against the identity that computes the claim.
+SELECT r.rule, p.filing, p.layer, p.violates, p.detail
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    SELECT c.filing, c.layer,
+           i.identity IS NULL AS violates,
+           format('%s claim %s files its %s as the output of `%s`', c.owns, c.seq, c.element,
+                  c.identity) AS detail
+    FROM      (
+        :compose(epistemics/claim_derivations.sqlc)
+    ) c
+    LEFT JOIN (
+        :compose(identities/roster.sqlc)
+    ) i
+           ON i.identity = c.identity::text
+          AND i.owns     = c.owns
+          AND i.element  = c.element
+) p ON true
+WHERE r.slug = 'identity_does_not_compute_the_claim'

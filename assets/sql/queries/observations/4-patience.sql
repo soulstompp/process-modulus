@@ -7,12 +7,6 @@ SELECT p.filing                            AS "filing!",
        coalesce(p.patience_unit, '')       AS "unit!",
        coalesce(p.demand_unit, '')         AS "demand_unit!"
 FROM (
-    -- pm:Demand/pm:patience, beside the demand it qualifies.
-SELECT l.filing, l.layer,
-       l.patience_low, l.patience_mode, l.patience_high, l.patience_unit,
-       l.patience_origin, l.patience_absent,
-       l.demand_unit
-FROM pm.layer l
-
+    SELECT * FROM layers.patience
 ) p
 ORDER BY p.patience_absent NULLS FIRST, p.filing, p.layer

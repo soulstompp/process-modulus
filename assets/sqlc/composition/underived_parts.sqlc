@@ -1,0 +1,34 @@
+# The fusions that owe no sum in one quantity because a part files it `derived` and the figure
+# cannot be computed. One row per (composed layer, quantity), shaped like the other suspension
+# grounds, with each such part and what stopped its computation named in `note`.
+#
+# A derived part is read computed
+#   A part filing the quantity `derived` files an output, and composition/derived_quantities.sqlc
+#   computes it through that part's own fusion and every derived layer below it. Where that
+#   finishes, the sum reads the result and owes its equality exactly as it would over stated
+#   parts. Where it cannot, the part has no figure and the sum would come out short by it, so the
+#   sum is lifted here, carrying the reason the computation gives.
+#
+# The one ground that needs a computation
+#   The other grounds are read off what the fusion and its parts file. This one needs the whole
+#   descent below the part, so it is kept apart from them: composition/suspension_grounds.sqlc
+#   takes it beside composition/filed_grounds.sqlc, and every sum that is owed or suspended sees
+#   it there. composition/suspended_remainders.sqlc reads the filed grounds alone, because a
+#   remainder walk already lifts wherever a node it reaches has no figure, computed or stated,
+#   which covers every part named here. It reads that figure through
+#   composition/resolved_quantities.sqlc, so the descent is composed there once already, and
+#   reading this ground as well would compose it a second time beneath every rule that reads a
+#   remainder, for no row it would change.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+SELECT p.composition, p.composed_layer, d.quantity,
+       'a part files the quantity derived and it cannot be computed' AS suspended_because,
+       string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
+                  ORDER BY p.part_filing, p.part_layer) AS note
+FROM      (
+    :compose(composition/parts.sqlc)
+) p
+JOIN      (
+    :compose(composition/derived_quantities.sqlc)
+) d ON d.filing = p.part_filing AND d.layer = p.part_layer
+WHERE d.low IS NULL
+GROUP BY p.composition, p.composed_layer, d.quantity

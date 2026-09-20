@@ -1,0 +1,32 @@
+-- §3d The incidence and the diagonal, as the two things whose product has a null space.
+# One row per resolved part: which fusion it goes into, and the factor that carries it there.
+#
+# Why the factor rides along when the rank does not depend on it
+#   `Phi` is a positive diagonal, and scaling a column by a positive number cannot change which
+#   columns are independent, so `rank(F Phi) = rank(F)` whatever the factors are. That is a claim
+#   worth running rather than repeating: the program takes the rank twice, once with the filed
+#   factors and once with every entry at one, and the two must agree.
+#   Proof: `src/proofs/README.md`, entry `units_scale_rows`.
+#
+# A factor that is not a number is still an edge
+#   Where `asrt:Part/factor` is a typed absence or a derivation there is no figure, and the column
+#   is NULL. The part is still in the fusion, so it is still a column of `F`, and the program
+#   reads a NULL as one for the purpose of taking a rank. That substitution is safe for exactly
+#   the reason above and for no other, so it may never be carried into a figure: what an absent
+#   factor converts to is not one, it is unknown, and `composition/converted.sqlc` is where that
+#   distinction is kept.
+#
+# Resolved parts, because an unresolved one is no column
+#   A part naming a filing this corpus does not hold has no figures to convert, so it is not a
+#   column of the matrix. `rank/composition_kernel.sqlc` folds the same set, which is what lets
+#   the program compare a rank against a count.
+-- asrt:Fusion/asrt:Part resolved, projected to the incidence and its diagonal.
+SELECT p.composition                             AS "composition!",
+       p.composed_layer                          AS "composed_layer!",
+       p.part_filing || '/' || p.part_layer      AS "part!",
+       CASE WHEN p.factor_state = 'omitted' THEN 1::double precision
+            ELSE p.factor_mode::double precision END AS factor
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+ORDER BY p.composition, p.composed_layer, "part!"

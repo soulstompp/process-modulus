@@ -20,7 +20,7 @@
            xmlns:pm="https://example.invalid/process-flow/1.0"
            targetNamespace="https://example.invalid/process-flow/1.0"
            elementFormDefault="qualified"
-           version="0.3.0">
+           version="0.0.1">
 
   <!-- ==================================================================
        REMAINDER: the object this model contributes.
@@ -47,8 +47,9 @@
 
       WHAT IT CONTAINS
 
-        quantity  the total. `derived` wherever demand, nameplate and the quantum are all
-                  stated.
+        quantity  the total. It may be filed as a `derivation` of `magnitude` wherever demand,
+                  nameplate and the quantum are all stated, and a stated one equals
+                  `|nameplate - demand|` at each of its three points.
         sign      which side of the nameplate the demand sits on.
         absorber  which buffer took it. BORROWED — the expected taxonomy is Factory Physics'
                   closed set (inventory · capacity · time), and this schema does not restate
@@ -131,15 +132,11 @@
       are different questions with different answers, and a model answering only one renders
       a borne cost and an absorbed one identically. THE FOURTH-BUFFER ARGUMENT LIVES ON THE
       HOLDER AXIS, NOT THE ABSORBER AXIS: people are not a fourth buffer added to a closed
-      set of three, they are a FIFTH HOLDER of the same three. Confusing the two reads as an
-      attack on Factory Physics, which this is not.
+      set of three, they are a FIFTH HOLDER of the same three.
 
-      ⛔ Moving `absorber` beside each `share`. A rollup across several filings — three
-      entities of one group, two companies in a merger — asks which buffers a business leans
-      on, and per-holder that question must be weighted by shares. The share on a labour
-      layer is `unmeasured` BY DESIGN AND PERMANENTLY, so the weighted form is incomputable
-      at exactly the layer this model exists for, while the layer-level form answers cleanly.
-      It stays at the remainder, one per layer.
+      ⛔ Reading `absorber` as a per-holder fact. It is one per remainder, and therefore one
+      per layer: which buffer took the difference is asked of the layer, not of each party
+      bearing a share of it.
 
       WHERE IT IS CHECKED
 
@@ -170,8 +167,9 @@
 
       O QUE CONTÉM
 
-        quantity  o total. `derived` sempre que a procura, a capacidade nominal e o quantum estejam
-                  todos declarados.
+        quantity  o total. Pode declarar-se como `derivation` da `magnitude` sempre que a procura,
+                  a capacidade nominal e o quantum estejam todos declarados, e uma declarada é
+                  igual a `|nameplate - demand|` em cada um dos seus três pontos.
         sign      de que lado da capacidade nominal está a procura.
         absorber  que amortecedor o levou. EMPRESTADO — a taxonomia esperada é o conjunto fechado da
                   Factory Physics (inventário · capacidade · tempo), e este esquema não reenuncia
@@ -254,15 +252,11 @@
       perguntas diferentes com respostas diferentes, e um modelo que responda só a uma representa da
       mesma maneira um custo suportado e um custo absorvido. O ARGUMENTO DO QUARTO AMORTECEDOR VIVE
       NO EIXO DE QUEM SUPORTA, NÃO NO DO AMORTECEDOR: as pessoas não são um quarto amortecedor
-      acrescentado a um conjunto fechado de três, são um QUINTO SUPORTE dos mesmos três. Confundir os
-      dois lê-se como um ataque à Factory Physics, que isto não é.
+      acrescentado a um conjunto fechado de três, são um QUINTO SUPORTE dos mesmos três.
 
-      ⛔ Mudar o `absorber` para junto de cada `share`. Uma agregação ao longo de várias declarações —
-      três entidades de um grupo, duas empresas numa fusão — pergunta em que amortecedores é que um
-      negócio se apoia, e por detentor essa pergunta tem de ser ponderada pelas quotas. A quota numa
-      camada de mão de obra é `unmeasured` POR DESENHO E PERMANENTEMENTE, portanto a forma ponderada
-      é incalculável exatamente na camada para que este modelo existe, enquanto a forma ao nível da
-      camada responde com nitidez. Fica no resto, um por camada.
+      ⛔ Ler o `absorber` como um facto por detentor. É um por resto, e portanto um por camada:
+      que amortecedor levou a diferença pergunta-se à camada e não a cada parte que suporta uma
+      quota dela.
 
       ONDE É VERIFICADO
 
@@ -283,7 +277,7 @@
       <xs:element name="sign"     type="pm:StatedFit"/>
       <xs:element name="absorber" type="pm:StatedBorrowedTerm"/>
       <xs:element name="holder"   type="pm:StatedHolder" maxOccurs="unbounded"/>
-      <xs:element name="quantity" type="pm:StatedClaim"/>
+      <xs:element name="quantity" type="pm:StatedMagnitude"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -294,8 +288,7 @@
     <xs:annotation><xs:documentation xml:lang="en">
       WHAT IT IS
 
-      Which side of the nameplate the demand sits on. From ISO 286 (limits and fits), and the
-      borrowing is not decoration.
+      Which side of the nameplate the demand sits on. From ISO 286 (limits and fits).
 
       THE MEMBERS, and THE COMPARISON IS BETWEEN TWO RANGES, NOT TWO POINTS. That is ISO's
       own criterion, where a fit class is decided by how the hole's tolerance zone and the
@@ -315,9 +308,12 @@
         nameplate.low ≥ demand.high ≥ demand.low ≥ nameplate.high ≥ nameplate.low
 
       so there is no second such pair and no range width left to argue about. IT IS A CLEARANCE
-      FIT, which is ISO 286's own answer for the line-to-line case, where minimum clearance is
-      zero. Nothing went unmet, so `customer` and `unrealised` are ruled out exactly as they are
-      anywhere else under a clearance, and the draw says nobody absorbed anything either.
+      FIT. ISO 286 counts the line-to-line case, where minimum clearance is zero, as a clearance
+      fit ("in the extreme case, equal to"). This pair meets ISO's interference wording to the
+      letter as well, and ISO never has to choose, because its tolerances always have width.
+      Reading it as clearance extends ISO's line-to-line answer. Nothing went unmet, so
+      `customer` and `unrealised` are ruled out exactly as they are anywhere else under a
+      clearance, and the draw says nobody absorbed anything either.
 
       ⚠️ A SENDER READING THE INTERFERENCE CRITERION LITERALLY WOULD FILE `interference` HERE and
       would not be wrong on the arithmetic, which is why this paragraph exists rather than a
@@ -386,21 +382,24 @@
       single point.
 
       WHICH SUPPLIES MAY SIT ON THE INTERFERENCE SIDE AT ALL is a property of the supply. A
-      supply whose `capacitySlack` is a stated `[0, 0, 0]`, somebody looked, and there is
-      no room above the rating — CANNOT have absorbed an interference fit, so EVERY ONE of
-      its holders must be `customer` or `unrealised`, and a document saying otherwise is
-      internally inconsistent. A STATED SLACK BOUNDS RATHER THAN FORBIDS: holders may sit on
-      the interference side up to it and no further. The rule is over the WHOLE holder list —
-      one conforming entry does not excuse a second claiming the excess was absorbed by a
-      supply that cannot absorb.
+      supply whose three buffers are all stated and empty, `capacitySlack`, `inventorySlack`
+      and `timeSlack` each a stated `[0, 0, 0]`, has no room above its rating, nothing held
+      ahead and no demand that waits. It CANNOT have absorbed an interference fit, so EVERY
+      ONE of its holders must be `customer` or `unrealised`, and a document saying otherwise
+      is internally inconsistent. One empty buffer is not enough: a supply that cannot run
+      hot may still have drawn on stock or made the demand wait, and a `booked` holder there
+      is a correct filing. A STATED SLACK BOUNDS RATHER THAN FORBIDS: holders may sit on the
+      interference side up to it and no further. The rule is over the WHOLE holder list; one
+      conforming entry does not excuse a second claiming the excess was absorbed by a supply
+      that cannot absorb.
 
-      UNDER `transition` THAT RULE BECOMES A PRESENCE RULE RATHER THAN A UNIVERSAL ONE, and
-      the weakening is correct rather than a concession. Part of the range is genuinely
+      UNDER `transition` THAT RULE BECOMES A PRESENCE RULE RATHER THAN A UNIVERSAL ONE. Part
+      of the range is genuinely
       clearance, so a `booked` share is legitimate there — a reserved block paid for and not
       fully drawn is exactly that. What cannot happen is for the interference side to have
-      been absorbed by a supply with no room above its rating:
+      been absorbed by a supply with nowhere to put it:
 
-        capacitySlack stated as `[0, 0, 0]`, `sign` = transition, exposure > 0
+        every buffer stated as `[0, 0, 0]`, `sign` = transition, exposure > 0
           ==> AT LEAST ONE holder of kind `customer` or `unrealised`, the two that bear
               demand nobody served
 
@@ -427,10 +426,10 @@
       ⛔ An `indeterminate` member, where `transition` is admitted. The obvious objection is
       that both are computable by the receiver, and that objection could never have carried
       the argument on its own, because `clearance` is equally computable — which is exactly
-      why `StatedFit` lets `sign` say `derived`. The real difference: `indeterminate` states
-      what the FILER DOES NOT KNOW, a conclusion the receiver reaches better on their own,
-      which is the objection that keeps a `Claim`'s expected value out of the model.
-      `transition` states what THE WORLD DOES: sometimes short, sometimes spare.
+      why `StatedFit` lets `sign` be a `derivation` of `fit`. The real difference:
+      `indeterminate` states what the FILER DOES NOT KNOW, a conclusion the receiver reaches
+      better on their own, which is the objection that keeps a `Claim`'s expected value out
+      of the model. `transition` states what THE WORLD DOES: sometimes short, sometimes spare.
 
       WHERE IT IS CHECKED
 
@@ -443,8 +442,8 @@
 
       SEE ALSO
 
-      `StatedFit` for `derived` and the two live absences. `Remainder` for the magnitude and
-      the decomposition. `Nameplate` and `capacitySlack` for where the exposure earns its
+      `StatedFit` for the `fit` derivation and the two absences. `Remainder` for the magnitude
+      and the decomposition. `Nameplate` and `capacitySlack` for where the exposure earns its
       keep. `Holder` for the five bearers. `Jagged` for the draw.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -454,7 +453,6 @@
       O QUE É
 
       De que lado da capacidade nominal está a procura. Da ISO 286 (tolerâncias e ajustamentos), e o
-      empréstimo não é decoração.
 
       OS MEMBROS, e A COMPARAÇÃO É ENTRE DOIS INTERVALOS, NÃO ENTRE DOIS PONTOS. É o próprio critério
       da ISO, onde a classe de ajustamento é decidida pela maneira como a zona de tolerância do furo
@@ -474,10 +472,13 @@
         nameplate.low ≥ demand.high ≥ demand.low ≥ nameplate.high ≥ nameplate.low
 
       portanto não há um segundo par assim nem sobra largura de intervalo nenhuma para discutir.
-      É UM AJUSTAMENTO `clearance`, que é a própria resposta da ISO 286 para o caso linha a linha,
-      em que a folga mínima é zero. Nada ficou por servir, portanto o `customer` e o `unrealised`
-      ficam excluídos exatamente como em qualquer outra `clearance`, e o consumo diz também que
-      ninguém absorveu coisa nenhuma.
+      É UM AJUSTAMENTO `clearance`. A ISO 286 conta o caso linha a linha, em que a folga mínima é
+      zero, como um ajustamento com folga («no caso extremo, igual a»). Este par cumpre também à
+      letra a redação da ISO para a interferência, e a ISO nunca tem de escolher, porque as suas
+      tolerâncias têm sempre largura. Lê-lo como `clearance` estende a resposta da ISO para o caso
+      linha a linha. Nada ficou por servir, portanto o `customer` e o `unrealised` ficam excluídos
+      exatamente como em qualquer outra `clearance`, e o consumo diz também que ninguém absorveu
+      coisa nenhuma.
 
       ⚠️ QUEM LEIA O CRITÉRIO DE INTERFERÊNCIA À LETRA APRESENTARIA AQUI `interference` e não estaria
       errado na aritmética, e é por isso que existe este parágrafo e não uma nota numa consulta. A
@@ -543,21 +544,24 @@
       nenhum isolado.
 
       QUE OFERTAS PODEM SEQUER ESTAR DO LADO DA INTERFERÊNCIA é uma propriedade da oferta. Uma oferta
-      cujo `capacitySlack` seja um `[0, 0, 0]` declarado, alguém foi ver, e não há espaço acima do
-      valor nominal — NÃO PODE ter absorvido um ajustamento de interferência, portanto TODOS os seus
-      detentores têm de ser `customer` ou `unrealised`, e um documento que diga o contrário é
-      internamente incoerente. UMA MARGEM DECLARADA LIMITA EM VEZ DE PROIBIR: os detentores podem
-      então estar do lado da interferência até ela e não mais. A regra é sobre a lista INTEIRA de
-      detentores — uma entrada conforme não desculpa uma segunda que afirme que o excesso foi
-      absorvido por uma oferta que não consegue absorver.
+      cujos três amortecedores estão todos declarados e vazios, `capacitySlack`, `inventorySlack` e
+      `timeSlack` cada um um `[0, 0, 0]` declarado, não tem espaço acima do valor nominal, nada
+      guardado adiante e nenhuma procura que espere. NÃO PODE ter absorvido um ajustamento de
+      interferência, portanto TODOS os seus detentores têm de ser `customer` ou `unrealised`, e um
+      documento que diga o contrário é internamente incoerente. Um amortecedor vazio não chega: uma
+      oferta que não consegue trabalhar acima do valor nominal pode ainda ter recorrido a stock ou
+      posto a procura à espera, e um detentor `booked` aí é uma declaração correta. UMA MARGEM
+      DECLARADA LIMITA EM VEZ DE PROIBIR: os detentores podem então estar do lado da interferência até
+      ela e não mais. A regra é sobre a lista INTEIRA de detentores; uma entrada conforme não desculpa
+      uma segunda que afirme que o excesso foi absorvido por uma oferta que não consegue absorver.
 
       SOB `transition` ESSA REGRA PASSA A SER UMA REGRA DE PRESENÇA E NÃO UNIVERSAL, e o
-      enfraquecimento é correto e não uma concessão. Parte do intervalo é genuinamente folga, portanto
+      Parte do intervalo é genuinamente folga, portanto
       uma quota `booked` é legítima aí — um bloco reservado pago e não totalmente consumido é
       exatamente isso. O que não pode acontecer é o lado da interferência ter sido absorvido por uma
-      oferta sem espaço acima do seu valor nominal:
+      oferta sem para onde o pôr:
 
-        capacitySlack declarado como `[0, 0, 0]`, `sign` = transition, exposição > 0
+        todos os amortecedores declarados como `[0, 0, 0]`, `sign` = transition, exposição > 0
           ==> PELO MENOS UM detentor de género `customer` ou `unrealised`, os dois que suportam
               procura que ninguém serviu
 
@@ -584,10 +588,10 @@
       ⛔ Um membro `indeterminate`, onde o `transition` é admitido. A objeção óbvia é que ambos são
       calculáveis por quem recebe, e essa objeção nunca poderia ter sustentado o argumento sozinha,
       porque o `clearance` é igualmente calculável — que é exatamente a razão de o `StatedFit` deixar
-      o `sign` dizer `derived`. A diferença a sério: o `indeterminate` enuncia o que QUEM DECLARA NÃO
-      SABE, uma conclusão a que quem recebe chega melhor sozinho, que é a objeção que mantém o valor
-      esperado de uma `Claim` fora do modelo. O `transition` enuncia o que O MUNDO FAZ: umas vezes
-      curto, outras vezes com sobra.
+      o `sign` ser uma `derivation` do `fit`. A diferença a sério: o `indeterminate` enuncia o que
+      QUEM DECLARA NÃO SABE, uma conclusão a que quem recebe chega melhor sozinho, que é a objeção
+      que mantém o valor esperado de uma `Claim` fora do modelo. O `transition` enuncia o que O
+      MUNDO FAZ: umas vezes curto, outras vezes com sobra.
 
       ONDE É VERIFICADO
 
@@ -600,9 +604,9 @@
 
       VER TAMBÉM
 
-      O `StatedFit` para o `derived` e para as duas ausências vivas. O `Remainder` para a grandeza e a
-      decomposição. A `Nameplate` e o `capacitySlack` para onde a exposição se paga. O `Holder` para
-      os cinco suportes. O `Jagged` para o consumo.
+      O `StatedFit` para a derivação do `fit` e para as duas ausências. O `Remainder` para a grandeza
+      e a decomposição. A `Nameplate` e o `capacitySlack` para onde a exposição se paga. O `Holder`
+      para os cinco suportes. O `Jagged` para o consumo.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="clearance"/>
@@ -616,87 +620,84 @@
        ================================================================== -->
   <xs:simpleType name="HolderKind">
     <xs:annotation><xs:documentation xml:lang="en">
-      WHAT IT IS
+      Who bears a remainder. One variant is transacted inside the entity and four are not, and that
+      asymmetry is the central claim.
 
-      Who bears a remainder. One variant is transacted inside the entity and four are not,
-      and that asymmetry is the central claim.
+      # The members
 
-      THE MEMBERS
+      - `booked`: not declined; a transacted position inside the entity.
+      - `counterparty`: the burden sits in another entity's books under an agreement, and the
+        consideration need not have been cash.
+      - `customer`: no transaction occurred; degradation borne by a customer creates no obligation on
+        the filer.
+      - `people`: absorbed work is not a transaction and obliges the entity to nobody.
+      - `unrealised`: demand never served is not an event.
 
-        booked        not declined: a transacted position inside the entity.
-        counterparty  the burden sits in another entity's books under an AGREEMENT, and THE
-                      CONSIDERATION NEED NOT HAVE BEEN CASH.
-        customer      no transaction occurred: degradation borne by a customer creates no
-                      obligation on the filer.
-        people        absorbed work is not a transaction and obliges the entity to nobody.
-        unrealised    demand never served is not an event.
+      A standard is entitled to disagree with any of the four, and each carries its own reason so the
+      disagreement has something to bite on.
 
-      A standard is entitled to disagree with any of the four, and each carries its own
-      reason so the disagreement has something to bite on.
+      # What it obliges
 
-      WHAT IT OBLIGES
+      A type is a claim about what can be said, not a claim that anything has been measured. Five
+      variants assert that a bearer is one of five things; they assert nothing about how much lands on
+      each.
 
-      A TYPE IS A CLAIM ABOUT WHAT CAN BE SAID, NOT A CLAIM THAT ANYTHING HAS BEEN MEASURED.
-      Five variants assert that a bearer is one of five things. They assert nothing about how
-      much lands on each.
+      ## Why `people` has no instrument
 
-      WHY `people` IS THE ONE WITHOUT AN INSTRUMENT, stated as a mechanism rather than an
-      assertion: an excess becomes visible when there is a COUNTERPARTY WHO CAN INVOICE IT. A
-      customer running over an allowance can be billed. A bank charges a penalty rate on an
-      overdraft. A person cannot invoice you for the same thing, so the identical physical
-      excess leaves no transaction.
+      An excess becomes visible when there is a counterparty who can invoice it. A customer running over
+      an allowance can be billed, and a bank charges a penalty rate on an overdraft. A person cannot
+      invoice you for the same thing, so the identical physical excess leaves no transaction.
 
-      ⚠️ That also predicts where the argument STOPS. Hire a contractor and the same absorbed
-      work becomes `counterparty`: priced, invoiced, visible. The invisibility is a property
-      of the RELATIONSHIP, not of the work.
+      That also predicts where the argument stops. Hire a contractor and the same absorbed work becomes
+      `counterparty`: priced, invoiced, visible. The invisibility is a property of the relationship, not
+      of the work.
 
-      SEE ALSO
+      # See also
 
-      `Holder` for the payload and the dated counterparty. `Remainder` for what is borne.
-      `Fit` for what the draw says about who held it.
+      `Holder` for the payload and the dated counterparty. `Remainder` for what is borne. `Fit` for what
+      the draw says about who held it.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
       **Português.**
 
-      O QUE É
-
       Quem suporta um resto. Uma variante é transacionada dentro da entidade e quatro não são, e essa
       assimetria é a afirmação central.
 
-      OS MEMBROS
+      # Os membros
 
-        booked        não declinado: uma posição transacionada dentro da entidade.
-        counterparty  o encargo está nos livros de outra entidade ao abrigo de um ACORDO, e A
-                      CONTRAPARTIDA NÃO TEM DE TER SIDO DINHEIRO.
-        customer      não houve transação nenhuma: a degradação suportada por um cliente não cria
-                      obrigação nenhuma para quem declara.
-        people        trabalho absorvido não é uma transação e não obriga a entidade a ninguém.
-        unrealised    procura que nunca foi servida não é um acontecimento.
+      - `booked`: não declinado; uma posição transacionada dentro da entidade.
+      - `counterparty`: o encargo está nos livros de outra entidade ao abrigo de um acordo, e a
+        contrapartida não tem de ter sido dinheiro.
+      - `customer`: não houve transação nenhuma; a degradação suportada por um cliente não cria
+        obrigação nenhuma para quem declara.
+      - `people`: trabalho absorvido não é uma transação e não obriga a entidade a ninguém.
+      - `unrealised`: procura que nunca foi servida não é um acontecimento.
 
-      Um normativo tem o direito de discordar de qualquer das quatro, e cada uma transporta a sua
-      razão para que a discordância tenha onde morder.
+      Um normativo tem o direito de discordar de qualquer das quatro, e cada uma transporta a sua razão
+      para que a discordância tenha onde morder.
 
-      O QUE OBRIGA
+      # O que obriga
 
-      UM TIPO É UMA AFIRMAÇÃO SOBRE O QUE PODE SER DITO, NÃO UMA AFIRMAÇÃO DE QUE ALGO FOI MEDIDO.
-      Cinco variantes afirmam que quem suporta é uma de cinco coisas. Não afirmam nada sobre quanto
-      cai em cada uma.
+      Um tipo é uma afirmação sobre o que pode ser dito, não uma afirmação de que algo foi medido. Cinco
+      variantes afirmam que quem suporta é uma de cinco coisas; não afirmam nada sobre quanto cai em cada
+      uma.
 
-      PORQUE É QUE O `people` É O QUE NÃO TEM INSTRUMENTO, enunciado como mecanismo e não como
-      asserção: um excesso torna-se visível quando há uma CONTRAPARTE QUE O POSSA FATURAR. Um cliente
-      que ultrapasse um plafond pode ser cobrado. Um banco cobra uma taxa de penalização num
-      descoberto. Uma pessoa não lhe pode passar fatura pela mesma coisa, portanto o excesso físico
-      idêntico não deixa transação nenhuma.
+      ## Porque é que o `people` não tem instrumento
 
-      ⚠️ Isso prevê também onde o argumento PÁRA. Contrate-se um prestador e o mesmo trabalho
-      absorvido passa a `counterparty`: com preço, faturado, visível. A invisibilidade é uma
-      propriedade da RELAÇÃO, e não do trabalho.
+      Um excesso torna-se visível quando há uma contraparte que o possa faturar. Um cliente que ultrapasse
+      um plafond pode ser cobrado, e um banco cobra uma taxa de penalização num descoberto. Uma pessoa
+      não lhe pode passar fatura pela mesma coisa, portanto o excesso físico idêntico não deixa transação
+      nenhuma.
 
-      VER TAMBÉM
+      Isso prevê também onde o argumento para. Contrate-se um prestador e o mesmo trabalho absorvido
+      passa a `counterparty`: com preço, faturado, visível. A invisibilidade é uma propriedade da relação,
+      e não do trabalho.
 
-      O `Holder` para a carga e para a contraparte datada. O `Remainder` para aquilo que é suportado.
-      O `Fit` para o que o consumo diz sobre quem o suportou.
+      # Ver também
+
+      O `Holder` para a carga e para a contraparte datada. O `Remainder` para aquilo que é suportado. O
+      `Fit` para o que o consumo diz sobre quem o suportou.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="booked"/>
@@ -709,168 +710,144 @@
 
   <xs:complexType name="Holder">
     <xs:annotation><xs:documentation xml:lang="en">
-      WHAT IT IS
-
       Who bears part of a remainder, and how much.
 
-      WHAT IT CONTAINS
+      # What it contains
 
-        kind   which of the five bearers.
-        party  WHOSE OTHER BOOKS the burden sits in. Only on a `counterparty` holder.
-        asOf   when that was true.
-        share  what this holder bears.
+      - `kind`: which of the five bearers.
+      - `party`: whose other books the burden sits in. Only on a `counterparty` holder.
+      - `asOf`: when that was true.
+      - `share`: what this holder bears.
 
-      `counterparty` asserts a fact about ANOTHER entity's books, which is a cached value
-      nothing refreshes, so the party and the date it was true of belong WITH it. A bare enum
-      is safe only for a consumer that never reads the payload, and that is not a shape to
-      publish as the model's.
+      `counterparty` asserts a fact about another entity's books, which is a cached value nothing
+      refreshes, so the party and the date it was true of belong with it. A bare enum is safe only for a
+      consumer that never reads the payload, and that is not a shape to publish as the model's.
 
-      `share` exists because ONE REMAINDER ROUTINELY LANDS ON MORE THAN ONE PARTY. A team
-      that absorbs some of an excess and turns the rest away has split it between `people`
-      and `unrealised`, and a single holder forces the sender to pick the larger one and
-      discard the other. That discarded half is frequently the interesting one.
+      `share` exists because one remainder routinely lands on more than one party. A team that absorbs
+      some of an excess and turns the rest away has split it between `people` and `unrealised`, and a
+      single holder forces the sender to pick the larger one and discard the other. That discarded half
+      is frequently the interesting one.
 
-      A QUANTITY, NEVER A FRACTION, and the reason is the model's own subject. A set of
-      fractions must sum to one, so a single UNMEASURED member invalidates the whole set and
-      the sender is pushed back to inventing a number. Quantities degrade honestly: `people`
-      may bear an unmeasured share beside a `customer` share somebody counted, and both
-      survive transmission. A fraction would also drop the unit, and this model has no
-      dimensionless number type anywhere.
+      A share is a quantity, never a fraction, and the reason is the model's own subject. A set of
+      fractions must sum to one, so a single unmeasured member invalidates the whole set and the sender
+      is pushed back to inventing a number. Quantities degrade honestly: `people` may bear an unmeasured
+      share beside a `customer` share somebody counted, and both survive transmission. A fraction would
+      also drop the unit, and this model has no dimensionless number type anywhere.
 
-      WHAT IT OBLIGES
+      # What it obliges
 
-      `party` and `asOf` appear ONLY where `kind` is `counterparty`.
+      - `party` and `asOf` appear only where `kind` is `counterparty`.
+      - A `counterparty` holder must name its `party`. A burden asserted to sit in another entity's books
+        with no entity named is not a counterparty claim; it is a guess wearing the one holder kind that
+        promises an instrument.
+      - A `counterparty` holder should carry `asOf`. The value is a cached fact about somebody else's
+        books and nothing here refreshes it, so a party with no date is a stale reading presented as a
+        current one.
+      - The shares sum to the remainder magnitude, `|nameplate - demand|`, wherever every share is
+        stated. One unmeasured share suspends the check rather than breaking it: the sum is unknown, not
+        wrong.
+      - A kind appears at most once per remainder, and a validator checks it: `holderKind` keys the
+        remainder's holders by kind. Two `people` entries with two shares is not a finer split; it is
+        one share written twice.
 
-      ⚠️ IN A CONSOLIDATION THAT RULE BITES SOMEWHERE UNOBVIOUS, and the mistake is natural:
-      a `booked` share in a group filing is booked in SOME MEMBER'S books, and naming which
-      one looks like exactly what `party` is for. It is not. On a `counterparty` holder
-      `party` names whose OTHER books the burden sits in; on a `booked` holder it would name
-      which of OUR OWN units records it. Two relations, one field — and the second is already
-      carried, better, by the composition that names which filed layer the share came from.
+      ⚠️ In a consolidation the first rule bites somewhere unobvious. A `booked` share in a group filing
+      is booked in some member's books, and naming which one looks like exactly what `party` is for. It
+      is not. On a `counterparty` holder `party` names whose other books the burden sits in; on a
+      `booked` holder it would name which of our own units records it. That is two relations in one
+      field, and the second is already carried, better, by the composition that names which filed layer
+      the share came from.
 
-      A `counterparty` HOLDER MUST NAME ITS `party`. A burden asserted to sit in another
-      entity's books with no entity named is not a counterparty claim; it is a guess wearing
-      the one holder kind that promises an instrument. And it SHOULD carry `asOf`, because
-      the value is a cached fact about somebody else's books and nothing here refreshes it,
-      so a party with no date is a stale reading presented as a current one.
+      # What it refuses
 
-      THE SHARES SUM TO THE REMAINDER MAGNITUDE, `|nameplate - demand|`, wherever every share
-      is stated. One unmeasured share SUSPENDS the check rather than breaking it: the sum is
-      unknown, not wrong.
+      # Where it is checked
 
-      A KIND APPEARS AT MOST ONCE PER REMAINDER. Two `people` entries with two shares is not
-      a finer split; it is one share written twice.
+      `assets/sql/rules.sql`, as `shares_do_not_sum`, `share_exceeds_slack` and `slack_unit_mismatch`.
+      A validator cannot reach any of them, because XSD 1.0 cannot:
 
-      WHAT IT REFUSES
+      - make one element's presence depend on a sibling's value;
+      - compare across elements for the sum;
+      - scope an identity constraint to a single remainder, since constraints attach to element
+        declarations and this element is local to a reused type.
 
-      ⛔ Splitting `StatedHolder` into a three-way choice to make the `party` rule structural
-      — `holder` carrying the other four kinds with no `party` at all, `counterparty`
-      carrying a required party and asOf, and `absent`. It would make both halves unbreakable
-      and checkable by any stock validator, and it also leaves four variants in an enum and
-      the fifth in the structure, which destroys `HolderKind`'s central claim that these are
-      FIVE VARIANTS OF ONE THING whose asymmetry is the finding. A rule enforced at the cost
-      of the set it is a rule about is a bad trade.
+      # See also
 
-      WHERE IT IS CHECKED
-
-      `assets/sql/rules.sql` as `shares_do_not_sum`, `share_exceeds_slack` and
-      `slack_unit_mismatch`.
-
-      ⛔ NOT REACHABLE BY A VALIDATOR, for three: XSD 1.0 cannot make one element's presence
-      depend on a sibling's value, cannot compare across elements for the sum, and cannot
-      scope an identity constraint to a single remainder, because constraints attach to
-      element declarations and this element is local to a reused type.
-
-      SEE ALSO
-
-      `HolderKind` for the five bearers and the asymmetry. `Remainder` for what is borne.
-      `Nameplate` for the slacks that bound a share. `Provenance` for the same split between
-      kind and party.
+      `HolderKind` for the five bearers and the asymmetry. `Remainder` for what is borne. `Nameplate` for
+      the slacks that bound a share. `Provenance` for the same split between kind and party.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
       **Português.**
 
-      O QUE É
-
       Quem suporta parte de um resto, e quanto.
 
-      O QUE CONTÉM
+      # O que contém
 
-        kind   qual dos cinco suportes.
-        party  EM QUE OUTROS LIVROS é que o encargo está. Só num detentor `counterparty`.
-        asOf   quando é que isso era verdade.
-        share  o que este detentor suporta.
+      - `kind`: qual dos cinco suportes.
+      - `party`: em que outros livros é que o encargo está. Só num detentor `counterparty`.
+      - `asOf`: quando é que isso era verdade.
+      - `share`: o que este detentor suporta.
 
-      O `counterparty` afirma um facto sobre os livros de OUTRA entidade, que é um valor em cache que
-      nada refresca, portanto a entidade e a data em que era verdade pertencem-lhe. Uma enumeração nua
-      só é segura para um consumidor que nunca leia a carga, e essa não é uma forma para publicar
-      como sendo a do modelo.
+      O `counterparty` afirma um facto sobre os livros de outra entidade, que é um valor em cache que nada
+      refresca, portanto a entidade e a data em que era verdade pertencem-lhe. Uma enumeração nua só é
+      segura para um consumidor que nunca leia a carga, e essa não é uma forma para publicar como sendo a
+      do modelo.
 
-      A `share` existe porque UM RESTO CAI ROTINEIRAMENTE SOBRE MAIS DO QUE UMA PARTE. Uma equipa que
-      absorva parte de um excesso e recuse o resto dividiu-o entre `people` e `unrealised`, e um
-      detentor único obriga quem envia a escolher o maior e a deitar fora o outro. Essa metade
-      deitada fora é muitas vezes a interessante.
+      A `share` existe porque um resto cai rotineiramente sobre mais do que uma parte. Uma equipa que
+      absorva parte de um excesso e recuse o resto dividiu-o entre `people` e `unrealised`, e um detentor
+      único obriga quem envia a escolher o maior e a deitar fora o outro. Essa metade deitada fora é
+      muitas vezes a interessante.
 
-      UMA QUANTIDADE, NUNCA UMA FRAÇÃO, e a razão é o próprio objeto do modelo. Um conjunto de frações
-      tem de somar um, portanto um único membro NÃO MEDIDO invalida o conjunto inteiro e quem envia é
-      empurrado de volta para inventar um número. As quantidades degradam-se com honestidade: o
-      `people` pode suportar uma quota não medida ao lado de uma quota `customer` que alguém contou, e
-      as duas sobrevivem à transmissão. Uma fração deitaria também fora a unidade, e este modelo não
-      tem tipo numérico adimensional nenhum.
+      Uma quota é uma quantidade, nunca uma fração, e a razão é o próprio objeto do modelo. Um conjunto de
+      frações tem de somar um, portanto um único membro não medido invalida o conjunto inteiro e quem
+      envia é empurrado de volta para inventar um número. As quantidades degradam-se com honestidade: o
+      `people` pode suportar uma quota não medida ao lado de uma quota `customer` que alguém contou, e as
+      duas sobrevivem à transmissão. Uma fração deitaria também fora a unidade, e este modelo não tem
+      tipo numérico adimensional nenhum.
 
-      O QUE OBRIGA
+      # O que obriga
 
-      O `party` e o `asOf` aparecem SÓ onde o `kind` é `counterparty`.
+      - O `party` e o `asOf` aparecem só onde o `kind` é `counterparty`.
+      - Um detentor `counterparty` tem de nomear o seu `party`. Um encargo que se afirma estar nos livros
+        de outra entidade sem entidade nomeada não é uma afirmação de contraparte; é um palpite vestido do
+        único género de detentor que promete um instrumento.
+      - Um detentor `counterparty` deve transportar o `asOf`. O valor é um facto em cache sobre os livros
+        de outra pessoa e nada aqui o refresca, portanto uma entidade sem data é uma leitura velha
+        apresentada como atual.
+      - As quotas somam a grandeza do resto, `|nameplate - demand|`, sempre que todas as quotas estejam
+        declaradas. Uma quota não medida suspende a verificação em vez de a quebrar: a soma é
+        desconhecida, não é errada.
+      - Um género aparece no máximo uma vez por resto, e um validador verifica-o: o `holderKind` indexa
+        os detentores do resto pelo género. Duas entradas `people` com duas quotas não são uma divisão
+        mais fina; são uma quota escrita duas vezes.
 
-      ⚠️ NUMA CONSOLIDAÇÃO ESSA REGRA MORDE NUM SÍTIO POUCO ÓBVIO, e o erro é natural: uma quota
-      `booked` numa declaração de grupo está registada nos livros DE ALGUM MEMBRO, e nomear qual
-      parece exatamente aquilo para que o `party` serve. Não é. Num detentor `counterparty` o `party`
-      nomeia em que OUTROS livros está o encargo; num detentor `booked` nomearia qual das NOSSAS
-      PRÓPRIAS unidades o regista. Duas relações, um campo — e a segunda já é transportada, e melhor,
-      pela composição que diz de que camada declarada veio a quota.
+      ⚠️ Numa consolidação a primeira regra morde num sítio pouco óbvio. Uma quota `booked` numa
+      declaração de grupo está registada nos livros de algum membro, e nomear qual parece exatamente
+      aquilo para que o `party` serve. Não é. Num detentor `counterparty` o `party` nomeia em que outros
+      livros está o encargo; num detentor `booked` nomearia qual das nossas próprias unidades o regista.
+      São duas relações num campo, e a segunda já é transportada, e melhor, pela composição que diz de
+      que camada declarada veio a quota.
 
-      UM DETENTOR `counterparty` TEM DE NOMEAR O SEU `party`. Um encargo que se afirma estar nos
-      livros de outra entidade sem entidade nomeada não é uma afirmação de contraparte; é um palpite
-      vestido do único género de detentor que promete um instrumento. E DEVE transportar o `asOf`,
-      porque o valor é um facto em cache sobre os livros de outra pessoa e nada aqui o refresca,
-      portanto uma entidade sem data é uma leitura velha apresentada como atual.
+      # O que recusa
 
-      AS QUOTAS SOMAM A GRANDEZA DO RESTO, `|nameplate - demand|`, sempre que todas as quotas estejam
-      declaradas. Uma quota não medida SUSPENDE a verificação em vez de a quebrar: a soma é
-      desconhecida, não é errada.
+      # Onde é verificado
 
-      UM GÉNERO APARECE NO MÁXIMO UMA VEZ POR RESTO. Duas entradas `people` com duas quotas não são
-      uma divisão mais fina; são uma quota escrita duas vezes.
+      No `assets/sql/rules.sql`, como `shares_do_not_sum`, `share_exceeds_slack` e `slack_unit_mismatch`.
+      Um validador não alcança nenhuma delas, porque o XSD 1.0 não consegue:
 
-      O QUE RECUSA
+      - fazer depender a presença de um elemento do valor de um irmão;
+      - comparar elementos entre si para a soma;
+      - limitar uma restrição de identidade a um único resto, porque as restrições se prendem a
+        declarações de elemento e este elemento é local a um tipo reutilizado.
 
-      ⛔ Dividir o `StatedHolder` numa escolha de três — o `holder` a transportar os outros quatro
-      géneros sem `party` nenhum, o `counterparty` a transportar entidade e data obrigatórias, e o
-      `absent`. Tornaria as duas metades inquebráveis e verificáveis por qualquer validador vulgar, e
-      deixa também quatro variantes numa enumeração e a quinta na estrutura, o que destrói a
-      afirmação central do `HolderKind` de que estas são CINCO VARIANTES DE UMA COISA cuja assimetria
-      é o resultado. Uma regra imposta ao custo do conjunto de que é regra é um mau negócio.
+      # Ver também
 
-      ONDE É VERIFICADO
-
-      No `assets/sql/rules.sql` como `shares_do_not_sum`, `share_exceeds_slack` e
-      `slack_unit_mismatch`.
-
-      ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR, em três casos: o XSD 1.0 não consegue fazer depender a
-      presença de um elemento do valor de um irmão, não consegue comparar elementos entre si para a
-      soma, e não consegue limitar uma restrição de identidade a um único resto, porque as restrições
-      se prendem a declarações de elemento e este elemento é local a um tipo reutilizado.
-
-      VER TAMBÉM
-
-      O `HolderKind` para os cinco suportes e a assimetria. O `Remainder` para aquilo que é suportado.
-      A `Nameplate` para as margens que limitam uma quota. A `Provenance` para a mesma divisão entre
-      género e entidade.
+      O `HolderKind` para os cinco suportes e a assimetria. O `Remainder` para aquilo que é suportado. A
+      `Nameplate` para as margens que limitam uma quota. A `Provenance` para a mesma divisão entre género
+      e entidade.
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="kind"  type="pm:HolderKind"/>
-      <xs:element name="share" type="pm:StatedClaim"/>
+      <xs:element name="share" type="pm:StatedShare"/>
       <xs:element name="party" type="xs:string" minOccurs="0"/>
       <xs:element name="asOf"  type="xs:date"   minOccurs="0"/>
     </xs:sequence>
@@ -895,7 +872,7 @@
     <xs:annotation><xs:documentation xml:lang="en">
       WHAT IT IS
 
-      Why a document has no value in this position. Four members, and the set is closed.
+      Why a document has no value in this position. Three members, and the set is closed.
 
       THE MEMBERS
 
@@ -903,14 +880,11 @@
                        looked and the quantity is zero, or the thing does not happen. A
                        receiver may rely on this.
         unmeasured     no instrument exists for this, here. The honest gap, and the only one
-                       of the four that filling would resolve. It asserts nothing about
+                       of the three that filling would resolve. It asserts nothing about
                        whether the quantity is large or small.
         notApplicable  the subject is outside this question's population, so asking is
                        MALFORMED rather than unanswered. A receiver that treats this as a gap
                        will report a deficiency that does not exist.
-        derived        this is an OUTPUT, computed from other elements. Sending a value would
-                       short-circuit the derivation and could disagree with its own inputs.
-                       The receiver computes it.
 
       WHAT IT OBLIGES
 
@@ -937,15 +911,23 @@
       worse than the gap it closes. It is a fact about the STANDING of an assertion, and
       standing belongs on the assertion. See `Provenance/standing`.
 
-      ⚠️ Two independent models arrived at exactly these four classes with near-identical
-      glosses, which is evidence and is why the bar for a fifth is high. Frequency is NOT
+      ⛔ `derived`, for `unverified`'s reason turned round. A value computed from other elements
+      HAS a value, fixed by a rule, and an absence has nowhere to say which rule, so the answer
+      ends up in a note no reader can check. It is a `Derivation`, naming its `Identity`, and it
+      is admitted only where that identity computes the position.
+
+      ⚠️ Two independent models arrived at the same four classes with near-identical glosses,
+      `derived` among them, which is evidence and is why the bar for a fifth is high. This one
+      files the fourth as a derivation rather than an absence, because it names a rule where the
+      other three name a nothing, a gap and a malformed question. Frequency is NOT
       part of that bar: an adopting corpus exercised both orphans and used `none` in zero of
       47 registers, and neither figure changes the reasoning above.
 
       SEE ALSO
 
-      `Absence` for the carrier and the note rule. `Provenance` for standing. Every
-      `Stated*` wrapper for where these appear.
+      `Absence` for the carrier and the note rule. `Provenance` for standing.
+      `ClaimAbsenceReason` for the narrowing a claim takes. `Derivation` and `Identity` for a
+      value computed from other elements. Every `Stated*` wrapper for where these appear.
     </xs:documentation><xs:documentation xml:lang="pt">
 
       
@@ -953,21 +935,18 @@
 
       O QUE É
 
-      Porque é que um documento não tem valor nesta posição. Quatro membros, e o conjunto é fechado.
+      Porque é que um documento não tem valor nesta posição. Três membros, e o conjunto é fechado.
 
       OS MEMBROS
 
         none           a resposta É nada, e isso é uma afirmação e não uma lacuna. Alguém foi ver e a
                        quantidade é zero, ou a coisa não acontece. Quem recebe pode confiar nisto.
-        unmeasured     não existe instrumento para isto, aqui. A lacuna honesta, e a única das quatro
+        unmeasured     não existe instrumento para isto, aqui. A lacuna honesta, e a única das três
                        que preencher resolveria. Não afirma nada sobre se a quantidade é grande ou
                        pequena.
         notApplicable  o assunto está fora da população desta pergunta, portanto perguntar é MAL
                        FORMULADO e não fica por responder. Quem receba e trate isto como lacuna
                        reportará uma deficiência que não existe.
-        derived        isto é uma SAÍDA, calculada a partir de outros elementos. Enviar um valor
-                       curto-circuitaria a derivação e poderia contradizer as próprias entradas dela.
-                       Quem recebe calcula-o.
 
       O QUE OBRIGA
 
@@ -993,21 +972,29 @@
       a lacuna que fecha. É um facto sobre a LEGITIMIDADE de uma afirmação, e a legitimidade pertence
       à afirmação. Ver o `Provenance/standing`.
 
-      ⚠️ Dois modelos independentes chegaram exatamente a estas quatro classes com glosas quase
-      idênticas, o que é prova e é a razão de a fasquia para uma quinta ser alta. A frequência NÃO
+      ⛔ O `derived`, pela razão do `unverified` virada ao contrário. Um valor calculado a partir de
+      outros elementos TEM valor, fixado por uma regra, e uma ausência não tem onde dizer qual regra,
+      portanto a resposta acaba numa nota que leitor nenhum consegue verificar. É uma `Derivation`,
+      que nomeia a sua `Identity`, e só é admitida onde essa identidade calcula a posição.
+
+      ⚠️ Dois modelos independentes chegaram às mesmas quatro classes com glosas quase idênticas,
+      o `derived` entre elas, o que é prova e é a razão de a fasquia para uma quinta ser alta. Este
+      declara a quarta como derivação e não como ausência, porque nomeia uma regra onde as outras
+      três nomeiam um nada, uma lacuna e uma pergunta mal formulada. A frequência NÃO
       faz parte dessa fasquia: um corpus em adoção exercitou os dois órfãos e usou o `none` em zero
       de 47 registos, e nenhum desses números muda o raciocínio acima.
 
       VER TAMBÉM
 
-      A `Absence` para o transporte e para a regra da nota. A `Provenance` para a legitimidade. Todos
-      os invólucros `Stated*` para os sítios onde estes aparecem.
+      A `Absence` para o transporte e para a regra da nota. A `Provenance` para a legitimidade. O
+      `ClaimAbsenceReason` para o estreitamento que uma afirmação toma. A `Derivation` e a `Identity`
+      para um valor calculado a partir de outros elementos. Todos os invólucros `Stated*` para os
+      sítios onde estes aparecem.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="none"/>
       <xs:enumeration value="unmeasured"/>
       <xs:enumeration value="notApplicable"/>
-      <xs:enumeration value="derived"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -1147,7 +1134,7 @@
 
       SEE ALSO
 
-      `AbsenceReason` for the four members. `Claim` for the same provenance argument. Every
+      `AbsenceReason` for the three members. `Claim` for the same provenance argument. Every
       `Stated*` wrapper for where this appears.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -1184,7 +1171,7 @@
 
       VER TAMBÉM
 
-      A `AbsenceReason` para os quatro membros. A `Claim` para o mesmo argumento da proveniência. Todos
+      A `AbsenceReason` para os três membros. A `Claim` para o mesmo argumento da proveniência. Todos
       os invólucros `Stated*` para os sítios onde isto aparece.
     </xs:documentation></xs:annotation>
     <xs:sequence>
@@ -1199,7 +1186,7 @@
     <xs:annotation><xs:documentation xml:lang="en">
       WHAT IT IS
 
-      Why a `Claim` has no value in this position. Three members: `AbsenceReason` without
+      Why a `Claim` has no value in this position. Two members: `AbsenceReason` without
       `none`.
 
       WHAT IT OBLIGES
@@ -1235,22 +1222,22 @@
       ONE, and one is a value. It has a size, and in `LumpyQuantum/origin` it has an author,
       so `intrinsic` (the line cannot be stopped), `contractual` (somebody promised cover) and
       `policy` (somebody staffed three shifts) collapsed into a blank that named none of them.
-      Both take this type now, and a whole duty cycle is filed as one whole period.
+      Both take this type, and a whole duty cycle is filed as one whole period.
 
-      ⛔ Leaving it to a rule. A rule of that shape examines 120 slacks and needs a relation
-      whose only product is the violation list, while a narrower simpleType reaches the same
-      fact in the validator. Two gates on one fact is a second opinion nobody adjudicates.
+      ⛔ Leaving it to a rule. A rule of that shape needs a relation whose only product is the
+      violation list, while a narrower simpleType reaches the same fact in the validator. Two
+      gates on one fact is a second opinion nobody adjudicates.
 
       SEE ALSO
 
-      `AbsenceReason` for the four, and for what `none` still means elsewhere. `Claim` for
+      `AbsenceReason` for the three, and for what `none` still means elsewhere. `Claim` for
       what a value costs to state. `ClaimAbsence` for the shape that carries this.
     </xs:documentation><xs:documentation xml:lang="pt">
       **Português.**
 
       O QUE É
 
-      Porque é que uma `Claim` não tem valor nesta posição. Três membros: o `AbsenceReason`
+      Porque é que uma `Claim` não tem valor nesta posição. Dois membros: o `AbsenceReason`
       sem o `none`.
 
       O QUE OBRIGA
@@ -1270,24 +1257,38 @@
       O QUE RECUSA
 
       ⛔ O `none`, que é a razão inteira de este tipo existir. Continua correto em todos os
-      invólucros cujo valor não é uma quantidade -- o `boundOrigin` (nada fixa este limite), a
-      `window` (a fração de serviço é um), os `couplings` (alguém procurou acoplamentos e não
-      encontrou nenhum) -- e esses mantêm o `AbsenceReason` inteiro.
+      invólucros cujo valor não tem nada a dizer sobre o caso degenerado -- o `boundOrigin` (nada
+      fixa este limite), os `couplings` (alguém procurou acoplamentos e não encontrou nenhum), o
+      `absorber` (nenhum amortecedor o levou), a `notation` (publicado sem identificador nenhum)
+      -- e esses mantêm o `AbsenceReason` inteiro.
 
-      ⛔ Deixá-lo a uma regra. Uma regra dessa forma examina 120 folgas e precisa de uma relação
-      cujo único produto é a lista de violações, ao passo que um simpleType mais estreito alcança
+      ⭐⭐⭐ E O TESTE É MAIS FINO DO QUE «ISTO É UMA QUANTIDADE». O `none` só é honesto onde o
+      ramo do valor não tem ESTADO NOMEADO para o caso degenerado; onde tem, o `none` é uma
+      segunda porta para ele e as duas grafias não podem ser comparadas como aritmética. Isso
+      alcança dois invólucros que não são afirmações de todo. O `StatedRemainder`: «não há resto»
+      lê-se ou «não há nada de que subtrair» ou «a diferença é zero», e o `Fit` já resolveu o
+      segundo em prosa -- uma nameplate pontual igual a uma procura pontual «É UM AJUSTAMENTO COM
+      FOLGA ... em que a folga mínima é zero», uma declaração com sinal e uma quantidade de
+      [0, 0, 0]. O `StatedLumpyQuantum` na `window`: «funciona continuamente» é uma fração de
+      serviço de UM, e um é um valor. Tem tamanho, e no `LumpyQuantum/origin` tem autor, por isso
+      o `intrinsic` (a linha não se pode parar), o `contractual` (alguém prometeu cobertura) e o
+      `policy` (alguém pôs três turnos) ficariam achatados num branco que não nomeia nenhum
+      deles. Ambos levam este tipo, e um ciclo de serviço inteiro declara-se como um período
+      inteiro.
+
+      ⛔ Deixá-lo a uma regra. Uma regra dessa forma precisa de uma relação cujo único produto é a
+      lista de violações, ao passo que um simpleType mais estreito alcança
       o mesmo facto no validador. Duas portas sobre um facto são uma segunda opinião que ninguém
       arbitra.
 
       VER TAMBÉM
 
-      O `AbsenceReason` para os quatro, e para o que o `none` ainda significa noutros sítios. A
+      O `AbsenceReason` para os três, e para o que o `none` ainda significa noutros sítios. A
       `Claim` para o que custa declarar um valor. A `ClaimAbsence` para a forma que carrega isto.
     </xs:documentation></xs:annotation>
     <xs:restriction base="xs:token">
       <xs:enumeration value="unmeasured"/>
       <xs:enumeration value="notApplicable"/>
-      <xs:enumeration value="derived"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -1332,6 +1333,979 @@
       <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
       <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="Identity">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      The equations this model holds between the positions of a document, each named, so that a
+      value filed as the output of one can say which. A figure that is computed from other
+      elements is a CLAIM about how it is computed, and that claim needs a name to be checked.
+
+      THE MEMBERS
+
+        fusionSum       `x = F Φ x_parts - e`, per quantity: a composed layer's figure is the sum
+                        of its converted parts less what the composer eliminated. Computes a
+                        composed demand, nameplate amount or draw, an eliminated quantity (solved
+                        for `e`) and a part's factor (solved for the factor from one quantity and
+                        held by the other two). It BINDS where the composer's search says it does
+                        (`StatedEliminations`), and it is the composer's assertion, not the model's.
+        magnitude       the size of the remainder in force: `|n - d|` with the bounds crossed, or,
+                        on a composed layer whose conversions have width, the size of the pivot over
+                        its parts. Computes a remainder's `quantity`. Binds: a stated quantity is
+                        this magnitude at each of its three points (`Remainder`).
+        fit             the comparison of the demand and nameplate ranges that ISO 286 makes.
+                        Computes a remainder's `sign`. Binds (`Fit`).
+        clearance       `max(n - d, 0)` read as a quantity in the layer's unit, only over a window
+                        that covers the whole of its period. Computes a time slack. DEFINES only: a
+                        measured slack is free to differ from it.
+        sharesSum       the holders' shares add up to the size of the remainder, solved for the one
+                        share filed as its output. Computes a holder's `share`. Binds.
+        sharedParts     the double counting the structure implies: `Σ (k - 1)·φ·x` over the highest
+                        layers two or more of a fusion's parts reach, each at its own stated figure.
+                        Computes an eliminated quantity. Binds.
+        conversionPath  the product of the conversions other filings state along a path from the
+                        part's unit to the composed layer's. Computes a part's factor. Binds.
+        amountOrigin    a bound's author is the one `Nameplate/amountOrigin` names. Computes the
+                        `boundOrigin` of a nameplate amount. Defines.
+        quantumOrigin   a bound's author is the one `LumpyQuantum/origin` names. Computes the
+                        `boundOrigin` of a lump or window size. Defines.
+
+      WHAT IT OBLIGES
+
+      EVERY POSITION THAT MAY BE COMPUTED ADMITS EXACTLY THE MEMBERS THAT COMPUTE IT, and no other
+      position admits a derivation at all. Where one member is possible the position fixes it (a
+      composed demand can only be its fusion's sum); where two are, the filer names the one they
+      used, because the two do not always agree and a checker holding the wrong one accuses a
+      document that is right. A claim's `boundOrigin` and `narrowsWhen` may also name the member
+      that computes the claim itself: the bound of a share taken off a fixed nameplate is the
+      demand's bound, and what would narrow it is whatever narrows the demand. Only that member,
+      or for an edge the sibling origin its holder states: a `Claim` is one type wherever it sits,
+      so the pairing is a rule rather than a restriction (`BoundDerivation`,
+      `NarrowingDerivation`).
+
+      BINDS OR DEFINES is `ConstraintOrigin`'s question asked of an equation: `r = n - d` holds
+      whatever anybody decides, a composer's sum holds because the composer says so, and the
+      clearance is a time slack only where somebody chose to read it as one.
+
+      WHAT IT REFUSES
+
+      ⛔ `derived` as an absence. A value computed from other elements is not missing; it is
+      stated by a rule, and the absence arm has no place to say which rule.
+
+      ⛔ Borrowing. The set is CONTRIBUTED and closed: these are this model's equations, and a new
+      one is a change to the model, made here.
+
+      SEE ALSO
+
+      `Derivation` carries it. `EliminationAgainst` is the other closed set this model contributes.
+      `Remainder`, `Fit`, `Fusion`, `LumpyQuantum`, `Nameplate` for the positions it computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      As equações que este modelo mantém entre as posições de um documento, cada uma com nome, para
+      que um valor declarado como saída de uma possa dizer qual. Um valor calculado a partir de
+      outros elementos é uma AFIRMAÇÃO sobre a maneira como é calculado, e essa afirmação precisa de
+      um nome para poder ser verificada.
+
+      OS MEMBROS
+
+        fusionSum       `x = F Φ x_parts - e`, por quantidade: o valor de uma camada composta é a soma
+                        das suas partes convertidas menos o que quem compôs eliminou. Calcula uma
+                        procura, uma capacidade nominal ou um consumo compostos, uma quantidade
+                        eliminada (resolvida em ordem a `e`) e o fator de uma parte (resolvido em
+                        ordem ao fator a partir de uma quantidade e mantido pelas outras duas).
+                        VINCULA onde a procura de quem compôs o diz (`StatedEliminations`), e é uma
+                        afirmação de quem compôs, não do modelo.
+        magnitude       a grandeza do resto em vigor: `|n - d|` com os limites cruzados ou, numa
+                        camada composta cujas conversões têm largura, a grandeza do pivô sobre as
+                        suas partes. Calcula a `quantity` de um resto. Vincula: uma quantidade
+                        declarada é esta grandeza em cada um dos seus três pontos (`Remainder`).
+        fit             a comparação dos intervalos da procura e da capacidade nominal que a ISO 286
+                        faz. Calcula o `sign` de um resto. Vincula (`Fit`).
+        clearance       `max(n - d, 0)` lido como quantidade na unidade da camada, só sobre uma
+                        janela que cubra todo o seu período. Calcula uma folga de tempo. Só DEFINE:
+                        uma folga medida pode divergir dela.
+        sharesSum       as quotas de quem suporta somam a grandeza do resto, resolvida em ordem à
+                        única quota declarada como saída. Calcula a `share` de quem suporta. Vincula.
+        sharedParts     a dupla contagem que a estrutura implica: `Σ (k - 1)·φ·x` sobre as camadas
+                        mais altas que duas ou mais partes de uma fusão alcançam, cada uma ao seu
+                        próprio valor declarado. Calcula uma quantidade eliminada. Vincula.
+        conversionPath  o produto das conversões que outras declarações enunciam ao longo de um
+                        caminho da unidade da parte à da camada composta. Calcula o fator de uma
+                        parte. Vincula.
+        amountOrigin    o autor de um limite é o que o `Nameplate/amountOrigin` nomeia. Calcula o
+                        `boundOrigin` de uma capacidade nominal. Define.
+        quantumOrigin   o autor de um limite é o que o `LumpyQuantum/origin` nomeia. Calcula o
+                        `boundOrigin` do tamanho de um lote ou de uma janela. Define.
+
+      O QUE OBRIGA
+
+      CADA POSIÇÃO QUE PODE SER CALCULADA ADMITE EXATAMENTE OS MEMBROS QUE A CALCULAM, e nenhuma
+      outra posição admite derivação alguma. Onde um só membro é possível, a posição fixa-o (uma
+      procura composta só pode ser a soma da sua fusão); onde há dois, quem declara nomeia o que
+      usou, porque os dois nem sempre coincidem e um verificador que segure o errado acusa um
+      documento que está certo. O `boundOrigin` e o `narrowsWhen` de uma afirmação podem também
+      nomear o membro que calcula a própria afirmação: o limite de uma quota tirada de uma
+      capacidade nominal fixa é o limite da procura, e o que a estreitaria é o que estreita a procura.
+      Só esse membro ou, para um limite, a origem irmã que quem a contém declara: uma `Claim` é um só
+      tipo onde quer que esteja, por isso o emparelhamento é uma regra e não uma restrição
+      (`BoundDerivation`, `NarrowingDerivation`).
+
+      VINCULA OU DEFINE é a pergunta do `ConstraintOrigin` feita a uma equação: `r = n - d` vale
+      decida quem decidir, a soma de quem compõe vale porque quem compõe o diz, e a folga é uma folga
+      de tempo só onde alguém escolheu lê-la assim.
+
+      O QUE RECUSA
+
+      ⛔ O `derived` como ausência. Um valor calculado a partir de outros elementos não está em
+      falta; é enunciado por uma regra, e o ramo de ausência não tem onde dizer qual.
+
+      ⛔ Empréstimo. O conjunto é CONTRIBUÍDO e fechado: estas são as equações deste modelo, e uma
+      nova é uma alteração ao modelo, feita aqui.
+
+      VER TAMBÉM
+
+      A `Derivation` transporta-o. A `EliminationAgainst` é o outro conjunto fechado que este modelo
+      contribui. O `Remainder`, o `Fit`, a `Fusion`, o `LumpyQuantum` e a `Nameplate` para as
+      posições que calcula.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="fusionSum"/>
+      <xs:enumeration value="magnitude"/>
+      <xs:enumeration value="fit"/>
+      <xs:enumeration value="clearance"/>
+      <xs:enumeration value="sharesSum"/>
+      <xs:enumeration value="sharedParts"/>
+      <xs:enumeration value="conversionPath"/>
+      <xs:enumeration value="amountOrigin"/>
+      <xs:enumeration value="quantumOrigin"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Derivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A value filed as the output of one of this model's identities, which the receiver
+      computes. It is a claim about HOW the value is computed, so it names the identity, and it
+      carries what an `Absence` carries so that who says it, and when, survives.
+
+      WHAT IT CONTAINS
+
+        identity    the member of `Identity` that computes the value.
+        note        anything the identity does not say, in words.
+        provenance  who asserts the derivation, and on what standing.
+        asOf        when it was true.
+
+      WHAT IT OBLIGES
+
+      THIS IS THE SHAPE, AND NO POSITION TAKES IT UNRESTRICTED. Every position that may be
+      computed takes a type of exactly this shape whose `identity` admits only the members
+      that compute that position (`ComposedDerivation`, `MagnitudeDerivation` and the rest),
+      and a position no member computes has no derivation arm at all. That expansion is the
+      catalogue's: `Identity` says what computes what, and the positions follow it.
+
+      WHAT IT REFUSES
+
+      ⛔ A value beside the identity. Sending the figure would short-circuit the computation
+      and could disagree with its own inputs; a filer who wants to state a figure files a
+      `claim`, and where the position binds, the receiver checks it against the identity.
+
+      SEE ALSO
+
+      `Identity` for the members. `Absence` for the same attachments on a value nobody has.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Um valor declarado como saída de uma das identidades deste modelo, que quem recebe calcula.
+      É uma afirmação sobre COMO o valor é calculado, portanto nomeia a identidade, e transporta o
+      que uma `Absence` transporta para que quem o diz, e quando, sobreviva.
+
+      O QUE CONTÉM
+
+        identity    o membro da `Identity` que calcula o valor.
+        note        o que a identidade não diz, por palavras.
+        provenance  quem afirma a derivação, e com que legitimidade.
+        asOf        quando era verdade.
+
+      O QUE OBRIGA
+
+      ESTA É A FORMA, E NENHUMA POSIÇÃO A TOMA SEM RESTRIÇÃO. Cada posição que pode ser calculada
+      toma um tipo exatamente com esta forma cuja `identity` só admite os membros que calculam essa
+      posição (`ComposedDerivation`, `MagnitudeDerivation` e as restantes), e uma posição que
+      nenhum membro calcula não tem ramo de derivação nenhum. Essa expansão é do catálogo: a
+      `Identity` diz o que calcula o quê, e as posições seguem-na.
+
+      O QUE RECUSA
+
+      ⛔ Um valor ao lado da identidade. Enviar o valor curto-circuitaria o cálculo e poderia
+      contradizer as suas próprias entradas; quem queira declarar um valor declara uma `claim`, e
+      onde a posição vincula, quem recebe verifica-a contra a identidade.
+
+      VER TAMBÉM
+
+      A `Identity` para os membros. A `Absence` para os mesmos anexos num valor que ninguém tem.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity"   type="pm:Identity"/>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ComposedDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a composed layer's demand, nameplate amount or draw: the `identity`
+      is restricted to `fusionSum`, the member that computes it. The position fixes the
+      identity, so a filer only says that it was computed.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para a procura, a capacidade nominal ou o consumo de uma camada composta: a
+      `identity` restringe-se a `fusionSum`, o membro que a calcula. A posição fixa a identidade,
+      portanto quem declara só diz que foi calculada.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="fusionSum"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MagnitudeDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a remainder's `quantity`: the `identity` is restricted to
+      `magnitude`, the member that computes it. The position fixes the identity, so a filer
+      only says that it was computed.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para a `quantity` de um resto: a `identity` restringe-se a `magnitude`, o
+      membro que a calcula. A posição fixa a identidade, portanto quem declara só diz que foi
+      calculada.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="magnitude"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FitDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a remainder's `sign`: the `identity` is restricted to `fit`, the
+      member that computes it. The position fixes the identity, so a filer only says that it
+      was computed.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para o `sign` de um resto: a `identity` restringe-se a `fit`, o membro que a
+      calcula. A posição fixa a identidade, portanto quem declara só diz que foi calculada.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="fit"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ClearanceDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a layer's time slack: the `identity` is restricted to `clearance`,
+      the member that computes it. The position fixes the identity, so a filer only says
+      that it was computed.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para a folga de tempo de uma camada: a `identity` restringe-se a `clearance`,
+      o membro que a calcula. A posição fixa a identidade, portanto quem declara só diz que foi
+      calculada.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="clearance"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ShareDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a holder's `share`: the `identity` is restricted to `sharesSum`,
+      the member that computes it. The position fixes the identity, so a filer only says
+      that it was computed.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para a `share` de quem suporta: a `identity` restringe-se a `sharesSum`, o
+      membro que a calcula. A posição fixa a identidade, portanto quem declara só diz que foi
+      calculada.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="sharesSum"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EliminationDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for an eliminated quantity: the `identity` is restricted to `fusionSum`
+      and `sharedParts`, the members that compute it. Where more than one could, the filer
+      names the one they used, because the two need not agree.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para uma quantidade eliminada: a `identity` restringe-se a `fusionSum` e
+      `sharedParts`, os membros que a calculam. Onde mais do que um poderia, quem declara nomeia o
+      que usou, porque os dois não têm de coincidir.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="fusionSum"/>
+            <xs:enumeration value="sharedParts"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FactorDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a part's conversion factor: the `identity` is restricted to
+      `fusionSum` and `conversionPath`, the members that compute it. Where more than one
+      could, the filer names the one they used, because the two need not agree.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para o fator de conversão de uma parte: a `identity` restringe-se a
+      `fusionSum` e `conversionPath`, os membros que a calculam. Onde mais do que um poderia, quem
+      declara nomeia o que usou, porque os dois não têm de coincidir.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="fusionSum"/>
+            <xs:enumeration value="conversionPath"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BoundDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for a claim's `boundOrigin`: the `identity` is restricted to
+      `amountOrigin`, `quantumOrigin`, `fusionSum`, `magnitude`, `sharesSum`, `sharedParts`,
+      `clearance` and `conversionPath`, the members that compute it. Where more than one could,
+      the filer names the one they used, because they need not agree.
+
+      WHAT IT OBLIGES
+
+      The member computes THIS claim: the claim sits at a position the member computes and its
+      edge is the edge of that member's terms, or the member is the sibling origin the claim's
+      holder states (`amountOrigin` on a nameplate amount, `quantumOrigin` on the size of a lump
+      or a window). A `Claim` is one type wherever it sits, so this type admits the members of
+      every position at once, and the pairing is checked in `assets/sql/rules.sql`, as
+      `identity_does_not_compute_the_claim`.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para o `boundOrigin` de uma afirmação: a `identity` restringe-se a
+      `amountOrigin`, `quantumOrigin`, `fusionSum`, `magnitude`, `sharesSum`, `sharedParts`,
+      `clearance` e `conversionPath`, os membros que a calculam. Onde mais do que um poderia, quem
+      declara nomeia o que usou, porque não têm de coincidir.
+
+      O QUE OBRIGA
+
+      O membro calcula ESTA afirmação: a afirmação está numa posição que o membro calcula e o seu
+      limite é o limite dos termos desse membro, ou o membro é a origem irmã que quem contém a
+      afirmação declara (`amountOrigin` numa capacidade nominal, `quantumOrigin` no tamanho de um
+      lote ou de uma janela). Uma `Claim` é um só tipo onde quer que esteja, por isso este tipo
+      admite os membros de todas as posições ao mesmo tempo, e o emparelhamento é verificado no
+      `assets/sql/rules.sql`, como `identity_does_not_compute_the_claim`.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="amountOrigin"/>
+            <xs:enumeration value="quantumOrigin"/>
+            <xs:enumeration value="fusionSum"/>
+            <xs:enumeration value="magnitude"/>
+            <xs:enumeration value="sharesSum"/>
+            <xs:enumeration value="sharedParts"/>
+            <xs:enumeration value="clearance"/>
+            <xs:enumeration value="conversionPath"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="NarrowingDerivation">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A `Derivation` for what would narrow a claim: the `identity` is restricted to
+      `fusionSum`, `magnitude`, `sharesSum`, `sharedParts`, `clearance` and `conversionPath`, the
+      members that compute it. Where more than one could, the filer names the one they used,
+      because they need not agree.
+
+      WHAT IT OBLIGES
+
+      The member computes THIS claim: the claim sits at a position the member computes, and it
+      narrows as that member's terms do. A `Claim` is one type wherever it sits, so this type
+      admits the members of every position at once, and the pairing is checked in
+      `assets/sql/rules.sql`, as `identity_does_not_compute_the_claim`.
+
+      SEE ALSO
+
+      `Derivation` for the shape and the attachments. `Identity` for what each member
+      computes.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma `Derivation` para o que estreitaria uma afirmação: a `identity` restringe-se a
+      `fusionSum`, `magnitude`, `sharesSum`, `sharedParts`, `clearance` e `conversionPath`, os
+      membros que a calculam. Onde mais do que um poderia, quem declara nomeia o que usou, porque
+      não têm de coincidir.
+
+      O QUE OBRIGA
+
+      O membro calcula ESTA afirmação: a afirmação está numa posição que o membro calcula, e
+      estreita-se como os termos desse membro. Uma `Claim` é um só tipo onde quer que esteja, por
+      isso este tipo admite os membros de todas as posições ao mesmo tempo, e o emparelhamento é
+      verificado no `assets/sql/rules.sql`, como `identity_does_not_compute_the_claim`.
+
+      VER TAMBÉM
+
+      A `Derivation` para a forma e para os anexos. A `Identity` para o que cada membro calcula.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="identity">
+        <xs:simpleType>
+          <xs:restriction base="pm:Identity">
+            <xs:enumeration value="fusionSum"/>
+            <xs:enumeration value="magnitude"/>
+            <xs:enumeration value="sharesSum"/>
+            <xs:enumeration value="sharedParts"/>
+            <xs:enumeration value="clearance"/>
+            <xs:enumeration value="conversionPath"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="note"       type="xs:string"     minOccurs="0"/>
+      <xs:element name="provenance" type="pm:Provenance" minOccurs="0"/>
+      <xs:element name="asOf"       type="xs:date"       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StatedSummedQuantity">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      One of the three quantities a fusion sums: stated as a claim, filed as the output of
+      an identity the receiver computes, or absent for a typed reason. Used by
+      `Demand/amount`, `Nameplate/amount` and `Jagged/draw`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`ComposedDerivation`);
+                    sending a value would short-circuit the computation and could disagree
+                    with its inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Uma das três quantidades que uma fusão soma: declarada como afirmação, declarada como saída de
+      uma identidade que quem recebe calcula, ou ausente por uma razão tipificada. Usado pelo
+      `Demand/amount`, pelo `Nameplate/amount` e pelo `Jagged/draw`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`ComposedDerivation`); enviar um
+                    valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:ComposedDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedMagnitude">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      The size of a remainder: stated as a claim, filed as the output of an identity the
+      receiver computes, or absent for a typed reason. Used by `Remainder/quantity`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`MagnitudeDerivation`);
+                    sending a value would short-circuit the computation and could disagree
+                    with its inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      A grandeza de um resto: declarada como afirmação, declarada como saída de uma identidade que
+      quem recebe calcula, ou ausente por uma razão tipificada. Usado pelo `Remainder/quantity`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`MagnitudeDerivation`); enviar um
+                    valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:MagnitudeDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedTimeSlack">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      A layer's time slack: stated as a claim, filed as the output of an identity the
+      receiver computes, or absent for a typed reason. Used by `Layer/timeSlack`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`ClearanceDerivation`);
+                    sending a value would short-circuit the computation and could disagree
+                    with its inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      A folga de tempo de uma camada: declarada como afirmação, declarada como saída de uma
+      identidade que quem recebe calcula, ou ausente por uma razão tipificada. Usado pelo
+      `Layer/timeSlack`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`ClearanceDerivation`); enviar um
+                    valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:ClearanceDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedShare">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      The share of a remainder one holder bears: stated as a claim, filed as the output of
+      an identity the receiver computes, or absent for a typed reason. Used by
+      `Holder/share`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`ShareDerivation`); sending a
+                    value would short-circuit the computation and could disagree with its
+                    inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      A quota de um resto que um detentor suporta: declarada como afirmação, declarada como saída de
+      uma identidade que quem recebe calcula, ou ausente por uma razão tipificada. Usado pelo
+      `Holder/share`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`ShareDerivation`); enviar um
+                    valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:ShareDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedEliminatedQuantity">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      How much a composer eliminated: stated as a claim, filed as the output of an identity
+      the receiver computes, or absent for a typed reason. Used by
+      `asrt:Elimination/quantity`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`EliminationDerivation`);
+                    sending a value would short-circuit the computation and could disagree
+                    with its inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Quanto quem compôs eliminou: declarada como afirmação, declarada como saída de uma identidade
+      que quem recebe calcula, ou ausente por uma razão tipificada. Usado pelo
+      `asrt:Elimination/quantity`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`EliminationDerivation`); enviar
+                    um valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:EliminationDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedFactor">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      The factor that converts a part into its composed layer's unit: stated as a claim,
+      filed as the output of an identity the receiver computes, or absent for a typed
+      reason. Used by `asrt:Part/factor`.
+
+      WHAT IT CONTAINS
+
+        claim       the figure, stated.
+        derivation  the figure is an identity's output, named (`FactorDerivation`); sending
+                    a value would short-circuit the computation and could disagree with its
+                    inputs.
+        absent      why there is no figure (`ClaimAbsence`).
+
+      SEE ALSO
+
+      `StatedClaim` for the same choice where nothing computes the figure. `Identity` for
+      what computes this one.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      O fator que converte uma parte para a unidade da sua camada composta: declarada como
+      afirmação, declarada como saída de uma identidade que quem recebe calcula, ou ausente por uma
+      razão tipificada. Usado pelo `asrt:Part/factor`.
+
+      O QUE CONTÉM
+
+        claim       o valor, declarado.
+        derivation  o valor é a saída de uma identidade, com nome (`FactorDerivation`); enviar um
+                    valor curto-circuitaria o cálculo e poderia contradizer as suas entradas.
+        absent      porque é que não há valor (`ClaimAbsence`).
+
+      VER TAMBÉM
+
+      A `StatedClaim` para a mesma escolha onde nada calcula o valor. A `Identity` para o que
+      calcula este.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="claim"      type="pm:Claim"/>
+      <xs:element name="derivation" type="pm:FactorDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="StatedAmountOrigin">
+    <xs:annotation><xs:documentation xml:lang="en">
+      WHAT IT IS
+
+      Who could have held a different amount, or why nobody can say.
+      `StatedConstraintOrigin` for `Nameplate/amountOrigin`, with two of its answers
+      removed.
+
+      WHAT IT CONTAINS
+
+        origin intrinsic/contractual/policy  somebody can move this, and here is who
+        absent/reason = unmeasured           nobody has asked who could hold a different
+        number
+        absent/reason = notApplicable        there is no committed amount to have an origin
+
+      WHAT IT REFUSES
+
+      ⛔ `none`. An amount that was COMMITTED has an author by definition, and where the
+      number is fixed by the nature of the thing, `intrinsic` is the member that says so;
+      `none` would be a second spelling of it. A BOUND is different, which is why
+      `Claim/boundOrigin` keeps `StatedConstraintOrigin` whole.
+
+      ⛔ A derivation. Nothing in the model computes who committed an amount.
+
+      SEE ALSO
+
+      `StatedConstraintOrigin` for the question and why it is wrapped. `ConstraintOrigin`
+      for the three members.
+    </xs:documentation><xs:documentation xml:lang="pt">
+      **Português.**
+
+      O QUE É
+
+      Quem poderia ter tido uma quantidade diferente, ou porque é que ninguém o sabe dizer. O
+      `StatedConstraintOrigin` para o `Nameplate/amountOrigin`, com duas das suas respostas
+      retiradas.
+
+      O QUE CONTÉM
+
+        origin intrinsic/contractual/policy  alguém pode mexer isto, e é este
+        absent/reason = unmeasured           ninguém perguntou quem poderia ter um número diferente
+        absent/reason = notApplicable        não há quantidade comprometida para ter origem
+
+      O QUE RECUSA
+
+      ⛔ O `none`. Uma quantidade que foi COMPROMETIDA tem autor por definição, e onde o número é
+      fixado pela natureza da coisa, o `intrinsic` é o membro que o diz; o `none` seria uma segunda
+      grafia dele. Um LIMITE é diferente, e é por isso que o `Claim/boundOrigin` mantém o
+      `StatedConstraintOrigin` inteiro.
+
+      ⛔ Uma derivação. Nada no modelo calcula quem comprometeu uma quantidade.
+
+      VER TAMBÉM
+
+      O `StatedConstraintOrigin` para a pergunta e para a razão de ser envolvida. A
+      `ConstraintOrigin` para os três membros.
+    </xs:documentation></xs:annotation>
+    <xs:choice>
+      <xs:element name="origin" type="pm:ConstraintOrigin"/>
+      <xs:element name="absent" type="pm:ClaimAbsence"/>
+    </xs:choice>
   </xs:complexType>
 
 
@@ -1478,7 +2452,12 @@
       O `Remainder` para o valor. A `Layer` para a obrigatoriedade. A `Absence` para o outro ramo.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="remainder" type="pm:Remainder"/>
+      <xs:element name="remainder" type="pm:Remainder">
+        <xs:key name="holderKind">
+          <xs:selector xpath="pm:holder/pm:holder"/>
+          <xs:field    xpath="pm:kind"/>
+        </xs:key>
+      </xs:element>
       <xs:element name="absent"    type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
@@ -1618,10 +2597,10 @@
       WHAT IT IS
 
       Who could move a bound, or a typed statement that nobody set it. Used by
-      `Nameplate/amountOrigin` and `Claim/boundOrigin`.
+      `Claim/boundOrigin`; `Nameplate/amountOrigin` asks the same question with two answers
+      removed, in `StatedAmountOrigin`.
 
-      WRAPPED WHERE `LumpyQuantum/origin` IS NOT, and the difference is not an oversight
-      even though the two carry the same enumeration.
+      WRAPPED WHERE `LumpyQuantum/origin` IS NOT, though the two carry the same enumeration.
 
       A QUANTUM'S ORIGIN IS A FACT ABOUT THE SUPPLY. A sender who filed `lumpy` has already
       established the block size, and knowing the size means knowing whose terms set it.
@@ -1644,8 +2623,10 @@
                                              measurements fell, not where a rule put them,
                                              and there is no lever to look for
         absent/reason = notApplicable        the quantity has no author to ask about: an
-                                             observed count, a derived residual
-        absent/reason = derived              it follows from a bound stated elsewhere
+                                             observed count. A computed one is a `derivation`
+        derivation                           the author is stated elsewhere: in the sibling origin
+                                             (`amountOrigin`, `quantumOrigin`), or it is the
+                                             identity that computes the claim (`BoundDerivation`)
 
       `none` is the common case, and it is what an optional enumeration cannot say. A demand
       interval read off twelve months of history has bounds nobody chose; an SLA has bounds
@@ -1655,12 +2636,13 @@
 
       ⛔ Being optional and silent. The cost is named at `Nameplate/capacitySlack`: the three
       buffer slacks say how much room a buffer has and NOTHING about whether anybody can move
-      it, the slot already exists, and across the whole corpus it is filled ONCE. An optional
-      field nobody fills is not a weak signal; it is an absent one.
+      it, and the slot already exists. An optional field nobody fills is not a weak signal; it
+      is an absent one.
 
       SEE ALSO
 
-      `ConstraintOrigin` for the three members. `Nameplate` and `Claim` for the two sites.
+      `ConstraintOrigin` for the three members. `Claim` for the site. `StatedAmountOrigin` for
+      the amount's.
       `LumpyQuantum` for the unwrapped case and why.
     </xs:documentation><xs:documentation xml:lang="pt">
 
@@ -1670,10 +2652,11 @@
       O QUE É
 
       Quem poderia mexer um limite, ou uma declaração tipificada de que ninguém o pôs. Usado pelo
-      `Nameplate/amountOrigin` e pelo `Claim/boundOrigin`.
+      `Claim/boundOrigin`; o `Nameplate/amountOrigin` faz a mesma pergunta com duas respostas
+      retiradas, no `StatedAmountOrigin`.
 
-      ENVOLVIDO ONDE O `LumpyQuantum/origin` NÃO É, e a diferença não é um esquecimento, embora os
-      dois transportem a mesma enumeração.
+      ENVOLVIDO ONDE O `LumpyQuantum/origin` NÃO É, embora os dois transportem a mesma
+      enumeração.
 
       A ORIGEM DE UM QUANTUM É UM FACTO SOBRE A OFERTA. Quem declarou `lumpy` já estabeleceu a
       dimensão do bloco, e saber a dimensão é saber de quem são os termos que a fixaram. Não há
@@ -1696,8 +2679,10 @@
         absent/reason = none                 NADA O FIXA. O limite é onde as medições caíram, e não
                                              onde uma regra as pôs, e não há alavanca para procurar
         absent/reason = notApplicable        a quantidade não tem autor por quem perguntar: uma
-                                             contagem observada, um residual derivado
-        absent/reason = derived              decorre de um limite declarado noutro sítio
+                                             contagem observada. Uma calculada é uma `derivation`
+        derivation                           o autor está declarado noutro sítio: na origem irmã
+                                             (`amountOrigin`, `quantumOrigin`), ou é a identidade
+                                             que calcula a afirmação (`BoundDerivation`)
 
       O `none` é o caso corrente, e é o que uma enumeração opcional não consegue dizer. Um intervalo
       de procura lido de doze meses de histórico tem limites que ninguém escolheu; um acordo de nível
@@ -1708,17 +2693,18 @@
 
       ⛔ Ser opcional e silencioso. O custo está nomeado no `Nameplate/capacitySlack`: as três margens
       dos amortecedores dizem quanto espaço um amortecedor tem e NADA sobre se alguém o consegue
-      mexer, a casa já existe, e ao longo de todo o corpus está preenchida UMA vez. Um campo opcional
-      que ninguém preenche não é um sinal fraco; é um sinal ausente.
+      mexer, e a casa já existe. Um campo opcional que ninguém preenche não é um sinal fraco; é um
+      sinal ausente.
 
       VER TAMBÉM
 
-      A `ConstraintOrigin` para os três membros. A `Nameplate` e a `Claim` para os dois sítios. O
-      `LumpyQuantum` para o caso não envolvido e porquê.
+      A `ConstraintOrigin` para os três membros. A `Claim` para o sítio. O `StatedAmountOrigin` para
+      o da quantidade. O `LumpyQuantum` para o caso não envolvido e porquê.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="origin" type="pm:ConstraintOrigin"/>
-      <xs:element name="absent" type="pm:Absence"/>
+      <xs:element name="origin"     type="pm:ConstraintOrigin"/>
+      <xs:element name="derivation" type="pm:BoundDerivation"/>
+      <xs:element name="absent"     type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -1926,9 +2912,9 @@
       ⛔ `absent/reason = notApplicable`. There is no document the question fails to reach.
       Every document either reports something somebody saw, or it does not.
 
-      ⛔ `absent/reason = derived`. Nothing in the model implies a document's standing.
-      Admitting the reason would invite a receiver to infer evidence FROM CONTENT, which is
-      the inference this element exists to stop.
+      ⛔ A `derivation`. No `Identity` computes a document's standing, and one that did would
+      invite a receiver to infer evidence FROM CONTENT, which is the inference this element
+      exists to stop.
 
       ⛔ Being optional. An omission and `unmeasured` would render identically, and the entire
       cost of this element is paid to tell a silence from an answer.
@@ -1992,8 +2978,8 @@
       ⛔ `absent/reason = notApplicable`. Não há documento que a pergunta não alcance. Ou o documento
       relata algo que alguém viu, ou não relata.
 
-      ⛔ `absent/reason = derived`. Nada no modelo implica a legitimidade de um documento. Admitir a
-      razão convidaria quem recebe a inferir a prova A PARTIR DO CONTEÚDO, que é precisamente a
+      ⛔ Uma `derivation`. Nenhuma `Identity` calcula a legitimidade de um documento, e uma que o
+      fizesse convidaria quem recebe a inferir a prova A PARTIR DO CONTEÚDO, que é precisamente a
       inferência que este elemento existe para travar.
 
       ⛔ Ser opcional. Uma omissão e o `unmeasured` ficariam iguais, e todo o custo deste elemento se
@@ -2246,15 +3232,14 @@
         quantum                     the supply is live for this much of each period. ⭐ ONE
                                     WHOLE PERIOD IS A DUTY FRACTION OF ONE, quoted in the
                                     period's own unit -- `1 week` against a period of `week`
-                                    -- and a `derived` timeSlack stays legal there
+                                    -- and a timeSlack derived by `clearance` stays legal there
         absent/reason = unmeasured  the unit HAS a period and nobody has measured the live
                                     part of it. The one state that disables the timeSlack
                                     rule below
         absent/reason = notApplicable  the unit has no denominator, so there is no cycle to
                                     be live in part of. A stock, not a rate
 
-      ⛔⛔ THERE IS NO FOURTH, AND ITS DELETION IS WHY THIS ARM IS A `ClaimAbsence`. "The
-      supply is always on" was `absent/reason = none` for two revisions, and it is a VALUE
+      ⛔⛔ THERE IS NO FOURTH ARM. "The supply is always on" is a VALUE
       wearing an absence: a duty fraction of one, with a size and an `origin` naming who could
       shorten it. A line that cannot be stopped, a desk somebody promised round the clock and
       a plant staffed three shifts filed identically, and only the last two are levers. Worse,
@@ -2264,22 +3249,24 @@
       WHAT IT OBLIGES
 
       The distinction buys back a rule the window itself asks for: where a `window` is filed,
-      `Layer/timeSlack` must not be `absent/reason = derived`, because a clearance spread
+      `Layer/timeSlack` must not be a `derivation` of `clearance`, because a clearance spread
       evenly across the denominator is exactly what a window denies. `unmeasured` is the case
       that rule cannot otherwise reach — nobody knows whether the spare is spread evenly, so
-      a DERIVED time slack is an assumption rather than a computation. With `none` filed it
-      is a computation again.
+      a DERIVED time slack is an assumption rather than a computation. With a whole period
+      filed it is a computation again.
 
       WHAT IT REFUSES
 
-      ⛔ `derived`. A duty cycle is a fact about the supply's calendar and nothing else in the
-      model implies one. Admitting the reason here would invite a receiver to compute a
-      window out of a slack, which is the inference the window forbids running the other way.
+      ⛔ A `derivation`. A duty cycle is a fact about the supply's calendar and no `Identity`
+      computes one. Admitting one here would invite a receiver to compute a window out of a
+      slack, which is the inference the window forbids running the other way.
 
       WHERE IT IS CHECKED
 
-      `assets/sql/rules.sql` as `derived_slack_over_a_window` and
-      `window_not_applicable_on_a_rate`.
+      `assets/sql/rules.sql` as `derived_slack_over_a_window`,
+      `window_not_applicable_on_a_rate` and `window_size_not_applicable`. The last holds the
+      quantum's own `size`: a window filed as a quantum has a size to ask about, and a unit with
+      no period says so here, as `notApplicable`, and not one level down.
 
       SEE ALSO
 
@@ -2300,37 +3287,41 @@
         quantum                     a oferta está viva durante esta parte de cada período. ⭐ UM
                                     PERÍODO INTEIRO É UMA FRAÇÃO DE SERVIÇO DE UM, cotado na
                                     unidade do próprio período -- `1 week` para um período de
-                                    `week` -- e aí um `timeSlack` `derived` continua legal
+                                    `week` -- e aí um `timeSlack` derivado pela `clearance`
+                                    continua legal
         absent/reason = unmeasured  a unidade TEM um período e ninguém mediu a parte viva dele. O
                                     único estado que desativa a regra do `timeSlack` abaixo
         absent/reason = notApplicable  a unidade não tem denominador, portanto não há ciclo nenhum
                                     em parte do qual estar vivo. Um stock, não uma taxa
 
-      ⛔⛔ NÃO HÁ UM QUARTO, E A SUA ELIMINAÇÃO É A RAZÃO DE ESTE RAMO SER UM `ClaimAbsence`. «A
-      oferta está sempre ligada» era `absent/reason = none` durante duas revisões, e é um VALOR
+      ⛔⛔ NÃO HÁ UM QUARTO RAMO. «A oferta está sempre ligada» é um VALOR
       vestido de ausência: uma fração de serviço de um, com um tamanho e um `origin` a dizer quem
       a poderia encurtar. Uma linha que não se pode parar, um balcão que alguém prometeu 24 horas
       e uma fábrica com três turnos declaravam-se de forma idêntica, e só os dois últimos são
-      alavancas.
+      alavancas. Pior, o `assets/sql/layers/derivation_licensed.sql` LIA essa ausência como a sua
+      licença, portanto uma regra tirava um número de um espaço em branco.
 
       O QUE OBRIGA
 
       A distinção recupera uma regra que a própria janela pede: onde uma `window` é declarada, o
-      `Layer/timeSlack` não pode ser `absent/reason = derived`, porque uma folga espalhada
+      `Layer/timeSlack` não pode ser uma `derivation` da `clearance`, porque uma folga espalhada
       uniformemente pelo denominador é exatamente o que uma janela nega. O `unmeasured` é o caso que
       essa regra de outro modo não alcança — ninguém sabe se a sobra está espalhada uniformemente,
-      portanto uma margem de tempo DERIVADA é uma suposição e não um cálculo. Com o `none` declarado
-      volta a ser um cálculo.
+      portanto uma margem de tempo DERIVADA é uma suposição e não um cálculo. Com um período inteiro
+      declarado volta a ser um cálculo.
 
       O QUE RECUSA
 
-      ⛔ O `derived`. Um ciclo de serviço é um facto sobre o calendário da oferta e mais nada no
-      modelo o implica. Admitir aqui a razão convidaria quem recebe a calcular uma janela a partir de
+      ⛔ Uma `derivation`. Um ciclo de serviço é um facto sobre o calendário da oferta e nenhuma
+      `Identity` o calcula. Admiti-la aqui convidaria quem recebe a calcular uma janela a partir de
       uma margem, que é a inferência que a janela proíbe no sentido contrário.
 
       ONDE É VERIFICADO
 
-      No `assets/sql/rules.sql` como `derived_slack_over_a_window` e `window_not_applicable_on_a_rate`.
+      No `assets/sql/rules.sql` como `derived_slack_over_a_window`, `window_not_applicable_on_a_rate`
+      e `window_size_not_applicable`. A última segura o próprio `size` do quantum: uma janela
+      declarada como quantum tem um tamanho sobre o qual perguntar, e uma unidade sem período
+      di-lo aqui, como `notApplicable`, e não um nível abaixo.
 
       VER TAMBÉM
 
@@ -2434,13 +3425,13 @@
     <xs:annotation><xs:documentation xml:lang="en">
       WHAT IT IS
 
-      Whether the fit is stated, derived, or absent for a stated reason.
+      Whether the fit is stated, computed by the `fit` identity, or absent for a stated reason.
 
       WHAT IT OBLIGES
 
-      The wrapper lets `sign` say `derived`: where demand and nameplate are both stated the
-      fit is computable, which is the same condition under which `Remainder/quantity` is
-      derived. One argument, applied to both elements instead of one.
+      The wrapper lets `sign` be a `derivation` naming `fit`: where demand and nameplate are both
+      stated the fit is computable, which is the same condition under which `Remainder/quantity`
+      is computed by `magnitude`. One argument, applied to both elements instead of one.
 
       And carrying `sign` at all is still worth it, which is why this is a wrapper rather
       than a deletion: the DIRECTION is frequently known when the MAGNITUDE is not. "It ran
@@ -2454,11 +3445,11 @@
       WHAT IT REFUSES
 
       ⛔ `absent/reason = none` meaning "the ranges overlap", AND THE GRAMMAR NOW REFUSES IT
-      TOO: this wrapper takes a `pm:ClaimAbsence`, so the state is not spellable. Overlapping ranges at the
-      nominal size are a `transition` fit — the textbook case rather than a boundary
-      curiosity — and a demand of [3, 4, 5] people against a nameplate of 4 is one. Reading
-      it as an absence evaluates a range comparison at `mostLikely` and reports no fit where
-      there is one.
+      TOO: this wrapper takes a `pm:ClaimAbsence`, so the state is not spellable.
+      Overlapping ranges at the nominal size are a `transition` fit — the textbook case
+      rather than a boundary curiosity — and a demand of [3, 4, 5] people against a
+      nameplate of 4 is one. Reading it as an absence evaluates a range comparison at
+      `mostLikely` and reports no fit where there is one.
 
       SEE ALSO
 
@@ -2471,13 +3462,15 @@
 
       O QUE É
 
-      Se o ajustamento é declarado, derivado, ou ausente por uma razão declarada.
+      Se o ajustamento é declarado, calculado pela identidade `fit`, ou ausente por uma razão
+      declarada.
 
       O QUE OBRIGA
 
-      O invólucro permite ao `sign` dizer `derived`: onde a procura e a capacidade nominal estão
-      ambas declaradas o ajustamento é calculável, que é a mesma condição sob a qual o
-      `Remainder/quantity` é derivado. Um argumento, aplicado a dois elementos em vez de um.
+      O invólucro permite ao `sign` ser uma `derivation` que nomeia o `fit`: onde a procura e a
+      capacidade nominal estão ambas declaradas o ajustamento é calculável, que é a mesma condição
+      sob a qual o `Remainder/quantity` é calculado pela `magnitude`. Um argumento, aplicado a dois
+      elementos em vez de um.
 
       E transportar sequer o `sign` continua a valer a pena, e é por isso que isto é um invólucro e
       não uma supressão: a DIREÇÃO é muitas vezes conhecida quando a GRANDEZA não é. «Esteve em
@@ -2502,8 +3495,9 @@
       as duas razões que aqui continuam vivas.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="fit"    type="pm:Fit"/>
-      <xs:element name="absent" type="pm:ClaimAbsence"/>
+      <xs:element name="fit"        type="pm:Fit"/>
+      <xs:element name="derivation" type="pm:FitDerivation"/>
+      <xs:element name="absent"     type="pm:ClaimAbsence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -2660,10 +3654,12 @@
 
       WHAT IT CONTAINS
 
-      A narrowing, or one of three absences that are three DIFFERENT claims:
+      A narrowing, a derivation, or one of three absences that are three DIFFERENT claims:
 
         narrowing                      the condition that would tighten it, and which of the
                                        three kinds of width it is.
+        derivation                     the claim is itself an identity's output, so it narrows
+                                       as that identity's terms do (`NarrowingDerivation`).
         absent/reason = none           somebody looked and NOTHING would tighten this.
                                        WHICH IS THE VARIATION CLAIM, STATED: the width is
                                        not ignorance, so no instrument, no intervention and
@@ -2710,10 +3706,13 @@
 
       O QUE CONTÉM
 
-      Um estreitamento, ou uma de três ausências que são três afirmações DIFERENTES:
+      Um estreitamento, uma derivação, ou uma de três ausências que são três afirmações DIFERENTES:
 
         narrowing                      a condição que o estreitaria, e qual das três espécies de
                                        largura é.
+        derivation                     a afirmação é ela própria a saída de uma identidade, e
+                                       portanto estreita-se como os termos dessa identidade
+                                       (`NarrowingDerivation`).
         absent/reason = none           alguém foi ver e NADA estreitaria isto. QUE É A AFIRMAÇÃO DE
                                        VARIAÇÃO, ENUNCIADA: a largura não é ignorância, portanto
                                        instrumento nenhum, intervenção nenhuma e experiência nenhuma
@@ -2750,8 +3749,9 @@
       para o intervalo.
     </xs:documentation></xs:annotation>
     <xs:choice>
-      <xs:element name="narrowing" type="pm:Narrowing"/>
-      <xs:element name="absent"    type="pm:Absence"/>
+      <xs:element name="narrowing"  type="pm:Narrowing"/>
+      <xs:element name="derivation" type="pm:NarrowingDerivation"/>
+      <xs:element name="absent"     type="pm:Absence"/>
     </xs:choice>
   </xs:complexType>
 
@@ -2761,12 +3761,9 @@
 
       What is asked of a layer, and how long the asking survives being unanswered.
 
-      ⭐⭐⭐ IT IS THE HALF OF THE TIME AXIS `Divisibility` FILED AS MISSING. That element sits
-      on `Nameplate`, so its `window` is a fact about SUPPLY, and its own annotation says so in
-      as many words: "the mirror, demand with a lifetime, an SLA saying how long a queued
-      order stays an order, is a fact about DEMAND, and `Layer/timeSlack` records where that
-      has to go if demand ever gains structure. Half the axis, filed as half rather than
-      pretended whole." This is demand gaining structure.
+      ⭐⭐⭐ THE DEMAND SIDE OF THE TIME AXIS. `Divisibility/window` sits on `Nameplate` and is
+      a fact about SUPPLY: when the supply is live. This is its mirror, how long the asking
+      survives being unanswered, and it is a fact about DEMAND. The two are read apart.
 
       WHAT IT CONTAINS
 
@@ -2831,13 +3828,9 @@
 
       O que é pedido a uma camada, e quanto tempo o pedido sobrevive sem resposta.
 
-      ⭐⭐⭐ É A METADE DO EIXO DO TEMPO QUE A `Divisibility` DECLAROU EM FALTA. Esse elemento assenta
-      na `Nameplate`, portanto a sua `window` é um facto sobre a OFERTA, e a sua própria anotação
-      di-lo com todas as letras: «o espelho, a procura com um tempo de vida, um SLA a dizer quanto
-      tempo uma encomenda em fila continua a ser uma encomenda, é um facto sobre a PROCURA, e o
-      `Layer/timeSlack` regista para onde isso tem de ir se a procura vier a ganhar estrutura.
-      Metade do eixo, declarada como metade em vez de fingida inteira.» Isto é a procura a ganhar
-      estrutura.
+      ⭐⭐⭐ O LADO DA PROCURA DO EIXO DO TEMPO. A `Divisibility/window` assenta na `Nameplate` e
+      é um facto sobre a OFERTA: quando a oferta está ativa. Este é o seu espelho, quanto tempo o
+      pedido sobrevive sem resposta, e é um facto sobre a PROCURA. Os dois leem-se em separado.
 
       O QUE CONTÉM
 
@@ -2898,7 +3891,7 @@
       que `unserved` passa a significar quando a procura se pode ir embora.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="amount"   type="pm:StatedClaim"/>
+      <xs:element name="amount"   type="pm:StatedSummedQuantity"/>
       <xs:element name="patience" type="pm:StatedClaim"/>
     </xs:sequence>
   </xs:complexType>
@@ -2937,8 +3930,7 @@
       THEM. `asrt:factor` files `GPU-hour per GPU`, a conversion whose denominator is a GPU,
       not a calendar. Collapsed into `notApplicable` it would be indistinguishable from `12
       people`, which has no denominator at all, and the two are different facts about the same
-      supply. One arm would have made the schema agree with the `LIKE` it replaces: the query
-      cannot tell them apart either.
+      supply.
 
       THE TWO EDITIONS STOP BEING A READER'S PROBLEM HERE. `shifts per week` and `turnos por
       semana` both file `period`, and deciding that `semana` IS `week` was a judgement written
@@ -2951,9 +3943,9 @@
       `notApplicable` already says here. Two spellings of one state is the collapse this
       wrapper exists to prevent.
 
-      ⛔ `absent/reason = derived`. Deriving the denominator from the unit STRING is the
-      `LIKE` this element replaces, and admitting the reason would license it in the schema's
-      own voice. A unit is an `xs:token`; nothing may read inside it.
+      ⛔ A `derivation`. Deriving the denominator from the unit STRING is the `LIKE` this
+      element replaces, and an `Identity` that did it would license it in the schema's own
+      voice. A unit is an `xs:token`; nothing may read inside it.
 
       ⛔ Being optional. An omission and `unmeasured` would render identically, and a supply
       whose denominator nobody stated is not the same as a stock.
@@ -3008,8 +4000,7 @@
       ⭐⭐ O `period` E O `each` SÃO DOIS BRAÇOS E NÃO UM, PORQUE ESTE CORPUS JÁ OS SEPARA. O
       `asrt:factor` declara `GPU-hour per GPU`, uma conversão cujo denominador é um GPU, não um
       calendário. Achatado em `notApplicable` ficaria indistinguível de `12 people`, que não tem
-      denominador nenhum, e os dois são factos diferentes sobre a mesma oferta. Um só braço teria
-      feito o esquema concordar com o `LIKE` que substitui: a consulta também não os distingue.
+      denominador nenhum, e os dois são factos diferentes sobre a mesma oferta.
 
       AS DUAS EDIÇÕES DEIXAM DE SER UM PROBLEMA DE QUEM LÊ. O `shifts per week` e o `turnos por
       semana` declaram ambos `period`, e decidir que `semana` É `week` era um juízo escrito em SQL
@@ -3022,9 +4013,9 @@
       `notApplicable` já diz aqui. Duas grafias de um estado é o achatamento que este invólucro
       existe para impedir.
 
-      ⛔ `absent/reason = derived`. Derivar o denominador da CADEIA da unidade é o `LIKE` que este
-      elemento substitui, e admitir a razão licenciá-lo-ia na própria voz do esquema. Uma unidade é
-      um `xs:token`; nada pode ler lá dentro.
+      ⛔ Uma `derivation`. Derivar o denominador da CADEIA da unidade é o `LIKE` que este elemento
+      substitui, e uma `Identity` que o fizesse licenciá-lo-ia na própria voz do esquema. Uma
+      unidade é um `xs:token`; nada pode ler lá dentro.
 
       ⛔ Ser opcional. Uma omissão e o `unmeasured` ficariam iguais, e uma oferta cujo denominador
       ninguém declarou não é o mesmo que um stock.
@@ -3085,8 +4076,7 @@
       `narrowsWhen` and `boundOrigin` are ONE PAIR: the first says what would make the range
       SMALLER, the second says who owns the edge it would move. A range with neither is a
       number pair with error bars. Both are required, because as optional fields their blanks
-      carried facts nothing else could state — and `boundOrigin` as a bare optional
-      enumeration was filed ONCE in the whole corpus.
+      carried facts nothing else could state.
       `assets/sql/reports/bound_ownership.sql` prints what the required, typed field gets
       instead.
 
@@ -3164,8 +4154,7 @@
       O `narrowsWhen` e o `boundOrigin` são UM PAR: o primeiro diz o que tornaria o intervalo MAIS
       PEQUENO, o segundo diz quem é dono da borda que ele moveria. Um intervalo sem nenhum dos dois é
       um par de números com barras de erro. Ambos são obrigatórios, porque como campos opcionais os
-      seus brancos transportavam factos que mais nada conseguia enunciar — e o `boundOrigin` como
-      enumeração opcional nua foi declarado UMA vez em todo o corpus.
+      seus brancos transportavam factos que mais nada conseguia enunciar.
       O `assets/sql/reports/bound_ownership.sql` imprime o que o campo obrigatório e tipificado
       obtém em vez disso.
 
@@ -3313,12 +4302,6 @@
 
       WHAT IT REFUSES
 
-      ⛔ One element with an optional `taxonomy` and a `value` typed `xs:token`, documented in
-      prose to mean that omitting the taxonomy requires a value this schema defines. Nothing
-      enforces that — `xs:token` accepts anything — so the contributed type would be defined
-      and never referenced, and the constraint would live only in an annotation. A rule with
-      no gate behind it is not a rule.
-
       SEE ALSO
 
       `ContributedBasis` for the one value this model owns. `BorrowedTerm` for the other
@@ -3352,12 +4335,6 @@
       Um valor emprestado sem a sua taxonomia é genuinamente AMBÍGUO, e não apenas não atribuído.
 
       O QUE RECUSA
-
-      ⛔ Um só elemento com uma `taxonomy` opcional e um `value` do tipo `xs:token`, documentado em
-      prosa no sentido de que omitir a taxonomia obriga a um valor que este esquema defina. Nada o
-      impõe — o `xs:token` aceita tudo — portanto o tipo contribuído ficaria definido e nunca
-      referenciado, e a restrição viveria só numa anotação. Uma regra sem porta atrás não é uma
-      regra.
 
       VER TAMBÉM
 
@@ -3572,10 +4549,8 @@
   <!-- ==================================================================
        QUANTUM: the indivisible unit a supply comes in.
 
-       ⭐⭐ THE STRUCTURE THE MODEL IS NAMED AFTER. In `a mod n`, `a` is continuous
-       demand and `n` is the modulus, the whole unit you must divide by. The
-       remainder is what that division leaves, so this type is the CAUSE and
-       Remainder is the EFFECT.
+       ⭐⭐ THE CAUSE, AND `Remainder` IS THE EFFECT. A supply arriving in whole units
+       cannot meet a demand that does not, and what that leaves is the remainder.
        ================================================================== -->
   <xs:simpleType name="ConstraintOrigin">
     <xs:annotation><xs:documentation xml:lang="en">
@@ -3887,11 +4862,11 @@
       supply nobody asked about, and it cannot reach the third state this annotation calls
       malformed.
 
-      ⚠️ WHAT THIS DELIBERATELY DOES NOT REACH. `Divisibility` sits on `Nameplate`, so
-      `window` is a fact about SUPPLY. The mirror — demand with a lifetime, an SLA saying how
-      long a queued order stays an order — is a fact about DEMAND, and `Layer/timeSlack`
-      records where that has to go if demand ever gains structure. Half the axis, filed as
-      half rather than pretended whole.
+      ⚠️ WHICH HALF OF THE TIME AXIS THIS IS. `Divisibility` sits on `Nameplate`, so `window`
+      is a fact about SUPPLY: when the supply is live. The mirror, demand with a lifetime and
+      an SLA saying how long a queued order stays an order, is a fact about DEMAND and is
+      filed at `Demand/patience`. Do not reach for `window` to say how long a demand survives
+      being held; the two sit on opposite sides of the layer and a receiver reads them apart.
 
       SEE ALSO
 
@@ -3947,11 +4922,12 @@
       oferta sobre que ninguém perguntou, e não alcança o terceiro estado a que esta anotação chama
       mal formado.
 
-      ⚠️ O QUE ISTO DELIBERADAMENTE NÃO ALCANÇA. A `Divisibility` assenta na `Nameplate`, portanto a
-      `window` é um facto sobre a OFERTA. O espelho — procura com tempo de vida, um acordo de nível
-      de serviço que diga quanto tempo uma encomenda em fila continua a ser uma encomenda — é um
-      facto sobre a PROCURA, e o `Layer/timeSlack` regista para onde isso tem de ir se a procura vier
-      a ganhar estrutura. Metade do eixo, declarada como metade em vez de fingida inteira.
+      ⚠️ QUAL DAS METADES DO EIXO DO TEMPO É ESTA. A `Divisibility` assenta na `Nameplate`,
+      portanto a `window` é um facto sobre a OFERTA: quando a oferta está ativa. O espelho, procura
+      com tempo de vida e um acordo de nível de serviço que diga quanto tempo uma encomenda em fila
+      continua a ser uma encomenda, é um facto sobre a PROCURA e declara-se em `Demand/patience`.
+      Não recorra à `window` para dizer quanto tempo uma procura sobrevive à espera; as duas ficam
+      em lados opostos da camada e quem recebe lê-as em separado.
 
       VER TAMBÉM
 
@@ -4011,8 +4987,8 @@
           this element is the statement that it is not. Under `absent
           reason="unmeasured"` nobody knows whether it is spread evenly either, so a
           derived time slack is an ASSUMPTION wearing a computation's clothes and
-          the same prohibition applies. Only `none` and `notApplicable` license the
-          derivation — two of the four states.
+          the same prohibition applies. Only a window of one whole period and
+          `notApplicable` license the `clearance` derivation.
 
           WHAT IT REFUSES
 
@@ -4026,8 +5002,8 @@
           corpus of headcount layers would report twenty of them.
 
           ⛔ Treating an always-on supply as needing no filing. It is exactly what
-          needs saying, and `absent/reason = none` is the filing that says it. Rare
-          in its VALUE, universal in its ELEMENT: of the units in this corpus only
+          needs saying, and a window of one whole period is the filing that says it.
+          Rare in its VALUE, universal in its ELEMENT: of the units in this corpus only
           `shifts per week`, `turnos por semana` and `launches per quarter` have a
           denominator at all, and only the shared line has a real duty cycle inside
           one.
@@ -4091,8 +5067,8 @@
       que a sobra está espalhada uniformemente pelo denominador, e este elemento é a declaração de
       que não está. Sob `absent/reason = unmeasured` ninguém sabe também se está espalhada
       uniformemente, portanto uma margem de tempo derivada é uma SUPOSIÇÃO vestida de cálculo e
-      aplica-se a mesma proibição. Só o `none` e o `notApplicable` autorizam a derivação — dois dos
-      quatro estados.
+      aplica-se a mesma proibição. Só uma janela de um período inteiro e o `notApplicable` autorizam
+      a derivação da `clearance`.
 
       O QUE RECUSA
 
@@ -4105,10 +5081,10 @@
       delas.
 
       ⛔ Tratar uma oferta sempre ligada como não precisando de declaração. É exatamente o que precisa
-      de ser dito, e o `absent/reason = none` é a declaração que o diz. Raro no VALOR, universal no
-      ELEMENTO: das unidades deste corpus só `shifts per week`, `turnos por semana` e `launches per
-      quarter` têm sequer denominador, e só a linha partilhada tem um ciclo de serviço a sério dentro
-      de um.
+      de ser dito, e uma janela de um período inteiro é a declaração que o diz. Raro no VALOR,
+      universal no ELEMENTO: das unidades deste corpus só `shifts per week`, `turnos por semana` e
+      `launches per quarter` têm sequer denominador, e só a linha partilhada tem um ciclo de serviço
+      a sério dentro de um.
 
       ONDE É VERIFICADO
 
@@ -4132,11 +5108,8 @@
   <!-- ==================================================================
        FACILITY: one supply, with BOTH faces at once.
 
-       ⛔ THE TWO FACES ARE A PRODUCT AND NOT A CHOICE, AND THE STRUCTURE SAYS SO
-       RATHER THAN THE PROSE. A `face` discriminator over one `amount` puts two
-       elements in a document for one supply with nothing linking them, which is
-       the opposite claim. There is no `Face` enum: a discriminator naming which of
-       two positions you are in is redundant once there are two positions.
+       ⛔ THE TWO FACES ARE A PRODUCT AND NOT A CHOICE. `nameplate` and `jagged` are
+       two positions and a supply files both: what was committed, and what happened.
        ================================================================== -->
   <xs:complexType name="Nameplate">
     <xs:annotation><xs:documentation xml:lang="en">
@@ -4192,12 +5165,15 @@
         a claim                     available up to this much, in the layer's unit
         a claim of [0, 0, 0]        somebody looked and it is zero, in the layer's unit
         absent/reason = unmeasured  available, and nobody has sized it
-        absent/reason = derived     computable here, e.g. from the clearance
 
-      ⛔ There is no `absent/reason = none` here. All three slacks are `pm:StatedClaim`, whose
-      absent arm is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, and that type is
-      `AbsenceReason` WITHOUT `none`. A measured zero has a unit, an observer and a provenance,
-      and the absence arm has a home for none of the three, so it is a claim.
+      ⛔ There is no `absent/reason = none` here. The absent arm of all three slacks is a
+      `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, and that type is `AbsenceReason`
+      WITHOUT `none`. A measured zero has a unit, an observer and a provenance, and the
+      absence arm has a home for none of the three, so it is a claim.
+
+      ⛔ There is no `derivation` of `capacitySlack` or `inventorySlack`. Both are measured
+      facts about the supply, and no `Identity` computes either. The time slack alone may be
+      a `derivation`, of `clearance`, under the conditions `Layer/timeSlack` states.
 
       `capacitySlack` is the one fact about a supply that no arithmetic can recover. A GPU
       cannot run at 110 per cent; a disk cannot hold more than it holds; a month has at most
@@ -4224,13 +5200,13 @@
 
       WHAT IT REFUSES
 
-      ⛔ A BOOLEAN SLACK, which is worse than imprecise — it is uncheckable. A boolean says a
-      buffer is available; it cannot say AVAILABLE, BARELY. Take a conveyor at a hundred
+      ⛔ Reading the figure as "there is some". It says a buffer is available; only the SIZE
+      says AVAILABLE, BARELY, and attribution needs the size. Take a conveyor at a hundred
       slots an hour carrying ninety-five muffins: five slots an hour are free, so a late
       muffin waits about twelve minutes and no longer. The belt admits delay, truthfully, and
       a sender with an hour of lateness could attribute all of it to the time buffer without
-      lying about anything. A boolean catches a CONTRADICTION and never an ATTRIBUTION: it
-      catches "you said inventory absorbed it and also said this cannot be stored", and never
+      lying about anything. Read without the size, this position catches a CONTRADICTION and
+      never an ATTRIBUTION: it catches "you said inventory absorbed it and also said this cannot be stored", and never
       "you said inventory absorbed six months of output through a two-day shelf life."
 
       ⛔ Inventing a slack to fill the field. A fabricated number wears more authority than a
@@ -4316,12 +5292,15 @@
         uma afirmação               disponível até este ponto, na unidade da camada
         uma afirmação de [0, 0, 0]  alguém foi ver e é zero, na unidade da camada
         absent/reason = unmeasured  disponível, e ninguém a dimensionou
-        absent/reason = derived     calculável aqui, por exemplo a partir da folga
 
-      ⛔ Não existe aqui `absent/reason = none`. As três folgas são `pm:StatedClaim`, cujo ramo de
-      ausência é um `pm:ClaimAbsence` que transporta `pm:ClaimAbsenceReason`, e esse tipo é o
-      `AbsenceReason` SEM o `none`. Um zero medido tem unidade, observador e proveniência, e o ramo
-      de ausência não tem lugar para nenhum dos três, portanto é uma afirmação.
+      ⛔ Não existe aqui `absent/reason = none`. O ramo de ausência das três folgas é um
+      `pm:ClaimAbsence` que transporta `pm:ClaimAbsenceReason`, e esse tipo é o `AbsenceReason` SEM
+      o `none`. Um zero medido tem unidade, observador e proveniência, e o ramo de ausência não tem
+      lugar para nenhum dos três, portanto é uma afirmação.
+
+      ⛔ Não há `derivation` do `capacitySlack` nem do `inventorySlack`. Ambos são factos medidos
+      sobre a oferta, e nenhuma `Identity` calcula qualquer deles. Só a margem de tempo pode ser uma
+      `derivation`, da `clearance`, nas condições que o `Layer/timeSlack` enuncia.
 
       O `capacitySlack` é o único facto sobre uma oferta que aritmética nenhuma recupera. Uma GPU não
       corre a 110 por cento; um disco não guarda mais do que guarda; um mês tem no máximo 31 dias —
@@ -4348,12 +5327,13 @@
 
       O QUE RECUSA
 
-      ⛔ UMA MARGEM BOOLEANA, que é pior do que imprecisa — é inverificável. Um booleano diz que um
-      amortecedor está disponível; não consegue dizer DISPONÍVEL, MAS À TANGENTE. Tome-se uma correia
+      ⛔ Ler a figura como «há alguma». Diz que um amortecedor está disponível; só o TAMANHO diz
+      DISPONÍVEL, MAS À TANGENTE, e a atribuição precisa do tamanho. Tome-se uma correia
       a cem lugares por hora a levar noventa e cinco bolos: cinco lugares por hora estão livres,
       portanto um bolo atrasado espera cerca de doze minutos e não mais. A correia admite atraso, com
       verdade, e quem envie com uma hora de atraso poderia atribuir-lha toda ao amortecedor de tempo
-      sem mentir em nada. Um booleano apanha uma CONTRADIÇÃO e nunca uma ATRIBUIÇÃO: apanha «disse
+      sem mentir em nada. Lida sem o tamanho, esta posição apanha uma CONTRADIÇÃO e nunca uma
+      ATRIBUIÇÃO: apanha «disse
       que o inventário o absorveu e disse também que isto não pode ser armazenado», e nunca «disse
       que o inventário absorveu seis meses de produção através de um prazo de validade de dois dias».
 
@@ -4385,8 +5365,8 @@
       `StatedConstraintOrigin` para as quatro ausências da origem.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="amount"         type="pm:StatedClaim"/>
-      <xs:element name="amountOrigin"   type="pm:StatedConstraintOrigin"/>
+      <xs:element name="amount"         type="pm:StatedSummedQuantity"/>
+      <xs:element name="amountOrigin"   type="pm:StatedAmountOrigin"/>
       <xs:element name="divisibility"   type="pm:StatedDivisibility"/>
       <xs:element name="capacitySlack"  type="pm:StatedClaim">
         <xs:annotation><xs:documentation xml:lang="en">
@@ -4649,7 +5629,7 @@
       ⛔ Keeping only the draw. Demand that went unserved never became a draw at all, so a
       model that keeps only this face has silently discarded every customer it never served.
 
-      ⚠️ NO PERIOD ELEMENT, and that is a position rather than an oversight: time is an axis
+      ⚠️ NO PERIOD ELEMENT. Time is an axis
       on a SIMULATION of this model, not a field on its types. A draw over an interval is
       expressed by making the interval part of the unit — "hours per month" — and `asOf` on
       the `Claim` says when the assertion was true. A document set that needs real intervals
@@ -4687,7 +5667,7 @@
       ⛔ Guardar só o consumo. A procura que não foi servida nunca chegou a ser consumo, portanto um
       modelo que guarde só esta face deitou fora em silêncio todos os clientes que nunca serviu.
 
-      ⚠️ SEM ELEMENTO DE PERÍODO, e isso é uma posição e não um esquecimento: o tempo é um eixo numa
+      ⚠️ SEM ELEMENTO DE PERÍODO. O tempo é um eixo numa
       SIMULAÇÃO deste modelo, não um campo dos seus tipos. Um consumo ao longo de um intervalo
       exprime-se pondo o intervalo dentro da unidade — «horas por mês» — e o `asOf` da `Claim` diz
       quando a afirmação era verdadeira. Um conjunto de documentos que precise de intervalos a sério
@@ -4699,7 +5679,7 @@
       `Facility` para o par. A `ContributedBasis` para o caso da tabela de preços.
     </xs:documentation></xs:annotation>
     <xs:sequence>
-      <xs:element name="draw"             type="pm:StatedClaim"/>
+      <xs:element name="draw"             type="pm:StatedSummedQuantity"/>
       <xs:element name="measurementBasis" type="pm:StatedBasis"/>
     </xs:sequence>
   </xs:complexType>
@@ -4815,10 +5795,11 @@
       every slack in this schema will be MEASURED one way and FILED another. Say which you
       did.
 
-      `derived` IS AVAILABLE ONLY WHERE THE LAYER RUNS CONTINUOUSLY, which almost nothing
-      does. The derivation `duration = q / clearance` assumes the clearance is spread evenly
-      across the unit's denominator, and a duty cycle is exactly the violation of that
-      assumption. A line running 02:00-05:00 at one muffin every five seconds:
+      A `derivation` OF `clearance` IS AVAILABLE ONLY WHERE THE LAYER RUNS CONTINUOUSLY, which
+      almost nothing does. Reading the slack as a wait, `duration = q / clearance`, assumes
+      the clearance is spread evenly across the unit's denominator, and a duty cycle is
+      exactly the violation of that assumption. A line running 02:00-05:00 at one muffin
+      every five seconds:
 
         nameplate   10800 s / 5 s      =  2160 muffins per day
         demand                            2000 muffins per day
@@ -4839,9 +5820,9 @@
       ⛔ A slack filed as a duration. It is dimensionally wrong however true it is, and it is
       converted before filing.
 
-      ⛔ `timeSlack` moved onto the supply. It sits on the layer because it is a fact about
-      DEMAND, and `demand` is a bare `Claim` with nowhere to hang it. If demand ever gains
-      structure this is the first thing that should move into it.
+      ⛔ `timeSlack` moved onto the supply. It is a fact about DEMAND, not about the thing
+      serving it, and filing it under the supply makes a shortfall look like a property of the
+      supply that caused it.
 
       WHERE IT IS CHECKED
 
@@ -4849,9 +5830,9 @@
       `derived_slack_over_a_window`.
 
       ⛔ NOT REACHABLE BY A VALIDATOR: the unit agreement, the share bound, and the duty-cycle
-      assumption behind `derived`. A unit is an `xs:token`; XSD 1.0 cannot compare one
-      element's unit against another's, no schema can see a multiplication that was skipped,
-      and nothing in a document says what duty cycle its supply runs on.
+      assumption behind the `clearance` derivation. A unit is an `xs:token`; XSD 1.0 cannot
+      compare one element's unit against another's, no schema can see a multiplication that
+      was skipped, and nothing in a document says what duty cycle its supply runs on.
 
       SEE ALSO
 
@@ -4917,10 +5898,11 @@
       amortecedor é naturalmente medida como duração, portanto todas as margens deste esquema serão
       MEDIDAS de uma maneira e DECLARADAS de outra. Diga-se qual se fez.
 
-      O `derived` SÓ ESTÁ DISPONÍVEL ONDE A CAMADA CORRE CONTINUAMENTE, o que quase nada faz. A
-      derivação `duração = q / folga` pressupõe que a folga está espalhada uniformemente pelo
-      denominador da unidade, e um ciclo de serviço é exatamente a violação dessa suposição. Uma
-      linha a correr das 02:00 às 05:00 a um bolo cada cinco segundos:
+      UMA `derivation` DA `clearance` SÓ ESTÁ DISPONÍVEL ONDE A CAMADA CORRE CONTINUAMENTE, o que
+      quase nada faz. Ler a margem como uma espera, `duração = q / folga`, pressupõe que a folga
+      está espalhada uniformemente pelo denominador da unidade, e um ciclo de serviço é exatamente
+      a violação dessa suposição. Uma linha a correr das 02:00 às 05:00 a um bolo cada cinco
+      segundos:
 
         nameplate   10800 s / 5 s      =  2160 muffins per day
         demand                            2000 muffins per day
@@ -4941,9 +5923,9 @@
       ⛔ Uma margem declarada como duração. É dimensionalmente errada por mais verdadeira que seja, e
       converte-se antes de declarar.
 
-      ⛔ O `timeSlack` mudado para a oferta. Assenta na camada porque é um facto sobre a PROCURA, e a
-      `demand` é uma `Claim` nua sem onde o pendurar. Se a procura vier a ganhar estrutura, isto é a
-      primeira coisa que deve mudar para lá.
+      ⛔ O `timeSlack` mudado para a oferta. É um facto sobre a PROCURA e não sobre aquilo que a
+      serve, e declará-lo sob a oferta faz uma falta parecer uma propriedade da oferta que a
+      causou.
 
       ONDE É VERIFICADO
 
@@ -4951,9 +5933,10 @@
       `derived_slack_over_a_window`.
 
       ⛔ NÃO ALCANÇÁVEL POR UM VALIDADOR: a concordância de unidades, o limite da quota, e a suposição
-      do ciclo de serviço por trás do `derived`. Uma unidade é um `xs:token`; o XSD 1.0 não consegue
-      comparar a unidade de um elemento com a de outro, esquema nenhum consegue ver uma multiplicação
-      que foi saltada, e nada num documento diz em que ciclo de serviço é que a oferta corre.
+      do ciclo de serviço por trás da derivação da `clearance`. Uma unidade é um `xs:token`; o XSD
+      1.0 não consegue comparar a unidade de um elemento com a de outro, esquema nenhum consegue ver
+      uma multiplicação que foi saltada, e nada num documento diz em que ciclo de serviço é que a
+      oferta corre.
 
       VER TAMBÉM
 
@@ -4965,7 +5948,7 @@
     <xs:sequence>
       <xs:element name="name"        type="xs:token"/>
       <xs:element name="demand"      type="pm:Demand"/>
-      <xs:element name="timeSlack"   type="pm:StatedClaim"/>
+      <xs:element name="timeSlack"   type="pm:StatedTimeSlack"/>
       <xs:element name="supply"      type="pm:Facility"/>
       <xs:element name="remainder"   type="pm:StatedRemainder"/>
     </xs:sequence>
@@ -4990,14 +5973,10 @@
                    to carry a refutation is the last place to accept an opinion.
         strength   how much, as a `pm:StatedClaim`. REQUIRED, and the wrapper carries the
                    absence. "The direction is known and the magnitude is not" is what
-                   `unmeasured` MEANS, so an optional element said it a second way and
-                   the corpus proved it: two of five couplings omitted the element and
-                   NONE ever filed the typed absence. The state with a word went unused
-                   because a state without one was easier to reach.
-                   ⛔ This is the argument two paragraphs down, applied one level in.
-                   `Stack/couplings` is a wrapper so that an empty list cannot mean both
-                   "nobody looked" and "somebody looked and found none"; an omitted
-                   `strength` meant both in exactly the same way.
+                   `unmeasured` MEANS, so an optional element would say it a second way.
+                   ⛔ The same reason `Stack/couplings` is a wrapper: an empty list cannot
+                   mean both "nobody looked" and "somebody looked and found none", and an
+                   omitted `strength` means both in exactly the same way.
 
       WHAT IT OBLIGES
 
@@ -5077,8 +6056,13 @@
         from · to  as duas camadas.
         observed   o que foi observado. OBRIGATÓRIO — o único elemento deste esquema cujo propósito é
                    transportar uma refutação é o último sítio onde aceitar uma opinião.
-        strength   quanto, como `pm:StatedClaim`. Opcional, porque a direção é muitas vezes conhecida
-                   quando a grandeza não é.
+        strength   quanto, como `pm:StatedClaim`. OBRIGATÓRIO, e o invólucro transporta a
+                   ausência. «A direção é conhecida e a grandeza não é» é o que o `unmeasured`
+                   SIGNIFICA, por isso um elemento opcional di-lo-ia uma segunda vez.
+                   ⛔ A mesma razão por que o `Stack/couplings` é um invólucro: uma lista
+                   vazia não pode significar ao mesmo tempo «ninguém foi ver» e «alguém foi
+                   ver e não encontrou nenhum», e um `strength` omitido significa as duas
+                   exatamente da mesma maneira.
 
       O QUE OBRIGA
 
@@ -5405,14 +6389,13 @@
       crossing nobody has done yet and a crossing there is nothing to do, and a receiver deciding
       whether the two documents can be laid side by side needs to be told which.
 
-      ⛔ `derived` does not reach this question. A position in someone else's document is not
-      computable from anything in this one.
+      ⛔ No `derivation` reaches this question. A position in someone else's document is not
+      computable from anything in this one, so no `Identity` names it.
 
       WHAT IT REFUSES
 
       ⛔ Being read as a unit of SEQUENCE. There is no predecessor, no successor, no gateway
-      and no condition here, and their absence is a scoping decision rather than an omission:
-      BPMN 2.0 models all of that, is an OMG standard with published schemas, and restating
+      and no condition here: BPMN 2.0 models all of that, is an OMG standard with published schemas, and restating
       it inside this namespace would fork it. `notationPosition` exists so an operation here
       can name the same operation THERE, and it names it by POSITION and imports nothing, so
       the other document needs no field added to it and no tool that reads it needs to change.
@@ -5463,13 +6446,13 @@
       cruzamento que ainda ninguém fez e um cruzamento que não há que fazer, e quem recebe e decide
       se os dois documentos podem ser postos lado a lado precisa que lhe digam qual dos dois é.
 
-      ⛔ O `derived` não alcança esta pergunta. Uma posição no documento de outra pessoa não é
-      calculável a partir de coisa nenhuma neste.
+      ⛔ Nenhuma `derivation` alcança esta pergunta. Uma posição no documento de outra pessoa não é
+      calculável a partir de coisa nenhuma neste, portanto nenhuma `Identity` a nomeia.
 
       O QUE RECUSA
 
       ⛔ Ser lida como uma unidade de SEQUÊNCIA. Não há aqui antecessor, sucessor, porta de decisão
-      nem condição, e a ausência deles é uma decisão de âmbito e não um esquecimento: o BPMN 2.0
+      nem condição: o BPMN 2.0
       modela tudo isso, é uma norma do OMG com esquemas publicados, e reenunciá-la dentro deste
       espaço de nomes bifurcá-la-ia. O `notationPosition` existe para que uma operação aqui possa
       nomear a mesma operação LÁ, e nomeia-a por POSIÇÃO e não importa nada, portanto o outro
@@ -5659,64 +6642,122 @@
            was deliberately made too weak to serve. -->
       <xs:element name="jurisdiction" type="xs:token" minOccurs="0"/>
       <xs:element name="framework"    type="pm:StatedBorrowedTerm"/>
-      <!-- ⛔⛔ A CHART OF ACCOUNTS IS NOT A REPORTING TAXONOMY, AND CONFUSING THEM
-           IS THE MISTAKE THIS ELEMENT EXISTS TO CATCH. A chart is the list of ACCOUNTS an
-           entity posts to (Spain's PGC, Sweden's BAS, Portugal's SNC código de contas),
-           and `1200` is a different account in each. A reporting taxonomy is the list of
-           CONCEPTS a filing is tagged with; `http://fasb.org/us-gaap` is one, and it
-           belongs to `framework` above. An adopter who files a reporting taxonomy here has
-           declared a chart that nobody posts to.
+      <xs:element name="chart"        type="pm:StatedBorrowedTerm">
+        <xs:annotation><xs:documentation xml:lang="en">
+          WHAT IT IS
 
-           ⭐ WHAT GOES IN EACH HALF, BECAUSE THE PAIR IS WHAT MAKES THE JOIN WORK.
-           `taxonomy` is THE CHART ITSELF, the same URI an `Answer/holds` must carry,
-           which is what lets a profile line the two up. `value` is the chart's own
-           identifier or edition (`PGC`, `BAS`, `SNC-2016`, the entity's chart name),
-           which keeps two editions of one chart distinguishable. The same split
-           `framework` uses. ⛔ NOT A POSITION: the position is the answer's half.
+          The list of ACCOUNTS an entity posts to: Spain's PGC, Sweden's BAS, Portugal's SNC
+          código de contas. `1200` is a different account in each, so the chart is what makes
+          a filed position mean anything at all.
 
-           ⭐⭐⭐ A SELF-AUTHORED CHART NAMES THE ENTITY AS ITS OWN TAXONOMY, AND THAT
-           CLOSES AN ENTIRE FILING POPULATION. THERE IS NO UNITED STATES CHART OF ACCOUNTS.
-           What is published there is a reporting taxonomy; every filer's chart is their
-           own and unpublished, so the whole US population has a chart, IN DAILY USE, with
-           no publishing authority to borrow from. The filer IS the authority for their own
-           chart, and naming themselves satisfies BorrowedTerm honestly rather than evading
-           it. ⛔ THE TWO MOVES THIS REPLACES WERE BOTH FALSE: omitting the chart said the
-           entity had none, and inventing a taxonomy URI filed an authority that does not
-           exist.
+          ⭐ A SEPARATE AXIS FROM `framework`, not a finer grain of it. Two regimes declaring
+          one framework under two authorities' codings share ONE chart: a Portuguese
+          microentity is `NC-ME` to IES and `M` to SAF-T, and posts to the SNC chart under
+          both.
 
-           ⚠️ SO `unmeasured` IS NOT THE US ANSWER AND MUST NOT BECOME ITS DUMPING GROUND.
-           THE US CHART IS UNPUBLISHED, NOT UNKNOWN, and it is filed as a term. `unmeasured`
-           is for a sender who is NOT THE ENTITY (a witness answering about somebody else's
-           books) or for a tier not yet assigned where the tier picks the chart, as Spain's
-           PGC for SMEs abridges the full PGC.
+          WHAT IT OBLIGES
 
-           ⭐ AND THE CHART IS A SEPARATE AXIS FROM THE FRAMEWORK. Two regimes declaring one
-           framework under two authorities' codings share ONE chart: a Portuguese
-           microentity is `NC-ME` to IES and `M` to SAF-T, and posts to the SNC chart under
-           both.
+          `taxonomy` is THE CHART ITSELF, the same URI an `asrt:Answer/holds` must carry,
+          which is what lets a profile line the two up. `value` is the chart's own identifier
+          or edition, `PGC`, `BAS`, `SNC-2016`, or the entity's own chart name, which keeps
+          two editions of one chart distinguishable. The same split `framework` uses.
 
-           ⭐⭐ REQUIRED, MIRRORING `framework`, FOR `StatedRemainder`'s REASON. This type
-           asserts a universal: any answer naming a position must carry the chart that
-           codes it, and requiring the element forces a regime that has none to SAY SO
-           rather than leave a blank a profile cannot tell from an unasked question. A
-           non-accounting witness answers `notApplicable` and is right to; `none` is for
-           somebody who looked and found there is no chart. The cost is one element per
-           regime, and `regime` is ITSELF optional, so it is paid only by a sender who has
-           already chosen to declare one.
+          ⭐⭐⭐ A SELF-AUTHORED CHART NAMES THE ENTITY AS ITS OWN TAXONOMY, AND THAT CLOSES
+          AN ENTIRE FILING POPULATION. THERE IS NO UNITED STATES CHART OF ACCOUNTS. What is
+          published there is a reporting taxonomy; every US filer's chart is their own and
+          unpublished, so the whole population has a chart IN DAILY USE with no publishing
+          authority to borrow from. The filer IS the authority for their own chart, and
+          naming themselves satisfies `BorrowedTerm` honestly rather than evading it.
 
-           ⛔ REJECTED: OPTIONAL AND WRAPPED, which looks like the cheaper half and is the
-           incoherent middle. It admits `chart` omitted AND `chart absent/reason = none`:
-           two encodings of one fact with no rule saying which to send. That is the mirror
-           of the defect `framework`'s wrapper repairs: S-1 is two facts sharing one
-           encoding; this would be one fact split across two.
+          REQUIRED, mirroring `framework`. A regime with no chart must SAY SO rather than
+          leave a blank a profile cannot tell from an unasked question. A non-accounting
+          witness answers `notApplicable` and is right to; `none` is for somebody who looked
+          and found there is no chart. `regime` is itself optional, so this is paid only by a
+          sender who has already chosen to declare one.
 
-           ⛔ REJECTED: ANNOTATION ALONE, left optional and unwrapped. The self-authored
-           clause closes the US population but cannot close a sender who is not the entity,
-           and it leaves the check this element exists for silent: a receiver cannot tell
-           "this regime has no chart" from "nobody said", so an answer holding an unexpected
-           chart yields no finding, and no report that it could not ask, either. See
-           conformance/README.md. -->
-      <xs:element name="chart"        type="pm:StatedBorrowedTerm"/>
+          WHAT IT REFUSES
+
+          ⛔⛔ A REPORTING TAXONOMY FILED AS A CHART, which is the mistake this element exists
+          to catch. A reporting taxonomy is the list of CONCEPTS a filing is tagged with;
+          `http://fasb.org/us-gaap` is one, and it belongs to `framework`. An adopter who
+          files one here has declared a chart that nobody posts to.
+
+          ⛔ `unmeasured` AS THE UNITED STATES ANSWER. That chart is UNPUBLISHED, NOT UNKNOWN,
+          and it is filed as a term. `unmeasured` is for a sender who is NOT THE ENTITY, a
+          witness answering about somebody else's books, or for a tier not yet assigned where
+          the tier picks the chart, as Spain's PGC for SMEs abridges the full PGC.
+
+          ⛔ Omitting the chart, which says the entity has none, and inventing a taxonomy URI,
+          which files an authority that does not exist.
+
+          ⛔ Reading either half as a POSITION. The position is the answer's half, never the
+          regime's.
+
+          SEE ALSO
+
+          `framework` for the other axis, and `asrt:Answer/holds` for the position a chart
+          codes.
+        </xs:documentation><xs:documentation xml:lang="pt">
+          **Português.**
+
+          O QUE É
+
+          A lista das CONTAS a que uma entidade lança: o PGC espanhol, o BAS sueco, o código
+          de contas do SNC português. O `1200` é uma conta diferente em cada um, por isso é o
+          plano que faz uma posição declarada significar seja o que for.
+
+          ⭐ UM EIXO SEPARADO DO `framework`, e não um grão mais fino dele. Dois regimes que
+          declarem um referencial sob as codificações de duas autoridades partilham UM plano:
+          uma microentidade portuguesa é `NC-ME` para a IES e `M` para o SAF-T, e lança ao
+          plano do SNC em ambos.
+
+          O QUE OBRIGA
+
+          A `taxonomy` é O PRÓPRIO PLANO, o mesmo URI que um `asrt:Answer/holds` tem de
+          transportar, que é o que permite a um perfil alinhar os dois. O `value` é o
+          identificador ou a edição do plano, `PGC`, `BAS`, `SNC-2016`, ou o nome do plano da
+          própria entidade, o que mantém duas edições de um plano distinguíveis. A mesma
+          divisão que o `framework` usa.
+
+          ⭐⭐⭐ UM PLANO DE AUTORIA PRÓPRIA NOMEIA A ENTIDADE COMO A SUA PRÓPRIA TAXONOMIA, E
+          ISSO FECHA UMA POPULAÇÃO INTEIRA DE DECLARANTES. NÃO EXISTE PLANO DE CONTAS DOS
+          ESTADOS UNIDOS. O que lá é publicado é uma taxonomia de relato; o plano de cada
+          declarante é seu e não publicado, por isso a população inteira tem um plano EM USO
+          DIÁRIO sem autoridade publicadora a quem o pedir emprestado. Quem declara É a
+          autoridade do seu próprio plano, e nomear-se a si mesmo satisfaz o `BorrowedTerm`
+          com honestidade em vez de o contornar.
+
+          OBRIGATÓRIO, a espelhar o `framework`. Um regime sem plano tem de O DIZER em vez de
+          deixar um branco que um perfil não distingue de uma pergunta que ninguém fez. Uma
+          testemunha não contabilística responde `notApplicable` e faz bem; o `none` é para
+          quem procurou e concluiu que não há plano. O `regime` é ele próprio opcional, por
+          isso isto só é pago por quem já escolheu declarar um.
+
+          O QUE RECUSA
+
+          ⛔⛔ UMA TAXONOMIA DE RELATO DECLARADA COMO PLANO, que é o erro para cuja deteção
+          este elemento existe. Uma taxonomia de relato é a lista dos CONCEITOS com que uma
+          declaração é etiquetada; o `http://fasb.org/us-gaap` é uma, e pertence ao
+          `framework`. Quem declare uma aqui declarou um plano a que ninguém lança.
+
+          ⛔ O `unmeasured` COMO RESPOSTA DOS ESTADOS UNIDOS. Esse plano é NÃO PUBLICADO e não
+          desconhecido, e declara-se como termo. O `unmeasured` é para quem envia e NÃO É A
+          ENTIDADE, uma testemunha que responde sobre os livros de outrem, ou para um escalão
+          ainda não atribuído onde é o escalão que escolhe o plano, como o PGC para PME em
+          Espanha abrevia o PGC completo.
+
+          ⛔ Omitir o plano, o que diz que a entidade não tem nenhum, e inventar um URI de
+          taxonomia, o que declara uma autoridade que não existe.
+
+          ⛔ Ler qualquer das metades como uma POSIÇÃO. A posição é a metade da resposta e
+          nunca a do regime.
+
+          VER TAMBÉM
+
+          O `framework` para o outro eixo, e o `asrt:Answer/holds` para a posição que um plano
+          codifica.
+        </xs:documentation></xs:annotation>
+      </xs:element>
       <xs:element name="note"         type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -5741,7 +6782,16 @@
         <xs:element name="evidence" type="pm:StatedEvidence"/>
         <xs:element name="regime" type="pm:Regime" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="stack" type="pm:Stack"/>
-        <xs:element name="operation" type="pm:Operation" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="operation" type="pm:Operation" minOccurs="0" maxOccurs="unbounded">
+          <xs:key name="operationDraw">
+            <xs:selector xpath="pm:draw"/>
+            <xs:field    xpath="pm:layer"/>
+          </xs:key>
+          <xs:key name="operationInduction">
+            <xs:selector xpath="pm:induces"/>
+            <xs:field    xpath="pm:layer"/>
+          </xs:key>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
 
@@ -5753,6 +6803,17 @@
     <xs:key name="layerName">
       <xs:selector xpath="pm:stack/pm:layer"/>
       <xs:field    xpath="pm:name"/>
+    </xs:key>
+
+    <xs:key name="operationLabel">
+      <xs:selector xpath="pm:operation"/>
+      <xs:field    xpath="pm:label"/>
+    </xs:key>
+
+    <xs:key name="couplingPair">
+      <xs:selector xpath="pm:stack/pm:couplings/pm:coupling"/>
+      <xs:field    xpath="pm:from"/>
+      <xs:field    xpath="pm:to"/>
     </xs:key>
 
     <xs:keyref name="drawLayer" refer="pm:layerName">

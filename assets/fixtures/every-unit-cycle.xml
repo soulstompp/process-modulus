@@ -164,14 +164,14 @@
                     <pm:unit>GPU-hour</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
                     <pm:narrowsWhen>
-                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:derivation>
                     </pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>
@@ -255,14 +255,14 @@
                     <pm:unit>node-hour</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
                     <pm:narrowsWhen>
-                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>what would narrow this is not an act but a computation: this share is the demand's range subtracted from a fixed nameplate, so a receiver holding both derives its width rather than waiting for anybody to measure again</pm:note></pm:derivation>
                     </pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from this layer's demand and nameplate</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from this layer's demand and nameplate</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>
@@ -346,14 +346,14 @@
                     <pm:unit>GPU</pm:unit>
                     <pm:denominator><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:denominator>
                     <pm:narrowsWhen>
-                      <pm:absent><pm:reason>derived</pm:reason><pm:note>what would narrow this is not an act but a computation: this layer's nameplate and its demand were both scaled by one conversion factor, so this share is the part's own remainder converted once rather than the difference of the two converted figures, and a receiver holding the part and the factor derives its width rather than waiting for anybody to measure again</pm:note></pm:absent>
+                      <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>what would narrow this is not an act but a computation: this layer's nameplate and its demand were both scaled by one conversion factor, so this share is the part's own remainder converted once rather than the difference of the two converted figures, and a receiver holding the part and the factor derives its width rather than waiting for anybody to measure again</pm:note></pm:derivation>
                     </pm:narrowsWhen>
-                    <pm:boundOrigin><pm:absent><pm:reason>derived</pm:reason><pm:note>nothing sets this bound</pm:note></pm:absent></pm:boundOrigin>
+                    <pm:boundOrigin><pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>the share is this layer's whole remainder, so its bound is the remainder's</pm:note></pm:derivation></pm:boundOrigin>
                   </pm:claim>
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <pm:quantity><pm:absent><pm:reason>derived</pm:reason><pm:note>computable from the part's remainder and the factor that converts it</pm:note></pm:absent></pm:quantity>
+            <pm:quantity><pm:derivation><pm:identity>magnitude</pm:identity><pm:note>computable from the part's remainder and the factor that converts it</pm:note></pm:derivation></pm:quantity>
           </pm:remainder>
         </pm:remainder>
       </pm:layer>

@@ -1,51 +1,56 @@
-# THE RULES THIS REPOSITORY CLAIMS TO ENFORCE. One row per rule: a slug, WHAT ONE EXAMINED ROW
-# OF IT IS, and the sentence the schema states it in.
+# The rules this repository claims to enforce. One row per rule: a slug, what one examined row
+# of it is, and the sentence the schema states it in.
 #
-# ⭐⭐⭐ `subject` IS DECLARED BECAUSE THE CONTRACT'S COLUMNS NAME A THING MANY RULES DO NOT
-#    EXAMINE. `checks/all.sqlc` returns `(rule, filing, layer, violates, detail)` and its header
-#    reads *which layer of which filing it is*, which is false wherever the examined item is
-#    finer than a layer: a PART, a SLACK or a CLAIM. The identity of that item then survives
-#    only inside the prose `detail`. ⚠️ The tally is not written here on purpose, because it has
-#    moved twice: `examples/soundness/main.rs` §4 prints it per subject every run.
+# Why `subject` is declared
+#   The contract's columns name a thing many rules do not examine. `checks/all.sqlc` returns
+#   `(rule, filing, layer, violates, detail)` and its header reads *which layer of which filing
+#   it is*, which is false wherever the examined item is finer than a layer: a part, a slack or a
+#   claim. The identity of that item then survives only inside the prose `detail`.
+#   `examples/soundness/main.rs` §4 prints the tally per subject on every run.
 #
-# ⛔⛔⛔ AND A CLAIM-GRAINED RULE MUST STILL REPORT THE CLAIM'S OWN LAYER. Returning the claim's
-#    ADDRESS in that column instead, `pm:nameplate/pm:amount claim 7`, names no filed layer at
-#    all, and the multiplicity law here cannot see it: it asks for ONE ROW PER `(filing, layer)`,
-#    and a value unique per row satisfies that by construction. **What makes the column wrong is
-#    exactly what makes that guard pass.** ⭐ So the address belongs in `detail`, where a finer
-#    subject's identity belongs, and `checks/grain.sqlc`'s `unresolvable` arm asks whether the
-#    key RESOLVES rather than whether it is unique.
+# A claim-grained rule still reports the claim's own layer
+#   Returning the claim's address in that column instead, `pm:nameplate/pm:amount claim 7`,
+#   names no filed layer at all, and the multiplicity law here cannot see it: it asks for one row
+#   per `(filing, layer)`, and a value unique per row satisfies that by construction. What makes
+#   the column wrong is exactly what makes that guard pass. So the address belongs in `detail`,
+#   where a finer subject's identity belongs, and `checks/grain.sqlc`'s `unresolvable` arm asks
+#   whether the key resolves rather than whether it is unique.
 #
-# ⛔⛔ SO THE COVERAGE NUMBER HAS A UNIT AND IT OWES PRINTING. *examined 20* means twenty PARTS
-#    for one rule and twenty LAYERS for another, and a `< 3 is thin` threshold across both grades
-#    two different things alike. ⚠️ Measured on this corpus, NO rule's verdict changes when counted at layer
-#    grain instead, so the harm is latent rather than live -- which is a reason to declare the
-#    unit, not a reason to leave it implicit.
+# The coverage number has a unit
+#   It owes printing. *examined 20* means twenty parts for one rule and twenty layers for
+#   another, and a `< 3 is thin` threshold across both grades two different things alike. On
+#   this corpus no rule's verdict changes when counted at layer grain instead, so the harm is
+#   latent rather than live, which is a reason to declare the unit, not a reason to leave it
+#   implicit.
 #
-# ⭐⭐ AND IT BUYS A LAW: a rule declaring `layer` must have exactly one row per
-#    `(filing, layer)`. A layer-grained rule that starts emitting two rows per layer has changed
-#    what it examines, and nothing else here would notice. ⛔ The converse is NOT assertable: a
-#    part-grained rule may legitimately see one part per layer in a given corpus.
+# It buys a law
+#   A rule declaring `layer` must have exactly one row per `(filing, layer)`. A layer-grained
+#   rule that starts emitting two rows per layer has changed what it examines, and nothing else
+#   here would notice. The converse is not assertable: a part-grained rule may legitimately see
+#   one part per layer in a given corpus.
 #
-# ⭐⭐⭐ THIS IS THE ONE PLACE A RULE'S NAME IS WRITTEN, AND EVERY CHECK JOINS IT TO LEARN ITS
-#    OWN. That is not tidiness -- it is what makes a rule able to report that it examined
-#    NOTHING. A check that simply filters its population disappears from a `GROUP BY` when the
-#    population is empty, so the single most important verdict this file can return, ⛔ VACUOUS,
-#    is exactly the one a grouping cannot produce. Joining the roster first means the row
-#    exists before the population does.
+# The one place a rule's name is written
+#   Every check joins this roster to learn its own name. That is not tidiness: it is what makes a
+#   rule able to report that it examined nothing. A check that simply filters its population
+#   disappears from a `GROUP BY` when the population is empty, so the single most important
+#   verdict this file can return, vacuous, is exactly the one a grouping cannot produce. Joining
+#   the roster first means the row exists before the population does.
 #
-# ⭐⭐ "A BOUND WITH NOTHING TO BOUND PASSES LOUDEST." An empty violations table is the good
-#    outcome and it is also what a checker that examines nothing returns. The two are
-#    indistinguishable from the outside, and this relation is what separates them.
+# A bound with nothing to bound passes loudest
+#   An empty violations table is the good outcome, and it is also what a checker that examines
+#   nothing returns. The two are indistinguishable from the outside, and this relation is what
+#   separates them.
 #
-# ⛔ A ROW HERE WITH NO CHECK BEHIND IT IS A CLAIM WITH NOTHING UNDER IT, and a check with no
-#   row here is a rule nobody declared. Both directions are anti-joined in
-#   reports/integrity.sqlc, which is empty when the two agree.
+# Both directions are checked
+#   A row here with no check behind it is a claim with nothing under it, and a check with no row
+#   here is a rule nobody declared. Both directions are anti-joined in reports/integrity.sqlc,
+#   which is empty when the two agree.
 -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees', 'layer', 'sign agrees with the range comparison'),
   ('shares_do_not_sum', 'layer', 'stated shares sum to the magnitude'),
-  ('nobody_named_as_unserved', 'layer', 'a supply with nowhere to put its excess names who went unserved'),
+  ('stated_quantity_is_not_the_magnitude', 'layer', 'a stated remainder quantity is the magnitude'),
+  ('nobody_named_as_unserved', 'layer', 'a supply with nowhere to put its excess names who went unserved, and under interference names nobody else'),
   ('exposure_unaccounted', 'layer', 'exposure does not exceed slack plus unserved shares'),
   ('share_exceeds_slack', 'layer', 'a share does not exceed the slack of the buffer that absorbed it'),
   ('slack_unit_mismatch', 'slack', 'a slack is expressed in the unit of the shares it bounds'),
@@ -60,11 +65,13 @@ SELECT * FROM (VALUES
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
   ('range_says_no_range', 'claim', 'a ranged claim does not file narrowsWhen as notApplicable'),
   ('bound_fell_with_no_range', 'claim', 'a point value does not say its bound is where the measurements fell'),
+  ('identity_does_not_compute_the_claim', 'claim', 'a claim''s edge or narrowing derives from an identity that computes the claim''s own position'),
   ('window_lost_or_summed', 'part', 'a window is carried through a fusion and never summed'),
   ('derived_slack_over_a_window', 'layer', 'a derived time slack needs a window that permits the derivation'),
   ('window_not_applicable_on_a_rate', 'layer', 'a window is notApplicable only where the unit has no period under the line'),
+  ('window_size_not_applicable', 'layer', 'a window that files its live part does not call that part''s size malformed'),
   ('elimination_not_applicable_with_parts', 'layer', 'a fusion calls double counting malformed only when it has one part'),
-  ('fusion_sum_disagrees', 'layer', 'a composed demand equals the sum of its converted parts less its eliminations'),
+  ('fusion_sum_disagrees', 'layer', 'a composed figure equals the sum of its converted parts less its eliminations, per quantity'),
   ('local_part_dangles', 'part', 'a local part names a layer in its own stack'),
   ('unit_crossing_without_a_factor', 'layer', 'a part crossing a unit boundary files what converts it'),
   ('regime_crossing_without_a_citation', 'part', 'a part crossing a regime boundary files what reconciles it'),

@@ -1,0 +1,57 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §4  Every question the absence census asks, the column it claims to read, and what it found.\n-- epistemics/absence_questions.sqlc, each question counted in epistemics/absences.sqlc.\nSELECT q.question AS \"question!\", q.table_name AS \"table_name!\", q.column_name AS \"column_name!\",\n       count(a.question) AS \"census!\"\nFROM      (\n    SELECT * FROM epistemics.absence_questions\n) q\nLEFT JOIN (\n    SELECT * FROM epistemics.absences\n) a ON a.question = q.question\nGROUP BY q.question, q.table_name, q.column_name\nORDER BY q.table_name, q.column_name\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "question!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absence_questions",
+            "name": "question"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "table_name!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absence_questions",
+            "name": "table_name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "column_name!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absence_questions",
+            "name": "column_name"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "census!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "4003a6bd08cf2ab3267a4e6aaea6ef354ff25948f803e384d2839ce6ed4fee3d"
+}

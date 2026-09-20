@@ -1,22 +1,24 @@
-# S, THE SLACK MATRIX: how much each buffer holds, in the layer's own unit. One row per
+# S, the slack matrix: how much each buffer holds, in the layer's own unit. One row per
 # (filing, layer, buffer), which is the sparse form of an L x 3 matrix, and `sized` says
 # whether that row carries a number or a typed reason it does not.
 #
-# ⭐⭐ THESE WERE BOOLEANS ONCE, AND A BIT SAYS A BUFFER EXISTS RATHER THAN HOW MUCH IT
-#    HOLDS -- so any share at all fitted inside it and the inequality that bounds shares
-#    against slack could not fail. Three columns became three rows carrying magnitudes, and
-#    the bound became checkable.
+# Magnitudes, not booleans
+#   A bit says a buffer exists rather than how much it holds, so any share at all fits inside it
+#   and the inequality that bounds shares against slack cannot fail. Three rows carrying magnitudes
+#   make the bound checkable.
 #
-# ⛔ AN UNSIZED ROW IS STILL A ROW, AND `none` IS NOT ONE OF THE REASONS IT CAN CARRY. All
-#   three slacks are `pm:StatedClaim`, so a buffer somebody looked at and found empty is a
-#   SIZED row reading `[0, 0, 0]` in the layer's unit. What is left for `absent` is
-#   `unmeasured` = nobody looked, `notApplicable` = the buffer does not arise here, and
-#   `derived` = the receiver computes it. Densifying an unsized row into 0.0 destroys the
-#   difference for good, and it is the difference between a bound that holds and a bound
-#   nobody tested.
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
+# An unsized row is still a row
+#   And `none` is not one of the reasons it can carry. The capacity and inventory slacks are
+#   `pm:StatedClaim` and the time slack is `pm:StatedTimeSlack`, and all three take their absence
+#   through a `pm:ClaimAbsence`, so a buffer somebody looked at and found empty is a sized row
+#   reading `[0, 0, 0]` in the layer's
+#   unit. What is left for `absent` is `unmeasured` = nobody looked and `notApplicable` = the
+#   buffer does not arise here; a time slack may instead name `clearance` in `derivation`, the
+#   receiver computing it. Densifying an unsized row into 0.0 destroys the difference for good, and
+#   it is the difference between a bound that holds and a bound nobody tested.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
+       s.derivation
 FROM pm.slack s

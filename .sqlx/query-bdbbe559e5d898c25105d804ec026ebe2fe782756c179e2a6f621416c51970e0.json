@@ -1,0 +1,49 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §5  The two self-joins of F, and the fibre profile each one's size is fixed by.\n-- composition/parts.sqlc grouped by each self-join's key, beside the self-join itself.\nSELECT 'composition/sibling_parts.sqlc' AS \"relation!\", 'ordered, reflexive kept' AS \"pairing!\",\n       f.k AS \"k!\", count(*) AS \"fibres!\",\n       (SELECT count(*) FROM ( SELECT * FROM composition.sibling_parts ) s) AS \"joined!\"\nFROM ( SELECT count(*) AS k\n       FROM ( SELECT * FROM composition.parts ) p\n       WHERE p.composition IS NOT NULL AND p.composed_layer IS NOT NULL\n         AND p.part_filing IS NOT NULL\n       GROUP BY p.composition, p.composed_layer, p.part_filing ) f\nGROUP BY f.k\nUNION ALL\nSELECT 'eliminations/derived.sqlc', 'unordered, reflexive dropped',\n       f.k, count(*),\n       (SELECT count(*) FROM ( SELECT * FROM eliminations.derived ) d)\nFROM ( SELECT count(*) AS k\n       FROM ( SELECT * FROM composition.parts ) p\n       WHERE p.part_filing IS NOT NULL AND p.part_layer IS NOT NULL\n       GROUP BY p.part_filing, p.part_layer ) f\nGROUP BY f.k\nORDER BY 1, 3\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "relation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "pairing!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "k!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "fibres!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "joined!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "bdbbe559e5d898c25105d804ec026ebe2fe782756c179e2a6f621416c51970e0"
+}

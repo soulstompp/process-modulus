@@ -1,21 +1,32 @@
-# EVERY EXPOSED LAYER LANDS IN EXACTLY ONE STANDING. One row: how many layers carry an exposure,
+# Every exposed layer lands in exactly one standing. One row: how many layers carry an exposure,
 # how many were classified, and how many were classified twice.
 #
-# ⭐⭐⭐ A PARTITION FAILS TWO WAYS AND THE COUNTS ONLY SEE ONE OF THEM, SO THE THIRD TERM IS NOT
-#    DECORATION. If the JOIN inside layers/exposure_scope drops or fans out a layer, the two
-#    cardinalities disagree and that is caught. But the `CASE` sits in the SELECT LIST, so a
-#    layer matching no arm does NOT vanish: it keeps its row and takes `standing = NULL`.
-#    Cardinality is unchanged, and a law built on cardinality is blind to it. Measured with the
-#    `ELSE` removed: 24 exposed, 24 classified, 0 doubled, ONE standing NULL, law still `t`.
-#    `unclassified` is the term that sees it. The general form:
-#    every law on this roster is a cardinality identity, and this is not a cardinality property.
+# The third term sees what the counts cannot
+#   A partition fails two ways and the counts only see one of them, so the third term is not
+#   decoration. If the JOIN inside layers/exposure_scope drops or fans out a layer, the two
+#   cardinalities disagree and that is caught. But the `CASE` sits in the SELECT list, so a layer
+#   matching no arm does not vanish: it keeps its row and takes `standing = NULL`. Cardinality is
+#   unchanged, and a law built on cardinality is blind to it. `unclassified` is the term that
+#   sees it. The general form: every law on this roster is a cardinality identity, and this is
+#   not a cardinality property.
 #
-# ⛔ THE JOIN INSIDE layers/exposure_scope IS THE RISK. layers/absorption.sqlc groups the slack
-#   matrix by layer, so it is one row per layer by construction. If it ever stops being one, the
-#   exposed layers fan out, every standing count still looks reasonable, and the third arm feeds
-#   two rules twice.
+# The join inside layers/exposure_scope is the risk
+#   layers/absorption.sqlc groups the slack matrix by layer, so it is one row per layer by
+#   construction. If it ever stops being one, the exposed layers fan out, every standing count
+#   still looks reasonable, and the third arm feeds two rules twice.
+#
+# Which standings exist is the type's job
+#   The type is `public.exposure_standing`, because a count of rows per standing cannot see a
+#   standing renamed, and `layers/unabsorbed_exposure.sqlc` selects on one by name. Every arm
+#   casts to it, so that name is checked when either query is parsed.
+#
+# Probe
+#   examples/probes runs it as `exposure_standing`.
+#   Remove the `ELSE` from the `CASE` in layers/exposure_scope.sqlc. The exposed and classified
+#   counts still agree and nothing is doubled; `unclassified` must count the layer that falls
+#   through, and the law must fail.
 -- layers/remainder.sqlc where exposure > 0, against layers/exposure_scope.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

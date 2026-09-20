@@ -1,0 +1,28 @@
+# Every column in schema `pm` whose type is `absence_reason`. One row per column: its table and its
+# name, as Postgres records them.
+#
+# The outside set, derived because Postgres writes it
+#   A census that claims every typed absence is a claim about a set it cannot see from the inside:
+#   a relation derived from what loaded reports what its arms read and never the column no arm
+#   reads. That set is usually declared by hand, and here it does not have to be, for
+#   diagrams/catalogue.sqlc's reason: `information_schema` is written by Postgres from schema.ddl,
+#   so a column added there arrives here with nobody restating it, and nothing in assets/sqlc/ can
+#   make it agree.
+#
+# The type is the test, not the name
+#   A column called `absent` and a column called `demand_absent` are the same kind of fact, and one
+#   called `answer` would be too; matching on the suffix would miss the first renamed one.
+#   `udt_name` is what a typed absence is.
+#
+# One column is not a question
+#   `absence.reason` is every absence at once, read from the elements rather than from the table of
+#   the thing each is about. It is the census's second route, held against the first by
+#   algebra/absences_filed.sqlc; asked as one more question it would count every absence twice.
+-- information_schema.columns, restricted to schema pm and type pm.absence_reason.
+SELECT c.table_name::text  AS table_name,
+       c.column_name::text AS column_name
+FROM information_schema.columns c
+WHERE c.table_schema = 'pm'
+  AND c.udt_schema   = 'pm'
+  AND c.udt_name     = 'absence_reason'
+  AND (c.table_name, c.column_name) <> ('absence', 'reason')

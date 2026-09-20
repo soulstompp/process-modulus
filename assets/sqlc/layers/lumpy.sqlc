@@ -1,13 +1,22 @@
-# THE LAYERS WHOSE SUPPLY ARRIVES IN WHOLE UNITS. One row per layer filing `lumpy` with the
-# quantum that size means. Half a truck and half a licence do not exist, and this is the set
-# where that is true.
+# The layers whose supply arrives in whole units. One row per layer that files `lumpy` and states
+# its nameplate, with the quantum that size means and the layer's demand where it states one. Half
+# a truck and half a licence do not exist, and this is the set where that is true.
 #
-# ⛔ NOT THE COMPLEMENT OF "CONTINUOUS". A layer whose divisibility is a typed absence is in
-#   neither set: nobody said which it was. The three-valued reading is the whole reason
-#   `lumpy` is a nullable boolean rather than a NOT NULL one.
--- pm:Nameplate/pm:Divisibility with a pm:LumpyQuantum.
-SELECT r.*
+# Not the complement of "continuous"
+#   A layer whose divisibility is a typed absence is in neither set: nobody said which it was. The
+#   three-valued reading is the whole reason `lumpy` is a nullable boolean rather than a NOT NULL
+#   one.
+#
+# Read from the nameplate, not from the remainder
+#   Whether supply arrives in whole units is a fact about the supply, so a lumpy layer that states
+#   no demand is still lumpy, and the unit and multiple rules still apply to it. The demand columns
+#   are NULL there; a caller that needs them, like the residue census, filters on them.
+-- layers/figures.sqlc where the nameplate is lumpy, the demand beside it where stated.
+SELECT f.filing, f.layer,
+       f.n_low, f.n_mode, f.n_high, f.n_unit AS amount_unit,
+       f.quantum_low, f.quantum_mode, f.quantum_high, f.quantum_unit, f.quantum_absent,
+       f.d_low, f.d_mode, f.d_high, f.d_unit AS unit
 FROM (
-    :compose(layers/remainder.sqlc)
-) r
-WHERE r.lumpy
+    :compose(layers/figures.sqlc)
+) f
+WHERE f.lumpy

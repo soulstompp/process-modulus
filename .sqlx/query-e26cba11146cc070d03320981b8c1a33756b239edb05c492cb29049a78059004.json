@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- rank/compose_edges.sqlc, symmetrised and walked for components, counted whole and by directory.\nWITH RECURSIVE\nedge AS (\n    SELECT DISTINCT e.parent AS a, e.child AS b\n    FROM ( SELECT * FROM rank.compose_edges ) e\n),\nnode AS (\n    SELECT a AS name FROM edge UNION SELECT b FROM edge\n),\nplaced AS (\n    SELECT n.name,\n           CASE WHEN position('/' IN n.name) > 0 THEN split_part(n.name, '/', 1) ELSE '(root)' END\n             AS directory\n    FROM node n\n),\nscoped_node AS (\n    SELECT NULL::text AS scope, p.name FROM placed p\n  UNION ALL\n    SELECT p.directory, p.name FROM placed p\n),\nscoped_edge AS (\n    SELECT NULL::text AS scope, e.a, e.b FROM edge e\n  UNION ALL\n    SELECT pa.directory, e.a, e.b\n    FROM edge e\n    JOIN placed pa ON pa.name = e.a\n    JOIN placed pb ON pb.name = e.b AND pb.directory = pa.directory\n),\nsym AS (\n    SELECT scope, a, b FROM scoped_edge\n  UNION\n    SELECT scope, b, a FROM scoped_edge\n),\nreach(scope, root, at) AS (\n      SELECT s.scope, s.name, s.name FROM scoped_node s\n    UNION\n      SELECT r.scope, r.root, y.b\n      FROM reach r JOIN sym y ON y.scope IS NOT DISTINCT FROM r.scope AND y.a = r.at\n),\ncomp AS (SELECT scope, root, min(at) AS component FROM reach GROUP BY scope, root)\nSELECT n.scope,\n       count(DISTINCT n.name)                                              AS n_nodes,\n       (SELECT count(*) FROM scoped_edge w\n         WHERE w.scope IS NOT DISTINCT FROM n.scope)                       AS m_edges,\n       count(DISTINCT c.component)                                         AS c_components,\n       count(DISTINCT n.name) - count(DISTINCT c.component)                AS rank_of_incidence,\n       (SELECT count(*) FROM scoped_edge w\n         WHERE w.scope IS NOT DISTINCT FROM n.scope)\n         - count(DISTINCT n.name) + count(DISTINCT c.component)            AS cycle_space_dim\nFROM      scoped_node n\nJOIN      comp c ON c.scope IS NOT DISTINCT FROM n.scope AND c.root = n.name\nGROUP BY  n.scope\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "scope",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "n_nodes",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "m_edges",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "c_components",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "rank_of_incidence",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "cycle_space_dim",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "e26cba11146cc070d03320981b8c1a33756b239edb05c492cb29049a78059004"
+}

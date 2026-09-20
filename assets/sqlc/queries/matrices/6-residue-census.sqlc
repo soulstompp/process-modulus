@@ -1,42 +1,51 @@
--- §6  The residue's three points, and whether they came back in order.
+-- §6  The residue's three points, whether they came back in order, and whether the demand crossed a tooth.
+# One row per lumpy corpus layer with a stated demand, carrying the demand's three points, the
+# quantum's, whether the residue evaluated at those points comes back ordered, and whether the
+# demand range crosses a multiple of the quantum.
 #
-# ONE ROW PER LUMPY CORPUS LAYER WITH A STATED DEMAND, carrying the demand's three points, the
-# quantum's, and whether the residue evaluated at those points comes back ORDERED.
+# Two parts of a remainder
+#   `r = mq - (d mod q)` splits a remainder into a part a procurement decision moves and a part no
+#   decision removes. The second half is a sawtooth in `d`, so evaluated at an interval's three
+#   points it need not come back ordered, and an unordered triple is not a valid interval at all,
+#   while the demand it was computed from is perfectly well formed.
 #
-# ⭐⭐ `r = mq - (d mod q)` SPLITS A REMAINDER INTO A PART A PROCUREMENT DECISION MOVES AND A
-# PART NO DECISION REMOVES. The second half is a SAWTOOTH in `d`, so evaluated at an interval's
-# three points it need not come back ordered, and an unordered triple is not a valid interval
-# at all, while the demand it was computed from is perfectly well formed.
+# The tooth is the census, the order is a symptom
+#   A demand inside one tooth always gives ordered residues; one that crosses need not, and may
+#   still come back ordered by luck, as `(0.2, 1.5, 2.7)` with `q = 1` does. So `crosses_tooth` is
+#   what makes the split unfilable and `sawtoothed` is what a reader would see. Proof:
+#   `src/proofs/README.md`, entry `sawtooth`.
 #
-# ⭐ The example recomputes every `mod` in Rust and asserts the verdict matches this column, so
-# the figure the note quotes is calculated twice rather than counted by hand, which is what a
-# figure counted by hand does: it drifts.
+# Calculated twice, not counted by hand
+#   The example recomputes every `mod` and every floor in Rust and asserts both verdicts match
+#   these columns.
 #
-# ⚠️ `quantum_mode` ALONE IS THE DIVISOR because every filed quantum in this corpus is a point
-# value. The example ASSERTS that rather than assuming it: a quantum with a spread would make
-# "the residue" three different divisions and this query would be picking one silently.
+# `quantum_mode` alone is the divisor
+#   Because every filed quantum in this corpus is a point value. The example asserts that rather
+#   than assuming it: a quantum with a spread would make "the residue" three different divisions
+#   and this query would be picking one silently.
 #
-# ⛔ CORPUS ONLY. The fixtures exist to exercise states the corpus does not reach, so counting
-# them here would report coverage this model has not actually been filed against.
+# Corpus only
+#   The fixtures exist to exercise states the corpus does not reach, so counting them here would
+#   report coverage this model has not actually been filed against.
 -- layers/lumpy.sqlc at corpus scope; the sawtooth is mod(d, q) at the three points.
 SELECT l.filing               AS "filing!",
        l.layer                AS "layer!",
        l.d_low::float8        AS "d_low!",
        l.d_mode::float8       AS "d_mode!",
        l.d_high::float8       AS "d_high!",
-       n.quantum_low::float8  AS "q_low!",
-       n.quantum_mode::float8 AS "q_mode!",
-       n.quantum_high::float8 AS "q_high!",
+       l.quantum_low::float8  AS "q_low!",
+       l.quantum_mode::float8 AS "q_mode!",
+       l.quantum_high::float8 AS "q_high!",
        (NOT (mod(l.d_low,  l.quantum_mode) <= mod(l.d_mode, l.quantum_mode)
          AND mod(l.d_mode, l.quantum_mode) <= mod(l.d_high, l.quantum_mode)))
-                              AS "sawtoothed!"
+                              AS "sawtoothed!",
+       (floor(l.d_low / l.quantum_mode) <> floor(l.d_high / l.quantum_mode))
+                              AS "crosses_tooth!"
 FROM (
     :compose(layers/lumpy.sqlc)
 ) l
 JOIN (
     :compose(scope/corpus.sqlc)
 ) f USING (filing)
-JOIN (
-    :compose(layers/nameplate.sqlc)
-) n USING (filing, layer)
+WHERE l.d_low IS NOT NULL
 ORDER BY l.filing, l.layer

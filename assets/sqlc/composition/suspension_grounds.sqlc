@@ -1,36 +1,45 @@
-# THE COMPOSED LAYERS THAT OWE NO SUM, AND FOR WHICH QUANTITY. One row per (composed layer,
+# The composed layers that owe no sum, and for which quantity. One row per (composed layer,
 # ground), carrying which ground it was and which quantity it lifts.
 #
-# ⛔⛔⛔ READ `quantity` BEFORE YOU USE THIS. NULL means EVERY quantity is suspended (nobody
-#    searched at all); a value means exactly that quantity is (the overlap was found and could
-#    not be sized against it). A caller computing one quantity's sum wants
-#    `quantity IS NULL OR quantity = '<that one>'`. Claim "no sum at all" here while the second
-#    arm pins `demand` and drops the column, and the claim is true of one arm and false of the
-#    other with nothing downstream able to tell.
+# Read `quantity` before you use this
+#   NULL means every quantity is suspended (nobody searched at all, a conversion nobody sized, or a
+#   part that is not here); a value means exactly that quantity is (the overlap was found and could
+#   not be sized against it, a layer the sum reads leaves it unstated, or a derived part cannot be
+#   computed). A caller computing one quantity's sum wants
+#   `quantity IS NULL OR quantity = '<that one>'`. ⚠️ Claim "no sum at all"
+#   here while the second arm pins `demand` and drops the column, and the claim is true of one arm
+#   and false of the other with nothing downstream able to tell.
 #
-# ⭐⭐⭐ THIS RELATION EXISTS BECAUSE OF DE MORGAN AND IT IS WORTH SAYING WHY. The condition
-#    it names reaches its call sites otherwise as a conjunction of two negations, in two
-#    different SQL idioms -- an `IS DISTINCT FROM` beside a `NOT EXISTS`. That is the most
-#    drift-prone shape there is: two ways to say NOT, neither of which names what is being
-#    excluded. `NOT a AND NOT b` is `NOT (a OR b)`, so the thing to name is the DISJUNCTION:
-#    the fusions that are suspended. The callers then anti-join one relation, and adding a
-#    third ground for suspension is a new file rather than a new clause in two predicates.
+# Why it exists: De Morgan
+#   The condition it names otherwise reaches its call sites as a conjunction of two negations, in
+#   two different SQL idioms: an `IS DISTINCT FROM` beside a `NOT EXISTS`. That is the most
+#   drift-prone shape there is, two ways to say NOT, neither of which names what is being
+#   excluded. `NOT a AND NOT b` is `NOT (a OR b)`, so the thing to name is the disjunction: the
+#   fusions that are suspended. The callers then anti-join one relation, and adding a ground
+#   for suspension is a new file rather than a new clause in two predicates.
 #
-# ⛔ RUN THIS ALONE BEFORE READING ANY COMPOSITION CHECK. Every row here is a fusion whose
-#   arithmetic is not owed, and a checker reporting a pass on one of these rows is reporting
-#   about nothing.
-# ⛔⛔⛔ THIS IS A BAG AND NOT A SET, WHICH IS THE WHOLE REASON IT IS TWO FILES. One fusion can
-#    be suspended on more than one GROUND -- `every-unsized-conversion/shift-capacity` files
-#    both an unsearched elimination and an unsized conversion -- and it is suspended ONCE. The
-#    key here is (composition, composed_layer, quantity, suspended_because); the key a caller
-#    almost always wants is the first three, and `composition/suspended_fusions.sqlc` is that
-#    projection.
+# Two kinds of ground, one set
+#   composition/filed_grounds.sqlc holds the grounds read off what a fusion and its parts file;
+#   composition/underived_parts.sqlc holds the one that needs a computation, a part filed
+#   `derived` whose figure cannot be derived. Every sum reads both, through this relation. Only
+#   composition/suspended_remainders.sqlc reads the first alone, and its header says why.
 #
-# ⚠️ AND THE DIFFERENCE IS INVISIBLE TO ALMOST EVERY CALLER, WHICH IS WHY IT NEEDS SAYING.
-#    `EXISTS`, `NOT EXISTS` and `EXCEPT` are blind to multiplicity: a duplicate row changes
-#    nothing they compute. A `LEFT JOIN` is not, and a law that COUNTS fusions is not. So the
-#    projection is what a counter or a joiner reads, and this file is what a reader who needs
-#    the reason reads. A relation nobody has joined on is a multiplicity nobody has checked.
--- the three filings that lift the sum rule, one row per GROUND, carrying the quantity it lifts.
-:union(ALL eliminations/unsearched.sqlc, eliminations/unsized.sqlc,
-           composition/unsized_conversions.sqlc)
+# Run this alone before reading any composition check
+#   Every row here is a fusion whose arithmetic is not owed, and a checker reporting a pass on one
+#   of these rows is reporting about nothing.
+#
+# A bag, not a set
+#   This is a bag and not a set, which is the whole reason it is two files. One fusion can be
+#   suspended on more than one ground (`every-unsized-conversion/shift-capacity` files both an
+#   unsearched elimination and an unsized conversion) and it is suspended once. The key here is
+#   (composition, composed_layer, quantity, suspended_because); the key a caller almost always
+#   wants is the first three, and `composition/suspended_fusions.sqlc` is that projection.
+#
+# The difference is invisible to almost every caller
+#   That is why it needs saying. `EXISTS`, `NOT EXISTS` and `EXCEPT` are blind to multiplicity: a
+#   duplicate row changes nothing they compute. A `LEFT JOIN` is not, and a law that counts
+#   fusions is not. So the projection is what a counter or a joiner reads, and this file is what a
+#   reader who needs the reason reads. A relation nobody has joined on is a multiplicity nobody
+#   has checked.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+:union(ALL composition/filed_grounds.sqlc, composition/underived_parts.sqlc)

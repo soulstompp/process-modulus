@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §1  Every document that reached the database, and what it says about itself.\n-- epistemics/documents.sqlc, with the citation a composition works under.\nSELECT d.filing                       AS \"filing!\",\n       d.root                         AS \"root!\",\n       d.evidence                     AS \"evidence\",\n       coalesce(d.witness, '')        AS \"witness!\",\n       coalesce(c.instrument || coalesce(' ' || c.clause, ''), '') AS \"under!\"\nFROM (\n    SELECT * FROM epistemics.documents\n) d\nLEFT JOIN (\n    SELECT * FROM composition.citations\n) c ON c.composition = d.filing AND c.seq = 1\nORDER BY d.root, d.filing\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.documents",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "root!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.documents",
+            "name": "root"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "evidence",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.documents",
+            "name": "evidence"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "witness!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "under!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "d7b1264dc1135f655f12b127787f054bba031d82e8671c95b7a6b9d8246522dd"
+}

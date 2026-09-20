@@ -11,26 +11,17 @@ FROM (
 SELECT s.buffer::text                                          AS buffer,
        f.evidence                                              AS evidence,
        count(*) FILTER (WHERE s.sized)                         AS sized,
-       count(*) FILTER (WHERE s.sized AND s.mode = 0)          AS sized_at_zero,
-       count(*) FILTER (WHERE NOT s.sized)                     AS absent,
+       count(*) FILTER (WHERE s.sized AND s.high = 0)          AS sized_at_zero,
+       count(*) FILTER (WHERE s.absent IS NOT NULL)            AS absent,
        count(*) FILTER (WHERE s.absent = 'unmeasured')         AS nobody_measured,
        count(*) FILTER (WHERE s.absent = 'notApplicable')      AS not_applicable,
-       count(*) FILTER (WHERE s.absent = 'derived')            AS derived,
+       count(*) FILTER (WHERE s.derivation IS NOT NULL)        AS derived,
        count(*)                                                AS rows
 FROM      (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names ARE the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.bound_origin, s.bound_origin_absent
-FROM pm.slack s
-
+    SELECT * FROM entries.slacks
 ) s
 JOIN      (
-    -- from pm.filing, both evidence values.
-SELECT f.name AS filing, f.kind, f.evidence
-FROM pm.filing f
-
+    SELECT * FROM scope.every_filing
 ) f USING (filing)
 GROUP BY s.buffer, f.evidence
 ORDER BY s.buffer, f.evidence

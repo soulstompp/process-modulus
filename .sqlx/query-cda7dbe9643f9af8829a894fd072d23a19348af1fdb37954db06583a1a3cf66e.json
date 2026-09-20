@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  Which relations a law governs, the roster, as the example reads it.\n-- algebra/roster.sqlc, projected to what the tree-walk needs.\nSELECT r.governs      AS \"governs!\",\n       r.form         AS \"form!\",\n       r.multiplicity AS \"multiplicity!\"\nFROM (\n    SELECT * FROM algebra.roster\n) r\nWHERE r.form NOT IN ('value', 'conformance')\nORDER BY r.governs\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "governs!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "algebra.roster",
+            "name": "governs"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "form!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "algebra.roster",
+            "name": "form"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "multiplicity!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "algebra.roster",
+            "name": "multiplicity"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "cda7dbe9643f9af8829a894fd072d23a19348af1fdb37954db06583a1a3cf66e"
+}

@@ -1,0 +1,52 @@
+# A lumpy remainder split into the whole quanta and the residue. One row per lumpy layer that
+# states its demand, with a point quantum and one unit across demand, nameplate and quantum.
+#
+# The split
+#   `k = n / q` is the number of quanta held, `m = k - floor(d / q)` is the number the remainder
+#   spans, and `residue = d mod q` is the part of the demand no whole quantum meets. Then
+#   `r = m * q - residue`, and the floors cancel: the identity is `n - d` for any demand and any
+#   nameplate, interval or not. Proof: `src/proofs/README.md`, entries `floors_cancel` and
+#   `congruence`.
+#
+# Read at the crossed pairs
+#   `m` is carried at the remainder's three corners, and each corner pairs the nameplate with the
+#   demand at the opposite end, as layers/differenced_remainder.sqlc does: `m_low` pairs `n_low`
+#   with `d_high`. The residue and the tooth `floor(d / q)` are carried at the demand's own three
+#   points, because they are functions of the demand alone.
+#
+# The two halves are not claims
+#   The residue is a sawtooth in `d`, so at a demand's three points it need not come back ordered,
+#   and `m * q` inherits the same jumps. `crosses_tooth` says where: a demand range that stays
+#   inside one tooth, `floor(d_low / q) = floor(d_high / q)`, has ordered residues, and one that
+#   crosses need not. That is why the schema carries the total and never the split, and why this
+#   relation is a derivation of `r` and not something a filer could state. Proof:
+#   `src/proofs/README.md`, entry `sawtooth`.
+#
+# One unit, a point quantum
+#   `floor(d / q)` divides the demand by the quantum, which means nothing across units and is three
+#   different divisions for a quantum with width. Both are left out rather than guessed at;
+#   checks/quantum_unit_mismatch reports the first, and examples/matrices/main.rs asserts no filed
+#   quantum has the second.
+-- layers/lumpy.sqlc, split as r = m*q - (demand mod q) at the crossed pairs.
+SELECT l.filing, l.layer, l.unit,
+       l.quantum_mode AS q,
+       l.n_low, l.n_mode, l.n_high,
+       l.d_low, l.d_mode, l.d_high,
+       floor(l.d_low  / l.quantum_mode) AS d_low_tooth,
+       floor(l.d_mode / l.quantum_mode) AS d_mode_tooth,
+       floor(l.d_high / l.quantum_mode) AS d_high_tooth,
+       mod(l.d_low,  l.quantum_mode)    AS d_low_residue,
+       mod(l.d_mode, l.quantum_mode)    AS d_mode_residue,
+       mod(l.d_high, l.quantum_mode)    AS d_high_residue,
+       l.n_low  / l.quantum_mode - floor(l.d_high / l.quantum_mode) AS m_low,
+       l.n_mode / l.quantum_mode - floor(l.d_mode / l.quantum_mode) AS m_mode,
+       l.n_high / l.quantum_mode - floor(l.d_low  / l.quantum_mode) AS m_high,
+       floor(l.d_low / l.quantum_mode) <> floor(l.d_high / l.quantum_mode) AS crosses_tooth
+FROM (
+    :compose(layers/lumpy.sqlc)
+) l
+WHERE l.d_low IS NOT NULL
+  AND l.quantum_mode > 0
+  AND l.quantum_low = l.quantum_high
+  AND l.unit = l.amount_unit
+  AND l.quantum_unit = l.amount_unit

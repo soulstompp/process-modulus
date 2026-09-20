@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §11  Whether a fused supply still arrives in whole units, and where that question has no answer.\n-- composition/composed_quantum.sqlc, ordered by whether the question has an answer.\nSELECT c.composition                                   AS \"composition!\",\n       c.composed_layer                                AS \"composed_layer!\",\n       c.parts                                         AS \"parts!\",\n       coalesce(c.unit, '(none)')                      AS \"unit!\",\n       coalesce(c.composed_quantum::text || CASE WHEN c.spread THEN ' (at a factor''s mode)' ELSE '' END,\n                '(' || c.absent || ')')                AS \"quantum!\"\nFROM (\n    SELECT * FROM composition.composed_quantum\n) c\nORDER BY (c.absent IS NOT NULL) DESC, c.composition, c.composed_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.composed_quantum",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.composed_quantum",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "parts!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "composition.composed_quantum",
+            "name": "parts"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "unit!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "quantum!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "37e34bf5d19d6b99006c8094157a522e937f823d9762f9f91b10110a0afe6f7a"
+}

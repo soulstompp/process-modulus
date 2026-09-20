@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §17 Every operation beside the notation position it names, or the fact that it names none.\n-- entries/operations.sqlc against entries/notation_references.sqlc, the whole beside the part.\nSELECT o.filing                                       AS \"filing!\",\n       o.label                                        AS \"label!\",\n       coalesce(r.foreign_notation, '')               AS \"notation!\",\n       coalesce(r.foreign_id, '')                     AS \"node!\",\n       coalesce(o.foreign_absent, '')                 AS \"why_not!\",\n       (r.filing IS NOT NULL)                         AS \"crosses!\"\nFROM      (\n    SELECT * FROM entries.operations\n) o\nLEFT JOIN (\n    SELECT * FROM entries.notation_references\n) r USING (filing, label)\nORDER BY (r.filing IS NOT NULL) DESC, 1, 2\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "entries.operations",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "label!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "entries.operations",
+            "name": "label"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "notation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "node!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "why_not!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "crosses!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "d7c8daa5fd079d009b2e4522f151124d228dc7402e20f0afca6f7fdafd91a409"
+}

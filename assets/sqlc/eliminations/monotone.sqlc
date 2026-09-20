@@ -1,0 +1,86 @@
+# One row per filed elimination, saying what a WIDER elimination would do to the composed figure it
+# comes off, and whether the filing itself licenses that reading. The reading
+# eliminations/paired.sqlc chose decides the first; the claim's own `boundOrigin` decides the second.
+#
+# Subtracting bound by bound is anti-isotone in the elimination
+#   Take the sum bound by bound and the low rises as the elimination's low rises, while the high
+#   falls as its high falls. Widen the elimination at both ends and the composed figure NARROWS. A
+#   composer who is less sure how much was double counted therefore files a more precise figure,
+#   which is the one place in this model where less knowledge produces a tighter answer.
+#
+# The crossed reading is isotone
+#   Pairing the sum's low against the elimination's high sends the width the other way, so widening
+#   the elimination widens the composed figure, which is what every other term here does. The
+#   crossed pairing is not chosen for that reason: eliminations/paired.sqlc reaches it only where
+#   bound by bound would leave the claim disordered. The monotonicity is a consequence of that
+#   repair rather than its motive.
+#
+# What licenses the bound-by-bound reading, and it is a filed answer
+#   Reading an elimination bound by bound assumes its bounds move with the bounds of the figure it is
+#   taken out of. A filing can say exactly that, at its claim's `boundOrigin`: a derivation naming
+#   `sharedParts` means the figure is a copy of one stated in the part it removes, so its bounds ARE
+#   that part's bounds and the assumption is the filer's own. An absent origin says nothing sets this
+#   bound, which neither supports the assumption nor contradicts it. So `licensed` is not a verdict on
+#   a filing; it is which of the two the filer wrote down.
+#
+# A point elimination has no reading to make
+#   Where the elimination is a single value the two pairings are the same arithmetic, so there is
+#   nothing for this relation to distinguish and `isotone` is NULL rather than either answer. That
+#   is most of them, and reading the population without this column would report a split that the
+#   corpus does not actually make.
+#
+# Why this reports and never accuses
+#   Neither reading is a defect and neither licence state is. Bound by bound is right wherever the
+#   elimination's bounds are the sum's own bounds, which is what a double count taken out of a figure
+#   usually is, and the filings that come out unlicensed are correct under the reading they state. The
+#   anti-isotone consequence is worth counting because nothing else here can see it, and worth
+#   counting rather than judging.
+#
+# The claim's own figures come along, and they are the proof the key is right
+#   `claim_seq` is an ordinal, so a join on it returns rows whether or not it points at the right
+#   claim: off by one it still returns one claim per elimination, which is why a cardinality check
+#   cannot settle it. The figures are what settle it, so they are carried here and
+#   queries/observations/20-elimination-monotonicity.sqlc requires them to agree on every row with a
+#   figure. A key checked only by how many rows it returns is not checked.
+#
+# The three origin columns are the evidence for the two derived from them
+#   `licensed` and `what_the_bound_rests_on` are both read off `origin`, `origin_absent` and
+#   `origin_derivation`, so those three ride beside them. Nothing in the tree reads them directly and
+#   they stay because this relation runs alone: a verdict whose inputs are not in the row can only be
+#   trusted, and the point of the licence column is that it is checkable against the filing.
+#
+# A typed absence stays a row
+#   An elimination filed with no figure keeps its row, with the width, the reading and the licence
+#   NULL. The suspension grounds decide what it lifts; this relation only says what could be read.
+-- eliminations/paired.sqlc against epistemics/claims.sqlc at the claim the eliminated quantity is.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit, e.absent, e.reason,
+       e.high - e.low AS width,
+       e.crossed,
+       e.claim_seq,
+       c.low  AS claim_low,
+       c.mode AS claim_mode,
+       c.high AS claim_high,
+       c.unit AS claim_unit,
+       c.origin, c.origin_absent, c.origin_derivation,
+       CASE WHEN e.low IS NULL OR e.high - e.low = 0 THEN NULL ELSE e.crossed END AS isotone,
+       CASE WHEN e.low IS NULL THEN NULL
+            ELSE c.origin_derivation IS NOT DISTINCT FROM 'sharedParts' END AS licensed,
+       CASE WHEN e.low IS NULL      THEN 'no figure, so nothing to read'
+            WHEN e.high - e.low = 0 THEN 'a point: both pairings are one arithmetic'
+            WHEN e.crossed          THEN 'ISOTONE: a wider elimination widens the composed figure'
+            ELSE 'ANTI-ISOTONE: a wider elimination NARROWS the composed figure'
+       END AS what_a_wider_elimination_does,
+       CASE WHEN e.low IS NULL THEN 'no claim to carry an origin'
+            WHEN c.origin_derivation IS NOT DISTINCT FROM 'sharedParts'
+                 THEN 'the filer says it is a copy of the part it removes'
+            WHEN c.origin_absent IS NOT NULL THEN 'the filer says nothing sets this bound'
+            WHEN c.origin IS NOT NULL        THEN 'the filer names who may change this bound'
+            ELSE 'nobody said'
+       END AS what_the_bound_rests_on
+FROM      (
+    :compose(eliminations/paired.sqlc)
+) e
+LEFT JOIN (
+    :compose(epistemics/claims.sqlc)
+) c ON c.filing = e.composition AND c.seq = e.claim_seq

@@ -1,0 +1,47 @@
+# The layer dimension as the checker reaches it. One row per filed layer: how many rules examine
+# it, how many found a violation, and whether anything reaches it at all.
+#
+# `rank/incidence_reach.sqlc`, transposed
+#   The transpose is the part that names things. That relation counts, per relation, how much of
+#   the layer dimension it touches. It is an aggregate per relation, so it can say how many and
+#   never which, and a layer nothing reaches leaves no row anywhere to be counted. This is the
+#   same measurement read down the other axis, where the subject is the layer and the shortfall
+#   has a name. It is the third member of the reach family, after `incidence_reach` and
+#   `guard_reach`.
+#
+# It needs a key that resolves
+#   It depends on the second arm of `checks/grain.sqlc`. A rule that puts a claim address in the
+#   contract's `layer` column names no layer, and this relation joined on that key drops those
+#   pairs and prints a believable table that reports layers as unreachable when they are not: an
+#   artifact of the mis-declared subject rather than a fact about the model. A cover measured
+#   through a key that does not resolve measures the key.
+#
+# Depth, not a boolean
+#   The useful reading is depth. On this corpus every filed layer is reached by at least one
+#   rule, which makes `reaches = 0` a guard that can fire rather than a finding. What varies is
+#   how much: a layer one rule can speak about is a layer one repair silences, and that is
+#   visible here and nowhere else.
+#
+# `examined` counts rules, not rows
+#   On purpose. A claim-grained rule returns many rows for one layer, and counting those would
+#   grade a layer by how many claims it happens to file rather than by how many different
+#   questions this repository can put to it.
+#
+# A rule that examined nothing does not reach this layer
+#   `checks/all.sqlc` joins its roster first so a rule with an empty population still returns a
+#   row, with `violates` NULL and no filing. Those rows carry no layer, so they cannot arrive
+#   here, which is the vacuous verdict staying where it belongs: a fact about the rule, not about
+#   the layer.
+-- checks/all.sqlc counted per layer, against layers/every_layer.sqlc as the whole dimension.
+SELECT l.filing,
+       l.layer,
+       count(DISTINCT c.rule)                                   AS examined_by,
+       count(DISTINCT c.rule) FILTER (WHERE c.violates)         AS violated,
+       count(DISTINCT c.rule) = 0                               AS nothing_reaches_it
+FROM      (
+    :compose(layers/every_layer.sqlc)
+) l
+LEFT JOIN (
+    :compose(checks/all.sqlc)
+) c ON c.filing = l.filing AND c.layer = l.layer
+GROUP BY l.filing, l.layer

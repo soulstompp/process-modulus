@@ -1,26 +1,28 @@
-# THE DOCUMENT-TO-DOCUMENT REFERENCES A FILING ACTUALLY MAKES. One row per (filing, foreign
-# notation) pair it reaches through a part.
+# The document-to-document references a filing actually makes. One row per (filing, foreign
+# notation) pair it reaches through a part or through the layers an elimination is stated between.
 #
-# ⭐⭐⭐ THIS IS WHAT AN `import` IS, AND `pm.filing_identity` IS NOT IT. That table is every
-#    document declaring its OWN uri: `asserted_by` reads *the filing, about itself*. In BPMN that
-#    is `targetNamespace`, one per document. An `import` is a document naming ANOTHER one, and
-#    nothing in the model files those directly: they are DERIVED from the references that cross a
-#    document boundary.
+# This is what an `import` is
+#   And `pm.filing_identity` is not it. That table is every document declaring its own uri:
+#   `asserted_by` reads *the filing, about itself*. In BPMN that is `targetNamespace`, one per
+#   document. An `import` is a document naming another one, and nothing in the model files those
+#   directly: they are derived from the references that cross a document boundary.
 #
-# ⛔⛔⛔ AND THE PARTS ARE NOT THE ONLY PLACE THIS MODEL REACHES OUT OF A FILING. There are TWO
-#    `pm:ForeignId` references: a `asrt:Part`, and an `asrt:Elimination/between`. Both name a
-#    notation and a layer in another document. ⛔ With no relation calling the second one a
-#    reference, every enumeration of what this model reaches returns the parts alone.
-#    ⭐ In THIS corpus the union changes nothing, because all 3 documents a `between` names are
-#    already reached by a part. That is luck and not construction, and a count cannot tell the
-#    difference, which is why the union is taken here rather than argued about.
+# Parts are not the only reach
+#   The parts are not the only place this model reaches out of a filing. There are two
+#   `pm:ForeignId` references: an `asrt:Part`, and an `asrt:Elimination/between`. Both name a
+#   notation and a layer in another document. With no relation calling the second one a
+#   reference, every enumeration of what this model reaches returns the parts alone. In this
+#   corpus the union changes nothing, because every document a `between` names is already reached
+#   by a part. That is luck and not construction, and a count cannot tell the difference, which is
+#   why the union is taken here rather than argued about.
 #
-# ⛔ AN IDENTITY TABLE IS A `targetNamespace` AND NOT AN `import`, AND A COUNT SETTLES IT.
-#   Declared |import| = |notation| the law expects 15 and the emitter writes 5, and 5 is right:
-#   `asserted_by` reads the filing about ITSELF, where an import is a document naming another.
-#   A law is worth having exactly when it can contradict the person who wrote it.
--- every reference that leaves its own document: diagrams/calls.sqlc's foreign parts, and the
--- filed layers an elimination is stated between.
+# A count settles identity against import
+#   An identity table is a `targetNamespace` and not an `import`. Declared as
+#   `|import| = |notation|`, the law expects one import per notation and the emitter writes fewer,
+#   one per document reached, and fewer is right: `asserted_by` reads the filing about itself,
+#   where an import is a document naming another. A law is worth having exactly when it can
+#   contradict the person who wrote it.
+-- diagrams/calls.sqlc's foreign parts, and the filed layers an elimination is stated between.
 SELECT DISTINCT x.composition, x.part_notation
 FROM (
     SELECT c.composition, c.part_notation

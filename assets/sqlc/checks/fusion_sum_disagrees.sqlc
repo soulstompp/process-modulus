@@ -1,41 +1,45 @@
-# A COMPOSED DEMAND EQUALS THE SUM OF ITS CONVERTED PARTS, LESS WHAT THE COMPOSER ELIMINATED.
-# One row per fusion that OWES that equality, with a verdict on each.
+# A composed layer's demand, nameplate and draw each equal the sum of the converted parts, less what
+# the composer eliminated against that quantity. One row per fusion that owes the equality in at
+# least one quantity, `violates` where any owed quantity disagrees.
 #
 #     x_composed = F Φ x_parts − e
 #
-# ⭐⭐⭐ THIS IS THE CONFORMANCE RULE FOR THE MODEL'S HEADLINE EQUATION. composition/fused.sqlc
-#    computes the sum, the filed figure and an `agrees` verdict; matrices.sqlc, a psql tour,
-#    PRINTS it, and examples/matrices/main.rs recomputes the product in Rust. A verdict that only a
-#    tour prints and an example asserts is a verdict reports/violations.sqlc and
-#    reports/coverage.sqlc cannot see, which is what a row on the roster buys.
+# The conformance rule for the headline equation
+#   composition/fused.sqlc computes the sum, the filed figure and an `agrees` verdict;
+#   matrices.sqlc, a psql tour, prints it, and examples/matrices/main.rs recomputes the product
+#   in Rust. A verdict that only a tour prints and an example asserts is a verdict
+#   reports/violations.sqlc and reports/coverage.sqlc cannot see, which is what a row on the
+#   roster buys.
 #
-# ⛔⛔ THE POPULATION IS ALREADY CORRECT AND MUST NOT BE WIDENED. composition/fused.sqlc inner
-#    joins composition/owed_equality.sqlc, so a fusion suspended on either ground is ABSENT
-#    here rather than counted as a pass. Adding the suspended rows would report a document that
-#    declined to claim the equality as one that satisfied it, which is the exact defect
-#    asrt:StatedEliminations was added to prevent.
+# The population is already correct
+#   It must not be widened. composition/fused.sqlc inner joins composition/owed_equality.sqlc, so
+#   a quantity suspended on any ground is absent here rather than counted as a pass. Adding the
+#   suspended rows would report a document that declined to claim the equality as one that
+#   satisfied it, which is the exact defect asrt:StatedEliminations was added to prevent.
 #
-# ⭐ IT IS THE DEMAND EQUALITY AND NOTHING ELSE. composition/fused.sqlc pins `quantity` at
-#   `demand` and says so in its own column; six nameplate eliminations and two draw eliminations
-#   are filed in this corpus and no rule reads them. A nameplate sibling is a second file over a
-#   second fused relation, not a widening of this one.
+# Every quantity, one verdict per fusion
+#   composition/fused.sqlc is one row per (fusion, quantity). The rule's subject is the layer, as
+#   checks/roster.sqlc declares, so the quantities fold into one verdict with `bool_or` and the
+#   detail names each. Proof: `src/proofs/README.md`, entry `fusion_sum`.
 #
-# ⛔ THIS SPANS TWO DOCUMENTS, WHICH IS WHY NO GRAMMAR CAN STATE IT. The parts are in one filing
-#   and the composed figure is in another; XSD 1.0 cannot follow the reference, let alone add up
-#   what is on the other end.
--- asrt:Fusion/asrt:Part summed against the composed pm:Layer/pm:Demand, via composition/fused.sqlc.
+# Two documents, so no grammar can state it
+#   The parts are in one filing and the composed figure is in another; XSD 1.0 cannot follow the
+#   reference, let alone add up what is on the other end.
+-- asrt:Fusion/asrt:Part summed against the composed layer's demand, nameplate and draw, via composition/fused.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
     SELECT f.composition AS filing, f.composed_layer AS layer,
-           NOT f.agrees AS violates,
-           format('parts less eliminations give [%s, %s, %s]; the filing states [%s, %s, %s]',
-                  f.computed_low, f.computed_mode, f.computed_high,
-                  f.filed_low, f.filed_mode, f.filed_high) AS detail
+           bool_or(NOT f.agrees) AS violates,
+           string_agg(format('%s: parts less eliminations give [%s, %s, %s]; the filing states [%s, %s, %s]',
+                             f.quantity, f.computed_low, f.computed_mode, f.computed_high,
+                             f.filed_low, f.filed_mode, f.filed_high),
+                      '; ' ORDER BY f.quantity) AS detail
     FROM (
         :compose(composition/fused.sqlc)
     ) f
+    GROUP BY f.composition, f.composed_layer
 ) p ON true
 WHERE r.slug = 'fusion_sum_disagrees'

@@ -1,25 +1,34 @@
-# EVERY ARITHMETIC CANDIDATE, AND WHETHER IT LANDS IN EXACTLY ONE VERDICT CLASS. One row per site.
+# Every arithmetic candidate, and whether it lands in exactly one verdict class. One row per site.
 #
-# ⭐⭐⭐ A COUNT-ONLY PARTITION CHECK IS INSUFFICIENT IN PRINCIPLE, AND THIS ONE IS BY KEY.
-#    Σ|classes| = |candidates| passes when a tuple in two classes is cancelled by a tuple in none.
-#    The classes must be pairwise disjoint AND jointly exhaustive, which is a statement about each
-#    candidate, not about the totals. So: group by (site, filing, layer) and require exactly one.
+# Checked by key, not by count
+#   A count-only partition check is insufficient in principle, and this one is by key.
+#   Σ|classes| = |candidates| passes when a tuple in two classes is cancelled by a tuple in none.
+#   The classes must be pairwise disjoint and jointly exhaustive, which is a statement about each
+#   candidate, not about the totals. So: group by (site, filing, layer) and require exactly one.
 #
-# ⛔ NOT EXHAUSTIVE IS THE SILENT ONE. A candidate falling through every CASE branch takes a NULL
-#   verdict, and the site then reports a smaller population and a cleaner verdict than it earned
-#   -- the same failure `violates IS NULL` is guarded against in checks/.
+# Not exhaustive is the silent failure
+#   A candidate falling through every CASE branch takes a NULL verdict, and the site then reports
+#   a smaller population and a cleaner verdict than it earned: the same failure
+#   `violates IS NULL` is guarded against in checks/.
 #
-# ⛔⛔⛔ SO THE NULL FILTER MUST SIT INSIDE THE COUNT AND NEVER BESIDE IT. As a `WHERE` it removes
-#    the whole GROUP, and a candidate in no class stops being a candidate; as a `FILTER` it
-#    leaves the group with ZERO classes and `classes <> 1` catches it. The two spellings are one
-#    keyword apart and they make opposite claims about exhaustiveness.
+# The NULL filter sits inside the count
+#   Never beside it. As a `WHERE` it removes the whole group, and a candidate in no class stops
+#   being a candidate; as a `FILTER` it leaves the group with zero classes and `classes <> 1`
+#   catches it. The two spellings are one keyword apart and they make opposite claims about
+#   exhaustiveness.
 #
-#    ⭐ Demonstrated by dropping one `ELSE` from arithmetic/remainder.sqlc and recomposing:
-#    `x_composed = F.Phi.x - e` falls from 16 candidates to 3, and with the filter beside the
-#    count the law still returns `t` reading "3 candidates, 3 in exactly one class". With it
-#    inside, eight of the nine sites go `f`. Restore the `ELSE` afterwards.
+# Which classes exist is the type's job
+#   No count can do it. "Exactly one class" survives any renaming of the classes, a misspelt one
+#   included, and a tally that selects a class by name then drops it. The classes are
+#   `public.arithmetic_verdict`, and every arm casts to it, so a misspelling fails when the query
+#   is parsed, on every run, whether or not any candidate reaches that arm.
+#
+# Probe
+#   examples/probes runs it as `arithmetic_class`. Drop the `ELSE` that makes a remainder
+#   `computable` in arithmetic/remainder.sqlc: its candidates fall out of every class, and the law
+#   must fail for `r = n - d` alone. With the filter beside the count it would still return `t`.
 -- arithmetic/all.sqlc, one candidate to exactly one verdict.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

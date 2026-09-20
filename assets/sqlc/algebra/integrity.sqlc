@@ -1,40 +1,135 @@
-# THE DECLARED ROSTERS AGAINST THE POPULATIONS THEY DECLARE, CHECKED AS A PARTITION PER CONTRACT.
-# One row per contract: whether |roster| = |declared but unproduced| + |roster ⋉ population|.
+# Every contract's outer join held to the same two differences taken by EXCEPT. One row per
+# contract whose population does not reach algebra/all.sqlc: whether |roster| = |declared but
+# unproduced| + |roster ⋉ population|, each term read off the contract's fold, and whether the fold's
+# two one-sided regions are the two differences EXCEPT takes.
 #
-# ⭐⭐ THE DEDUP IS INTENDED ON ONE SIDE AND THE LAW IS WRITTEN AROUND IT. `checks/all.sqlc`
-#    carries many rows over far fewer distinct rule names; `EXCEPT` collapses them, and that IS
-#    the question -- which rule NAMES appear that nothing declares. So the law is stated over
-#    distinct subjects on both sides, not over rows.
+# Two operators for one set
+#   Each fold in folds/ reads both differences off a full outer join of its roster and its
+#   population: a declared subject with no row, and a row no roster declares. This law takes the
+#   same two differences with EXCEPT, on distinct subjects, and the roster's size with a distinct
+#   count, and holds the fold to them. A join key that stopped matching would put every subject in
+#   both one-sided regions of the fold and leave the EXCEPTs where they were.
 #
-# ⛔ reports/integrity.sqlc IS THE ONE RELATION HERE WHOSE EMPTINESS PROVES NOTHING ON ITS OWN,
-#   because a mis-parenthesised EXCEPT returns a plausible table. This law is the second witness:
-#   it counts the same sets a different way and must agree.
--- checks/ and arithmetic/ rosters partitioned by the populations they declare.
-SELECT a.law, p.subject, p.holds, p.detail
+# The dedup is intended
+#   `checks/all.sqlc` carries many rows over far fewer distinct rule names, and EXCEPT collapses
+#   them, which is the question: which names appear that nothing declares. The folds keep the rows
+#   and count them, and algebra/subject_boxes.sqlc is the law about the counts. This one is about
+#   the names.
+#
+# Six of the seven
+#   The laws' own contract is not here: its population is algebra/all.sqlc, and this law is one of
+#   its arms. folds/law_subjects.sqlc says what holds that fold instead.
+#
+# The second witness for reports/integrity.sqlc
+#   reports/integrity.sqlc restricts the same folds, and an empty result is also what a broken
+#   restriction returns. This law counts the same sets by a second operator and must agree.
+#
+# Probe
+#   examples/probes runs it as `integrity`: in the composed text the rules fold's join key stops
+#   matching, and the law must fail for `rules` alone.
+-- every fold in folds/ whose population does not reach algebra/all.sqlc, against its roster and its population by EXCEPT.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT x.contract AS subject,
-           x.declared = x.unproduced + x.produced AS holds,
-           format('%s declared = %s unproduced + %s produced',
-                  x.declared, x.unproduced, x.produced) AS detail
+           x.roster = x.missing + x.produced
+             AND x.declared = x.roster
+             AND x.unproduced = x.missing
+             AND x.undeclared = x.stray AS holds,
+           format('%s declared = %s unproduced + %s produced, %s undeclared; by EXCEPT, %s on the roster, %s unproduced, %s undeclared',
+                  x.declared, x.unproduced, x.produced, x.undeclared, x.roster, x.missing, x.stray) AS detail
     FROM (
         SELECT 'rules' AS contract,
-               (SELECT count(DISTINCT r.rule) FROM ( :compose(checks/roster.sqlc) ) r) AS declared,
+               (SELECT count(DISTINCT r.rule) FROM ( :compose(checks/roster.sqlc) ) r) AS roster,
                (SELECT count(*) FROM ( SELECT r.rule FROM ( :compose(checks/roster.sqlc) ) r
                                        EXCEPT
-                                       SELECT c.rule FROM ( :compose(checks/all.sqlc) ) c ) z) AS unproduced,
-               (SELECT count(DISTINCT r.rule) FROM ( :compose(checks/roster.sqlc) ) r
-                 WHERE EXISTS (SELECT 1 FROM ( :compose(checks/all.sqlc) ) c WHERE c.rule = r.rule)) AS produced
+                                       SELECT c.rule FROM ( :compose(checks/all.sqlc) ) c ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT c.rule FROM ( :compose(checks/all.sqlc) ) c
+                                       EXCEPT
+                                       SELECT r.rule FROM ( :compose(checks/roster.sqlc) ) r ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/rule_subjects.sqlc) ) s ) f
         UNION ALL
         SELECT 'arithmetic',
-               (SELECT count(DISTINCT b.site) FROM ( :compose(arithmetic/roster.sqlc) ) b),
-               (SELECT count(*) FROM ( SELECT b.site FROM ( :compose(arithmetic/roster.sqlc) ) b
+               (SELECT count(DISTINCT a.site) FROM ( :compose(arithmetic/roster.sqlc) ) a) AS roster,
+               (SELECT count(*) FROM ( SELECT a.site FROM ( :compose(arithmetic/roster.sqlc) ) a
                                        EXCEPT
-                                       SELECT z.site FROM ( :compose(arithmetic/all.sqlc) ) z ) y),
-               (SELECT count(DISTINCT b.site) FROM ( :compose(arithmetic/roster.sqlc) ) b
-                 WHERE EXISTS (SELECT 1 FROM ( :compose(arithmetic/all.sqlc) ) z WHERE z.site = b.site))
+                                       SELECT z.site FROM ( :compose(arithmetic/all.sqlc) ) z ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT z.site FROM ( :compose(arithmetic/all.sqlc) ) z
+                                       EXCEPT
+                                       SELECT a.site FROM ( :compose(arithmetic/roster.sqlc) ) a ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/site_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'diagrams',
+               (SELECT count(DISTINCT d.object) FROM ( :compose(diagrams/domain_objects.sqlc) ) d) AS roster,
+               (SELECT count(*) FROM ( SELECT d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d
+                                       EXCEPT
+                                       SELECT k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT k.object FROM ( :compose(diagrams/catalogue.sqlc) ) k
+                                       EXCEPT
+                                       SELECT d.object FROM ( :compose(diagrams/domain_objects.sqlc) ) d ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/object_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'diagram laws',
+               (SELECT count(DISTINCT l.slug) FROM ( :compose(diagrams/roster.sqlc) ) l) AS roster,
+               (SELECT count(*) FROM ( SELECT l.slug FROM ( :compose(diagrams/roster.sqlc) ) l
+                                       EXCEPT
+                                       SELECT e.slug FROM ( :compose(diagrams/expected.sqlc) ) e ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT e.slug FROM ( :compose(diagrams/expected.sqlc) ) e
+                                       EXCEPT
+                                       SELECT l.slug FROM ( :compose(diagrams/roster.sqlc) ) l ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/diagram_law_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'absences',
+               (SELECT count(DISTINCT q.table_name || '.' || q.column_name) FROM ( :compose(epistemics/absence_questions.sqlc) ) q) AS roster,
+               (SELECT count(*) FROM ( SELECT q.table_name || '.' || q.column_name FROM ( :compose(epistemics/absence_questions.sqlc) ) q
+                                       EXCEPT
+                                       SELECT k.table_name || '.' || k.column_name FROM ( :compose(epistemics/absence_columns.sqlc) ) k ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT k.table_name || '.' || k.column_name FROM ( :compose(epistemics/absence_columns.sqlc) ) k
+                                       EXCEPT
+                                       SELECT q.table_name || '.' || q.column_name FROM ( :compose(epistemics/absence_questions.sqlc) ) q ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/absence_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'derivations',
+               (SELECT count(DISTINCT i.table_name || '.' || i.column_name) FROM ( :compose(identities/roster.sqlc) ) i) AS roster,
+               (SELECT count(*) FROM ( SELECT i.table_name || '.' || i.column_name FROM ( :compose(identities/roster.sqlc) ) i
+                                       EXCEPT
+                                       SELECT k.table_name || '.' || k.column_name FROM ( :compose(epistemics/derivation_columns.sqlc) ) k ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT k.table_name || '.' || k.column_name FROM ( :compose(epistemics/derivation_columns.sqlc) ) k
+                                       EXCEPT
+                                       SELECT i.table_name || '.' || i.column_name FROM ( :compose(identities/roster.sqlc) ) i ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( :compose(folds/derivation_subjects.sqlc) ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'integrity'

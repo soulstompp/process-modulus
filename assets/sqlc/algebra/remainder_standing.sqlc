@@ -1,20 +1,31 @@
-# EVERY COMPUTABLE REMAINDER, AND WHETHER IT WAS CLASSIFIED EXACTLY ONCE. One row.
+# Every computable remainder, and whether it was classified exactly once. One row.
 #
-# ⭐⭐ THE ASSERTION examples/observations/main.rs MAKES IS THAT THE CLOSURE QUESTION WAS PUT TO EVERY
-#    REMAINDER, AND THIS IS THAT ASSERTION AS ALGEBRA. layers/remainder_scope.sqlc must be a
-#    partition of layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic
-#    unasked, and disjoint, so no remainder is counted under two standings.
+# The closure question, as algebra
+#   examples/observations/main.rs asserts that the closure question was put to every remainder,
+#   and this is that assertion as algebra. layers/remainder_scope.sqlc must be a partition of
+#   layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic unasked, and
+#   disjoint, so no remainder is counted under two standings.
 #
-# ⛔ THE LEFT JOINS INSIDE remainder_scope ARE ONE RISK. A layer whose filing declared two stack
-#   scopes, or two coupling searches, would fan out and be classified twice -- and the standing
+# Fan-out from the left joins
+#   The left joins inside remainder_scope are one risk. A layer whose filing declared two stack
+#   scopes, or two coupling searches, would fan out and be classified twice, and the standing
 #   counts would still look reasonable. Cardinality on both sides is what catches that one.
 #
-# ⛔⛔ AND THE ARMS ARE THE OTHER, WHICH CARDINALITY CANNOT SEE. The `CASE` is in the SELECT
-#    LIST, so a remainder matching no arm keeps its row and takes `standing = NULL` rather than
-#    vanishing. Measured with the `ELSE` removed: 44 computable, 44 classified, 0 doubled,
-#    TWENTY-FIVE standing NULL, law still `t`. `unclassified` is the term that sees it.
+# A remainder matching no arm
+#   The arms are the other risk, and cardinality cannot see it. The `CASE` is in the SELECT list,
+#   so a remainder matching no arm keeps its row and takes `standing = NULL` rather than
+#   vanishing. `unclassified` is the term that sees it.
+#
+# Which standings exist is the type's job
+#   The type is `public.remainder_standing`, because a count of rows per standing cannot see a
+#   standing renamed. Every arm casts to it.
+#
+# Probe
+#   examples/probes runs it as `remainder_standing`.
+#   Remove the `ELSE` from layers/remainder_scope.sqlc. Computable, classified and doubled still
+#   agree; `unclassified` must count the remainders that fall through, and the law must fail.
 -- layers/remainder.sqlc against layers/remainder_scope.sqlc.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

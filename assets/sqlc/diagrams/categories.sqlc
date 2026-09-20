@@ -1,27 +1,41 @@
-# EVERY LAYER SOME OPERATION INDUCES INTO, WHICH IS THE `categoryValue` POPULATION. One row per
+# Every layer some operation induces into, which is the `categoryValue` population. One row per
 # (filing, layer) that N reaches, and nothing else.
 #
-# ⭐⭐⭐ THIS IS N GETTING A NOTATION AFTER BEING FILED AS TOTALLY LOST. `induction` mapped to
-#    `laneSet`, the same element as `draw`, and was deliberately not emitted: a SECOND lane set
-#    gives every layer two `lane` elements with nothing but a matching name to say they are one
-#    layer, so the conformed key `(filing, layer)` does not survive. That reasoning was right about
-#    lane sets and wrong about BPMN, which has a second mechanism entirely.
+# N gets a notation
+#   N was once filed as totally lost. `induction` mapped to `laneSet`, the same element as `draw`,
+#   and was deliberately not emitted: a second lane set gives every layer two `lane` elements with
+#   nothing but a matching name to say they are one layer, so the conformed key `(filing, layer)`
+#   does not survive. That reasoning was right about lane sets and wrong about BPMN, which has a
+#   second mechanism entirely.
 #
-# ⭐⭐ A CATEGORY IS NOT A PARTITION, AND THAT IS EXACTLY WHY IT FITS. `tFlowElement` carries
-#    `categoryValueRef` with `maxOccurs="unbounded"`, so a flow element may be in MANY categories,
-#    where `flowNodeRef` puts it in one lane. D is a containment and N is a cover, and BPMN has one
-#    element for each. Emitting N as a second lane set would have added 2 lanes to a corpus of 51
-#    and broken `|lane| = |layer|`; this adds none.
+# A category is not a partition
+#   That is exactly why it fits. `tFlowElement` carries `categoryValueRef` with
+#   `maxOccurs="unbounded"`, so a flow element may be in many categories, where `flowNodeRef` puts
+#   it in one lane. D is a containment and N is a cover, and BPMN has one element for each.
+#   Emitting N as a second lane set would have added lanes and broken `|lane| = |layer|`; this
+#   adds none.
 #
-# ⛔ AND IT LOSES SOMETHING, WHICH IS WHY THIS FILE IS NOT THE END OF THE ARGUMENT.
-#   `tCategoryValue` carries a `value` of type `xs:string` and no reference attribute of any kind,
-#   so the layer arrives as TEXT beside a `lane` of the same name and nothing in the document ties
-#   the two. It is the weaker cousin of the `callActivity` defect: a call loses the layer outright,
-#   a category keeps its name and loses the pointer.
+# What it loses
+#   This file is not the end of the argument. `tCategoryValue` carries a `value` of type
+#   `xs:string` and no reference attribute of any kind, so the layer arrives as text beside a
+#   `lane` of the same name and nothing in the document ties the two. It is the weaker cousin of
+#   the `callActivity` defect: a call loses the layer outright, a category keeps its name and loses
+#   the pointer.
 #
-# ⚠️ ONE ROW PER LAYER AND NOT PER INDUCTION, because a categoryValue is one element however many
-#   operations reference it. diagrams/category_members.sqlc is the per-edge population.
+# One row per layer, not per induction
+#   A categoryValue is one element however many operations reference it.
+#   diagrams/category_members.sqlc is the per-edge population.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
+WITH
+inductions AS NOT MATERIALIZED (
+    :define(entries/inductions.sqlc)
+)
 SELECT DISTINCT i.filing, i.layer
 FROM (
     :compose(entries/inductions.sqlc)

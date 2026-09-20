@@ -1,0 +1,27 @@
+# Every node a remainder descent passes through rather than stops on. One row per row of
+# composition/remainder_frontier.sqlc whose node composition/unsettled.sqlc names.
+#
+# The other half of the difference
+#   The frontier's rows are either stopping points or nodes the walk continued through.
+#   composition/settled_remainders.sqlc is the first half, the frontier less the unsettled nodes,
+#   and this is the second, the frontier restricted to them. A node passed through carries no
+#   remainder up; what it contributes is its own elimination, which
+#   composition/carried_eliminations.sqlc carries, and any ground that suspends it, which
+#   composition/suspended_remainders.sqlc lifts the remainder above it for.
+#
+# Every path, usable or not
+#   Kept here whatever the path's `usable` says, because a suspension at a node the walk reaches
+#   lifts the remainder above it whether or not the path's product is known. A reader that sums along
+#   the path restricts to `usable` itself.
+#
+# Proof
+#   algebra/settled_remainders.sqlc holds the usable frontier to its three classes: this, the
+#   settled rows, and the stops with no figure.
+-- composition/remainder_frontier.sqlc restricted to the nodes composition/unsettled.sqlc names.
+SELECT w.*
+FROM      (
+    :compose(composition/remainder_frontier.sqlc)
+) w
+JOIN      (
+    :compose(composition/unsettled.sqlc)
+) u ON u.filing = w.filing AND u.layer = w.layer

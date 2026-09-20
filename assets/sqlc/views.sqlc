@@ -1,0 +1,212 @@
+-- Every statement composed by two or more others, and every fold, as a view.
+#
+#   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/views.sql
+#
+# A view is its composition
+#   Each line below creates a view whose body is the statement's own template, composed. Postgres
+#   expands a view into the query that reads it before planning, so a view stores no result and
+#   changes no plan: querying it runs the statement, with its law and its probe behind it.
+#
+# `:define` is where the body goes
+#   Every other directive in the tree is `:compose`, which says *this relation here* and writes
+#   the name where the relation has one. `:define` says *and here is what it is*, so the body is
+#   spliced in even though the name exists. That is the only difference between the two, and it is
+#   why this file can name every view in the tree without any of them defining itself.
+#   A statement may define a name for its own duration the same way, in a `WITH` clause.
+#
+# The composed files name the views
+#   `cargo sqlc compose --views assets/sqlc/views.sqlc` writes `SELECT * FROM <view>` wherever a
+#   template listed here is composed, so a statement many others read is written once rather than
+#   once per reader. The templates do not change: every `:compose` is still in them, so the compose
+#   DAG, the rule closures and the parsers that read the tree see every edge. Composed without
+#   `--views`, every statement inlines whole, which is the form for experiments and for tuning a
+#   plan.
+#
+# Which statements are views
+#   Every template composed by two or more others, this file aside, that leaves no slot open, and
+#   every file in folds/. Each is named after its file, in the schema named after its directory.
+#   tests/views.rs holds the list to the tree in both directions, and holds that each view is
+#   created after every view it reads.
+#
+# Required, and rebuilt on every load
+#   The composed files read the views, so this file runs after the ingest and before any query.
+#   assets/ddl/schema.ddl drops the schema the views read from, which drops the views with it, so
+#   this file drops and recreates its own schemas.
+
+SET search_path TO pm, public;
+DROP SCHEMA IF EXISTS algebra CASCADE;
+CREATE SCHEMA algebra;
+DROP SCHEMA IF EXISTS arithmetic CASCADE;
+CREATE SCHEMA arithmetic;
+DROP SCHEMA IF EXISTS checks CASCADE;
+CREATE SCHEMA checks;
+DROP SCHEMA IF EXISTS composition CASCADE;
+CREATE SCHEMA composition;
+DROP SCHEMA IF EXISTS diagrams CASCADE;
+CREATE SCHEMA diagrams;
+DROP SCHEMA IF EXISTS eliminations CASCADE;
+CREATE SCHEMA eliminations;
+DROP SCHEMA IF EXISTS entries CASCADE;
+CREATE SCHEMA entries;
+DROP SCHEMA IF EXISTS epistemics CASCADE;
+CREATE SCHEMA epistemics;
+DROP SCHEMA IF EXISTS folds CASCADE;
+CREATE SCHEMA folds;
+DROP SCHEMA IF EXISTS identities CASCADE;
+CREATE SCHEMA identities;
+DROP SCHEMA IF EXISTS layers CASCADE;
+CREATE SCHEMA layers;
+DROP SCHEMA IF EXISTS rank CASCADE;
+CREATE SCHEMA rank;
+DROP SCHEMA IF EXISTS reports CASCADE;
+CREATE SCHEMA reports;
+DROP SCHEMA IF EXISTS scope CASCADE;
+CREATE SCHEMA scope;
+DROP SCHEMA IF EXISTS units CASCADE;
+CREATE SCHEMA units;
+
+CREATE VIEW algebra.roster AS :define(algebra/roster.sqlc);
+CREATE VIEW epistemics.absence_questions AS :define(epistemics/absence_questions.sqlc);
+CREATE VIEW composition.composer_regimes AS :define(composition/composer_regimes.sqlc);
+CREATE VIEW composition.notations AS :define(composition/notations.sqlc);
+CREATE VIEW composition.part_references AS :define(composition/part_references.sqlc);
+CREATE VIEW composition.regimes AS :define(composition/regimes.sqlc);
+CREATE VIEW eliminations.filed AS :define(eliminations/filed.sqlc);
+CREATE VIEW eliminations.searched AS :define(eliminations/searched.sqlc);
+CREATE VIEW entries.couplings AS :define(entries/couplings.sqlc);
+CREATE VIEW entries.draws AS :define(entries/draws.sqlc);
+CREATE VIEW entries.holders AS :define(entries/holders.sqlc);
+CREATE VIEW entries.inductions AS :define(entries/inductions.sqlc);
+CREATE VIEW entries.operations AS :define(entries/operations.sqlc);
+CREATE VIEW entries.slacks AS :define(entries/slacks.sqlc);
+CREATE VIEW epistemics.claims AS :define(epistemics/claims.sqlc);
+CREATE VIEW epistemics.coupling_searches AS :define(epistemics/coupling_searches.sqlc);
+CREATE VIEW epistemics.filed_absences AS :define(epistemics/filed_absences.sqlc);
+CREATE VIEW epistemics.filed_derivations AS :define(epistemics/filed_derivations.sqlc);
+CREATE VIEW epistemics.scopes AS :define(epistemics/scopes.sqlc);
+CREATE VIEW layers.denied_remainders AS :define(layers/denied_remainders.sqlc);
+CREATE VIEW layers.filed_remainders AS :define(layers/filed_remainders.sqlc);
+CREATE VIEW layers.patience AS :define(layers/patience.sqlc);
+CREATE VIEW layers.summed_quantities AS :define(layers/summed_quantities.sqlc);
+CREATE VIEW layers.windows AS :define(layers/windows.sqlc);
+CREATE VIEW scope.every_filing AS :define(scope/every_filing.sqlc);
+CREATE VIEW epistemics.absences AS :define(epistemics/absences.sqlc);
+CREATE VIEW arithmetic.roster AS :define(arithmetic/roster.sqlc);
+CREATE VIEW composition.fusions AS :define(composition/fusions.sqlc);
+CREATE VIEW composition.parts AS :define(composition/parts.sqlc);
+CREATE VIEW composition.unresolved_parts AS :define(composition/unresolved_parts.sqlc);
+CREATE VIEW folds.fusion_parts AS :define(folds/fusion_parts.sqlc);
+CREATE VIEW composition.derived_quantities AS :define(composition/derived_quantities.sqlc);
+CREATE VIEW composition.resolved_quantities AS :define(composition/resolved_quantities.sqlc);
+CREATE VIEW layers.nameplate AS :define(layers/nameplate.sqlc);
+CREATE VIEW layers.drawn AS :define(layers/drawn.sqlc);
+CREATE VIEW entries.unserved_holders AS :define(entries/unserved_holders.sqlc);
+CREATE VIEW entries.unserved_totals AS :define(entries/unserved_totals.sqlc);
+CREATE VIEW layers.demand AS :define(layers/demand.sqlc);
+CREATE VIEW composition.fusion_quantities AS :define(composition/fusion_quantities.sqlc);
+CREATE VIEW composition.unsized_conversions AS :define(composition/unsized_conversions.sqlc);
+CREATE VIEW composition.filed_grounds AS :define(composition/filed_grounds.sqlc);
+CREATE VIEW composition.unsettled AS :define(composition/unsettled.sqlc);
+CREATE VIEW composition.remainder_frontier AS :define(composition/remainder_frontier.sqlc);
+CREATE VIEW composition.passed_nodes AS :define(composition/passed_nodes.sqlc);
+CREATE VIEW composition.suspended_remainders AS :define(composition/suspended_remainders.sqlc);
+CREATE VIEW composition.figureless_remainders AS :define(composition/figureless_remainders.sqlc);
+CREATE VIEW composition.converted AS :define(composition/converted.sqlc);
+CREATE VIEW folds.part_sums AS :define(folds/part_sums.sqlc);
+CREATE VIEW eliminations.paired AS :define(eliminations/paired.sqlc);
+CREATE VIEW composition.owed_remainder AS :define(composition/owed_remainder.sqlc);
+CREATE VIEW layers.figures AS :define(layers/figures.sqlc);
+CREATE VIEW layers.differenced_remainder AS :define(layers/differenced_remainder.sqlc);
+CREATE VIEW composition.settled_remainders AS :define(composition/settled_remainders.sqlc);
+CREATE VIEW composition.fused_remainders AS :define(composition/fused_remainders.sqlc);
+CREATE VIEW layers.remainder AS :define(layers/remainder.sqlc);
+CREATE VIEW layers.exposure_scope AS :define(layers/exposure_scope.sqlc);
+CREATE VIEW layers.unabsorbed_exposure AS :define(layers/unabsorbed_exposure.sqlc);
+CREATE VIEW layers.filed_against_derived AS :define(layers/filed_against_derived.sqlc);
+CREATE VIEW composition.derived_fusions AS :define(composition/derived_fusions.sqlc);
+CREATE VIEW composition.suspension_grounds AS :define(composition/suspension_grounds.sqlc);
+CREATE VIEW composition.suspended_fusions AS :define(composition/suspended_fusions.sqlc);
+CREATE VIEW composition.suspended_quantities AS :define(composition/suspended_quantities.sqlc);
+CREATE VIEW composition.owed_equality AS :define(composition/owed_equality.sqlc);
+CREATE VIEW layers.absorber AS :define(layers/absorber.sqlc);
+CREATE VIEW entries.absorbing_slack AS :define(entries/absorbing_slack.sqlc);
+CREATE VIEW entries.served_holders AS :define(entries/served_holders.sqlc);
+CREATE VIEW folds.served_totals AS :define(folds/served_totals.sqlc);
+CREATE VIEW layers.pressed AS :define(layers/pressed.sqlc);
+CREATE VIEW entries.holder_totals AS :define(entries/holder_totals.sqlc);
+CREATE VIEW entries.derived_time_slacks AS :define(entries/derived_time_slacks.sqlc);
+CREATE VIEW layers.lumpy AS :define(layers/lumpy.sqlc);
+CREATE VIEW arithmetic.all AS :define(arithmetic/all.sqlc);
+CREATE VIEW layers.quantities AS :define(layers/quantities.sqlc);
+CREATE VIEW composition.part_quantities AS :define(composition/part_quantities.sqlc);
+CREATE VIEW composition.carriable AS :define(composition/carriable.sqlc);
+CREATE VIEW composition.carried AS :define(composition/carried.sqlc);
+CREATE VIEW composition.composed_quantum AS :define(composition/composed_quantum.sqlc);
+CREATE VIEW composition.fused AS :define(composition/fused.sqlc);
+CREATE VIEW checks.roster AS :define(checks/roster.sqlc);
+CREATE VIEW epistemics.point_claims AS :define(epistemics/point_claims.sqlc);
+CREATE VIEW units.conversions AS :define(units/conversions.sqlc);
+CREATE VIEW units.with_a_period AS :define(units/with_a_period.sqlc);
+CREATE VIEW layers.signed AS :define(layers/signed.sqlc);
+CREATE VIEW epistemics.claim_derivations AS :define(epistemics/claim_derivations.sqlc);
+CREATE VIEW identities.roster AS :define(identities/roster.sqlc);
+CREATE VIEW composition.descent AS :define(composition/descent.sqlc);
+CREATE VIEW composition.jagged_layers AS :define(composition/jagged_layers.sqlc);
+CREATE VIEW layers.every_layer AS :define(layers/every_layer.sqlc);
+CREATE VIEW composition.part_regimes AS :define(composition/part_regimes.sqlc);
+CREATE VIEW composition.citations AS :define(composition/citations.sqlc);
+CREATE VIEW checks.unresolved_part AS :define(checks/unresolved_part.sqlc);
+CREATE VIEW checks.jagged_layer AS :define(checks/jagged_layer.sqlc);
+CREATE VIEW checks.all AS :define(checks/all.sqlc);
+CREATE VIEW folds.rule_subjects AS :define(folds/rule_subjects.sqlc);
+CREATE VIEW rank.graph_edges AS :define(rank/graph_edges.sqlc);
+CREATE VIEW rank.compose_edges AS :define(rank/compose_edges.sqlc);
+CREATE VIEW rank.graph_measures AS :define(rank/graph_measures.sqlc);
+CREATE VIEW rank.compose_measures AS :define(rank/compose_measures.sqlc);
+CREATE VIEW rank.composition_kernel AS :define(rank/composition_kernel.sqlc);
+CREATE VIEW rank.composition_image AS :define(rank/composition_image.sqlc);
+CREATE VIEW checks.fit_axes AS :define(checks/fit_axes.sqlc);
+CREATE VIEW checks.fit_domain AS :define(checks/fit_domain.sqlc);
+CREATE VIEW reports.fit_coverage AS :define(reports/fit_coverage.sqlc);
+CREATE VIEW diagrams.catalogue AS :define(diagrams/catalogue.sqlc);
+CREATE VIEW diagrams.domain_objects AS :define(diagrams/domain_objects.sqlc);
+CREATE VIEW eliminations.between AS :define(eliminations/between.sqlc);
+CREATE VIEW eliminations.references AS :define(eliminations/references.sqlc);
+CREATE VIEW eliminations.resolved AS :define(eliminations/resolved.sqlc);
+CREATE VIEW diagrams.categories AS :define(diagrams/categories.sqlc);
+CREATE VIEW diagrams.citations AS :define(diagrams/citations.sqlc);
+CREATE VIEW diagrams.dependences AS :define(diagrams/dependences.sqlc);
+CREATE VIEW diagrams.calls AS :define(diagrams/calls.sqlc);
+CREATE VIEW diagrams.descents AS :define(diagrams/descents.sqlc);
+CREATE VIEW epistemics.documents AS :define(epistemics/documents.sqlc);
+CREATE VIEW diagrams.pools AS :define(diagrams/pools.sqlc);
+CREATE VIEW diagrams.scopes AS :define(diagrams/scopes.sqlc);
+CREATE VIEW diagrams.searches AS :define(diagrams/searches.sqlc);
+CREATE VIEW entries.notation_references AS :define(entries/notation_references.sqlc);
+CREATE VIEW diagrams.foreign_calls AS :define(diagrams/foreign_calls.sqlc);
+CREATE VIEW diagrams.lane_membership AS :define(diagrams/lane_membership.sqlc);
+CREATE VIEW diagrams.legends AS :define(diagrams/legends.sqlc);
+CREATE VIEW diagrams.expected AS :define(diagrams/expected.sqlc);
+CREATE VIEW diagrams.roster AS :define(diagrams/roster.sqlc);
+CREATE VIEW epistemics.absence_columns AS :define(epistemics/absence_columns.sqlc);
+CREATE VIEW epistemics.derivation_columns AS :define(epistemics/derivation_columns.sqlc);
+CREATE VIEW folds.absence_subjects AS :define(folds/absence_subjects.sqlc);
+CREATE VIEW folds.derivation_subjects AS :define(folds/derivation_subjects.sqlc);
+CREATE VIEW folds.diagram_law_subjects AS :define(folds/diagram_law_subjects.sqlc);
+CREATE VIEW folds.object_subjects AS :define(folds/object_subjects.sqlc);
+CREATE VIEW folds.site_subjects AS :define(folds/site_subjects.sqlc);
+CREATE VIEW layers.decomposed AS :define(layers/decomposed.sqlc);
+CREATE VIEW entries.spillovers AS :define(entries/spillovers.sqlc);
+CREATE VIEW layers.remainder_scope AS :define(layers/remainder_scope.sqlc);
+CREATE VIEW epistemics.searches AS :define(epistemics/searches.sqlc);
+CREATE VIEW algebra.all AS :define(algebra/all.sqlc);
+CREATE VIEW composition.sibling_parts AS :define(composition/sibling_parts.sqlc);
+CREATE VIEW eliminations.derived AS :define(eliminations/derived.sqlc);
+CREATE VIEW entries.cross_layer_edges AS :define(entries/cross_layer_edges.sqlc);
+CREATE VIEW epistemics.edges AS :define(epistemics/edges.sqlc);
+CREATE VIEW epistemics.widths AS :define(epistemics/widths.sqlc);
+CREATE VIEW folds.law_subjects AS :define(folds/law_subjects.sqlc);
+CREATE VIEW folds.contract_subjects AS :define(folds/contract_subjects.sqlc);
+CREATE VIEW rank.layer_reach AS :define(rank/layer_reach.sqlc);
+CREATE VIEW reports.integrity AS :define(reports/integrity.sqlc);
+CREATE VIEW scope.corpus AS :define(scope/corpus.sqlc);

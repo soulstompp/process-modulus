@@ -1,0 +1,26 @@
+# Every claim whose edge or whose narrowing is filed as an identity's output. One row per such
+# derivation: the filing, the claim, its layer, the claim's own position, the element the
+# derivation sits at, and the identity it names.
+#
+# The claim's position is the key
+#   `pm:claim/pm:boundOrigin` and `pm:claim/pm:narrowsWhen` are the same two elements wherever a
+#   claim sits, so the element alone says nothing about what the identity computes. The claim's
+#   own `owns` does: a share's edge can be `sharesSum`'s and a patience's cannot, and
+#   identities/roster.sqlc lists which (identity, position, element) are cells.
+#
+# Two restrictions of one relation
+#   Each arm is epistemics/claims.sqlc where one of its two derivation columns is set, tagged with
+#   its element where the two are united.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch, at the claim's own position.
+SELECT c.filing, c.seq, c.layer, c.owns, 'pm:claim/pm:boundOrigin' AS element,
+       c.origin_derivation AS identity
+FROM (
+    :compose(epistemics/claims.sqlc)
+) c
+WHERE c.origin_derivation IS NOT NULL
+UNION ALL
+SELECT c.filing, c.seq, c.layer, c.owns, 'pm:claim/pm:narrowsWhen', c.narrows_derivation
+FROM (
+    :compose(epistemics/claims.sqlc)
+) c
+WHERE c.narrows_derivation IS NOT NULL

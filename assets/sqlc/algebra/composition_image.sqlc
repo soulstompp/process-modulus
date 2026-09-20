@@ -1,0 +1,75 @@
+# The law rank/composition_image.sqlc owes: the fold is onto, so the left null space is empty, and
+# where it would not be a rule is already accusing somebody. Two rows.
+#
+# The empty half, stated as a dimension
+#   Every declared fusion is a row of `F Phi`, the rows are independent because their supports are
+#   disjoint and none of them is zero, so the rank is the declared count and there is nothing left
+#   over on the fusion side. `declared = rank + left_null` with `left_null` zero is the whole
+#   claim, and the first subject holds it per composition rather than for the corpus, because a
+#   composition is one filer's document.
+#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+#
+# Which is why a declared fungibility has exactly one side to live on
+#   A null space on the part side is what a fusion asserts: supply moved between its parts leaves
+#   the composed figure where it was. A null space on the fusion side would be the opposite kind of
+#   fact, a combination of composed figures no assignment to the parts can reach, and the model has
+#   arranged for there to be none. One map, two null spaces, and only one of them is ever a claim.
+#
+# The containment, because the implication runs one way
+#   A composition with a dimension here has a declared fusion with no column under it, which can
+#   only happen through a part that resolves to nothing, so checks/unresolved_part.sqlc is already
+#   accusing that document. The converse fails: a fusion with one part that resolves and one that
+#   does not is still a row. So the second subject holds a containment and not an equivalence, and
+#   writing it as an equivalence would make it fail on the first filing that loses one part of two.
+#
+# Zero is a rule holding it there, not the arithmetic coming out flat
+#   The same shape as the layer graph's cycle space. Both dimensions are zero in every conforming
+#   document because a rule refuses what would raise them, so a green here is a statement about the
+#   rules rather than about the numbers, and removing either rule gives this law something to say.
+#
+# Probe
+#   examples/probes runs it as `composition_image` and `composition_image / the rule`. Delete the
+#   filing identity a part names and one composition must report a dimension while the rule reports
+#   the part; suppress the rule and the containment must fail with the dimension still there.
+-- rank/composition_image.sqlc, then the compositions carrying a dimension against checks/unresolved_part.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/composition_image' AS subject,
+           count(*) > 0 AND sum(i.declared) > 0
+           AND count(*) FILTER (WHERE i.declared <> i.rank + i.left_null) = 0
+           AND sum(i.left_null) = 0                                                  AS holds,
+           format('%s composition(s), %s declared fusion(s), rank %s, left null %s%s',
+                  count(*), sum(i.declared), sum(i.rank), sum(i.left_null),
+                  coalesce(': ' || string_agg(i.composition, ', ' ORDER BY i.composition)
+                                   FILTER (WHERE i.left_null > 0), ''))              AS detail
+    FROM (
+        :compose(rank/composition_image.sqlc)
+    ) i
+    UNION ALL
+    SELECT 'rank/composition_image / the rule',
+           count(*) FILTER (WHERE x.examined > 0) > 0
+           AND count(*) FILTER (WHERE x.left_null > 0 AND x.accused = 0) = 0         AS holds,
+           format('%s composition(s) carry a dimension, %s of those have no part accused; '
+                  '%s part reference(s) examined, %s accused%s',
+                  count(*) FILTER (WHERE x.left_null > 0),
+                  count(*) FILTER (WHERE x.left_null > 0 AND x.accused = 0),
+                  sum(x.examined), sum(x.accused),
+                  coalesce(': ' || string_agg(x.composition, ', ' ORDER BY x.composition)
+                                   FILTER (WHERE x.left_null > 0 AND x.accused = 0), ''))
+    FROM (
+        SELECT i.composition, i.left_null,
+               count(u.filing) FILTER (WHERE u.violates)             AS accused,
+               count(u.filing) FILTER (WHERE u.violates IS NOT NULL) AS examined
+        FROM      (
+            :compose(rank/composition_image.sqlc)
+        ) i
+        LEFT JOIN (
+            :compose(checks/unresolved_part.sqlc)
+        ) u ON u.filing = i.composition
+        GROUP BY i.composition, i.left_null
+    ) x
+) p ON true
+WHERE a.slug = 'composition_image'

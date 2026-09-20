@@ -53,7 +53,10 @@ fn main() -> Result<(), Error> {
     let config = Config::default()
         .with_schemas(schemas)
         .set_interpreter_flags(InterpreterFlags::all() - InterpreterFlags::WITH_NUM_BIG_INT)
-        .set_optimizer_flags(OptimizerFlags::all())
+        // Structurally identical types keep their own names. Every derivable position has a
+        // wrapper and a derivation type of the same shape, told apart only by the identities the
+        // XSD admits there; merged, a demand's amount would be typed as whichever twin was kept.
+        .set_optimizer_flags(OptimizerFlags::all() - OptimizerFlags::REMOVE_DUPLICATES)
         .set_generator_flags(GeneratorFlags::all() - GeneratorFlags::ADVANCED_ENUMS)
         // Every xs:documentation block becomes rustdoc.
         .set_renderer_flags(RendererFlags::all())

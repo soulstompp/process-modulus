@@ -1,25 +1,29 @@
 -- §11  Whether a fused supply still arrives in whole units, and where that question has no answer.
+# One row per composed layer every one of whose parts is lumpy: the greatest common divisor of the
+# parts' quanta, each converted into the composed layer's unit, and a typed absence where there is
+# none.
 #
-# ONE ROW PER COMPOSED LAYER whose parts all state a quantum: the greatest common divisor of those
-# quanta where the parts share a unit, and a typed absence where they do not.
+# Every attainable sum is a multiple of the gcd
+#   Each part's nameplate is a whole number of its own quanta, so every sum the parts could make is
+#   a multiple of the gcd and no larger quantum divides them all. Not every multiple is attainable,
+#   because nobody holds a negative number of units: `q = 4` and `q = 6` never make 2. Proof:
+#   `src/proofs/README.md`, entry `composed_quantum`.
 #
-# ⭐⭐ THE SET OF ATTAINABLE COMPOSED SUPPLIES IS AN IDEAL. Each part's nameplate ranges over the
-# multiples of its own quantum, so the attainable sums are the multiples of gcd(q₁, q₂) by Bézout.
-# The gcd is therefore the greatest element of the intersection of the parts' divisor sets, and no
-# larger quantum divides every sum the parts could produce.
+# Two absences, two facts
+#   `unmeasured` where a part's conversion factor is: nobody sized it, so nobody can say what the
+#   parts share. `notApplicable` where the converted quanta still sit in different units, which is
+#   a question that is malformed rather than unanswered.
 #
-# ⛔ A `notApplicable` HERE IS NOT THIN COVERAGE. Divisibility is a relation on ONE ordered set, so
-# two quanta in different units have no common divisor to find. The row says the question is
-# malformed rather than unanswered, which is a different fact and the one a filer can act on.
-#
-# ⭐ AND `1` IS A REAL ANSWER, not a failure. Every integer is a multiple of one, so the constraint
-# is vacuous and the fused supply is continuous as far as the arithmetic can see.
+# `1` is a real answer
+#   Not a failure. Every integer is a multiple of one, so the constraint is vacuous and the fused
+#   supply is continuous as far as the arithmetic can see.
 -- composition/composed_quantum.sqlc, ordered by whether the question has an answer.
 SELECT c.composition                                   AS "composition!",
        c.composed_layer                                AS "composed_layer!",
        c.parts                                         AS "parts!",
-       coalesce(c.unit, '(incommensurable)')           AS "unit!",
-       coalesce(c.composed_quantum::text, '(' || c.absent || ')') AS "quantum!"
+       coalesce(c.unit, '(none)')                      AS "unit!",
+       coalesce(c.composed_quantum::text || CASE WHEN c.spread THEN ' (at a factor''s mode)' ELSE '' END,
+                '(' || c.absent || ')')                AS "quantum!"
 FROM (
     :compose(composition/composed_quantum.sqlc)
 ) c

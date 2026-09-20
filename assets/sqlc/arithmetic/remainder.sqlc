@@ -1,35 +1,65 @@
-# EVERY LAYER WHERE A REMAINDER WAS CONCEIVABLE, AND WHETHER IT COULD BE TAKEN. One row per
+# Every layer where a remainder was conceivable, and whether it could be taken. One row per
 # layer holding a nameplate row, verdict on whether `n - d` may be computed there at all.
 #
-# ⭐⭐⭐ THIS IS THE CANDIDATE POPULATION, NOT THE GATED ONE, AND THE DIFFERENCE IS THE POINT.
-#    layers/remainder.sqlc inner-joins demand to nameplate, so a layer missing either simply
-#    is not there -- the sparse reading, and correct for the arithmetic. But a relation that
-#    drops a row cannot report WHY, so the four layers this model declines to subtract on are
-#    invisible to everything downstream. Here they are rows.
+# The candidate population, not the gated one
+#   The difference is the point. layers/remainder.sqlc inner-joins demand to nameplate, so a
+#   layer missing either simply is not there: the sparse reading, and correct for the
+#   arithmetic. But a relation that drops a row cannot report why, so the layers this model
+#   declines to subtract on are invisible to everything downstream. Here they are rows.
 #
-# ⛔⛔ AND THE UNIT COMPARISON IS THE ONE NOTHING ELSE MAKES. layers/remainder.sqlc:28-29
-#    carries `d_unit` and `n_unit` as two separate columns and subtracts across them with no
-#    predicate. Every computable layer agrees today, so the guard would BIND every one of them
-#    and fire on none -- a rule worth having, not a bound with nothing to bound. The population
-#    is this relation's own `computable` verdict; soundness prints its size.
--- pm:Demand/pm:claim against pm:Nameplate/pm:amount, before layers/remainder.sqlc drops either.
+# The unit comparison nothing else makes
+#   layers/differenced_remainder.sqlc carries the demand's unit and the nameplate's as two
+#   separate columns, `unit` and `amount_unit`, and subtracts across them with no predicate. A
+#   guard would bind every computable layer: a rule worth having, not a bound with nothing to
+#   bound. The population is this relation's own `computable` verdict; soundness prints its size.
+#
+# A layer whose own `n - d` is not its remainder
+#   Where a conversion with width scales both a composed layer's totals, its remainder is the
+#   pivot, and layers/remainder.sqlc drops the layer where the pivot is lifted rather than fall back
+#   to the crossed difference (composition/figureless_remainders.sqlc). Such a layer is `suspended`
+#   here, with that reason, so the row layers/remainder.sqlc drops still says why.
+#
+# Both operands from the relation that keeps an absent figure
+#   composition/resolved_quantities.sqlc keeps a row for every layer's demand and every nameplate's
+#   amount, stated, computed where filed as a derivation, or typed absent. The value wrappers keep
+#   only the figures, and would drop exactly the rows whose verdict is `suspended`. A derivation
+#   that cannot be computed says why.
+-- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc drops either,
+-- with composition/figureless_remainders.sqlc for a layer whose n - d is not its remainder.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
 ) a
 LEFT JOIN (
-    SELECT l.filing, l.layer,
-           CASE WHEN l.demand_low IS NULL OR n.amount_low IS NULL THEN 'suspended'
-                WHEN l.demand_unit IS DISTINCT FROM n.amount_unit  THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           CASE WHEN l.demand_low IS NULL AND n.amount_low IS NULL
-                     THEN format('demand %s and nameplate %s', l.demand_absent, n.amount_absent)
-                WHEN l.demand_low IS NULL THEN format('demand %s', l.demand_absent)
-                WHEN n.amount_low IS NULL THEN format('nameplate %s', n.amount_absent)
-                WHEN l.demand_unit IS DISTINCT FROM n.amount_unit
-                     THEN format('%s against %s', l.demand_unit, n.amount_unit)
-                ELSE format('both in %s', l.demand_unit) END AS detail
-    FROM pm.layer l
-    JOIN pm.nameplate n USING (filing, layer)
+    SELECT d.filing, d.layer,
+           CASE WHEN d.low IS NULL OR n.low IS NULL   THEN 'suspended'::public.arithmetic_verdict
+                WHEN d.unit IS DISTINCT FROM n.unit   THEN 'not comparable'::public.arithmetic_verdict
+                WHEN g.filing IS NOT NULL             THEN 'suspended'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           CASE WHEN d.low IS NULL AND n.low IS NULL
+                     THEN format('demand %s and nameplate %s', d.why, n.why)
+                WHEN d.low IS NULL THEN format('demand %s', d.why)
+                WHEN n.low IS NULL THEN format('nameplate %s', n.why)
+                WHEN d.unit IS DISTINCT FROM n.unit
+                     THEN format('%s against %s', d.unit, n.unit)
+                WHEN g.filing IS NOT NULL
+                     THEN 'a conversion with width scales both totals, and the composed remainder is lifted'
+                ELSE format('both in %s', d.unit) END AS detail
+    FROM      (
+        SELECT q.*, CASE WHEN q.derivation IS NOT NULL
+                         THEN format('`%s` and not computable: %s', q.derivation, q.blocked_because)
+                         ELSE q.absent::text END AS why
+        FROM ( :compose(composition/resolved_quantities.sqlc) ) q
+    ) d
+    JOIN      (
+        SELECT q.*, CASE WHEN q.derivation IS NOT NULL
+                         THEN format('`%s` and not computable: %s', q.derivation, q.blocked_because)
+                         ELSE q.absent::text END AS why
+        FROM ( :compose(composition/resolved_quantities.sqlc) ) q
+    ) n ON n.filing = d.filing AND n.layer = d.layer AND n.quantity = 'nameplate'
+    LEFT JOIN (
+        :compose(composition/figureless_remainders.sqlc)
+    ) g ON g.filing = d.filing AND g.layer = d.layer
+    WHERE d.quantity = 'demand'
 ) p ON true
 WHERE a.slug = 'remainder'

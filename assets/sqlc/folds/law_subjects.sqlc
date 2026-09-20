@@ -1,0 +1,33 @@
+# Every law algebra/roster.sqlc declares or algebra/all.sqlc emits, with that law's rows counted by
+# verdict. One row per law.
+#
+# The same fold as the rules'
+#   folds/rule_subjects.sqlc argues it: the roster drives, so a declared law no row names is a row
+#   with every count at zero, and the outer join is full, so a law the population names and the
+#   roster does not is a row with `declared` false.
+#
+# The boxes
+#   `answered` is a row with a verdict, and splits into `holding` and `failing`. `silent` is a
+#   subject the law examined and returned no verdict on; `vacuous` is the roster's own row, emitted
+#   when the law has no subject at all. Each box is counted by its own predicate.
+#
+# No law in algebra/ can hold this one
+#   Its population is algebra/all.sqlc, so a law composing it would compose itself. The soundness
+#   example holds it instead: it already reads every law's rows through
+#   queries/soundness/1-laws.sqlc, counts them per law into the same boxes, and compares.
+-- algebra/roster.sqlc against algebra/all.sqlc, one row per law.
+SELECT coalesce(g.slug, w.law)                                                AS subject,
+       g.slug IS NOT NULL                                                     AS declared,
+       count(w.law)                                                           AS rows,
+       count(w.law) FILTER (WHERE w.holds IS NOT NULL)                        AS answered,
+       count(w.law) FILTER (WHERE w.holds)                                    AS holding,
+       count(w.law) FILTER (WHERE NOT w.holds)                                AS failing,
+       count(w.law) FILTER (WHERE w.holds IS NULL AND w.subject IS NOT NULL)  AS silent,
+       count(w.law) FILTER (WHERE w.holds IS NULL AND w.subject IS NULL)      AS vacuous
+FROM      (
+    :compose(algebra/roster.sqlc)
+) g
+FULL JOIN (
+    :compose(algebra/all.sqlc)
+) w ON w.law = g.slug
+GROUP BY g.slug, w.law

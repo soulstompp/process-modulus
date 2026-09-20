@@ -1,0 +1,71 @@
+# The walk a derived figure's computation makes, every row of it. One row per (layer and quantity
+# filed as its fusion's sum, node reached), with the product of the conversion factors along the path, the
+# layer the node is a part of and why its own conversion is absent if it is, what the node files
+# for that quantity, whether a fusion builds it, and whether the walk closed a cycle to reach it.
+#
+# A derivation is an output, so it is computed and never read as a gap
+#   `pm:Identity` names what computes it, and on these three quantities it is always `fusionSum`:
+#   "a composed layer's figure is the sum of its converted parts less what the composer
+#   eliminated." A part that is itself derived is computed the same way, one level down, and so on
+#   until a node states the figure. This is that descent.
+#
+# It stops where the figure is stated, and nowhere else
+#   A node stating the quantity ends its path: that figure is what the level above reads. A node
+#   filing it `derived` is passed through into its own parts. A node filing it any other way, or a
+#   derived node no fusion builds, ends the path too, and composition/derived_quantities.sqlc names
+#   it as the reason the computation cannot finish.
+#
+# A deliberate copy of the descent, like the remainder frontier
+#   It is composition/descent.sqlc with a stop condition and a quantity, for the reason
+#   composition/remainder_frontier.sqlc gives: stopping inside a recursion is not a filter over its
+#   result, because a deeper row may be reachable only through a node this walk never passes.
+#
+# The cycle clause's own path is not returned
+#   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type, which a view
+#   cannot hold. The walk returns `is_cycle` and every column of its own, and not that one.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+WITH RECURSIVE
+resolved AS (
+    :compose(composition/parts.sqlc)
+),
+figure AS (
+    SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent, s.derivation,
+           (f.filing IS NOT NULL) AS is_fusion
+    FROM      (
+        :compose(layers/summed_quantities.sqlc)
+    ) s
+    LEFT JOIN (
+        :compose(composition/fusions.sqlc)
+    ) f ON f.filing = s.filing AND f.layer = s.layer
+),
+walk(root_filing, root_layer, quantity, filing, layer, depth,
+     factor_low, factor_mode, factor_high, factor_absent, part_of, conversion_absent,
+     conversion_derivation, low, mode, high, unit, absent, derivation, is_fusion) AS (
+        SELECT r.filing, r.layer, r.quantity, p.part_filing, p.part_layer, 1,
+               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
+               p.factor_state IN ('absent', 'derivation'), p.composed_layer,
+               p.factor_absent, p.factor_derivation,
+               n.low, n.mode, n.high, n.unit, n.absent, n.derivation, coalesce(n.is_fusion, false)
+        FROM      figure r
+        JOIN      resolved p ON p.composition = r.filing AND p.composed_layer = r.layer
+        LEFT JOIN figure n   ON n.filing = p.part_filing AND n.layer = p.part_layer
+                            AND n.quantity = r.quantity
+        WHERE r.derivation IS NOT NULL
+    UNION ALL
+        SELECT w.root_filing, w.root_layer, w.quantity, p.part_filing, p.part_layer, w.depth + 1,
+               w.factor_low  * coalesce(p.factor_low,  1),
+               w.factor_mode * coalesce(p.factor_mode, 1),
+               w.factor_high * coalesce(p.factor_high, 1),
+               w.factor_absent OR p.factor_state IN ('absent', 'derivation'),
+               p.composed_layer, p.factor_absent, p.factor_derivation,
+               n.low, n.mode, n.high, n.unit, n.absent, n.derivation, coalesce(n.is_fusion, false)
+        FROM      walk w
+        JOIN      resolved p ON p.composition = w.filing AND p.composed_layer = w.layer
+        LEFT JOIN figure n   ON n.filing = p.part_filing AND n.layer = p.part_layer
+                            AND n.quantity = w.quantity
+        WHERE w.derivation IS NOT NULL
+) CYCLE filing, layer SET is_cycle USING route
+SELECT root_filing, root_layer, quantity, filing, layer, depth,
+       factor_low, factor_mode, factor_high, factor_absent, part_of, conversion_absent,
+       conversion_derivation, low, mode, high, unit, absent, derivation, is_fusion, is_cycle
+FROM walk

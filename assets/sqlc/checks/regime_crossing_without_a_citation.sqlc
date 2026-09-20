@@ -1,33 +1,37 @@
-# EVERY CROSS-DOCUMENT PART WHOSE FRAMEWORK IS KNOWN ON BOTH SIDES, BESIDE WHETHER THE COMPOSITION
-# CITES AN INSTRUMENT. One row per such part, `violates` where the frameworks differ and nothing
-# is cited.
+# Every cross-document part whose framework is known on both sides, beside whether the
+# composition cites an instrument. One row per such part, `violates` where the frameworks differ
+# and nothing is cited.
 #
-# ⭐⭐⭐ THE RULE: cross a regime boundary and you must say what reconciles it. It is the exact
-#    analogue of checks/unit_crossing_without_a_factor, and for the same reason in its words:
-#    somebody is asserting two things are interchangeable, and an assertion needs a filer. There
-#    the assertion is that two UNITS may be added and `asrt:factor` carries it; here it is that
-#    two FRAMEWORKS' figures may be added, and `asrt:Composition/citation` carries the instrument
-#    and the clause. `merge-group-composition` composes IFRS-2026 out of `us-gaap` and `NCRF-PE`,
-#    which is what consolidation is, and it cites IFRS-10 B86.
+# Crossing a regime boundary needs a reconciliation
+#   The rule: cross a regime boundary and you must say what reconciles it. It is the exact
+#   analogue of checks/unit_crossing_without_a_factor, and for the same reason in its words:
+#   somebody is asserting two things are interchangeable, and an assertion needs a filer. There
+#   the assertion is that two units may be added and `asrt:factor` carries it; here it is that
+#   two frameworks' figures may be added, and `asrt:Composition/citation` carries the instrument
+#   and the clause. `merge-group-composition` composes IFRS-2026 out of `us-gaap` and `NCRF-PE`,
+#   which is what consolidation is, and it cites IFRS-10 B86.
 #
-# ⛔⛔ THE POPULATION EXCLUDES A PAIR THAT NAMED NO FRAMEWORK, AND THAT IS NOT A TECHNICALITY.
-#    `IS DISTINCT FROM` calls two NULLs equal, so a fixture that never stated a regime would read
-#    as "no crossing" and pass silently. It is not passing; it was never asked. ⚠️ `pm.regime` is
-#    the one fact table with no typed absence column, so *nobody looked* and *no regime applies*
-#    are stored identically and this rule cannot tell them apart either.
+# A pair that named no framework is excluded
+#   That is not a technicality. `IS DISTINCT FROM` calls two NULLs equal, so a fixture that never
+#   stated a regime would read as "no crossing" and pass silently. It is not passing; it was
+#   never asked.
 #
-# ⭐ THE TABLE THIS READS HOLDS TEN FILED ROWS AND NEEDED NO SCHEMA CHANGE TO BE ASKED ABOUT. A
-#   crossing sits in the corpus whether or not a relation reads it, which is why the WRITE side
-#   is the only direction that finds a fact nothing queries.
+# Why a framework is missing is typed, and this rule does not need it
+#   `framework_absent` in composition/regimes.sqlc says whether nobody looked or no framework
+#   applies. Either way there is no framework to cross into, so the crossing is not known and the
+#   part is outside this rule's population; epistemics/absences.sqlc reports which it was.
 #
-# ⛔⛔⛔ AND WRITING IT FOUND A SECOND, LARGER SILENCE. `asrt:part/asrt:layer/asrt:regime` names
-#    which of the composition's OWN regimes each part comes under, thirty of them are filed, and
-#    the ingest reads `//pm:regime` only so none of them is loaded. This rule therefore compares
-#    two documents' SELF-DECLARED frameworks, not the composer's assignment. Read
-#    `composition/regime_crossings.sqlc`'s header before quoting this rule as being about the
-#    composer's claim, because it is not.
--- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files
--- what reconciles it".
+# No schema change was needed to ask
+#   The table this reads needed no schema change to be asked about. A crossing sits in the corpus
+#   whether or not a relation reads it, which is why the write side is the only direction that
+#   finds a fact nothing queries.
+#
+# Self-declared frameworks, not the composer's assignment
+#   `asrt:part/asrt:layer/asrt:regime` names which of the composition's own regimes each part
+#   comes under. This rule does not read it: it compares two documents' self-declared
+#   frameworks, not the composer's assignment. Read `composition/regime_crossings.sqlc`'s header
+#   before quoting this rule as being about the composer's claim, because it is not.
+-- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files what reconciles it".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

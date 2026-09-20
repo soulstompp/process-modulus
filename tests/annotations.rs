@@ -1,19 +1,28 @@
 //! Every type documents its own children, and the list is held to the content model.
 //!
-//! ⭐⭐⭐ A `WHAT IT CONTAINS` BLOCK IS WHAT A READER USES AS THE CONTENT MODEL. Almost nobody
-//!    reads an `xs:sequence`; they read the list above it, and then they file against what the
-//!    list says. So a name in the list that the sequence does not declare sends a filer to write
-//!    an element that does not validate, and a child the list omits is one they never learn they
-//!    may send. Both had happened: `Claim` and `Absence` documented an `asserter` that has never
-//!    existed in either content model, `Claim` never mentioned its required `denominator`, and
-//!    `evidence` is required on all three assertion roots and was named in none of them.
+//! ## Why the list is checked
 //!
-//! ⭐⭐ IT HOLDS BOTH LANGUAGES SEPARATELY, against the same sequence. An implementer reads one
-//!    document, and a Portuguese list that has drifted from the English one is not a translation.
+//! A "what it contains" list is what a reader uses as the content model. Almost nobody reads an
+//! `xs:sequence`; they read the list above it and file against what it says. A name in the list
+//! that the sequence does not declare sends a filer to write an element that does not validate,
+//! and a child the list omits is one they never learn they may send.
 //!
-//! ⚠️ A TYPE WITH NO LIST IS NOT A FAILURE. Several wrappers explain themselves in a sentence
-//!   instead, and a sentence is not a content model claiming to be complete. What this holds is
-//!   the types that DO make the claim.
+//! ## Both languages, separately
+//!
+//! Each language's list is held against the same sequence. An implementer reads one document, and
+//! a Portuguese list that has drifted from the English one is not a translation.
+//!
+//! ## A type with no list is not a failure
+//!
+//! Several wrappers explain themselves in a sentence instead, and a sentence is not a content
+//! model claiming to be complete. This holds only the types that make the claim.
+//!
+//! ## Two layouts
+//!
+//! A list is either a markdown heading (`# What it contains`, `# O que contém`) followed by items
+//! written `` - `name`: description ``, or the older caps heading (`WHAT IT CONTAINS`,
+//! `O QUE CONTÉM`) followed by entries indented exactly eight columns with the name and the
+//! description separated by two spaces.
 
 use std::collections::BTreeSet;
 
@@ -22,8 +31,8 @@ const ASSERTION: &str = include_str!("../schema/assertion.xsd");
 
 /// One named `xs:complexType`: its name and its whole body.
 ///
-/// ⭐ Split on the two-space indent, which is where every named type in these schemas starts.
-/// The one anonymous type in the pair is the document root's, nested inside an `xs:element` and
+/// Split on the two-space indent, which is where every named type in these schemas starts. The
+/// one anonymous type in the pair is the document root's, nested inside an `xs:element` and
 /// carrying no annotation of its own, so it declares nothing this test could hold.
 fn named_types(schema: &str) -> Vec<(&str, &str)> {
     let mut out = Vec::new();
@@ -43,7 +52,7 @@ fn named_types(schema: &str) -> Vec<(&str, &str)> {
 /// The children a type actually declares, in the order the sequence gives them.
 fn children(body: &str) -> Vec<&str> {
     let mut out = Vec::new();
-    // ⭐ A `ref=` is a child too, and the one in this pair is the document root embedded whole.
+    // A `ref=` is a child too; the one in this pair is the document root embedded whole.
     for needle in ["<xs:element name=\"", "<xs:element ref=\""] {
         let mut rest = body;
         while let Some(i) = rest.find(needle) {
@@ -74,7 +83,7 @@ fn documentation<'a>(body: &'a str, lang: &str) -> Option<&'a str> {
 /// | `low · mostLikely · high`, `lumpy \| continuous` | all three, all two |
 /// | `absent/reason = none`, `origin intrinsic/contractual/policy` | `absent`, `origin` |
 ///
-/// ⭐ The last row is the one worth naming: a wrapper lists its `absent` child once per REASON,
+/// The last row is the one worth naming: a wrapper lists its `absent` child once per reason,
 /// because the three reasons are three different facts, and an entry that says which reason it
 /// means is still an entry about the one child.
 fn names_in(head: &str) -> Vec<&str> {
@@ -90,13 +99,50 @@ fn names_in(head: &str) -> Vec<&str> {
     vec![head.split_whitespace().next().unwrap_or("")]
 }
 
-/// The children a `WHAT IT CONTAINS` block claims, or nothing where the type explains itself in
-/// prose instead.
+/// The children a "what it contains" list claims, or nothing where the type explains itself in
+/// prose instead. Either layout is read; see the module header.
 ///
-/// ⛔ THE LIST ENDS AT THE FIRST PARAGRAPH, and that is not a detail: `CoverageEntry` follows its
-///   list with a SECOND indented list, of the two ways one child may be filled. Reading on would
-///   report those two as children the type does not have.
-fn listed(doc: &str, heading: &str) -> Option<Vec<String>> {
+/// The list ends at the first paragraph. `CoverageEntry` follows its list with a second one, of
+/// the two ways one child may be filled, and reading on would report those two as children the
+/// type does not have.
+fn listed(doc: &str, markdown: &str, caps: &str) -> Option<Vec<String>> {
+    if let Some(names) = listed_markdown(doc, markdown) {
+        return Some(names);
+    }
+    listed_caps(doc, caps)
+}
+
+/// A `# heading` followed by `` - `name`: description `` items. Continuation lines are indented
+/// deeper than the item; the first line that is neither ends the list.
+fn listed_markdown(doc: &str, heading: &str) -> Option<Vec<String>> {
+    let mut lines = doc.lines().skip_while(|l| l.trim() != heading);
+    lines.next()?;
+    let mut names: Vec<String> = Vec::new();
+    let mut item_indent: Option<usize> = None;
+    for line in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let indent = line.len() - line.trim_start().len();
+        if let Some(rest) = line.trim().strip_prefix("- `") {
+            let head = &rest[..rest.find('`')?];
+            for n in names_in(head) {
+                names.push(n.trim_end_matches('+').to_string());
+            }
+            item_indent = Some(indent);
+            continue;
+        }
+        match item_indent {
+            Some(i) if indent > i => continue, // a description running onto the next line
+            Some(_) => break,                  // a paragraph, so the list is over
+            None => continue,                  // prose before the list
+        }
+    }
+    if names.is_empty() { None } else { Some(names) }
+}
+
+/// The older layout: a caps heading, then entries indented exactly eight columns.
+fn listed_caps(doc: &str, heading: &str) -> Option<Vec<String>> {
     let start = doc.find(heading)?;
     let mut names: Vec<String> = Vec::new();
     for line in doc[start..].lines().skip(1) {
@@ -132,9 +178,12 @@ fn every_documented_content_list_names_exactly_the_children_the_type_declares() 
     for (file, schema) in [("process-modulus.xsd", BASE), ("assertion.xsd", ASSERTION)] {
         for (name, body) in named_types(schema) {
             let declared: Vec<&str> = children(body);
-            for (lang, heading) in [("en", "WHAT IT CONTAINS"), ("pt", "O QUE CONTÉM")] {
+            for (lang, markdown, caps) in [
+                ("en", "# What it contains", "WHAT IT CONTAINS"),
+                ("pt", "# O que contém", "O QUE CONTÉM"),
+            ] {
                 let Some(doc) = documentation(body, lang) else { continue };
-                let Some(claimed) = listed(doc, heading) else { continue };
+                let Some(claimed) = listed(doc, markdown, caps) else { continue };
                 held += 1;
                 let claimed_set: BTreeSet<&str> = claimed.iter().map(String::as_str).collect();
                 let declared_set: BTreeSet<&str> = declared.iter().copied().collect();

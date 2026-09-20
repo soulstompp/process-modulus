@@ -4,13 +4,13 @@
      with the BPMN glyph for its kind, thin for a task and thick for a call. That is
      what *properly layered* means, and it is what lets a reader check the partition
      and the call graph with no BPMN tool present. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" width="760">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 438" width="760">
   <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .refuted{stroke:#b00;stroke-width:2.5} .coverName{font:10px sans-serif;fill:#888} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
   <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
   <g class="pool" data-filing="every-absence" id="pool-every-absence"><title>pool: every-absence</title>
-    <rect id="pool-every-absence-box" x="8" y="36" width="744" height="250" class="poolBox"/>
-    <path id="pool-every-absence-band" d="M36 36 v250" class="poolBox"/>
-    <text id="pool-every-absence-name" transform="translate(26,161) rotate(-90)" text-anchor="middle" class="poolName">every-absence</text>
+    <rect id="pool-every-absence-box" x="8" y="36" width="744" height="290" class="poolBox"/>
+    <path id="pool-every-absence-band" d="M36 36 v290" class="poolBox"/>
+    <text id="pool-every-absence-name" transform="translate(26,181) rotate(-90)" text-anchor="middle" class="poolName">every-absence</text>
   </g>
   <g class="lane" data-layer="counter" data-rank="0" id="lane_every-absence_counter"><title>lane: counter</title>
     <rect id="lane_every-absence_counter-box" x="120" y="46" width="620" height="34" class="laneBox"/>
@@ -50,11 +50,18 @@
     <a href="../graphs/model-layers.svg#lane_every-absence_oven-b"><text id="lane_every-absence_oven-b-name" x="128" y="262" class="laneName">oven-b</text></a>
     <text id="lane_every-absence_oven-b-rank" x="732" y="262" class="rankName" text-anchor="end">rank 0</text>
   </g>
+  <g class="lane" data-layer="proofer" data-rank="0" id="lane_every-absence_proofer"><title>lane: proofer</title>
+    <rect id="lane_every-absence_proofer-box" x="120" y="286" width="620" height="34" class="laneBox"/>
+    <text id="lane_every-absence_proofer-name" x="128" y="302" class="laneName">proofer</text>
+    <text id="lane_every-absence_proofer-rank" x="732" y="302" class="rankName" text-anchor="end">rank 0</text>
+  </g>
   <g class="note" id="legend"><title>legend</title>
-    <path id="legend-bracket" d="M20 294 h-8 v58 h8" class="noteBox"/>
-    <text id="legend-0-says" x="26" y="306" class="noteText">SCOPE: complete. This pool is a PROJECTION of one system and not the system.</text>
-    <text id="legend-0-source" x="26" y="318" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
-    <text id="legend-1-says" x="26" y="336" class="noteText">COUPLING SEARCH: none. An absent dependence line is NOT independence.</text>
-    <text id="legend-1-source" x="26" y="348" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+    <path id="legend-bracket" d="M20 334 h-8 v88 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="346" class="noteText">AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one.</text>
+    <text id="legend-0-source" x="26" y="358" class="noteCite">assets/sqlc/diagrams/lane_grain.sqlc</text>
+    <text id="legend-1-says" x="26" y="376" class="noteText">SCOPE: complete. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="388" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="406" class="noteText">COUPLING SEARCH: none. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="418" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
   </g>
 </svg>

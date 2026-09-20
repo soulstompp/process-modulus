@@ -1,0 +1,16 @@
+-- §3  The SQL's own F Φ x: each owed sum of converted parts, before the elimination.
+# One row per (composed layer, quantity) that owes the sum, carrying `sum_low`, `sum_mode` and
+# `sum_high` from composition/fused.sqlc. The example builds the same figure as a matrix product
+# from 3a and asserts the two are equal, which is what makes "a matrix product is a join with a
+# `GROUP BY`" a checked statement. Proof: `src/proofs/README.md`, entry `product_is_join`.
+-- composition/fused.sqlc, the sums before the elimination.
+SELECT f.composition        AS "composition!",
+       f.composed_layer     AS "composed!",
+       f.quantity::text     AS "quantity!",
+       f.sum_low::float8    AS "sum_low!",
+       f.sum_mode::float8   AS "sum_mode!",
+       f.sum_high::float8   AS "sum_high!"
+FROM (
+    :compose(composition/fused.sqlc)
+) f
+ORDER BY f.quantity, f.composition, f.composed_layer

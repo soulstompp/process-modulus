@@ -1,44 +1,54 @@
-# WHAT THE COMPOSER SAYS EACH PART'S REGIME IS, BESIDE WHAT THAT PART'S OWN FILING DECLARES. One
+# What the composer says each part's regime is, beside what that part's own filing declares. One
 # row per resolved part carrying a regime handle, with both claims and whether they agree.
 #
-# ⭐⭐⭐ TWO PARTIES, TWO CLAIMS ABOUT ONE THING, AND THE GRAMMAR CANNOT ASK WHETHER THEY AGREE.
-#    `asrt:part/asrt:layer/asrt:regime` is a handle into the composition's OWN declarations, and
-#    XSD 1.0 checks that it resolves: `compositionRegimeId` is the key, `partRegime` the keyref.
-#    That is the strongest thing a grammar can do here and it stops at the document edge, because
-#    an identity constraint is scoped to one document and the schema's own annotation says so.
-#    Whether the composer's claim matches what the OTHER filing declares about itself is exactly
-#    what falls to a rule.
+# Two claims the grammar cannot compare
+#   Two parties, two claims about one thing, and the grammar cannot ask whether they agree.
+#   `asrt:part/asrt:layer/asrt:regime` is a handle into the composition's own declarations, and
+#   XSD 1.0 checks that it resolves: `compositionRegimeId` is the key, `partRegime` the keyref.
+#   That is the strongest thing a grammar can do here and it stops at the document edge, because an
+#   identity constraint is scoped to one document and the schema's own annotation says so. Whether
+#   the composer's claim matches what the other filing declares about itself is exactly what falls
+#   to a rule.
 #
-# ⭐⭐ THE FRAMEWORK IS COMPARED AS A PAIR AND NEVER AS A CODE. `pm:Regime`'s annotation is
-#    emphatic: SAF-T PT publishes `S · M · N · O`, IES AnexoASNC publishes
-#    `NIC · NCRF · NCRF-PE · NC-ME`, the lists do not line up, and "a code without its authority
-#    is genuinely ambiguous rather than merely unattributed". So the join is on taxonomy AND
-#    value. Comparing values alone would call `NCRF-PE` and `S` different frameworks and `M` and
-#    `M` the same one, both wrongly.
+# The framework is compared as a pair, never as a code
+#   `pm:Regime`'s annotation is emphatic: SAF-T PT publishes `S · M · N · O`, IES AnexoASNC
+#   publishes `NIC · NCRF · NCRF-PE · NC-ME`, the lists do not line up, and "a code without its
+#   authority is genuinely ambiguous rather than merely unattributed". So the join is on taxonomy
+#   and value. Comparing values alone would call `NCRF-PE` and `S` different frameworks and `M`
+#   and `M` the same one, both wrongly.
 #
-# ⛔ A PART FILING MAY DECLARE MORE THAN ONE REGIME AND `refutation` DOES, so agreement is
-#   MEMBERSHIP and not equality: the composer's framework must appear among the frameworks that
-#   filing declares. Equality would accuse a document for declaring a second authority's coding,
-#   which is the very thing the tall `regime` table exists to permit.
+# Agreement is membership, not equality
+#   A part filing may declare more than one regime, and `refutation` does, so the composer's
+#   framework must appear among the frameworks that filing declares. Equality would accuse a
+#   document for declaring a second authority's coding, which is the very thing the tall `regime`
+#   table exists to permit.
 #
-# ⚠️ `agrees` IS NULL WHERE EITHER SIDE IS TYPED ABSENT, not false. A fixture reporting under no
-#   framework and a composer who said `notApplicable` have not disagreed; the question does not
-#   arise. `checks/part_regime_disagrees.sqlc` keeps that out of its population rather than
-#   reading it as a pass.
--- pm.part's regime handle resolved into pm.composition_regime, against the part filing's own pm.regime.
+# `agrees` is NULL where either side is typed absent
+#   Not false. A fixture reporting under no framework and a composer who said `notApplicable` have
+#   not disagreed; the question does not arise. `checks/part_regime_disagrees.sqlc` keeps that out
+#   of its population rather than reading it as a pass.
+-- composition/parts.sqlc's regime handle resolved into composition/composer_regimes.sqlc, against
+-- the part filing's own composition/regimes.sqlc.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        cr.framework_taxonomy AS composer_taxonomy,
        cr.framework_value    AS composer_value,
        cr.framework_absent   AS composer_absent,
-       (cr.framework_taxonomy IS NOT NULL AND EXISTS (
-            SELECT 1 FROM pm.regime r
+       (cr.framework_value IS NOT NULL AND EXISTS (
+            SELECT 1
+            FROM (
+                :compose(composition/regimes.sqlc)
+            ) r
             WHERE r.filing = p.part_filing
               AND r.framework_taxonomy = cr.framework_taxonomy
               AND r.framework_value    = cr.framework_value))            AS agrees,
-       (SELECT count(*) FROM pm.regime r WHERE r.filing = p.part_filing
-          AND r.framework_taxonomy IS NOT NULL)                          AS frameworks_the_filing_states
+       (SELECT count(*)
+        FROM (
+            :compose(composition/regimes.sqlc)
+        ) r
+        WHERE r.filing = p.part_filing AND r.framework_value IS NOT NULL) AS frameworks_the_filing_states
 FROM      (
     :compose(composition/parts.sqlc)
 ) p
-JOIN pm.composition_regime cr
-  ON cr.composition = p.composition AND cr.id = p.part_regime
+JOIN      (
+    :compose(composition/composer_regimes.sqlc)
+) cr ON cr.composition = p.composition AND cr.id = p.part_regime

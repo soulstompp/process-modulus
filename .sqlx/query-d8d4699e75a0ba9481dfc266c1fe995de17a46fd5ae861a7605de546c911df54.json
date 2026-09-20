@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  Every denominator the corpus leans on, and what it sits under.\n-- units/denominators.sqlc, the census over every claim carrying one.\nSELECT d.kind          AS \"kind!\",\n       d.denominator   AS \"denominator!\",\n       d.claims        AS \"claims!\",\n       d.filed_on      AS \"filed_on!\"\nFROM (\n    -- pm:Claim/pm:denominator, across every position that files one.\nSELECT c.denominator_kind AS kind,\n       c.denominator,\n       count(*)               AS claims,\n       count(DISTINCT c.owns) AS positions,\n       string_agg(DISTINCT c.owns, ', ' ORDER BY c.owns) AS filed_on\nFROM      (\n    SELECT * FROM epistemics.claims\n) c\nWHERE c.denominator IS NOT NULL\nGROUP BY 1, 2\n\n) d\nORDER BY d.kind, d.claims DESC\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "kind!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.claims",
+            "name": "denominator_kind"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "denominator!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.claims",
+            "name": "denominator"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "claims!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "filed_on!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "d8d4699e75a0ba9481dfc266c1fe995de17a46fd5ae861a7605de546c911df54"
+}

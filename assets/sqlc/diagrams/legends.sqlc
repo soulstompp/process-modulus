@@ -1,40 +1,113 @@
-# EVERY NOTE A DOCUMENT OWES ON ITS OWN FACE. One row per (filing, note) that must be VISIBLE,
-# not merely present.
+# Every note a document owes on its own face. One row per (filing, note) that must be visible, not
+# merely present.
 #
-# ⭐⭐⭐ THE RULE THAT DECIDES MEMBERSHIP: A NOTE IS OWED WHEREVER THE NOTATION'S OWN DEFAULT
-#    READING IS WRONG. Not everything true about a filing belongs on its face. These four do,
-#    because without each one a reader reaches a specific false conclusion from a correct drawing:
-#      scope       a pool with three lanes reads as *this is the system*. It is a PROJECTION, and
-#                  14 of 15 filings here decline to claim otherwise.
-#      search      an absent dependence line reads as INDEPENDENCE. 12 of 15 state no coupling and
-#                  the four typed answers are the only thing separating *nobody looked* from
-#                  *somebody looked and found none*.
-#      dependence  a dotted arrow between two lanes reads as FLOW. A coupling is a dependence and
-#                  is NEVER evidence for a fusion, which the schema says in capitals.
-#      cover       a dashed box around nodes reads as a CONTAINER. A group is a cover: an
-#                  operation may be in several and is in exactly one lane.
+# Owed where the default reading is wrong
+#   That is the rule that decides membership: a note is owed wherever the notation's own default
+#   reading is wrong. Not everything true about a filing belongs on its face. These five do,
+#   because without each one a reader reaches a specific false conclusion from a correct drawing.
+#   Four come from a glyph that means something else in BPMN; the fifth comes from the absence of
+#   one, which is why no care in the emitter can prevent it:
+#     scope       a pool with three lanes reads as *this is the system*. It is a projection, and
+#                 nearly every filing here declines to claim otherwise.
+#     search      an absent dependence line reads as independence. Most filings state no coupling,
+#                 and the four typed answers are the only thing separating *nobody looked* from
+#                 *somebody looked and found none*.
+#     dependence  a dotted arrow between two lanes reads as flow. A coupling is a dependence and
+#                 is never evidence for a fusion, which the schema says in capitals.
+#     cover       a dashed box around nodes reads as a container. A group is a cover: an
+#                 operation may be in several and is in exactly one lane.
+#     lane        a lane drawn empty reads as an idle part of the system. Most lanes here are
+#                 empty and correct: `rank/incidence_reach.sqlc` measures the incidence sparse
+#                 and the magnitude total, so the figure is filed and BPMN has no glyph for it.
 #
-# ⛔⛔ AND `documentation` PUTS ALL OF THEM IN THE ARTIFACT AND ON NO PAGE. It is an ANNOTATION
-#   admitted on any base element and INVISIBLE in every rendering. `textAnnotation` is the only
-#   element in BPMN that puts words on the canvas, and withholding it on the reason
-#   *documentation is spent instead* is true, and about the wrong
-#   property. Two readers need two carriers: a tool reads the documentation where it is attached,
-#   a person reads the note where it is drawn.
+# `documentation` puts them on no page
+#   It puts all of them in the artifact and on no page. It is an annotation admitted on any base
+#   element and invisible in every rendering. `textAnnotation` is the only element in BPMN that
+#   puts words on the canvas, and withholding it on the reason *documentation is spent instead* is
+#   true, and about the wrong property. Two readers need two carriers: a tool reads the
+#   documentation where it is attached, a person reads the note where it is drawn.
 #
-# ⭐⭐ FLOATING, WITH NO `association`. An artifact may stand alone, and attaching these would
-#    spend `association` a second way, which is exactly the collision that ruled it out for `F`:
-#    the two consolidation filings already carry coupling lines and would carry note lines beside
-#    them, and a reader could not tell which dotted line was which.
+# Floating, with no `association`
+#   An artifact may stand alone, and attaching these would spend `association` a second way, which
+#   is exactly the collision that ruled it out for `F`: the two consolidation filings already carry
+#   coupling lines and would carry note lines beside them, and a reader could not tell which
+#   dotted line was which.
 #
-# ⚠️ CONDITIONAL ON PAGE THREE AND FOUR. A document with no coupling owes no note about arrows,
-#   and one with no cover owes none about dashed boxes. A legend for a glyph that is not there is
-#   noise, and noise is how a legend stops being read.
+# Conditional on pages three, four and five
+#   A document with no coupling owes no note about arrows, one with no cover owes none about dashed
+#   boxes, and one whose every lane holds a node owes none about empty ones. A legend for a glyph
+#   that is not there is noise, and noise is how a legend stops being read. The fifth is
+#   conditional on an absence rather than a presence, which is the one arm whose population grows
+#   when a filing says less.
 #
-# ⭐⭐ AND EACH NOTE NAMES THE RELATION IT STATES, FOR THE REASON THE `--` LINE EXISTS. These
-#    four are the only sentences in this pipeline a person reads off a PICTURE, so they are the
-#    ones furthest from the model and the ones with no other route back to it.
-#    `diagrams/annotated.sqlc` carries the same column for the sentences a tool reads.
+# Each note names the relation it states
+#   For the reason the `--` line exists. These are the only sentences in this pipeline a person
+#   reads off a picture, so they are the ones furthest from the model and the ones with no other
+#   route back to it. `diagrams/annotated.sqlc` carries the same column for the sentences a tool
+#   reads.
+#
+# The fifth arm cites a different relation
+#   Its population and its citation are two different relations, and the emitter's attribution
+#   law is why. `diagrams/lane_occupancy.sqlc` decides who owes the note;
+#   `diagrams/lane_grain.sqlc` is what the note says, and it is the one the emitter queries. A
+#   `states` the emitter never read would be decorative, which that law refuses by scraping the
+#   `query_file!` literals out of its own source rather than trusting this column.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
+WITH
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+calls AS NOT MATERIALIZED (
+    :define(diagrams/calls.sqlc)
+),
+inductions AS NOT MATERIALIZED (
+    :define(entries/inductions.sqlc)
+),
+categories AS NOT MATERIALIZED (
+    :define(diagrams/categories.sqlc)
+),
+couplings AS NOT MATERIALIZED (
+    :define(entries/couplings.sqlc)
+),
+dependences AS NOT MATERIALIZED (
+    :define(diagrams/dependences.sqlc)
+),
+foreign_calls AS NOT MATERIALIZED (
+    :define(diagrams/foreign_calls.sqlc)
+),
+draws AS NOT MATERIALIZED (
+    :define(entries/draws.sqlc)
+),
+lane_membership AS NOT MATERIALIZED (
+    :define(diagrams/lane_membership.sqlc)
+),
+epistemics_scopes AS NOT MATERIALIZED (
+    :define(epistemics/scopes.sqlc)
+),
+diagrams_scopes AS NOT MATERIALIZED (
+    :define(diagrams/scopes.sqlc)
+),
+coupling_searches AS NOT MATERIALIZED (
+    :define(epistemics/coupling_searches.sqlc)
+),
+searches AS NOT MATERIALIZED (
+    :define(diagrams/searches.sqlc)
+),
+every_layer AS NOT MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+)
 SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
 FROM ( :compose(diagrams/scopes.sqlc) ) s
 UNION ALL
@@ -46,3 +119,7 @@ FROM ( :compose(diagrams/dependences.sqlc) ) d
 UNION ALL
 SELECT DISTINCT c.filing, 'cover', 'diagrams/categories.sqlc'
 FROM ( :compose(diagrams/categories.sqlc) ) c
+UNION ALL
+SELECT DISTINCT e.filing, 'lane', 'diagrams/lane_grain.sqlc'
+FROM ( :compose(diagrams/lane_occupancy.sqlc) ) e
+WHERE NOT e.occupied

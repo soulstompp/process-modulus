@@ -1,8 +1,10 @@
 -- §3  Which relations a law governs, the roster, as the example reads it.
+# One row per governed relation, with its form and multiplicity.
 #
-# ⭐ THE ROSTER IS THE AUTHORITY AND THE EXAMPLE READS IT RATHER THAN RESTATING IT. A list of
-# governed relations written in Rust would be a second copy free to drift from the one the SQL
-# uses, which is the exact failure this contract exists to prevent one level down.
+# The roster is the authority
+#   The example reads it rather than restating it. A list of governed relations written in Rust
+#   would be a second copy free to drift from the one the SQL uses, which is the exact failure this
+#   contract exists to prevent one level down.
 -- algebra/roster.sqlc, projected to what the tree-walk needs.
 SELECT r.governs      AS "governs!",
        r.form         AS "form!",
@@ -10,4 +12,5 @@ SELECT r.governs      AS "governs!",
 FROM (
     :compose(algebra/roster.sqlc)
 ) r
+WHERE r.form NOT IN ('value', 'conformance')
 ORDER BY r.governs

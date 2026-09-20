@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- eliminations/resolved.sqlc projected to the two ends of the relationship.\nWITH\nnotations AS NOT MATERIALIZED (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n),\neliminations_between AS NOT MATERIALIZED (\n    -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.version, b.regime,\n       b.registration_taxonomy, b.registration_value\nFROM pm.elimination_between b\n\n),\neliminations_references AS NOT MATERIALIZED (\n    -- asrt:Elimination/asrt:between, typed asrt:FiledLayer, whose filing is a pm:ForeignId.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, b.layer, b.regime\nFROM (\n    SELECT * FROM eliminations_between\n) b\n\n),\nresolved AS NOT MATERIALIZED (\n    -- eliminations/references.sqlc joined through pm.filing_identity to pm.layer.\nSELECT b.composition, b.composed_layer, b.quantity, b.seq,\n       b.party, b.notation, fi.filing AS resolved_filing, b.layer, b.regime\nFROM      (\n    SELECT * FROM eliminations_references\n) b\nJOIN      (\n    SELECT * FROM notations\n) fi ON fi.notation = b.notation\nJOIN pm.layer l  ON l.filing = fi.filing AND l.layer = b.layer\n\n)\nSELECT b.composition, b.composed_layer, b.notation, b.resolved_filing, b.layer\nFROM (\n    SELECT * FROM resolved\n) b\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "notation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "notation"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "resolved_filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing_identity",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.elimination_between",
+            "name": "layer"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "fe5af3c992d28175449ede7708411bc4c93008fc7f6685c79de8f6d16a1124ec"
+}

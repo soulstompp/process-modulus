@@ -9,25 +9,13 @@ SELECT f.filing,
        count(c.filing) AS couplings_filed,
        s.answer        AS search_answer
 FROM      (
-    -- from pm.filing where evidence = 'observation' and the kind attests to a world.
-SELECT f.name AS filing, f.kind, f.evidence
-FROM pm.filing f
-WHERE f.evidence = 'observation'
-  AND f.kind IN ('processModulus', 'composition', 'dependence')
-
+    SELECT * FROM scope.corpus
 ) f
 LEFT JOIN (
-    -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
-SELECT c.filing, c.from_layer, c.to_layer,
-       c.low, c.mode, c.high, c.unit, c.observation
-FROM pm.coupling c
-
+    SELECT * FROM entries.couplings
 ) c USING (filing)
 LEFT JOIN (
-    -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
-SELECT cs.filing, cs.absent AS answer, cs.note
-FROM pm.coupling_search cs
-
+    SELECT * FROM epistemics.coupling_searches
 ) s ON s.filing = f.filing
 GROUP BY f.filing, s.answer
 

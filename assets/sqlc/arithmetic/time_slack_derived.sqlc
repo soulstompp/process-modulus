@@ -1,32 +1,43 @@
-# EVERY LAYER THAT DERIVED ITS TIME SLACK RATHER THAN MEASURING IT, AND WHETHER THE DIVISION
-# BEHIND IT HOLDS. One row per time slack filed `absent/reason = derived`.
+# Every layer that derived its time slack rather than measuring it, and whether the clearance it
+# stands for can be computed. One row per time slack filed `absent/reason = derived`.
 #
-# ⭐⭐⭐ THE MULTIPLICATION IS OWED AND IT IS INVISIBLE ONCE DONE. `timeSlack = q / clearance`
-#    turns a quantity into a DURATION, so the two sides are not merely in different units --
-#    they are of different kinds, and the answer looks perfectly well formed either way. The
-#    schema says so at process-modulus.xsd:4691: a slack filed as a duration is dimensionally
-#    wrong however true it is.
+# The slack is the clearance, a quantity
+#   `pm:Layer/timeSlack` holds a quantity in the layer's unit, because it is compared against
+#   holder shares. Filed as `derived`, it is the clearance the layer's own figures give,
+#   `max(n - d, 0)`: on a line making 2160 muffins a day against a demand of 2000, the slack is 160
+#   muffins a day. The twelve minutes a late muffin waits, `q / clearance`, is a duration, a
+#   different dimension describing the same line, and the bridge between the two,
+#   `quantity = duration x rate`, is the filer's to cross before filing. Proof:
+#   `src/proofs/README.md`, entries `clearance_is_not_a_duration` and `slack_from_duration`.
 #
-# ⛔ checks/derived_slack_over_a_window ASKS A DIFFERENT QUESTION OF THE SAME ROWS -- whether
-#   the window licenses the assumption -- and that one is guarded. Whether the arithmetic
-#   itself is dimensionally sound is not asked anywhere.
--- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against the quantum it was divided from.
+# One unit
+#   The clearance is a subtraction, so it is computable where demand and nameplate share a unit,
+#   and `not comparable` where they do not.
+#
+# A different question of the same rows
+#   checks/derived_slack_over_a_window asks whether the window licenses reading that quantity as
+#   demand that survives being held, which needs the spare spread evenly across the period.
+#   Whether the subtraction itself can be done is this site's question.
+-- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against the clearance it stands for.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT t.filing, t.layer,
-           CASE WHEN r.quantum_mode IS NULL                      THEN 'suspended'
-                WHEN r.quantum_unit IS DISTINCT FROM r.unit       THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
-           CASE WHEN r.quantum_mode IS NULL THEN 'no quantum to divide'
-                ELSE format('a quantum of %s %s over a clearance in %s, yielding a duration',
-                            r.quantum_mode, r.quantum_unit, r.unit) END AS detail
+           CASE WHEN r.filing IS NULL                            THEN 'suspended'::public.arithmetic_verdict
+                WHEN r.unit IS DISTINCT FROM r.amount_unit        THEN 'not comparable'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           CASE WHEN r.filing IS NULL THEN 'no demand and nameplate to take a clearance from'
+                WHEN r.unit IS DISTINCT FROM r.amount_unit
+                     THEN format('a demand in %s against a nameplate in %s', r.unit, r.amount_unit)
+                ELSE format('the clearance [%s, %s, %s] %s is the slack',
+                            greatest(r.r_low, 0), greatest(r.r_mode, 0), greatest(r.r_high, 0),
+                            r.unit) END AS detail
     FROM      (
         :compose(entries/derived_time_slacks.sqlc)
     ) t
-    JOIN      (
+    LEFT JOIN (
         :compose(layers/remainder.sqlc)
     ) r USING (filing, layer)
 ) p ON true

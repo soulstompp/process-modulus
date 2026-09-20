@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/descent.sqlc reduced to one row per reached layer, against rank/composition_kernel.sqlc.\nSELECT r.composition,\n       r.composed_layer,\n       coalesce(b.deepest, 0)                             AS deepest,\n       1 + coalesce(b.fusions, 0)                         AS fusions_below,\n       coalesce(b.leaves, 0)                              AS leaves,\n       1::bigint                                          AS row_dim,\n       coalesce(b.leaves, 0) - 1                          AS closure_kernel,\n       r.kernel_dim + coalesce(b.kernel, 0)               AS sum_kernel,\n       coalesce(b.leaves_positive, 0)                     AS leaves_positive,\n       coalesce(b.leaves_unknown, 0)                      AS leaves_unknown\nFROM      (\n    SELECT * FROM rank.composition_kernel\n) r\nLEFT JOIN (\n    SELECT w.root_filing,\n           w.root_layer,\n           max(w.depth)::bigint                                  AS deepest,\n           count(*) FILTER (WHERE k.composition IS NOT NULL)      AS fusions,\n           count(*) FILTER (WHERE k.composition IS NULL)          AS leaves,\n           count(*) FILTER (WHERE k.composition IS NULL\n                                  AND NOT w.factor_absent\n                                  AND w.factor_mode > 0)          AS leaves_positive,\n           count(*) FILTER (WHERE k.composition IS NULL\n                                  AND w.factor_absent)            AS leaves_unknown,\n           coalesce(sum(k.kernel_dim), 0)::bigint                 AS kernel\n    FROM      (\n        SELECT d.root_filing, d.root_layer, d.filing, d.layer,\n               max(d.depth)             AS depth,\n               bool_or(d.factor_absent) AS factor_absent,\n               min(d.factor_mode)       AS factor_mode\n        FROM (\n            SELECT * FROM composition.descent\n        ) d\n        GROUP BY d.root_filing, d.root_layer, d.filing, d.layer\n    ) w\n    LEFT JOIN (\n        SELECT * FROM rank.composition_kernel\n    ) k ON k.composition = w.filing AND k.composed_layer = w.layer\n    GROUP BY w.root_filing, w.root_layer\n) b ON b.root_filing = r.composition AND b.root_layer = r.composed_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "rank.composition_kernel",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "rank.composition_kernel",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "deepest",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "fusions_below",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "leaves",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "row_dim",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "closure_kernel",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "sum_kernel",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "leaves_positive",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 9,
+        "name": "leaves_unknown",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "314027a67df7e23d673541e81efad828f98b8dd81299486bc3f896317eb75c4c"
+}

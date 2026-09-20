@@ -1,28 +1,50 @@
-# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS AND DEMAND NOBODY COULD SERVE, BESIDE WHETHER
-# ANYBODY IS NAMED AS HAVING GONE WITHOUT. One row per examined layer, `violates` where no unserved
-# holder appears.
+# Every supply with nowhere to put its excess and demand nobody could serve, beside who is named as
+# having gone without. One row per examined layer, `violates` where no unserved holder appears, or,
+# under interference, where any holder claims the excess was served.
 #
-# ⭐⭐⭐ THE RULE, AND THE ARGUMENT IS ENTIRELY IN THE WORD "EVERY". If every buffer was
-#    accounted for and none of them had room, the excess above the nameplate CANNOT have been
-#    absorbed by running hot, by drawing on stock or by making the demand wait. There was
-#    nowhere to go, so it went unserved and somebody has to be named as having gone without.
-#    ONE UNMEASURED BUFFER LICENSES NONE OF THIS, whatever the other two say, because nobody
-#    knows what that route could have taken. layers/exposure_scope.sqlc classifies all three
-#    standings; this rule reads the one that concludes anything.
+# The argument is in the word "every"
+#   If every buffer was accounted for and none of them had room, the excess above the nameplate
+#   cannot have been absorbed by running hot, by drawing on stock or by making the demand wait.
+#   There was nowhere to go, so it went unserved and somebody has to be named as having gone
+#   without. One unmeasured buffer licenses none of this, whatever the other two say, because
+#   nobody knows what that route could have taken. layers/exposure_scope.sqlc classifies all
+#   three standings; this rule reads the one that concludes anything.
 #
-# ⛔ THE VIOLATION IS AN ANTI-JOIN AGAINST entries/unserved_holders.sqlc, which the clearance
-#   check semi-joins and the exposure check sums. One relation, three readings.
--- every slack on the layer accounted for and empty, against pm:HolderKind customer/unrealised.
+# Under interference, every holder; under transition, one
+#   Where the whole demand range sits above the nameplate, all of the remainder is excess, so every
+#   holder is `customer` or `unrealised`: a `booked`, `counterparty` or `people` holder says part of
+#   an excess was absorbed by a supply that had nowhere to absorb it. Where the ranges overlap,
+#   part of the range is genuinely clearance and a `booked` share is legitimate there, so the rule
+#   weakens to presence: at least one holder bears the unserved part. The fit is the one derived
+#   from the ranges, which checks/fit_disagrees holds the filed sign to.
+#
+# Every buffer, not the capacity alone
+#   A measured-zero capacity slack does not make an excess unabsorbable while stock or waiting
+#   could still take it. Read on the capacity buffer alone, this rule would accuse a filing whose
+#   inventory slack took part of the excess and says so with a `booked` holder.
+#
+# One relation, three readings
+#   The violation is an anti-join against entries/unserved_holders.sqlc, which the clearance
+#   check semi-joins and the exposure check sums, and a semi-join against
+#   entries/served_holders.sqlc under interference.
+-- every slack on the layer accounted for and empty, against pm:HolderKind of every holder.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
     SELECT c.filing, c.layer,
-           u.filing IS NULL AS violates,
-           format('%s could not be served and no holder says so', c.exposure) AS detail
+           u.filing IS NULL OR (c.derived_fit = 'interference' AND s.filing IS NOT NULL) AS violates,
+           CASE WHEN u.filing IS NULL
+                THEN format('%s could not be served and no holder says so', c.exposure)
+                WHEN c.derived_fit = 'interference' AND s.filing IS NOT NULL
+                THEN format('%s could not be served, and a %s holder says part of it was',
+                            c.exposure, s.kinds)
+                ELSE format('%s could not be served, and the holders say who went without',
+                            c.exposure)
+           END AS detail
     FROM (
-        SELECT e.filing, e.layer, e.exposure
+        SELECT e.filing, e.layer, e.exposure, e.derived_fit
         FROM (
             :compose(layers/unabsorbed_exposure.sqlc)
         ) e
@@ -32,5 +54,8 @@ LEFT JOIN (
                 FROM (
                     :compose(entries/unserved_holders.sqlc)
                 ) h ) u USING (filing, layer)
+    LEFT JOIN (
+        :compose(folds/served_totals.sqlc)
+    ) s USING (filing, layer)
 ) p ON true
 WHERE r.slug = 'nobody_named_as_unserved'

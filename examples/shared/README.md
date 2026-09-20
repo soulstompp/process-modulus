@@ -12,6 +12,7 @@ it and what keeps `build.rs` from putting a row for it in the table in
 | `simulation/` | a bench on NeXosim: mailboxes, an event queue and a clock, plus the filing writer that turns a run into a document this schema admits | `generation`, `resolution`, `strain` |
 | `tree/` | the one scanner over `assets/sqlc/`, which reads `:compose()` directives and walks the term | `compositions`, `observations`, `soundness` |
 | `sources/` | the one walk over `examples/` itself, asking which relations a program names | `compositions`, `observations` |
+| `database/` | the one way a program opens its database, with the just-in-time compiler off, because a plan this deep costs more to compile than to run | `combinatorics`, `diagramming`, `graphs`, `matrices`, `observations`, `readiness`, `soundness` |
 
 A program reaches in by path, because a module in a sibling directory is not a child of the
 target that uses it:

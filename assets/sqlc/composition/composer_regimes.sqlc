@@ -1,0 +1,14 @@
+# Every regime a composition declares for its parts to name. One row per `asrt:regime` at the root
+# of a composition: its handle, its jurisdiction, and the framework and chart the composer says a
+# part reports under, each a borrowed term or the typed reason there is none.
+#
+# What a composer says, not what the part says
+#   The shape is `pm:Regime`, the same as composition/regimes.sqlc, and the fact is a different
+#   one with a different author: the composer's claim about another document. A part names one of
+#   these by handle, and XSD checks that the handle resolves, which is as far as a grammar reaches.
+#   Whether the part's own filing agrees is composition/part_regimes.sqlc.
+-- asrt:regime at the root of an asrt:composition, one row per declaration in document order.
+SELECT r.composition, r.seq, r.id, r.jurisdiction,
+       r.framework_taxonomy, r.framework_value, r.framework_absent,
+       r.chart_taxonomy, r.chart_value, r.chart_absent
+FROM pm.composition_regime r

@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- asrt:Fusion/asrt:Part against itself; conformance rule \"a fusion's parts partition what they compose\".\nSELECT r.rule, p.filing, p.layer, p.violates, p.detail\nFROM      (\n    SELECT * FROM checks.roster\n) r\nLEFT JOIN (\n    SELECT f.filing, f.layer,\n           j.filing IS NOT NULL AS violates,\n           CASE WHEN j.filing IS NULL\n                THEN format('`%s` draws each part once', f.layer)\n                ELSE format('`%s/%s` arrives through `%s/%s` and through `%s/%s`',\n                            j.doubled_filing, j.doubled_layer,\n                            j.via_filing, j.via_layer, j.also_via_filing, j.also_via_layer)\n           END AS detail\n    FROM      (\n        SELECT * FROM composition.fusions\n    ) f\n    LEFT JOIN (\n        SELECT * FROM composition.jagged_layers\n    ) j ON j.filing = f.filing AND j.layer = f.layer\n) p ON true\nWHERE r.slug = 'jagged_layer'\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "rule",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "checks.roster",
+            "name": "rule"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fusions",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fusions",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "violates",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "detail",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "8e9d72580f8382d935cf174d78ffbb0ece3f77666bab29656d7f81687f361a53"
+}

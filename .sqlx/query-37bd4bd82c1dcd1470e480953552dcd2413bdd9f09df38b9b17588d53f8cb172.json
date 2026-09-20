@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §6  What the fixtures decline to answer, which is the whole reason they exist.\n-- reports/absences_in_the_fixtures.sqlc, given the caller that makes it readable.\nSELECT a.question AS \"question!\", a.reason::text AS \"reason!\", a.times AS \"times!\"\nFROM (\n    -- reports/absence_census.sqlc at fixture scope.\n-- epistemics/absences.sqlc, restricted by the caller's @scope.\nSELECT a.question, a.reason, count(*) AS times\nFROM (\n    SELECT * FROM epistemics.absences\n) a\nJOIN (\n    -- from pm.filing where evidence = 'stipulation'; see assets/fixtures/README.md.\nSELECT f.name AS filing, f.kind, f.evidence\nFROM pm.filing f\nWHERE f.evidence = 'stipulation'\n\n) s USING (filing)\nGROUP BY 1, 2\nORDER BY 3 DESC, 1, 2\n\n\n) a\nORDER BY a.times DESC, a.question\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "question!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.absences",
+            "name": "question"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "reason!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "times!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "37bd4bd82c1dcd1470e480953552dcd2413bdd9f09df38b9b17588d53f8cb172"
+}

@@ -1,24 +1,37 @@
-# THE WALK A REMAINDER DESCENT MAKES, EVERY ROW OF IT. One row per (composed layer, node
-# reached), with the product of the conversion factors along the path.
+# The walk a remainder descent makes, every row of it. One row per (composed layer, node reached),
+# with the product of the conversion factors along the path.
 #
-# ⭐⭐⭐ IT EXISTS SO THAT composition/settled_remainders.sqlc HAS A NAMED LEFT OPERAND. That
-#    relation keeps the rows whose node is settled and drops the rest, which is a difference,
-#    and |A| = |A∖B| + |A⋉B| is checkable only where somebody can count A. Spelled inside the
-#    recursive CTE there was no A, so no law on algebra/roster.sqlc could govern it.
+# A named left operand for settled_remainders
+#   It exists so that composition/settled_remainders.sqlc has a named left operand. That relation
+#   keeps the rows whose node is settled and drops the rest, which is a difference, and
+#   |A| = |A∖B| + |A⋉B| is checkable only where somebody can count A. Spelled inside the recursive
+#   CTE there would be no A, so no law on algebra/roster.sqlc could govern it.
 #
-# ⛔ THE WALK PRUNES AND THE DIFFERENCE DOES NOT. It descends only THROUGH an unsettled node,
-#   so a settled node is a stopping point rather than a filter: its own subtree is never
-#   entered. The difference then selects those stopping points. Two different uses of
-#   composition/unsettled.sqlc, and collapsing them into one would either walk the whole tree
-#   or stop at the first node.
-# ⚠️ IT IS `composition/descent.sqlc` WITH A STOP CONDITION, AND THE DUPLICATION IS DELIBERATE.
-#   The two files share more source lines than any other pair in this tree, and the difference is
-#   one join: this walk halts where `composition/unsettled.sqlc` stops holding. ⛔ It cannot be
-#   written as a restriction OF that relation, because stopping inside a recursion is not a
-#   filter over its result: a row at depth 3 there may be reachable only through a node this walk
-#   never passes. ⭐ The tool that would fit is a slot on the stop condition, and it would make
-#   `descent.sqlc` a shape rather than a query, costing it the standalone runnability every
-#   template here is supposed to have. So the copy stays, and this sentence is the record of why.
+# The walk prunes and the difference does not
+#   It descends only through an unsettled node, so a settled node is a stopping point rather than a
+#   filter: its own subtree is never entered. The difference then selects those stopping points.
+#   Two different uses of composition/unsettled.sqlc, and collapsing them into one would either
+#   walk the whole tree or stop at the first node.
+#
+# `usable` is a path with a product
+#   A path is usable where every factor on it has a figure and it closes no cycle: then the product
+#   it carries is a number and the node at its end is reached once. Every reader that multiplies
+#   along the path keeps these rows and no others, so the test is stated here once.
+#
+# A deliberate copy of the descent
+#   It is `composition/descent.sqlc` with a stop condition, and the duplication is deliberate. The
+#   two files share more source lines than any other pair in this tree, and the difference is one
+#   join: this walk halts where `composition/unsettled.sqlc` stops holding. It cannot be written as
+#   a restriction of that relation, because stopping inside a recursion is not a filter over its
+#   result: a row at depth 3 there may be reachable only through a node this walk never passes.
+#   The tool that would fit is a slot on the stop condition, and it would make
+#   `composition/descent.sqlc` a shape rather than a query, costing it the standalone runnability
+#   every template here is supposed to have. So the copy stays, and this section is the record of
+#   why.
+#
+# The cycle clause's own path is not returned
+#   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type, which a view
+#   cannot hold. The walk returns `is_cycle` and every column of its own, and not that one.
 -- composition/parts.sqlc walked while composition/unsettled.sqlc holds, carrying the product.
 WITH RECURSIVE
 resolved AS (
@@ -31,16 +44,19 @@ frontier(root_filing, root_layer, filing, layer, depth,
          factor_low, factor_mode, factor_high, factor_absent) AS (
         SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,
                coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),
-               (p.factor_absent IS NOT NULL)
+               p.factor_state IN ('absent', 'derivation')
         FROM resolved p
     UNION ALL
         SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,
                w.factor_low  * coalesce(p.factor_low,  1),
                w.factor_mode * coalesce(p.factor_mode, 1),
                w.factor_high * coalesce(p.factor_high, 1),
-               w.factor_absent OR (p.factor_absent IS NOT NULL)
+               w.factor_absent OR p.factor_state IN ('absent', 'derivation')
         FROM frontier w
         JOIN open_node o ON o.filing = w.filing AND o.layer = w.layer
         JOIN resolved p  ON p.composition = w.filing AND p.composed_layer = w.layer
 ) CYCLE filing, layer SET is_cycle USING route
-SELECT * FROM frontier
+SELECT f.root_filing, f.root_layer, f.filing, f.layer, f.depth,
+       f.factor_low, f.factor_mode, f.factor_high, f.factor_absent, f.is_cycle,
+       (NOT f.factor_absent AND NOT f.is_cycle) AS usable
+FROM frontier f

@@ -1,0 +1,14 @@
+-- §4b  Every question the absence census actually files a row under.
+# One row per distinct question in epistemics/absences.sqlc. This is the other side of §4: a
+# question the census files under and the roster does not name is an arm nobody declared, and its
+# rows count toward no column. The program takes the difference in Rust, against §4's roster.
+#
+# What it cannot see
+#   Only questions that filed something appear, because a relation derived from rows cannot list an
+#   arm that produced none. §4 covers that half from the roster's side.
+-- epistemics/absences.sqlc, its questions.
+SELECT DISTINCT a.question AS "question!"
+FROM (
+    :compose(epistemics/absences.sqlc)
+) a
+ORDER BY a.question

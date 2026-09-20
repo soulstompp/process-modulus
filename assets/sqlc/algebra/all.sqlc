@@ -1,23 +1,34 @@
-# EVERY SET-ALGEBRAIC LAW THIS TREE CLAIMS, WITH ITS VERDICT. One row per (law, subject): which
-# law, which relation or instance, whether it holds, and the cardinalities that decide it.
+# Every law this tree claims, with its verdict. One row per (law, subject): which law, which
+# relation or instance, whether it holds, and the cardinalities or figures that decide it.
 #
-# ⭐⭐⭐ THIS IS THE RELATION examples/soundness/main.rs IS A VIEW OF, AND IT ANSWERS A QUESTION NEITHER
-#    checks/ NOR arithmetic/ ASKS. A check says the DOCUMENT contradicts the model. An arithmetic
-#    site says you cannot COMPUTE here. This says the QUERY does not compute what it claims to --
-#    a defect in the machinery rather than in the evidence, and the only one of the three that
-#    accuses nobody's filing.
+# A defect in the machinery
+#   This is the relation examples/soundness/main.rs is a view of, and it answers a question
+#   neither checks/ nor arithmetic/ asks. A check says the document contradicts the model. An
+#   arithmetic site says you cannot compute here. This says the query does not compute what it
+#   claims to: a defect in the machinery rather than in the evidence, and the only one of the
+#   three that accuses nobody's filing. `conforms` is the one law about the evidence, and
+#   algebra/roster.sqlc says why it sits here.
 #
-# ⛔ THE CONTRACT EVERY LAW KEEPS: one plain SELECT, no leading WITH, returning exactly
-#   `(law, subject, holds, detail)`, with `holds` NULL only on the roster row that found nothing
-#   to check. Same shape as checks/ and arithmetic/, same reason -- a law with an empty subject
-#   set must report ⛔ VACUOUS rather than vanish from a GROUP BY.
+# The contract every law keeps
+#   One plain SELECT, no leading WITH, returning exactly `(law, subject, holds, detail)`, with
+#   `holds` NULL only on the roster row that found nothing to check. Same shape as checks/ and
+#   arithmetic/, for the same reason: a law with an empty subject set must report as vacuous
+#   rather than vanish from a GROUP BY. `law` is the roster's `slug` and not its formula, because
+#   several laws share one formula.
 -- algebra/roster.sqlc joined to each law's own subjects.
 :union(ALL algebra/dimension_use.sqlc,
+           algebra/compose_decomposition.sqlc,
            algebra/decomposition.sqlc,
+           algebra/cycle_space.sqlc,
+           algebra/composition_kernel.sqlc,
+           algebra/composition_row_space.sqlc,
+           algebra/composition_image.sqlc,
+           algebra/composition_closure.sqlc,
+           algebra/layer_units.sqlc,
            algebra/owed_equality.sqlc,
            algebra/leaves.sqlc,
            algebra/jagged_layers.sqlc,
-           algebra/composed_demand.sqlc,
+           algebra/composed_quantities.sqlc,
            algebra/integrity.sqlc,
            algebra/carried.sqlc,
            algebra/owed_remainder.sqlc,
@@ -27,4 +38,29 @@
            algebra/remainder_standing.sqlc,
            algebra/exposure_standing.sqlc,
            algebra/searches.sqlc,
-           algebra/part_regimes.sqlc)
+           algebra/part_regimes.sqlc,
+           algebra/crossed_remainder.sqlc,
+           algebra/exposure.sqlc,
+           algebra/remainder_decomposes.sqlc,
+           algebra/sawtooth.sqlc,
+           algebra/composed_quantum.sqlc,
+           algebra/fusion_sum.sqlc,
+           algebra/composed_remainder.sqlc,
+           algebra/conforms.sqlc,
+           algebra/fit_domain.sqlc,
+           algebra/absences_filed.sqlc,
+           algebra/derivations_filed.sqlc,
+           algebra/fusions_have_parts.sqlc,
+           algebra/searches_answered.sqlc,
+           algebra/subject_boxes.sqlc,
+           algebra/factor_state.sqlc,
+           algebra/fusion_quantities.sqlc,
+           algebra/part_sums.sqlc,
+           algebra/suspended_quantities.sqlc,
+           algebra/unsized_conversions_are_unsettled.sqlc,
+           algebra/part_quantities.sqlc,
+           algebra/figures.sqlc,
+           algebra/served_totals.sqlc,
+           algebra/derived_quantities.sqlc,
+           algebra/unresolved_parts.sqlc,
+           algebra/remainder_in_force.sqlc)

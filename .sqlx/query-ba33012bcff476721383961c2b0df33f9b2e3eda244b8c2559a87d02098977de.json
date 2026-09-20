@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §9  Across every kind of search this model defines, how often did somebody actually look?\n-- epistemics/searches.sqlc, folded by question and answer.\nSELECT s.looked_for                                   AS \"looked_for!\",\n       coalesce(s.answer::text, 'filed the thing')    AS \"answer!\",\n       count(*)                                       AS \"times!\"\nFROM (\n    SELECT * FROM epistemics.searches\n) s\nGROUP BY s.looked_for, s.answer\nORDER BY s.looked_for, count(*) DESC, 2\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "looked_for!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.searches",
+            "name": "looked_for"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "answer!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "times!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "ba33012bcff476721383961c2b0df33f9b2e3eda244b8c2559a87d02098977de"
+}

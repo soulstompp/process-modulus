@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §15  What the layer dimension actually carries, and the order a fusion may be evaluated in.\n-- rank/incidence_reach.sqlc, ordered so the two kinds sit beside each other.\nSELECT c.relation  AS \"relation!\",\n       c.kind      AS \"kind!\",\n       c.reaches   AS \"reaches!\",\n       c.of_layers AS \"of!\"\nFROM (\n    -- each incidence and each magnitude, counted against layers/every_layer.sqlc as the denominator.\nSELECT x.relation, x.kind, x.reaches,\n       (SELECT count(*) FROM ( SELECT * FROM layers.every_layer ) l) AS of_layers\nFROM      (\n    SELECT 'D draw'      AS relation, 'incidence' AS kind, count(DISTINCT (d.filing, d.layer)) AS reaches\n    FROM ( SELECT * FROM entries.draws ) d\n    UNION ALL\n    SELECT 'N induction', 'incidence', count(DISTINCT (n.filing, n.layer))\n    FROM ( SELECT * FROM entries.inductions ) n\n    UNION ALL\n    SELECT 'C coupling',  'incidence', count(DISTINCT (c.filing, c.from_layer))\n    FROM ( SELECT * FROM entries.couplings ) c\n    UNION ALL\n    SELECT 'F part',      'incidence', count(DISTINCT (p.composition, p.composed_layer))\n    FROM ( SELECT * FROM composition.parts ) p\n    UNION ALL\n    SELECT 'nameplate',   'magnitude', count(DISTINCT (n.filing, n.layer))\n    FROM ( SELECT * FROM layers.nameplate ) n\n    UNION ALL\n    SELECT 'slack',       'magnitude', count(DISTINCT (s.filing, s.layer))\n    FROM ( SELECT * FROM entries.slacks ) s\n) x\n\n) c\nORDER BY c.kind, c.reaches DESC, c.relation\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "relation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "kind!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "reaches!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "of!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "f944c50be254e09fa8619f8d51f2eb8d3227982dbba4fe6d282fbc7f42088882"
+}

@@ -1,0 +1,83 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §10b Every `between` as a cross-document REFERENCE, beside whether it lands on a layer here.\n-- eliminations/references.sqlc against eliminations/resolved.sqlc, the whole beside the half.\nSELECT a.composition                        AS \"composition!\",\n       a.composed_layer                     AS \"composed_layer!\",\n       a.quantity::text                     AS \"quantity!\",\n       a.party                              AS \"party!\",\n       a.layer                              AS \"layer!\",\n       coalesce(r.resolved_filing, '(outside this corpus)') AS \"lands_on!\",\n       (r.resolved_filing IS NOT NULL)      AS \"resolves!\"\nFROM      (\n    SELECT * FROM eliminations.references\n) a\nLEFT JOIN (\n    SELECT * FROM eliminations.resolved\n) r USING (composition, composed_layer, quantity, seq)\nORDER BY (r.resolved_filing IS NOT NULL), 1, 2, 3, a.seq\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.\"references\"",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.\"references\"",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "party!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.\"references\"",
+            "name": "party"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "eliminations.\"references\"",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "lands_on!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "resolves!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "2bffa832369cfecbcd4c25e3a1a128e9557cc3ded9b62b28a91f92bd428aa7a7"
+}

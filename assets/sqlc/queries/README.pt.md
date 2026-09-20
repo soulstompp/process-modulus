@@ -13,34 +13,39 @@ corridas sem Rust; cada uma é uma única instrução.
 | `readiness/` | [`examples/readiness/main.rs`](../../../examples/readiness/main.rs) | pode-se sequer calcular aqui? |
 | `observations/` | [`examples/observations/main.rs`](../../../examples/observations/main.rs) | o que diz o conjunto de documentos? |
 | `soundness/` | [`examples/soundness/main.rs`](../../../examples/soundness/main.rs) | a maquinaria faz o que afirma? |
+| `combinatorics/` | [`examples/combinatorics/main.rs`](../../../examples/combinatorics/main.rs) | o que se pode ler de uma classificação, e cada lei lê aquilo que se confia que lê? |
 
 ⭐ **A pasta é a correspondência, em vez de ser coisa que um leitor tem de se lembrar.** Uma
 consulta acrescentada a `readiness/` e nunca lida pelo `examples/readiness/main.rs` aparece como
 órfã no `examples/observations/main.rs`, que afirma que nada em `assets/sqlc/` é alcançado por nada.
 
 ⚠️ O `matrices/` responde às secções numeradas do [`../README.pt.md`](../README.pt.md). As outras
-três não lhe correspondem: o `readiness/` é uma vista sobre `arithmetic/all.sqlc`, o
+não lhe correspondem: o `readiness/` é uma vista sobre `arithmetic/all.sqlc`, o
 `observations/` é um passeio por relações cujo produto é conhecimento e não um veredicto, e o
 `soundness/` é o que lê várias: as leis de álgebra de conjuntos em `algebra/all.sqlc`, os contratos
 de roster em `reports/integrity.sqlc`, e o que a população de cada roster emite quando o conjunto de
-documentos está vazio.
+documentos está vazio. O `combinatorics/` lê cada classificação contra as classes que declara, e o
+DAG de composição, o censo das ausências e as duas autojunções de `F` como funções de linhas para
+classes.
 
-⭐⭐ **O `soundness/` é o único que não pode acusar o arquivo de ninguém.** As outras três perguntam
-pela aritmética, pelos dados e pelo conjunto de documentos; essa pergunta se as CONSULTAS calculam o
-que dizem. É onde uma diferença que falha para uma tabela plausível é apanhada.
+⭐⭐ **O `soundness/` e o `combinatorics/` são as únicas duas que não podem acusar o arquivo de
+ninguém.** As outras três perguntam pela aritmética, pelos dados e pelo conjunto de documentos;
+essas duas perguntam se as CONSULTAS calculam o que dizem, e que parte de uma classificação cada lei
+consegue ver. É no `soundness/` que uma diferença que falha para uma tabela plausível é apanhada.
 
 ⭐ **Cada uma compõe as mesmas relações que as regras compõem**, em vez de repetir as junções. O
 `1-fit-from-ranges` compõe `layers/signed.sqlc`, que é também a população que a regra do sinal
-examina; o `3b-composed-demand` faz anti-junção com `composition/suspended_fusions.sqlc`, que é
+examina; o `3b-composed-quantities` faz anti-junção com `composition/suspended_fusions.sqlc`, que é
 também aquilo com que o `matrices.sql` faz anti-junção. Portanto o exemplo e o verificador correm
 sobre as mesmas linhas por construção e não por dois autores estarem de acordo, e se quiser ver de
 que é feita uma destas consultas, siga-lhe as linhas `:compose()`.
 
 Estes são modelos `.sqlc`. O `cargo sqlc compose` escreve o SQL executável em
-`assets/sql/queries/`, e é isso que o `psql` e o `sqlx` leem:
+`assets/sql/queries/`, e é isso que o `psql` e o `sqlx` leem, depois de carregado o
+`assets/sql/views.sql`: uma instrução que várias consultas partilham é lida da sua vista.
 
 ```
-cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
+cargo sqlc compose --source assets/sqlc --target assets/sql --views assets/sqlc/views.sqlc --skip-prepare
 psql -d process_modulus_proof -f assets/sql/queries/matrices/1-fit-from-ranges.sql
 ```
 
@@ -62,7 +67,7 @@ os seus tipos contra uma base de dados viva no momento da compilação. Depois d
 recompor e regenerar:
 
 ```
-cargo sqlc compose --source assets/sqlc --target assets/sql --skip-prepare
+cargo sqlc compose --source assets/sqlc --target assets/sql --views assets/sqlc/views.sqlc --skip-prepare
 cargo sqlx prepare -- --all-targets   # cada exemplo lê query_file!; um só alvo poda os outros
 ```
 

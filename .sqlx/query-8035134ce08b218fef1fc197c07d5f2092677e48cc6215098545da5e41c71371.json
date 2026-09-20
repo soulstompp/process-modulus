@@ -1,0 +1,45 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §2  The compositions as balls into boxes: every splice site, and the template it lands in.\n-- rank/compose_edges.sqlc, the edge list as it stands.\nSELECT e.parent AS \"parent!\", e.child AS \"child!\", e.splices::bigint AS \"splices!\"\nFROM (\n    SELECT * FROM rank.compose_edges\n) e\nORDER BY e.parent, e.child\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "parent!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "rank.compose_edges",
+            "name": "parent"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "child!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "rank.compose_edges",
+            "name": "child"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "splices!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "8035134ce08b218fef1fc197c07d5f2092677e48cc6215098545da5e41c71371"
+}

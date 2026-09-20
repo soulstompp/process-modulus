@@ -1,63 +1,94 @@
-# EVERY FUSION THAT OWES ITS PARTS AN EQUALITY, AND WHETHER THE SUM IS OWED AT ALL. One row per
-# composed layer reached by at least one part.
+# Every fusion, and in which quantities its parts owe it an equality. One row per composed layer
+# reached by at least one part: `computable` where at least one quantity's sum is owed, and the
+# detail says which are owed and why the rest are suspended.
 #
-# ⛔⛔⛔ THE UNITS ARE NOT CHECKED HERE AND MUST NOT BE. conformance/README.md:326 -- "the units
-#    of a fusion's parts are NOT checked and must not be ... asserting that they name one unit
-#    IS WHAT A FUSION SAYS." A filer who fuses two layers has DECLARED them commensurable, and
-#    a checker that tested it would be overruling a judgement no document owes it. This is the
-#    one site on the roster whose empty guard is correct, which is why `(forbidden)` is a value
-#    and not a NULL.
+# The units are not checked here, and must not be
+#   conformance/README.md: "the units of a fusion's parts are not checked and must not be ...
+#   asserting that they name one unit is what a fusion says." A filer who fuses two layers has
+#   declared them commensurable, and a checker that tested it would be overruling a judgement no
+#   document owes it. This is the one site on the roster whose empty guard is correct, which is
+#   why `(forbidden)` is a value and not a NULL.
 #
-# ⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED. A composer who never searched for
-#    double counting, or who found it and could not size it, owes no equality -- so the rows
-#    composition/suspended_fusions.sqlc names are absent from the arithmetic rather than
-#    passing it. assertion.xsd:1934 states the verdict table this follows.
+# Suspended is a third outcome
+#   It stands beside passed and failed. A composer who never searched for double counting, or
+#   who found it and could not size it, owes no equality, so the rows
+#   composition/suspended_fusions.sqlc names are absent from the arithmetic rather than passing
+#   it. assertion.xsd:1934 states the verdict table this follows.
 #
-# ⛔ THE VERDICT COMES FROM composition/owed_equality.sqlc AND THE REASON FROM ITS COMPLEMENT.
-#   Re-deriving the anti-join here while the `--` line cites the relation that already holds it
-#   is a header documenting a dependency the SQL declines to compose. Taking the verdict from
-#   the named relation is what makes a change to `owed_equality` reach here.
-# ⚠️ THE REASON JOIN IS NARROWED TO THE DEMAND GRAIN, AND IT HAS TO BE. This site computes the
-#   demand sum, and composition/suspension_grounds.sqlc is one row per (composed layer, ground)
-#   carrying the quantity it lifts -- a BAG. composition/suspended_fusions.sqlc is its
-#   projection onto the fusion, and this site needs the reasons, so it folds the bag itself. Without the narrowing a nameplate-only suspension
-#   would supply this site's reason, and TWO grounds on one fusion would emit two rows for one
-#   candidate -- which algebra/arithmetic_class.sqlc would catch as a partition failure, but the
-#   cause would be this join rather than anything a document filed.
-#   ⭐ At most one ground can apply per quantity because assertion.xsd makes StatedEliminations
-#   an xs:choice: a fusion files an `absent` or `elimination+`, never both. That is a grammar
-#   guarantee the DDL does not carry, which is why the narrowing is written rather than assumed.
--- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc.
+# Verdict and reason come from named relations
+#   The verdict comes from composition/owed_equality.sqlc and composition/derived_quantities.sqlc,
+#   and the reason from the suspensions. Re-deriving the anti-join here while the `--` line cites
+#   the relation that already holds it is a header documenting a dependency the SQL declines to
+#   compose. Taking the verdict from the named relations is what makes a change to either reach
+#   here.
+#
+# A derived composed figure is computed, not suspended
+#   Where the composing document files a quantity `derived`, the sum is the figure rather than a
+#   check on it, so the detail gives the computed figure from composition/derived_quantities.sqlc,
+#   or the reason it cannot be computed. A fusion is `computable` where one quantity owes its
+#   equality or one derived figure computes, so a fusion filing every quantity `derived` is not
+#   suspended for having nothing to compare.
+#
+# One row per layer, every quantity in it
+#   The arithmetic contract is one verdict per (site, filing, layer), and algebra/arithmetic_class
+#   holds it to exactly one. So the quantities fold here: the owed ones from
+#   composition/owed_equality.sqlc, the suspended ones with their grounds from
+#   composition/suspension_grounds.sqlc, whose bag is folded to one line per quantity and ground
+#   before the join so a fusion suspended on two grounds still yields one row.
+#
+# At most one ground per quantity from the eliminations
+#   assertion.xsd makes StatedEliminations an xs:choice: a fusion files an `absent` or
+#   `elimination+`, never both. That is a grammar guarantee the DDL does not carry, which is why
+#   the fold is written rather than assumed.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and composition/derived_quantities.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT f.filing, f.layer,
-           CASE WHEN o.filing IS NULL THEN 'suspended'
-                ELSE 'computable' END AS verdict,
-           CASE WHEN o.filing IS NULL
-                     THEN format('no equality is owed: %s', s.suspended_because)
-                ELSE 'the sum is owed exactly' END AS detail
+           CASE WHEN o.owed IS NULL AND d.computed IS NOT TRUE
+                THEN 'suspended'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
+           concat_ws('; ',
+                     CASE WHEN o.owed IS NOT NULL THEN format('owed exactly for %s', o.owed) END,
+                     d.derived,
+                     s.suspended) AS detail
     FROM      (
         :compose(composition/fusions.sqlc)
     ) f
     LEFT JOIN (
-        :compose(composition/owed_equality.sqlc)
+        SELECT o.filing, o.layer, string_agg(o.quantity::text, ', ' ORDER BY o.quantity) AS owed
+        FROM (
+            :compose(composition/owed_equality.sqlc)
+        ) o
+        GROUP BY o.filing, o.layer
     ) o USING (filing, layer)
-    -- ⛔ THE GROUNDS ARE A BAG, so they are folded to one row per fusion before the join. A
-    --   fusion suspended on two grounds is suspended once, and joining the bag would emit it
-    --   twice. `composition/suspended_fusions.sqlc` is the set; this site needs the REASONS
-    --   as well, so it folds them here rather than reaching for the projection.
     LEFT JOIN (
         SELECT g.composition, g.composed_layer,
-               string_agg(DISTINCT g.suspended_because, '; ' ORDER BY g.suspended_because)
-                   AS suspended_because
+               string_agg(DISTINCT format('suspended for %s: %s',
+                                          coalesce(g.quantity::text, 'every quantity'),
+                                          g.suspended_because), '; ') AS suspended
         FROM (
             :compose(composition/suspension_grounds.sqlc)
         ) g
-        WHERE coalesce(g.quantity, 'demand') = 'demand'
         GROUP BY g.composition, g.composed_layer
     ) s ON s.composition = f.filing AND s.composed_layer = f.layer
+    LEFT JOIN (
+        SELECT d.filing, d.layer, bool_or(q.low IS NOT NULL) AS computed,
+               string_agg(CASE WHEN q.low IS NOT NULL
+                               THEN format('derived for %s: computed [%s, %s, %s]', d.quantity,
+                                           q.low, q.mode, q.high)
+                               ELSE format('derived for %s, not computable: %s', d.quantity,
+                                           q.blocked_because) END,
+                          '; ' ORDER BY d.quantity) AS derived
+        FROM      (
+            :compose(composition/derived_fusions.sqlc)
+        ) d
+        JOIN      (
+            :compose(composition/derived_quantities.sqlc)
+        ) q ON q.filing = d.filing AND q.layer = d.layer AND q.quantity = d.quantity
+        GROUP BY d.filing, d.layer
+    ) d ON d.filing = f.filing AND d.layer = f.layer
 ) p ON true
 WHERE a.slug = 'fusion_sum'

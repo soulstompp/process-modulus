@@ -125,13 +125,13 @@
     <target>f0:lane_merge-group-composition_on-call</target>
   </relationship>
   <relationship type="process-modulus:elimination-between" direction="Forward">
-      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/eliminations/resolved.sqlc]</documentation>
-    <source>tns:lane_merge-holding-composition_compute</source>
-    <target>f0:lane_merge-group-composition_compute-us</target>
-  </relationship>
-  <relationship type="process-modulus:elimination-between" direction="Forward">
-      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/eliminations/resolved.sqlc]</documentation>
+      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/diagrams/attributions.sqlc]</documentation>
     <source>tns:lane_merge-holding-composition_compute</source>
     <target>f0:lane_merge-group-composition_compute-pt</target>
+  </relationship>
+  <relationship type="process-modulus:elimination-between" direction="Forward">
+      <documentation>a composed layer, and a layer of another document the composer states the double counting runs against. ⛔ NOT a part: nothing is composed from this, and the SIZE of the overlap is not here. [assets/sqlc/diagrams/attributions.sqlc]</documentation>
+    <source>tns:lane_merge-holding-composition_compute</source>
+    <target>f0:lane_merge-group-composition_compute-us</target>
   </relationship>
 </definitions>

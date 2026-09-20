@@ -1,0 +1,90 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §14  Supply that enters one total twice through two of a fusion's own parts, and no elimination for it.\n-- composition/jagged_layers.sqlc for fusions with no filed elimination, against the doubled layer's own figures.\nSELECT j.filing                                   AS \"filing!\",\n       j.layer                                    AS \"layer!\",\n       j.doubled_filing || '/' || j.doubled_layer AS \"doubled!\",\n       j.via_layer                                AS \"via!\",\n       j.also_via_layer                           AS \"also_via!\",\n       f.d_mode::float8                           AS \"twice_demand\",\n       f.n_mode::float8                           AS \"twice_nameplate\",\n       coalesce(f.d_unit, f.n_unit, '')           AS \"unit!\"\nFROM      (\n    SELECT * FROM composition.jagged_layers\n) j\nLEFT JOIN (\n    SELECT * FROM eliminations.filed\n) e ON e.composition = j.filing AND e.composed_layer = j.layer\nLEFT JOIN (\n    SELECT * FROM layers.figures\n) f ON f.filing = j.doubled_filing AND f.layer = j.doubled_layer\nWHERE e.composition IS NULL\nORDER BY j.filing, j.layer, j.doubled_filing, j.doubled_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.jagged_layers",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.jagged_layers",
+            "name": "layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "doubled!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "via!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.jagged_layers",
+            "name": "via_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "also_via!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.jagged_layers",
+            "name": "also_via_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "twice_demand",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "twice_nameplate",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "unit!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      true,
+      true,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "9f23dbbfb4aec3b8739dc85d2d11997de6198bf040c4272fad60d42d1d0be7b3"
+}

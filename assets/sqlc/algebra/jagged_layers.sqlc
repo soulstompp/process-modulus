@@ -1,22 +1,26 @@
-# THE JAGGED FUSIONS SPLIT BY WHETHER ANYBODY FILED AN ELIMINATION, CHECKED AS A PARTITION. One
+# The jagged fusions split by whether anybody filed an elimination, checked as a partition. One
 # row: whether |jagged| = |unadmitted| + |jagged ⋉ filed eliminations|.
 #
-# ⭐⭐⭐ THE OBSERVATION IS A DIFFERENCE AND THE DIFFERENCE IS THE ARGUMENT. §14 reports the
-#    overlap nobody admitted, which is composition/jagged_layers.sqlc MINUS the fusions that
-#    filed an elimination. Get the anti-join backwards and it reports the filings that DID
-#    their own cleanup as though they had not, which is the opposite accusation with the same
-#    column names and a believable count.
+# The difference is the argument
+#   The observation is a difference. §14 reports the overlap nobody admitted, which is
+#   composition/jagged_layers.sqlc minus the fusions that filed an elimination. Get the anti-join
+#   backwards and it reports the filings that did their own cleanup as though they had not, which
+#   is the opposite accusation with the same column names and a believable count.
 #
-# ⛔⛔ THE LEFT OPERAND IS A BAG ON THE COMPARED ATTRIBUTES. One fusion can double count more
-#    than one layer, and each is its own row and its own repair, so `EXCEPT` would collapse a
-#    fusion with three overlaps into one and the observation would under-report the work by two.
-#    The anti-join preserves the multiplicity; this law is what says so.
+# The left operand is a bag on the compared attributes
+#   One fusion can double count more than one layer, and each is its own row and its own repair,
+#   so `EXCEPT` would collapse a fusion with three overlaps into one and the observation would
+#   under-report the work by two. The anti-join preserves the multiplicity; this law is what says
+#   so.
 #
-# ⚠️ IT IS VACUOUS ON A CLEAN CORPUS AND THAT IS CORRECT. No fusion here is jagged, so the law
-#   reads 0 = 0 + 0. It binds the moment one is, and examples/soundness/main.rs runs it either way.
-#   ⭐ PROBE: file a part that a sibling already reaches and this law must still hold.
+# Vacuous on a clean corpus, correctly
+#   No fusion here is jagged, so the law reads 0 = 0 + 0. It binds the moment one is, and
+#   examples/soundness/main.rs runs it either way.
+#
+# Probe
+#   File a part that a sibling already reaches; this law must still hold.
 -- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

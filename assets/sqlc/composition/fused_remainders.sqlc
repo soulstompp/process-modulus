@@ -1,119 +1,155 @@
-# THE COMPOSED REMAINDER, PIVOTED THROUGH THE PARTS, BESIDE THE ONE layers/remainder.sqlc
-# DERIVES FROM THE COMPOSED TOTALS. One row per composed layer that owes an exact remainder.
+# The composed remainder, pivoted through the parts, beside the one layers/remainder.sqlc derives
+# from the composed totals. One row per composed layer that owes an exact remainder.
 #
-# ⭐⭐⭐ `r_composed = F Phi r_parts - e_n + e_d`, AND THE POINT IS THAT IT IS NOT
-#    `n_composed - d_composed`. One conversion factor multiplies BOTH a part's nameplate and its
-#    demand, so the two converted totals are correlated and differencing them counts that
-#    factor's spread twice. Converting each part's OWN remainder puts one occurrence of the
-#    factor on each term and the correlation is gone. composition/settled_remainders.sqlc is
-#    that pivot, one row per settled node with the path's factors already multiplied in; this is
-#    the sum over it plus the correction.
+# Not `n_composed - d_composed`
+#   `r_composed = F Phi r_parts - e_n + e_d`, and the point is that it is not
+#   `n_composed - d_composed`. One conversion factor multiplies both a part's nameplate and its
+#   demand, so the two converted totals are correlated and differencing them counts that factor's
+#   spread twice. Converting each part's own remainder puts one occurrence of the factor on each
+#   term and the correlation is gone. composition/settled_remainders.sqlc is that pivot, one row
+#   per settled node with the path's factors already multiplied in; this is the sum over it plus
+#   the correction.
 #
-# ⛔⛔ BOTH ELIMINATIONS APPEAR AND THEIR SIGNS ARE OPPOSITE. Removing double-counted DEMAND
-#    raises the remainder; removing double-counted NAMEPLATE lowers it. ⛔ An identity written in
-#    prose and evaluated nowhere can lose a whole term without anything noticing, and this one
-#    lost `+ e_d` for exactly as long as it lived in a document. This relation is what evaluates
-#    it, and `examples/matrices/main.rs` §4 is where the identity is now written down.
+# Both eliminations appear, with opposite signs
+#   Removing double-counted demand raises the remainder; removing double-counted nameplate lowers
+#   it. An identity written in prose and evaluated nowhere can lose a whole term without anything
+#   noticing, and this one lost `+ e_d` while it lived only in a document. This relation is what
+#   evaluates it, and `examples/matrices/main.rs` §4 is where the identity is written down.
 #
-# ⛔⛔⛔ AN ELIMINATION ENTERS AT THE SAME END OF THE SHARED DRIVER AS THE `Σ φ r` TERM IT
-#    CORRECTS, AND WHICH END THAT IS DEPENDS ON WHICH DRIVER IS SHARED. `e` is a quantity
-#    counted twice, so it moves with the quantity it was counted in, and the corner it takes
-#    follows the scenario the sum is read at rather than the sign in front of it.
+# Which corner an elimination takes
+#   An elimination is counted in one quantity, so it moves with that quantity: `e_n` is at the
+#   nameplate's low where the nameplate is low, `e_d` at the demand's high where the demand is
+#   high. Which end of its own range that is, the quantity's sum rule has already decided:
+#   bound by bound it is low with low, and where the sum inverted and took the crossed pairing it
+#   is low with high. eliminations/paired.sqlc decides which, for the eliminations filed here and,
+#   through composition/carried_eliminations.sqlc, for those at the nodes a walk passes, so
+#   `n_at_low`, `n_at_high`, `d_at_low` and `d_at_high` are each elimination read at its own
+#   quantity's corners. Then the corner of `r` decides which end of each quantity is in play:
 #
-#      no factor spread          the driver is `d`, and `r = n - d` FALLS as `d` rises, so
-#                                `r_low` sits at `d`'s high and takes `e_d`'s HIGH
-#      spread factor, r > 0      both `n` and `d` scale with the factor, so `r` RISES with it,
-#                                and `r_low` sits at the factor's low end and takes `e_d`'s LOW
+#     no factor spread          the driver is `d`, and `r = n - d` falls as `d` rises, so
+#                               `r_low` takes the nameplate at its low and the demand at its high
+#     spread factor, r > 0      both `n` and `d` scale with the factor, so `r` rises with it,
+#                               and `r_low` takes both quantities at their low
 #
-#    ⭐ `e_n` IS NEVER REVERSED. `n` is not the crossed operand in `r = n - d`, so a nameplate
-#    elimination enters low with low under either driver. Only `e_d` flips.
+#   With no spread this makes the pivot exactly `n_composed - d_composed` crossed, wherever the
+#   composed layer's filed totals are their sums. Proof: `src/proofs/README.md`, entry
+#   `composed_remainder`.
 #
-# ⛔⛔ THE SIGN OF THE SUM IS NOT THE DISCRIMINATOR, IT ONLY LOOKS LIKE ONE. It agrees with the
-#    driver test on every layer whose `r` keeps one sign, and disagrees where `r` STRADDLES
-#    zero, because there the sign changes between the two corners while the driver does not.
-#    `every-local-part/both-views` is that layer: two identical parts and eliminations equal to
-#    one whole copy of each, so removing one copy from two must leave exactly one copy. Read
-#    with the sign test its high comes out 600 too large, which is `e_d`'s own width.
+# The sign of the sum is not the discriminator
+#   It only looks like one. It agrees with the driver test on every layer whose `r` keeps one
+#   sign, and disagrees where `r` straddles zero, because there the sign changes between the two
+#   corners while the driver does not. `every-local-part/both-views` is that layer: two identical
+#   parts and eliminations equal to one whole copy of each, so removing one copy from two must
+#   leave exactly one copy. Read with the sign test its high comes out 600 too large, which is
+#   `e_d`'s own width.
 #
-#    ⭐ The three layers that can tell these rules apart, and the figure each must land on:
-#      merge-group-composition/labour        driver d, r < 0        (-3.0, -1.5, -0.4)
-#      merge-holding-composition/compute     driver phi, r > 0      (1414.0, 2857.0, 4085.6)
-#      every-local-part/both-views           driver d, r straddles  (-240, 160, 360)
+# Four layers that tell the rules apart
+#   The figure each must land on:
+#     merge-group-composition/labour            driver d, r < 0        (-3.0, -1.5, -0.4)
+#     merge-holding-composition/compute         driver phi, r > 0      (1414.0, 2857.0, 4085.6)
+#     every-local-part/both-views               driver d, r straddles  (-240, 160, 360)
+#     every-inverting-elimination/shift-capacity  nameplate crossed    (0, 4, 7)
 #
-# ⛔ THE `coalesce(..., 0)` IS SOUND ONLY BECAUSE composition/owed_remainder.sqlc IS INNER
-#   JOINED FIRST. Inside that population an absent elimination means the composer looked and
-#   found no double counting, which is the number zero. Outside it the same absence means nobody
-#   looked, and filling it would put a claim in the checker the document declined to make.
+# One read of each elimination relation, pivoted
+#   Both quantities' eliminations come from one copy of eliminations/paired.sqlc and one of
+#   composition/carried_eliminations.sqlc, each keyed by quantity and turned into columns with
+#   `FILTER`. A join per quantity asked the same relation twice and planned it twice, and it sits
+#   under every rule that reads a remainder.
 #
-# ⚠️⚠️ AND THE IDENTITY NEVER NAMES THE CORNER `e` TAKES, SO A READER HAS TO DERIVE IT.
-#    `x_composed = F Phi x - e` is silent on it, and the corpus is not: composition/fused.sqlc
-#    composes a demand component-wise as `sum(d_high) - e_d_high`, and every filed composed
-#    demand reproduces exactly under that rule. Only an elimination with WIDTH can tell the two
-#    rules apart, and they are few enough to list rather than count here:
+# The zero fill is sound only inside the owed population
+#   The `coalesce(..., 0)` is sound only because composition/owed_remainder.sqlc is inner joined
+#   first. Inside that population an absent elimination means the composer looked and found no
+#   double counting, which is the number zero. Outside it the same absence means nobody looked,
+#   and filling it would put a claim in the checker the document declined to make. The population
+#   excludes a layer whose walk passes a node whose own sum is suspended, which is what keeps the
+#   carried terms numbers too.
 #
-#      SELECT composition, composed_layer, quantity
-#      FROM ( eliminations/filed ) WHERE high > low
+# A filed remainder that adds `e_d` straight
+#   Where a filed remainder adds `e_d` straight it sits one elimination-width below this figure,
+#   which is the right rule for an addition applied to an operand that crosses. Observation 13
+#   prints this relation beside the differenced one. Two figures in one document cannot both be
+#   right where an elimination has spread, and which of them moves is a filer's call rather than
+#   this relation's.
 #
-#    Every one is a demand and every one composes component-wise. A point elimination has no
-#    corners to choose between, so the rest of the corpus is silent by construction.
-#
-#    ⛔ THE CROSSING FOLLOWS THE OPERAND AND NOT THE SIGN IN FRONT OF IT. `r_low` pairs `n_low`
-#    with `d_HIGH`, and the composed demand at its high is `sum(d_high) - e_d_high`, so the
-#    elimination reaching `r_low` is `e_d` at ITS high. `e_n` is read straight, because `n` is
-#    not crossed in `r`.
-#
-#    ⚠️ WHERE A FILED REMAINDER ADDS `e_d` STRAIGHT IT SITS ONE ELIMINATION-WIDTH BELOW THIS
-#    FIGURE, which is the right rule for an addition applied to an operand that crosses.
-#    Observation 13 prints this relation beside the differenced one. Two figures in one document
-#    cannot both be right where an elimination has spread, and which of them moves is a filer's
-#    call rather than this relation's.
-#
-# ⚠️ IT TREATS `e_n` AND `e_d` AS INDEPENDENT OF EACH OTHER AND OF THE PARTS, WHICH IS AN
-#   ASSUMPTION AND NOT A DERIVATION. They are separately filed observations about different
-#   quantities, so nothing here says they move together. If a filer ever states that one double
-#   count generates both, this sum decorrelates them the way the composed totals decorrelate
-#   `phi`, and `pm:Coupling` is the element that would say so.
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/filed.sqlc.
-SELECT c.composition, c.composed_layer,
-       sum(c.r_low)  - coalesce(max(en.low),  0) - coalesce(max(cn.e_low),  0)
-         + CASE WHEN bool_or(c.spread_factor) AND sum(c.r_low) >= 0
-                THEN coalesce(max(ed.low),  0) + coalesce(max(cd.e_low),  0)
-                ELSE coalesce(max(ed.high), 0) + coalesce(max(cd.e_high), 0) END AS pivoted_low,
-       sum(c.r_mode) - coalesce(max(en.mode), 0) - coalesce(max(cn.e_mode), 0)
-                     + coalesce(max(ed.mode), 0) + coalesce(max(cd.e_mode), 0)   AS pivoted_mode,
-       sum(c.r_high) - coalesce(max(en.high), 0) - coalesce(max(cn.e_high), 0)
-         + CASE WHEN bool_or(c.spread_factor) AND sum(c.r_low) >= 0
-                THEN coalesce(max(ed.high), 0) + coalesce(max(cd.e_high), 0)
-                ELSE coalesce(max(ed.low),  0) + coalesce(max(cd.e_low),  0) END AS pivoted_high,
-       max(d.r_low)  AS derived_low,
-       max(d.r_mode) AS derived_mode,
-       max(d.r_high) AS derived_high,
-       max(d.derived_fit) AS derived_fit,
-       max(d.unit)   AS unit,
-       count(*)      AS parts
-FROM      (
-    :compose(composition/settled_remainders.sqlc)
-) c
-JOIN      (
-    :compose(composition/owed_remainder.sqlc)
-) o  ON o.filing = c.composition AND o.layer = c.composed_layer
-JOIN      (
-    :compose(layers/differenced_remainder.sqlc)
-) d  ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN (
-    :compose(eliminations/filed.sqlc)
-) en ON en.composition = c.composition AND en.composed_layer = c.composed_layer
-    AND en.quantity = 'nameplate'
-LEFT JOIN (
-    :compose(eliminations/filed.sqlc)
-) ed ON ed.composition = c.composition AND ed.composed_layer = c.composed_layer
-    AND ed.quantity = 'demand'
-LEFT JOIN (
-    :compose(composition/carried_eliminations.sqlc)
-) cn ON cn.composition = c.composition AND cn.composed_layer = c.composed_layer
-    AND cn.quantity = 'nameplate'
-LEFT JOIN (
-    :compose(composition/carried_eliminations.sqlc)
-) cd ON cd.composition = c.composition AND cd.composed_layer = c.composed_layer
-    AND cd.quantity = 'demand'
-GROUP BY c.composition, c.composed_layer
+# The two eliminations are not independent
+#   Each is read at the corner of `r` through the quantity it was counted in, so `e_n` and `e_d`
+#   move with the same scenario. Read as independent, as interval arithmetic with no correlation
+#   would, `both-views` comes out at a low of -840: a week in which the double-counted demand is at
+#   its least while the double-counted nameplate is at its most, which the filing's own figures do
+#   not admit. That independent reading is kept for one case only: where the paired reading
+#   inverts, it is the widest ordered claim the terms allow, and the pivot falls back to it.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+SELECT y.composition, y.composed_layer,
+       CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
+            THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
+       y.pivoted_mode,
+       CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
+            THEN y.paired_high ELSE y.r_high - y.n_low  + y.d_high END AS pivoted_high,
+       y.derived_low, y.derived_mode, y.derived_high, y.derived_fit, y.unit, y.parts, y.spread
+FROM (
+    SELECT x.*,
+           x.r_low  - x.n_at_low
+             + CASE WHEN x.spread AND x.r_low >= 0 THEN x.d_at_low  ELSE x.d_at_high END AS paired_low,
+           x.r_mode - x.n_mode + x.d_mode                                            AS pivoted_mode,
+           x.r_high - x.n_at_high
+             + CASE WHEN x.spread AND x.r_low >= 0 THEN x.d_at_high ELSE x.d_at_low  END AS paired_high,
+           least(x.n_at_low, x.n_at_high)    AS n_low,
+           greatest(x.n_at_low, x.n_at_high) AS n_high,
+           least(x.d_at_low, x.d_at_high)    AS d_low,
+           greatest(x.d_at_low, x.d_at_high) AS d_high
+    FROM (
+        SELECT c.composition, c.composed_layer,
+               sum(c.r_low)  AS r_low,
+               sum(c.r_mode) AS r_mode,
+               sum(c.r_high) AS r_high,
+               bool_or(c.spread_factor) AS spread,
+               coalesce(max(e.n_at_low),  0) + coalesce(max(k.n_low),  0) AS n_at_low,
+               coalesce(max(e.n_mode),    0) + coalesce(max(k.n_mode), 0) AS n_mode,
+               coalesce(max(e.n_at_high), 0) + coalesce(max(k.n_high), 0) AS n_at_high,
+               coalesce(max(e.d_at_low),  0) + coalesce(max(k.d_low),  0) AS d_at_low,
+               coalesce(max(e.d_mode),    0) + coalesce(max(k.d_mode), 0) AS d_mode,
+               coalesce(max(e.d_at_high), 0) + coalesce(max(k.d_high), 0) AS d_at_high,
+               max(d.r_low)  AS derived_low,
+               max(d.r_mode) AS derived_mode,
+               max(d.r_high) AS derived_high,
+               max(d.derived_fit) AS derived_fit,
+               max(d.unit)   AS unit,
+               count(*)      AS parts
+        FROM      (
+            :compose(composition/settled_remainders.sqlc)
+        ) c
+        JOIN      (
+            :compose(composition/owed_remainder.sqlc)
+        ) o  ON o.filing = c.composition AND o.layer = c.composed_layer
+        JOIN      (
+            :compose(layers/differenced_remainder.sqlc)
+        ) d  ON d.filing = c.composition AND d.layer = c.composed_layer
+        LEFT JOIN (
+            SELECT p.composition, p.composed_layer,
+                   max(p.at_low)  FILTER (WHERE p.quantity = 'nameplate') AS n_at_low,
+                   max(p.mode)    FILTER (WHERE p.quantity = 'nameplate') AS n_mode,
+                   max(p.at_high) FILTER (WHERE p.quantity = 'nameplate') AS n_at_high,
+                   max(p.at_low)  FILTER (WHERE p.quantity = 'demand')    AS d_at_low,
+                   max(p.mode)    FILTER (WHERE p.quantity = 'demand')    AS d_mode,
+                   max(p.at_high) FILTER (WHERE p.quantity = 'demand')    AS d_at_high
+            FROM (
+                :compose(eliminations/paired.sqlc)
+            ) p
+            GROUP BY p.composition, p.composed_layer
+        ) e ON e.composition = c.composition AND e.composed_layer = c.composed_layer
+        LEFT JOIN (
+            SELECT w.composition, w.composed_layer,
+                   max(w.e_low)  FILTER (WHERE w.quantity = 'nameplate') AS n_low,
+                   max(w.e_mode) FILTER (WHERE w.quantity = 'nameplate') AS n_mode,
+                   max(w.e_high) FILTER (WHERE w.quantity = 'nameplate') AS n_high,
+                   max(w.e_low)  FILTER (WHERE w.quantity = 'demand')    AS d_low,
+                   max(w.e_mode) FILTER (WHERE w.quantity = 'demand')    AS d_mode,
+                   max(w.e_high) FILTER (WHERE w.quantity = 'demand')    AS d_high
+            FROM (
+                :compose(composition/carried_eliminations.sqlc)
+            ) w
+            GROUP BY w.composition, w.composed_layer
+        ) k ON k.composition = c.composition AND k.composed_layer = c.composed_layer
+        GROUP BY c.composition, c.composed_layer
+    ) x
+) y

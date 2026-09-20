@@ -1,0 +1,95 @@
+# The licence units/conversions.sqlc takes when it reads the conversion graph off one quantity.
+# Two rows, because a slice stands in for the whole relation on two conditions and not one.
+#
+# A pin is the whole relation on two conditions
+#   Pinning one value of a column and dropping the column answers for the whole relation exactly
+#   when the payload is CONSTANT on the key, so there is one answer to give, and the pinned value
+#   REACHES every key, so no key is dropped on the way. Either one alone passes while the other
+#   fails. `src/proofs/README.md`, entry `pin_is_the_whole_relation`, proves the pair and gives a
+#   counterexample to each half. The two subjects here are those two conditions, measured over the
+#   two relations they live in: layers/quantities.sqlc for the unit, composition/part_quantities.sqlc
+#   for the reach.
+#
+# A unit belongs to a claim, not to a layer
+#   `pm.claim.unit` is filed per position, so nothing in the schema stops a layer from filing its
+#   demand in one unit and its nameplate in another. arithmetic/remainder.sqlc already carries a
+#   `not comparable` verdict for exactly that layer, so the model not only permits it, it has a
+#   word for it. This corpus does not do it, and units/conversions.sqlc pins
+#   `quantity = 'nameplate'` on the strength of that.
+#
+# Which makes the pin a claim about the corpus, and this is where the claim is made
+#   The pin's own header stated the query and said to run it. Nothing ran it. units/conversions.sqlc
+#   feeds checks/conversion_cycle_does_not_close, so the day a layer files two units that rule and
+#   the whole unit graph read one quantity of five and say nothing about the other four, and they
+#   say it in the shape of a clean answer.
+#
+# A functional dependency, which is why it is `|π(layer, unit)| = |π(layer)|`
+#   The claim is that `(filing, layer) → unit` is a function on layers/quantities.sqlc. Counting
+#   the distinct units per layer is the same statement and is what the SQL does, because the count
+#   names the offending layers on its way past and an equality of two projections does not.
+#
+# An absent unit is not a disagreement
+#   A quantity filed with no unit makes no claim about units, and `count(DISTINCT unit)` passes
+#   over a NULL, so such a row is counted out rather than counted against. That is the reading the
+#   pin needs: it converts between two units that were both stated.
+#
+# The second subject: a part the pin never sees is an edge the unit graph does not have
+#   units/conversions.sqlc draws one edge per part with a STATED factor, read at the nameplate. A
+#   part whose layers file a demand and no nameplate is a legitimate filing and contributes no
+#   edge, so checks/conversion_cycle_does_not_close would walk a graph missing an arrow and find no
+#   cycle for the best of reasons. Nothing said so until this row: it counts the parts with a
+#   stated factor that never reach the pinned quantity.
+#
+# Its non-vacuity is a column, not a comment
+#   Every layer agreeing trivially is what an empty corpus, a corpus that states no units, and a
+#   working corpus all look like from the outside. The layers that file a quantity and the layers
+#   that state a unit are both inside `holds`, and so are the parts and the stated factors, so a
+#   population that stopped arriving fails here rather than passing quietly.
+#
+# Probe
+#   examples/probes runs it as `layer_units`, filing the nameplate in a unit of its own.
+-- layers/quantities.sqlc folded to one row per layer: how many units its quantities name.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'layers/quantities' AS subject,
+           count(*) > 0
+           AND count(*) FILTER (WHERE x.units > 0) > 0
+           AND count(*) FILTER (WHERE x.units > 1) = 0                               AS holds,
+           format('%s layer(s) file a quantity, %s state a unit, %s state more than one%s',
+                  count(*), count(*) FILTER (WHERE x.units > 0),
+                  count(*) FILTER (WHERE x.units > 1),
+                  coalesce(': ' || string_agg(x.filing || '/' || x.layer, ', '
+                                              ORDER BY x.filing, x.layer)
+                                   FILTER (WHERE x.units > 1), ''))                  AS detail
+    FROM (
+        SELECT q.filing, q.layer, count(DISTINCT q.unit) AS units
+        FROM      (
+            :compose(layers/quantities.sqlc)
+        ) q
+        GROUP BY q.filing, q.layer
+    ) x
+    UNION ALL
+    SELECT 'composition/part_quantities',
+           count(*) > 0
+           AND count(*) FILTER (WHERE y.stated) > 0
+           AND count(*) FILTER (WHERE y.stated AND NOT y.at_the_pin) = 0            AS holds,
+           format('%s part(s), %s with a stated factor, %s of those file no nameplate%s',
+                  count(*), count(*) FILTER (WHERE y.stated),
+                  count(*) FILTER (WHERE y.stated AND NOT y.at_the_pin),
+                  coalesce(': ' || string_agg(y.composition || '/' || y.part_layer, ', '
+                                              ORDER BY y.composition, y.part_layer)
+                                   FILTER (WHERE y.stated AND NOT y.at_the_pin), ''))
+    FROM (
+        SELECT r.composition, r.composed_layer, r.part_filing, r.part_layer,
+               bool_or(r.factor_state = 'stated')  AS stated,
+               bool_or(r.quantity = 'nameplate')   AS at_the_pin
+        FROM      (
+            :compose(composition/part_quantities.sqlc)
+        ) r
+        GROUP BY r.composition, r.composed_layer, r.part_filing, r.part_layer
+    ) y
+) p ON true
+WHERE a.slug = 'layer_units'

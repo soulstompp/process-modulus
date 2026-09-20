@@ -1,29 +1,60 @@
-# THE GRAPHS THIS MODEL COMPOSES, AS THE LANE SETS OF ONE POOL. One row per graph: what its nodes
+# The graphs this model composes, as the lane sets of one pool. One row per graph: what its nodes
 # are, what its edges are, and what a cycle in it means.
 #
-# ⭐⭐⭐ A `VALUES` LITERAL, BECAUSE IT IS A CONTRACT. Derived from the tree it could never report
-#    that a graph has nothing behind it, and the claimant row is exactly that case: it is declared
-#    here and supplies no edges at all, which is the finding rather than an omission.
+# A `VALUES` literal, because it is a contract
+#   Derived from the tree it could never report that a graph has nothing behind it, and the
+#   claimant row is exactly that case: it is declared here and supplies no edges at all, which is
+#   the finding rather than an omission.
 #
-# ⭐⭐ THEY ARE THREE LANE SETS AND NOT THREE LANES, AND THE DIFFERENCE IS MEASURED. A `laneSet` is
-#    a partition claimed exhaustive, so three LANES would put every composition in exactly one.
-#    169 of 220 compositions touch more than one graph: a relation reading a part AND its factor is
-#    in the layer graph and the unit graph, and that is what a factor IS. BPMN permits several lane
-#    sets over one process for exactly this reason.
+# Three lane sets, not three lanes
+#   A `laneSet` is a partition claimed exhaustive, so three lanes would put every composition in
+#   exactly one, and most compositions touch more than one graph: a relation reading a part and its
+#   factor is in the layer graph and the unit graph, and that is what a factor is. BPMN permits
+#   several lane sets over one process for exactly this reason.
 #
-# ⛔ AND THREE LANE SETS CANNOT ALL BE THE CONTAINMENT. An inclusion tree gives each node ONE
-#   parent, so only one of these can be the nesting a diagram draws; the others need showing some
-#   other way. That is why `examples/diagramming/main.rs` takes the graph as a SLOT rather than picking
-#   one silently, and why a caller that names none does not run.
+# Only one can be the containment
+#   An inclusion tree gives each node one parent, so only one of these can be the nesting a diagram
+#   draws; the others need showing some other way. That is why `examples/diagramming/main.rs`
+#   takes the graph as a slot rather than picking one silently, and why a caller that names none
+#   does not run.
+
+# ⛔ `cycle_sense` exists because the word has four referents in this tree
+#   This relation asks one question, "what does a cycle in it mean", of three graphs, and without
+#   this column it was answered in two different senses. The four are set out in
+#   `composition/descent.sqlc`'s header: undirected, which is a SUBSPACE at dimension `m - n + c`;
+#   directed, which is a PARTITION of the nodes into the classes of `F+ ∩ (F+)ᵀ`; a duty cycle,
+#   which is a RATIO and not a graph object at all; and the loop you can walk, which is what the
+#   other three compose to. A column that does not say which is not comparable across its own
+#   rows, which is the only thing a three-row contract read by one emitter is for.
+#
+# The layer row answers the UNDIRECTED sense, and it used to answer the directed one
+#   Both are true of the layer graph and they are not interchangeable. `checks/layers_move_together`
+#   rules on the directed sense, the classes of mutual reachability. `checks/jagged_layer` is what
+#   holds the UNDIRECTED dimension at zero, which `algebra/cycle_space` states as
+#   `dim ker B = 0 ⟺ |jagged| = 0` and `examples/graphs/main.rs` asserts on every run. A diamond
+#   separates them: it is acyclic as a digraph, so nothing is mutually reachable and
+#   `layers_move_together` finds nothing, while its cycle space is `4 - 4 + 1 = 1` and
+#   `jagged_layer` accuses. ⛔ This column answers the undirected sense because that is the one the
+#   drawing itself carries: `examples/diagramming/main.rs` computes the emitted call graph's
+#   `m - n + c` and holds it against the model's.
+#
+# `governed_by` is now checked against what actually holds the dimension
+#   It used to have to RESOLVE and nothing more, so a graph could cite any relation in the tree
+#   and the emitter would carry the citation into a reader's document. `examples/graphs/main.rs`
+#   now holds each graph to the rule it uses itself.
 -- the three graphs this model composes, as data an emitter chooses between.
 SELECT * FROM (VALUES
   ('layers',    'a layer, keyed (filing, layer)', 'a part: F : layer -> layer',
-                'a MISFILED PARTITION. The cells were one cell',              'checks/layers_move_together'),
+                'undirected',
+                'a leaf reached down two branches of one fold, which is a double count rather than a partition',
+                                                                              'checks/jagged_layer'),
   ('units',     'a unit',                          'a conversion: phi : unit -> unit',
-                'EXPECTED, and required to CLOSE: the weights on it must vanish, so a potential exists',
+                'undirected',
+                'expected, and required to close: the weights on it must vanish, so a potential exists',
                                                                               'checks/conversion_cycle_does_not_close'),
   ('claimants', 'a claimant: software, an agent, a role, a person',
-                '⛔ delegation, and NOTHING FILES IT',
+                'delegation, and nothing files it',
+                'directed',
                 'unknown. Not "nobody is accountable": mutual signing authority is a legitimate cycle',
                                                                               NULL)
-) AS g(graph, node_is, edge_is, a_cycle_is, governed_by)
+) AS g(graph, node_is, edge_is, cycle_sense, a_cycle_is, governed_by)

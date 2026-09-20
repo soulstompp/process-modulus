@@ -1,0 +1,54 @@
+# The fusion side of `F Phi`, where the model has arranged for there to be nothing. One row per
+# composition: the fusions it declares, how many of them are a row of the matrix, the rank that
+# follows, and the dimension of the left null space.
+#
+# Two subspaces, and one number decides both
+#   The rows of `F Phi` have disjoint supports and none of them is zero, so they are independent
+#   and the rank is simply how many rows there are. The column space is then the whole of the
+#   space the declared fusions span exactly when every declared fusion IS a row, and the left null
+#   space is the rest. So `rank` and `left_null` are not two measurements, they are one count read
+#   from each end, and `declared = rank + left_null` is the statement that they partition.
+#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+#
+# What a non-zero left null space would mean
+#   A vector in it is a combination of composed figures that no assignment to the parts can
+#   produce. In this model that is not a subtle condition: it is a declared fusion with no column
+#   under it at all, so its figure is owed by a sum over an empty set. `asrt:Fusion/part` is
+#   `minOccurs="1"`, so the filing cannot say it directly, and the state is reached the other way,
+#   through a part whose filing this corpus does not hold.
+#
+# Which is why the count here is of RESOLVED parts and the other law's is not
+#   `algebra/fusions_have_parts.sqlc` drives from the references a composer FILED, and it is right
+#   to: whether a fusion named a part is a question about the document, and the answer does not
+#   depend on what else was loaded. This relation asks the matrix's question instead, and a
+#   reference to a filing nobody has is no column. So the two can part company, and the set where
+#   they do is `composition/unresolved_parts.sqlc`. Neither is the other's check.
+#
+# Refused rather than corrected, which is the same shape as the cycle space
+#   `checks/unresolved_part.sqlc` accuses a part that does not resolve, so a conforming corpus has
+#   no such part and this dimension is zero in every conforming document. That is not the
+#   arithmetic coming out flat, it is a rule holding it there, and the layer graph's cycle space
+#   is zero for exactly the same kind of reason. Both are laws that would have something to report
+#   if a rule were removed.
+#
+# Per composition, because that is who is answerable
+#   A composition is one filer's claim, so a fusion missing its columns is that filer's document
+#   to repair even when the missing filing is somebody else's. Reporting one number for the corpus
+#   would name nobody.
+#
+# Probe
+#   `algebra/composition_image.sqlc` holds `left_null = 0` with the declared count as its floor.
+#   In a rolled-back transaction, delete the layer a part names and this relation must show one
+#   dimension on that composition and nowhere else.
+-- composition/fusions.sqlc against the fusions that are a row of F Phi.
+SELECT f.filing                                         AS composition,
+       count(*)                                         AS declared,
+       count(k.composition)                             AS rank,
+       count(*) - count(k.composition)                  AS left_null
+FROM      (
+    :compose(composition/fusions.sqlc)
+) f
+LEFT JOIN (
+    :compose(rank/composition_kernel.sqlc)
+) k ON k.composition = f.filing AND k.composed_layer = f.layer
+GROUP BY f.filing

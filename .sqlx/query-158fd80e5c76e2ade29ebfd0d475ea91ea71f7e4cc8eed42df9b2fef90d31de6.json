@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §2  The operations that both draw and induce, the entries `D-transpose N` would have.\n-- entries/cross_layer_edges.sqlc, the join on the shared (filing, operation) index.\nSELECT x.operation        AS \"operation!\",\n       x.drawn_from       AS \"drawn!\",\n       x.drawn::float8    AS d_val,\n       x.commits          AS \"commits!\",\n       x.committed::float8 AS n_val\nFROM (\n    SELECT * FROM entries.cross_layer_edges\n) x\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "operation!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "entries.cross_layer_edges",
+            "name": "operation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "drawn!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "entries.cross_layer_edges",
+            "name": "drawn_from"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "d_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "commits!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "entries.cross_layer_edges",
+            "name": "commits"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "n_val",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      true,
+      null
+    ]
+  },
+  "hash": "158fd80e5c76e2ade29ebfd0d475ea91ea71f7e4cc8eed42df9b2fef90d31de6"
+}

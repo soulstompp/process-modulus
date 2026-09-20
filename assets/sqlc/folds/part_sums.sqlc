@@ -1,0 +1,25 @@
+# Every fusion's converted parts, summed per quantity. One row per (composed layer, quantity)
+# composition/converted.sqlc has a part for: the three points summed, and how many parts were.
+#
+# The parts into their fusion, weighted
+#   composition/converted.sqlc is one row per part and quantity with the part's figure in the
+#   composed layer's unit. Summed per fusion and quantity it is `F Φ x` for that quantity, the side
+#   of a fusion's sum that comes from its parts. It is a fold over a bag with `+`, so every part is
+#   counted as many times as it appears, which is what a sum owes: a layer reached by two parts is
+#   in the sum twice, and the elimination is what takes the second one back out.
+#
+# Readers compose this, not the parts
+#   eliminations/paired.sqlc reads it to decide whether an elimination is wider than the sum it is
+#   taken from, and composition/fused.sqlc to compare the sum with the figure the composer filed.
+#   Each then meets it one row per key, so neither regroups what is summed here.
+#   algebra/fusion_sum.sqlc recomputes the sum from its own route and stays independent of this.
+-- composition/converted.sqlc folded to one row per composed layer and quantity.
+SELECT c.composition, c.composed_layer, c.quantity,
+       sum(c.low)  AS sum_low,
+       sum(c.mode) AS sum_mode,
+       sum(c.high) AS sum_high,
+       count(*)    AS parts
+FROM (
+    :compose(composition/converted.sqlc)
+) c
+GROUP BY c.composition, c.composed_layer, c.quantity

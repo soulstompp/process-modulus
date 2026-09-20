@@ -195,7 +195,7 @@ fn emit_lane(
     //   rank should have been. An invented id is stable for nobody: it renumbers when the file is
     //   re-emitted, so an annotation or a stylesheet written against it silently moves.
     // ⛔⛔ THE MARK IS ON `violated` AND NEVER ON A BAND OF `examined`. A threshold would be
-    //   this stage inventing the number `rank/layer_cover.sqlc` explicitly refuses to state:
+    //   this stage inventing the number `rank/layer_reach.sqlc` explicitly refuses to state:
     //   a layer under few rules is not a defect, it is a layer few questions reach. A rule
     //   SAYING NO is a fact, so it is the only thing that gets ink.
     let box_class = if l.violated.unwrap_or(0) > 0 { "laneBox refuted" } else { "laneBox" };
@@ -233,7 +233,7 @@ fn emit_lane(
         writeln!(body, r#"    <text id="{}-rank" x="{}" y="{}" class="rankName" text-anchor="end">rank {}</text>"#,
                  esc(&l.id), x + w - 8, y + 16, r)?;
     }
-    // ⭐ THE COUNT AS A NUMBER AND NOT AS A SHADE. `rank/layer_cover.sqlc` states outright that
+    // ⭐ THE COUNT AS A NUMBER AND NOT AS A SHADE. `rank/layer_reach.sqlc` states outright that
     //   there is no threshold at which a layer is under-checked, so a band would be ink asserting
     //   what the relation declines to say. A reader comparing 6 against 19 across the page is
     //   doing the comparison the number supports.
@@ -596,7 +596,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // ⭐ The height follows the content: a lane with three nodes is taller than one with none.
         //   Nothing is dropped to make the picture fit, which is the one thing a renderer must
-        //   never do here. `planner.md` transfers: do not pre-digest the diagram.
+        //   never do here. Do not pre-digest the diagram.
         let mut y = 46;
         let mut body = String::new();
         // ⭐⭐⭐ THE OUTERMOST GROUP IS THE CONTAINMENT AND NEVER THE RANK. The rank can hold
@@ -700,8 +700,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //    lanes, so as a caption it rendered as a word floating over nothing, indistinguishable
         //    from a diagram that failed to draw. As a band it is the correct glyph for free, and
         //    an empty pool is the notation SAYING that the contents are withheld.
-        // ⭐ THE PAGE GROWS FOR THE LEGEND RATHER THAN THE LEGEND BEING TRIMMED TO FIT. `planner.md`
-        //   transfers: do not pre-digest the diagram, and a note dropped to make a picture tidy is
+        // ⭐ THE PAGE GROWS FOR THE LEGEND RATHER THAN THE LEGEND BEING TRIMMED TO FIT. Do not
+        //   pre-digest the diagram: a note dropped to make a picture tidy is
         //   the one thing a renderer here must never do.
         // ⭐⭐ TWO LINES PER NOTE, BECAUSE A NOTE NOW CARRIES A SENTENCE AND ITS SOURCE. Set on
         //   one line the longest of them runs past the page: 151 characters at 11px is about 830
@@ -1369,12 +1369,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ⭐⭐ WHAT THIS ROSTER IS FOR, THEN: a fourth kind cannot join the three without somebody
     //    saying so, and the shortfall is a printed figure rather than something an outside
     //    reader has to find. Closed both ways, like the two rosters above.
-    //    docs/plans/FINDINGS-2026-09-10.
     // ------------------------------------------------------------------
-    // ⚠️ AND THE MARK COUNT IS NOT THE ELEMENT COUNT, WHICH IS THIS SESSION'S OWN LESSON ARRIVING
-    //   HERE. One legend bracket holds every annotation in its document, so `noteBox` is 15 marks
-    //   over 35 `textAnnotation` elements. Reporting 15 would read as fifteen annotations. Each
-    //   row carries the element it stands for and both numbers are printed.
+    // ⚠️ AND THE MARK COUNT IS NOT THE ELEMENT COUNT, WHICH IS THE GRAIN LESSON ARRIVING HERE.
+    //   One legend bracket holds every annotation in its document, so `noteBox` draws one mark per
+    //   document over far more `textAnnotation` elements. Reporting the mark count alone would
+    //   read as that many annotations. Each row carries the element it stands for and both numbers are
+    //   printed, so take them from the output rather than from this comment.
     let geometry: &[(&str, &str, &str, &str)] = &[
         ("poolBox",  "participant",    "read",    "bpmndi:BPMNShape for the participant"),
         ("laneBox",  "lane",           "read",    "bpmndi:BPMNShape for the lane"),
@@ -1693,19 +1693,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         //   is emitted once per graph and its opening words come from `diagrams/graphs.sqlc`, so
         //   a needle taken from the layer graph's wording would leave a fourth graph's sentence
         //   unclaimed the day one is added. The semicolon clause is the emitter's own.
-        ("; a cycle here is ",     "unseen",  "⛔ what a cycle MEANS in the graph this document draws, and the rule that judges one, which is the sentence separating a misfiled partition from a conversion that is required to close"),
+        ("; a cycle here is ",     "unseen",  "⛔ what a cycle MEANS in the graph this document draws, IN WHICH SENSE of a word with four of them, and the rule that judges one, which is the sentence separating a double count from a conversion that is required to close"),
         // ⭐⭐⭐ THE ONLY USE ON THIS ROSTER THAT IS ABOUT WHAT COULD CONTRADICT THE DRAWING
         //   RATHER THAN ABOUT WHAT IT SHOWS. Every other sentence here states a filed fact; this
         //   one states how many of this repository's rules can speak about that layer, so the
         //   picture carries its own refutability. ⛔ It is `drawn` and the `b == v` arm holds it
         //   to one mark per fact, because a coverage number that reaches half the boxes is worse
         //   than one that reaches none: a reader compares what is on the page.
-        ("refutable by ",          "drawn",   "⭐ how many rules can say anything about this layer, and how many of them say no. The count is ink and the THRESHOLD is not: `rank/layer_cover.sqlc` refuses to name an N below which a layer is under-checked, so a shaded band would be this stage asserting what the relation declines to"),
+        ("refutable by ",          "drawn",   "⭐ how many rules can say anything about this layer, and how many of them say no. The count is ink and the THRESHOLD is not: `rank/layer_reach.sqlc` refuses to name an N below which a layer is under-checked, so a shaded band would be this stage asserting what the relation declines to"),
     ];
     // ⛔⛔⛔ COUNT THE FACT, NOT THE SUBSTRING, AND THIS ROSTER DID THE SECOND WHILE SAYING THE
     //   FIRST. `bpmn_all.matches("rank ")` returned 153 over 51 lanes, because the sentence a
     //   lane carries says the word three times, and the summary underneath called that number
-    //   *documentation facts*. The skill's own rule, one line long: COUNT THE ARTIFACT AS WHAT
+    //   *documentation facts*. The rule, one line long: COUNT THE ARTIFACT AS WHAT
     //   IT IS. A `documentation` element is one fact whatever its prose repeats, so parse the
     //   elements and attribute each body once.
     // ⚠️ It is also why a raw scan is unsafe here at all: every SVG carries a provenance comment

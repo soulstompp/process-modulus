@@ -1,16 +1,434 @@
--- §1  Every set-algebraic law this tree claims, and whether it holds.
-#
-# ONE ROW PER (LAW, SUBJECT). The cardinalities that decide each law are in `detail`, so a reader
+-- §1  Every law this tree claims, and whether it holds.
+# One row per (law, subject). The cardinalities or figures that decide each law are in `detail`, so a reader
 # can see the arithmetic rather than take the boolean on trust.
 #
-# ⭐⭐ A LAW WITH NO SUBJECTS REPORTS ⛔ VACUOUS RATHER THAN VANISHING, which is why every law
-# joins algebra/roster.sqlc before its population, the same reason checks/ does.
+# A law with no subjects reports `VACUOUS`
+#   Rather than vanishing, which is why every law joins algebra/roster.sqlc before its
+#   population, the same reason checks/ does.
+# Its vocabulary is computed once
+#   Every relation below is read many times over in what follows, and Postgres expands a view once
+#   per reference, so the planner was building thousands of copies of the same few relations. This
+#   statement was within a few levels of the depth `examples/probes` refuses to read a plan past,
+#   and took tens of gigabytes to plan. Defined here, each is computed once: `examples/probes`
+#   prints the depth and what is left of the ceiling. ⭐ The rows are identical and the plan is
+#   deliberately not, which is the one place in this tree where that is the intention.
+#
 -- algebra/all.sqlc, as the example reads it.
+WITH
+algebra_roster AS MATERIALIZED (
+    :define(algebra/roster.sqlc)
+),
+arithmetic_roster AS MATERIALIZED (
+    :define(arithmetic/roster.sqlc)
+),
+fusions AS MATERIALIZED (
+    :define(composition/fusions.sqlc)
+),
+notations AS MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+unresolved_parts AS MATERIALIZED (
+    :define(composition/unresolved_parts.sqlc)
+),
+filed AS MATERIALIZED (
+    :define(eliminations/filed.sqlc)
+),
+searched AS MATERIALIZED (
+    :define(eliminations/searched.sqlc)
+),
+fusion_parts AS MATERIALIZED (
+    :define(folds/fusion_parts.sqlc)
+),
+summed_quantities AS MATERIALIZED (
+    :define(layers/summed_quantities.sqlc)
+),
+derived_quantities AS MATERIALIZED (
+    :define(composition/derived_quantities.sqlc)
+),
+resolved_quantities AS MATERIALIZED (
+    :define(composition/resolved_quantities.sqlc)
+),
+converted AS MATERIALIZED (
+    :define(composition/converted.sqlc)
+),
+fusion_quantities AS MATERIALIZED (
+    :define(composition/fusion_quantities.sqlc)
+),
+derived_fusions AS MATERIALIZED (
+    :define(composition/derived_fusions.sqlc)
+),
+unsized_conversions AS MATERIALIZED (
+    :define(composition/unsized_conversions.sqlc)
+),
+filed_grounds AS MATERIALIZED (
+    :define(composition/filed_grounds.sqlc)
+),
+unsettled AS MATERIALIZED (
+    :define(composition/unsettled.sqlc)
+),
+remainder_frontier AS MATERIALIZED (
+    :define(composition/remainder_frontier.sqlc)
+),
+passed_nodes AS MATERIALIZED (
+    :define(composition/passed_nodes.sqlc)
+),
+suspended_remainders AS MATERIALIZED (
+    :define(composition/suspended_remainders.sqlc)
+),
+figureless_remainders AS MATERIALIZED (
+    :define(composition/figureless_remainders.sqlc)
+),
+owed_remainder AS MATERIALIZED (
+    :define(composition/owed_remainder.sqlc)
+),
+demand AS MATERIALIZED (
+    :define(layers/demand.sqlc)
+),
+layers_nameplate AS MATERIALIZED (
+    :define(layers/nameplate.sqlc)
+),
+figures AS MATERIALIZED (
+    :define(layers/figures.sqlc)
+),
+filed_remainders AS MATERIALIZED (
+    :define(layers/filed_remainders.sqlc)
+),
+differenced_remainder AS MATERIALIZED (
+    :define(layers/differenced_remainder.sqlc)
+),
+settled_remainders AS MATERIALIZED (
+    :define(composition/settled_remainders.sqlc)
+),
+part_sums AS MATERIALIZED (
+    :define(folds/part_sums.sqlc)
+),
+paired AS MATERIALIZED (
+    :define(eliminations/paired.sqlc)
+),
+fused_remainders AS MATERIALIZED (
+    :define(composition/fused_remainders.sqlc)
+),
+suspension_grounds AS MATERIALIZED (
+    :define(composition/suspension_grounds.sqlc)
+),
+suspended_fusions AS MATERIALIZED (
+    :define(composition/suspended_fusions.sqlc)
+),
+suspended_quantities AS MATERIALIZED (
+    :define(composition/suspended_quantities.sqlc)
+),
+owed_equality AS MATERIALIZED (
+    :define(composition/owed_equality.sqlc)
+),
+slacks AS MATERIALIZED (
+    :define(entries/slacks.sqlc)
+),
+absorber AS MATERIALIZED (
+    :define(layers/absorber.sqlc)
+),
+absorbing_slack AS MATERIALIZED (
+    :define(entries/absorbing_slack.sqlc)
+),
+windows AS MATERIALIZED (
+    :define(layers/windows.sqlc)
+),
+derived_time_slacks AS MATERIALIZED (
+    :define(entries/derived_time_slacks.sqlc)
+),
+holders AS MATERIALIZED (
+    :define(entries/holders.sqlc)
+),
+holder_totals AS MATERIALIZED (
+    :define(entries/holder_totals.sqlc)
+),
+served_holders AS MATERIALIZED (
+    :define(entries/served_holders.sqlc)
+),
+unserved_holders AS MATERIALIZED (
+    :define(entries/unserved_holders.sqlc)
+),
+unserved_totals AS MATERIALIZED (
+    :define(entries/unserved_totals.sqlc)
+),
+served_totals AS MATERIALIZED (
+    :define(folds/served_totals.sqlc)
+),
+drawn AS MATERIALIZED (
+    :define(layers/drawn.sqlc)
+),
+remainder AS MATERIALIZED (
+    :define(layers/remainder.sqlc)
+),
+exposure_scope AS MATERIALIZED (
+    :define(layers/exposure_scope.sqlc)
+),
+filed_against_derived AS MATERIALIZED (
+    :define(layers/filed_against_derived.sqlc)
+),
+lumpy AS MATERIALIZED (
+    :define(layers/lumpy.sqlc)
+),
+pressed AS MATERIALIZED (
+    :define(layers/pressed.sqlc)
+),
+unabsorbed_exposure AS MATERIALIZED (
+    :define(layers/unabsorbed_exposure.sqlc)
+),
+arithmetic_all AS MATERIALIZED (
+    :define(arithmetic/all.sqlc)
+),
+checks_roster AS MATERIALIZED (
+    :define(checks/roster.sqlc)
+),
+quantities AS MATERIALIZED (
+    :define(layers/quantities.sqlc)
+),
+part_quantities AS MATERIALIZED (
+    :define(composition/part_quantities.sqlc)
+),
+carriable AS MATERIALIZED (
+    :define(composition/carriable.sqlc)
+),
+carried AS MATERIALIZED (
+    :define(composition/carried.sqlc)
+),
+composition_citations AS MATERIALIZED (
+    :define(composition/citations.sqlc)
+),
+composer_regimes AS MATERIALIZED (
+    :define(composition/composer_regimes.sqlc)
+),
+descent AS MATERIALIZED (
+    :define(composition/descent.sqlc)
+),
+fused AS MATERIALIZED (
+    :define(composition/fused.sqlc)
+),
+jagged_layers AS MATERIALIZED (
+    :define(composition/jagged_layers.sqlc)
+),
+regimes AS MATERIALIZED (
+    :define(composition/regimes.sqlc)
+),
+part_regimes AS MATERIALIZED (
+    :define(composition/part_regimes.sqlc)
+),
+couplings AS MATERIALIZED (
+    :define(entries/couplings.sqlc)
+),
+claims AS MATERIALIZED (
+    :define(epistemics/claims.sqlc)
+),
+claim_derivations AS MATERIALIZED (
+    :define(epistemics/claim_derivations.sqlc)
+),
+point_claims AS MATERIALIZED (
+    :define(epistemics/point_claims.sqlc)
+),
+identities_roster AS MATERIALIZED (
+    :define(identities/roster.sqlc)
+),
+denied_remainders AS MATERIALIZED (
+    :define(layers/denied_remainders.sqlc)
+),
+every_layer AS MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+),
+signed AS MATERIALIZED (
+    :define(layers/signed.sqlc)
+),
+conversions AS MATERIALIZED (
+    :define(units/conversions.sqlc)
+),
+with_a_period AS MATERIALIZED (
+    :define(units/with_a_period.sqlc)
+),
+jagged_layer AS MATERIALIZED (
+    :define(checks/jagged_layer.sqlc)
+),
+unresolved_part AS MATERIALIZED (
+    :define(checks/unresolved_part.sqlc)
+),
+checks_all AS MATERIALIZED (
+    :define(checks/all.sqlc)
+),
+fit_axes AS MATERIALIZED (
+    :define(checks/fit_axes.sqlc)
+),
+fit_domain AS MATERIALIZED (
+    :define(checks/fit_domain.sqlc)
+),
+composed_quantum AS MATERIALIZED (
+    :define(composition/composed_quantum.sqlc)
+),
+calls AS MATERIALIZED (
+    :define(diagrams/calls.sqlc)
+),
+catalogue AS MATERIALIZED (
+    :define(diagrams/catalogue.sqlc)
+),
+inductions AS MATERIALIZED (
+    :define(entries/inductions.sqlc)
+),
+categories AS MATERIALIZED (
+    :define(diagrams/categories.sqlc)
+),
+diagrams_citations AS MATERIALIZED (
+    :define(diagrams/citations.sqlc)
+),
+dependences AS MATERIALIZED (
+    :define(diagrams/dependences.sqlc)
+),
+descents AS MATERIALIZED (
+    :define(diagrams/descents.sqlc)
+),
+domain_objects AS MATERIALIZED (
+    :define(diagrams/domain_objects.sqlc)
+),
+foreign_calls AS MATERIALIZED (
+    :define(diagrams/foreign_calls.sqlc)
+),
+draws AS MATERIALIZED (
+    :define(entries/draws.sqlc)
+),
+lane_membership AS MATERIALIZED (
+    :define(diagrams/lane_membership.sqlc)
+),
+epistemics_scopes AS MATERIALIZED (
+    :define(epistemics/scopes.sqlc)
+),
+diagrams_scopes AS MATERIALIZED (
+    :define(diagrams/scopes.sqlc)
+),
+coupling_searches AS MATERIALIZED (
+    :define(epistemics/coupling_searches.sqlc)
+),
+diagrams_searches AS MATERIALIZED (
+    :define(diagrams/searches.sqlc)
+),
+legends AS MATERIALIZED (
+    :define(diagrams/legends.sqlc)
+),
+every_filing AS MATERIALIZED (
+    :define(scope/every_filing.sqlc)
+),
+documents AS MATERIALIZED (
+    :define(epistemics/documents.sqlc)
+),
+pools AS MATERIALIZED (
+    :define(diagrams/pools.sqlc)
+),
+eliminations_between AS MATERIALIZED (
+    :define(eliminations/between.sqlc)
+),
+eliminations_references AS MATERIALIZED (
+    :define(eliminations/references.sqlc)
+),
+resolved AS MATERIALIZED (
+    :define(eliminations/resolved.sqlc)
+),
+operations AS MATERIALIZED (
+    :define(entries/operations.sqlc)
+),
+notation_references AS MATERIALIZED (
+    :define(entries/notation_references.sqlc)
+),
+expected AS MATERIALIZED (
+    :define(diagrams/expected.sqlc)
+),
+diagrams_roster AS MATERIALIZED (
+    :define(diagrams/roster.sqlc)
+),
+spillovers AS MATERIALIZED (
+    :define(entries/spillovers.sqlc)
+),
+absence_columns AS MATERIALIZED (
+    :define(epistemics/absence_columns.sqlc)
+),
+absence_questions AS MATERIALIZED (
+    :define(epistemics/absence_questions.sqlc)
+),
+filed_absences AS MATERIALIZED (
+    :define(epistemics/filed_absences.sqlc)
+),
+filed_derivations AS MATERIALIZED (
+    :define(epistemics/filed_derivations.sqlc)
+),
+patience AS MATERIALIZED (
+    :define(layers/patience.sqlc)
+),
+absences AS MATERIALIZED (
+    :define(epistemics/absences.sqlc)
+),
+derivation_columns AS MATERIALIZED (
+    :define(epistemics/derivation_columns.sqlc)
+),
+epistemics_searches AS MATERIALIZED (
+    :define(epistemics/searches.sqlc)
+),
+absence_subjects AS MATERIALIZED (
+    :define(folds/absence_subjects.sqlc)
+),
+derivation_subjects AS MATERIALIZED (
+    :define(folds/derivation_subjects.sqlc)
+),
+diagram_law_subjects AS MATERIALIZED (
+    :define(folds/diagram_law_subjects.sqlc)
+),
+object_subjects AS MATERIALIZED (
+    :define(folds/object_subjects.sqlc)
+),
+rule_subjects AS MATERIALIZED (
+    :define(folds/rule_subjects.sqlc)
+),
+site_subjects AS MATERIALIZED (
+    :define(folds/site_subjects.sqlc)
+),
+decomposed AS MATERIALIZED (
+    :define(layers/decomposed.sqlc)
+),
+remainder_scope AS MATERIALIZED (
+    :define(layers/remainder_scope.sqlc)
+),
+compose_edges AS MATERIALIZED (
+    :define(rank/compose_edges.sqlc)
+),
+compose_measures AS MATERIALIZED (
+    :define(rank/compose_measures.sqlc)
+),
+graph_edges AS MATERIALIZED (
+    :define(rank/graph_edges.sqlc)
+),
+fit_coverage AS MATERIALIZED (
+    :define(reports/fit_coverage.sqlc)
+),
+graph_measures AS MATERIALIZED (
+    :define(rank/graph_measures.sqlc)
+),
+composition_kernel AS MATERIALIZED (
+    :define(rank/composition_kernel.sqlc)
+),
+composition_image AS MATERIALIZED (
+    :define(rank/composition_image.sqlc)
+),
+algebra_all AS MATERIALIZED (
+    :define(algebra/all.sqlc)
+)
 SELECT z.law                            AS "law!",
+       f.law                            AS "formula!",
        coalesce(z.subject, '')          AS "subject!",
        z.holds                          AS "holds",
        coalesce(z.detail, '')           AS "detail!"
 FROM (
     :compose(algebra/all.sqlc)
 ) z
+JOIN (
+    :compose(algebra/roster.sqlc)
+) f ON f.slug = z.law
 ORDER BY z.law, z.subject

@@ -1,16 +1,19 @@
-# EVERY TIME SLACK FILED AS `derived`, BESIDE WHETHER ITS WINDOW LICENSES THE DERIVATION. One
-# row per examined slack, `violates` where nothing licenses it.
+# Every time slack filed as a `clearance` derivation, beside whether its window licenses it. One row
+# per examined slack, `violates` where nothing licenses it.
 #
-# ⭐⭐ THE RULE: a derived time slack needs a window that permits the derivation. `q /
-#    clearance` spreads the spare evenly across the denominator; a stated window says it is
-#    concentrated instead, and `unmeasured` says nobody knows -- an assumption wearing a
-#    computation's clothes.
+# A derived slack needs a licensing window
+#   The rule: a derived time slack needs a window that permits the derivation. The slack is the
+#   clearance, and reading it as a wait, `q / clearance`, spreads the spare evenly across the
+#   denominator; a stated window says it is concentrated instead, and `unmeasured` says nobody
+#   knows: an assumption wearing a computation's clothes. Proof: `src/proofs/README.md`, entry
+#   `duty_cycle`.
 #
-# ⭐ THE CHECK IS AN ANTI-JOIN AGAINST layers/derivation_licensed.sqlc, which is the positive
-#   statement of the same thing and the one worth reading: exactly two REASONS license it,
-#   "it runs the whole period" and "the question has no denominator". Two answers, not
-#   two documents -- most layers in this corpus file one of them.
--- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against pm:Divisibility/pm:window.
+# An anti-join against the positive statement
+#   The check is an anti-join against layers/derivation_licensed.sqlc, which is the positive
+#   statement of the same thing and the one worth reading: exactly two reasons license it, "it
+#   runs the whole period" and "the question has no denominator". Two answers, not two
+#   documents; most layers in this corpus file one of them.
+-- pm:Layer/pm:timeSlack filed as a clearance derivation, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -18,7 +21,7 @@ FROM      (
 LEFT JOIN (
     SELECT d.filing, d.layer,
            lic.filing IS NULL AS violates,
-           format('timeSlack is `derived` and the window is %s',
+           format('timeSlack is the `clearance` and the window is %s',
                   coalesce(d.window_absent::text,
                            format('%s %s', d.window_low, d.window_unit))) AS detail
     FROM      (

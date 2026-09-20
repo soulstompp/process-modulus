@@ -34,7 +34,8 @@ use process_modulus::asrt::{
 };
 use process_modulus::pm;
 use process_modulus::pm::{
-    AbsenceReasonType, AbsenceType, LayerType, ProcessModulusElementType, StatedClaimType,
+    AbsenceReasonType, AbsenceType, IdentityType, LayerType, ProcessModulusElementType,
+    StatedEliminatedQuantityType, StatedSummedQuantityType,
 };
 use xsd_parser_types::quick_xml::{DeserializeSync, SliceReader};
 
@@ -69,6 +70,18 @@ fn partial() -> CompositionType {
     CompositionType::deserialize(&mut rd).expect("every-partial-elimination.xml parses")
 }
 
+fn inverting() -> CompositionType {
+    let xml = read("fixtures/every-inverting-elimination.xml");
+    let mut rd = SliceReader::new(&xml);
+    CompositionType::deserialize(&mut rd).expect("every-inverting-elimination.xml parses")
+}
+
+fn derived_elimination() -> CompositionType {
+    let xml = read("fixtures/every-derived-elimination.xml");
+    let mut rd = SliceReader::new(&xml);
+    CompositionType::deserialize(&mut rd).expect("every-derived-elimination.xml parses")
+}
+
 /// The URN a filing gives for itself — the S-28 repair, and the whole of local composition.
 fn notation(doc: &ProcessModulusElementType) -> Option<&str> {
     match &doc.notation {
@@ -92,10 +105,19 @@ fn fusion<'a>(c: &'a CompositionType, name: &str) -> &'a FusionType {
         .unwrap_or_else(|| panic!("no fusion `{name}`"))
 }
 
-fn triple(s: &StatedClaimType) -> Option<Triple> {
+/// A summed quantity's filed figure, or `None` where it is computed or typed absent.
+fn triple(s: &StatedSummedQuantityType) -> Option<Triple> {
     match s {
-        StatedClaimType::Claim(c) => Some((c.low, c.most_likely, c.high)),
-        StatedClaimType::Absent(_) => None,
+        StatedSummedQuantityType::Claim(c) => Some((c.low, c.most_likely, c.high)),
+        StatedSummedQuantityType::Derivation(_) | StatedSummedQuantityType::Absent(_) => None,
+    }
+}
+
+/// An eliminated quantity's filed figure, or `None` where it is computed or typed absent.
+fn eliminated(s: &StatedEliminatedQuantityType) -> Option<Triple> {
+    match s {
+        StatedEliminatedQuantityType::Claim(c) => Some((c.low, c.most_likely, c.high)),
+        StatedEliminatedQuantityType::Derivation(_) | StatedEliminatedQuantityType::Absent(_) => None,
     }
 }
 
@@ -132,6 +154,11 @@ fn elimination_absence(f: &FusionType) -> Option<&AbsenceType> {
 /// demand of `-360`. `EliminationAgainst`'s own annotation says why: *"an elimination that does
 /// not say which one it hits is an adjustment applied to whichever number the reader happened
 /// to be holding."* The reader here was this function.
+///
+/// The elimination is subtracted bound by bound unless that inverts, and then the crossed pairing
+/// is the sum: point parts with an elimination of width have no spread for the overlap to move
+/// with. `src/proofs/README.md`, entry `elimination_componentwise`, proves it, and
+/// `assets/fixtures/every-inverting-elimination.xml` files it.
 fn expected(
     c: &ProcessModulusElementType,
     f: &FusionType,
@@ -148,22 +175,32 @@ fn expected(
         let l = of(layer(c, &p.layer.filing.id));
         total = (total.0 + l.0, total.1 + l.1, total.2 + l.2);
     }
+    let mut removed = (0.0, 0.0, 0.0);
     for e in &f.eliminations.content {
         if let StatedEliminationsTypeContent::Elimination(e) = e {
             if e.against != against {
                 continue;
             }
             match &e.quantity {
-                StatedClaimType::Claim(q) => {
-                    total = (total.0 - q.low, total.1 - q.most_likely, total.2 - q.high)
+                StatedEliminatedQuantityType::Claim(q) => {
+                    removed = (removed.0 + q.low, removed.1 + q.most_likely, removed.2 + q.high)
                 }
                 // A zero elimination is `[0, 0, 0]` and lands in the arm above. There is no
-                // `none` spelling for it: `ClaimAbsenceReason` does not carry one.
-                StatedClaimType::Absent(_) => return None,
+                // `none` spelling for it: `ClaimAbsenceReason` does not carry one. A computed
+                // elimination suspends the sum as `eliminations/unsized.sqlc` does, because
+                // nothing here computes it.
+                StatedEliminatedQuantityType::Derivation(_) | StatedEliminatedQuantityType::Absent(_) => {
+                    return None
+                }
             }
         }
     }
-    Some(total)
+    let bound_by_bound = (total.0 - removed.0, total.1 - removed.1, total.2 - removed.2);
+    if bound_by_bound.0 <= bound_by_bound.1 && bound_by_bound.1 <= bound_by_bound.2 {
+        Some(bound_by_bound)
+    } else {
+        Some((total.0 - removed.2, total.1 - removed.1, total.2 - removed.0))
+    }
 }
 
 /// ⭐⭐⭐ THE TWO STATES `assets/corpus/` CANNOT REACH, AND THEY OWE DIFFERENT ARITHMETIC.
@@ -257,7 +294,7 @@ fn the_sum_rule_rejects_a_fusion_that_does_not_reconcile() {
         .iter_mut()
         .find(|l| l.name == "oven")
         .expect("oven");
-    if let StatedClaimType::Claim(d) = &mut l.demand.amount {
+    if let StatedSummedQuantityType::Claim(d) = &mut l.demand.amount {
         d.low += 100.0;
         d.most_likely += 100.0;
         d.high += 100.0;
@@ -334,16 +371,24 @@ fn the_same_figures_owe_different_arithmetic_under_a_different_search() {
 /// document is really in is "nobody has said", and `tests/state_coverage.rs` can only call
 /// that state Exercised if some document is in it. The comment still announces the file, so a
 /// human is never misled; the element declines to, so a machine is never made to guess.
+///
+/// The files are read from the directory rather than listed, so a fixture added beside the others
+/// is held to this without anybody remembering to name it here.
 #[test]
 fn every_fixture_declares_that_it_is_a_stipulation() {
-    for name in [
-        "every-absence.xml",
-        "every-elimination.xml",
-        "every-claimed.xml",
-        "every-local-part.xml",
-        "every-partial-elimination.xml",
-        "every-draft.xml",
-    ] {
+    let dir = format!("{}/assets/fixtures", env!("CARGO_MANIFEST_DIR"));
+    let mut names: Vec<String> = fs::read_dir(&dir)
+        .unwrap_or_else(|e| panic!("{dir}: {e}"))
+        .flatten()
+        .map(|e| e.file_name().to_string_lossy().into_owned())
+        .filter(|n| n.ends_with(".xml"))
+        .collect();
+    names.sort();
+    assert!(
+        names.iter().any(|n| n == "every-draft.xml"),
+        "the directory read found no `every-draft.xml`, so it read the wrong directory"
+    );
+    for name in &names {
         let body = read(&format!("fixtures/{name}"));
         assert!(
             body.contains("A STIPULATION, NOT A FILING"),
@@ -466,7 +511,7 @@ fn two_views_of_one_number_reconcile_under_the_unmodified_sum_rule() {
                 _ => None,
             })
             .unwrap_or_else(|| panic!("no {what} elimination"));
-        let removed = triple(&e.quantity).expect("sized");
+        let removed = eliminated(&e.quantity).expect("sized");
         assert!(
             close(removed, of(layer(stack, "as-filed"))),
             "the {what} elimination is {removed:?} and one whole view is {:?}. Removing less \
@@ -532,6 +577,103 @@ fn a_filing_that_declines_to_name_itself_cannot_be_a_part() {
 /// part. This fixture files SOME — 3 of a 10 — and the sum rule is the same rule, unmodified.
 /// The parts are fungible here exactly as they are at both ends, and `observed` says so in the
 /// document; nothing about the arithmetic decides that judgement.
+/// An elimination wider than the sum it corrects. Two point parts of 10 and a shared block of
+/// `[2, 3, 5]`: bound by bound that is `[18, 17, 15]`, which is not a claim, and the composed
+/// nameplate is filed as the crossed pairing `[15, 17, 18]`. The demand in the same fusion
+/// eliminates `[0, 0, 0]` and is still bound by bound, so both branches run on one fusion.
+#[test]
+fn an_elimination_wider_than_its_sum_reconciles_under_the_crossed_pairing() {
+    let c = inverting();
+    let f = fusion(&c, "shift-capacity");
+    let stack = &c.process_modulus;
+
+    let parts = ["team-a", "team-b"].map(|p| nameplate(layer(stack, p)));
+    assert!(
+        parts.iter().all(|p| p.0 == p.2),
+        "the inversion needs point parts, and this fixture files {parts:?}"
+    );
+    let sum = (parts[0].0 + parts[1].0, parts[0].1 + parts[1].1, parts[0].2 + parts[1].2);
+    assert!(close(sum, (20.0, 20.0, 20.0)));
+    let bound_by_bound = (sum.0 - 2.0, sum.1 - 3.0, sum.2 - 5.0);
+    assert!(
+        bound_by_bound.0 > bound_by_bound.2,
+        "{bound_by_bound:?} must invert, or this fixture exercises nothing new"
+    );
+
+    let computed = expected(stack, f, EliminationAgainstType::Nameplate, nameplate)
+        .expect("a sized elimination owes a sum");
+    assert!(close(computed, (15.0, 17.0, 18.0)));
+    assert!(close(nameplate(layer(stack, "shift-capacity")), computed));
+
+    let computed = expected(stack, f, EliminationAgainstType::Demand, demand)
+        .expect("a sized elimination owes a sum");
+    assert!(close(demand(layer(stack, "shift-capacity")), computed));
+}
+
+/// ⭐⭐⭐ THE THIRD ARM OF AN ELIMINATED QUANTITY, AND IT SUSPENDS THE SUM RATHER THAN SIZING IT.
+///
+/// `pm:StatedEliminatedQuantity` admits a claim, a typed absence and a DERIVATION, and `expected`
+/// above has carried the derivation branch since it was written. Nothing filed one, so that branch
+/// had never run: the grammar admitted the state, `pm.elimination.derivation` held a column for it,
+/// and both were answering to no document.
+///
+/// ⛔ WHAT IT COSTS IS THE POINT. `sharedParts` sums over the highest layers two or more of a
+/// fusion's parts reach, and these two reach no common layer, so there is nothing for it to compute.
+/// The nameplate sum is therefore not owed and the composed nameplate stands on the composer's word.
+/// The demand elimination in the same fusion is stated at zero, so that sum IS owed and is exact,
+/// and one fusion runs both outcomes at once.
+#[test]
+fn a_derived_elimination_suspends_its_sum_and_leaves_the_other_owed() {
+    let c = derived_elimination();
+    let f = fusion(&c, "crew-capacity");
+    let stack = &c.process_modulus;
+
+    let against_nameplate = f
+        .eliminations
+        .content
+        .iter()
+        .filter_map(|e| match e {
+            StatedEliminationsTypeContent::Elimination(e) => Some(e),
+            StatedEliminationsTypeContent::Absent(_) => None,
+        })
+        .find(|e| e.against == EliminationAgainstType::Nameplate)
+        .expect("this fixture files a nameplate elimination");
+    let derivation = match &against_nameplate.quantity {
+        StatedEliminatedQuantityType::Derivation(d) => d,
+        StatedEliminatedQuantityType::Claim(_) | StatedEliminatedQuantityType::Absent(_) => {
+            panic!("this fixture exists to file the DERIVATION arm; the other two are filed elsewhere")
+        }
+    };
+    assert_eq!(
+        derivation.identity,
+        IdentityType::SharedParts,
+        "the derivation must name the identity that would compute the overlap"
+    );
+
+    // The parts really do assert an unstated overlap: points summing to 20 against a filed 18.
+    let parts = ["crew-a", "crew-b"].map(|p| nameplate(layer(stack, p)));
+    assert!(parts.iter().all(|p| p.0 == p.2), "the parts are points, and this fixture needs them so");
+    let sum = parts[0].0 + parts[1].0;
+    let composed = nameplate(layer(stack, "crew-capacity"));
+    assert!(close(composed, (15.0, 17.0, 18.0)));
+    assert!(
+        composed.2 < sum,
+        "the composed nameplate must be less than the parts' sum, or nothing is being eliminated"
+    );
+
+    // ⛔ And no rule may hold the composer to it, because the correction was never sized.
+    assert!(
+        expected(stack, f, EliminationAgainstType::Nameplate, nameplate).is_none(),
+        "a derived elimination owes no sum: nothing here computes one, so a figure would be invented"
+    );
+
+    // The other quantity in the same fusion is owed, and it reconciles exactly.
+    let owed = expected(stack, f, EliminationAgainstType::Demand, demand)
+        .expect("a sized elimination owes a sum, and zero is sized");
+    assert!(close(owed, (11.0, 13.0, 15.0)));
+    assert!(close(demand(layer(stack, "crew-capacity")), owed));
+}
+
 #[test]
 fn a_partial_nameplate_elimination_reconciles_under_the_unmodified_sum_rule() {
     let c = partial();
@@ -572,7 +714,7 @@ fn a_partial_nameplate_elimination_reconciles_under_the_unmodified_sum_rule() {
             _ => None,
         })
         .expect("a nameplate elimination");
-    let removed = triple(&e.quantity).expect("sized");
+    let removed = eliminated(&e.quantity).expect("sized");
     for part_name in ["team-a", "team-b"] {
         let p = nameplate(layer(stack, part_name));
         assert!(

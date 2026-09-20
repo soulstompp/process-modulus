@@ -1,0 +1,24 @@
+# What each rule that reads the fit examined in every cell of its axis, beside what was declared.
+# One row per declared cell of checks/fit_domain.sqlc: the rule, its axis, the fit (NULL where
+# there is none on that axis), the declared standing, its reason, and the examined count.
+#
+# Driven from the declared cells
+#   Grouping the examined rows could only list the cells some row reached, and an open cell is
+#   exactly one nothing reached. So the declared cells drive and the rows are joined to them, and
+#   `count(o.layer)` gives an empty cell its zero.
+#
+# Read beside reports/coverage.sqlc
+#   Coverage says how much a rule examined. This says where along the fit it examined it, and which
+#   of the places it examined nothing are the rule's design and which are a document nobody filed.
+-- checks/fit_domain.sqlc against checks/fit_cells.sqlc.
+SELECT d.slug, a.axis, d.fit, d.standing, d.reason, count(o.layer) AS examined
+FROM      (
+    :compose(checks/fit_domain.sqlc)
+) d
+JOIN      (
+    :compose(checks/fit_axes.sqlc)
+) a ON a.slug = d.slug
+LEFT JOIN (
+    :compose(checks/fit_cells.sqlc)
+) o ON o.slug = d.slug AND o.fit IS NOT DISTINCT FROM d.fit
+GROUP BY d.slug, a.axis, d.fit, d.standing, d.reason

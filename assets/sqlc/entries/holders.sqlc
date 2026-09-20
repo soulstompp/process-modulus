@@ -1,18 +1,19 @@
-# H, THE HOLDER MATRIX: who bears the remainder, and how much of it. One row per
+# H, the holder matrix: who bears the remainder, and how much of it. One row per
 # (filing, layer, kind), which is the sparse form of an L x 5 matrix. No row means that
-# kind bears nothing -- or that nobody said. The two readings are not separated here, which
+# kind bears nothing, or that nobody said. The two readings are not separated here, which
 # is what `share_absent` is for.
 #
-# ⭐⭐ A DISTRIBUTION AND NOT A SELECTION. One remainder routinely lands on several parties
-#    at once: the firm books part of it, a counterparty absorbs part under contract, and a
-#    customer waits for the rest. A single "who absorbs this" column would have forced the
-#    filer to pick one, and picking one is the flattening the tall table refuses.
+# A distribution, not a selection
+#   One remainder routinely lands on several parties at once: the firm books part of it, a
+#   counterparty absorbs part under contract, and a customer waits for the rest. A single "who
+#   absorbs this" column would have forced the filer to pick one, and picking one is the
+#   flattening the tall table refuses.
 #
-# ⛔ `counterparty` IS THE ONLY KIND THAT NAMES A PARTY AND A DATE, because it is the only
-#   one whose bearer is a third party with an agreement behind it. The schema enforces both
-#   directions of that: no other kind may name one, and a counterparty must.
+# Only `counterparty` names a party and a date
+#   It is the only kind whose bearer is a third party with an agreement behind it. The schema
+#   enforces both directions of that: no other kind may name one, and a counterparty must.
 -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,
-       h.party, h.as_of
+       h.party, h.as_of, h.share_derivation
 FROM pm.holder h

@@ -1,0 +1,39 @@
+# The filed figures the example reads, against the sums that are not owed, checked as a partition
+# of every stated demand, nameplate and draw. One row: whether |stated| = |3b| +
+# |stated ⋉ suspended|.
+#
+# `kept` composes the subject
+#   `kept` composes the subject rather than re-deriving it, and that is the whole point of the
+#   law. Spell the anti-join out inline and it governs a copy of
+#   queries/matrices/3b-composed-quantities.sqlc: change that file's WHERE and this law still passes,
+#   which is the one failure a soundness contract cannot afford because it is invisible.
+#   algebra/owed_equality.sqlc composes composition/owed_equality.sqlc for the same reason.
+#
+# Why not `EXCEPT`
+#   The left operand is a set here, so this one could convert to `EXCEPT`, and must not. The
+#   query carries the figure's three points and the eliminations beside them, and `EXCEPT`
+#   returns only what both arms can spell. π does not distribute over ∖: project first and you
+#   subtract on fewer attributes. The anti-join is correct for payload, not merely habitual.
+-- layers/summed_quantities.sqlc partitioned by the query the roster names as this law's subject.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'queries/matrices/3b-composed-quantities' AS subject,
+           x.total = x.kept + x.removed AS holds,
+           format('%s stated figures = %s carried + %s suspended', x.total, x.kept, x.removed)
+               AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) d
+               WHERE d.low IS NOT NULL)                                              AS total,
+             (SELECT count(*) FROM ( :compose(queries/matrices/3b-composed-quantities.sqlc) ) k)
+                                                                                     AS kept,
+             (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) d
+               WHERE d.low IS NOT NULL
+                 AND EXISTS (SELECT 1 FROM ( :compose(composition/suspended_quantities.sqlc) ) s
+                              WHERE s.composition = d.filing AND s.composed_layer = d.layer
+                                AND s.quantity = d.quantity)) AS removed
+         ) x
+) p ON true
+WHERE a.slug = 'composed_quantities'

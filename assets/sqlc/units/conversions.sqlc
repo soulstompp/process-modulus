@@ -1,59 +1,66 @@
-# EVERY CONVERSION THE CORPUS FILES, AS AN EDGE BETWEEN TWO UNITS. One row per fusion part that
-# carries a factor: the unit it converts FROM, the unit it converts TO, and the three bounds.
+# Every conversion the corpus files, as an edge between two units. One row per fusion part that
+# carries a factor: the unit it converts from, the unit it converts to, and the three bounds.
 #
-# ⭐⭐⭐ THE ENDPOINTS ARE FILED FACTS AND NOTHING HERE PARSES A UNIT STRING. A factor's own
-#    unit reads `GPU-hour per GPU` and only the DENOMINATOR half of that is structural, so
-#    reading the pair off the label would mean splitting free text on a preposition -- which is
-#    the `LIKE '% per %'` this directory has removed twice. It is unnecessary: a factor
-#    converts a PART LAYER into its COMPOSED LAYER, and both of those layers file their own
-#    unit. The edge is the two layers, and the label is only a label.
+# The endpoints are filed facts
+#   Nothing here parses a unit string. A factor's own unit reads `GPU-hour per GPU` and only the
+#   denominator half of that is structural, so reading the pair off the label would mean
+#   splitting free text on a preposition, which is the `LIKE '% per %'` this directory has
+#   removed twice. It is unnecessary: a factor converts a part layer into its composed layer, and
+#   both of those layers file their own unit. The edge is the two layers, and the label is only
+#   a label.
 #
-# ✅⛔⛔ AN EDGE CAN CROSS A UNIT BOUNDARY WITH NO FACTOR AT ALL, AND FINDING THOSE IS WHAT THIS
-#    RELATION IS FOR. `pessoas` to `people`, and `turnos por semana` to `shifts per week`, are
-#    three such crossings in this corpus. A composition like that asserts that a Portuguese unit
-#    and an English one are the same thing, and asserts it by OMITTING the element -- which
-#    `composition/converted.sqlc` reads as a factor of one. Two editions of one word is a
-#    judgement this repository has twice refused to make in SQL, and an omission lets it arrive
-#    as an absence instead.
-#    ⭐ Two file `[1, 1, 1]` with a `boundOrigin` and a provenance, so the assertion has an
-#    author and a note saying what would make it false; the third files `unmeasured`, which is
-#    a composer saying they looked at a real crossing and could not size it.
-#    `checks/unit_crossing_without_a_factor` is what keeps it that way, and the count of
-#    factorless crossings is ZERO rather than three by luck.
+# A crossing with no factor at all
+#   An edge can cross a unit boundary with no factor at all, and finding those is what this
+#   relation is for. `pessoas` to `people`, and `turnos por semana` to `shifts per week`, are
+#   three such crossings in this corpus. A composition like that asserts that a Portuguese unit
+#   and an English one are the same thing, and asserts it by omitting the element, which
+#   `composition/converted.sqlc` reads as a factor of one. Two editions of one word is a
+#   judgement this repository has twice refused to make in SQL, and an omission lets it arrive
+#   as an absence instead.
 #
-# ⚠️ NINETEEN PARTS STILL OMIT THE ELEMENT and every one of them is correct: their unit and
-#    their composed layer's already agree, so the identity is forced by structure the document
-#    states and there is no author to name. That is the whole distinction the rule enforces --
-#    an omission is only ever allowed to mean "nothing to convert".
+# How the crossings are filed
+#   Two file `[1, 1, 1]` with a `boundOrigin` and a provenance, so the assertion has an author
+#   and a note saying what would make it false; the third files `unmeasured`, which is a
+#   composer saying they looked at a real crossing and could not size it.
+#   `checks/unit_crossing_without_a_factor` is what keeps it that way, and it is why the count
+#   of factorless crossings is zero rather than three, and not by luck.
 #
-# ⚠️ A TYPED-ABSENT FACTOR IS NOT AN EDGE EITHER, and for a different reason: `unmeasured` says
-#    nobody sized the conversion, so there is no number to put on the arrow.
-# ⛔ THE `quantity = 'nameplate'` PIN IS A SLICE AND IT IS DECLARED HERE BECAUSE IT DOES NOT
-#   SHOW IN THE KEY. A unit is a property of a CLAIM, not of a layer: `pm.claim.unit` is per
-#   position, and arithmetic/remainder.sqlc carries a `not comparable` verdict for exactly the
-#   layer whose demand and nameplate disagree. So reading the edge off one quantity is a σπ,
-#   and the aggregate over all three would be a different relation. It is sound today because
-#   no corpus layer files two units across its quantities, which is one query:
+# An omission means nothing to convert
+#   The parts that still omit the element are all correct: their unit and their composed
+#   layer's already agree, so the identity is forced by structure the document states and there
+#   is no author to name. That is the whole distinction the rule enforces: an omission is only
+#   ever allowed to mean "nothing to convert".
 #
-#     SELECT filing, layer FROM ( layers/quantities ) GROUP BY 1,2 HAVING count(DISTINCT unit) > 1
+# A typed-absent factor is not an edge either
+#   For a different reason: `unmeasured` says nobody sized the conversion, so there is no number
+#   to put on the arrow.
 #
-#   ⚠️ The day that returns a row, this graph and checks/conversion_cycle_does_not_close are
-#   reading one third of the evidence and saying nothing about it.
+# The `quantity = 'nameplate'` pin is a slice
+#   It is declared here because it does not show in the key. A unit is a property of a claim,
+#   not of a layer: `pm.claim.unit` is per position, and arithmetic/remainder.sqlc carries a
+#   `not comparable` verdict for exactly the layer whose demand and nameplate disagree. So
+#   reading the edge off one quantity is a σπ, and the aggregate over all three would be a
+#   different relation. It is sound while no layer files two units across its quantities.
+#
+# Which is a claim about the corpus, so it is a law and not a sentence
+#   algebra/layer_units.sqlc holds it: `|π(layer, unit)| = |π(layer)|` over layers/quantities.sqlc,
+#   run every time the laws run. Before that it was this header saying to run a query, and a
+#   sentence telling a reader to run a query is not a program that runs it. The day a layer files
+#   two units, this graph and checks/conversion_cycle_does_not_close are reading a fifth of the
+#   evidence and saying nothing about the rest, and the law is what says so.
+#
+# The word `nameplate` is checked now
+#   `quantity` is `public.layer_quantity`, so the pin below is a value of a declared type and a
+#   misspelling fails when this query is parsed. Spelled as free text it matched nothing, and a
+#   conversion graph with no edges is not obviously wrong to look at.
 -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
-       part.unit AS from_unit,
-       comp.unit AS to_unit,
+       p.part_unit     AS from_unit,
+       p.composed_unit AS to_unit,
        p.factor_low, p.factor_mode, p.factor_high,
        p.composition AS filing, p.composed_layer AS layer
-FROM      (
-    :compose(composition/parts.sqlc)
+FROM (
+    :compose(composition/part_quantities.sqlc)
 ) p
-JOIN      (
-    :compose(layers/quantities.sqlc)
-) part ON part.filing = p.part_filing AND part.layer = p.part_layer
-      AND part.quantity = 'nameplate'
-JOIN      (
-    :compose(layers/quantities.sqlc)
-) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
-      AND comp.quantity = 'nameplate'
-WHERE p.factor_low IS NOT NULL
+WHERE p.quantity = 'nameplate'
+  AND p.factor_state = 'stated'

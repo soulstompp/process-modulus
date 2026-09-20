@@ -1,0 +1,106 @@
+# The absence census counted from the columns, held against the absences counted from the elements.
+# One row per group of positions and questions that share rows, plus one for positions the
+# roster does not name: whether both routes count the same absences, per filing and reason.
+#
+# Two routes that share no code
+#   epistemics/absences.sqlc asks each question of the column on the table of the thing the absence
+#   is about; epistemics/filed_absences.sqlc reads every absent element in the documents. The ingest
+#   fills them by different paths. A branch one path drops, a column no census arm reads, an arm
+#   that counts one absence twice or reads the wrong column: each moves one side and not the other,
+#   and every one of those happened here before this law existed.
+#
+# Compared per group, not per question
+#   epistemics/absence_positions.sqlc maps positions to questions, and the map is not one to one:
+#   `buffer slack` spans three positions and one position's standing is asked by two questions. A
+#   group is every question and position joined through shared rows, so each absence is compared
+#   once, whatever its question calls it.
+#
+# What it cannot see
+#   It counts per filing, group and reason. Two absences swapped between layers of one filing, with
+#   the same reason at the same position, leave every count unchanged.
+#
+# Probe
+#   examples/probes runs it as `absences_filed` and `absences_filed / a row`.
+#   In memory, drop the census arm for `remainder absorber` from the composed
+#   epistemics/absences.sql: this law must fail for that group alone. And in a rolled-back
+#   transaction, delete one row of pm.absence: it must fail for that row's group.
+-- epistemics/absences.sqlc against epistemics/filed_absences.sqlc, through epistemics/absence_positions.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    WITH positions AS (
+        SELECT * FROM (
+            :compose(epistemics/absence_positions.sqlc)
+        ) r
+    ),
+    by_owns AS (
+        SELECT owns, min(question) AS g FROM positions WHERE question IS NOT NULL GROUP BY owns
+    ),
+    by_question AS (
+        SELECT p.question, min(o.g) AS g
+        FROM positions p JOIN by_owns o USING (owns)
+        WHERE p.question IS NOT NULL
+        GROUP BY p.question
+    ),
+    owns_group AS (
+        SELECT p.owns, min(q.g) AS g
+        FROM positions p JOIN by_question q USING (question)
+        GROUP BY p.owns
+    ),
+    counted AS (
+        SELECT q.g, c.filing, c.reason, count(*) AS n
+        FROM (
+            :compose(epistemics/absences.sqlc)
+        ) c
+        JOIN by_question q USING (question)
+        GROUP BY q.g, c.filing, c.reason
+    ),
+    filed AS (
+        SELECT o.g, f.filing, f.reason, count(*) AS n
+        FROM (
+            :compose(epistemics/filed_absences.sqlc)
+        ) f
+        JOIN owns_group o USING (owns)
+        GROUP BY o.g, f.filing, f.reason
+    ),
+    cells AS (
+        SELECT coalesce(c.g, f.g) AS g, coalesce(c.filing, f.filing) AS filing,
+               coalesce(c.reason, f.reason) AS reason,
+               coalesce(c.n, 0) AS counted, coalesce(f.n, 0) AS filed
+        FROM counted c
+        FULL JOIN filed f ON f.g = c.g AND f.filing = c.filing AND f.reason = c.reason
+    )
+    SELECT q.g AS subject,
+           coalesce(bool_and(x.counted = x.filed), true) AS holds,
+           format('%s filed, %s counted%s', coalesce(sum(x.filed), 0), coalesce(sum(x.counted), 0),
+                  coalesce(': ' || string_agg(format('%s %s filed %s, counted %s', x.filing, x.reason,
+                                                     x.filed, x.counted), '; ' ORDER BY x.filing, x.reason)
+                                   FILTER (WHERE x.counted <> x.filed), '')) AS detail
+    FROM (SELECT DISTINCT g FROM by_question) q
+    LEFT JOIN cells x ON x.g = q.g
+    GROUP BY q.g
+    UNION ALL
+    SELECT 'positions the roster does not name',
+           count(*) FILTER (WHERE p.owns IS NULL) = 0,
+           format('%s absences at %s undeclared position(s)%s; %s at positions no column answers',
+                  count(*) FILTER (WHERE p.owns IS NULL),
+                  count(DISTINCT f.owns) FILTER (WHERE p.owns IS NULL),
+                  coalesce(': ' || string_agg(DISTINCT f.owns, ', ') FILTER (WHERE p.owns IS NULL), ''),
+                  count(*) FILTER (WHERE p.owns IS NOT NULL AND p.question IS NULL))
+    FROM (
+        :compose(epistemics/filed_absences.sqlc)
+    ) f
+    LEFT JOIN (SELECT owns, min(question) AS question FROM positions GROUP BY owns) p USING (owns)
+    UNION ALL
+    SELECT 'questions no position holds',
+           count(*) = 0,
+           format('%s question(s) on the census with no position%s', count(*),
+                  coalesce(': ' || string_agg(q.question, ', '), ''))
+    FROM (
+        :compose(epistemics/absence_questions.sqlc)
+    ) q
+    WHERE q.question NOT IN (SELECT question FROM positions WHERE question IS NOT NULL)
+) p ON true
+WHERE a.slug = 'absences_filed'

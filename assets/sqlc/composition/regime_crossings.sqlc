@@ -1,34 +1,53 @@
-# EVERY CROSS-DOCUMENT PART WHOSE FRAMEWORK DIFFERS FROM THE ONE IT IS COMPOSED INTO. One row per
+# Every cross-document part whose framework differs from the one it is composed into. One row per
 # crossing, with both frameworks and whether the composition cites an instrument.
 #
-# ⭐⭐⭐ IT NEEDS NO SCHEMA CHANGE: PAIR `regime` WITH `part` AND THE CROSSING IS ALREADY THERE.
-#    `pm.regime` is a tall table because a `filing.jurisdiction` column cannot hold `refutation`,
-#    which reports under two regimes at once. `merge-group-composition` composes under IFRS-2026
-#    from parts under `NCRF-PE` and `us-gaap`, which is what consolidation IS, and this is the
-#    relation that says so.
+# No schema change needed
+#   Pair `regime` with `part` and the crossing is already there. `pm.regime` is a tall table
+#   because a `filing.jurisdiction` column cannot hold `refutation`, which reports under two
+#   regimes at once. `merge-group-composition` composes under IFRS-2026 from parts under `NCRF-PE`
+#   and `us-gaap`, which is what consolidation is, and this is the relation that says so.
 #
-# ⭐⭐ AND IT IS THE EXACT ANALOGUE OF THE UNIT CROSSING. `checks/unit_crossing_without_a_factor`
-#    says: cross a unit boundary and you must file what converts, because somebody is asserting
-#    two units are interchangeable and an assertion needs a filer. Cross a REGIME boundary and
-#    somebody is asserting two frameworks' figures may be added. `asrt:Composition/citation`
-#    carries the instrument and the clause, and that is what reconciles it.
+# The exact analogue of the unit crossing
+#   `checks/unit_crossing_without_a_factor` says: cross a unit boundary and you must file what
+#   converts, because somebody is asserting two units are interchangeable and an assertion needs a
+#   filer. Cross a regime boundary and somebody is asserting two frameworks' figures may be added.
+#   `asrt:Composition/citation` carries the instrument and the clause, and that is what reconciles
+#   it.
 #
-# ⛔⛔ A FILING THAT STATES NO FRAMEWORK IS NOT A FILING IN THE SAME FRAMEWORK, AND SQL WILL SAY
-#    IT IS. `IS DISTINCT FROM` returns false for two NULLs, so a pair of documents that never
-#    named a regime reads as "no crossing" and vanishes from the population. `crossing_known`
-#    carries that apart, and it is the §9 pattern arriving where nobody had looked for it: the
-#    matrix needs the search beside it. ⚠️ `pm.regime` has no typed absence column, alone among
-#    the fact tables, so `unmeasured` and `notApplicable` are stored identically here.
-# ⭐⭐⭐ IT JOINS TWO SELF-DECLARATIONS AND NEVER THE COMPOSER'S ASSIGNMENT. The composition's
-#    own framework against the PART FILING'S own framework is a real fact and a checkable one.
-#    What the composer says a part reports under is a DIFFERENT claim with a different author,
-#    filed as `asrt:part/asrt:layer/asrt:regime`, and keeping the two apart is what this whole
-#    model exists for: what a filing says about itself and what somebody says about it are never
-#    the same claim.
+# No framework is not the same framework
+#   A filing that states no framework is not a filing in the same framework, and SQL will say it
+#   is. `IS DISTINCT FROM` returns false for two NULLs, so a pair of documents that never named a
+#   regime reads as "no crossing" and vanishes from the population. `crossing_known` carries that
+#   apart, and it is the §9 pattern arriving where nobody had looked for it: the matrix needs the
+#   search beside it. Why a composition names no framework is typed in its own declaration,
+#   `framework_absent` in composition/regimes.sqlc, and epistemics/absences.sqlc reports it; here
+#   it only keeps the crossing unknown.
 #
-#    ⭐ The composer's side is `checks/part_regime_disagrees`, over
-#    `composition/part_regimes.sqlc`, which holds both claims side by side.
---
+# `min` pairs the two halves because a term is whole
+#   Where `states = 1`, `min` over the taxonomy and `min` over the value are taken separately and
+#   still come from the one stated declaration, because the schema keeps every term whole: a
+#   declaration filed absent has neither half. A taxonomy left beside an absence would pair with
+#   another declaration's value.
+#
+# The composer's assignment, against the composition's own framework
+#   The two frameworks compared are both the composer's: the one it assigns the part, filed as
+#   `asrt:part/asrt:layer/asrt:regime` and read through composition/part_regimes.sqlc, and the one
+#   the composition itself reports under. That is the right pair for a crossing, because the
+#   composer is the one asserting the two frameworks' figures may be added. Whether the part's
+#   own filing agrees with the composer's assignment is a different claim with a different author,
+#   and `checks/part_regime_disagrees` asks it over the same relation: what a filing says about
+#   itself and what somebody says about it are never the same claim.
+#
+# Why not `seq = 1`
+#   `seq = 1` would be a guess that could not announce itself. A filing may declare more than one
+#   regime, which is the whole reason `regime` is tall, and taking the first silently picks one of
+#   them. `states` counts them, and a composition reporting under two frameworks makes "the
+#   framework it composes into" a question with two answers, so the crossing is not known rather
+#   than absent.
+#
+# Probe
+#   Give the composition a second regime declaration: `crossing_known` must turn false for its
+#   parts. A crossing count that does not move is the danger, not the reassurance.
 -- composition/part_regimes.sqlc: the composer's framework for each part against the framework
 -- the composition itself reports under.
 SELECT x.composition, x.composed_layer, x.part_filing, x.part_layer,
@@ -44,18 +63,15 @@ SELECT x.composition, x.composed_layer, x.part_filing, x.part_layer,
 FROM      (
     :compose(composition/part_regimes.sqlc)
 ) x
--- ⛔⛔ `seq = 1` WOULD BE A GUESS THAT COULD NOT ANNOUNCE ITSELF. A filing may
---   declare more than one regime, which is the whole reason `regime` is tall, and taking the
---   first silently picks one of them. Probed by giving the composition a second declaration: the
---   crossing count did not move, which is the danger rather than the reassurance. `states`
---   counts them, and a composition reporting under two frameworks makes "the framework it
---   composes INTO" a question with two answers, so the crossing is not KNOWN rather than absent.
 LEFT JOIN (
     SELECT r.filing,
            count(*) FILTER (WHERE r.framework_value IS NOT NULL) AS states,
            min(r.framework_taxonomy) AS framework_taxonomy,
            min(r.framework_value)    AS framework_value
-    FROM pm.regime r GROUP BY r.filing
+    FROM (
+        :compose(composition/regimes.sqlc)
+    ) r
+    GROUP BY r.filing
 ) own ON own.filing = x.composition
 LEFT JOIN (
     :compose(composition/citations.sqlc)

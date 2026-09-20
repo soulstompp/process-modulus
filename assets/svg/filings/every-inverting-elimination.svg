@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from assets/bpmn/filings/every-inverting-elimination.bpmn by examples/rendering/main.rs. DO NOT EDIT.
+     Every lane is its own group carrying the layer name; every activity is drawn
+     with the BPMN glyph for its kind, thin for a task and thick for a call. That is
+     what *properly layered* means, and it is what lets a reader check the partition
+     and the call graph with no BPMN tool present. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 268" width="760">
+  <style>.poolBox{fill:none;stroke:#333;stroke-width:1.5} .laneBox{fill:none;stroke:#888} .activity{fill:#f4f4f4;stroke:#555} .task{stroke-width:1} .callActivity{stroke-width:3.5} .subProcess{stroke-width:1} .marker{fill:none;stroke:#555;stroke-width:1} .laneName{font:12px sans-serif;font-weight:600} .nodeName{font:11px sans-serif} .poolName{font:13px sans-serif;font-weight:700} .rankName{font:10px sans-serif;fill:#666;letter-spacing:.5px} .refuted{stroke:#b00;stroke-width:2.5} .coverName{font:10px sans-serif;fill:#888} .groupBox{fill:none;stroke:#555;stroke-width:1.5;stroke-dasharray:6 4} .groupName{font:10px sans-serif;fill:#555;font-style:italic} .depLine{fill:none;stroke:#555;stroke-width:1.2;stroke-dasharray:3 3} .noteBox{fill:none;stroke:#555;stroke-width:1} .noteText{font:11px sans-serif;fill:#333} .noteCite{font:9px monospace;fill:#777}</style>
+  <defs><marker id="depArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#555"/></marker></defs>
+  <g class="pool" data-filing="every-inverting-elimination" id="pool-every-inverting-elimination"><title>pool: every-inverting-elimination</title>
+    <rect id="pool-every-inverting-elimination-box" x="8" y="36" width="744" height="120" class="poolBox"/>
+    <path id="pool-every-inverting-elimination-band" d="M36 36 v120" class="poolBox"/>
+    <text id="pool-every-inverting-elimination-name" transform="translate(26,96) rotate(-90)" text-anchor="middle" class="poolName">every-inverting-elimination</text>
+  </g>
+  <g class="lane" data-layer="shift-capacity" data-rank="1" id="lane_every-inverting-elimination_shift-capacity"><title>lane: shift-capacity</title>
+    <rect id="lane_every-inverting-elimination_shift-capacity-box" x="120" y="46" width="620" height="104" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-inverting-elimination_shift-capacity"><text id="lane_every-inverting-elimination_shift-capacity-name" x="128" y="62" class="laneName">shift-capacity</text></a>
+    <text id="lane_every-inverting-elimination_shift-capacity-rank" x="732" y="62" class="rankName" text-anchor="end">rank 1</text>
+  <g class="lane" data-layer="team-a" data-rank="0" id="lane_every-inverting-elimination_team-a"><title>lane: team-a</title>
+    <rect id="lane_every-inverting-elimination_team-a-box" x="134" y="68" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-inverting-elimination_team-a"><text id="lane_every-inverting-elimination_team-a-name" x="142" y="84" class="laneName">team-a</text></a>
+    <text id="lane_every-inverting-elimination_team-a-rank" x="726" y="84" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  <g class="lane" data-layer="team-b" data-rank="0" id="lane_every-inverting-elimination_team-b"><title>lane: team-b</title>
+    <rect id="lane_every-inverting-elimination_team-b-box" x="134" y="106" width="600" height="34" class="laneBox"/>
+    <a href="../graphs/model-layers.svg#lane_every-inverting-elimination_team-b"><text id="lane_every-inverting-elimination_team-b-name" x="142" y="122" class="laneName">team-b</text></a>
+    <text id="lane_every-inverting-elimination_team-b-rank" x="726" y="122" class="rankName" text-anchor="end">rank 0</text>
+  </g>
+  </g>
+  <g class="note" id="legend"><title>legend</title>
+    <path id="legend-bracket" d="M20 164 h-8 v88 h8" class="noteBox"/>
+    <text id="legend-0-says" x="26" y="176" class="noteText">AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one.</text>
+    <text id="legend-0-source" x="26" y="188" class="noteCite">assets/sqlc/diagrams/lane_grain.sqlc</text>
+    <text id="legend-1-says" x="26" y="206" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-source" x="26" y="218" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
+    <text id="legend-2-says" x="26" y="236" class="noteText">COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-source" x="26" y="248" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
+  </g>
+</svg>

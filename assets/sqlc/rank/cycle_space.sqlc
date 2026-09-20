@@ -1,35 +1,130 @@
-# THE INCIDENCE RANK AND CYCLE SPACE OF EVERY GRAPH THIS MODEL COMPOSES. One row per graph: nodes,
-# edges, components, and the two dimensions that follow.
+# The incidence rank and cycle space of every graph this model composes that has an edge. One row
+# per graph: nodes, edges, components, and the two dimensions that follow. The claimant graph has
+# no edges, because delegation is filed nowhere, so it has no row.
 #
-# ⭐⭐⭐ `rank = n - c` AND `cycle space = m - n + c`, WHICH IS THE PARAMETER THE THREE GRAPHS
-#    DIFFER ON. A graph with cycles has NO ORDINAL rank and ALWAYS has a MATRIX rank, and
-#    confusing the two produces a wrong claim: that a cyclic graph has no rank
-#    at all. It has one. **A well-founded relation is simply one whose cycle space is ZERO**, and
-#    the ordinal rank is what you get for free when it is.
+# The parameter the graphs differ on
+#   `rank = n - c` and `cycle space = m - n + c`, which is the parameter the graphs differ on. A
+#   graph with cycles has no ordinal rank and always has a matrix rank, and confusing the two
+#   produces a wrong claim: that a cyclic graph has no rank at all. It has one.
 #
-# ⭐⭐ AND THE CYCLE SPACE IS WHERE A WEIGHTED GRAPH'S RULE LIVES. An edge vector decomposes into
-#    the ROW SPACE, a gradient, plus the LEFT NULLSPACE, the cycle part.
-#    `checks/conversion_cycle_does_not_close` asks that the cycle component of `log phi` vanish,
-#    which says `log phi` is a gradient, which says a POTENTIAL exists: an absolute log-size per
-#    unit whose differences are the filed factors. A rule written as a walk round a loop IS a
-#    subspace condition. Gilbert Strang's graph chapter is the reference.
+# Which cycle, and the implication runs one way
+#   `m - n + c` counts UNDIRECTED cycles, so a zero here says the graph is a forest.
+#   Well-foundedness is the DIRECTED question, whether anything descends forever, and every
+#   acyclic digraph has it. A forest is well-founded; the converse fails. A diamond is four edges
+#   over four nodes in one component, so its cycle space is one, and nothing in it descends
+#   forever. So a zero cycle space hands you the ordinal rank and the ordinal rank hands back
+#   nothing. The layer graph is both at once, and that is `checks/jagged_layer` holding it there
+#   rather than an identity: a diamond in it is a layer composed twice.
 #
-# ⛔ COUNTS ARE NOT WRITTEN IN THIS HEADER, BECAUSE THIS RELATION IS WHAT PRINTS THEM. Run it.
-#   The corpus moves and a sentence does not.
+# Where a weighted graph's rule lives
+#   The cycle space is where a weighted graph's rule lives. An edge vector decomposes into the
+#   column space, a gradient, plus the left nullspace, the cycle part. `B` is `m x n`, one row per
+#   edge, and every one of those names depends on that: `src/proofs/README.md`, entry
+#   `incidence_subspaces`, is where the orientation is declared. The cycle component of
+#   `log phi` vanishing says `log phi` is a gradient, which says a potential exists: an absolute
+#   log-size per unit whose differences are the filed factors. A rule written as a walk round a
+#   loop is a subspace condition. `checks/conversion_cycle_does_not_close` asks its interval form:
+#   with each factor a range, that 1 lie inside the product round the loop, since exact closure at
+#   the mode is out of reach, as that rule's header shows. Gilbert Strang's graph chapter is the
+#   reference.
 #
-# ⚠️ COMPONENTS ARE UNDIRECTED, because `n - c` and `m - n + c` are facts about the underlying
-#   undirected graph. Reading them off the directed edges gives a different and wrong `c`.
-# ⭐⭐⭐ AND IT IS NOW ONE SCOPE OF `rank/graph_measures.sqlc` RATHER THAN A SECOND COPY OF THE
-#    WALK. This file and `rank/decomposition.sqlc` each carried `nodes`, `sym`, `reach` and
-#    `comp`, twenty lines of the same undirected component search differing by one column, and
-#    the other file's `filing IS NULL` rows were exactly these rows. ⛔ One file was the other
-#    restricted, and nothing said so, so a fix to either walk had to be remembered twice.
+# And the cut space is where this model's OTHER rule lives
+#   The two subspaces are orthogonal complements, and this model has one rule in each. A sum round a
+#   loop is the cycle condition, which is the paragraph above and what
+#   `checks/conversion_cycle_does_not_close` asks of the unit graph. A balance AT A NODE is the cut
+#   condition: what a composed layer files equals the sum over its converted parts less what was
+#   eliminated, with the elimination as the source term. That is the fusion rule, it lives in the
+#   column space, and `checks/jagged_layer` accuses on that side. So a filing can satisfy one and
+#   break the other, and the two graphs need two rules rather than one.
+#   Proof: `src/proofs/README.md`, entries `incidence_subspaces` and `fusion_adds_no_cycle`.
 #
-# ⚠️ THE PIN IS `filing IS NULL` AND THE COLUMN IS PROJECTED AWAY, which is the shape rule 9
-#   warns about. It is declared here and in the `--` line because it is the WHOLE graph rather
-#   than a slice of one: the per-filing cut is a different question and `rank/decomposition.sqlc`
-#   is the file that asks it.
+# A zero cycle space leaves no room for a circulation
+#   Where `m - n + c` is zero the cut space is the whole edge space, so every edge vector on that
+#   graph is a potential difference and nothing goes round. That is the conserved carrier written as
+#   a subspace, and it is why no spectral radius arises here: a composition has no direction to
+#   circulate in. Read the dimensions off this relation rather than from a sentence.
+#
+# The numbers
+#   Run this relation for the counts. The corpus moves and a sentence does not.
+#
+# Components are undirected
+#   `n - c` and `m - n + c` are facts about the underlying undirected graph. Reading them off the
+#   directed edges gives a different and wrong `c`.
+#
+# One scope of `rank/graph_measures.sqlc`
+#   This relation is that one at the corpus-wide scope, not a second copy of the walk.
+#   `rank/decomposition.sqlc` reads the same relation, and its `filing IS NULL` rows are exactly
+#   these rows, so a fix to the walk is made once.
+#
+# The pin is `filing IS NULL`, and the column is projected away
+#   That is the shape that usually marks a slice passing as an aggregate. It is declared here and
+#   in the `--` line because it is the whole graph rather than a slice of one: the per-filing cut
+#   is a different question and `rank/decomposition.sqlc` is the file that asks it.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- rank/graph_measures.sqlc at the corpus-wide scope: the two graphs as incidence matrices.
+WITH
+fusions AS NOT MATERIALIZED (
+    :define(composition/fusions.sqlc)
+),
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+unresolved_parts AS NOT MATERIALIZED (
+    :define(composition/unresolved_parts.sqlc)
+),
+filed AS NOT MATERIALIZED (
+    :define(eliminations/filed.sqlc)
+),
+searched AS NOT MATERIALIZED (
+    :define(eliminations/searched.sqlc)
+),
+fusion_parts AS NOT MATERIALIZED (
+    :define(folds/fusion_parts.sqlc)
+),
+summed_quantities AS NOT MATERIALIZED (
+    :define(layers/summed_quantities.sqlc)
+),
+derived_quantities AS NOT MATERIALIZED (
+    :define(composition/derived_quantities.sqlc)
+),
+resolved_quantities AS NOT MATERIALIZED (
+    :define(composition/resolved_quantities.sqlc)
+),
+slacks AS NOT MATERIALIZED (
+    :define(entries/slacks.sqlc)
+),
+demand AS NOT MATERIALIZED (
+    :define(layers/demand.sqlc)
+),
+layers_nameplate AS NOT MATERIALIZED (
+    :define(layers/nameplate.sqlc)
+),
+quantities AS NOT MATERIALIZED (
+    :define(layers/quantities.sqlc)
+),
+part_quantities AS NOT MATERIALIZED (
+    :define(composition/part_quantities.sqlc)
+),
+conversions AS NOT MATERIALIZED (
+    :define(units/conversions.sqlc)
+),
+graph_edges AS NOT MATERIALIZED (
+    :define(rank/graph_edges.sqlc)
+),
+graph_measures AS NOT MATERIALIZED (
+    :define(rank/graph_measures.sqlc)
+)
 SELECT m.graph, m.n_nodes, m.m_edges, m.c_components, m.cycle_space_dim, m.rank_of_incidence
 FROM (
     :compose(rank/graph_measures.sqlc)

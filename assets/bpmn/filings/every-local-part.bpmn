@@ -34,6 +34,9 @@
       </lane>
     </laneSet>
     <callActivity id="call_every-local-part_as-filed_every-absence_oven" name="as-filed &lt;- every-absence/oven" calledElement="f0:proc_every-absence"/>
+    <textAnnotation id="note_every-local-part_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
     <textAnnotation id="note_every-local-part_scope">
       <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
     </textAnnotation>
@@ -58,11 +61,14 @@
       <bpmndi:BPMNShape id="shape_every-local-part_call_every-local-part_as-filed_every-absence_oven" bpmnElement="tns:call_every-local-part_as-filed_every-absence_oven">
         <dc:Bounds x="304" y="112" width="420" height="18"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_scope" bpmnElement="tns:note_every-local-part_scope">
+      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_lane" bpmnElement="tns:note_every-local-part_lane">
         <dc:Bounds x="20" y="164" width="720" height="28"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_search" bpmnElement="tns:note_every-local-part_search">
+      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_scope" bpmnElement="tns:note_every-local-part_scope">
         <dc:Bounds x="20" y="194" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-local-part_note_every-local-part_search" bpmnElement="tns:note_every-local-part_search">
+        <dc:Bounds x="20" y="224" width="720" height="28"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

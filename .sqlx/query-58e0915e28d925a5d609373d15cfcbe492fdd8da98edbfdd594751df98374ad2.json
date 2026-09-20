@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §5  What each filing says about couplings, and whether it says anything at all.\n-- entries/coupling_presence.sqlc over scope/corpus.sqlc.\nSELECT p.filing            AS \"filing!\",\n       p.couplings_filed   AS \"n!\",\n       p.search_answer::text AS why\nFROM (\n    -- pm:Stack/pm:couplings against pm:couplings/pm:absent, over a scope the caller names.\nSELECT f.filing,\n       count(c.filing) AS couplings_filed,\n       s.answer        AS search_answer\nFROM      (\n    SELECT * FROM scope.corpus\n) f\nLEFT JOIN (\n    SELECT * FROM entries.couplings\n) c USING (filing)\nLEFT JOIN (\n    SELECT * FROM epistemics.coupling_searches\n) s ON s.filing = f.filing\nGROUP BY f.filing, s.answer\n\n) p\nORDER BY p.filing\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "scope.corpus",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "n!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "58e0915e28d925a5d609373d15cfcbe492fdd8da98edbfdd594751df98374ad2"
+}

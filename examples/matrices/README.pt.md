@@ -34,10 +34,44 @@ como o seu **sinal** são avaliados ao longo do intervalo da procura. A §1 reca
 dizê-lo de forma direta, porque o resto do modelo são matrizes e o pressuposto natural é que sejam
 elas a fazer o trabalho aqui. Não são.
 
-⛔ **Não há aqui norma, espetro nem valor próprio** até que alguém escolha uma escala por camada, o
-que é um ato de modelação e não um ato matemático. O que fixa a decomposição em soma direta são as
-unidades, não um produto interno. Vocabulário espetral trazido a este modelo descreve um modelo que
-ninguém está a construir.
+⛔ **Não há norma, espetro nem valor próprio no mapa de composição** até que alguém escolha uma
+escala por camada, o que é um ato de modelação e não um ato matemático. O que fixa essa
+decomposição em soma direta são as unidades, não um produto interno. Vocabulário espetral trazido
+ao `F Φ − E` descreve um modelo que ninguém está a construir.
+
+⭐ **Duas palavras dessa recusa têm mesmo referentes, e não são as espetrais.** A própria **matriz
+de incidência** do grafo das camadas tem uma característica, `n − c`, e uma decomposição ortogonal
+honesta: o seu espaço de arestas é o **espaço de cortes** (o espaço das linhas) mais o **espaço de
+ciclos** (o núcleo), que são complementos ortogonais e somam o número de arestas. Este modelo põe
+uma regra em cada um. Um balanço NUM NÓ é a regra de fusão, `x_composta = Σ φ x_parte − e`, e vive
+no espaço de cortes. Uma soma AO LONGO DE UM CICLO é a regra de conversão, `1 ∈ Π φ`, e vive no
+espaço de ciclos. Portanto uma declaração pode satisfazer uma e quebrar a outra, e os dois grafos
+precisam de duas regras em vez de uma.
+
+⛔ **E o espaço de ciclos do grafo das camadas é zero**, que é a razão por que nada aqui circula: o
+espaço de cortes é todo o espaço de arestas, todo o vetor de arestas é uma diferença de potencial,
+e uma composição não tem direção nenhuma em que circular. É o portador conservado dito em álgebra
+linear, e é a razão por que não há ponto fixo, nem inversa de Leontief, nem pergunta de
+convergência a fazer. O `rank/cycle_space.sqlc` calcula as duas dimensões para cada grafo aqui em
+vez de as afirmar, e o `src/proofs/README.md` §10 prova as identidades.
+
+⭐⭐ **E o dobrar `F Φ` é outra matriz, com quatro subespaços seus, que é a distinção que aqui corre
+mal mais vezes.** A incidência acima é `m × n`, uma linha por aresta. O dobrar é
+`|fusões| × |partes|`, baixo e largo. Cada parte pertence a uma só fusão, portanto os suportes das
+linhas são disjuntos e a característica é simplesmente o número de linhas: o **espaço das colunas**
+é todo o espaço das fusões e o **núcleo à esquerda** é vazio, mantido lá pelo
+`algebra/fusions_have_parts`. O **núcleo** do lado das partes é o que carrega uma afirmação,
+`Σ (partes − 1)` dimensões de fornecimento que quem compôs disse que o seu valor composto não vê, e
+o **espaço das linhas** ao lado dele é uma direção estritamente positiva por fusão, que é a razão
+por que nenhum desvio não negativo é invisível. As §3d e §3e calculam os quatro.
+
+⭐⭐⭐ **Indexados por CAMADA dos dois lados, os mesmos factos arquivados dão um operador QUADRADO,
+e é nilpotente.** Uma composição é bem fundada, portanto alguma potência dele é zero, `(I − F Φ)` é
+invertível e `(I − F Φ)⁻¹ = I + F Φ + (F Φ)²` é uma soma finita e não um limite. Essa série É o
+`composition/descent.sqlc`, e a §3e multiplica as matrizes e afirma que as duas coincidem, com o
+índice de nilpotência confrontado com a descida mais funda que a relação do fecho reporta. ⛔ É
+também a razão por que não há pergunta de convergência: a série termina, e se não terminasse o
+modelo estaria a dizer que uma camada se compõe a partir de si própria.
 
 # O dicionário, porque os mesmos objetos são calculados duas vezes
 
@@ -55,6 +89,10 @@ são um dos seus lados.
 | `F` (incidência) | `composition/parts` |
 | `Φ x` (partes convertidas) | `composition/converted` |
 | `F Φ x − e` | `composition/fused` |
+| `ker(F Φ)` | `rank/composition_kernel` |
+| `row(F Φ)` | `rank/composition_row_space` |
+| `col(F Φ)`, `ker((F Φ)ᵀ)` | `rank/composition_image` |
+| `(I − F Φ)⁻¹ = I + F Φ + (F Φ)²` | `composition/descent`, `rank/composition_closure` |
 | `e` | `eliminations/filed` |
 | `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` |
 | `D`, `N` | `entries/draws`, `entries/inductions` |

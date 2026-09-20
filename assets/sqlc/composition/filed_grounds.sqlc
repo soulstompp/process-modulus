@@ -1,0 +1,19 @@
+# The suspension grounds read off what the fusion and its parts file. One row per (composed layer,
+# ground), carrying which ground it was and which quantity it lifts, exactly as
+# composition/suspension_grounds.sqlc has them.
+#
+# Every ground but one
+#   Nobody searched for double counting; an overlap was found and not sized; a conversion was never
+#   sized; a layer the sum reads leaves the quantity unstated; a part names a layer that is not here.
+#   Each is decided by what is filed at the fusion and its own parts, before anything is computed. The ground that needs a computation,
+#   a part filed `derived` that cannot be derived, is composition/underived_parts.sqlc, and
+#   composition/suspension_grounds.sqlc is the two together.
+#
+# Who reads this and not the whole set
+#   composition/suspended_remainders.sqlc. A remainder walk lifts wherever a node it reaches has no
+#   figure, computed or stated, so the one ground left out here is one the walk already sees for
+#   itself.
+-- the five grounds decided by what is filed, one row per ground, carrying the quantity it lifts.
+:union(ALL eliminations/unsearched.sqlc, eliminations/unsized.sqlc,
+           composition/unsized_conversions.sqlc, composition/unstated_quantities.sqlc,
+           composition/unresolved_parts.sqlc)

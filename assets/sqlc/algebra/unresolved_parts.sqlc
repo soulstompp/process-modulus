@@ -1,0 +1,35 @@
+# The part references that resolve, against the ones that do not, checked as a partition of all of
+# them. One row: whether |part_references| = |unresolved_parts| + |part_references ⋉ parts|.
+#
+# Exact because a reference resolves at most once
+#   composition/parts.sqlc turns a reference into a row by its notation, and a notation is `UNIQUE`
+#   on `pm.filing_identity`, so one reference can meet at most one resolved row. The references are a
+#   set on `pm.part`'s key. Let two filings claim one notation and a reference resolves twice, the
+#   semijoin still counts it once, and the partition holds while the sum it feeds counts the part
+#   twice; the key is what stops that, and this law is what stops the difference drifting from it.
+#
+# Probe
+#   examples/probes runs it as `unresolved_parts`: count parts that resolve among the ones that
+#   do not, and the law must fail.
+-- composition/part_references.sqlc partitioned by composition/parts.sqlc into composition/unresolved_parts.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/unresolved_parts' AS subject,
+           x.total = x.kept + x.resolved AS holds,
+           format('%s part references = %s unresolved + %s resolved', x.total, x.kept, x.resolved)
+               AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(composition/part_references.sqlc) ) r) AS total,
+             (SELECT count(*) FROM ( :compose(composition/unresolved_parts.sqlc) ) u) AS kept,
+             (SELECT count(*) FROM ( :compose(composition/part_references.sqlc) ) r
+               WHERE EXISTS (SELECT 1 FROM ( :compose(composition/parts.sqlc) ) p
+                             WHERE p.composition = r.composition
+                               AND p.composed_layer = r.composed_layer
+                               AND p.part_notation = r.part_filing
+                               AND p.part_layer = r.part_layer))                    AS resolved
+         ) x
+) p ON true
+WHERE a.slug = 'unresolved_parts'

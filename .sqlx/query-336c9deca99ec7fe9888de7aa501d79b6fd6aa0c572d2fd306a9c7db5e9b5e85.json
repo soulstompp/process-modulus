@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §4  Every declared rule and site, and how many rows its check actually emits.\n-- folds/rule_subjects.sqlc and folds/site_subjects.sqlc, restricted to what each roster declares.\nSELECT 'rules' AS \"contract!\", f.subject AS \"subject!\", f.rows AS \"rows!\",\n       f.answered AS \"verdicts!\"\nFROM (\n    SELECT * FROM folds.rule_subjects\n) f\nWHERE f.declared\nUNION ALL\nSELECT 'arithmetic', f.subject, f.rows, f.answered\nFROM (\n    SELECT * FROM folds.site_subjects\n) f\nWHERE f.declared\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "contract!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "subject!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "rows!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "verdicts!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "336c9deca99ec7fe9888de7aa501d79b6fd6aa0c572d2fd306a9c7db5e9b5e85"
+}

@@ -33,10 +33,45 @@ and its **sign** are evaluated across the demand range. §1 recomputes both.
 stating outright, because the rest of the model is matrices and the natural assumption is
 that they do the work here. They don't.
 
-⛔ **There is no norm, spectrum or eigenvalue here** until somebody chooses a scaling per
-layer, which is a modelling act rather than a mathematical one. What pins the direct-sum
-decomposition is the units, not an inner product. Spectral vocabulary brought to this model
-describes a model nobody is building.
+⛔ **There is no norm, spectrum or eigenvalue on the composition map** until somebody chooses a
+scaling per layer, which is a modelling act rather than a mathematical one. What pins that
+direct-sum decomposition is the units, not an inner product. Spectral vocabulary brought to
+`F Φ − E` describes a model nobody is building.
+
+⭐ **Two words in that refusal do have referents, and they are not the spectral ones.** The layer
+graph's own **incidence matrix** has a rank, `n − c`, and an honest orthogonal decomposition: its
+edge space is the **cut space** (the column space) plus the **cycle space** (the left
+nullspace), which are orthogonal complements and sum to the edge count. `B` is `m × n` here, one
+row per edge: `src/proofs/README.md`, entry `incidence_subspaces`, is where that orientation is
+declared, and every one of those names depends on it. This model puts one rule in each. A balance
+at a node is the fusion rule, `x_composed = Σ φ x_part − e`, and it lives in the cut space. A sum
+round a loop is the conversion rule, `1 ∈ Π φ`, and it lives in the cycle space. So a filing can satisfy
+one and break the other, and the two graphs need two rules rather than one.
+
+⛔ **And the layer graph's cycle space is zero**, which is why nothing here circulates: the cut
+space is the whole edge space, every edge vector is a potential difference, and a composition has
+no direction to circulate in. That is the conserved carrier stated in linear algebra, and it is
+the reason there is no fixed point, no Leontief inverse and no convergence question to ask.
+`rank/cycle_space.sqlc` computes both dimensions for every graph here rather than asserting them,
+and `src/proofs/README.md` §10 proves the identities.
+
+⭐⭐ **And the fold `F Φ` is a different matrix with four subspaces of its own, which is the
+distinction that goes wrong most often here.** The incidence above is `m × n`, one row per edge.
+The fold is `|fusions| × |parts|`, short and wide. Every part belongs to one fusion, so the rows
+have disjoint supports and the rank is simply the row count: the **column space** is the whole
+fusion space and the **left null space** is empty, held there by `algebra/fusions_have_parts`. The
+**null space** on the part side is the one that carries a claim, `Σ (parts − 1)` dimensions of
+supply a composer said their composed figure cannot see, and the **row space** beside it is one
+strictly positive direction per fusion, which is why no non-negative offset is invisible. §3d and
+§3e compute all four.
+
+⭐⭐⭐ **Indexed by LAYER on both sides the same filed facts give a SQUARE operator, and it is
+nilpotent.** A composition is well founded, so some power of it is zero, `(I − F Φ)` is invertible
+and `(I − F Φ)⁻¹ = I + F Φ + (F Φ)²` is a finite sum rather than a limit. That series IS
+`composition/descent.sqlc`, and §3e multiplies the matrices out and asserts the two agree, with the
+nilpotency index against the deepest descent the closure relation reports. ⛔ It is also why there
+is no convergence question: the series terminates, and if it did not the model would be saying a
+layer is composed from itself.
 
 # The dictionary, because the same objects are computed twice
 
@@ -54,6 +89,10 @@ of it.
 | `F` (incidence) | `composition/parts` |
 | `Φ x` (converted parts) | `composition/converted` |
 | `F Φ x − e` | `composition/fused` |
+| `ker(F Φ)` | `rank/composition_kernel` |
+| `row(F Φ)` | `rank/composition_row_space` |
+| `col(F Φ)`, `ker((F Φ)ᵀ)` | `rank/composition_image` |
+| `(I − F Φ)⁻¹ = I + F Φ + (F Φ)²` | `composition/descent`, `rank/composition_closure` |
 | `e` | `eliminations/filed` |
 | `H`, `S`, `C` | `entries/holders`, `entries/slacks`, `entries/couplings` |
 | `D`, `N` | `entries/draws`, `entries/inductions` |

@@ -1,16 +1,22 @@
-# THE LEAF LAYERS AGAINST THE ONES THAT NAME PARTS, CHECKED AS A PARTITION OF THE DESCENT. One
+# The leaf layers against the ones that name parts, checked as a partition of the descent. One
 # row: whether |descent| = |leaves| + |descent ⋉ fusions|.
 #
-# ⛔⛔⛔ THE LEFT OPERAND IS A BAG AND THAT IS THE WHOLE REASON THIS LAW MATTERS.
-#    composition/descent.sqlc carries MORE ROWS THAN DISTINCT (filing, layer): a layer reachable
-#    through two paths appears twice, and those duplicates ARE what checks/jagged_layer
-#    exists to find. The anti-join preserves them; `EXCEPT` would deduplicate and silently drop
-#    every one -- erasing the subject of a rule while still returning a plausible table.
-#    ⛔ The two counts are deliberately not written here. This law's own `detail` prints them
-#    side by side on every run, which is why it carries the distinct-key count at all.
-#    ⭐ PROBE: rewrite composition/leaves.sqlc as `EXCEPT` and this law must fail.
+# The left operand is a bag
+#   That is the whole reason this law matters. composition/descent.sqlc carries more rows than
+#   distinct (filing, layer): a layer reachable through two paths appears twice, and those
+#   duplicates are what checks/jagged_layer exists to find. The anti-join preserves them;
+#   `EXCEPT` would deduplicate and silently drop every one, erasing the subject of a rule while
+#   still returning a plausible table.
+#
+# Where the counts are
+#   This law's own `detail` prints the row count and the distinct-key count side by side on every
+#   run, which is why it carries the distinct-key count at all.
+#
+# Probe
+#   examples/probes runs it as `leaves`.
+#   Rewrite composition/leaves.sqlc as `EXCEPT`; this law must fail.
 -- composition/descent.sqlc partitioned by composition/fusions.sqlc, multiplicity preserved.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

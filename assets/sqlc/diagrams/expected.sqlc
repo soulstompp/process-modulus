@@ -1,18 +1,111 @@
-# THE MODEL SIDE OF EVERY DIAGRAM LAW, COUNTED. One row per law on diagrams/roster.sqlc, with the
+# The model side of every diagram law, counted. One row per law on diagrams/roster.sqlc, with the
 # number a correct emission must produce.
 #
-# ⭐⭐⭐ THIS IS THE SPECIFICATION OF A CORRECT TRANSLATION, AND IT IS COMPUTABLE BEFORE ANY
-#    TRANSLATION EXISTS. The emitter is then judged against a number it did not produce, which is
-#    the only arrangement worth having: an emitter that computed its own expectation would agree
-#    with itself no matter what it did: a slice wearing an aggregate's shape, in a new place.
+# The specification of a correct translation
+#   It is computable before any translation exists. The emitter is then judged against a number it
+#   did not produce, which is the only arrangement worth having: an emitter that computed its own
+#   expectation would agree with itself no matter what it did, a slice wearing an aggregate's
+#   shape in a new place.
 #
-# ⭐ THE CALLER SUPPLIES THE LABEL. Each arm counts a different relation and none of them knows
-#   which law it serves, and a member that carried its own label would
-#   be answering a question about the set it happens to be in.
+# The caller supplies the label
+#   Each arm counts a different relation and none of them knows which law it serves, and a member
+#   that carried its own label would be answering a question about the set it happens to be in.
 #
-# ⛔ A LAW HERE WITH NO ROW ON THE ROSTER IS A COUNT NOBODY DECLARED, and a roster row with no arm
+# Both directions are checked
+#   A law here with no row on the roster is a count nobody declared, and a roster row with no arm
 #   here is a law nothing computes. reports/integrity.sqlc anti-joins both directions.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- diagrams/roster.sqlc's model_side relations, each counted.
+WITH
+composition_citations AS NOT MATERIALIZED (
+    :define(composition/citations.sqlc)
+),
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+calls AS NOT MATERIALIZED (
+    :define(diagrams/calls.sqlc)
+),
+inductions AS NOT MATERIALIZED (
+    :define(entries/inductions.sqlc)
+),
+categories AS NOT MATERIALIZED (
+    :define(diagrams/categories.sqlc)
+),
+diagrams_citations AS NOT MATERIALIZED (
+    :define(diagrams/citations.sqlc)
+),
+couplings AS NOT MATERIALIZED (
+    :define(entries/couplings.sqlc)
+),
+dependences AS NOT MATERIALIZED (
+    :define(diagrams/dependences.sqlc)
+),
+descents AS NOT MATERIALIZED (
+    :define(diagrams/descents.sqlc)
+),
+foreign_calls AS NOT MATERIALIZED (
+    :define(diagrams/foreign_calls.sqlc)
+),
+draws AS NOT MATERIALIZED (
+    :define(entries/draws.sqlc)
+),
+lane_membership AS NOT MATERIALIZED (
+    :define(diagrams/lane_membership.sqlc)
+),
+epistemics_scopes AS NOT MATERIALIZED (
+    :define(epistemics/scopes.sqlc)
+),
+diagrams_scopes AS NOT MATERIALIZED (
+    :define(diagrams/scopes.sqlc)
+),
+coupling_searches AS NOT MATERIALIZED (
+    :define(epistemics/coupling_searches.sqlc)
+),
+searches AS NOT MATERIALIZED (
+    :define(diagrams/searches.sqlc)
+),
+every_layer AS NOT MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+),
+legends AS NOT MATERIALIZED (
+    :define(diagrams/legends.sqlc)
+),
+every_filing AS NOT MATERIALIZED (
+    :define(scope/every_filing.sqlc)
+),
+documents AS NOT MATERIALIZED (
+    :define(epistemics/documents.sqlc)
+),
+pools AS NOT MATERIALIZED (
+    :define(diagrams/pools.sqlc)
+),
+eliminations_between AS NOT MATERIALIZED (
+    :define(eliminations/between.sqlc)
+),
+eliminations_references AS NOT MATERIALIZED (
+    :define(eliminations/references.sqlc)
+),
+resolved AS NOT MATERIALIZED (
+    :define(eliminations/resolved.sqlc)
+),
+operations AS NOT MATERIALIZED (
+    :define(entries/operations.sqlc)
+),
+notation_references AS NOT MATERIALIZED (
+    :define(entries/notation_references.sqlc)
+)
 SELECT 'pools'   AS slug, count(*) AS expected FROM ( :compose(epistemics/documents.sqlc) )  x
 UNION ALL
 SELECT 'lanes',   count(*) FROM ( :compose(layers/every_layer.sqlc) )    x

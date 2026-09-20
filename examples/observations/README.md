@@ -39,8 +39,8 @@ must not be able to say the same thing.** A slack of zero is the smallest slack 
 `[0, 0, 0]` in the unit it is zero in. A supply that runs continuously has a duty fraction of
 one and is filed as one whole period, quoted in the period's own unit, carrying the origin that
 says who could shorten it. A remainder of zero is a clearance fit, filed with a sign and a
-quantity of `[0, 0, 0]`, because ISO 286's line-to-line case is a clearance whose minimum
-clearance is zero.
+quantity of `[0, 0, 0]`, because `Fit` reads it as clearance, extending ISO 286's line-to-line
+case, where minimum clearance is zero, to the one pair ISO's clauses do not separate.
 
 An identity element may sit in an absence, but only when the identity is **forced**. Two
 conditions, and both are required: the identity must follow from structure the document already

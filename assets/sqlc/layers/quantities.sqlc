@@ -1,40 +1,60 @@
-# EVERY QUANTITY A LAYER FILES, AS ROWS RATHER THAN COLUMNS. One row per layer per quantity,
-# with the element's own name as the key.
+# Every quantity a layer files, as rows rather than columns. One row per layer per quantity, with
+# the element's own name as the key.
 #
-# ⭐⭐⭐ THE MODEL ALREADY TREATS THESE AS ONE KIND OF THING AND THE SQL DID NOT.
-#    `asrt:Elimination` carries a `quantity` and the corpus files eliminations naming THREE of
-#    them -- `demand`, `nameplate` and `draw` -- because two members naming one machine double
-#    count the machine as well as the orders. `composition/converted.sqlc` and
-#    `composition/fused.sqlc` both answer `'demand' AS quantity` as a literal, so the nameplate
-#    and draw eliminations a composer filed and sized are read by nothing.
+# One kind of thing
+#   The model already treats these as one kind of thing and the SQL did not. `asrt:Elimination`
+#   carries a `quantity` and the corpus files eliminations naming three of them (`demand`,
+#   `nameplate` and `draw`), because two members naming one machine double count the machine as
+#   well as the orders. composition/fused.sqlc sums demand, nameplate and draw; this relation adds
+#   the three buffer slacks, which no sum reads.
 #
-# ⛔⛔ AND A FUSION CAN THEREFORE MOVE A NAMEPLATE IN SILENCE. Demonstrated 2026-09-06 with
-#    `examples/witnesses/main.rs`: `merge-group-composition/compute-us` is a ONE-PART fusion with no
-#    eliminations, its composed nameplate was moved from 8 GPU to 40 GPU -- five times the
-#    single part it is composed from -- and no composition rule noticed.
+# A fusion could move a nameplate in silence
+#   `merge-group-composition/compute-us` is a one-part fusion with no eliminations, and its
+#   composed nameplate moved to five times the single part it is composed from was invisible to
+#   every composition rule while they read only demand. checks/one_part_fusion_alters_its_part
+#   reads this relation and fires on that edit, and examples/witnesses/main.rs makes it.
 #
-# ⭐ WHY FIVE AND NOT TWO. A layer's demand, its nameplate and its three buffer slacks are all
-#   quantities in the layer's own unit that a composition has to carry or account for. The
-#   three slacks arrive from `entries/slacks.sqlc` already tall, and the buffer enum names them
-#   exactly as the elements do.
+# Why five and not two
+#   A layer's demand, its nameplate and its three buffer slacks are all quantities in the layer's
+#   own unit that a composition has to carry or account for. The three slacks arrive from
+#   `entries/slacks.sqlc` already tall, and the buffer enum names them exactly as the elements do.
 #
-# ⚠️ AN UNSIZED QUANTITY IS ABSENT FROM THIS RELATION rather than present with a NULL. A row
-#    here is a number somebody filed; a caller that needs to know a slack was DECLINED reads
-#    entries/slacks.sqlc, where the typed reason lives.
+# An unsized quantity has no row
+#   An unsized quantity is absent from this relation rather than present with a NULL. A row here
+#   is a number somebody filed; a caller that needs to know a slack was declined reads
+#   entries/slacks.sqlc, where the typed reason lives.
+#
+# The five names are a codomain, and it is not the fusion's
+#   `public.layer_quantity` declares them, so a caller that misspells one fails when its query is
+#   parsed instead of quietly matching nothing. `pm.summed_quantity` is the OTHER set, the three a
+#   fusion sums, and the two agree on `demand` and `nameplate` and on nothing else. A relation
+#   holding one against the other therefore matches by name and casts both sides to say that the
+#   name is all they share: composition/carried.sqlc and algebra/carried.sqlc are the two that do.
+#   ⛔ Before this was a type, `units/conversions.sqlc`'s `quantity = 'nameplate'` was a string
+#   nothing checked, and a misspelling there empties the whole conversion graph in silence.
+#
+# The slack arm builds its name and the cast is where that is checked
+#   `pm.buffer || 'Slack'` makes the element's name out of the buffer's, so the three move together
+#   with the enum they come from. A buffer this codomain does not name fails at the cast rather
+#   than arriving downstream as a sixth quantity nobody declared.
+#
+# Probe
+#   `examples/witnesses/main.rs` moves `compute-us`'s composed nameplate to five times its part;
+#   run it, and a composition rule must notice.
 -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
-SELECT d.filing, d.layer, 'demand' AS quantity,
+SELECT d.filing, d.layer, 'demand'::public.layer_quantity AS quantity,
        d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
 FROM (
     :compose(layers/demand.sqlc)
 ) d
 UNION ALL
-SELECT n.filing, n.layer, 'nameplate',
+SELECT n.filing, n.layer, 'nameplate'::public.layer_quantity,
        n.n_low, n.n_mode, n.n_high, n.n_unit
 FROM (
     :compose(layers/nameplate.sqlc)
 ) n
 UNION ALL
-SELECT s.filing, s.layer, s.buffer || 'Slack',
+SELECT s.filing, s.layer, (s.buffer || 'Slack')::public.layer_quantity,
        s.low, s.mode, s.high, s.unit
 FROM (
     :compose(entries/slacks.sqlc)

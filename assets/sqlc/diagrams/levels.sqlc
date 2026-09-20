@@ -1,46 +1,50 @@
-# THE PROCESSES THIS CORPUS ACTUALLY HOLDS, AT EVERY LEVEL. One row per level: who acts, what
-# they act on, what comes out, and whether examples/diagramming/main.rs emits it.
+# The processes this corpus actually holds, at every level. One row per level: who acts, what they
+# act on, what comes out, and whether examples/diagramming/main.rs emits it.
 #
-# ⭐⭐⭐ THE UNCARRIED TABLES ARE NOT CONTENTLESS, THEY ARE A DIFFERENT PROCESS. `coupling_search`,
-#    `stack_scope`, `bound_origin`, `narrowing` and `claim`'s provenance columns have no home in
-#    the SUPPLY process, which is why diagrams/domain_objects.sqlc files them as `none`. They have
-#    an actor, a subject and an outcome of their own: somebody looked, at something, and found
-#    something. That is a process, and it is the one about the act of FILING rather than about the
-#    supply. `pm.claim` carries `prov_entered_by` and `prov_approved_by`, which is two roles and an
-#    order, and §1's "there is no sequence here" is true of the supply and FALSE of this level.
+# The uncarried tables are a different process
+#   They are not contentless. `coupling_search`, `stack_scope`, `bound_origin`, `narrowing` and
+#   `claim`'s provenance columns have no element in the supply process: diagrams/domain_objects.sqlc
+#   renders the first two as documentation only and files the rest as `none`. They have an actor,
+#   a subject and an
+#   outcome of their own: somebody looked, at something, and found something. That is a process,
+#   and it is the one about the act of filing rather than about the supply. `pm.claim` carries
+#   `prov_entered_by` and `prov_approved_by`, which is two roles and an order, and §1's "there is
+#   no sequence here" is true of the supply and false of this level.
 #
-# ⭐⭐ AND EVERY LEVEL ABOVE THE FIRST ALREADY HAS THE SAME SHAPE, THREE TIMES OVER:
-#      checks/all      rule | filing, layer | violates | detail
-#      arithmetic/all  site | filing, layer | verdict  | detail
-#      algebra/all     law  | subject       | holds    | detail
-#    ACTOR, SUBJECT, OUTCOME, WHY. Nobody designed that; it fell out of each roster answering the
-#    same question one level up. It is the signature of a meta-process and it is already data.
+# The levels above share one shape
+#   Every level above the first has the same shape, three times over:
+#     checks/all      rule | filing, layer | violates | detail
+#     arithmetic/all  site | filing, layer | verdict  | detail
+#     algebra/all     law  | subject       | holds    | detail
+#   Actor, subject, outcome, why. Nobody designed that; it fell out of each roster answering the
+#   same question one level up. It is the signature of a meta-process and it is already data.
 #
-# ⭐⭐⭐ THE RECURSION TERMINATES, AND THE END CONDITION IS AN EMPTY TABLE. Each level's output is
-#    the next one's subject: a figure becomes a claim, a claim becomes a verdict, a verdict becomes
-#    a law's subject, a law becomes a contract's subject. Then reports/integrity.sqlc is REQUIRED
-#    TO RETURN NOTHING, so a level 5 would have no population at all. That is §3's third
-#    precondition, "the expansion has a start and an end", holding of the META recursion for the
-#    same reason it holds of F.
+# The recursion ends on an empty table
+#   Each level's output is the next one's subject: a figure becomes a claim, a claim becomes a
+#   verdict, a verdict becomes a law's subject, a law becomes a contract's subject. Then
+#   reports/integrity.sqlc is required to return nothing, so a level 5 would have no population at
+#   all. That is §3's third precondition, "the expansion has a start and an end", holding of the
+#   meta recursion for the same reason it holds of F.
 #
-# ⛔ ONLY LEVEL 0 IS EMITTED, AND THAT IS THE FINDING RATHER THAN A LIMIT. 44 of the tree's
-#   compositions reach no drawable table at all, and `epistemics/` is wholly among them: the entire
-#   record of who looked at what has no BPMN element. It is not undrawable because it is vague. It
-#   is undrawable because it is a DIFFERENT PROCESS and this emitter renders one.
+# Only level 0 is emitted
+#   That is the finding rather than a limit. Many of the tree's compositions reach no drawable
+#   table at all, and `epistemics/` is wholly among them: the entire record of who looked at what
+#   has no BPMN element. It is not undrawable because it is vague. It is undrawable because it is
+#   a different process and this emitter renders one.
 -- the levels of process this corpus holds, and which of them a BPMN emission carries.
 SELECT * FROM (VALUES
   (0, 'supply',   'an operation, in the lane it draws from', 'a layer''s supply',
-      'a draw, and a commitment INDUCED on another layer',   'pm.operation, pm.draw, pm.induction', true),
+      'a draw, and a commitment induced on another layer',   'pm.operation, pm.draw, pm.induction', true),
   (1, 'filing',   'a party, an enterer, an approver, a searcher',
       'the figures level 0 leaves behind',
       'a claim with a standing, a search with an outcome, a scope with an extent',
-      'pm.claim provenance, pm.coupling_search, pm.stack_scope, pm.bound_origin, pm.narrowing', false),
+      'pm.claim provenance, pm.absence, pm.coupling_search, pm.stack_scope, pm.bound_origin, pm.narrowing', false),
   (2, 'checking', 'a rule on checks/roster.sqlc', 'the claims level 1 filed',
       'violates, or NULL for a rule that examined nothing',  'checks/all.sqlc', false),
   (3, 'proving',  'a law on algebra/roster.sqlc, a site on arithmetic/roster.sqlc',
       'the relations level 2 rests on', 'holds, or a verdict',
       'algebra/all.sqlc, arithmetic/all.sqlc', false),
   (4, 'contract', 'a roster, against the population it declares', 'the laws level 3 states',
-      '⛔ NOTHING. An empty result is the end condition, which is why there is no level 5',
+      'nothing. An empty result is the end condition, which is why there is no level 5',
       'reports/integrity.sqlc', false)
 ) AS l(level, process, actor, subject, outcome, where_it_lives, emitted)

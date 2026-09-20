@@ -1,35 +1,287 @@
-# EVERY RULE BESIDE THE GRAIN IT DECLARES AND THE GRAIN ITS ROWS ACTUALLY HAVE. One row per rule.
+# Every rule beside the grain it declares and the grain its rows actually have. One row per rule.
 #
-# ⭐⭐⭐ THE CONTRACT'S COLUMNS NAME A SUBJECT MANY RULES DO NOT EXAMINE. `checks/all.sqlc`
-#    returns `(rule, filing, layer, ...)` and says *which layer of which filing it is*. Wherever
-#    the examined item is finer than a layer, a PART, a SLACK or a CLAIM, `(filing, layer)` is
-#    not a key and the item's identity survives only inside the prose `detail`.
-#    ⚠️ The tally is printed by `examples/soundness/main.rs` §4 rather than written here: it moved
-#    when `claim` was added, which is the third subject and the largest of the three.
+# The contract's columns name a subject many rules do not examine
+#   `checks/all.sqlc` returns `(rule, filing, layer, ...)` and says *which layer of which filing
+#   it is*. Wherever the examined item is finer than a layer (a part, a slack or a claim),
+#   `(filing, layer)` is not a key and the item's identity survives only inside the prose
+#   `detail`. `examples/soundness/main.rs` §4 prints the tally; `claim` is the third subject and
+#   the largest of the three.
 #
-# ⭐⭐ WHICH SPLITS THE BAG INTO TWO THINGS THAT WERE BEING CALLED ONE. `invariance.sqlc` says
-#    `checks/all.sqlc` IS A BAG because *several items per layer produce the same sentence*, and
-#    that is true of TWO rules. For the other five every row says something DIFFERENT, and the
-#    bag is a GRAIN artifact rather than a repetition one. ⭐ Its count-don't-subtract repair is
-#    right for both, which is worth knowing: the repair was more general than its stated reason.
+# Two things called one bag
+#   `invariance.sqlc` says `checks/all.sqlc` is a bag because *several items per layer produce
+#   the same sentence*, and that is true of only some rules. For the others every row says
+#   something different, and the bag is a grain artifact rather than a repetition one. Its
+#   count-don't-subtract repair is right for both, which is worth knowing: the repair was more
+#   general than its stated reason.
 #
-# ⛔⛔ THE LAW IS ONE-DIRECTIONAL AND THAT IS NOT A WEAKNESS. A rule declaring `layer` must have
-#   exactly one row per `(filing, layer)`; a second row means it silently changed what it
-#   examines and no other law here would see it, because the count moves and nothing says what
-#   the count is OF. ⛔ The converse cannot be asserted: a part-grained rule may legitimately see
-#   one part per layer in a corpus that happens to file one, and accusing it would be reading
-#   luck as a declaration.
-# ⭐⭐⭐ AND A KEY THAT IS UNIQUE IS NOT A KEY THAT RESOLVES, WHICH IS WHY THIS FILE NEEDED A
-#    SECOND ARM. `unresolvable` counts the rows whose `(filing, layer)` names no filed layer.
-#    ⛔ A NULL is not counted: a rule about a composition legitimately has no layer, and the
-#    contract's column is nullable for exactly that. What is counted is a value that LOOKS like
-#    a layer and is not, which is the state a reader and every join downstream cannot detect.
+# The law is one-directional
+#   That is not a weakness. A rule declaring `layer` must have exactly one row per
+#   `(filing, layer)`; a second row means it silently changed what it examines and no other law
+#   here would see it, because the count moves and nothing says what the count is of. The
+#   converse cannot be asserted: a part-grained rule may legitimately see one part per layer in a
+#   corpus that happens to file one, and accusing it would be reading luck as a declaration.
 #
-# ⚠️ ZERO IS A REPAIRABLE STATE AND NOT A PROPERTY OF THE CONTRACT. A rule whose subject is
-#   finer than a layer reports the finer item's identity in `detail` and its own layer in the
-#   column, because anything joining a verdict to a layer keeps only the pairs that resolve and
-#   drops the rest in silence.
--- checks/roster.sqlc's declared subject against checks/all.sqlc's multiplicity AND its key.
+# A unique key is not a key that resolves
+#   That is why this file has a second arm. `unresolvable` counts the rows whose
+#   `(filing, layer)` names no filed layer. A NULL is not counted: a rule about a composition
+#   legitimately has no layer, and the contract's column is nullable for exactly that. What is
+#   counted is a value that looks like a layer and is not, which is the state a reader and every
+#   join downstream cannot detect.
+#
+# The arm the multiplicity one cannot be
+#   `finer_than_declared` asks whether the key is unique per row; `unresolvable` asks whether the
+#   key resolves. A rule putting an address like `pm:nameplate/pm:amount claim 7` in the `layer`
+#   column satisfies the multiplicity arm by construction, because a value unique per row is one
+#   row per key. What makes the column wrong is exactly what makes that arm pass.
+#
+# Zero is a repairable state
+#   It is not a property of the contract. A rule whose subject is finer than a layer reports the
+#   finer item's identity in `detail` and its own layer in the column, because anything joining
+#   a verdict to a layer keeps only the pairs that resolve and drops the rest in silence.
+# Its vocabulary is computed once
+#   Every relation below is read many times over in what follows, and Postgres expands a view once
+#   per reference, so the planner was building thousands of copies of the same few relations. This
+#   statement was within a few levels of the depth `examples/probes` refuses to read a plan past,
+#   and took tens of gigabytes to plan. Defined here, each is computed once: `examples/probes`
+#   prints the depth and what is left of the ceiling. ⭐ The rows are identical and the plan is
+#   deliberately not, which is the one place in this tree where that is the intention.
+#
+-- checks/roster.sqlc's declared subject against checks/all.sqlc's multiplicity and its key.
+WITH
+checks_roster AS MATERIALIZED (
+    :define(checks/roster.sqlc)
+),
+fusions AS MATERIALIZED (
+    :define(composition/fusions.sqlc)
+),
+notations AS MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+unresolved_parts AS MATERIALIZED (
+    :define(composition/unresolved_parts.sqlc)
+),
+filed AS MATERIALIZED (
+    :define(eliminations/filed.sqlc)
+),
+searched AS MATERIALIZED (
+    :define(eliminations/searched.sqlc)
+),
+fusion_parts AS MATERIALIZED (
+    :define(folds/fusion_parts.sqlc)
+),
+summed_quantities AS MATERIALIZED (
+    :define(layers/summed_quantities.sqlc)
+),
+derived_quantities AS MATERIALIZED (
+    :define(composition/derived_quantities.sqlc)
+),
+resolved_quantities AS MATERIALIZED (
+    :define(composition/resolved_quantities.sqlc)
+),
+slacks AS MATERIALIZED (
+    :define(entries/slacks.sqlc)
+),
+demand AS MATERIALIZED (
+    :define(layers/demand.sqlc)
+),
+layers_nameplate AS MATERIALIZED (
+    :define(layers/nameplate.sqlc)
+),
+quantities AS MATERIALIZED (
+    :define(layers/quantities.sqlc)
+),
+part_quantities AS MATERIALIZED (
+    :define(composition/part_quantities.sqlc)
+),
+carriable AS MATERIALIZED (
+    :define(composition/carriable.sqlc)
+),
+fusion_quantities AS MATERIALIZED (
+    :define(composition/fusion_quantities.sqlc)
+),
+unsized_conversions AS MATERIALIZED (
+    :define(composition/unsized_conversions.sqlc)
+),
+filed_grounds AS MATERIALIZED (
+    :define(composition/filed_grounds.sqlc)
+),
+suspension_grounds AS MATERIALIZED (
+    :define(composition/suspension_grounds.sqlc)
+),
+suspended_fusions AS MATERIALIZED (
+    :define(composition/suspended_fusions.sqlc)
+),
+suspended_quantities AS MATERIALIZED (
+    :define(composition/suspended_quantities.sqlc)
+),
+carried AS MATERIALIZED (
+    :define(composition/carried.sqlc)
+),
+citations AS MATERIALIZED (
+    :define(composition/citations.sqlc)
+),
+composer_regimes AS MATERIALIZED (
+    :define(composition/composer_regimes.sqlc)
+),
+converted AS MATERIALIZED (
+    :define(composition/converted.sqlc)
+),
+derived_fusions AS MATERIALIZED (
+    :define(composition/derived_fusions.sqlc)
+),
+descent AS MATERIALIZED (
+    :define(composition/descent.sqlc)
+),
+unsettled AS MATERIALIZED (
+    :define(composition/unsettled.sqlc)
+),
+remainder_frontier AS MATERIALIZED (
+    :define(composition/remainder_frontier.sqlc)
+),
+passed_nodes AS MATERIALIZED (
+    :define(composition/passed_nodes.sqlc)
+),
+suspended_remainders AS MATERIALIZED (
+    :define(composition/suspended_remainders.sqlc)
+),
+figureless_remainders AS MATERIALIZED (
+    :define(composition/figureless_remainders.sqlc)
+),
+owed_equality AS MATERIALIZED (
+    :define(composition/owed_equality.sqlc)
+),
+part_sums AS MATERIALIZED (
+    :define(folds/part_sums.sqlc)
+),
+paired AS MATERIALIZED (
+    :define(eliminations/paired.sqlc)
+),
+fused AS MATERIALIZED (
+    :define(composition/fused.sqlc)
+),
+owed_remainder AS MATERIALIZED (
+    :define(composition/owed_remainder.sqlc)
+),
+figures AS MATERIALIZED (
+    :define(layers/figures.sqlc)
+),
+filed_remainders AS MATERIALIZED (
+    :define(layers/filed_remainders.sqlc)
+),
+differenced_remainder AS MATERIALIZED (
+    :define(layers/differenced_remainder.sqlc)
+),
+settled_remainders AS MATERIALIZED (
+    :define(composition/settled_remainders.sqlc)
+),
+fused_remainders AS MATERIALIZED (
+    :define(composition/fused_remainders.sqlc)
+),
+jagged_layers AS MATERIALIZED (
+    :define(composition/jagged_layers.sqlc)
+),
+regimes AS MATERIALIZED (
+    :define(composition/regimes.sqlc)
+),
+part_regimes AS MATERIALIZED (
+    :define(composition/part_regimes.sqlc)
+),
+absorber AS MATERIALIZED (
+    :define(layers/absorber.sqlc)
+),
+absorbing_slack AS MATERIALIZED (
+    :define(entries/absorbing_slack.sqlc)
+),
+couplings AS MATERIALIZED (
+    :define(entries/couplings.sqlc)
+),
+windows AS MATERIALIZED (
+    :define(layers/windows.sqlc)
+),
+derived_time_slacks AS MATERIALIZED (
+    :define(entries/derived_time_slacks.sqlc)
+),
+holders AS MATERIALIZED (
+    :define(entries/holders.sqlc)
+),
+holder_totals AS MATERIALIZED (
+    :define(entries/holder_totals.sqlc)
+),
+served_holders AS MATERIALIZED (
+    :define(entries/served_holders.sqlc)
+),
+unserved_holders AS MATERIALIZED (
+    :define(entries/unserved_holders.sqlc)
+),
+unserved_totals AS MATERIALIZED (
+    :define(entries/unserved_totals.sqlc)
+),
+claims AS MATERIALIZED (
+    :define(epistemics/claims.sqlc)
+),
+claim_derivations AS MATERIALIZED (
+    :define(epistemics/claim_derivations.sqlc)
+),
+point_claims AS MATERIALIZED (
+    :define(epistemics/point_claims.sqlc)
+),
+served_totals AS MATERIALIZED (
+    :define(folds/served_totals.sqlc)
+),
+identities_roster AS MATERIALIZED (
+    :define(identities/roster.sqlc)
+),
+denied_remainders AS MATERIALIZED (
+    :define(layers/denied_remainders.sqlc)
+),
+drawn AS MATERIALIZED (
+    :define(layers/drawn.sqlc)
+),
+every_layer AS MATERIALIZED (
+    :define(layers/every_layer.sqlc)
+),
+remainder AS MATERIALIZED (
+    :define(layers/remainder.sqlc)
+),
+exposure_scope AS MATERIALIZED (
+    :define(layers/exposure_scope.sqlc)
+),
+filed_against_derived AS MATERIALIZED (
+    :define(layers/filed_against_derived.sqlc)
+),
+lumpy AS MATERIALIZED (
+    :define(layers/lumpy.sqlc)
+),
+pressed AS MATERIALIZED (
+    :define(layers/pressed.sqlc)
+),
+signed AS MATERIALIZED (
+    :define(layers/signed.sqlc)
+),
+unabsorbed_exposure AS MATERIALIZED (
+    :define(layers/unabsorbed_exposure.sqlc)
+),
+conversions AS MATERIALIZED (
+    :define(units/conversions.sqlc)
+),
+with_a_period AS MATERIALIZED (
+    :define(units/with_a_period.sqlc)
+),
+jagged_layer AS MATERIALIZED (
+    :define(checks/jagged_layer.sqlc)
+),
+unresolved_part AS MATERIALIZED (
+    :define(checks/unresolved_part.sqlc)
+),
+checks_all AS MATERIALIZED (
+    :define(checks/all.sqlc)
+)
 SELECT r.slug,
        r.subject                                     AS declares,
        count(c.rule)                                 AS rows,
@@ -37,11 +289,6 @@ SELECT r.slug,
        count(DISTINCT (c.filing, c.layer, c.detail)) AS sentences,
        r.subject = 'layer'
          AND count(c.rule) <> count(DISTINCT (c.filing, c.layer)) AS finer_than_declared,
-       -- ⛔⛔⛔ THE ARM THE MULTIPLICITY ONE CANNOT BE. `finer_than_declared` asks whether the
-       --    key is UNIQUE per row; this asks whether the key RESOLVES. A rule putting an
-       --    address like `pm:nameplate/pm:amount claim 7` in the `layer` column satisfies the
-       --    multiplicity arm by construction, because a value unique per row IS one row per key.
-       --    ⭐ What makes the column wrong is exactly what makes that arm pass.
        count(c.rule) FILTER (WHERE c.layer IS NOT NULL AND l.layer IS NULL) AS unresolvable
 FROM      (
     :compose(checks/roster.sqlc)

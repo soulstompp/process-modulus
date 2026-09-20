@@ -1,66 +1,78 @@
-# WHAT EACH ABSORBING BUFFER WAS ASKED TO HOLD, BESIDE HOW MUCH IT HOLDS. One row per
+# What each absorbing buffer was asked to hold, beside how much it holds. One row per
 # (interfering layer, buffer it named) carrying the shares attributed to that buffer and the
 # slack filed for it.
 #
-# ⭐⭐ THE UNSERVED HOLDERS ARE EXEMPT AND THAT EXEMPTION IS THE ARGUMENT, NOT A
-#    TECHNICALITY. The remaining holders name somebody who ABSORBED the remainder, so their
-#    shares have to fit inside the buffer that did the absorbing. `customer` and `unrealised`
-#    name demand that was never met by anyone -- it is the overflow, not a load on the
-#    buffer, so counting it would bound the wrong quantity.
+# The unserved holders are exempt
+#   That exemption is the argument, not a technicality. The remaining holders name somebody who
+#   absorbed the remainder, so their shares have to fit inside the buffer that did the absorbing.
+#   `customer` and `unrealised` name demand that was never met by anyone: it is the overflow, not
+#   a load on the buffer, so counting it would bound the wrong quantity.
 #
-# ✅⭐⭐⭐ THE EXEMPTION IS AN ANTI-JOIN NOW, NOT A KIND LIST. It read `kind <> 'unrealised'`,
-#    which exempted one member of a class of two and summed `customer` -- demand that was
-#    MADE and went unserved -- into the buffer's load. checks/clearance_with_unserved.sqlc
-#    ranges over the complement of this population and calls that same PAIR a violation, and
-#    entries/unserved_holders.sqlc is where the pair is named. Three partitions of five kinds
-#    lived here; there is one definition between them now, and it is in one file.
+# The exemption is the served set, not a kind list written here
+#   The served side comes from entries/served_holders.sqlc, the complement of the unserved pair.
+#   A kind list written here, such as
+#   `kind <> 'unrealised'` exempts one member of a class of two and sums `customer`, demand that
+#   was made and went unserved, into the buffer's load. checks/clearance_with_unserved.sqlc ranges
+#   over the complement of this population and calls that same pair a violation, and
+#   entries/unserved_holders.sqlc is where the pair is named. The partition of the five kinds has
+#   one definition, and it is in one file.
 #
-# ⛔⛔ INTERFERENCE ONLY, WHERE `pressed` ALSO ADMITS `transition`, AND THAT NARROWING IS THE
-#    REPAIR. Under a transition the holder shares carry the CLEARANCE magnitude -- `|n - d|`
-#    is the larger side and it is what the filer can count -- while the buffer slack bounds
-#    the INTERFERENCE side. The inequality then compares opposite edges of one buffer.
-#    `Fit` says the two sides are anticorrelated and must be evaluated AT A CORNER, and
-#    nothing in this relation can pick one. checks/exposure_unaccounted.sqlc is the rule
-#    written for that case: it reaches the same layers through the implied exposure instead,
-#    and suspends rather than passing when the unserved share is unstated.
+# Interference only
+#   `pressed` also admits `transition`, and narrowing to interference is the repair. Under a
+#   transition the holder shares carry the clearance magnitude (`|n - d|` is the larger side and
+#   it is what the filer can count) while the buffer slack bounds the interference side. The
+#   inequality then compares opposite edges of one buffer. `Fit` says the two sides are
+#   anticorrelated and must be evaluated at a corner, and nothing in this relation can pick one.
+#   checks/exposure_unaccounted.sqlc is the rule written for that case: it reaches the same layers
+#   through the implied exposure instead, and suspends rather than passing when the unserved share
+#   is unstated.
 #
-# ⛔ HOLDER IS INCIDENCE, NOT ABSORPTION -- the words are the XSD's, in the section header
-#   above `HolderKind`. Which holders absorbed is not a fact the type carries. It is read
-#   here from the sign and the unserved class, and that reading belongs to this file rather
-#   than to any filing.
+# Holder is incidence, not absorption
+#   The words are the XSD's, in the section header above `HolderKind`. Which holders absorbed is
+#   not a fact the type carries. It is read here from the sign and the unserved class, and that
+#   reading belongs to this file rather than to any filing.
 #
-# ⛔ ONLY A SIZED SLACK BOUNDS ANYTHING. A buffer filed `unmeasured` has no magnitude to
-#   compare against, so those rows are absent rather than passing -- a bound with nothing to
-#   bound passes loudest.
+# Only a sized slack bounds anything
+#   A buffer filed `unmeasured` has no magnitude to compare against, so those rows are absent
+#   rather than passing: a bound with nothing to bound passes loudest.
 #
-# ⛔⛔ AND THE BUFFER IS REACHED THROUGH A READER'S ASSERTION. The absorber is a borrowed
-#    term; deciding that it names one of the three structural buffers is a judgement recorded
-#    in layers/absorber.sqlc, not a fact any filing states.
-# ⛔⛔⛔ THE ANTI-JOIN IS WHY `share_exceeds_slack` READS ⛔ VACUOUS, AND THE VACUUM IS A FINDING
-#    ABOUT THE EVIDENCE RATHER THAN A GAP IN IT. Traced stage by stage: 23 pressed layers, all 23
-#    keep their absorber and their holders, 4 survive `slack is SIZED`, 3 survive
-#    `sign = interference` -- and the anti-join then removes all three.
+# The sum is the served fold's, with what it leaves out
+#   `borne` is folds/served_totals.sqlc's served mode, one row per layer, so the served shares are
+#   folded once. `sum()` skips NULLs, so a layer where a served share is filed `unmeasured` or as
+#   `sharesSum`'s output sums to less than it holds; `unstated` is carried beside the sum, and a
+#   reader bounding the load declines those layers rather than reading part of it as all of it.
 #
-#    ⭐ It removes them because **every holder on all three is `customer` or `unrealised`**:
-#    `enterprise-contract/capability` and `contrato-empresarial/capacidade-entregavel` (2 + 1
-#    each) and `merge-holding-composition/shift-line` (1.7 + 1.0). Six holders, six unserved.
-#    So on every interference layer in this corpus that sizes its absorbing buffer, NOTHING WAS
-#    ABSORBED AT ALL -- the demand was turned away. `Σ served shares ≤ S` has an empty left side
-#    because no share was served, which is the model's own subject stated by the data.
+# The buffer is reached through a reader's assertion
+#   The absorber is a borrowed term; deciding that it names one of the three structural buffers is
+#   a judgement recorded in layers/absorber.sqlc, not a fact any filing states.
 #
-#    ⛔ Disable the anti-join and three rows appear: 2.7, 3 and 3 against slacks of their own.
-#    That is not the rule waking up; it is the rule counting turned-away demand as absorbed.
+# Why `share_exceeds_slack` reads vacuous
+#   The served filter is why, and the vacuum is a finding about the evidence rather than a gap in
+#   it. Every pressed layer that survives `slack is sized` and `sign = interference` is then removed
+#   by the served filter, because every holder on it is `customer` or `unrealised`: on this corpus that is
+#   `enterprise-contract/capability`, `contrato-empresarial/capacidade-entregavel` and
+#   `merge-holding-composition/shift-line`. So on every interference layer in this corpus that
+#   sizes its absorbing buffer, nothing was absorbed at all: the demand was turned away.
+#   `Σ served shares ≤ S` has an empty left side because no share was served, which is the model's
+#   own subject stated by the data.
 #
-# ⚠️ AND PROBE IT RATHER THAN READING THE ZERO. A `0` here is produced by a working anti-join, by
-#   a broken one, and by an upstream filter that emptied the population -- three different facts
-#   wearing one number. ⭐ algebra/borne.sqlc settles it without touching this file: Σall = Σkept
-#   + Σremoved, per layer, every run. It prints `3 held = 0 absorbed + 3 unserved` for each of the
-#   four layers above, the vacuum as arithmetic rather than as an argument in a comment.
-#   ⛔ A hand probe cannot say it: a `sed` that matches nothing reports the opposite in silence.
+# Probe it rather than reading the zero
+#   A `0` here is produced by a working served filter, by a broken one, and by an upstream filter that
+#   emptied the population: three different facts wearing one number. algebra/borne.sqlc settles
+#   it without touching this file: Σall = Σkept + Σremoved, per layer, every run. Run it for the
+#   numbers; its detail reads `<held> held = <absorbed> absorbed + <unserved> unserved` per layer,
+#   the vacuum as arithmetic rather than as an argument in a comment.
+#
+# Probe
+#   Trace the population stage by stage (pressed, absorber and holders kept, `slack is sized`,
+#   `sign = interference`, the served filter) and see where it empties. Disable the served filter and rows
+#   appear, each against a slack of its own. That is not the rule waking up; it is the rule
+#   counting turned-away demand as absorbed. ⚠️ A hand probe cannot settle the zero the way
+#   algebra/borne.sqlc does: a `sed` that matches nothing reports the opposite in silence.
 -- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
-SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit
+SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit, b.unstated
 FROM (
-    SELECT p.filing, p.layer, a.buffer, sum(h.share_mode) AS borne
+    SELECT p.filing, p.layer, a.buffer, h.served_mode AS borne, h.unstated
     FROM      (
         :compose(layers/pressed.sqlc)
     ) p
@@ -68,10 +80,9 @@ FROM (
         :compose(layers/absorber.sqlc)
     ) a USING (filing, layer)
     JOIN      (
-        :compose(entries/served_holders.sqlc)
+        :compose(folds/served_totals.sqlc)
     ) h USING (filing, layer)
     WHERE p.sign = 'interference'
-    GROUP BY p.filing, p.layer, a.buffer
 ) b
 JOIN (
     :compose(entries/slacks.sqlc)

@@ -1,0 +1,33 @@
+# A layer's demand and nameplate, side by side. One row per (filing, layer) that has either figure,
+# stated or computed: layers/demand.sqlc and layers/nameplate.sqlc, joined on the layer.
+#
+# The pair every remainder is made of
+#   `r = n - d` reads the two figures of one layer together, and so does every question asked of a
+#   layer against both: whether a denied remainder is contradicted, whether a lumpy nameplate's
+#   quantum fits the demand, what a part reached twice would put into a total twice. Each of those
+#   joined the two vectors to its own rows separately; here they are joined once, and a reader
+#   joins the pair.
+#
+# Full, so either figure alone is a row
+#   A layer with a demand and no nameplate, or the reverse, is a row with the missing side empty,
+#   so a reader asking about a layer finds what it has. layers/differenced_remainder.sqlc keeps the
+#   rows with both.
+#
+# Proof
+#   algebra/figures.sqlc holds the pair to inclusion and exclusion: the layers with either figure are
+#   those with a demand, plus those with a nameplate, less those with both.
+-- layers/demand.sqlc and layers/nameplate.sqlc on the layer, each side where it has a figure.
+SELECT filing, layer,
+       d.d_low, d.d_mode, d.d_high, d.d_unit, d.is_a_point, d.d_derived,
+       n.n_low, n.n_mode, n.n_high, n.n_unit, n.n_derived,
+       n.amount_origin, n.amount_origin_absent,
+       n.lumpy, n.divisibility_absent,
+       n.quantum_low, n.quantum_mode, n.quantum_high, n.quantum_unit, n.quantum_absent,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_absent
+FROM      (
+    :compose(layers/demand.sqlc)
+) d
+FULL JOIN (
+    :compose(layers/nameplate.sqlc)
+) n USING (filing, layer)

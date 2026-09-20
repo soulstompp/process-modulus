@@ -1,0 +1,52 @@
+-- §20 What a WIDER elimination would do to the figure it comes off, and whether the filer licensed it.
+# One row per filed elimination, with the reading it takes, the direction its own width pushes the
+# composed figure, and what its claim says its bound rests on.
+#
+# The one place less knowledge gives a tighter answer
+#   Every other width in this model widens what it touches. An elimination subtracted bound by bound
+#   does the opposite: widen it and the composed figure narrows, because its low rises and its high
+#   falls together. So a composer less certain how much was double counted files a more precise
+#   composed demand. Nothing else here can see that, which is why it is worth a section.
+#
+# The licence is a filed answer, not a verdict
+#   Reading an elimination bound by bound assumes its bounds move with the figure it comes out of, and
+#   a filing can say exactly that at its claim's `boundOrigin`: a derivation naming `sharedParts` means
+#   the figure is a copy of one stated in the part it removes. An absent origin says nothing sets the
+#   bound, which neither supports the assumption nor contradicts it. So this column reports which of
+#   the two the filer wrote down and judges neither.
+#
+# Reported, not asserted
+#   Neither reading is a defect. The filings that come out anti-isotone and unlicensed are correct
+#   under the reading they state, so a rule here would spend trust on documents that are right.
+#
+# ⛔ The figures are how the key is checked, and a count could not do it
+#   `claim_seq` is an ordinal, so joining on it returns one claim per elimination whether or not it is
+#   the right claim. Measured on this corpus: shifted by one it still returns every row and the figures
+#   stop agreeing. So this section carries the claim's own three points beside the elimination's and
+#   the program requires them equal, which is the check a cardinality could never be.
+#
+# Both arms are occupied, which is what makes the columns readable
+#   A classification with an empty arm reports the corpus rather than the model. The crossed reading is
+#   reached only where bound by bound would leave the claim disordered, so it is rare by construction
+#   and not by accident, and a run in which it vanished would mean the fixture exercising it had
+#   stopped.
+-- eliminations/monotone.sqlc, ordered so the anti-isotone rows read first.
+SELECT m.composition                     AS "composition!",
+       m.composed_layer                  AS "composed_layer!",
+       m.quantity::text                  AS "quantity!",
+       m.low::float8                     AS low,
+       m.high::float8                    AS high,
+       m.width::float8                   AS width,
+       m.crossed                         AS "crossed!",
+       m.isotone                         AS isotone,
+       m.licensed                        AS licensed,
+       m.claim_seq                       AS claim_seq,
+       m.claim_low::float8               AS claim_low,
+       m.claim_mode::float8              AS claim_mode,
+       m.claim_high::float8              AS claim_high,
+       m.what_a_wider_elimination_does   AS "what_a_wider_elimination_does!",
+       m.what_the_bound_rests_on         AS "what_the_bound_rests_on!"
+FROM (
+    :compose(eliminations/monotone.sqlc)
+) m
+ORDER BY (m.isotone IS NULL), m.isotone, m.licensed, 1, 2, 3

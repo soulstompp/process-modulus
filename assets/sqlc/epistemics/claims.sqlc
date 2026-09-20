@@ -1,41 +1,50 @@
-# EVERY THREE-POINT CLAIM IN EVERY DOCUMENT, WITH THE ELEMENT THAT MADE IT, THE WIDTH IT
-# SPANS, AND THE TWO ANSWERS `Claim` REQUIRES OF IT. One row per claim: what would narrow
-# this range, and who owns the edge it would have to move.
+# Every three-point claim in every document, with the element that made it, the width it spans,
+# and the two answers `Claim` requires of it. One row per claim: what would narrow this range, and
+# who owns the edge it would have to move.
 #
-# ⭐⭐⭐ THE GRAIN IS THE CLAIM AND NOT THE LAYER, AND THAT IS THE WHOLE POINT OF THE FILE.
-#    `Claim` is the most reused type in the schema: demands, nameplates, quanta, windows,
-#    draws, slacks, shares, factors, coupling strengths and eliminated quantities are all
-#    Claims. Every one of those lives in the table of the thing it describes, which is the
-#    right shape for asking about a demand and the wrong shape for asking about a claim.
-#    Twelve different parents in this corpus, across two schemas.
+# The grain is the claim, not the layer
+#   That is the whole point of the file. `Claim` is the most reused type in the schema: demands,
+#   nameplates, quanta, windows, draws, slacks, shares, factors, coupling strengths and eliminated
+#   quantities are all Claims. Every one of those lives in the table of the thing it describes,
+#   which is the right shape for asking about a demand and the wrong shape for asking about a
+#   claim. Their parents are many different tables, across two schemas.
 #
-# ⭐⭐ AND IT CARRIES `layer`, WHICH IS WHAT LETS A CLAIM-GRAINED RELATION JOIN BACK. The
-#    ancestor axis supplies it at ingest; NULL means the claim is about a RELATION between
-#    layers -- a coupling strength, an elimination quantity, a part factor -- rather than
-#    about one. Without it a rule needing both grains has to read the per-table copy and
-#    reach one parent of twelve.
+# `layer` lets a claim-grained relation join back
+#   The ancestor axis supplies it at ingest; NULL means the claim is about a relation between
+#   layers (a coupling strength, an elimination quantity, a part factor) rather than about one.
+#   Without it a rule needing both grains has to read the per-table copy and reach one parent of
+#   many.
 #
-# ⛔⛔ AND IT IS THE HALF OF THE PAIR EASIEST TO LOSE. Keyed on a bare document ordinal with no
-#    way back to the claim, `narrowsWhen` and `boundOrigin` can be COUNTED and never COMPARED
-#    against the width they describe, and both rules that make that comparison then run over
-#    `layer.demand_*` -- 40 claims of 182, and the only 40 with no point value among them. One
-#    reports VACUOUS; the other passes on a corpus containing a violation it cannot reach.
+# The half of the pair easiest to lose
+#   Keyed on a bare document ordinal with no way back to the claim, `narrowsWhen` and `boundOrigin`
+#   can be counted and never compared against the width they describe, and both rules that make
+#   that comparison then run over `layer.demand_*`: a minority of the claims, and one with no point
+#   value among them. One reports vacuous; the other passes on a corpus containing a violation it
+#   cannot reach.
 #
-# ⭐⭐ AND THE TWO COLUMNS ARE ONE INSTRUMENT. `narrowsWhen` says what would make the range
-#    SMALLER; `boundOrigin` says who owns the edge it would have to move. Same width, and
-#    three different courses of action depending on the answers: renegotiate, measure again,
-#    or accept it. Read apart they are two censuses; read together they are advice.
+# Everything the claim said comes with it
+#   Its provenance whole, and the date it holds at, so a relation reading claims reads all a
+#   document attached to one rather than a selection somebody thought worth keeping.
+#
+# The two columns are one instrument
+#   `narrowsWhen` says what would make the range smaller; `boundOrigin` says who owns the edge it
+#   would have to move. Same width, and three different courses of action depending on the answers:
+#   renegotiate, measure again, or accept it. Read apart they are two censuses; read together they
+#   are advice.
 -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
 SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,
        c.denominator, c.denominator_kind, c.denominator_absent,
        c.prov_party, c.prov_standing_taxonomy, c.prov_standing_value, c.prov_standing_absent,
+       c.prov_entered_by, c.prov_approved_by, c.prov_note, c.as_of,
        c.low = c.high AS is_a_point,
        n.condition    AS narrows_condition,
        n.kind         AS narrows_kind,
        n.absent       AS narrows_absent,
        b.origin,
-       b.absent       AS origin_absent
+       b.absent       AS origin_absent,
+       n.derivation   AS narrows_derivation,
+       b.derivation   AS origin_derivation
 FROM pm.claim c
 JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)

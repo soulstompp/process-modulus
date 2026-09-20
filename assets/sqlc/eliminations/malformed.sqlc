@@ -1,24 +1,25 @@
-# THE FUSIONS THAT CALL THE DOUBLE-COUNTING QUESTION MALFORMED, WITH THE PARTS THEY ACTUALLY
-# HAVE. One row per composed layer filing its elimination search as `notApplicable`, carrying
+# The fusions that call the double-counting question malformed, with the parts they actually
+# have. One row per composed layer filing its elimination search as `notApplicable`, carrying
 # how many parts it names.
 #
-# ⭐⭐ BETWEEN A SET OF ONE, NOTHING CAN BE COUNTED TWICE -- so `notApplicable` is exactly
-#    right on a single-part fusion and the question genuinely does not arise. Between two or
-#    more it DOES arise: `notApplicable` there is a claim that two supplies cannot possibly
-#    overlap, which is a judgement about the world and belongs in `observed` where somebody
-#    signs it.
+# When `notApplicable` is right
+#   Between a set of one, nothing can be counted twice, so `notApplicable` is exactly right on a
+#   single-part fusion and the question genuinely does not arise. Between two or more it does
+#   arise: `notApplicable` there is a claim that two supplies cannot possibly overlap, which is a
+#   judgement about the world and belongs in `observed` where somebody signs it.
 #
-# ⛔ THE PART COUNT IS THE WHOLE POPULATION TEST. A `notApplicable` search on a fusion with no
-#   parts filed at all is not examined by the rule and must not be counted as passing it,
-#   which is why the count comes from a join rather than from the search row alone.
--- eliminations/searched.sqlc answering "notApplicable", counted over asrt:part.
-SELECT es.composition, es.composed_layer, count(*) AS parts
+# The part count is the whole population test
+#   A `notApplicable` search on a fusion with no parts filed at all is not examined by the rule and
+#   must not be counted as passing it, which is why a fusion whose count is zero is left out rather
+#   than carried with a zero the rule would read.
+-- eliminations/searched.sqlc answering "notApplicable", beside folds/fusion_parts.sqlc.
+SELECT es.composition, es.composed_layer, f.parts
 FROM (
     :compose(eliminations/searched.sqlc)
 ) es
 JOIN (
-    :compose(composition/part_references.sqlc)
-) p
-  ON p.composition = es.composition AND p.composed_layer = es.composed_layer
+    :compose(folds/fusion_parts.sqlc)
+) f
+  ON f.composition = es.composition AND f.composed_layer = es.composed_layer
 WHERE es.answer = 'notApplicable'
-GROUP BY es.composition, es.composed_layer
+  AND f.parts > 0

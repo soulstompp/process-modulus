@@ -1,4 +1,4 @@
-# Conformance profiles
+# `conformance/`: what a profile may narrow, and which rules no validator reaches at all
 
 > **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
 
@@ -238,22 +238,25 @@ the slack rule below is strictly stronger, because a buffer whose slack is a mea
 fails it for any positive share, and a buffer with a sized slack is now bounded as well as
 permitted.
 
+**A third left because a validator now reaches it.** *A holder `kind` appears at most once per
+remainder* is the schema's `holderKind` key, so an XSD 1.0 validator refuses a second holder of
+one kind and nothing is left for an implementer to owe.
+
 | the rule | where |
 |---|---|---|
 | a `Claim`'s bounds satisfy `low` <= `mostLikely` <= `high` | `Claim` | |
 | the expected value is derived and must not be carried | `Claim` | |
 | a quantum's `size` is expressed in the unit of the nameplate it divides | `LumpyQuantum` | `quantum_unit_mismatch` |
-| a supply whose `capacitySlack` is a measured zero, under an interference fit, must hold it as `customer` or `unrealised`, across every holder | `Fit` | `nobody_named_as_unserved` |
+| a supply whose three buffers are all stated as zero, under an interference fit, must hold the excess as `customer` or `unrealised`, across every holder | `Fit` | `nobody_named_as_unserved` |
 | the same supply under a TRANSITION fit names at least one `customer` or `unrealised` holder, presence rather than universality, because part of the range is legitimately clearance | `Fit` | `nobody_named_as_unserved` |
 | `max(0, demand.high - nameplate.low)` does not exceed `capacitySlack.high` plus the unserved shares' highs, evaluated at that one corner | `Nameplate` | `exposure_unaccounted` |
 | a draw does not exceed the nameplate plus the capacity slack the supply filed, since a supply cannot serve more than it can make | `Jagged`, `Nameplate` | `draw_exceeds_the_supply` |
 | the `nameplate` is a whole multiple of the quantum, for a lumpy supply | `Remainder` | `nameplate_not_a_multiple` |
-| `quantity` is `derived` wherever demand, nameplate and the quantum are all stated | `Remainder` | |
+| `quantity` may be filed as a `magnitude` derivation wherever demand, nameplate and the quantum are all stated, and a stated `quantity` equals `\|nameplate - demand\|` | `Remainder` | `stated_quantity_is_not_the_magnitude` |
 | a `clearance` fit rules out `customer` and `unrealised`, the value now meaning across the whole range | `Remainder` | `clearance_with_unserved` |
 | a layer denying it has a remainder is not contradicted by its own demand and nameplate, which between them derive one | `StatedRemainder` | `denied_remainder_is_not_contradicted` |
 | `sign` agrees with the RANGE comparison — `clearance` where `nameplate.low` >= `demand.high`, `interference` where `nameplate.high` <= `demand.low`, `transition` where they overlap | `Fit` | `fit_disagrees` |
 | the stated `share`s sum to `\|nameplate - demand\|`, wherever every share is stated | `Holder` | `shares_do_not_sum` |
-| a holder `kind` appears at most once per remainder | `Holder` | |
 | a `dependence` end's filing exists, and the layer named is in it | `FiledLayer` (`assertion.xsd`) | |
 | a `dependence` end's `version` names the edition actually read \* | `FiledLayer` (`assertion.xsd`) | |
 | a `dependence` entry's two ends are not the same filing *and* the same layer | `DependenceEntry` (`assertion.xsd`) | |
@@ -262,14 +265,14 @@ permitted.
 | a LOCAL part, whose notation is its own composition's, names a layer in that document's own stack | `FiledLayer` (`assertion.xsd`) | `local_part_dangles` |
 | layers that always move together are one layer, so a part cycle among them fails the definition of a layer rather than naming an edge to break | `Layer`, `FiledLayer` (`assertion.xsd`) | `layers_move_together` |
 | a composed layer's claim equals `Σ parts - Σ eliminations`, per quantity | `Fusion` (`assertion.xsd`) | `fusion_sum_disagrees` |
-| an elimination subtracts component-wise and does NOT reverse bounds | `Elimination` (`assertion.xsd`) | |
+| an elimination subtracts component-wise and does NOT reverse bounds, except where component-wise inverts, and there the crossed pairing is the sum | `Elimination` (`assertion.xsd`) | `fusion_sum_disagrees` |
 | a fusion's parts are fungible, so their remainders may offset | `Fusion` (`assertion.xsd`) | |
 | `party` and `asOf` appear only on a `counterparty` holder | `Holder` | |
 | a `counterparty` holder names its `party`, and should carry `asOf` | `Holder` | |
 | a coupling propagates through a fusion and ATTENUATES, bounded by the part's share of the layer it was fused into | `Coupling` | `coupling_does_not_attenuate` |
 | a fusion that absorbs a coupling between its own parts says so, and never cites it as evidence | `Coupling` | |
 | no leaf layer is reachable through two paths, once compositions nest | `composition` (`assertion.xsd`) | `jagged_layer` |
-| a holder's share does not exceed the slack of the buffer its `absorber` names, on the interference side, with `unrealised` exempt | `Nameplate`, `Layer` | `share_exceeds_slack` |
+| a holder's share does not exceed the slack of the buffer its `absorber` names, on the interference side, with `customer` and `unrealised` exempt | `Nameplate`, `Layer` | `share_exceeds_slack` |
 | a fused layer's slack is bounded by the SUM of its parts', and one unsized part makes that bound unsized | `Nameplate`, `Layer` | |
 | a part's `factor` converts into the composed layer's unit, and is absent exactly when they already agree | `Part` (`assertion.xsd`) | `unit_crossing_without_a_factor` |
 | a `factor` is strictly positive, so the interval product is component-wise | `Part` (`assertion.xsd`) | |
@@ -281,15 +284,16 @@ permitted.
 | a slack is expressed in the unit of the shares it bounds | `Nameplate`, `Layer` | `slack_unit_mismatch` |
 | a slack measured as a duration is converted before filing, by `quantity = duration x rate` | `Nameplate`, `Layer` | |
 | a unit's denominator covers at least one whole duty cycle of the supply it measures | `Claim` | |
-| `timeSlack` is `derived` only where the layer runs the WHOLE of its period, filed as a window of one whole period in the period's own unit | `Layer` | `derived_slack_over_a_window` |
-| a claim filing `boundOrigin` as `derived` sits beside a sibling element that states the author — `Nameplate/amountOrigin` or `LumpyQuantum/origin` — so the pointer resolves | `Claim` | |
+| `timeSlack` is filed as a `clearance` derivation only where the layer runs the WHOLE of its period, filed as a window of one whole period in the period's own unit | `Layer` | `derived_slack_over_a_window` |
+| a claim whose `boundOrigin` or `narrowsWhen` is filed as a derivation names an identity that computes the claim's own position, or for an edge the sibling origin its holder states (`amountOrigin` on a nameplate amount, `quantumOrigin` on a lump or window size), since a `Claim` is one type wherever it sits | `Claim` | `identity_does_not_compute_the_claim` |
 | a point value files `narrowsWhen` as `notApplicable`, having no width to tighten | `Claim` | `narrows_a_point_value` |
 | a claim that spans a width does not file `narrowsWhen` as `notApplicable` | `Claim` | `range_says_no_range` |
 | a point value does not file `boundOrigin` absent `none`, since that reason says the bound is where the measurements fell and nothing fell anywhere | `Claim` | `bound_fell_with_no_range` |
 | a `window` is the ON-duration, one per period of the nameplate's unit, and never the gap | `Divisibility` | |
 | a `window` requires the nameplate's unit to name a period, since it is the live part of that denominator | `Divisibility` | |
 | a `window` is CARRIED through a fusion and never summed: it is a property of the machine, not a quantity | `Divisibility` | `window_lost_or_summed` |
-| a layer filing a `window`, OR filing its absence as `unmeasured`, must not file `timeSlack` as `derived`, because in neither case is the spare known to be spread evenly across the period | `Divisibility`, `Layer` | `derived_slack_over_a_window` |
+| a `window` filed as a `quantum` does not file that quantum's `size` as `notApplicable`: a unit with no period is the window's own `notApplicable` | `StatedLumpyQuantum` | `window_size_not_applicable` |
+| a layer filing a `window`, OR filing its absence as `unmeasured`, must not file `timeSlack` as a `clearance` derivation, because in neither case is the spare known to be spread evenly across the period | `Divisibility`, `Layer` | `derived_slack_over_a_window` |
 | a `window` filed as `notApplicable` sits on a unit with no denominator, since a unit that names a period can be answered | `Divisibility` | `window_not_applicable_on_a_rate` |
 | a fusion filing `eliminations` as `none` or `notApplicable` owes an EXACT sum: the composed figure equals `Σ` converted parts. Filing it as `unmeasured` suspends the check rather than passing it | `Fusion` (`assertion.xsd`) | `fusion_sum_disagrees` |
 | a fusion filing `eliminations` as `notApplicable` has exactly one part, since between a set of one nothing can be counted twice | `Fusion` (`assertion.xsd`) | `elimination_not_applicable_with_parts` |
@@ -339,8 +343,8 @@ elimination is how much supply its parts counted in common, and the documents he
 that scale end to end: a stated `[0, 0, 0]` at `merge-group-composition`'s `labour`, a whole part
 at its `shift-line`, and the middle at `assets/fixtures/every-partial-elimination.xml`. ⛔ The
 bottom of that scale is a CLAIM of zero and not `absent/reason = none`: an elimination's
-`quantity` is a `pm:StatedClaim`, whose reasons are `{unmeasured, notApplicable, derived}`, and
-`none` is not in the type. The parts are
+`quantity` is a `pm:StatedEliminatedQuantity`, whose absence arm is a `pm:ClaimAbsence` carrying
+`pm:ClaimAbsenceReason`, `{unmeasured, notApplicable}`, and `none` is not in the type. The parts are
 fungible at all three. An elimination is no more evidence for a kind of fusion than a coupling
 is evidence for a fusion at all.
 
@@ -428,8 +432,8 @@ that read an `unmeasured` elimination as zero would find the layer reconciling e
 report success about a figure it has been told is overstated. `unchecked` is a third state
 and folding it into `checked and passed` is the failure this whole file is about. The zero is
 the opposite case, and it is a CLAIM rather than an absence: an elimination that sizes to
-nothing is filed `[0, 0, 0]`, because `Elimination/quantity` is a `pm:StatedClaim` and
-`pm:ClaimAbsenceReason` has no `none` for it to hide in. `none` on the `eliminations` wrapper
+nothing is filed `[0, 0, 0]`, because `Elimination/quantity` is a `pm:StatedEliminatedQuantity`
+and `pm:ClaimAbsenceReason` has no `none` for it to hide in. `none` on the `eliminations` wrapper
 says a different thing again, that the composer searched and found no double counting at all,
 and that leaves the sum EXACT.
 

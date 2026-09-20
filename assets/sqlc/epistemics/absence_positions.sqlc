@@ -1,0 +1,66 @@
+# Every position a document can file a typed absence at, and the census question that counts it.
+# One row per (position, question): the position as `parent/wrapper`, spelled as
+# epistemics/filed_absences.sqlc spells it, and the question from epistemics/absence_questions.sqlc,
+# or none with the reason no column answers it.
+#
+# Not a bijection, and that is the schema's shape
+#   `buffer slack` is one question over three positions, because `slack` is one tall table for
+#   three elements. `pm:provenance/pm:standing` is one position under two questions, because a
+#   provenance sits inside a claim or inside an absence and each keeps its standing in its own
+#   table. algebra/absences_filed.sqlc compares the two routes per group of positions and questions
+#   that share rows, so neither case is double counted or split.
+#
+# Positions with no column
+#   Their absences are in the table and in no census arm, each for the reason given. A position
+#   filed in a document and missing from this roster fails the law by name.
+#
+# A bare values literal
+#   A contract must not be derived from what it governs; the positions are the XSD's, read from its
+#   `Stated*` wrappers, and a new wrapper position is a row somebody adds here.
+-- The XSD's Stated* wrapper positions in the documents ingest loads, against epistemics/absences.sqlc's questions.
+SELECT * FROM (VALUES
+  ('pm:processModulus/pm:notation',     'its own notation',                       NULL::text),
+  ('pm:processModulus/pm:evidence',     'what it is evidence for',                NULL),
+  ('pm:stack/pm:scope',                 'how much of the system',                 NULL),
+  ('pm:stack/pm:couplings',             'did anybody look for couplings',         NULL),
+  ('pm:regime/pm:framework',            'regime framework',                       NULL),
+  ('pm:regime/pm:chart',                'regime chart',                           NULL),
+  ('asrt:regime/pm:framework',          'part regime framework',                  NULL),
+  ('asrt:regime/pm:chart',              'part regime chart',                      NULL),
+  ('asrt:provenance/pm:standing',       'assertion standing',                     NULL),
+  ('pm:provenance/pm:standing',         'provenance standing',                    NULL),
+  ('pm:provenance/pm:standing',         'provenance standing, on an absence',     NULL),
+  ('pm:provenance/pm:standing',         'provenance standing, on a derivation',   NULL),
+  ('pm:claim/pm:narrowsWhen',           'narrowsWhen',                            NULL),
+  ('pm:claim/pm:boundOrigin',           'boundOrigin',                            NULL),
+  ('pm:claim/pm:denominator',           'denominator',                            NULL),
+  ('pm:coupling/pm:strength',           'coupling strength',                      NULL),
+  ('pm:operation/pm:notationPosition',  'where the operation is in a notation',   NULL),
+  ('pm:draw/pm:quantity',               'operation draw',                         NULL),
+  ('pm:induces/pm:commitment',          'operation induction',                    NULL),
+  ('pm:demand/pm:amount',               'demand',                                 NULL),
+  ('pm:demand/pm:patience',             'patience',                               NULL),
+  ('pm:layer/pm:timeSlack',             'buffer slack',                           NULL),
+  ('pm:nameplate/pm:capacitySlack',     'buffer slack',                           NULL),
+  ('pm:nameplate/pm:inventorySlack',    'buffer slack',                           NULL),
+  ('pm:layer/pm:remainder',             'remainder',                              NULL),
+  ('pm:remainder/pm:sign',              'remainder sign',                         NULL),
+  ('pm:remainder/pm:absorber',          'remainder absorber',                     NULL),
+  ('pm:remainder/pm:quantity',          'remainder quantity',                     NULL),
+  ('pm:holder/pm:share',                'holder share',                           NULL),
+  ('pm:nameplate/pm:amount',            'nameplate amount',                       NULL),
+  ('pm:nameplate/pm:amountOrigin',      'who committed the amount',               NULL),
+  ('pm:nameplate/pm:divisibility',      'divisibility',                           NULL),
+  ('pm:divisibility/pm:window',         'duty-cycle window',                      NULL),
+  ('pm:lumpy/pm:size',                  'lump size',                              NULL),
+  ('pm:quantum/pm:size',                'duty-cycle period',                      NULL),
+  ('pm:jagged/pm:draw',                 'draw',                                   NULL),
+  ('pm:jagged/pm:measurementBasis',     'measurement basis',                      NULL),
+  ('asrt:fusion/asrt:eliminations',     'did anybody look for double counting',   NULL),
+  ('asrt:elimination/asrt:quantity',    'eliminated quantity',                    NULL),
+  ('asrt:part/asrt:factor',             'part factor',                            NULL),
+  ('pm:continuous/pm:premium',          NULL,
+   'a premium is a claim nothing reads, so it has no columns of its own: its value is in claim and its absence here alone'),
+  ('pm:remainder/pm:holder',            NULL,
+   'a holder that is typed absent has no row in holder, whose rows are the holders that bear a share')
+) AS p(owns, question, why_no_column)

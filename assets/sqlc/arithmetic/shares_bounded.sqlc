@@ -1,30 +1,49 @@
-# EVERY LAYER WHOSE SHARES ARE BOUNDED BY A SLACK, AND WHETHER THAT BOUND IS AVAILABLE. One row
-# per layer that names an absorber a reader has mapped.
+# Every layer whose served shares are bounded by a slack, and whether that bound is available. One
+# row per interference layer that names an absorber a reader has mapped and a holder that says the
+# excess was served: the population entries/borne.sqlc sums.
 #
-# ⭐⭐ THIS SITE IS THE ONE THAT IS GUARDED, AND IT IS WORTH SEEING WHY. checks/slack_unit_mismatch
-#    exists precisely because an inequality between two numbers in different units is not a
-#    failing comparison but a meaningless one -- so it is the precondition that makes
-#    share_exceeds_slack mean anything. Every other inequality in this model wants the same
-#    precondition and seven of them do not have it.
+# The site that is guarded
+#   It is worth seeing why. checks/slack_unit_mismatch exists precisely because an inequality
+#   between two numbers in different units is not a failing comparison but a meaningless one, so
+#   it is the precondition that makes share_exceeds_slack mean anything. Every other inequality
+#   in this model wants the same precondition, and arithmetic/roster.sqlc carries a NULL in
+#   `guarded_by` wherever it is missing.
 #
-# ⛔ AN UNSIZED SLACK SUSPENDS THE BOUND. entries/borne.sqlc drops those rows; this one names
-#   them, which is how `share_exceeds_slack` came to read ⛔ VACUOUS without anything saying so.
--- the slack named by pm:Remainder/pm:absorber, against pm:Remainder/pm:holder.
+# `fusion_sum` is not an unguarded site
+#   It reads `(forbidden)` rather than NULL, because a fusion declares commensurability, and
+#   sweeping it in with the unguarded sites overstates them by one. examples/readiness/main.rs
+#   prints the tally from the roster on every run.
+#
+# The served holders, under interference
+#   The inequality is `Σ served shares <= S`: a buffer bounds what it absorbed, and the two holders
+#   who went without were absorbed by nothing. So the site reads entries/served_holders.sqlc, and
+#   only where the filed fit is interference, which is where entries/borne.sqlc and
+#   checks/share_exceeds_slack.sqlc look. A site wider than its rule would report computable
+#   arithmetic the rule never does. Proof: `src/proofs/README.md`, entry `served_within_slack`.
+#
+# An unsized slack suspends the bound
+#   entries/borne.sqlc drops those rows; this one names them, and where every row is suspended that
+#   is what explains `share_exceeds_slack` reading as vacuous.
+-- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under interference.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT s.filing, s.layer,
-           CASE WHEN s.mode IS NULL                  THEN 'suspended'
-                WHEN h.unstated > 0                  THEN 'suspended'
-                WHEN h.share_units <> ARRAY[s.unit]  THEN 'not comparable'
-                ELSE 'computable' END AS verdict,
+           CASE WHEN s.mode IS NULL                  THEN 'suspended'::public.arithmetic_verdict
+                WHEN h.unstated > 0                  THEN 'suspended'::public.arithmetic_verdict
+                WHEN h.share_units <> ARRAY[s.unit]  THEN 'not comparable'::public.arithmetic_verdict
+                ELSE 'computable'::public.arithmetic_verdict END AS verdict,
            CASE WHEN s.mode IS NULL
                      THEN format('the %s buffer is %s', s.buffer, s.absent)
                 WHEN h.unstated > 0
-                     THEN format('%s of %s shares unstated, against a %s slack of %s',
-                                 h.unstated, h.holders, s.buffer, s.mode)
+                     THEN format('%s of %s shares unstated%s, against a %s slack of %s',
+                                 h.unstated, h.holders,
+                                 CASE WHEN h.derived > 0
+                                      THEN format(' (%s of them filed as `sharesSum`''s output, which nothing here computes)', h.derived)
+                                      ELSE '' END,
+                                 s.buffer, s.mode)
                 ELSE format('%s shares bounded by a %s slack of %s',
                             h.holders, s.buffer, s.mode)
            END AS detail
@@ -32,7 +51,14 @@ LEFT JOIN (
         :compose(entries/absorbing_slack.sqlc)
     ) s
     JOIN      (
-        :compose(entries/holder_totals.sqlc)
+        :compose(folds/served_totals.sqlc)
     ) h USING (filing, layer)
+    JOIN      (
+        SELECT DISTINCT r.filing, r.layer
+        FROM (
+            :compose(layers/pressed.sqlc)
+        ) r
+        WHERE r.sign = 'interference'
+    ) x USING (filing, layer)
 ) p ON true
 WHERE a.slug = 'shares_bounded'

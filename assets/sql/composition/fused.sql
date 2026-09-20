@@ -1,195 +1,40 @@
--- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
-SELECT c.composition, c.composed_layer,
-       'demand' AS quantity,
-       sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
-       sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
-       sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
-       max(d.d_low)  AS filed_low,
-       max(d.d_mode) AS filed_mode,
-       max(d.d_high) AS filed_high,
-       (sum(c.d_low)  - coalesce(max(e.low),  0) = max(d.d_low)
-    AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
-    AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
-FROM      (
-    -- asrt:Part/asrt:factor applied to the part layer's pm:Demand.
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
-       'demand' AS quantity,
-       d.d_low  * coalesce(p.factor_low, 1)  AS d_low,
-       d.d_mode * coalesce(p.factor_mode, 1) AS d_mode,
-       d.d_high * coalesce(p.factor_high, 1) AS d_high
-FROM      (
-    -- pm.part joined through pm.filing_identity to pm.layer.
-SELECT p.composition, p.composed_layer,
-       p.part_filing AS part_notation,
-       fi.filing     AS part_filing,
-       p.part_layer,
-       p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM      (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.notation = p.part_filing
--- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
---    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
---    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
---    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
---    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
---    law over a rule is vacuous the moment the dimension is inside its closure, because the
---    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
---    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
-JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
-
-) p
-JOIN      (
-    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
-SELECT l.filing, l.layer,
-       l.demand_low  AS d_low,
-       l.demand_mode AS d_mode,
-       l.demand_high AS d_high,
-       l.demand_unit AS d_unit,
-       l.demand_low = l.demand_high AS is_a_point,
-       l.demand_narrows,
-       l.demand_narrows_kind,
-       l.demand_narrows_absent
-FROM pm.layer l
-WHERE l.demand_low IS NOT NULL
-
-) d
-       ON d.filing = p.part_filing AND d.layer = p.part_layer
-  -- ⛔ A TYPED-ABSENT FACTOR IS NOT A FACTOR OF ONE. See the header.
-  AND p.factor_absent IS NULL
-
-) c
-JOIN      (
-    -- composition/fusions.sqlc minus the suspensions that lift the demand sum.
-SELECT f.filing, f.layer, 'demand' AS quantity
+-- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at its corners.
+SELECT x.composition, x.composed_layer, x.quantity,
+       x.sum_low, x.sum_mode, x.sum_high, x.crossed,
+       x.sum_low  - x.e_at_low  AS computed_low,
+       x.sum_mode - x.e_mode    AS computed_mode,
+       x.sum_high - x.e_at_high AS computed_high,
+       x.filed_low, x.filed_mode, x.filed_high,
+       (x.sum_low  - x.e_at_low  = x.filed_low
+    AND x.sum_mode - x.e_mode    = x.filed_mode
+    AND x.sum_high - x.e_at_high = x.filed_high) AS agrees
 FROM (
-    -- distinct (composition, composedLayerName) over asrt:Fusion/asrt:Part.
-SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
-FROM (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-
-) f
-EXCEPT
-SELECT s.composition, s.composed_layer, 'demand'
-FROM (
-    -- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
-SELECT DISTINCT g.composition, g.composed_layer, g.quantity
-FROM (
-    -- the three filings that lift the sum rule, one row per GROUND, carrying the quantity it lifts.
--- eliminations/searched.sqlc, kept where asrt:absent/pm:reason is "unmeasured".
-SELECT es.composition, es.composed_layer,
-       NULL::text AS quantity,
-       'the search was never made' AS suspended_because,
-       es.note
-FROM (
-    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
-SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
-FROM pm.elimination_search es
-
-) es
-WHERE es.answer = 'unmeasured'
-UNION ALL
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       'the overlap was found and could not be sized' AS suspended_because,
-       e.reason AS note
-FROM (
-    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
-FROM pm.elimination e
-
-) e
-WHERE e.absent IS NOT NULL
-UNION ALL
--- asrt:Part/asrt:factor taking its pm:absent branch, as a suspension of the composed sum.
-SELECT p.composition, p.composed_layer,
-       NULL::text AS quantity,
-       'the conversion was filed and could not be sized' AS suspended_because,
-       p.factor_absent::text AS note
-FROM (
-    -- pm.part joined through pm.filing_identity to pm.layer.
-SELECT p.composition, p.composed_layer,
-       p.part_filing AS part_notation,
-       fi.filing     AS part_filing,
-       p.part_layer,
-       p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM      (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent
-FROM pm.part p
-
-) p
-JOIN      (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-) fi ON fi.notation = p.part_filing
--- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
---    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
---    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
---    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
---    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
---    law over a rule is vacuous the moment the dimension is inside its closure, because the
---    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
---    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
-JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
-
-) p
-WHERE p.factor_absent IS NOT NULL
-
-
-) g
-
-) s
-WHERE s.quantity IS NULL OR s.quantity = 'demand'
-
-) o
-       ON o.filing = c.composition AND o.layer = c.composed_layer
-JOIN      (
-    -- from pm.layer; demandLow/Mode/High of pm:Layer/pm:Demand, and Claim/narrowsWhen.
-SELECT l.filing, l.layer,
-       l.demand_low  AS d_low,
-       l.demand_mode AS d_mode,
-       l.demand_high AS d_high,
-       l.demand_unit AS d_unit,
-       l.demand_low = l.demand_high AS is_a_point,
-       l.demand_narrows,
-       l.demand_narrows_kind,
-       l.demand_narrows_absent
-FROM pm.layer l
-WHERE l.demand_low IS NOT NULL
-
-) d
-       ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN (
-    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.reason
-FROM pm.elimination e
-
-) e
-       ON e.composition = c.composition
-      AND e.composed_layer = c.composed_layer
-      AND e.quantity = 'demand'
-GROUP BY c.composition, c.composed_layer
+    SELECT s.composition, s.composed_layer, s.quantity,
+           s.sum_low, s.sum_mode, s.sum_high,
+           coalesce(e.crossed, false) AS crossed,
+           coalesce(e.at_low,  0) AS e_at_low,
+           coalesce(e.mode,    0) AS e_mode,
+           coalesce(e.at_high, 0) AS e_at_high,
+           d.low  AS filed_low,
+           d.mode AS filed_mode,
+           d.high AS filed_high
+    FROM      (
+        SELECT * FROM folds.part_sums
+    ) s
+    JOIN      (
+        SELECT * FROM composition.owed_equality
+    ) o
+           ON o.filing = s.composition AND o.layer = s.composed_layer
+          AND o.quantity = s.quantity
+    JOIN      (
+        SELECT * FROM layers.summed_quantities
+    ) d
+           ON d.filing = s.composition AND d.layer = s.composed_layer
+          AND d.quantity = s.quantity
+    LEFT JOIN (
+        SELECT * FROM eliminations.paired
+    ) e
+           ON e.composition = s.composition
+          AND e.composed_layer = s.composed_layer
+          AND e.quantity = s.quantity
+) x

@@ -1,0 +1,80 @@
+# The composition map's null space has the dimension the layer graph says it has. One row.
+#
+# The identity
+#   A part belongs to one fusion, so folding the parts onto their fusions gives fibre sizes whose
+#   sum is the number of parts and whose box count is the rank of `F`. The layer graph counts the
+#   same parts as edges. So `Σ parts = m` and `dim ker(F Phi) = Σ (parts - 1) = m - |fusions|`,
+#   and neither side is free to move alone.
+#   Proof: `src/proofs/README.md`, entry `composition_kernel`.
+#
+# Unconditional, and the forest form is the special case
+#   Euler gives `m = n - c + dim(cycle)`, so on a graph whose cycle space is zero the identity
+#   reads `dim ker = (n - c) - |fusions|`, which is the leaf count less the component count. That
+#   is the form worth carrying in the head, and it is not the form asserted here: gating this law
+#   on the cycle space would make it abstain exactly when the graph got interesting, and
+#   `algebra/cycle_space.sqlc` is already the law that holds the forest.
+#
+# What it can actually catch, which is not the arithmetic
+#   `Σ (parts - 1) = Σ parts - |fusions|` is true of any fold, so the content of this law is the
+#   crossing: that the fold's `Σ parts` is the graph's `m` and the fold's box count is the graph's
+#   rank contribution. `rank/graph_edges.sqlc` flattens a layer's `(filing, layer)` into one
+#   string on a `/`, and `rank/graph_measures.sqlc` counts the edges `DISTINCT (graph, filing,
+#   from_node, to_node)` afterwards. The flattening is injective on this corpus by luck rather
+#   than by construction, and it is the one place that has to be true. Two layers colliding under
+#   it, or one fusion naming one layer twice, drops `m` below `Σ parts` and this law is what
+#   notices.
+#
+# The other three subspaces have their own laws
+#   This one is the null space on the part side. `algebra/composition_row_space.sqlc` is the row
+#   space beside it, `algebra/composition_image.sqlc` is the column space and the left null space
+#   on the fusion side, and `algebra/composition_closure.sqlc` is what becomes of this dimension
+#   once compositions nest. Four laws over one map, because it has four subspaces.
+#
+# Where the independent route is
+#   Two relations reading one source by different code is the weaker half of the claim. The
+#   stronger half is `examples/matrices/main.rs`, which builds `F` and `Phi` as dense matrices and
+#   takes the rank by elimination, sharing nothing with either side of this law. A law and a
+#   program disagreeing is the finding; this law alone would leave the dimension unchecked
+#   against any arithmetic at all.
+#
+# Not vacuous by construction
+#   A corpus with no fusions satisfies the identity as `0 = 0`. The floor requires parts, fusions
+#   and edges before the comparison counts, so an empty corpus reports that it examined nothing
+#   rather than that the model holds.
+#
+# Probe
+#   examples/probes runs it as `composition_kernel`, by collapsing every part layer of one filing
+#   onto the filing's own name in the composed SQL: `m` falls and `Σ parts` does not.
+#   ⛔ Dropping the `DISTINCT` in `rank/graph_measures.sqlc` moves nothing instead, because this
+#   corpus files no duplicate edge, so it is not a probe of anything.
+-- rank/composition_kernel.sqlc folded, against rank/graph_measures.sqlc's layer row.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/composition_kernel' AS subject,
+           x.parts > 0 AND x.fusions > 0 AND x.edges > 0
+           AND x.parts = x.edges
+           AND x.kernel = x.edges - x.fusions                                        AS holds,
+           format('dim ker %s over %s part(s) in %s fusion(s); the layer graph has %s edge(s), '
+                  '%s node(s), %s component(s) and cycle space %s',
+                  x.kernel, x.parts, x.fusions, x.edges,
+                  x.nodes, x.components, x.dim)                                      AS detail
+    FROM (
+        SELECT k.parts, k.fusions, k.kernel,
+               m.m_edges AS edges, m.n_nodes AS nodes,
+               m.c_components AS components, m.cycle_space_dim AS dim
+        FROM      (
+            SELECT coalesce(sum(c.parts), 0)      AS parts,
+                   count(*)                       AS fusions,
+                   coalesce(sum(c.kernel_dim), 0) AS kernel
+            FROM ( :compose(rank/composition_kernel.sqlc) ) c
+        ) k
+        CROSS JOIN (
+            :compose(rank/graph_measures.sqlc)
+        ) m
+        WHERE m.graph = 'layers' AND m.filing IS NULL
+    ) x
+) p ON true
+WHERE a.slug = 'composition_kernel'

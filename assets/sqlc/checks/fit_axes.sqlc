@@ -1,0 +1,61 @@
+# Which fit each rule reads. One row per rule on checks/roster.sqlc: the axis its population or its
+# verdict depends on, or `not read`.
+#
+# Two axes, because the fit is filed and derived
+#   A layer states its sign, and the model derives a fit from its demand and nameplate. On a
+#   conforming document the two agree wherever both exist, and checks/fit_disagrees.sqlc is the
+#   rule that says so; they are still two columns, and a rule reads one of them. A rule selecting
+#   `sign = 'clearance'` examines what the filer claimed; a rule comparing against the magnitude
+#   `|r|`, whose low is 0 exactly where the range straddles zero, examines what the figures give.
+#
+# The fit is an arm only of the rules that read it
+#   A rule whose logic never branches on the fit has the same verdict in every fit class, so the
+#   fit is not an arm of its product and its cells are one cell. Declaring a standing per fit for
+#   a unit rule or a structural rule would list four copies of one question. Those rules say
+#   `not read`, and checks/fit_domain.sqlc declares cells only for the others.
+#
+# Checked by the compose DAG, not trusted
+#   Every fit a rule can read arrives through layers/remainder.sqlc or layers/filed_remainders.sqlc:
+#   the derived fit, the filed sign, the exposure and the magnitude are all theirs. So a rule
+#   declaring `not read` must reach neither in its closure, and a rule declaring an axis must reach
+#   one. algebra/fit_domain.sqlc holds both directions against rank/rule_closure.sqlc, which shares
+#   no code with this list.
+#
+# Declared rather than derived
+#   A rule added to checks/roster.sqlc without a row here fails that law, so a new rule states
+#   which fit it reads when it is written.
+-- the fit axis each rule on checks/roster.sqlc reads, declared.
+SELECT * FROM (VALUES
+  ('fit_disagrees',                        'filed against derived'::public.fit_axis),
+  ('shares_do_not_sum',                    'derived fit'),
+  ('stated_quantity_is_not_the_magnitude', 'derived fit'),
+  ('nobody_named_as_unserved',             'derived fit'),
+  ('exposure_unaccounted',                 'derived fit'),
+  ('share_exceeds_slack',                  'filed sign'),
+  ('slack_unit_mismatch',                  'not read'),
+  ('quantum_unit_mismatch',                'not read'),
+  ('nameplate_not_a_multiple',             'not read'),
+  ('draw_exceeds_the_supply',              'not read'),
+  ('clearance_with_unserved',              'filed sign'),
+  ('unresolved_part',                      'not read'),
+  ('jagged_layer',                         'not read'),
+  ('layers_move_together',                 'not read'),
+  ('coupling_does_not_attenuate',          'not read'),
+  ('narrows_a_point_value',                'not read'),
+  ('range_says_no_range',                  'not read'),
+  ('bound_fell_with_no_range',             'not read'),
+  ('identity_does_not_compute_the_claim',  'not read'),
+  ('window_lost_or_summed',                'not read'),
+  ('derived_slack_over_a_window',          'not read'),
+  ('window_not_applicable_on_a_rate',      'not read'),
+  ('window_size_not_applicable',           'not read'),
+  ('elimination_not_applicable_with_parts','not read'),
+  ('fusion_sum_disagrees',                 'not read'),
+  ('local_part_dangles',                   'not read'),
+  ('unit_crossing_without_a_factor',       'not read'),
+  ('regime_crossing_without_a_citation',   'not read'),
+  ('part_regime_disagrees',                'not read'),
+  ('conversion_cycle_does_not_close',      'not read'),
+  ('one_part_fusion_alters_its_part',      'not read'),
+  ('denied_remainder_is_not_contradicted', 'not read')
+) AS a(slug, axis)

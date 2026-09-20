@@ -1,0 +1,67 @@
+# The law `rank/compose_decomposition.sqlc` owes: cutting the compose DAG by directory partitions
+# its nodes, and accounts for every edge as kept or crossing.
+#
+# Without it the measurement is unreadable
+#   That relation reports the independent loops corpus-wide and the smaller number summed over the
+#   directories, and concludes that the difference needs two directories to exist. It would report the same shape
+#   if the cut had quietly dropped nodes, and the conclusion would then be about a bug rather than
+#   about the tree. This law is what makes the loss structural: every template appears once whole
+#   and once under its own directory, so what the cut loses is connectivity and never population.
+#
+# A partition, where the sibling law is about a cover
+#   `algebra/decomposition.sqlc` asserts `|E| = Σ_filing |E_filing|`, because a filing cut keeps
+#   every edge and may repeat a NODE. This cut is the other way round: it keeps every node exactly
+#   once and DROPS every edge whose ends are in two directories. So the node identity is exact and
+#   the edge identity needs the crossing count to close. Reading either sum as the other's kind is
+#   the mistake both headers exist to prevent.
+#
+# The crossing count is taken from the edges and not by subtraction
+#   `whole - kept` would be true by construction and would check nothing. The third term is
+#   counted directly off `rank/compose_edges.sqlc`, by comparing the two endpoints' directories,
+#   so the identity has three independently computed terms and can fail.
+#
+# ⛔ The directory RULE is shared with `rank/compose_measures.sqlc` and the COUNTING is not
+#   That is deliberate and the line matters. What a directory is has to be one definition or the
+#   two sides are measuring different cuts, so the `CASE` naming a root-level template `'(root)'`
+#   is written the same way in both. What is independent is the route to the number: the relation
+#   reaches it through a scoped join and an undirected walk, this reaches it by comparing two
+#   endpoints pairwise. ⚠️ An earlier draft of this file used a bare `split_part` here, which
+#   names a root-level template after its own filename instead of `'(root)'`. It agreed with the
+#   relation only while no root-level template composed another, which is the state of this tree
+#   today, so the law held for a reason that was not the law.
+#
+# Probe
+#   Drop the root-level templates from the scope list in `rank/compose_measures.sqlc` and
+#   recompose: the node identity must fail, and the cycle space this law does not mention must
+#   not move.
+-- algebra/roster.sqlc against rank/compose_measures.sqlc: the directory cut is a partition.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/compose_decomposition' AS subject,
+           x.whole_nodes = x.cut_nodes
+             AND x.whole_edges = x.cut_edges + x.crossing                            AS holds,
+           format('%s templates whole = %s summed over %s directories; %s edges = %s kept + %s crossing',
+                  x.whole_nodes, x.cut_nodes, x.directories,
+                  x.whole_edges, x.cut_edges, x.crossing)                            AS detail
+    FROM ( SELECT
+             (SELECT m.n_nodes FROM ( :compose(rank/compose_measures.sqlc) ) m
+               WHERE m.scope IS NULL)                                                AS whole_nodes,
+             (SELECT coalesce(sum(m.n_nodes), 0) FROM ( :compose(rank/compose_measures.sqlc) ) m
+               WHERE m.scope IS NOT NULL)                                            AS cut_nodes,
+             (SELECT m.m_edges FROM ( :compose(rank/compose_measures.sqlc) ) m
+               WHERE m.scope IS NULL)                                                AS whole_edges,
+             (SELECT coalesce(sum(m.m_edges), 0) FROM ( :compose(rank/compose_measures.sqlc) ) m
+               WHERE m.scope IS NOT NULL)                                            AS cut_edges,
+             (SELECT count(*) FROM ( :compose(rank/compose_edges.sqlc) ) e
+               WHERE (CASE WHEN position('/' IN e.parent) > 0
+                           THEN split_part(e.parent, '/', 1) ELSE '(root)' END)
+                  <> (CASE WHEN position('/' IN e.child) > 0
+                           THEN split_part(e.child, '/', 1) ELSE '(root)' END))       AS crossing,
+             (SELECT count(*) FROM ( :compose(rank/compose_measures.sqlc) ) m
+               WHERE m.scope IS NOT NULL)                                            AS directories
+         ) x
+) p ON true
+WHERE a.slug = 'compose_decomposition'

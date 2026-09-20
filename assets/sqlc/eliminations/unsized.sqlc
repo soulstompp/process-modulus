@@ -1,40 +1,53 @@
-# THE FUSIONS THAT OWE NO EQUALITY BECAUSE THE OVERLAP WAS FOUND AND COULD NOT BE SIZED. One
-# row per composed layer that FILES a demand elimination whose quantity is `unmeasured`.
+# The fusions that owe no equality because the overlap was found and could not be sized. One
+# row per composed layer and quantity whose elimination is filed as a typed absence, or as an
+# identity's output that nothing here computes into the sum.
 #
-# ⭐⭐ THIS IS A DIFFERENT DOCUMENT FROM AN UNSEARCHED ONE AND IT SUSPENDS FOR A DIFFERENT
-#    REASON. "These hours are double counted and by how much cannot be said" is a composer who
-#    looked, found something, and reported the honest width of their ignorance.
-#    Reading that as a zero -- which `coalesce(e.low, 0)` does -- asserts a sum the composer
-#    explicitly declined to make.
+# A different document from an unsearched one
+#   It suspends for a different reason. "These hours are double counted and by how much cannot be
+#   said" is a composer who looked, found something, and reported the honest width of their
+#   ignorance. Reading that as a zero, which `coalesce(e.low, 0)` does, asserts a sum the composer
+#   explicitly declined to make.
 #
-# ⛔ SO THE SUSPENSION HAS GROUNDS AT MORE THAN ONE LEVEL, and a checker that handles only the
-#   first is right about three fusions and wrong about the fourth. They are separate files so
+# Grounds at more than one level
+#   So the suspension has grounds at more than one level, and a checker that handles only the first
+#   is right about the fusions suspended on it and wrong about the rest. They are separate files so
 #   each can be run and counted alone, and united in composition/suspension_grounds.sqlc so no
-#   caller has to remember them. ⚠️ THAT UNION IS A BAG: one fusion can be suspended on more
-#   than one ground and is suspended once, which is why composition/suspended_fusions.sqlc
-#   exists as the projection: a caller that COUNTS reads the set, a caller that needs the
-#   reason reads the bag.
+#   caller has to remember them.
 #
-# ⭐⭐⭐ IT CARRIES `quantity` RATHER THAN PINNING IT, WHICH IS WHAT MAKES IT COMPOSABLE. An
-#    elimination is filed PER QUANTITY (pm.elimination's key is composition, composed layer,
-#    quantity), so filtering `quantity = 'demand'` here and dropping the column makes the union
-#    above wear the name "the composed layers that owe no sum AT ALL" while suspending only the
-#    demand sum, and the first nameplate rule to compose it is then wrong in BOTH
-#    directions: suspended because the DEMAND elimination was unsized, and letting a nameplate
-#    elimination filed `unmeasured` through into a `coalesce(..., 0)`. The pin in the file name
-#    is what makes a caller say which grain it means.
+# The union is a bag
+#   One fusion can be suspended on more than one ground and is suspended once, which is why
+#   composition/suspended_fusions.sqlc exists as the projection: a caller that counts reads the set,
+#   a caller that needs the reason reads the bag.
 #
-# ⭐⭐ AND IT SUSPENDS ON ANY TYPED ABSENCE, NOT ONLY `unmeasured`. An elimination quantity is a
-#    `pm:StatedClaim`, so its absent branch is a `pm:ClaimAbsence` carrying
-#    `pm:ClaimAbsenceReason` -- {unmeasured, notApplicable, derived}, with `none` NOT in the type.
-#    Filtering to `unmeasured` left the other two to survive owed_equality and be read as the
-#    NUMBER ZERO. tests/composition.rs returns `None` on any typed absence; the two witnesses
-#    stated different rules and nothing said so.
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent branch, per quantity.
+# It carries `quantity` rather than pinning it
+#   That is what makes it composable. An elimination is filed per quantity (pm.elimination's key is
+#   composition, composed layer, quantity), so filtering `quantity = 'demand'` here and dropping the
+#   column makes the union above wear the name "the composed layers that owe no sum at all" while
+#   suspending only the demand sum. The first nameplate rule to compose it is then wrong in both
+#   directions: suspended because the demand elimination was unsized, and letting a nameplate
+#   elimination filed `unmeasured` through into a `coalesce(..., 0)`. The pin in the file name is
+#   what makes a caller say which grain it means.
+#
+# A derived elimination is said to be one
+#   A derivation is an output the receiver computes, not a gap, and eliminations/derived.sqlc does
+#   find the double counts a shared part implies. Nothing yet wires that figure into the sum, so
+#   the sum is still lifted, under the identity's name rather than as an overlap nobody could size.
+#
+# Any typed absence suspends
+#   Not only `unmeasured`. An elimination quantity is a `pm:StatedEliminatedQuantity`, whose three
+#   arms are a claim, a named derivation and an absence, so its absent branch is a
+#   `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`: {unmeasured, notApplicable}, with `none`
+#   not in the type. Filtering to `unmeasured` lets the other survive owed_equality and be read as
+#   the number zero. tests/composition.rs returns `None` on any typed absence, and the
+#   two witnesses must state the same rule.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
-       'the overlap was found and could not be sized' AS suspended_because,
+       CASE WHEN e.derivation IS NOT NULL
+            THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
+                        'the sum', e.derivation)
+            ELSE 'the overlap was found and could not be sized' END AS suspended_because,
        e.reason AS note
 FROM (
     :compose(eliminations/filed.sqlc)
 ) e
-WHERE e.absent IS NOT NULL
+WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL

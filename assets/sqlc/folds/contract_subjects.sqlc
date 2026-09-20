@@ -1,0 +1,56 @@
+# Every subject every contract in this repository declares or produces, with the population's rows
+# for it counted by verdict. One row per (contract, subject).
+#
+# What a contract is, counted
+#   A contract is a roster, a bare `VALUES` literal naming its subjects, and a population, a bag of
+#   rows each naming a subject and, for three contracts, carrying a verdict. The population is a
+#   function from rows to subjects, and the roster declares its boxes. Everything this repository
+#   asks of a contract is a question about the sizes of that function's fibres: whether a declared
+#   box is empty, whether a ball fell outside the declared boxes, how many balls carry a verdict,
+#   whether any came back silent. Those sizes, with empty boxes printed because the roster drives,
+#   are the twelvefold way's balls into labelled boxes read up to the order of the balls, and this
+#   relation is that reading, once, for every contract.
+#
+# Each contract's outer join on its own, then their union
+#   Each arm composes one fold, `roster ⟗ population` grouped per subject, and each fold keeps the
+#   boxes its own verdict has. The union keeps the columns every contract shares, and the caller,
+#   holding all seven, names each arm; no fold knows it has siblings.
+#
+# The regions of the outer join
+#   `declared` and `rows > 0` are the two sides: declared with no row is a roster naming something
+#   no population produces, and a row that is not declared is a population growing past its roster.
+#   Both false cannot occur, because every row here comes from one side or the other.
+#
+# `answered` for a population with no verdict
+#   The three contracts with a verdict count `answered`, `silent` and `vacuous` in their own folds.
+#   The four others carry no verdict: a catalogue row naming a table is the whole answer to whether
+#   the table exists, so the union gives them `rows` as `answered`, and zero for `silent` and
+#   `vacuous`, because nothing in them can be withheld. Every reader treats a row of those
+#   populations as its own answer, so nothing a reader distinguishes is merged by saying so.
+#
+# Who reads it
+#   reports/integrity.sqlc crosses it with the problems a contract can have and keeps the ones found;
+#   rank/guard_reach.sqlc counts, per contract, the declared subjects some answered row reaches.
+#   algebra/integrity.sqlc and algebra/subject_boxes.sqlc hold six of the seven folds from outside;
+#   the laws' own fold cannot be held from algebra/, whose relation it counts.
+-- the seven contracts' folds, each labelled with the contract it counts.
+SELECT 'rules' AS contract, f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
+FROM ( :compose(folds/rule_subjects.sqlc) ) f
+UNION ALL
+SELECT 'arithmetic', f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
+FROM ( :compose(folds/site_subjects.sqlc) ) f
+UNION ALL
+SELECT 'algebra', f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
+FROM ( :compose(folds/law_subjects.sqlc) ) f
+UNION ALL
+SELECT 'diagrams', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( :compose(folds/object_subjects.sqlc) ) f
+UNION ALL
+SELECT 'diagram laws', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( :compose(folds/diagram_law_subjects.sqlc) ) f
+UNION ALL
+SELECT 'absences', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( :compose(folds/absence_subjects.sqlc) ) f
+UNION ALL
+SELECT 'derivations', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( :compose(folds/derivation_subjects.sqlc) ) f

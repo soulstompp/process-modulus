@@ -1,0 +1,77 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §4  The one layer where a conversion factor is correlated with itself.\n-- layers/filed_against_derived.sqlc at the one layer with a spread conversion factor.\nSELECT r.qty_low::float8      AS \"q_low!\",\n       r.qty_mode::float8     AS \"q_mode!\",\n       r.qty_high::float8     AS \"q_high!\",\n       r.d_low::float8        AS \"d_low!\",\n       r.d_mode::float8       AS \"d_mode!\",\n       r.d_high::float8       AS \"d_high!\",\n       r.n_low::float8        AS \"n_low!\",\n       r.n_mode::float8       AS \"n_mode!\",\n       r.n_high::float8       AS \"n_high!\"\nFROM (\n    SELECT * FROM layers.filed_against_derived\n) r\nWHERE r.filing = 'merge-holding-composition'\n  AND r.layer  = 'compute'\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "q_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "q_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "q_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "d_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "d_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "d_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "n_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "n_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 8,
+        "name": "n_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "9e24f319728f36b4f537943ef16bc1477233acb34332711fa7f46981f2592409"
+}

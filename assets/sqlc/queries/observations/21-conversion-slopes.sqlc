@@ -1,0 +1,40 @@
+-- §21 Which corner of the path's factor each bound of a carried remainder took, and whether it mattered.
+# One row per settled node a remainder walk carries up, with the sign of the operand at each bound
+# and whether taking corners gave a different figure from multiplying bound by bound.
+#
+# The conversion of a signed quantity is two slopes and a sign
+#   A demand, a nameplate and a draw cannot be negative, so the smaller factor always lands on the
+#   smaller figure and `composition/converted.sqlc` multiplies bound by bound. A remainder is a
+#   difference and may be negative, so `composition/settled_remainders.sqlc` takes the least and the
+#   greatest over both corners instead: more of a shortfall converted at a larger rate is the smaller
+#   number. Those are the two branches of one operator, and this section says which branch each
+#   filing actually reached.
+#
+# `corner_rule_bites` is a conjunction, and that is the point
+#   It needs a factor with width AND a negative operand at that bound. Either alone changes nothing.
+#   Read the counts here rather than assuming: if both populations are sizeable and the column is
+#   false throughout, the two do not overlap in this corpus, and the least and the greatest are
+#   standing ready for a document nobody has filed.
+#
+# An empty conjunction is a fact about the evidence
+#   It is not a reason to simplify the arithmetic. A negative remainder is a layer whose demand
+#   exceeds its supply, which is the interference case the model exists to measure, and a factor with
+#   width is ordinary. The identity is proved against a constructed operand in
+#   `src/proofs/README.md`, entries `positive_factor_componentwise` and `two_slopes`, precisely
+#   because no filing reaches it.
+-- composition/conversion_slopes.sqlc, ordered so any biting row reads first.
+SELECT c.composition                AS "composition!",
+       c.composed_layer             AS "composed_layer!",
+       c.node_filing                AS "node_filing!",
+       c.node_layer                 AS "node_layer!",
+       c.depth                      AS "depth!",
+       c.spread_factor              AS "spread_factor!",
+       c.operand_low::float8        AS operand_low,
+       c.operand_high::float8       AS operand_high,
+       c.low_took                   AS "low_took!",
+       c.high_took                  AS "high_took!",
+       c.corner_rule_bites          AS corner_rule_bites
+FROM (
+    :compose(composition/conversion_slopes.sqlc)
+) c
+ORDER BY c.corner_rule_bites DESC NULLS LAST, c.spread_factor DESC, 1, 2, 4

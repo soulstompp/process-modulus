@@ -1,16 +1,18 @@
-# THE TWO KINDS OF DILIGENCE SEARCH AGAINST THE UNION THAT HOLDS BOTH. One row: whether
+# The two kinds of diligence search against the union that holds both. One row: whether
 # |A ⊎ B| = |A| + |B|.
 #
-# ⭐ A `UNION ALL` OF TWO COMPOSED RELATIONS IS TRIVIALLY ADDITIVE -- WHICH IS WHY THIS LAW IS A
-#   DRIFT CHECK RATHER THAN AN ALGEBRA CHECK, AND SAYING SO IS THE HONEST THING. It cannot fail on
-#   the operator; it fails when somebody adds a predicate to the union file, drops an arm, or
+# A drift check, not an algebra check
+#   A `UNION ALL` of two composed relations is trivially additive, which is why this law is a
+#   drift check rather than an algebra check, and saying so is the honest thing. It cannot fail
+#   on the operator; it fails when somebody adds a predicate to the union file, drops an arm, or
 #   writes bare `UNION` and silently deduplicates. Those are the ways a hand-written union goes
 #   wrong, and none of them raises an error.
 #
-# ⛔ Composer-generated `:union(ALL …)` does NOT earn a row here: the arms are spliced verbatim
-#   and there is no call site to drift. Only hand-written unions do.
+# Only hand-written unions earn a row
+#   A union the composer generates from its `ALL` directive does not earn a row here: the arms
+#   are spliced verbatim and there is no call site to drift.
 -- epistemics/searches.sqlc against the two relations it unions.
-SELECT a.law, p.subject, p.holds, p.detail
+SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a

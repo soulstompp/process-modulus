@@ -1,0 +1,74 @@
+# The law rank/composition_closure.sqlc owes: the null space of a whole descent is the sum of the
+# null spaces of the levels in it. One row.
+#
+# The identity
+#   Composing onto maps composes their null spaces additively, so under any root the dimension of
+#   the composite map's null space is the sum of the blocks below it. The composite is onto a
+#   single figure, so its own dimension is the leaf count less one, and the two routes are
+#   `leaves - 1` and `Σ (parts - 1)` over the distinct fusions in the closure.
+#   Proof: `src/proofs/README.md`, entry `kernel_closes`.
+#
+# What it can catch, which is not the arithmetic
+#   On a tree the identity is forced by counting edges, so the content of this law is that the
+#   descent under each root IS a tree. A leaf reached by a second path raises the block sum and
+#   leaves the leaf count alone; a cycle takes the leaf count away without taking the blocks. Both
+#   land here, and this law names the root, which is what neither of the instruments that already
+#   exist does: checks/jagged_layer.sqlc names the fusion whose own parts overlap and
+#   algebra/cycle_space.sqlc reports one number for the corpus.
+#
+# And the row space of the closure, in the same row
+#   The composite is onto one figure, so `row_dim` is 1 at any depth, and every leaf reaches the
+#   root through a path product that is strictly positive or that nobody stated. Those two
+#   possibilities must exhaust the leaves: a path product of zero would be a factor of zero, which
+#   `pm.part`'s own CHECK refuses, and a negative one is not a conversion. So this clause is the
+#   block-level positivity carried through the nesting, and it is what says no non-negative
+#   assignment to the leaves is invisible to the root.
+#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+#
+# Non-vacuity needs the closure to be a closure
+#   At one level `leaves - 1` and `Σ (parts - 1)` are the same expression, so a corpus of
+#   single-level compositions passes this law having compared nothing with itself. The floor
+#   requires a root whose descent reaches two levels, which is where the sum over levels first has
+#   more than one term.
+#
+# Every fusion, not only the tops
+#   rank/composition_closure.sqlc takes each fusion as a root of its own closure, so a defect
+#   under an interior fusion is reported at that fusion and at every fusion above it. Both are
+#   true: the identity fails for the interior root on its own, and for each ancestor because its
+#   closure contains the interior one.
+#
+# Probe
+#   examples/probes runs it as `composition_closure`. In a rolled-back transaction, give a fusion a
+#   part naming a layer already reachable beneath it through another composition, and this law must
+#   fail at that fusion and at nothing that does not contain it.
+-- rank/composition_closure.sqlc: the composite's dimension against the sum of its levels'.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'rank/composition_closure' AS subject,
+           count(*) > 0
+           AND count(*) FILTER (WHERE c.deepest >= 2) > 0
+           AND count(*) FILTER (WHERE c.closure_kernel <> c.sum_kernel) = 0
+           AND count(*) FILTER (WHERE c.row_dim <> 1) = 0
+           AND count(*) FILTER (WHERE c.leaves_positive + c.leaves_unknown <> c.leaves) = 0
+                                                                                     AS holds,
+           format('%s root(s), %s reaching two levels or more; %s disagree between the '
+                  'composite dimension and the sum of its blocks, %s have a leaf whose path '
+                  'product is neither positive nor unstated, %s leaf arrival(s) unstated%s',
+                  count(*), count(*) FILTER (WHERE c.deepest >= 2),
+                  count(*) FILTER (WHERE c.closure_kernel <> c.sum_kernel),
+                  count(*) FILTER (WHERE c.leaves_positive + c.leaves_unknown <> c.leaves),
+                  coalesce(sum(c.leaves_unknown), 0),
+                  coalesce(': ' || string_agg(format('%s/%s wants %s and sums to %s',
+                                                     c.composition, c.composed_layer,
+                                                     c.closure_kernel, c.sum_kernel),
+                                              ', ' ORDER BY c.composition, c.composed_layer)
+                                   FILTER (WHERE c.closure_kernel <> c.sum_kernel), ''))
+                                                                                     AS detail
+    FROM (
+        :compose(rank/composition_closure.sqlc)
+    ) c
+) p ON true
+WHERE a.slug = 'composition_closure'

@@ -1,34 +1,46 @@
-# EVERY FUSION, BESIDE WHETHER ITS LAYER MUST MOVE WITH ANOTHER. One row per fusion, `violates`
+# Every fusion, beside whether its layer must move with another. One row per fusion, `violates`
 # where the layer sits in a co-movement class of more than one.
 #
-# ⭐⭐⭐ THE RULE IS `pm:Layer`'s OWN DEFINITION, WHICH IS ALSO THE MODEL'S FOURTH FALSIFIER:
-#    *a layer is a place where a remainder can be held INDEPENDENTLY of every other layer*, and
-#    *if two candidate layers' remainders always move together, they were never two layers*. If A
-#    is composed from B while B is composed from A, no perturbation of one leaves the other fixed.
-#    The pair fails the definition: the two cells are one cell.
+# The fourth falsifier, as a rule
+#   The rule is `pm:Layer`'s own definition, which is also the model's fourth falsifier: *a
+#   layer is a place where a remainder can be held independently of every other layer*, and *if
+#   two candidate layers' remainders always move together, they were never two layers*. If A is
+#   composed from B while B is composed from A, no perturbation of one leaves the other fixed.
+#   The pair fails the definition: the two cells are one cell.
 #
-# ⛔⛔ THE REPAIR IS A WRAP, NOT A DELETED EDGE, AND THE DETAIL SAYS SO. A rule that reports
-#    *break the loop* points at falsifying a real supply relation. What the schema asks for is
-#    merging the layers, or one filer withdrawing a part, and that is what the detail names.
+# The repair is a merge, not a deleted edge
+#   The detail says so. A rule that reports *break the loop* points at falsifying a real supply
+#   relation. What the schema asks for is merging the layers, or one filer withdrawing a part,
+#   and that is what the detail names.
 #
-# ⭐⭐ IT SEES WHAT NO OTHER RULE HERE SEES. Measured on three probes: a LOCAL loop, which a rule
-#    confined to one document also catches, though at the root grain and pointing at the wrong
-#    repair; and a CROSS-DOCUMENT loop whose factors close round it, which a local rule cannot
-#    reach at all and which `conversion_cycle_does_not_close` correctly ignores because the units
-#    DO close. That third case is two layers co-moving with no arithmetic error anywhere, and
-#    nothing else here reaches it.
+# It sees what no other rule here sees
+#   A local loop is also caught by a rule confined to one document, though at the root grain and
+#   pointing at the wrong repair. A cross-document loop whose factors close round it is reached
+#   by no local rule at all, and `conversion_cycle_does_not_close` correctly ignores it because
+#   the units do close. That case is two layers co-moving with no arithmetic error anywhere, and
+#   nothing else here reaches it.
 #
-# ⭐ THE POPULATION IS THE FUSIONS AND THAT IS EXACT, not a convenience: to sit on a cycle a layer
-#   must have an outgoing edge in `F`, which is to say it must be composed from something.
+# The population is the fusions, exactly
+#   Not a convenience: to sit on a cycle a layer must have an outgoing edge in `F`, which is to
+#   say it must be composed from something.
 #
-# ⛔⛔⛔ THE REFLEXIVE PAIR IS THE SIMPLEST VIOLATION AND THE EASIEST TO EXCLUDE BY ACCIDENT.
-#    Write `AND NOT (co_moves_with = self)` so the detail does not read *`compute` moves with
-#    `compute`*, and the rule fires ZERO on a layer composed from ITSELF, which is the purest
-#    case of a thing that is not a layer. `composition/descent.sqlc` emits `(A, A)` only when A
-#    genuinely reaches A, so a reflexive pair here is never trivial. ⭐ A cosmetic choice in a
-#    detail string makes a hole at the easiest case, so the detail branches on it instead.
--- composition/descent.sqlc intersected with its converse; conformance rule "layers that always
--- move together are one layer".
+# One row per fusion, not one per pair
+#   The pair relation holds `(A,A)` and `(A,B)` for a two-cycle, so joining it directly reports
+#   one defect twice. A rule's grain is its subject's grain, and the subject here is the layer.
+#
+# The reflexive pair is the simplest violation
+#   It is also the easiest to exclude by accident. Write `AND NOT (co_moves_with = self)` so the
+#   detail does not read *`compute` moves with `compute`*, and the rule fires zero on a layer
+#   composed from itself, which is the purest case of a thing that is not a layer.
+#   `composition/descent.sqlc` emits `(A, A)` only when A genuinely reaches A, so a reflexive
+#   pair here is never trivial. A cosmetic choice in a detail string makes a hole at the easiest
+#   case, so the detail branches on it instead.
+#
+# Probe
+#   Inside a transaction you roll back, close a loop within one document, then a cross-document
+#   loop whose factors close round it. This rule must fire on both, and
+#   `conversion_cycle_does_not_close` must stay quiet on the second.
+-- composition/descent.sqlc intersected with its converse; conformance rule "layers that always move together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
@@ -47,9 +59,6 @@ LEFT JOIN (
         :compose(composition/fusions.sqlc)
     ) f
     LEFT JOIN (
-        -- ⛔ ONE ROW PER FUSION, NOT ONE PER PAIR. The pair relation holds `(A,A)` and `(A,B)`
-        --   for a two-cycle, so joining it directly reported one defect twice. A rule's grain is
-        --   its subject's grain, and the subject here is the LAYER.
         SELECT m.filing, m.layer, m.class, m.members,
                bool_or(m.co_moves_with_filing = m.filing AND m.co_moves_with_layer = m.layer)
                  AS reaches_itself,

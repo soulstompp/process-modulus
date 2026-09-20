@@ -1,40 +1,39 @@
-# WHAT EACH RULE ACTUALLY EXAMINED, AND WHETHER THAT IS ENOUGH TO MEAN ANYTHING. One row per
+# What each rule actually examined, and whether that is enough to mean anything. One row per
 # rule: how many items it looked at, how many breached it, and a verdict on the count itself.
 #
-# ⭐⭐⭐ A RULE THAT EXAMINED NOTHING IS NOT A RULE THAT PASSED. This repository names the trap
-#    in one sentence -- "a bound with nothing to bound passes loudest" -- and this is where it
-#    is answered rather than restated. An empty violations table beside a zero here is a
-#    checker reporting on its own silence.
-#      examined = 0  ⛔ VACUOUS. The rule proves nothing whatever.
-#      examined < 3  ⚠️  thin. One or two rows is a demonstration, not evidence.
-#      otherwise     ok.
+# A rule that examined nothing did not pass
+#   This repository names the trap in one sentence, "a bound with nothing to bound passes
+#   loudest", and this is where it is answered rather than restated. An empty violations table
+#   beside a zero here is a checker reporting on its own silence.
+#     examined = 0  `VACUOUS`. The rule proves nothing whatever.
+#     examined < 3  `thin`. One or two rows is a demonstration, not evidence.
+#     otherwise     `ok`.
 #
-# ⭐⭐ AND A THIN VERDICT IS USUALLY A FACT ABOUT AUTHORSHIP, NOT ABOUT THE WORLD. If a rule
-#    examines one row, the question is who wrote the corpus and what they filed -- not whether
-#    the model is wrong. A FIXTURE can raise the number honestly, because a fixture is a
-#    stipulation; a corpus filing cannot, because that would mean inventing an observation
-#    nobody made.
+# A thin verdict is about authorship
+#   It is usually a fact about authorship, not about the world. If a rule examines one row, the
+#   question is who wrote the corpus and what they filed, not whether the model is wrong. A
+#   fixture can raise the number honestly, because a fixture is a stipulation; a corpus filing
+#   cannot, because that would mean inventing an observation nobody made.
 #
-# ⛔⛔ THE VACUOUS ROW IS THE WHOLE REASON THIS IS A `GROUP BY` OVER A ROSTER JOIN RATHER THAN
-#    OVER A POPULATION. Group a filtered population and a rule with nothing to examine
-#    produces no row at all -- so the checker's most important verdict would be delivered by
-#    silence, which is indistinguishable from the rule not existing. Every check emits its
-#    roster row first, so `examined = 0` is a row you can read.
+# Why this groups over a roster join
+#   The vacuous row is the whole reason this is a `GROUP BY` over a roster join rather than over a
+#   population. Group a filtered population and a rule with nothing to examine produces no row at
+#   all, so the checker's most important verdict would be delivered by silence, which is
+#   indistinguishable from the rule not existing. Every check emits its roster row first, so
+#   `examined = 0` is a row you can read.
 #
-# ⛔ EVERY COUNT HERE IS OVER THE SAME RELATION THE VIOLATIONS ARE FILTERED FROM. Nothing
-#   restates a population, so nothing here can be about a different set of rows than the rule
-#   it reports on.
--- checks/all.sqlc, grouped by rule.
-SELECT c.rule,
-       count(*) FILTER (WHERE c.violates IS NOT NULL) AS examined,
-       count(*) FILTER (WHERE c.violates)             AS violations,
-       CASE WHEN count(*) FILTER (WHERE c.violates IS NOT NULL) = 0
-                 THEN '⛔ VACUOUS - proves nothing'
-            WHEN count(*) FILTER (WHERE c.violates IS NOT NULL) < 3
-                 THEN '⚠️  thin'
-            ELSE 'ok' END                             AS verdict
+# One relation, no restated population
+#   Every count here is over the same relation the violations are filtered from. Nothing restates
+#   a population, so nothing here can be about a different set of rows than the rule it reports
+#   on.
+-- folds/rule_subjects.sqlc, one row per rule either side names.
+SELECT f.subject                        AS rule,
+       f.answered                       AS examined,
+       f.violated                       AS violations,
+       CASE WHEN f.answered = 0 THEN '⛔ VACUOUS - proves nothing'
+            WHEN f.answered < 3 THEN 'thin'
+            ELSE 'ok' END               AS verdict
 FROM (
-    :compose(checks/all.sqlc)
-) c
-GROUP BY c.rule
+    :compose(folds/rule_subjects.sqlc)
+) f
 ORDER BY examined DESC, rule

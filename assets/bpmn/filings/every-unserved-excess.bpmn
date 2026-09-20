@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED from process-modulus by examples/diagramming/main.rs. DO NOT EDIT.
+     source: the filing `every-unserved-excess`; change the model, not this file.
+     laws:   assets/sqlc/diagrams/roster.sqlc -->
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:tns="urn:example:fixture:line:every-unserved-excess"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             targetNamespace="urn:example:fixture:line:every-unserved-excess"
+             id="defs_every-unserved-excess">
+  <collaboration id="collab_every-unserved-excess">
+    <participant id="pool_every-unserved-excess" name="every-unserved-excess" processRef="proc_every-unserved-excess"/>
+  </collaboration>
+  <process id="proc_every-unserved-excess" isExecutable="false">
+    <documentation>pm:Stack of `every-unserved-excess`. Rendered from process-modulus; the arithmetic is not here, and how much of the system this stack holds is on the laneSet. [assets/sqlc/diagrams/pools.sqlc]</documentation>
+    <laneSet id="lanes_every-unserved-excess" name="draw">
+      <documentation>scope: scoped. `complete` asserts there are no other layers of this system, `scoped` says somebody established what lies outside and excluded it, `unbounded` says nobody looked. ⛔ A LANE SET CANNOT SAY WHICH, so this sentence is the only place it is said. Basis: stipulated: one line, the only layer this document states [assets/sqlc/diagrams/scopes.sqlc]</documentation>
+      <documentation>coupling search: notApplicable. `unmeasured` is nobody looked, `none` is somebody looked and found no dependence, `notApplicable` is there is no pair to couple, `stated` is the dependences drawn here. An absent line is not independence. [assets/sqlc/diagrams/searches.sqlc]</documentation>
+      <lane id="lane_every-unserved-excess_line" name="line">
+        <documentation>rank 0; nothing beneath this layer needs evaluating first at rank 0, and a higher rank waits on every arrival below it [assets/sqlc/rank/evaluation_order.sqlc]</documentation>
+      </lane>
+    </laneSet>
+    <textAnnotation id="note_every-unserved-excess_lane">
+      <text>AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one. [assets/sqlc/diagrams/lane_grain.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-unserved-excess_scope">
+      <text>SCOPE: scoped. This pool is a PROJECTION of one system and not the system. [assets/sqlc/diagrams/scopes.sqlc]</text>
+    </textAnnotation>
+    <textAnnotation id="note_every-unserved-excess_search">
+      <text>COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence. [assets/sqlc/diagrams/searches.sqlc]</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="diagram_every-unserved-excess">
+    <bpmndi:BPMNPlane id="plane_every-unserved-excess" bpmnElement="tns:collab_every-unserved-excess">
+      <bpmndi:BPMNShape id="shape_every-unserved-excess_pool" bpmnElement="tns:pool_every-unserved-excess" isHorizontal="true">
+        <dc:Bounds x="8" y="36" width="744" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unserved-excess_lane_every-unserved-excess_line" bpmnElement="tns:lane_every-unserved-excess_line">
+        <dc:Bounds x="120" y="46" width="620" height="34"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unserved-excess_note_every-unserved-excess_lane" bpmnElement="tns:note_every-unserved-excess_lane">
+        <dc:Bounds x="20" y="94" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unserved-excess_note_every-unserved-excess_scope" bpmnElement="tns:note_every-unserved-excess_scope">
+        <dc:Bounds x="20" y="124" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_every-unserved-excess_note_every-unserved-excess_search" bpmnElement="tns:note_every-unserved-excess_search">
+        <dc:Bounds x="20" y="154" width="720" height="28"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

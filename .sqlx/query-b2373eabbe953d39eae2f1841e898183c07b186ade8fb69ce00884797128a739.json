@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  The SQL's own F Φ x: each owed sum of converted parts, before the elimination.\n-- composition/fused.sqlc, the sums before the elimination.\nSELECT f.composition        AS \"composition!\",\n       f.composed_layer     AS \"composed!\",\n       f.quantity::text     AS \"quantity!\",\n       f.sum_low::float8    AS \"sum_low!\",\n       f.sum_mode::float8   AS \"sum_mode!\",\n       f.sum_high::float8   AS \"sum_high!\"\nFROM (\n    SELECT * FROM composition.fused\n) f\nORDER BY f.quantity, f.composition, f.composed_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "composition!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fused",
+            "name": "composition"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "composed!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "composition.fused",
+            "name": "composed_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "sum_low!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "sum_mode!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "sum_high!",
+        "type_info": "Float8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "b2373eabbe953d39eae2f1841e898183c07b186ade8fb69ce00884797128a739"
+}

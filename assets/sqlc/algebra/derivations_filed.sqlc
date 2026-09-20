@@ -1,0 +1,91 @@
+# The derivation census counted from the columns, held against the derivations counted from the
+# elements. One row per position and element identities/roster.sqlc lists, plus one for derivations
+# filed at a cell it does not list: whether both routes count the same derivations, per filing and
+# identity.
+#
+# Two routes that share no code
+#   epistemics/derivations.sqlc reads each position's identity from the column on the table of the
+#   thing it computes; epistemics/filed_derivations.sqlc reads every derivation element. The ingest
+#   fills them by different paths, so a branch one path drops, or a census arm reading the wrong
+#   column, moves one side and not the other. algebra/absences_filed.sqlc makes the same argument
+#   for the reasons, and this is its mirror.
+#
+# Per position and element, not per question
+#   A figure's derivation column is one position. The edge and narrowing columns hold one per
+#   claim position, and both routes key them by the claim's own `owns` with the element beside it,
+#   so the (position, element) pairs are the groups and nothing needs joining through shared rows.
+#
+# The roster is held to the data too
+#   A figure's derivation at a cell the roster does not list is one the grammar and the DDL's
+#   CHECKs should both have refused. A claim's edge or narrowing at such a cell the grammar cannot
+#   refuse, because a claim is one type wherever it sits; checks/identity_does_not_compute_the_claim
+#   reports it against the document, and the last subject here says the roster does not cover it.
+#
+# What it cannot see
+#   Two derivations swapped between layers of one filing, naming the same identity at the same
+#   position, leave every count unchanged.
+#
+# Probe
+#   examples/probes runs it as `derivations_filed`: delete the time slack's row from pm.derivation
+#   in a rolled-back transaction, and the law must fail for that position alone.
+-- epistemics/derivations.sqlc against epistemics/filed_derivations.sqlc, through identities/roster.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    WITH counted AS (
+        SELECT c.owns, c.element, c.filing, c.identity, count(*) AS n
+        FROM (
+            :compose(epistemics/derivations.sqlc)
+        ) c
+        GROUP BY c.owns, c.element, c.filing, c.identity
+    ),
+    filed AS (
+        SELECT f.owns, f.element, f.filing, f.identity, count(*) AS n
+        FROM (
+            :compose(epistemics/filed_derivations.sqlc)
+        ) f
+        GROUP BY f.owns, f.element, f.filing, f.identity
+    ),
+    cells AS (
+        SELECT coalesce(c.owns, f.owns) AS owns, coalesce(c.element, f.element) AS element,
+               coalesce(c.filing, f.filing) AS filing, coalesce(c.identity, f.identity) AS identity,
+               coalesce(c.n, 0) AS counted, coalesce(f.n, 0) AS filed
+        FROM counted c
+        FULL JOIN filed f ON f.owns = c.owns AND f.element = c.element AND f.filing = c.filing
+                         AND f.identity = c.identity
+    ),
+    positions AS (
+        SELECT DISTINCT r.owns, r.element
+        FROM (
+            :compose(identities/roster.sqlc)
+        ) r
+    )
+    SELECT CASE WHEN q.element = q.owns THEN q.owns ELSE q.element || ' at ' || q.owns END AS subject,
+           coalesce(bool_and(x.counted = x.filed), true) AS holds,
+           format('%s filed, %s counted%s', coalesce(sum(x.filed), 0), coalesce(sum(x.counted), 0),
+                  coalesce(': ' || string_agg(format('%s %s filed %s, counted %s', x.filing,
+                                                     x.identity, x.filed, x.counted),
+                                              '; ' ORDER BY x.filing, x.identity)
+                                   FILTER (WHERE x.counted <> x.filed), '')) AS detail
+    FROM positions q
+    LEFT JOIN cells x ON x.owns = q.owns AND x.element = q.element
+    GROUP BY q.owns, q.element
+    UNION ALL
+    SELECT 'pairs the roster does not admit',
+           count(*) = 0,
+           format('%s derivation(s) at a cell identities/roster.sqlc does not list%s', count(*),
+                  coalesce(': ' || string_agg(DISTINCT f.element || ' at ' || f.owns || ' ' || f.identity::text, ', '), ''))
+    FROM (
+        :compose(epistemics/filed_derivations.sqlc)
+    ) f
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM (
+            :compose(identities/roster.sqlc)
+        ) r
+        WHERE r.owns = f.owns AND r.element = f.element AND r.identity = f.identity::text
+    )
+) p ON true
+WHERE a.slug = 'derivations_filed'

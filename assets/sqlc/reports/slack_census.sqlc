@@ -1,35 +1,39 @@
-# WHICH BUFFERS A SET OF DOCUMENTS SIZES, AND FOR THE REST, WHY NOT. One row per (buffer,
+# Which buffers a set of documents sizes, and for the rest, why not. One row per (buffer,
 # evidence): how many slacks are sized, how many of those read zero, and one column per typed
 # reason the rest are not.
 #
-# ⭐⭐⭐ IT PARTITIONS, AND A BREAKDOWN THAT DOES NOT IS WORSE THAN NO BREAKDOWN. Counting
-#    `sized`, `absent = 'none'` and `absent = 'unmeasured'` gives three figures that do not add
-#    up to the total: `notApplicable` and `derived` slacks fall out silently, and among them is
-#    the single `derived` time slack that entries/derived_time_slacks.sqlc and
-#    checks/derived_slack_over_a_window.sqlc exist to talk about. A census with a residue is a
-#    census nobody can check.
+# It partitions
+#   A breakdown that does not is worse than no breakdown. Counting `sized`, `absent = 'none'` and
+#   `absent = 'unmeasured'` gives three figures that do not add up to the total: `notApplicable`
+#   slacks and derived ones fall out silently, and among them is the `clearance` time slack that
+#   entries/derived_time_slacks.sqlc and checks/derived_slack_over_a_window.sqlc exist to talk
+#   about. A census with a residue is a census nobody can check. `sized`, `absent` and `derived`
+#   partition the rows.
 #
-# ⛔⛔ AND `absent = 'none'` WAS STRUCTURALLY DEAD, WHICH IS WORSE THAN WRONG. A slack is a
-#    `pm:StatedClaim`, so its absent branch is a `pm:ClaimAbsence` carrying
-#    `pm:ClaimAbsenceReason` -- {unmeasured, notApplicable, derived}. `none` IS NOT IN THE TYPE.
-#    The column the surrounding prose called "the count that matters" could only ever read zero,
-#    and it does, in every run. A sized zero is how this model says
-#    "checked, and it cannot stretch", and `entries/slacks.sqlc` carries it as `sized AND mode = 0`.
+# `none` is not in the type
+#   A column for `absent = 'none'` would be structurally dead, which is worse than wrong. A slack
+#   is a `pm:StatedClaim`, or a `pm:StatedTimeSlack` for the time buffer, and either way its absent
+#   branch is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, {unmeasured, notApplicable},
+#   and `none` is not in the type.
+#   Such a column could only ever read zero. A sized zero is how this model says "checked, and it
+#   cannot stretch", and it is a slack whose high is zero, which is how layers/absorption.sqlc
+#   reads it too. A mode of zero with room above it can still stretch.
 #
-# ⛔⛔⛔ THE `@scope` IS REQUIRED AND THAT IS THE POINT. The census it replaces joined no scope at
-#    all, so it counted the fixtures, and `assets/fixtures/` exists to file absences ON PURPOSE.
-#    Pooling a stipulation with an observation answers "how much does this corpus measure?" with
-#    a number the fixtures manufactured. A caller that supplies no scope does not compose.
-#    reports/absence_census.sqlc is the same slot for the same reason.
+# The `@scope` is required
+#   That is the point. A census that joins no scope counts the fixtures, and `assets/fixtures/`
+#   exists to file absences on purpose. Pooling a stipulation with an observation answers "how
+#   much does this corpus measure?" with a number the fixtures manufactured. A caller that
+#   supplies no scope does not compose. reports/absence_census.sqlc is the same slot for the same
+#   reason.
 -- entries/slacks.sqlc by buffer, split by evidence, restricted by the caller's @scope.
 SELECT s.buffer::text                                          AS buffer,
        f.evidence                                              AS evidence,
        count(*) FILTER (WHERE s.sized)                         AS sized,
-       count(*) FILTER (WHERE s.sized AND s.mode = 0)          AS sized_at_zero,
-       count(*) FILTER (WHERE NOT s.sized)                     AS absent,
+       count(*) FILTER (WHERE s.sized AND s.high = 0)          AS sized_at_zero,
+       count(*) FILTER (WHERE s.absent IS NOT NULL)            AS absent,
        count(*) FILTER (WHERE s.absent = 'unmeasured')         AS nobody_measured,
        count(*) FILTER (WHERE s.absent = 'notApplicable')      AS not_applicable,
-       count(*) FILTER (WHERE s.absent = 'derived')            AS derived,
+       count(*) FILTER (WHERE s.derivation IS NOT NULL)        AS derived,
        count(*)                                                AS rows
 FROM      (
     :compose(entries/slacks.sqlc)

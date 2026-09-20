@@ -258,10 +258,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -287,10 +287,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -448,10 +448,10 @@
             <!-- derived: |10 - [10.4, 11.5, 13.0]| = [0.4, 1.5, 3.0] people,
                  and the two shares above sum to exactly that. -->
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -544,10 +544,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -573,10 +573,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -675,10 +675,10 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -769,10 +769,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -798,10 +798,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -929,10 +929,10 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -1026,10 +1026,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -1056,10 +1056,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -1189,10 +1189,10 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -1270,10 +1270,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -1297,10 +1297,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -1430,10 +1430,10 @@
               </pm:holder>
             </pm:holder>
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -1528,10 +1528,10 @@
                   </pm:absent>
                 </pm:narrowsWhen>
                 <pm:boundOrigin>
-                  <pm:absent>
-                    <pm:reason>derived</pm:reason>
+                  <pm:derivation>
+                    <pm:identity>amountOrigin</pm:identity>
                     <pm:note>`Nameplate/amountOrigin` says who could have held a different number of these, one element over. Reading the same fact twice is how the two come to disagree</pm:note>
-                  </pm:absent>
+                  </pm:derivation>
                 </pm:boundOrigin>
               </pm:claim>
             </pm:amount>
@@ -1555,10 +1555,10 @@
                         </pm:absent>
                       </pm:narrowsWhen>
                       <pm:boundOrigin>
-                        <pm:absent>
-                          <pm:reason>derived</pm:reason>
+                        <pm:derivation>
+                          <pm:identity>quantumOrigin</pm:identity>
                           <pm:note>`LumpyQuantum/origin` says who sets the size of one unit, in this same element</pm:note>
-                        </pm:absent>
+                        </pm:derivation>
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
@@ -1595,10 +1595,10 @@
                           </pm:absent>
                         </pm:narrowsWhen>
                         <pm:boundOrigin>
-                          <pm:absent>
-                            <pm:reason>derived</pm:reason>
+                          <pm:derivation>
+                            <pm:identity>quantumOrigin</pm:identity>
                             <pm:note>`LumpyQuantum/origin` says who sets this window, in this same element</pm:note>
-                          </pm:absent>
+                          </pm:derivation>
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
@@ -1748,10 +1748,10 @@
             </pm:holder>
             <!-- derived: |10 - [11.0, 12.7, 14.4]| = [1.0, 2.7, 4.4] shifts per week -->
             <pm:quantity>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>magnitude</pm:identity>
                 <pm:note>computable from this layer's demand and nameplate; the receiver computes it</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:quantity>
           </pm:remainder>
         </pm:remainder>
@@ -2232,10 +2232,10 @@
               </pm:absent>
             </pm:narrowsWhen>
             <pm:boundOrigin>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>sharedParts</pm:identity>
                 <pm:note>the size of the double counting, and it follows from a bound stated elsewhere: it is the ten shifts both parts file as their own nameplate, copied whole. `against` and `between` say which bound</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:boundOrigin>
             <pm:provenance><pm:party>group-parent</pm:party>
               <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
@@ -2290,10 +2290,10 @@
               </pm:absent>
             </pm:narrowsWhen>
             <pm:boundOrigin>
-              <pm:absent>
-                <pm:reason>derived</pm:reason>
+              <pm:derivation>
+                <pm:identity>sharedParts</pm:identity>
                 <pm:note>the size of the double counting, and it follows from a bound stated elsewhere: it is the 4.4 shifts the consuming part files as its own draw, copied whole. `against` and `between` say which bound</pm:note>
-              </pm:absent>
+              </pm:derivation>
             </pm:boundOrigin>
             <pm:provenance><pm:party>group-parent</pm:party>
               <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>

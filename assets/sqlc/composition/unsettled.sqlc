@@ -1,20 +1,45 @@
-# THE COMPOSED LAYERS WHOSE OWN FILED TOTALS CANNOT BE DIFFERENCED. One row per composed layer
-# carrying at least one part whose conversion factor has WIDTH.
+# The composed layers whose own totals cannot be differenced. One row per composed layer carrying
+# at least one part whose conversion factor has width, or has no figure to say whether it does.
 #
-# ⭐⭐⭐ THIS IS THE BASE CASE OF THE REMAINDER RECURSION, STATED PROPERLY. `composition/
-#    leaves.sqlc` is where the PART graph bottoms out, and it is the base case for a sum over
-#    parts. A remainder bottoms out earlier: it stops wherever `n - d` is legitimate, and that
-#    is wherever the two were not scaled by one factor with width. A leaf qualifies trivially,
-#    having nothing above it that could have correlated anything, but so does every composed
-#    layer whose conversions are point values, and the corpus is almost entirely those.
+# A derived total settles like a filed one
+#   A composed layer that files its demand or nameplate as its fusion's sum is read at the figure
+#   its fusion computes (layers/demand.sqlc, layers/nameplate.sqlc), and where its conversions are
+#   point values that figure differences as legitimately as a filed one: the eliminations are
+#   inside it, subtracted bound by bound, so `n - d` over it is the pivot over its parts. So it is
+#   not here, and a remainder walk stops on it. Where its figure cannot be computed the walk stops
+#   on a node with no figure, which composition/suspended_remainders.sqlc lifts and
+#   algebra/settled_remainders.sqlc counts.
 #
-# ⛔ SO A DESCENT FOR A REMAINDER MUST STOP AT THE FIRST SETTLED NODE AND NOT RUN TO THE LEAVES.
+# It reads the resolved parts, not the references, and that keeps two grounds apart
+#   `composition/part_references.sqlc` would carry a part whose notation names no filing here, and
+#   such a fusion is already lifted by `composition/unresolved_parts.sqlc`. Reading references here
+#   would suspend it twice, on two grounds, one of which is not about conversions at all. Composing
+#   `composition/parts.sqlc` is what keeps this ground and that one disjoint.
+#
+# A factor with no figure is not a point
+#   A conversion filed `unmeasured`, or as an identity's output nothing here computes, has no
+#   width anybody can read, and comparing its two empty bounds would read it as a point: a blank
+#   taken for the value that makes `n - d` legitimate. Nobody knows whether the factor scaled both
+#   totals with a spread, so both states are unsettled by name, and only a stated factor is asked
+#   for its width.
+#
+# The base case of the remainder recursion
+#   This is the base case of the remainder recursion, stated properly.
+#   `composition/leaves.sqlc` is where the part graph bottoms out, and it is the base case for a
+#   sum over parts. A remainder bottoms out earlier: it stops wherever `n - d` is legitimate, and
+#   that is wherever the two were not scaled by one factor with width. A leaf qualifies trivially,
+#   having nothing above it that could have correlated anything, but so does every composed layer
+#   whose conversions are point values, and the corpus is almost entirely those.
+#
+# A remainder descent stops at the first settled node
+#   So a descent for a remainder must stop at the first settled node and not run to the leaves.
 #   Running past one throws away a filed figure its composer stands behind, and with it every
-#   correction that composer already applied, which then has to be rebuilt from below and can
-#   fail for reasons the filed figure had already settled.
--- composition/parts.sqlc, restricted to the parts whose factor has width.
+#   correction that composer already applied, which then has to be rebuilt from below and can fail
+#   for reasons the filed figure had already settled.
+-- composition/parts.sqlc restricted to the parts whose factor has width or no figure.
 SELECT DISTINCT p.composition AS filing, p.composed_layer AS layer
 FROM (
     :compose(composition/parts.sqlc)
 ) p
-WHERE p.factor_low IS DISTINCT FROM p.factor_high
+WHERE p.factor_state IN ('absent', 'derivation')
+   OR (p.factor_state = 'stated' AND p.factor_low <> p.factor_high)

@@ -1,28 +1,41 @@
-# C, THE COUPLING INCIDENCE, PROJECTED TO WHAT AN `association` CAN CARRY. One row per
+# C, the coupling incidence, projected to what an `association` can carry. One row per
 # (filing, from_layer, to_layer): this filing observed that relieving one layer moves the other.
 #
-# ⭐⭐⭐ THE MODEL'S OWN FALSIFIER, DRAWN. `pm:Coupling` exists *so that the model can be REFUTED
-#    IN ITS OWN FORMAT*: a stack is assumed to be independent quantizations, and a coupling is
-#    the observation that says it is not. A diagram silent about it is the artifact a reader is
-#    most likely to be shown AND the one incapable of carrying the refutation, which is what
-#    this relation is here to prevent.
+# The model's own falsifier, drawn
+#   `pm:Coupling` exists *so that the model can be refuted in its own format*: a stack is assumed
+#   to be independent quantizations, and a coupling is the observation that says it is not. A
+#   diagram silent about it is the artifact a reader is most likely to be shown and the one
+#   incapable of carrying the refutation, which is what this relation is here to prevent.
 #
-# ⭐⭐ IT IS DIRECTED, AND THAT WAS CHECKED RATHER THAN ASSUMED. `composition/attenuated.sqlc`
-#    matches from to from and to to to, `entries/spillovers.sqlc` joins each end separately, and
-#    `checks/coupling_does_not_attenuate.sqlc` formats its own detail as `%s->%s`. ⚠️ The
-#    SYMMETRIC falsifier is a different relation: `checks/layers_move_together.sqlc` reads
-#    `rank/co_moving_layers.sqlc`, which is the descent intersected with its converse, so it is
-#    about F and never about C. Two rules, two graphs, one English phrase.
+# It is directed
+#   That was checked rather than assumed. `composition/attenuated.sqlc` matches from to from and
+#   to to to, `entries/spillovers.sqlc` joins each end separately, and
+#   `checks/coupling_does_not_attenuate.sqlc` formats its own detail as `%s->%s`. The symmetric
+#   falsifier is a different relation: `checks/layers_move_together.sqlc` reads
+#   `rank/co_moving_layers.sqlc`, which is the descent intersected with its converse, so it is
+#   about F and never about C. Two rules, two graphs, one English phrase.
 #
-# ⛔⛔ INCIDENCE ONLY, AND HERE THAT REFUSES THE `observation` AS WELL AS THE STRENGTH. The
-#   observation is REQUIRED prose and it is the whole evidence, and two of the five in this corpus
-#   contain a numeral: one quotes `[0.10, 0.22, 0.35]` outright. Carrying it into a
-#   `documentation` would put a magnitude on a page that has no unit anywhere, which is exactly
-#   the refusal `dataObject` carries, arriving through prose instead of through a field.
+# Incidence only, observation included
+#   Here that refuses the `observation` as well as the strength. The observation is required prose
+#   and it is the whole evidence, and some observations in this corpus contain a numeral: one
+#   quotes `[0.10, 0.22, 0.35]` outright. Carrying it into a `documentation` would put a magnitude
+#   on a page that has no unit anywhere, which is exactly the refusal `dataObject` carries,
+#   arriving through prose instead of through a field.
 #
-# ⚠️ SO THE ARTIFACT SAYS THAT TWO LAYERS ARE COUPLED AND CANNOT SAY WHAT WAS SEEN. That is a
-#   `loses` and it is a wide one. It is still the first time the fact appears at all.
+# What the artifact cannot say
+#   So the artifact says that two layers are coupled and cannot say what was seen. That is a
+#   `loses`, and a wide one. It is still the first time the fact appears at all.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
+WITH
+couplings AS NOT MATERIALIZED (
+    :define(entries/couplings.sqlc)
+)
 SELECT c.filing, c.from_layer, c.to_layer
 FROM (
     :compose(entries/couplings.sqlc)

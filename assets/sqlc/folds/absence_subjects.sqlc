@@ -1,0 +1,21 @@
+# Every absence column epistemics/absence_questions.sqlc asks about or
+# epistemics/absence_columns.sqlc finds in the catalog, with how many catalog rows name it. One row
+# per column, spelled `table.column`.
+#
+# The same fold as the rules', with no verdict
+#   folds/rule_subjects.sqlc argues it: the census drives, so a column it asks about that the
+#   catalog does not have is a row with `rows` at zero, and the outer join is full, so an absence
+#   column the census never asks about is a row with `declared` false. The catalog carries no
+#   verdict, so `rows` is the only box.
+-- epistemics/absence_questions.sqlc against epistemics/absence_columns.sqlc, one row per column.
+SELECT coalesce(q.table_name, k.table_name) || '.' || coalesce(q.column_name, k.column_name)
+                                            AS subject,
+       q.column_name IS NOT NULL            AS declared,
+       count(k.column_name)                 AS rows
+FROM      (
+    :compose(epistemics/absence_questions.sqlc)
+) q
+FULL JOIN (
+    :compose(epistemics/absence_columns.sqlc)
+) k ON k.table_name = q.table_name AND k.column_name = q.column_name
+GROUP BY q.table_name, q.column_name, k.table_name, k.column_name

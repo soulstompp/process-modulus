@@ -1,0 +1,39 @@
+-- §5  The two self-joins of F, and the fibre profile each one's size is fixed by.
+# One row per (relation, fibre size): which self-join, how it pairs the rows of one fibre, a fibre
+# size `k`, how many fibres have that size, and how many rows the self-join returned.
+#
+# A self-join's size is not free
+#   A self-join on a key reads the kernel of the map to that key. Grouping composition/parts.sqlc by
+#   the join key partitions its rows into fibres of size `k`, and the self-join then returns `Σ k²`
+#   rows if it keeps the reflexive pair, `Σ k(k−1)` if it drops it, and `Σ C(k,2)` if it keeps each
+#   unordered pair once. composition/sibling_parts.sqlc keeps the reflexive pair on purpose and
+#   eliminations/derived.sqlc keeps each unordered pair once, and both headers say so; this is what
+#   makes those statements fail when the join changes.
+#
+# NULL keys are excluded
+#   `GROUP BY` puts NULLs in one fibre and `=` never matches one, so the two counts would disagree
+#   for a reason that is not a defect.
+#
+# A drift check, not an algebra check
+#   As algebra/searches.sqlc says of its own union, the identity holds for any self-join on an exact
+#   key. What it catches is somebody changing the key or the pairing with nothing saying so.
+-- composition/parts.sqlc grouped by each self-join's key, beside the self-join itself.
+SELECT 'composition/sibling_parts.sqlc' AS "relation!", 'ordered, reflexive kept' AS "pairing!",
+       f.k AS "k!", count(*) AS "fibres!",
+       (SELECT count(*) FROM ( :compose(composition/sibling_parts.sqlc) ) s) AS "joined!"
+FROM ( SELECT count(*) AS k
+       FROM ( :compose(composition/parts.sqlc) ) p
+       WHERE p.composition IS NOT NULL AND p.composed_layer IS NOT NULL
+         AND p.part_filing IS NOT NULL
+       GROUP BY p.composition, p.composed_layer, p.part_filing ) f
+GROUP BY f.k
+UNION ALL
+SELECT 'eliminations/derived.sqlc', 'unordered, reflexive dropped',
+       f.k, count(*),
+       (SELECT count(*) FROM ( :compose(eliminations/derived.sqlc) ) d)
+FROM ( SELECT count(*) AS k
+       FROM ( :compose(composition/parts.sqlc) ) p
+       WHERE p.part_filing IS NOT NULL AND p.part_layer IS NOT NULL
+       GROUP BY p.part_filing, p.part_layer ) f
+GROUP BY f.k
+ORDER BY 1, 3

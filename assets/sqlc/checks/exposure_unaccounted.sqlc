@@ -1,30 +1,41 @@
-# EVERY SUPPLY WITH NOWHERE TO PUT ITS EXCESS THAT STATES ALL ITS UNSERVED SHARES, BESIDE WHAT ITS OWN
-# NUMBERS SAY WENT UNSERVED. One row per examined layer, `violates` where the exposure
+# Every supply with nowhere to put its excess that states all its unserved shares, beside what
+# its own numbers say went unserved. One row per examined layer, `violates` where the exposure
 # exceeds what anybody admits.
 #
-# ⭐⭐⭐ THE ONE PLACE THIS MODEL MEASURES SOMETHING WITH NO INSTRUMENT BEHIND IT. Nobody
-#    filed the exposure; it is the ceiling the filer's OWN demand and nameplate imply -- the
-#    largest demand against the smallest supply. What could have gone unserved is at most
-#    what the buffer can absorb plus what they admit went unserved, and the buffer here
-#    absorbs nothing by their own measurement. So the whole exposure has to be accounted for
-#    in the holder rows. ⭐ `absorbable` is READ and never assumed: it is a sum across the whole
-#    buffer row and it is zero by construction of this population, where a literal `0` in the
-#    sentence below would be a claim about the capacity column alone.
+# A measure with no instrument behind it
+#   This is the one place this model measures something with no instrument behind it. Nobody
+#   filed the exposure; it is the ceiling the filer's own demand and nameplate imply: the largest
+#   demand against the smallest supply. What could have gone unserved is at most what the buffer
+#   can absorb plus what they admit went unserved, and the buffer here absorbs nothing by their
+#   own measurement. So the whole exposure has to be accounted for in the holder rows.
 #
-# ⛔⛔ EVALUATED AT THE HIGH CORNER, ON PURPOSE. The two sides of a transition fit are
-#    ANTI-CORRELATED -- the week demand ran highest is not the week supply ran lowest -- so
-#    anything summed across the demand range reports a week that never happened.
+# `absorbable` is read, never assumed
+#   It is a sum across the whole buffer row and it is zero by construction of this population,
+#   where a literal `0` in the sentence below would be a claim about the capacity column alone.
 #
-# ⛔ AN UNSTATED UNSERVED SHARE SUSPENDS THE INEQUALITY, so those layers are absent rather
-#   than passing. Inheriting a neighbouring rule's `exposure > 0` filter instead is a
-#   different population, and it counted three rows where nine are checked.
-# ⛔⛔⛔ IT INNER-JOINS THE UNSERVED TOTAL, AND THE OUTER JOIN IT REPLACES WAS INVENTING ROWS.
-#    `coalesce(u.unserved, 0)` gave a layer with NO unserved holder a zero nobody filed, so six
-#    such layers entered the examined set. All six read `exposure = 0`, so `0 > 0 + 1e-9` is
-#    false and the rule passed on every one of them WITHOUT BEING ABLE TO FIRE. Nine examined,
-#    three of them real. arithmetic/exposure_bounded.sqlc, the site this rule guards, inner-joins
-#    and declares three; a guard and its site disagreeing about their population is the guard's
-#    defect, and reports/coverage.sqlc was counting the difference as coverage.
+# Evaluated at the high corner, on purpose
+#   The two sides of a transition fit are anti-correlated (the week demand ran highest is not the
+#   week supply ran lowest), so anything summed across the demand range reports a week that never
+#   happened.
+#
+# An unstated unserved share suspends the inequality
+#   Those layers are absent rather than passing. Inheriting a neighbouring rule's `exposure > 0`
+#   filter instead is a different population, so its count is not a count of what this rule
+#   checks.
+#
+# Unserved shares in another unit are not compared
+#   A share quoted in a unit other than the layer's is not a smaller share; it is not a share of
+#   this remainder at all, and summing it against the exposure is a comparison with no answer.
+#   arithmetic/exposure_bounded.sqlc calls those layers `not comparable`, and this rule leaves them
+#   out rather than judging them. Proof: `src/proofs/README.md`, entry `exposure_bound`.
+#
+# The unserved total is inner-joined
+#   An outer join here invents rows. `coalesce(u.unserved, 0)` gives a layer with no unserved
+#   holder a zero nobody filed, so such layers enter the examined set. They all read
+#   `exposure = 0`, so `0 > 0 + 1e-9` is false and the rule passes on every one of them without
+#   being able to fire. arithmetic/exposure_bounded.sqlc, the site this rule guards, inner-joins;
+#   a guard and its site disagreeing about their population is the guard's defect, and
+#   reports/coverage.sqlc would count the difference as coverage.
 -- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -44,6 +55,7 @@ LEFT JOIN (
             :compose(entries/unserved_totals.sqlc)
         ) u USING (filing, layer)
         WHERE u.unstated = 0
+          AND u.share_units = ARRAY[x.unit]
     ) e
 ) p ON true
 WHERE r.slug = 'exposure_unaccounted'

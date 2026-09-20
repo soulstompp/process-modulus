@@ -1,0 +1,92 @@
+# Every owed fusion sum, recomputed. One row per (composed layer, quantity) in
+# composition/owed_equality.sqlc: whether composition/fused.sqlc summed, subtracted and judged
+# what the definitions say it should.
+#
+# What it asserts
+#   - `sum_*` equals `Σ x_part * factor` recomputed from composition/resolved_quantities.sqlc and
+#     the parts' factors, at each of the three points, a part filed `derived` entering at the
+#     figure its own fusions compute (algebra/derived_quantities.sqlc holds that figure);
+#   - the result is an ordered claim;
+#   - it is the component-wise subtraction of the elimination wherever that is ordered, and the
+#     crossed pairing `[Σ low - e_high, Σ mode - e_mode, Σ high - e_low]` wherever it is not;
+#   - `agrees` is true exactly where the result equals the figure the composed layer files.
+#   Proof: `src/proofs/README.md`, entries `fusion_sum` and `elimination_componentwise`.
+#
+# Why not read `agrees` and stop
+#   `agrees` is what the rule reads, so a law that took it on trust would pass whatever fused
+#   computed. This one recomputes the sum from the filed figures and holds every column fused
+#   derives to it; a fusion missing from fused while owed fails here too.
+#
+# The conversion is one rule, and independence is in the route
+#   `Σ x_part * factor` is read at the corner the operand's sign picks, which is the operator
+#   composition/converted.sqlc applies on the route this law corroborates. Recomputing it bound by
+#   bound would be a second ARITHMETIC rather than a second ROUTE: the two agree on every
+#   non-negative operand and part company on the first negative one, so this law would fail on a
+#   correct filing exactly where the relation it checks is right. What keeps it independent is that
+#   it reads composition/parts.sqlc and composition/resolved_quantities.sqlc directly instead of
+#   through folds/part_sums.sqlc, not that it multiplies differently.
+#   Proof: `src/proofs/README.md`, entries `two_slopes` and `positive_factor_componentwise`.
+#
+# Probe
+#   examples/probes runs it as `fusion_sum` and `fusion_sum / corner`.
+#   For the corner, swap the least for the greatest on the low bound of the sum: every sum
+#   under a factor with width must fail, and no other.
+#   In composition/fused.sqlc subtract component-wise unconditionally. Every sum whose
+#   component-wise reading inverts must fail, which assets/fixtures/every-inverting-elimination.xml
+#   exists to supply.
+-- composition/fused.sqlc against composition/resolved_quantities.sqlc, composition/parts.sqlc and eliminations/filed.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT o.filing || ' / ' || o.layer || ' / ' || o.quantity AS subject,
+           f.composition IS NOT NULL
+           AND abs(f.sum_low  - r.sum_low)  < 1e-9
+           AND abs(f.sum_mode - r.sum_mode) < 1e-9
+           AND abs(f.sum_high - r.sum_high) < 1e-9
+           AND f.computed_low <= f.computed_mode AND f.computed_mode <= f.computed_high
+           AND abs(f.computed_mode - (r.sum_mode - coalesce(e.mode, 0))) < 1e-9
+           AND CASE WHEN r.sum_low  - coalesce(e.low,  0) <= r.sum_mode - coalesce(e.mode, 0)
+                     AND r.sum_mode - coalesce(e.mode, 0) <= r.sum_high - coalesce(e.high, 0)
+                    THEN abs(f.computed_low  - (r.sum_low  - coalesce(e.low,  0))) < 1e-9
+                     AND abs(f.computed_high - (r.sum_high - coalesce(e.high, 0))) < 1e-9
+                    ELSE abs(f.computed_low  - (r.sum_low  - coalesce(e.high, 0))) < 1e-9
+                     AND abs(f.computed_high - (r.sum_high - coalesce(e.low,  0))) < 1e-9 END
+           AND f.agrees = (abs(f.computed_low  - d.low)  < 1e-9
+                       AND abs(f.computed_mode - d.mode) < 1e-9
+                       AND abs(f.computed_high - d.high) < 1e-9) AS holds,
+           format('Σ [%s, %s, %s] less [%s, %s, %s] gives [%s, %s, %s] against a filed [%s, %s, %s]',
+                  r.sum_low, r.sum_mode, r.sum_high,
+                  coalesce(e.low, 0), coalesce(e.mode, 0), coalesce(e.high, 0),
+                  f.computed_low, f.computed_mode, f.computed_high,
+                  d.low, d.mode, d.high) AS detail
+    FROM      (
+        :compose(composition/owed_equality.sqlc)
+    ) o
+    JOIN      (
+        SELECT p.composition, p.composed_layer, s.quantity,
+               sum(least(   s.low  * coalesce(p.factor_low, 1),
+                            s.low  * coalesce(p.factor_high, 1))) AS sum_low,
+               sum(s.mode * coalesce(p.factor_mode, 1))           AS sum_mode,
+               sum(greatest(s.high * coalesce(p.factor_low, 1),
+                            s.high * coalesce(p.factor_high, 1))) AS sum_high
+        FROM      (
+            :compose(composition/parts.sqlc)
+        ) p
+        JOIN      (
+            :compose(composition/resolved_quantities.sqlc)
+        ) s ON s.filing = p.part_filing AND s.layer = p.part_layer
+        GROUP BY p.composition, p.composed_layer, s.quantity
+    ) r ON r.composition = o.filing AND r.composed_layer = o.layer AND r.quantity = o.quantity
+    JOIN      (
+        :compose(layers/summed_quantities.sqlc)
+    ) d ON d.filing = o.filing AND d.layer = o.layer AND d.quantity = o.quantity
+    LEFT JOIN (
+        :compose(eliminations/filed.sqlc)
+    ) e ON e.composition = o.filing AND e.composed_layer = o.layer AND e.quantity = o.quantity
+    LEFT JOIN (
+        :compose(composition/fused.sqlc)
+    ) f ON f.composition = o.filing AND f.composed_layer = o.layer AND f.quantity = o.quantity
+) p ON true
+WHERE a.slug = 'fusion_sum'

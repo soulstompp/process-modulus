@@ -1,55 +1,77 @@
-# THE COMPOSITION RULE FOR DEMAND, COMPUTED AND SET BESIDE WHAT WAS FILED. One row per composed
-# layer that owes the demand equality, carrying the sum of its converted parts less its demand
-# eliminations, the figure the document actually states, and whether the two agree.
-#
-# ⛔⛔ THE `quantity` COLUMN READS `demand` BECAUSE THIS FILE PINS IT AT LINE 47, and a relation
-#    that pins a dimension has to declare it or it cannot be composed safely. `pm.elimination`'s
-#    key is (composition, composed layer, QUANTITY): six nameplate eliminations and two draw
-#    eliminations are filed in this corpus and no SQL reads them. Somebody reaching for "the
-#    composition rule" gets the demand one, and now the columns say which.
+# The composition rule, computed and set beside what was filed. One row per (composed layer,
+# quantity) that owes the equality, carrying the sum of the converted parts, the elimination filed
+# against that quantity, the result, the figure the document states, and whether the two agree.
 #
 #     x_composed = F Φ x_parts − e_x
 #
-# ⭐⭐ THE ELIMINATION IS THE TERM THAT IS EASY TO FORGET, AND FORGETTING IT IS THE ORDINARY
-#    WAY TO GET THIS ARITHMETIC WRONG. Two parts that both count the same shared
-#    machine sum to more machine than exists; `e` is what the composer says was counted
-#    twice. Dropping it does not produce an obviously silly number -- it produces a slightly
-#    large one, which is worse.
+# Per quantity
+#   Demand, nameplate and draw each owe the sum separately, and an elimination names exactly one
+#   of them, so the sum is folds/part_sums.sqlc's, one row per (composition, composed layer,
+#   quantity), and the owed pair, the filed figure and the elimination each meet it one row per
+#   key. `sum_low`, `sum_mode` and `sum_high` are `F Φ x` before the elimination, which is the
+#   product examples/matrices/main.rs recomputes as a matrix product.
 #
-# ⭐ AND THE ROWS THAT ARE NOT HERE ARE NOT FAILURES. A fusion suspended on either ground is
-#   absent rather than counted as a pass, so `agrees` is a verdict over documents that
-#   claimed something. See composition/owed_equality.sqlc.
+# Component-wise, unless that inverts
+#   The elimination is subtracted bound by bound: the overlap is part of what the sum counts, so
+#   at the sum's low corner it is at its own low. That pairing can invert. Point parts that sum to
+#   20 with an elimination of `[2, 3, 5]` give `[18, 17, 15]`, which is not a claim. There the
+#   sum has no width for the overlap to move with, so the only ordered reading is the crossed one,
+#   `[Σ low - e_high, Σ mode - e_mode, Σ high - e_low]`, `[15, 17, 18]`, and that is the figure a
+#   correct filing states. eliminations/paired.sqlc decides which reading holds and reads each
+#   elimination at its corners, and `crossed` says which a row took. Proof:
+#   `src/proofs/README.md`, entry `elimination_componentwise`.
 #
-# ⛔ THIS SPANS TWO DOCUMENTS, WHICH IS WHY NO GRAMMAR CAN STATE IT. The parts are in one
-#   filing and the composed figure is in another; XSD 1.0 cannot follow the reference, let
-#   alone add up what is on the other end.
--- asrt:Fusion/asrt:Part against the composed pm:Layer/pm:Demand, less asrt:eliminations.
-SELECT c.composition, c.composed_layer,
-       'demand' AS quantity,
-       sum(c.d_low)  - coalesce(max(e.low),  0) AS computed_low,
-       sum(c.d_mode) - coalesce(max(e.mode), 0) AS computed_mode,
-       sum(c.d_high) - coalesce(max(e.high), 0) AS computed_high,
-       max(d.d_low)  AS filed_low,
-       max(d.d_mode) AS filed_mode,
-       max(d.d_high) AS filed_high,
-       (sum(c.d_low)  - coalesce(max(e.low),  0) = max(d.d_low)
-    AND sum(c.d_mode) - coalesce(max(e.mode), 0) = max(d.d_mode)
-    AND sum(c.d_high) - coalesce(max(e.high), 0) = max(d.d_high)) AS agrees
-FROM      (
-    :compose(composition/converted.sqlc)
-) c
-JOIN      (
-    :compose(composition/owed_equality.sqlc)
-) o
-       ON o.filing = c.composition AND o.layer = c.composed_layer
-JOIN      (
-    :compose(layers/demand.sqlc)
-) d
-       ON d.filing = c.composition AND d.layer = c.composed_layer
-LEFT JOIN (
-    :compose(eliminations/filed.sqlc)
-) e
-       ON e.composition = c.composition
-      AND e.composed_layer = c.composed_layer
-      AND e.quantity = 'demand'
-GROUP BY c.composition, c.composed_layer
+# The elimination is the term that is easy to forget
+#   Forgetting it is the ordinary way to get this arithmetic wrong. Two parts that both count the
+#   same shared machine sum to more machine than exists; `e` is what the composer says was counted
+#   twice. Dropping it does not produce an obviously silly number: it produces a slightly large
+#   one, which is worse.
+#
+# Missing rows are not failures
+#   The rows that are not here are not failures. A quantity suspended on any ground is absent
+#   rather than counted as a pass, so `agrees` is a verdict over documents that claimed something.
+#   See composition/owed_equality.sqlc.
+#
+# It spans two documents
+#   That is why no grammar can state it. The parts are in one filing and the composed figure is in
+#   another; XSD 1.0 cannot follow the reference, let alone add up what is on the other end.
+-- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at its corners.
+SELECT x.composition, x.composed_layer, x.quantity,
+       x.sum_low, x.sum_mode, x.sum_high, x.crossed,
+       x.sum_low  - x.e_at_low  AS computed_low,
+       x.sum_mode - x.e_mode    AS computed_mode,
+       x.sum_high - x.e_at_high AS computed_high,
+       x.filed_low, x.filed_mode, x.filed_high,
+       (x.sum_low  - x.e_at_low  = x.filed_low
+    AND x.sum_mode - x.e_mode    = x.filed_mode
+    AND x.sum_high - x.e_at_high = x.filed_high) AS agrees
+FROM (
+    SELECT s.composition, s.composed_layer, s.quantity,
+           s.sum_low, s.sum_mode, s.sum_high,
+           coalesce(e.crossed, false) AS crossed,
+           coalesce(e.at_low,  0) AS e_at_low,
+           coalesce(e.mode,    0) AS e_mode,
+           coalesce(e.at_high, 0) AS e_at_high,
+           d.low  AS filed_low,
+           d.mode AS filed_mode,
+           d.high AS filed_high
+    FROM      (
+        :compose(folds/part_sums.sqlc)
+    ) s
+    JOIN      (
+        :compose(composition/owed_equality.sqlc)
+    ) o
+           ON o.filing = s.composition AND o.layer = s.composed_layer
+          AND o.quantity = s.quantity
+    JOIN      (
+        :compose(layers/summed_quantities.sqlc)
+    ) d
+           ON d.filing = s.composition AND d.layer = s.composed_layer
+          AND d.quantity = s.quantity
+    LEFT JOIN (
+        :compose(eliminations/paired.sqlc)
+    ) e
+           ON e.composition = s.composition
+          AND e.composed_layer = s.composed_layer
+          AND e.quantity = s.quantity
+) x

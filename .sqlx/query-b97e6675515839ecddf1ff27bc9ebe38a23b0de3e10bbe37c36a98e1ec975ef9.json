@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the corpus directory as data; assets/ddl/schema.ddl's `filing.kind` CHECK is the domain.\nSELECT * FROM (VALUES\n  ('contrato-empresarial'::text,        'processModulus'::text, true,  NULL::text),\n  ('coverage-pt-ncrf-pe',               'coverage',       false, 'ingest does not read a document rooted at `coverage`. `tests/coverage_parse.rs` asserts the property it exists to prove, at the XML level, so the document is checked and not stored'),\n  ('coverage-us-gaap',                  'coverage',       false, 'the same, in the other regime. The pair is the subject: two regimes stay comparable exactly where the two witnesses cite one taxonomy'),\n  ('dependence-group-consolidation',    'dependence',     false, 'ingest does not read a document rooted at `dependence`. It carries the only `asrt:DependenceEntry` in the corpus, so `from` and `to` are the two uses of `asrt:FiledLayer` with no apparatus, where `Part/layer` and `Elimination/between` both have one'),\n  ('enterprise-contract',               'processModulus', true,  NULL),\n  ('merge-group-composition',           'composition',    true,  NULL),\n  ('merge-holding-composition',         'composition',    true,  NULL),\n  ('merge-pt-member',                   'processModulus', true,  NULL),\n  ('merge-us-member',                   'processModulus', true,  NULL),\n  ('refutation',                        'processModulus', true,  NULL),\n  ('run-2026-08-30',                    'run',            false, 'ingest does not read a document rooted at `run`. It is the observed side the coverage documents are asked about'),\n  ('unstated',                          'processModulus', true,  NULL)\n) AS d(document, kind, loaded, not_loaded_because)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "document",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "kind",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "loaded",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "not_loaded_because",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "b97e6675515839ecddf1ff27bc9ebe38a23b0de3e10bbe37c36a98e1ec975ef9"
+}

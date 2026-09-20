@@ -13,6 +13,7 @@ e o que impede o `build.rs` de lhe pôr uma linha na tabela do [`../README.pt.md
 | `simulation/` | uma bancada sobre o NeXosim: caixas de correio, uma fila de eventos e um relógio, mais o escritor de arquivos que transforma uma execução num documento que este esquema admite | `generation`, `resolution`, `strain` |
 | `tree/` | o único leitor de `assets/sqlc/`, que lê as diretivas `:compose()` e percorre o termo | `compositions`, `observations`, `soundness` |
 | `sources/` | a única travessia da própria pasta `examples/`, que pergunta que relações é que um programa nomeia | `compositions`, `observations` |
+| `database/` | a única maneira de um programa abrir a sua base de dados, com o compilador just-in-time desligado, porque um plano desta profundidade custa mais a compilar do que a executar | `combinatorics`, `diagramming`, `graphs`, `matrices`, `observations`, `readiness`, `soundness` |
 
 Um programa alcança-os por caminho, porque um módulo numa pasta irmã não é filho do alvo que o usa:
 

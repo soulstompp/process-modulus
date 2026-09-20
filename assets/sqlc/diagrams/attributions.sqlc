@@ -1,0 +1,38 @@
+# Every resolved `between` the emitter draws as an attribution. One row per row of
+# eliminations/resolved.sqlc: the composed layer, and the layer of another document the double
+# counting runs against, with the notation that document is imported by.
+#
+# The relationship and nothing wider
+#   examples/diagramming/main.rs draws one `relationship` per row, from the composed layer to the
+#   layer it names, and imports the notation it needs. Which quantity the elimination is against,
+#   and which `between` it was, stay in eliminations/resolved.sqlc: the quantity is
+#   `pm.summed_quantity`, which sqlx has no mapping for, and a program with no use for a quantity is
+#   better unable to read one, as diagrams/calls.sqlc argues for magnitudes.
+#
+# A bag, as its source is
+#   One row per eliminated quantity and `between`, so an elimination against two quantities that
+#   runs against one layer is drawn once per quantity.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
+-- eliminations/resolved.sqlc projected to the two ends of the relationship.
+WITH
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+eliminations_between AS NOT MATERIALIZED (
+    :define(eliminations/between.sqlc)
+),
+eliminations_references AS NOT MATERIALIZED (
+    :define(eliminations/references.sqlc)
+),
+resolved AS NOT MATERIALIZED (
+    :define(eliminations/resolved.sqlc)
+)
+SELECT b.composition, b.composed_layer, b.notation, b.resolved_filing, b.layer
+FROM (
+    :compose(eliminations/resolved.sqlc)
+) b

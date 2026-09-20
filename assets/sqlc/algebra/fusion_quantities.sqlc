@@ -1,0 +1,32 @@
+# Every summed quantity belongs to a composed layer or to a layer that composes nothing. One row:
+# whether |layers/summed_quantities| = |those of layers no fusion names| + |composition/fusion_quantities|.
+#
+# The join must not fan out
+#   composition/fusion_quantities.sqlc joins the fusions to the summed quantities on the composed
+#   layer. Keyed right, each quantity of a composed layer appears once; keyed on less than the
+#   layer, a quantity would pair with every fusion of its filing and the count would pass the total.
+#   The complement is taken by `NOT EXISTS`, a different operator from the join, so the two sides
+#   share no code.
+#
+# Probe
+#   examples/probes runs it as `fusion_quantities`: in the composed text the join forgets the
+#   layer, and the law must fail.
+-- layers/summed_quantities.sqlc against composition/fusion_quantities.sqlc and its complement.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT 'composition/fusion_quantities' AS subject,
+           x.total = x.leaves + x.fused AS holds,
+           format('%s summed quantities = %s of layers no fusion names + %s of composed layers',
+                  x.total, x.leaves, x.fused) AS detail
+    FROM ( SELECT
+             (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) s)  AS total,
+             (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) s
+               WHERE NOT EXISTS (SELECT 1 FROM ( :compose(composition/fusions.sqlc) ) f
+                                  WHERE f.filing = s.filing AND f.layer = s.layer))   AS leaves,
+             (SELECT count(*) FROM ( :compose(composition/fusion_quantities.sqlc) ) q) AS fused
+         ) x
+) p ON true
+WHERE a.slug = 'fusion_quantities'

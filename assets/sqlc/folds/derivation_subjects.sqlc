@@ -1,0 +1,29 @@
+# Every derivation column identities/roster.sqlc lists or epistemics/derivation_columns.sqlc finds
+# in the catalog, with how many catalog rows name it. One row per column, spelled `table.column`.
+#
+# The same fold as the rules', with no verdict
+#   folds/rule_subjects.sqlc argues it: the roster drives, so a column it lists that the catalog
+#   does not have is a row with `rows` at zero, and the outer join is full, so a derivation column
+#   the roster never lists is a row with `declared` false. The catalog carries no verdict, so `rows`
+#   is the only box.
+#
+# The roster is a bag on the column, on purpose
+#   identities/roster.sqlc names a column once per identity it admits, so its key is the pair and
+#   the column repeats. The contract is about columns, so the roster is taken as the set of its
+#   columns before the join; joined as it stands, a column admitting two identities would count its
+#   catalog row twice.
+-- identities/roster.sqlc's columns against epistemics/derivation_columns.sqlc, one row per column.
+SELECT coalesce(r.table_name, k.table_name) || '.' || coalesce(r.column_name, k.column_name)
+                                            AS subject,
+       r.column_name IS NOT NULL            AS declared,
+       count(k.column_name)                 AS rows
+FROM      (
+    SELECT DISTINCT i.table_name, i.column_name
+    FROM (
+        :compose(identities/roster.sqlc)
+    ) i
+) r
+FULL JOIN (
+    :compose(epistemics/derivation_columns.sqlc)
+) k ON k.table_name = r.table_name AND k.column_name = r.column_name
+GROUP BY r.table_name, r.column_name, k.table_name, k.column_name

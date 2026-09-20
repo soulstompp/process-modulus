@@ -1,25 +1,29 @@
-# THE DUTY CYCLE EVERY SUPPLY FILES, OR THE TYPED REASON IT FILES NONE. One row per
-# nameplate: how much of a period the supply is actually available for.
+# The duty cycle every supply files, or the typed reason it files none. One row per nameplate: how
+# much of a period the supply is actually available for.
 #
-# ⭐⭐ A SECOND AXIS OF DIVISIBILITY AND NOT A THIRD VALUE OF THE FIRST. A supply can arrive
-#    in whole units AND be intermittent in time at once -- a truck that comes twice a week is
-#    both -- so the amount question and the calendar question are separate columns.
+# A second axis of divisibility
+#   A second axis of divisibility and not a third value of the first. A supply can arrive in whole
+#   units and be intermittent in time at once (a truck that comes twice a week is both), so the
+#   amount question and the calendar question are separate columns.
 #
-# ⛔⛔ AND A BLANK WOULD MEAN THREE THINGS AT ONCE, WHICH IS WHY IT IS TYPED. ⚠️ ONLY TWO OF
-#    THE THREE ARE ABSENCES. The first is a VALUE, and it spent two revisions filed as
-#    `absent/reason = none`, which cost it both its size and its origin.
-#      one whole period -- the supply runs continuously. A DUTY FRACTION OF ONE, filed as a
-#                         value because that is what it is: `1 week` against a period of
-#                         `week`, carrying an origin saying who could shorten it.
-#      `notApplicable` -- the unit has no denominator, so "five days of what?" is malformed.
-#      `unmeasured`    -- nobody asked.
-#    Only the last is arithmetically dangerous, and only because a time slack cannot be
-#    derived from a clearance when nobody knows whether the spare is spread evenly.
+# A blank would mean three things
+#   A blank would mean three things at once, which is why it is typed. Only two of the three are
+#   absences. The first is a value; filed as `absent/reason = none`, it loses both its size and
+#   its origin.
+#     one whole period   the supply runs continuously. A duty fraction of one, filed as a
+#                        value because that is what it is: `1 week` against a period of
+#                        `week`, carrying an origin saying who could shorten it.
+#     `notApplicable`    the unit has no denominator, so "five days of what?" is malformed.
+#     `unmeasured`       nobody asked.
+#   Only the last is arithmetically dangerous, and only because a time slack cannot be derived
+#   from a clearance when nobody knows whether the spare is spread evenly.
 #
-# ⛔ THIS RELATION DELIBERATELY DOES NOT REQUIRE A STATED NAMEPLATE AMOUNT. The window is a
+# No stated amount required
+#   This relation deliberately does not require a stated nameplate amount. The window is a
 #   statement about the calendar; a supply nobody has sized still has one.
 -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
 SELECT n.filing, n.layer,
-       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_absent,
+       n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,
+       n.window_absent,
        n.amount_unit
 FROM pm.nameplate n

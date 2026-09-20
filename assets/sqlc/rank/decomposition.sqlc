@@ -1,31 +1,100 @@
-# WHAT EACH GRAPH LOSES WHEN IT IS CUT UP BY FILING. One row per graph: its cycle space taken
+# What each graph loses when it is cut up by filing. One row per graph: its cycle space taken
 # corpus-wide, and the sum of its cycle spaces taken one filing at a time.
 #
-# ⭐⭐⭐ IT ANSWERS AN ACCUSATION RATHER THAN RAISING ONE. `examples/diagramming/main.rs` emits one
-#    document per FILING and draws the LAYER graph, and that is not a silent pick
-#    among three equals. **It is the only one of the three whose per-filing projection
-#    preserves the graph's cycle space**, and this relation is the measurement that says so.
+# It answers an accusation rather than raising one
+#   `examples/diagramming/main.rs` emits one document per filing and draws the layer graph, and
+#   that is not a silent pick among three equals. It is the only one of the three whose
+#   per-filing projection preserves the graph's cycle space, and this relation is the
+#   measurement that says so.
 #
-# ⛔⛔ THE UNIT GRAPH'S ONLY CYCLE SPANS TWO FILINGS, SO CUTTING BY FILING DESTROYS IT. Corpus-wide
-#    the unit graph carries one independent cycle; summed per filing it carries none, because
-#    `GPU-hour -> node-hour` and `node-hour -> GPU` are filed in `every-unit-cycle` and the edge
-#    that closes them, `GPU -> GPU-hour`, is filed in `merge-holding-composition`. ⭐ **The fixture
-#    named `every-unit-cycle` contains no unit cycle on its own.**
+# Cutting by filing destroys the unit graph's cycle
+#   The unit graph's only cycle spans two filings. Corpus-wide the unit graph carries one
+#   independent cycle; summed per filing it carries none, because `GPU-hour -> node-hour` and
+#   `node-hour -> GPU` are filed in `every-unit-cycle` and the edge that closes them,
+#   `GPU -> GPU-hour`, is filed in `merge-holding-composition`. The fixture named
+#   `every-unit-cycle` contains no unit cycle on its own.
 #
-# ⛔ AND THE CYCLE IS THE WHOLE SUBJECT. `checks/conversion_cycle_does_not_close` exists to ask
-#   whether the factors close round a loop, so a per-filing unit diagram would show two edges, no
-#   loop, and nothing to check: a picture that is well formed, validates, and has quietly removed
-#   the one property it was drawn to show. That is this repository's stated failure mode, and it
-#   would have been produced by making the graph a slot without measuring first.
+# The cycle is the whole subject
+#   `checks/conversion_cycle_does_not_close` exists to ask whether the factors close round a
+#   loop, so a per-filing unit diagram would show two edges, no loop, and nothing to check: a
+#   picture that is well formed, validates, and has quietly removed the one property it was drawn
+#   to show. That is this repository's stated failure mode, and it would have been produced by
+#   making the graph a slot without measuring first.
 #
-# ⚠️ A GRAPH THAT SURVIVES IS NOT THEREBY WORTH DRAWING. `claimants` survives trivially, with no
-#   edges at all. Survival is a precondition on an honest per-filing emission and never a reason.
-# ⭐⭐⭐ AND THE WALK IS GONE FROM THIS FILE. It carried its own `nodes`, `sym`, `reach` and
-#    `comp`, the same twenty lines `rank/cycle_space.sqlc` carried, and this file's own
-#    `filing IS NULL` rows WERE that file's whole output. `rank/graph_measures.sqlc` now
-#    computes both scopes once and this is the comparison between them, which is the only
-#    thing here that was ever about decomposition.
+# Surviving the cut is not a reason to draw
+#   A graph that survives is not thereby worth drawing. `claimants` survives trivially, with no
+#   edges at all. Survival is a precondition on an honest per-filing emission and never a
+#   reason.
+#
+# The walk lives in `rank/graph_measures.sqlc`
+#   This file's `filing IS NULL` rows would be `rank/cycle_space.sqlc`'s whole output, so
+#   `rank/graph_measures.sqlc` computes both scopes once and this is the comparison between them,
+#   which is the only thing here that is about decomposition.
+#
+# Defined, not read
+#   A program reads these columns, so this statement defines its vocabulary in its own
+#   WITH clause: a view keeps the rows and loses the column's origin, which is where
+#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
+#
 -- rank/graph_measures.sqlc at both scopes: the whole against the sum of the parts.
+WITH
+fusions AS NOT MATERIALIZED (
+    :define(composition/fusions.sqlc)
+),
+notations AS NOT MATERIALIZED (
+    :define(composition/notations.sqlc)
+),
+part_references AS NOT MATERIALIZED (
+    :define(composition/part_references.sqlc)
+),
+parts AS NOT MATERIALIZED (
+    :define(composition/parts.sqlc)
+),
+unresolved_parts AS NOT MATERIALIZED (
+    :define(composition/unresolved_parts.sqlc)
+),
+filed AS NOT MATERIALIZED (
+    :define(eliminations/filed.sqlc)
+),
+searched AS NOT MATERIALIZED (
+    :define(eliminations/searched.sqlc)
+),
+fusion_parts AS NOT MATERIALIZED (
+    :define(folds/fusion_parts.sqlc)
+),
+summed_quantities AS NOT MATERIALIZED (
+    :define(layers/summed_quantities.sqlc)
+),
+derived_quantities AS NOT MATERIALIZED (
+    :define(composition/derived_quantities.sqlc)
+),
+resolved_quantities AS NOT MATERIALIZED (
+    :define(composition/resolved_quantities.sqlc)
+),
+slacks AS NOT MATERIALIZED (
+    :define(entries/slacks.sqlc)
+),
+demand AS NOT MATERIALIZED (
+    :define(layers/demand.sqlc)
+),
+layers_nameplate AS NOT MATERIALIZED (
+    :define(layers/nameplate.sqlc)
+),
+quantities AS NOT MATERIALIZED (
+    :define(layers/quantities.sqlc)
+),
+part_quantities AS NOT MATERIALIZED (
+    :define(composition/part_quantities.sqlc)
+),
+conversions AS NOT MATERIALIZED (
+    :define(units/conversions.sqlc)
+),
+graph_edges AS NOT MATERIALIZED (
+    :define(rank/graph_edges.sqlc)
+),
+graph_measures AS NOT MATERIALIZED (
+    :define(rank/graph_measures.sqlc)
+)
 SELECT w.graph,
        w.cycle_space_dim                                               AS corpus_wide,
        coalesce(sum(p.cycle_space_dim), 0)::bigint                     AS summed_per_filing,

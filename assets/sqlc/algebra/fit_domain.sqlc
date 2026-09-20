@@ -1,0 +1,78 @@
+# Every rule's declared fit domain, held against the compose DAG and against what it examined.
+# One row per rule named on checks/roster.sqlc, checks/fit_axes.sqlc or checks/fit_domain.sqlc:
+# whether its declaration is whole and true.
+#
+# What it asserts, per rule
+#   - it is on checks/roster.sqlc and declares exactly one axis;
+#   - it declares `not read` exactly when its closure in rank/rule_closure.sqlc reaches neither
+#     layers/remainder.sqlc nor layers/filed_remainders.sqlc, the two relations every fit a rule
+#     can read comes from;
+#   - a rule with an axis declares all four cells once each, and a rule reading no fit declares
+#     none;
+#   - every declared cell is `exercised` exactly when reports/fit_coverage.sqlc counts an
+#     examined row in it.
+#
+# Two routes that share no code
+#   The axis is a literal and the reach is the compose DAG, which examples/compositions/main.rs
+#   builds from the source tree. A rule that starts reading the fit through a new composition
+#   fails here until it declares an axis and its cells; one that stops reading it fails until it
+#   says `not read`. The standings are held against rows, both ways, so an open cell a new
+#   document fills fails as surely as an exercised cell that empties.
+#
+# Probe
+#   examples/probes runs it as `fit_domain / cell` and `fit_domain / axis`.
+#   Two, one per route, both in memory. In the composed checks/fit_domain.sql mark
+#   `shares_do_not_sum`'s transition cell `exercised`: this law must fail for that rule alone. In
+#   the composed checks/fit_axes.sql give `draw_exceeds_the_supply` the axis `derived fit`: it must
+#   fail for that rule, whose closure reaches no fit.
+-- checks/fit_axes.sqlc and checks/fit_domain.sqlc against rank/rule_closure.sqlc and reports/fit_coverage.sqlc.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    SELECT s.slug AS subject,
+           r.slug IS NOT NULL
+           AND coalesce(x.axes, 0) = 1
+           AND (x.axis = 'not read') = NOT coalesce(h.reaches, false)
+           AND CASE WHEN x.axis = 'not read' THEN coalesce(k.cells, 0) = 0
+                    ELSE coalesce(k.cells, 0) = 4 AND k.distinct_cells = 4 END
+           AND coalesce(k.disagreeing, 0) = 0                             AS holds,
+           format('%s; its closure %s the fit; %s cells, %s disagreeing with what it examined%s',
+                  coalesce(x.axis::text, 'no axis declared'),
+                  CASE WHEN coalesce(h.reaches, false) THEN 'reaches' ELSE 'does not reach' END,
+                  coalesce(k.cells, 0), coalesce(k.disagreeing, 0),
+                  coalesce(': ' || k.cells_read, ''))                     AS detail
+    FROM (
+        SELECT slug FROM ( :compose(checks/roster.sqlc) ) r0
+        UNION
+        SELECT slug FROM ( :compose(checks/fit_axes.sqlc) ) a0
+        UNION
+        SELECT slug FROM ( :compose(checks/fit_domain.sqlc) ) d0
+    ) s
+    LEFT JOIN (
+        :compose(checks/roster.sqlc)
+    ) r ON r.slug = s.slug
+    LEFT JOIN (
+        SELECT f.slug, count(*) AS axes, min(f.axis) AS axis
+        FROM ( :compose(checks/fit_axes.sqlc) ) f
+        GROUP BY f.slug
+    ) x ON x.slug = s.slug
+    LEFT JOIN (
+        SELECT c.slug, true AS reaches
+        FROM ( :compose(rank/rule_closure.sqlc) ) c
+        WHERE c.template IN ('layers/remainder.sqlc', 'layers/filed_remainders.sqlc')
+        GROUP BY c.slug
+    ) h ON h.slug = s.slug
+    LEFT JOIN (
+        SELECT v.slug,
+               count(*)                                                        AS cells,
+               count(DISTINCT coalesce(v.fit::text, 'no fit'))                 AS distinct_cells,
+               count(*) FILTER (WHERE (v.standing = 'exercised') <> (v.examined > 0)) AS disagreeing,
+               string_agg(coalesce(v.fit::text, 'no fit') || ' ' || v.standing || ' ' || v.examined,
+                          ', ' ORDER BY v.fit NULLS LAST)                      AS cells_read
+        FROM ( :compose(reports/fit_coverage.sqlc) ) v
+        GROUP BY v.slug
+    ) k ON k.slug = s.slug
+) p ON true
+WHERE a.slug = 'fit_domain'

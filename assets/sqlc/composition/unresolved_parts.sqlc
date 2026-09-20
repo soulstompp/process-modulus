@@ -1,0 +1,39 @@
+# The fusions that owe no sum because a part they name is not here. One row per part reference that
+# resolves to no filing in this corpus, or to no layer in the filing it names, shaped like the other
+# suspension grounds, with the reference named in `note`.
+#
+# A sum over parts nobody can read is not owed
+#   `asrt:Fusion` puts it in one sentence: the fused figure against its parts is arithmetic over
+#   documents that are not this one, and "an implementer that can fetch the parts owes the check; one
+#   that cannot owes the reader the knowledge that it did not happen." composition/converted.sqlc
+#   reads resolved parts only, so without this ground a reference that lands nowhere simply drops
+#   out of the sum, the sum comes out short by that part's figure, and every rule reading the sum or
+#   the remainder built on it reports the shortfall as a disagreement the document never made.
+#
+# Every quantity, and the remainder with them
+#   Its `quantity` is NULL: an unread part is missing from the demand, the nameplate and the draw
+#   alike. composition/filed_grounds.sqlc carries it, so composition/suspended_remainders.sqlc lifts
+#   the remainder too, at the layer and at any node its walk passes through. The walk cannot find
+#   this for itself, because it descends through resolved parts and never meets the one that is
+#   missing.
+#
+# Two readers of one difference
+#   checks/unresolved_part reports the same references as a violation of the rule that a part
+#   resolves. The rule says the reference is wrong; this says what can no longer be computed
+#   because of it. composition/derived_quantities.sqlc reads it as one of the reasons a derived
+#   figure cannot be computed, and algebra/unresolved_parts.sqlc holds the partition it takes.
+-- composition/part_references.sqlc less composition/parts.sqlc, per fusion and reference.
+SELECT r.composition, r.composed_layer,
+       NULL::pm.summed_quantity AS quantity,
+       'a part resolves to no filing here' AS suspended_because,
+       r.part_filing || '/' || r.part_layer AS note
+FROM      (
+    :compose(composition/part_references.sqlc)
+) r
+LEFT JOIN (
+    :compose(composition/parts.sqlc)
+) p ON  p.composition    = r.composition
+    AND p.composed_layer = r.composed_layer
+    AND p.part_notation  = r.part_filing
+    AND p.part_layer     = r.part_layer
+WHERE p.composition IS NULL

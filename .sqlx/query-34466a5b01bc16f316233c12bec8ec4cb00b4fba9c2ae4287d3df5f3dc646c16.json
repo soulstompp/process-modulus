@@ -1,0 +1,49 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- rank/graph_edges.sqlc's endpoints, with evaluation_order and layer_reach joined at (filing, layer).\nSELECT 'layers' AS graph,\n       e.filing || '/' || e.layer AS node,\n       r.rank                     AS rank,\n       c.examined_by              AS examined_by,\n       c.violated                 AS violated\nFROM (\n    SELECT p.composition AS filing, p.composed_layer AS layer\n    FROM ( SELECT * FROM composition.parts ) p\n    UNION\n    SELECT p.part_filing, p.part_layer\n    FROM ( SELECT * FROM composition.parts ) p\n) e\nLEFT JOIN (\n    -- composition/descent.sqlc aggregated to the deepest arrival under each layer.\nWITH\nnotations AS NOT MATERIALIZED (\n    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n\n),\npart_references AS NOT MATERIALIZED (\n    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).\nSELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,\n       CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state\n            WHEN p.factor_absent     IS NOT NULL THEN 'absent'::public.factor_state\n            WHEN p.factor_derivation IS NOT NULL THEN 'derivation'::public.factor_state\n            ELSE                                      'omitted'::public.factor_state END AS factor_state,\n       p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version\nFROM pm.part p\n\n),\nparts AS NOT MATERIALIZED (\n    -- pm.part joined through pm.filing_identity to pm.layer.\nSELECT p.composition, p.composed_layer,\n       p.part_filing AS part_notation,\n       fi.filing     AS part_filing,\n       p.part_layer,\n       p.part_regime,\n       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,\n       p.factor_state\nFROM      (\n    SELECT * FROM composition.part_references\n) p\nJOIN      (\n    SELECT * FROM composition.notations\n) fi ON fi.notation = p.part_filing\nJOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer\n\n),\ndescent AS NOT MATERIALIZED (\n    -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.\nWITH RECURSIVE\nresolved AS (\n    SELECT * FROM composition.parts\n),\nwalk(root_filing, root_layer, filing, layer, depth, path,\n     factor_low, factor_mode, factor_high, factor_absent) AS (\n        SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, 1,\n               ARRAY[p.composition  || '/' || p.composed_layer,\n                     p.part_filing  || '/' || p.part_layer],\n               coalesce(p.factor_low, 1), coalesce(p.factor_mode, 1), coalesce(p.factor_high, 1),\n               p.factor_state IN ('absent', 'derivation')\n        FROM resolved p\n    UNION ALL\n        SELECT w.root_filing, w.root_layer, p.part_filing, p.part_layer, w.depth + 1,\n               w.path || (p.part_filing || '/' || p.part_layer),\n               w.factor_low  * coalesce(p.factor_low,  1),\n               w.factor_mode * coalesce(p.factor_mode, 1),\n               w.factor_high * coalesce(p.factor_high, 1),\n               w.factor_absent OR p.factor_state IN ('absent', 'derivation')\n        FROM walk w\n        JOIN resolved p ON p.composition = w.filing AND p.composed_layer = w.layer\n) CYCLE filing, layer SET is_cycle USING route\nSELECT root_filing, root_layer, filing, layer, depth, path,\n       factor_low, factor_mode, factor_high, factor_absent, is_cycle\nFROM walk\n\n),\nevery_layer AS NOT MATERIALIZED (\n    -- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n\n)\nSELECT l.filing, l.layer,\n       CASE WHEN coalesce(bool_or(d.is_cycle), false) THEN NULL\n            ELSE coalesce(max(d.depth), 0) END AS rank,\n       count(d.filing)           AS arrivals\nFROM      (\n    SELECT * FROM layers.every_layer\n) l\nLEFT JOIN (\n    SELECT * FROM composition.descent\n) d ON d.root_filing = l.filing AND d.root_layer = l.layer\nGROUP BY l.filing, l.layer\n\n) r ON r.filing = e.filing AND r.layer = e.layer\nLEFT JOIN (\n    SELECT * FROM rank.layer_reach\n) c ON c.filing = e.filing AND c.layer = e.layer\nUNION ALL\nSELECT 'units', u.unit, NULL, NULL, NULL\nFROM (\n    SELECT c.from_unit AS unit FROM ( SELECT * FROM units.conversions ) c\n    UNION\n    SELECT c.to_unit        FROM ( SELECT * FROM units.conversions ) c\n) u\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "node",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "rank",
+        "type_info": "Int4",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "examined_by",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "violated",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "34466a5b01bc16f316233c12bec8ec4cb00b4fba9c2ae4287d3df5f3dc646c16"
+}

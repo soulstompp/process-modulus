@@ -1,17 +1,20 @@
--- The matrices of examples/matrices/main.rs, pulled out with SQL. That example is where each one is
--- defined; this file is the relational half of the pair it asserts agreement between.
+-- The matrices of examples/matrices/main.rs, pulled out with SQL.
+#
+# That example is where each one is defined; this file is the relational half of the pair it
+# asserts agreement between.
 #
 #   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/matrices.sql
 #
-# ⭐⭐ THIS FILE IS A TOUR AND HOLDS NO LOGIC OF ITS OWN. Each section composes one relation
-#    from assets/sqlc/, so every matrix printed here is a file somebody can run on its own and
-#    look at without the surrounding argument. The prose between the sections is the argument;
-#    the relations are the evidence, and they are separable on purpose.
+# A tour with no logic of its own
+#   Each section composes one relation from assets/sqlc/, so every matrix printed here is a file
+#   somebody can run on its own and look at without the surrounding argument. The prose between
+#   the sections is the argument; the relations are the evidence, and they are separable on
+#   purpose.
 #
-# ⭐ THE CLAIM UNDER TEST THROUGHOUT: a matrix product IS a join on the shared index and a sum
-#   over it. Where that is true it is shown. Where it is FALSE -- and it is false in two
-#   instructive places -- the section says so rather than printing a number that composes
-#   arithmetically and means nothing.
+# The claim under test throughout
+#   A matrix product is a join on the shared index and a sum over it. Where that is true it is
+#   shown. Where it is false, and it is false in two instructive places, the section says so
+#   rather than printing a number that composes arithmetically and means nothing.
 
 SET search_path TO pm, public;
 \pset border 2
@@ -30,7 +33,7 @@ ORDER BY filing, operation, layer;
 \echo
 \echo === N, the induction matrix. Same shape, different fact. ========================
 \echo 'A draw is consumption that happened. An induction is a commitment that creates a'
-\echo 'future draw on a DIFFERENT supply, and only it names a decider.'
+\echo 'future draw on a different supply, and only it names a decider.'
 SELECT filing, operation, layer,
        coalesce(mode::text, '(' || absent || ')') AS entry, unit, decider
 FROM (
@@ -49,19 +52,19 @@ FROM (
     :compose(entries/cross_layer_edges.sqlc)
 ) x
 ORDER BY 1, 2, 3;
-\echo '⛔ TWO SEPARATE REASONS THE PRODUCT IS NOT A QUANTITY, AND BOTH ARE VISIBLE ABOVE.'
-\echo '   Each layer carries its OWN unit, so an entry would come out in people*launches,'
-\echo '   which is not a rate of anything. And the one operation in this corpus that both'
-\echo '   draws and induces has an UNMEASURED draw, so there is no number to multiply --'
-\echo '   the matrix that would show cross-layer structure is empty precisely because the'
-\echo '   interesting quantity has no instrument behind it.'
-\echo '   The INCIDENCE composes and gives you reachability. The QUANTITIES do not. There'
-\echo '   is also no firing count per operation, deliberately, because sequence and timing'
-\echo '   are BPMN''s job.'
+\echo 'Two separate reasons the product is not a quantity, and both are visible above.'
+\echo 'Each layer carries its own unit, so an entry would come out in people*launches,'
+\echo 'which is not a rate of anything. And the one operation in this corpus that both'
+\echo 'draws and induces has an unmeasured draw, so there is no number to multiply:'
+\echo 'the matrix that would show cross-layer structure is empty precisely because the'
+\echo 'interesting quantity has no instrument behind it.'
+\echo 'The incidence composes and gives you reachability. The quantities do not. There'
+\echo 'is also no firing count per operation, deliberately, because sequence and timing'
+\echo 'are BPMN''s job.'
 
 \echo
 \echo === C, the coupling matrix, and the absence that matters ========================
-\echo 'C = 0 is the model ASSUMPTION. Every non-zero entry is an observation somebody made.'
+\echo 'C = 0 is the model assumption. Every non-zero entry is an observation somebody made.'
 SELECT filing, from_layer, to_layer, low, mode, high, unit,
        left(observation, 60) || '...' AS observed
 FROM (
@@ -70,10 +73,10 @@ FROM (
 ORDER BY filing, from_layer, to_layer;
 
 \echo
-\echo '⛔⛔ AND HERE IS WHAT THE MATRIX CANNOT SAY. A filing with no rows above has either'
-\echo '    a stack of independent layers, or nobody who looked. Densify it and both become'
-\echo '    a grid of 0.0 and the difference is gone for good. The answer is not in C at all;'
-\echo '    it is in the SEARCH beside it, which is why that element had to exist.'
+\echo 'And here is what the matrix cannot say. A filing with no rows above has either'
+\echo 'a stack of independent layers, or nobody who looked. Densify it and both become'
+\echo 'a grid of 0.0 and the difference is gone for good. The answer is not in C at all;'
+\echo 'it is in the search beside it, which is why that element had to exist.'
 SELECT p.filing, p.couplings_filed,
        coalesce(p.search_answer::text, '(couplings are filed above)') AS what_the_search_says
 FROM (
@@ -92,8 +95,8 @@ FROM (
 ORDER BY 1, 2, 3;
 
 \echo
-\echo 'S, and the count that matters is the SIZED column: a buffer nobody measured is not a'
-\echo 'buffer that is empty, and only a sized row can bound anything at all. A SIZED_AT_ZERO is'
+\echo 'S, and the count that matters is the `sized` column: a buffer nobody measured is not a'
+\echo 'buffer that is empty, and only a sized row can bound anything at all. A `sized_at_zero` is'
 \echo 'the tightest bound there is, not a missing one, and the split is the whole point.'
 \echo 'Stipulations are kept apart from observations: the fixtures file absences on purpose,'
 \echo 'so pooling them would answer "how much does this corpus measure" with a made-up number.'
@@ -101,18 +104,20 @@ ORDER BY 1, 2, 3;
 
 \echo
 \echo === r = n - d, and the bound reversal that is easy to get wrong =================
-\echo 'Subtracting intervals REVERSES the bounds: the low of n-d pairs n.low with d.HIGH.'
-\echo 'Get that backwards and every remainder in the corpus comes out inside out.'
+\echo 'Subtracting intervals reverses the bounds: the low of n-d pairs n.low with d.high.'
+\echo 'Get that backwards and every remainder in the corpus comes out inside out. On a'
+\echo 'composed layer r is the pivot through its parts, which the Phi section below explains:'
+\echo 'inside n - d, and equal to it wherever no conversion factor has width.'
 SELECT filing, layer, r_low, r_mode, r_high, unit, sign,
        derived_fit AS fit_from_the_ranges
 FROM (
     :compose(layers/remainder.sqlc)
 ) r
 ORDER BY filing, layer;
-\echo '⭐ The last two columns are the filed sign and the sign recomputed from the ranges.'
-\echo '  They agree for every layer that files one, which is a rule XSD 1.0 cannot express'
-\echo '  at all. Where `sign` is blank the document declined to classify, and declining is'
-\echo '  not disagreeing -- see assets/sqlc/layers/signed.sqlc.'
+\echo 'The last two columns are the filed sign and the sign recomputed from the ranges.'
+\echo 'They agree for every layer that files one, which is a rule XSD 1.0 cannot express'
+\echo 'at all. Where `sign` is blank the document declined to classify, and declining is'
+\echo 'not disagreeing: see assets/sqlc/layers/signed.sqlc.'
 
 \echo
 \echo === F and Phi, and the recursion the schema cannot see ==========================
@@ -130,28 +135,29 @@ ORDER BY root_layer, depth, part_filing, part_layer;
 \echo 'Convert each part into the composed unit, add them up, subtract what was counted'
 \echo 'twice. The elimination is the term that is easy to forget, and dropping it gives a'
 \echo 'total that is plausible and wrong with nothing to warn you.'
-SELECT composition, composed_layer,
+SELECT composition, composed_layer, quantity,
        computed_low, computed_mode, computed_high,   -- computed here
        filed_low, filed_mode, filed_high,            -- filed in the document
        agrees
 FROM (
     :compose(composition/fused.sqlc)
 ) f
-ORDER BY 1, 2;
-\echo '⭐ Every row agrees. A fusion that states nobody looked for double counting owes no'
-\echo '  equality and is SUSPENDED rather than counted as a pass -- and so is one that found'
-\echo '  the overlap and could not size it, and so is one whose CONVERSION nobody sized. All'
-\echo '  three grounds are in composition/suspension_grounds.sqlc; this anti-joins'
-\echo '  composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
-\echo '  fusion suspended on two grounds is suspended ONCE, so a caller that COUNTS reads the'
-\echo '  projection and a caller that needs the reason reads the bag.'
-\echo '  That is the composition rule checked against real filings, and XSD 1.0 cannot state'
-\echo '  it, let alone check it: it spans two documents.'
+ORDER BY 1, 2, 3;
+\echo 'A fusion that states nobody looked for double counting owes no equality and is'
+\echo 'suspended rather than counted as a pass, and so is one that found the overlap and could'
+\echo 'not size it, one whose conversion nobody sized, and, for one quantity, one where a layer'
+\echo 'the sum reads leaves that quantity unstated. The grounds are in'
+\echo 'composition/suspension_grounds.sqlc; this anti-joins'
+\echo 'composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
+\echo 'fusion suspended on two grounds is suspended once, so a caller that counts reads the'
+\echo 'projection and a caller that needs the reason reads the bag.'
+\echo 'That is the composition rule checked against real filings, and XSD 1.0 cannot state'
+\echo 'it, let alone check it: it spans two documents.'
 
 \echo
 \echo === Phi: the correlation trap, and why r must be converted and never re-derived =
-\echo 'A conversion factor multiplies BOTH the nameplate and the demand of one part, so'
-\echo 'the two converted intervals are CORRELATED. Difference them as though they were'
+\echo 'A conversion factor multiplies both the nameplate and the demand of one part, so'
+\echo 'the two converted intervals are correlated. Difference them as though they were'
 \echo 'independent and phi''s spread gets counted twice.'
 SELECT 'converted directly, as filed'       AS method, x.qty_low, x.qty_mode, x.qty_high
 FROM (
@@ -161,9 +167,9 @@ WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute'
 UNION ALL
 SELECT 're-derived from the composed totals', x.r_low, x.r_mode, x.r_high
 FROM (
-    :compose(layers/filed_against_derived.sqlc)
+    :compose(layers/differenced_remainder.sqlc)
 ) x
 WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute';
-\echo '⛔ They agree at the MODE and nowhere else, because the mode is the one point where'
-\echo '   phi is a single number and has no spread to count twice. Both figures are'
-\echo '   arithmetically correct. Only the first is the remainder.'
+\echo 'They agree at the mode and nowhere else, because the mode is the one point where'
+\echo 'phi is a single number and has no spread to count twice. Both figures are'
+\echo 'arithmetically correct. Only the first is the remainder.'

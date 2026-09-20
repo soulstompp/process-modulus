@@ -1,65 +1,61 @@
-# EVERY LAYER THAT DENIES HAVING A REMAINDER, BESIDE WHETHER ITS OWN TWO NUMBERS IMPLY ONE.
-# One row per denial, `violates` where the layer states both a demand and a nameplate that
-# differ -- so the remainder it says does not exist is derivable from the filing itself.
+# Every layer that denies having a remainder, beside whether its own two numbers imply one. One
+# row per denial, `violates` where the layer states both a demand and a nameplate, so the
+# remainder it says does not exist is derivable from the filing itself, even where the two
+# coincide.
 #
-# ⭐⭐ THE RULE: a layer that denies having a remainder is not contradicted by its own figures.
-#    If a layer files a demand AND a nameplate, then `r = n - d` is a quantity the document
-#    itself supplies and the denial is refuted by the page it is written on. This spans three
-#    elements of one layer, which is why no grammar can state it.
+# A denial its own figures refute
+#   The rule: a layer that denies having a remainder is not contradicted by its own figures. If a
+#   layer files a demand and a nameplate, then `r = n - d` is a quantity the document itself
+#   supplies and the denial is refuted by the page it is written on. This spans three elements
+#   of one layer, which is why no grammar can state it.
 #
-# ⛔⛔ AND THERE IS NO ESCAPE HERE FOR "THE TWO COINCIDE EXACTLY", WHICH DOES NOT BELONG IN THE
-#    PREDICATE. A point nameplate equal to a point demand is `r = 0`, and `Fit` settles that
-#    case in prose: "IT IS A CLEARANCE FIT, which is ISO 286's own answer for the line-to-line
-#    case, where minimum clearance is zero." A clearance is a REMAINDER, filed with a sign and
-#    a quantity of [0, 0, 0]. Exempting it lets the wrapper's absence stand in for a filing the
-#    schema has already decided, which is the last place `none` on a remainder can hide.
+# No escape for an exact coincidence
+#   "The two coincide exactly" does not belong in the predicate. A point nameplate equal to a
+#   point demand is `r = 0`, and `Fit` settles that case in prose: "IT IS A CLEARANCE FIT",
+#   extending ISO 286's line-to-line answer to the one pair its clauses do not separate. A
+#   clearance is a remainder, filed with a sign and a quantity of [0, 0, 0]. Exempting it lets
+#   the wrapper's absence stand in for a filing the schema has already decided, which is the last
+#   place `none` on a remainder can hide.
 #
-# ⭐ `derived` IS THE ONE DENIAL A STATED PAIR DOES NOT CONTRADICT, and that is what the word
-#   means: "this is an OUTPUT, computed from other elements ... the receiver computes it."
-#   Filing both figures and declining to restate the difference is the intended use.
+# A computed remainder is filed, not denied
+#   A layer whose remainder the receiver computes files the remainder, and names `magnitude` as
+#   what computes its quantity. The denial takes a `pm:ClaimAbsence`, `unmeasured` or
+#   `notApplicable`, and a stated pair contradicts either.
 #
-# ⛔⛔ THE VERSION FIRST PROPOSED FOR THIS RULE WAS VACUOUS BY CONSTRUCTION, and it is worth
-#    recording why. It was "a denied remainder names no holders and no absorber" -- but
-#    `Holder` and `absorber` live INSIDE the `Remainder` element, so a layer that declined the
-#    element cannot carry either. XSD already enforces it structurally and the absorber half is
-#    now a CHECK in the DDL. A rule that cannot fail examines nothing however many rows it
-#    counts, which is the trap this whole file is written to name.
+# Why the rule is not about holders
+#   "A denied remainder names no holders and no absorber" would be vacuous by construction:
+#   `Holder` and `absorber` live inside the `Remainder` element, so a layer that declined the
+#   element cannot carry either. XSD already enforces it structurally and the absorber half is a
+#   CHECK in the DDL. A rule that cannot fail examines nothing however many rows it counts, which
+#   is the trap this whole file is written to name.
 #
-# ⭐ TODAY BOTH DENIALS FILE THEIR NAMEPLATE AS `notApplicable` -- a ratio and an object store,
-#   neither of which states a nameplate for a demand to be subtracted from -- so both pass, and
-#   the rule is thin rather than vacuous: it examines two real rows and could fail on the next
+# Thin, not vacuous
+#   On this corpus both denials file their nameplate as `notApplicable` (a ratio and an object
+#   store, neither of which states a nameplate for a demand to be subtracted from), so both pass,
+#   and the rule is thin rather than vacuous: it examines real rows and could fail on the next
 #   filing.
---
--- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate.
+-- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate, from layers/figures.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           (dm.d_low IS NOT NULL AND np.n_low IS NOT NULL
-            AND d.reason <> 'derived')                             AS violates,
-           CASE WHEN dm.d_low IS NULL OR np.n_low IS NULL
+           (f.d_low IS NOT NULL AND f.n_low IS NOT NULL)     AS violates,
+           CASE WHEN f.d_low IS NULL OR f.n_low IS NULL
                 THEN format('`%s`, and no remainder is derivable: %s',
                             d.reason,
-                            CASE WHEN dm.d_low IS NULL THEN 'no demand is stated'
+                            CASE WHEN f.d_low IS NULL THEN 'no demand is stated'
                                  ELSE 'no nameplate is stated' END)
-                WHEN d.reason = 'derived'
-                THEN format('`derived`, and demand [%s, %s] against a nameplate of [%s, %s] '
-                            'is exactly what the receiver computes it from',
-                            dm.d_low, dm.d_high, np.n_low, np.n_high)
                 ELSE format('`%s`, yet demand [%s, %s] against a nameplate of [%s, %s] '
                             'gives a remainder the filing supplies itself',
-                            d.reason, dm.d_low, dm.d_high, np.n_low, np.n_high)
+                            d.reason, f.d_low, f.d_high, f.n_low, f.n_high)
            END AS detail
     FROM      (
         :compose(layers/denied_remainders.sqlc)
     ) d
     LEFT JOIN (
-        :compose(layers/demand.sqlc)
-    ) dm USING (filing, layer)
-    LEFT JOIN (
-        :compose(layers/nameplate.sqlc)
-    ) np USING (filing, layer)
+        :compose(layers/figures.sqlc)
+    ) f USING (filing, layer)
 ) p ON true
 WHERE r.slug = 'denied_remainder_is_not_contradicted'

@@ -1,34 +1,41 @@
-# WHICH ABSENCE REASONS EACH QUESTION HAS EVER TAKEN, AS A FOUR-BIT WORD. One row per question,
-# the mask reading `n u a d` for none, unmeasured, notApplicable, derived, and a dot where the
-# corpus has never used that reason.
+# Which absence reasons each question has ever taken, as a three-bit word. One row per question,
+# the mask reading `n u a` for none, unmeasured and notApplicable, and a dot where the corpus has
+# never used that reason.
 #
-# ⭐⭐⭐ `AbsenceReason` IS FOUR MEMBERS, SO A SITE'S REACHED STATES ARE A WORD RATHER THAN A LIST,
-#    and that is the whole trick. Asked as rows, "which reasons does `remainder sign` file" is
-#    twelve rows nobody reads. Asked as a word it is `.uad`, and it sits beside `boundOrigin`'s
-#    `nuad` in a sorted column where the missing bit is the first thing the eye lands on.
+# Reached states as a word
+#   `AbsenceReason` is three members, so a site's reached states are a word rather than a list,
+#   and that is the whole trick. Asked as rows, "which reasons does `remainder sign` file" is a pile
+#   of rows nobody reads. Asked as a word it reads like `.ua`, and it sits beside `boundOrigin`'s
+#   `nua` in a sorted column where the missing bit is the first thing the eye lands on.
 #
-# ⛔⛔ AN ADMITTED BIT THAT IS NEVER SET IS A QUESTION, AND ONE OF THEM WAS A DEFECT. `StatedFit`
-#    admitted `nuad` and `remainder sign` exercised `.uad`, for twenty documents. The element's
-#    own annotation refuses the missing bit in prose -- overlapping ranges are a `transition`
-#    fit, which the value arm NAMES -- and the mask is what sets the two side by side. A word in
-#    a sorted column is a comparison a reader makes at a glance; sixteen annotations are not.
+# An admitted bit never set is a question
+#   Sometimes it is a defect. `StatedFit` admitted `nua` while `remainder sign` exercised only
+#   `.ua`, and the element's own annotation refuses the missing bit in prose: overlapping ranges
+#   are a `transition` fit, which the value arm names. The mask is what sets the two side by side.
+#   A word in a sorted column is a comparison a reader makes at a glance; a pile of annotations is
+#   not.
 #
-# ⭐⭐ AND THE MASKS CLUSTER, WHICH IS STRUCTURE RATHER THAN TRIVIA. Sort by the word and sixteen
-#    wrappers fall into a handful of KINDS. Two questions with one mask are the same kind of
-#    question; a mask that is a strict subset of another is a candidate for the narrower type.
-#    ⚠️ A subset is a candidate and never a verdict: a site may simply be young. The reading is
-#    "go and look at this one", which is what an observation is for.
+# The masks cluster
+#   That is structure rather than trivia. Sort by the word and the wrappers fall into a handful of
+#   kinds. Two questions with one mask are the same kind of question; a mask that is a strict
+#   subset of another is a candidate for the narrower type. A subset is a candidate and never a
+#   verdict: a site may simply be young. The reading is "go and look at this one", which is what an
+#   observation is for.
 #
-# ⛔ IT DOES NOT KNOW WHAT IS ADMISSIBLE, only what was taken. The admissible word lives in the
-#   XSD (`pm:Absence` is `nuad`, `pm:ClaimAbsence` is `.uad`) and in this database as the
-#   `a_..._absence_has_no_none` CHECKs. Comparing the two is the reader's job, and stating that
-#   plainly is better than a relation that guesses at a grammar it cannot see.
--- epistemics/absences.sqlc folded to one four-bit word per question.
+# It does not know what is admissible
+#   It knows only what was taken. The admissible word lives in the XSD (`pm:Absence` is `nua`,
+#   `pm:ClaimAbsence` is `.ua`) and in this database as the `a_..._absence_has_no_none` CHECKs.
+#   Comparing the two is the reader's job, and stating that plainly is better than a relation that
+#   guesses at a grammar it cannot see.
+#
+# A derivation is not a bit
+#   It is not an absence: it names the identity that computes the position, and
+#   epistemics/derivations.sqlc counts it.
+-- epistemics/absences.sqlc folded to one three-bit word per question.
 SELECT a.question,
        (CASE WHEN bool_or(a.reason = 'none')          THEN 'n' ELSE '.' END) ||
        (CASE WHEN bool_or(a.reason = 'unmeasured')    THEN 'u' ELSE '.' END) ||
-       (CASE WHEN bool_or(a.reason = 'notApplicable') THEN 'a' ELSE '.' END) ||
-       (CASE WHEN bool_or(a.reason = 'derived')       THEN 'd' ELSE '.' END) AS mask,
+       (CASE WHEN bool_or(a.reason = 'notApplicable') THEN 'a' ELSE '.' END) AS mask,
        count(*)                                                             AS filings,
        count(*) FILTER (WHERE a.reason = 'none')                            AS as_none
 FROM (

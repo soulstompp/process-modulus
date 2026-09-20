@@ -1,0 +1,99 @@
+# This repository's own compose DAG, measured, at both scopes. One row per scope, where
+# `scope IS NULL` is the graph taken whole and a non-null scope is one directory's cut of it.
+# Nodes, edges, components, and the two dimensions those three determine.
+#
+# Beside `rank/graph_measures.sqlc`, on purpose
+#   That relation measures the graphs the model composes; this measures the graph this repository
+#   composes. It is the same argument `rank/compose_edges.sqlc` makes for the edge lists, carried
+#   one step further: two edge lists of one shape in one directory was the claim that they are the
+#   same algebra, and two measurement relations are that claim made comparable. Until this file
+#   existed the compose graph had no row anywhere and every dimension of it lived in one program.
+#
+# Filesystem-fed and outside `pm`
+#   `public.compose_edge` descends from `assets/sqlc/` rather than from a filed document, so this
+#   relation may say something about this repository and must never join a filing to say something
+#   about a subject. That is the line `rank/compose_edges.sqlc` states and this file inherits.
+#
+# The cut is a PARTITION where the model's is a COVER, and the difference is not cosmetic
+#   `rank/graph_measures.sqlc` cuts by filing, and a node may appear under two filings, so the
+#   per-filing node counts sum to more than the whole graph's. A template lives in exactly one
+#   directory, so this cut partitions the nodes and `sum(n_nodes)` equals the whole graph's `n`
+#   exactly. Two different kinds of cut, and a reader who compares the two relations' sums without
+#   noticing will conclude that one of them has lost nodes.
+#
+# Why a directory is the cut worth taking
+#   It is the only partition of these nodes anybody maintains by hand, and it is the one a reader
+#   navigates by. So the question it answers is whether the directory tree is where composition
+#   lives, and `rank/compose_decomposition.sqlc` is where that answer is stated.
+#
+# The directory is the TOP-LEVEL one, which is what `assets/sqlc/README.md` calls a directory
+#   `queries/observations/16-guard-reach.sqlc` is in `queries`, not in `queries/observations`.
+#   That is the partition the README's own directory block lists and the one a reader navigates
+#   by, and it is the coarser of the two available, so a cut at the finer level can only lose
+#   more. Cutting at every level would be a different relation and a different question.
+#
+# A template in no directory gets a scope of its own
+#   A few templates sit at the root of `assets/sqlc/`, so `'(root)'` is a scope like any other.
+#   Dropping them would make the partition a cover again and the sum would stop being a check.
+#
+# The `'undirected'` sense, and it is the only one this file measures
+#   `n - c` and `m - n + c` are facts about the underlying undirected graph, so the walk
+#   symmetrises before counting, exactly as `rank/graph_measures.sqlc` does. The compose DAG is
+#   well founded and has no DIRECTED cycle at all, which is a different question and a different
+#   sense of the word: `composition/descent.sqlc`'s header sets out all four.
+#
+# Probe
+#   Move one template into another directory and recompose: the whole-graph row must not move at
+#   all, and the summed cycle space must. A change that moves both is reading the wrong scope.
+-- rank/compose_edges.sqlc, symmetrised and walked for components, counted whole and by directory.
+WITH RECURSIVE
+edge AS (
+    SELECT DISTINCT e.parent AS a, e.child AS b
+    FROM ( :compose(rank/compose_edges.sqlc) ) e
+),
+node AS (
+    SELECT a AS name FROM edge UNION SELECT b FROM edge
+),
+placed AS (
+    SELECT n.name,
+           CASE WHEN position('/' IN n.name) > 0 THEN split_part(n.name, '/', 1) ELSE '(root)' END
+             AS directory
+    FROM node n
+),
+scoped_node AS (
+    SELECT NULL::text AS scope, p.name FROM placed p
+  UNION ALL
+    SELECT p.directory, p.name FROM placed p
+),
+scoped_edge AS (
+    SELECT NULL::text AS scope, e.a, e.b FROM edge e
+  UNION ALL
+    SELECT pa.directory, e.a, e.b
+    FROM edge e
+    JOIN placed pa ON pa.name = e.a
+    JOIN placed pb ON pb.name = e.b AND pb.directory = pa.directory
+),
+sym AS (
+    SELECT scope, a, b FROM scoped_edge
+  UNION
+    SELECT scope, b, a FROM scoped_edge
+),
+reach(scope, root, at) AS (
+      SELECT s.scope, s.name, s.name FROM scoped_node s
+    UNION
+      SELECT r.scope, r.root, y.b
+      FROM reach r JOIN sym y ON y.scope IS NOT DISTINCT FROM r.scope AND y.a = r.at
+),
+comp AS (SELECT scope, root, min(at) AS component FROM reach GROUP BY scope, root)
+SELECT n.scope,
+       count(DISTINCT n.name)                                              AS n_nodes,
+       (SELECT count(*) FROM scoped_edge w
+         WHERE w.scope IS NOT DISTINCT FROM n.scope)                       AS m_edges,
+       count(DISTINCT c.component)                                         AS c_components,
+       count(DISTINCT n.name) - count(DISTINCT c.component)                AS rank_of_incidence,
+       (SELECT count(*) FROM scoped_edge w
+         WHERE w.scope IS NOT DISTINCT FROM n.scope)
+         - count(DISTINCT n.name) + count(DISTINCT c.component)            AS cycle_space_dim
+FROM      scoped_node n
+JOIN      comp c ON c.scope IS NOT DISTINCT FROM n.scope AND c.root = n.name
+GROUP BY  n.scope

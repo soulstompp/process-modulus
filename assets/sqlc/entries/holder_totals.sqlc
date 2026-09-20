@@ -1,27 +1,36 @@
-# EVERY HOLDER SHARE ON A LAYER, TOTALLED, WITH WHAT WOULD SUSPEND THE TOTAL. One row per layer
+# Every holder share on a layer, totalled, with what would suspend the total. One row per layer
 # naming at least one holder: how many, how many left the share unstated, the sum of the stated
 # ones at the mode, and the distinct units they were quoted in.
 #
-# ⭐⭐⭐ THREE FILES COMPUTED THIS γ SEPARATELY AND TWO OF THEM DISAGREED ABOUT ONE DOCUMENT.
-#    arithmetic/shares_sum.sqlc, arithmetic/shares_bounded.sqlc and checks/shares_do_not_sum.sqlc
-#    each grouped entries/holders.sqlc by (filing, layer) for the same two numbers. The two
-#    arithmetic sites report an unstated share as `suspended` and a foreign unit as
-#    `not comparable`; the check had only a `HAVING` for the first and NO branch at all for the
-#    second, so it would have summed across units and compared the total to |r|.
+# One γ for three callers
+#   arithmetic/shares_sum.sqlc, arithmetic/shares_bounded.sqlc and checks/shares_do_not_sum.sqlc
+#   each need entries/holders.sqlc grouped by (filing, layer) for the same two numbers. The two
+#   arithmetic sites report an unstated share as `suspended` and a foreign unit as
+#   `not comparable`. A check computing its own copy with only a `HAVING` for the first and no
+#   branch at all for the second sums across units and compares the total to |r|, and so disagrees
+#   with them about the same document.
 #
-# ⛔⛔ H IS A DISTRIBUTION OVER THE MAGNITUDE OF `r`, SO A SHARE IN ANOTHER UNIT IS NOT A SMALLER
-#    SHARE, IT IS NOT A SHARE OF THIS. That is why `share_units` is carried rather than assumed
-#    away: a caller compares it against its own layer's unit and decides. arithmetic/roster.sqlc
-#    records `guarded_by = NULL` for shares_sum, meaning no unit rule stands there at all, which
-#    made the check the only thing between that site and a wrong number.
+# A share in another unit is not a share of this
+#   H is a distribution over the magnitude of `r`, so a share in another unit is not a smaller
+#   share, it is not a share of this. That is why `share_units` is carried rather than assumed
+#   away: a caller compares it against its own layer's unit and decides. arithmetic/roster.sqlc
+#   records `guarded_by = NULL` for shares_sum, meaning no unit rule stands there at all, which
+#   makes the check the only thing between that site and a wrong number.
 #
-# ⭐ `sum()` SKIPS NULLS SILENTLY, so a layer where half the holders stated a share sums to half
-#   the truth and looks like an ordinary number. `unstated` is the column that makes that
-#   visible, and every caller has to read it before it reads the sum.
+# Read `unstated` before the sum
+#   `sum()` skips NULLs silently, so a layer where half the holders stated a share sums to half the
+#   truth and looks like an ordinary number. `unstated` is the column that makes that visible, and
+#   every caller has to read it before it reads the sum.
+#
+# A derived share is unstated, and says which equation it waits on
+#   `derived` counts the shares filed as `sharesSum`'s output, which are among the unstated ones:
+#   nothing here computes a share, so a caller suspends on them as on any unstated share, and names
+#   the identity rather than reading an output as an absence.
 -- entries/holders.sqlc folded to one row per layer.
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,
        count(*) FILTER (WHERE h.share_mode IS NULL)  AS unstated,
+       count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
        sum(h.share_low)                              AS shares_low,
        sum(h.share_mode)                             AS shares_mode,
        sum(h.share_high)                             AS shares_high,
