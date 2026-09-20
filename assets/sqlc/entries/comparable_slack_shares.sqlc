@@ -1,20 +1,34 @@
-# THE SLACK/SHARE PAIRS THAT CAN BE COMPARED AT ALL. One row per (layer, buffer, holder kind)
-# where BOTH the slack and the share state a unit.
+# The slack/share pairs that can be compared at all. One row per (layer, buffer, holder kind)
+# where both the slack and the share state a unit.
 #
-# ⭐⭐ A SLACK IS COMPARED AGAINST HOLDER SHARES, SO IT HAS TO BE IN THE SAME UNIT -- and a
-#    pair where either side declines to say is not a mismatch, it is an unanswerable
-#    question. Making the population "both stated" rather than "all pairs" is the difference
-#    between a rule that examines something and a rule that reports on rows it cannot read.
-# ⛔⛔⛔ IT IS THE ABSORBING BUFFER'S SLACK, NOT EVERY SLACK IN THE LAYER, AND THAT NARROWING IS
-#    THE POINT OF THE FILE. Join entries/slacks.sqlc on (filing, layer) alone and every holder
-#    is compared against all three of its layer's buffers. Two thirds of the pairs
-#    were a holder against a buffer that absorbs nothing of theirs, where a differing unit is no
-#    defect at all -- and checks/slack_unit_mismatch.sqlc, whose sentence is 'the unit of the
-#    shares IT BOUNDS', reported all of them as its examined population.
+# Both sides must state a unit
+#   A slack is compared against holder shares, so it has to be in the same unit, and a pair where
+#   either side declines to say is not a mismatch, it is an unanswerable question. Making the
+#   population "both stated" rather than "all pairs" is the difference between a rule that examines
+#   something and a rule that reports on rows it cannot read.
 #
-# ⭐ arithmetic/roster.sqlc names that rule the guard for `shares_bounded`, and that site joins
-#   the absorber. A guard wider than the site it guards is not a stricter guard; it is a guard
-#   answering a different question and counting the answer toward its own coverage.
+# The absorbing buffer's slack only
+#   It is the absorbing buffer's slack, not every slack in the layer, and that narrowing is the
+#   point of the file. Join entries/slacks.sqlc on (filing, layer) alone and every holder is
+#   compared against all three of its layer's buffers. Most of those pairs are a holder against a
+#   buffer that absorbs nothing of theirs, where a differing unit is no defect at all, and
+#   checks/slack_unit_mismatch.sqlc, whose sentence is 'the unit of the shares it bounds', would
+#   report all of them as its examined population.
+#
+# Every holder, not only the ones the slack bounds
+#   The slack bounds the served holders' shares, and a unit rule could stop at them. It does not,
+#   because a remainder's shares are a distribution of `|r|` and are all in the layer's unit
+#   whichever holder carries them, as is the slack. A slack and a share that disagree are a defect
+#   whether the share was served or went without, and the unserved holders are often the only
+#   ones a layer states, as `enterprise-contract`'s `capability` does.
+#
+# The guard covers its site, and the extra rows are unit checks
+#   arithmetic/roster.sqlc names this rule the guard for `shares_bounded`, and that site reads the
+#   absorbing buffer against the served holders under interference. On the buffer the guard is no
+#   wider than the site: a holder against a buffer that absorbs nothing of theirs is no defect, and
+#   counting it would be a guard answering a different question. On the holders it is wider on
+#   purpose, for the reason above, so every pair the site compares is checked here and the rest are
+#   checks of the unit claim alone, which reports/coverage.sqlc counts as this rule's own.
 -- entries/absorbing_slack.sqlc against pm:Remainder/pm:holder, each carrying its own unit.
 SELECT s.filing, s.layer, s.buffer, h.kind,
        s.unit AS slack_unit, h.share_unit

@@ -1,21 +1,23 @@
-# THE FUSIONS THAT OWE AN EXACT COMPOSED REMAINDER. One row per composed layer whose demand and
-# nameplate eliminations are BOTH answered, so `r_composed = F Phi r_parts - e_n + e_d` is a
-# closed expression rather than a warning.
+# The fusions that owe an exact composed remainder. One row per composed layer whose demand and
+# nameplate eliminations are both answered, so `r_composed = F Phi r_parts - e_n + e_d` is a closed
+# expression rather than a warning.
 #
-# ⭐⭐ IT IS A DIFFERENCE AND ITS LEFT OPERAND IS A FILE, WHICH IS THE POINT. A difference whose
-#    left side is spelled inline cannot be counted, so no law on algebra/roster.sqlc can govern
-#    it. `composition/fusions.sqlc` is the A, `composition/suspended_remainders.sqlc` is the B,
-#    and algebra/owed_remainder.sqlc counts them. See composition/carriable.sqlc, which exists
-#    for the same reason at the other difference.
+# A difference whose left operand is a file
+#   That is the point. A difference whose left side is spelled inline cannot be counted, so no law
+#   on algebra/roster.sqlc can govern it. `composition/fusions.sqlc` is the A,
+#   `composition/suspended_remainders.sqlc` is the B, and algebra/owed_remainder.sqlc counts them.
+#   See composition/carriable.sqlc, which exists for the same reason at the other difference.
 #
-# ⭐ IT IS THE REMAINDER'S TWIN OF composition/owed_equality.sqlc, WHICH IS THE DEMAND'S. That
-#   one suspends on `coalesce(s.quantity, 'demand') = 'demand'` alone. A remainder needs both
-#   arms, so the two populations differ and neither substitutes for the other.
+# The remainder's twin of the demand's
+#   It is the remainder's twin of composition/owed_equality.sqlc, which is the demand's. That one
+#   suspends on `coalesce(s.quantity, 'demand') = 'demand'` alone. A remainder needs both arms, so
+#   the two populations differ and neither substitutes for the other.
 #
-# ⛔ IT IS ALSO WHAT MAKES `coalesce(e, 0)` SOUND ONE JOIN LATER. Once the suspended fusions are
-#   out, an absent elimination means the composer LOOKED and found no double counting, which is
-#   the number zero. Inside the suspended set the same absence means nobody looked, and filling
-#   it would put a claim in the checker that the document declined to make.
+# It makes `coalesce(e, 0)` sound one join later
+#   Once the suspended fusions are out, an absent elimination means the composer looked and found
+#   no double counting, which is the number zero. Inside the suspended set the same absence means
+#   nobody looked, and filling it would put a claim in the checker that the document declined to
+#   make.
 -- composition/fusions.sqlc less composition/suspended_remainders.sqlc.
 SELECT f.filing, f.layer
 FROM      (

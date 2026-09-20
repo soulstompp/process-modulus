@@ -1,27 +1,28 @@
 -- §1  The remainder and its fit, read off the ranges rather than off a point.
+# One row per layer that files both a demand range and a nameplate range and classifies itself,
+# carrying both ranges and the sign the document filed, so the example can recompute `r = n - d`
+# in Rust and assert the two agree.
 #
-# EVERY LAYER THAT FILES BOTH A DEMAND RANGE AND A NAMEPLATE RANGE AND CLASSIFIES ITSELF.
-# One row per layer, carrying both ranges and the sign the document filed -- so the example
-# can recompute `r = n - d` in Rust and assert the two agree.
+# The interesting column is `sign!`
+#   Run it alone and look there: a `transition` is the case a two-member enumeration could not
+#   have named, and the corpus almost never reaches it.
 #
-# ⭐ RUN IT ALONE AND THE INTERESTING COLUMN IS `sign!`: one layer in the whole corpus is a
-#   `transition`, the case a two-member enumeration could not have named.
+# `evidence!` separates the corpus from the fixtures
+#   The split is the point. Every fixture layer reaching this query is a `transition`: they were
+#   written to exercise the state the corpus almost never reaches, so a census pooling them would
+#   report the rare case as common and the note would quote it.
 #
-# ⛔ `evidence!` SEPARATES THE CORPUS FROM THE FIXTURES AND THE SPLIT IS THE POINT. Every
-#   fixture layer reaching this query is a `transition` -- they were written to exercise the
-#   state the corpus almost never reaches -- so a census pooling them would report the rare
-#   case as common and the note would quote it.
+# The shared relation is layers/signed.sqlc
+#   It is also what the sign rule examines. The example and the checker therefore range over the
+#   same rows by construction rather than by two authors agreeing.
 #
-# ⛔ THE SHARED RELATION IS layers/signed.sqlc, WHICH IS ALSO WHAT THE SIGN RULE EXAMINES. The
-#   example and the checker therefore range over the same rows by construction rather than by
-#   two authors agreeing.
-#
-# ⛔⛔ `differenceable!` IS THE PIN THIS QUERY OWES ITS CALLER, AND WITHOUT IT THE EXAMPLE
-#    ACCUSES A CORRECT FILING. `r = n - d` read off the two filed totals is the remainder only
-#    where those totals were not both scaled by one conversion factor with width. Where they
-#    were, differencing counts that factor's spread twice and the range says `transition` about
-#    a layer that clears. composition/unsettled.sqlc names exactly those layers;
-#    composition/fused_remainders.sqlc carries their actual remainder.
+# The pin this query owes: `differenceable!`
+#   `differenceable!` is the pin this query owes its caller. Without it the example accuses a
+#   correct filing. `r = n - d` read off the two filed totals is the remainder only where those
+#   totals were not both scaled by one conversion factor with width. Where they were, differencing
+#   counts that factor's spread twice and the range says `transition` about a layer that clears.
+#   composition/unsettled.sqlc names exactly those layers; composition/fused_remainders.sqlc carries
+#   their actual remainder.
 -- layers/signed.sqlc, with the evidence axis from pm.filing.
 SELECT s.filing              AS "filing!",
        s.layer               AS "layer!",

@@ -1,10 +1,9 @@
-# THE DOCUMENTS THAT STIPULATE A STATE. One row per filing written to reach a combination
-# the corpus does not contain -- a `derived` sign, a partial elimination, an asserted
-# independence.
+# The documents that stipulate a state. One row per filing written to reach a combination the
+# corpus does not contain: a `derived` sign, a partial elimination, an asserted independence.
 #
-# ⭐ RUN THIS ONE ALONE TO SEE WHAT THE CORPUS IS MISSING. Every row here is a state
-#   somebody had to invent because no real filing produced it, so this relation is a
-#   readable list of the model's untested edges.
+# Run it alone to see what the corpus is missing
+#   Every row here is a state somebody had to invent because no real filing produced it, so this
+#   relation is a readable list of the model's untested edges.
 -- from pm.filing where evidence = 'stipulation'; see assets/fixtures/README.md.
 SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f

@@ -1,25 +1,28 @@
-# EVERY LAYER WHOSE PARTS ARE ALL IN ITS OWN DOCUMENT, WHICH IS THE `childLaneSet` POPULATION.
-# One row per composed layer that carries at least one LOCAL part.
+# Every layer whose parts are all in its own document, which is the `childLaneSet` population. One
+# row per composed layer that carries at least one local part.
 #
-# ⭐⭐⭐ THIS IS THE RECURSION EQUIVALENCE, AND BPMN ALREADY HAD THE ELEMENT. `Lane` carries an
-#    optional `childLaneSet` for SUB-PARTITIONS, and *a fusion's parts partition what they compose*
-#    is that sentence. Rendering a local fusion as a `subProcess` said it was an ACTIVITY inside a
-#    lane; it is a PARTITION of one, and the difference is that a subProcess leaves layer grain
-#    while a nested lane does not.
+# The recursion equivalence
+#   BPMN already had the element. `Lane` carries an optional `childLaneSet` for sub-partitions,
+#   and *a fusion's parts partition what they compose* is that sentence. Rendering a local fusion
+#   as a `subProcess` said it was an activity inside a lane; it is a partition of one, and the
+#   difference is that a subProcess leaves layer grain while a nested lane does not.
 #
-# ⭐⭐ THE GRAIN IS THE WHOLE POINT. A `callActivity` names a PROCESS, so a foreign part collapses
-#    layer-to-layer into filing-to-filing and the emitted graph can carry a cycle the model does
-#    not. A nested LANE is still a lane, keyed `(filing, layer)`, so nothing collapses and nothing
-#    can be invented. Every part this relation names is a part removed from that exposure.
+# The grain is the whole point
+#   A `callActivity` names a process, so a foreign part collapses layer-to-layer into
+#   filing-to-filing and the emitted graph can carry a cycle the model does not. A nested lane is
+#   still a lane, keyed `(filing, layer)`, so nothing collapses and nothing can be invented. Every
+#   part this relation names is a part removed from that exposure.
 #
-# ⛔ IT IS ONE ROW PER PARENT AND NOT PER PART, because a `childLaneSet` is one element however
-#   many lanes it holds. The child LANES are counted by the `lanes` law, which is unchanged: every
-#   layer is still exactly one lane, and nesting moves it rather than duplicating it.
+# One row per parent, not per part
+#   A `childLaneSet` is one element however many lanes it holds. The child lanes are counted by
+#   the `lanes` law, which is unchanged: every layer is still exactly one lane, and nesting moves
+#   it rather than duplicating it.
 #
-# ⚠️ A LANE HOLDING A `childLaneSet` MUST NOT ALSO HOLD `flowNodeRef`s, and that is checkable
-#   rather than assumed: measured over this corpus, no local fusion carries a draw or a foreign
-#   part, so no parent lane owes both. The day one does, the emission owes a decision and this
-#   header is where the reader should be told there was one.
+# A parent lane holds no `flowNodeRef`s
+#   A lane holding a `childLaneSet` must not also hold `flowNodeRef`s, and that is checkable rather
+#   than assumed: in this corpus no local fusion carries a draw or a foreign part, so no parent
+#   lane owes both. The day one does, the emission owes a decision, and this header is where the
+#   reader should be told there was one.
 -- diagrams/calls.sqlc pinned to local parts, folded to the parent lane that will hold them.
 SELECT DISTINCT c.composition, c.composed_layer
 FROM (

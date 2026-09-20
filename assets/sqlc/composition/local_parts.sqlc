@@ -1,16 +1,24 @@
-# THE PARTS A FILING DRAWS FROM ITS OWN STACK. One row per part whose notation is its own
+# The parts a filing draws from its own stack. One row per part whose notation is its own
 # composition's, so it names a layer that same document built.
 #
-# ⭐⭐⭐ XSD 1.0 CANNOT MAKE A KEYREF CONDITIONAL ON ANOTHER FIELD'S VALUE, which is why
-#    this set exists as a query rather than as a constraint. `composedLayerName` cannot be
-#    pointed at "the local stack, but only when the notation matches mine", so a local part
-#    naming a layer that is not there validates cleanly -- and so does a local part that
-#    closes a loop.
+# XSD 1.0 cannot make a keyref conditional
+#   XSD 1.0 cannot make a keyref conditional on another field's value, which is why this set exists
+#   as a query rather than as a constraint. `composedLayerName` cannot be pointed at "the local
+#   stack, but only when the notation matches mine", so a local part naming a layer that is not
+#   there validates cleanly, and so does a local part that closes a loop.
 #
-# ⛔⛔ AND THE LOOP IS THE ONE THAT WOULD HANG A READER. Layer A composed from B while B is
-#    composed from A is a document with no arithmetic in it: every figure depends on itself.
-#    A FOREIGN part cannot do that within one document; a local one can, and that is the
-#    cost of the capability. Both local-part rules examine exactly this relation.
+# It stops one step short of composition/parts.sqlc, on purpose
+#   `composition/parts.sqlc` resolves a part: it keeps the ones whose notation names a filing here
+#   AND whose layer is in that filing, and projects the resolved filing. This relation does the
+#   first half and not the second, so a part naming a layer its own document never built is still
+#   a row. It has to be: `checks/local_part_dangles.sqlc` is the rule about exactly those, and a
+#   relation that had already dropped them would leave that rule nothing to examine.
+#
+# The loop is the one that would hang a reader
+#   Layer A composed from B while B is composed from A is a document with no arithmetic in it:
+#   every figure depends on itself. A foreign part cannot do that within one document; a local one
+#   can, and that is the cost of the capability. Both local-part rules examine exactly this
+#   relation.
 -- pm.part where pm:ForeignId/notation equals the composition's own pm:notation.
 SELECT p.*
 FROM      (

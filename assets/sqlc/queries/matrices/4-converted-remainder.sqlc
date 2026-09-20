@@ -1,17 +1,17 @@
 -- §4  The one layer where a conversion factor is correlated with itself.
+# One row: the filed remainder of `merge-holding-composition/compute` beside the demand and
+# nameplate it would have been re-derived from. The example differences the second pair in Rust
+# and compares.
 #
-# ONE ROW: the filed remainder of `merge-holding-composition/compute` beside the demand and
-# nameplate it would have been re-derived from. The example differences the second pair in
-# Rust and compares.
+# One factor multiplies both sides
+#   That layer converts a US part metered per reserved card into GPU-hour, and one factor
+#   multiplies both sides. The nameplate and the demand therefore move together, so the two
+#   converted intervals are correlated, and differencing them as though they were independent
+#   counts the factor's spread twice.
 #
-# ⭐⭐ THAT LAYER CONVERTS A US PART METERED PER RESERVED CARD INTO GPU-HOUR, AND ONE FACTOR
-# MULTIPLIES BOTH SIDES. The nameplate and the demand therefore move TOGETHER, so the two
-# converted intervals are correlated, and differencing them as though they were independent
-# counts the factor's spread twice.
-#
-# ⛔ THEY AGREE AT THE MODE AND NOWHERE ELSE, because the mode is the one point where the
-# factor is a single number with no spread to double. Both figures are arithmetically correct;
-# only the filed one is the remainder.
+# They agree at the mode and nowhere else
+#   The mode is the one point where the factor is a single number with no spread to double. Both
+#   figures are arithmetically correct; only the filed one is the remainder.
 -- layers/filed_against_derived.sqlc at the one layer with a spread conversion factor.
 SELECT r.qty_low::float8      AS "q_low!",
        r.qty_mode::float8     AS "q_mode!",

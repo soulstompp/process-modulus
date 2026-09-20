@@ -1,23 +1,27 @@
-# EVERY DENOMINATOR THE CORPUS LEANS ON, AND HOW MANY CLAIMS LEAN ON IT. One row per stated
+# Every denominator the corpus leans on, and how many claims lean on it. One row per stated
 # denominator, with the kind its filer gave it and the elements it was filed under.
 #
-# ⭐⭐⭐ IT ASKS THE QUESTION OF EVERY CLAIM, WHICH IS THE POINT. `Claim` is the most reused type
-#    in the schema and under half the corpus's claims carry a denominator. Before
-#    `pm:StatedDenominator` the question was asked of `pm.nameplate` alone and reached a small
-#    fraction of them: demands, quanta, draws, shares and slacks all state a unit and nothing
-#    asked any of them. ⛔ `SELECT count(*) FILTER (WHERE denominator IS NOT NULL), count(*)
-#    FROM pm.claim` is the pair, and written by hand it is wrong in both halves.
+# It asks the question of every claim
+#   That is the point. `Claim` is the most reused type in the schema and under half the
+#   corpus's claims carry a denominator. Asked of `pm.nameplate` alone, the question reaches a
+#   small fraction of them: demands, quanta, draws, shares and slacks all state a unit, and a
+#   nameplate-only question asks none of them.
 #
-# ⭐⭐ THE `kind` COLUMN IS THE FILER'S ANSWER AND NOT A READER'S. `period` says the supply
-#    cycles through it, so the duty-cycle question has an answer; `each` says there is a
-#    denominator and it is still not a cycle. Derive both by splitting the unit string on a
-#    preposition and you can find the denominator but never classify it, while quietly
-#    asserting that `por` and `per` are one word.
+# `kind` is the filer's answer, not a reader's
+#   `period` says the supply cycles through it, so the duty-cycle question has an answer; `each`
+#   says there is a denominator and it is still not a cycle. Derive both by splitting the unit
+#   string on a preposition and you can find the denominator but never classify it, while
+#   quietly asserting that `por` and `per` are one word.
 #
-# ⛔ THE TWO EDITIONS STILL SIT AS SEPARATE ROWS, and now that is a finding rather than an
-#   evasion: `week` and `semana` are two filers' words for one cycle, nothing in the corpus
-#   says so, and a reader looking at these rows can see exactly what a translation table would
-#   have to assert. layers/absorber.sqlc is where that kind of assertion is allowed to live.
+# The two editions sit as separate rows
+#   That is a finding rather than an evasion: `week` and `semana` are two filers' words for one
+#   cycle, nothing in the corpus says so, and a reader looking at these rows can see exactly
+#   what a translation table would have to assert. layers/absorber.sqlc is where that kind of
+#   assertion is allowed to live.
+#
+# The numbers
+#   Run `SELECT count(*) FILTER (WHERE denominator IS NOT NULL), count(*) FROM pm.claim` for the
+#   pair; written by hand it is wrong in both halves.
 -- pm:Claim/pm:denominator, across every position that files one.
 SELECT c.denominator_kind AS kind,
        c.denominator,

@@ -1,20 +1,18 @@
-# WHO OWNS THE EDGE OF EACH RANGE. One row per answer, with how many claims gave it.
+# Who owns the edge of each range. One row per answer, with how many claims gave it.
 #
-# ⭐⭐ THE PAIR WITH narrowsWhen IS THE POINT: one says what would make a range smaller, the
-#    other says who owns the edge it would have to move. A negotiated bound moves by
-#    renegotiating; a bound that is simply where the measurements fell moves by measuring
-#    again; an intrinsic one does not move at all. Same width, three different courses of
-#    action, and only one of them is a purchase order.
+# The pair with narrowsWhen is the point
+#   One says what would make a range smaller, the other says who owns the edge it would have to
+#   move. A negotiated bound moves by renegotiating; a bound that is simply where the measurements
+#   fell moves by measuring again; an intrinsic one does not move at all. Same width, three
+#   different courses of action, and only one of them is a purchase order.
 #
-# ⛔ AS AN OPTIONAL BARE ENUMERATION IT WAS FILED ONCE ACROSS THE CORPUS. Required and typed, the
-#   answer that leads is that NOTHING sets the edge -- the range is simply where the
-#   measurements fell -- with `derived` close behind it, where the model ALREADY states the
-#   author in a sibling element and had no way to point at it. Neither is a finding the single
-#   column could have produced.
-#   ⚠️ `derived` LED WHEN THIS WAS WRITTEN AND THE COMMENT SAID SO AS THOUGH IT WERE SETTLED.
-#     The corpus grew and `none` passed it, with the table one line below still printing the
-#     refutation. A count in a comment is a claim with a date on it; prefer the shape of the
-#     answer to its rank, or read the number off the run.
+# What a required, typed answer shows
+#   As an optional bare enumeration this was almost never filed. Required and typed, two answers
+#   stand out that the single column could not have produced: `none`, where nothing sets the edge
+#   and the range is simply where the measurements fell, and `derived`, where the model already
+#   states the author in a sibling element and had no way to point at it. Which of the two leads
+#   moves with the corpus, so prefer the shape of the answer to its rank; run this report for the
+#   order.
 -- pm:Claim/pm:boundOrigin, over the corpus.
 SELECT e.who_owns_the_edge, count(*) AS claims
 FROM (

@@ -1,37 +1,42 @@
-# THE LAYERS WHOSE WINDOW PERMITS DERIVING A TIME SLACK FROM A CLEARANCE. One row per
-# nameplate whose duty cycle leaves the spare spread evenly across the denominator.
+# The layers whose window permits deriving a time slack from a clearance. One row per nameplate
+# whose duty cycle leaves the spare spread evenly across the denominator.
 #
-# ⭐⭐ THIS IS THE POSITIVE FORM OF A RULE USUALLY WRITTEN AS A NEGATION, and the positive
-#    form is the one that reads. `timeSlack = q / clearance` assumes the spare is spread
-#    evenly across the denominator. A window that is a PROPER PART of the period says it is
-#    not -- the machine runs 02:00 to 05:00 -- so the division is over a base that does not
-#    exist. `unmeasured` says nobody knows whether it is, which is an assumption wearing a
-#    computation's clothes.
-#    ⛔ So exactly two REASONS license the derivation -- "it runs the whole period" and "the
-#      question has no denominator" -- across however many layers file one of them. Two
-#      answers, not two documents.
+# The positive form of a negated rule
+#   This is the positive form of a rule usually written as a negation, and the positive form is
+#   the one that reads. A derived time slack is the clearance, and reading it as demand that
+#   survives being held assumes the spare is spread evenly across the denominator: only then is
+#   the wait it implies, `q / clearance`, the wait anybody has. A window that is a proper part of
+#   the period says it is not (the machine runs 02:00 to 05:00), so the average is over a base that
+#   does not exist. `unmeasured` says nobody knows whether it is, which is an assumption wearing a
+#   computation's clothes. Proof: `src/proofs/README.md`, entry `clearance_is_not_a_duration`.
 #
-# ⛔⛔ AND THE FIRST OF THE TWO MUST NOT BE READ OUT OF AN ABSENCE, WHICH IS WHY THIS FILE
-#    EXISTS. `window_absent IN ('none', 'notApplicable')` reads `none` as
-#    "the duty fraction is one" -- a number, filed as though it were a nothing. The absence
-#    arm carries no size and no origin, so a line that cannot be stopped and a line somebody
-#    staffed round the clock licensed this derivation identically and neither said so. Now
-#    the licence is read off a FILED window, and the two spellings collapse into one.
+# Two reasons, not two documents
+#   So exactly two reasons license the derivation, "it runs the whole period" and "the question
+#   has no denominator", across however many layers file one of them. Two answers, not two
+#   documents.
 #
-# ⭐ THE PERIOD ARRIVES BY A SEMI-JOIN, WHICH IS NOW A CHOICE RATHER THAN A GUARD. This asks
-#    "is there a period equal to this window's unit" and uses no value from the answer, so
-#    `EXISTS` states the question it means. ⚠️ It is also a guard. Let `pm.claim.owns` carry an
-#    element NAME rather than a PATH and `Demand/amount` and `Nameplate/amount` are one
-#    `pm:amount` to `units/with_a_period.sqlc`, which then returns two rows per layer: a plain
-#    join fans out, a semi-join hides it. `owns` is a path, and the relation is one row per
-#    layer.
+# The first reason is never read out of an absence
+#   The first of the two must not be read out of an absence, which is why this file exists.
+#   `window_absent IN ('none', 'notApplicable')` reads `none` as "the duty fraction is one": a
+#   number, filed as though it were a nothing. The absence arm carries no size and no origin, so
+#   read that way a line that cannot be stopped and a line somebody staffed round the clock
+#   license this derivation identically, and neither says so. The licence is read off a filed
+#   window, and the two spellings collapse into one.
 #
-# ⭐⭐⭐ A WHOLE PERIOD IS QUOTED AS `1` IN THE PERIOD'S OWN UNIT, AND THAT IS THE WHOLE
-#    TRICK. `1 week` against a period of `week` is a duty fraction of one you can read
-#    without dividing anything; `5 days` against the same period is a proper part. No unit
-#    conversion happens here on purpose -- `window_not_applicable_on_a_rate` records what
-#    happened the last time this directory guessed at units in SQL, and a licence decided by
-#    a `LIKE` is a reader's judgement wearing a query's clothes.
+# The period arrives by a semi-join
+#   This asks "is there a period equal to this window's unit" and uses no value from the answer,
+#   so `EXISTS` states the question it means. It is also a guard. Let `pm.claim.owns` carry an
+#   element name rather than a path and `Demand/amount` and `Nameplate/amount` are one `pm:amount`
+#   to `units/with_a_period.sqlc`, which then returns two rows per layer: a plain join fans out, a
+#   semi-join hides it. `owns` is a path, and the relation is one row per layer.
+#
+# A whole period is quoted as `1`
+#   A whole period is quoted as `1` in the period's own unit, and that is the whole trick. `1 week`
+#   against a period of `week` is a duty fraction of one you can read without dividing anything;
+#   `5 days` against the same period is a proper part. No unit conversion happens here on
+#   purpose: `window_not_applicable_on_a_rate` records what happened when this directory guessed
+#   at units in SQL, and a licence decided by a `LIKE` is a reader's judgement wearing a query's
+#   clothes.
 -- pm:Divisibility/window: absent notApplicable, or filed as one whole period.
 SELECT w.filing, w.layer,
        CASE WHEN w.window_absent IS NOT NULL THEN 'the question has no denominator'

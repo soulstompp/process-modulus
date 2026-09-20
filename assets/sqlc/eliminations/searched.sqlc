@@ -1,13 +1,16 @@
-# DID ANYBODY LOOK FOR DOUBLE COUNTING ACROSS THIS FUSION'S PARTS? One row per composed layer
+# Did anybody look for double counting across this fusion's parts? One row per composed layer
 # that was asked, carrying what it answered.
 #
-# ⭐⭐⭐ THE ANSWER DECIDES WHICH ARITHMETIC IS OWED, which is what raises this above bookkeeping.
-#    `none` or `notApplicable`: the composed figure must equal the sum of its converted parts
-#    EXACTLY. `unmeasured`: no equality is owed at all, and a checker reporting one is reporting
-#    about nothing. eliminations/unsearched.sqlc is that third state made a relation.
+# The answer decides which arithmetic is owed
+#   That is what raises this above bookkeeping. `none` or `notApplicable`: the composed figure must
+#   equal the sum of its converted parts exactly. `unmeasured`: no equality is owed at all, and a
+#   checker reporting one is reporting about nothing. eliminations/unsearched.sqlc is that third
+#   state made a relation. There is no fourth: `asrt:StatedEliminations` has no derivation arm,
+#   because whether anybody looked is nobody's output, and `pm.elimination_search` refuses one too.
 #
-# ⛔ A LIST CHECKED CLEAN AND A LIST NOBODY LOOKED AT ARE THE SAME BYTES AND THEY OWE OPPOSITE
-#   ARITHMETIC. The eliminations table cannot tell them apart; this can.
+# Clean and unexamined look the same
+#   A list checked clean and a list nobody looked at are the same bytes, and they owe opposite
+#   arithmetic. The eliminations table cannot tell them apart; this can.
 -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
 SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
 FROM pm.elimination_search es

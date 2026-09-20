@@ -1,18 +1,20 @@
-# A(l), THE ABSORBER MAP: which of the three structural buffers each layer says took up its
-# remainder. One row per layer that names an absorber AND whose named term a reader has
-# mapped. A layer citing a taxonomy nobody has mapped has NO ROW, and that is correct --
-# the question is unanswerable, not answered zero.
+# A(l), the absorber map: which of the three structural buffers each layer says took up its
+# remainder. One row per layer that names an absorber and whose named term a reader has mapped.
 #
-# ⛔⛔ THE JOIN THROUGH `buffer_term` IS A READER'S ASSERTION AND NOT A DOCUMENT'S. The
-#    absorber travels as a taxonomy plus a value, so a Portuguese filing citing a translated
-#    edition of Factory Physics says `capacidade`. That `capacidade` IS `capacity` is a
-#    judgement somebody made; no filing says it. Deleting the mapping row makes the slack
-#    rules stop answering for that filing rather than answer wrongly, which is the behaviour
-#    worth having.
+# An unmapped taxonomy has no row
+#   A layer citing a taxonomy nobody has mapped has no row, and that is correct: the question is
+#   unanswerable, not answered zero.
 #
-# ⭐ THIS IS WHY THE ABSORBER IS NOT AN ENUM. A restated value set is a fork, and a fork
-#   drifts with nothing able to notice. Declared as an enum, this schema does not load the
-#   corpus at all: `capacidade` is not one of its members.
+# The mapping is a reader's assertion
+#   The join through `buffer_term` is a reader's assertion and not a document's. The absorber
+#   travels as a taxonomy plus a value, so a Portuguese filing citing a translated edition of
+#   Factory Physics says `capacidade`. That `capacidade` is `capacity` is a judgement somebody
+#   made; no filing says it. Deleting the mapping row makes the slack rules stop answering for that
+#   filing rather than answer wrongly, which is the behaviour worth having.
+#
+# Why the absorber is not an enum
+#   A restated value set is a fork, and a fork drifts with nothing able to notice. Declared as an
+#   enum, this schema does not load the corpus at all: `capacidade` is not one of its members.
 -- pm:Remainder/absorber, resolved through pm.buffer_term.
 SELECT l.filing, l.layer,
        l.absorber_taxonomy AS taxonomy,

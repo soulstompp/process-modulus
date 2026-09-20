@@ -1,19 +1,19 @@
-# WHAT A SET OF DOCUMENTS DOES NOT ANSWER, BROKEN DOWN BY WHY. One row per (question, reason),
+# What a set of documents does not answer, broken down by why. One row per (question, reason),
 # with how many times that pairing occurs across whichever documents the caller chose.
 #
-# ⭐⭐⭐ THE SCOPE IS A SLOT, AND THAT IS THE POINT OF THE FILE. "Some relation, over some set
-#    of documents" is the shape of every finding here, and choosing the document set is the
-#    single decision most easily forgotten -- forget it and a report about the world quietly
-#    counts the stipulations written to exercise it. A slot cannot be forgotten: a caller that
-#    supplies no `@scope` does not compose at all. The choice moves from a habit into the
-#    build.
+# The scope is a slot
+#   That is the point of the file. "Some relation, over some set of documents" is the shape of
+#   every finding here, and choosing the document set is the single decision most easily
+#   forgotten: forget it and a report about the world quietly counts the stipulations written to
+#   exercise it. A slot cannot be forgotten, because a caller that supplies no `@scope` does not
+#   compose at all. The choice moves from a habit into the build.
 #
-# ⭐⭐ AND THE TWO ANSWERS ARE DIFFERENT QUESTIONS, WHICH IS WHY BOTH CALLERS EXIST.
-#    Over the corpus, this reads as WHAT NOBODY HAS MEASURED YET -- the honest map of the
-#    evidence's edges, and where the next instrument is worth building.
-#    Over the fixtures, it reads as WHAT THIS REPOSITORY HAD TO INVENT -- every absence a
-#    stipulation had to assert because no real filing produced it, which is the list of states
-#    the model can handle and has never actually met.
+# Two callers, two questions
+#   Over the corpus, this reads as what nobody has measured yet: the honest map of the evidence's
+#   edges, and where the next instrument is worth building. Over the fixtures, it reads as what
+#   this repository had to invent: every absence a stipulation had to assert because no real
+#   filing produced it, which is the list of states the model can handle and has never actually
+#   met.
 -- epistemics/absences.sqlc, restricted by the caller's @scope.
 SELECT a.question, a.reason, count(*) AS times
 FROM (

@@ -1,22 +1,29 @@
-# EVERY LAYER ANY DOCUMENT DECLARES, WHATEVER IT WENT ON TO SAY ABOUT IT. One row per
+# Every layer any document declares, whatever it went on to say about it. One row per
 # (filing, layer): the roster, before any of the vectors decide whether they have an entry for it.
 #
-# ⭐⭐⭐ EVERY OTHER RELATION IN THIS DIRECTORY IS A FILTER ON THIS ONE, AND THIS IS WHERE THE
-#    THING BEING FILTERED HAS ITS NAME. `layers/demand.sqlc` keeps the layers with a stated
-#    demand, `layers/nameplate.sqlc` those with a stated amount, `layers/absorber.sqlc` those
-#    whose taxonomy a reader has mapped. Each is correct, and each is a sparse reading of one
-#    population -- and without a name for that population a caller needing existence alone
-#    reaches into `pm.layer` raw, projecting no column of it, because there is nothing to
-#    compose.
+# Every other relation here filters this one
+#   Every other relation in this directory is a filter on this one, and this is where the thing
+#   being filtered has its name. `layers/demand.sqlc` keeps the layers with a stated demand,
+#   `layers/nameplate.sqlc` those with a stated amount, `layers/absorber.sqlc` those whose
+#   taxonomy a reader has mapped. Each is correct, and each is a sparse reading of one population;
+#   without a name for that population, a caller needing existence alone reaches into `pm.layer`
+#   raw, projecting no column of it, because there is nothing to compose.
 #
-# ⛔ EXISTENCE IS NOT A COLUMN, AND THAT IS WHY THIS FILE LOOKS EMPTY. It carries the key and
-#   nothing else on purpose. A caller wanting a layer's demand composes layers/demand.sqlc; a
-#   caller asking only whether the layer IS composes this. `composition/parts.sqlc` and
-#   `checks/local_part_dangles.sqlc` ask exactly that question, once positively and once as its
-#   complement, and neither could name what it was asking of.
+# Existence is not a column
+#   That is why this file looks empty. It carries the key and nothing else on purpose. A caller
+#   wanting a layer's demand composes layers/demand.sqlc; a caller asking only whether the layer
+#   is composes this. `checks/local_part_dangles.sqlc` asks the complement, left-joining this
+#   relation to find the local parts that name no layer.
 #
-# ⭐ RUN IT ALONE AND IT IS THE DENOMINATOR FOR EVERY COVERAGE FIGURE IN THE REPOSITORY. Any
-#   "so many of the lumpy layers" needs its denominator from somewhere, and this is where.
+# A denominator, never a membership test
+#   The positive question, whether one named layer exists, is asked of `pm.layer` directly, as
+#   `composition/parts.sqlc` does. Inner-joining this relation for a membership test would hand the
+#   whole dimension to every consumer downstream; `algebra/dimension_use.sqlc` states that rule and
+#   holds every parent that inner-joins this file to a declared exception.
+#
+# The denominator for every coverage figure
+#   Run it alone and it is the denominator for every coverage figure in the repository. Any "so
+#   many of the lumpy layers" needs its denominator from somewhere, and this is where.
 -- pm:Stack/pm:layer, keyed and nothing more.
 SELECT l.filing, l.layer
 FROM pm.layer l

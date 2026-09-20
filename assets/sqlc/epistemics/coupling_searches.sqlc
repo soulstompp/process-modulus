@@ -1,19 +1,22 @@
-# DID ANYBODY LOOK FOR COUPLINGS BETWEEN THIS STACK'S LAYERS? One row per filing that was asked,
+# Did anybody look for couplings between this stack's layers? One row per filing that was asked,
 # carrying what it answered and the note that argues for the answer.
 #
-# ⭐⭐⭐ A STACK WITH NO COUPLINGS FILED HAS EITHER INDEPENDENT LAYERS OR NOBODY WHO LOOKED, and
-#    an empty coupling table renders those two identically. They are opposite claims: one
-#    licenses treating each remainder on its own, the other says nothing at all. This is where
-#    the difference lives.
+# Independent layers, or nobody who looked
+#   A stack with no couplings filed has either independent layers or nobody who looked, and an
+#   empty coupling table renders those two identically. They are opposite claims: one licenses
+#   treating each remainder on its own, the other says nothing at all. This is where the difference
+#   lives.
 #
-# ⛔ A NULL `answer` IS NOT AN ABSENCE. It means the document filed real couplings, so the
-#   search question is answered by the content rather than by a reason.
+# A null `answer` is not an absence
+#   It means the document filed real couplings, so the search question is answered by the content
+#   rather than by a reason.
 #
-# ⭐⭐ IT WAS HALF OF A UNION THAT FIVE CALLERS TOOK BACK APART. epistemics/searches.sqlc built
-#    the two search kinds into one relation with a `looked_for` string, and then every caller
-#    that wanted one of them filtered on that string -- entries/coupling_presence.sqlc,
-#    reports/independence_tested.sqlc, and two relations that gave up and read pm.coupling_search
-#    raw. A union whose members were never files is a union nobody can compose half of.
+# Its own file, so the union can be taken half at a time
+#   epistemics/searches.sqlc unions this with the elimination search. Built inline as one relation
+#   with a `looked_for` string, every caller wanting one kind of search has to filter on that
+#   string, and callers give up and read pm.coupling_search raw. entries/coupling_presence.sqlc and
+#   reports/independence_tested.sqlc compose this half directly. A union whose members were never
+#   files is a union nobody can compose half of.
 -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs

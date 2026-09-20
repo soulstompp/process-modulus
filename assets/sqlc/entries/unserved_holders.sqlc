@@ -1,16 +1,16 @@
-# THE TWO KINDS THAT BEAR DEMAND NOBODY SERVED. One row per holder filed as `customer` or
+# The two kinds that bear demand nobody served. One row per holder filed as `customer` or
 # `unrealised`.
 #
-# ⭐⭐ THIS RELATION IS USED THREE WAYS AND THAT IS WHY IT IS A FILE. As a SEMI-JOIN it says
-#    "this layer admits somebody went unserved" -- which under a clearance fit is a
-#    contradiction, since a supply above demand everywhere leaves nothing unmet. As an
-#    ANTI-JOIN it says "this layer admits nobody", which under a measured-zero capacity and a
-#    live exposure is a filing with a hole in it. Aggregated it is the quantity that bounds
-#    the exposure. One relation, a semi-join, an anti-join and a sum.
+# Used three ways, so it is a file
+#   As a semi-join it says "this layer admits somebody went unserved", which under a clearance fit
+#   is a contradiction, since a supply above demand everywhere leaves nothing unmet. As an
+#   anti-join it says "this layer admits nobody", which under a measured-zero capacity and a live
+#   exposure is a filing with a hole in it. Aggregated it is the quantity that bounds the exposure.
+#   One relation, a semi-join, an anti-join and a sum.
 #
-# ⛔ THE OTHER THREE KINDS ARE NOT THE COMPLEMENT OF THIS ONE. `booked`, `counterparty` and
-#   `people` all name somebody who ABSORBED the remainder; these two name demand that was
-#   never met at all. That is a difference in kind, not in party.
+# The other three kinds are not its complement
+#   `booked`, `counterparty` and `people` all name somebody who absorbed the remainder; these two
+#   name demand that was never met at all. That is a difference in kind, not in party.
 -- pm:HolderKind values `customer` and `unrealised`.
 SELECT h.*
 FROM (

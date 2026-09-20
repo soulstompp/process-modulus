@@ -1,18 +1,21 @@
-# EVERY PART REFERENCE AS FILED, BESIDE WHETHER IT LANDS ON ANYTHING. One row per part,
+# Every part reference as filed, beside whether it lands on anything. One row per part,
 # `violates` where the notation or the layer resolves to nothing.
 #
-# ⭐⭐ THE RULE: a part reference resolves to a filing that is here, and to a layer in it.
-#    This is a foreign key across documents, which is why no grammar can enforce it -- XSD 1.0
-#    cannot follow a cross-document reference, so it never had to resolve one.
+# A part reference resolves
+#   The rule: a part reference resolves to a filing that is here, and to a layer in it. This is a
+#   foreign key across documents, which is why no grammar can enforce it: XSD 1.0 cannot follow
+#   a cross-document reference, so it never had to resolve one.
 #
-# ⛔⛔ AND IT IS ONLY CHECKABLE BECAUSE A READER ASSERTED THE NOTATION-TO-DOCUMENT MAPPING.
-#    Without a filing declaring its own notation, a part reference cannot be resolved from the
-#    corpus even in principle, and this conformance rule would presuppose a lookup the model
-#    does not provide. Writing the query is what makes that visible.
+# Checkable only because a reader asserted the mapping
+#   It is only checkable because a reader asserted the notation-to-document mapping. Without a
+#   filing declaring its own notation, a part reference cannot be resolved from the corpus even
+#   in principle, and this conformance rule would presuppose a lookup the model does not
+#   provide. Writing the query is what makes that visible.
 #
-# ⭐ THE VIOLATION IS THE DIFFERENCE BETWEEN TWO NAMED RELATIONS -- every part, minus the parts
-#   that resolve. An anti-join, not a NOT EXISTS, because "the parts that resolve" is the
-#   object with a life of its own and this rule is what falls out of it.
+# A difference between two named relations
+#   The violation is every part, minus the parts that resolve. An anti-join, not a NOT EXISTS,
+#   because "the parts that resolve" is the object with a life of its own and this rule is what
+#   falls out of it.
 -- asrt:Part/pm:ForeignId against pm.filing_identity and pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

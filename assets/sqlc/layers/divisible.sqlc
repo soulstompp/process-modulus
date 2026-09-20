@@ -1,11 +1,11 @@
-# THE LUMPY LAYERS WHOSE QUANTUM CAN ACTUALLY DIVIDE SOMETHING. One row per lumpy layer
-# whose quantum is strictly positive.
+# The lumpy layers whose quantum can actually divide something. One row per lumpy layer whose
+# quantum is strictly positive.
 #
-# ⛔ A QUANTUM OF ZERO DIVIDES NOTHING, so "the nameplate is a whole multiple of the quantum"
-#   has no population on such a layer -- every number is a multiple of zero or none is,
-#   depending which convention you reach for, and neither answer is about the supply. This
-#   relation is the honest denominator for that rule, and counting all lumpy layers instead
-#   inflates it with rows the arithmetic cannot touch.
+# A quantum of zero divides nothing
+#   So "the nameplate is a whole multiple of the quantum" has no population on such a layer:
+#   every number is a multiple of zero or none is, depending which convention you reach for, and
+#   neither answer is about the supply. This relation is the honest denominator for that rule, and
+#   counting all lumpy layers instead inflates it with rows the arithmetic cannot touch.
 -- pm:LumpyQuantum/size, strictly positive.
 SELECT l.*
 FROM (

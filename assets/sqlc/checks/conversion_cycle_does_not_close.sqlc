@@ -1,49 +1,54 @@
-# EVERY CYCLE IN THE UNIT GRAPH, BESIDE THE PRODUCT OF THE FACTORS ROUND IT. One row per cycle,
+# Every cycle in the unit graph, beside the product of the factors round it. One row per cycle,
 # `violates` where one does not lie inside that product.
 #
-# ⭐⭐ THE RULE: convert a quantity all the way round a cycle of units and you must be able to
-#    get back what you started with. `units/conversions.sqlc` reads each fusion part that
-#    carries a factor as an edge from its part layer's unit to its composed layer's unit, so
-#    the corpus is a graph and this walks it.
+# A cycle of conversions must come back
+#   The rule: convert a quantity all the way round a cycle of units and you must be able to get
+#   back what you started with. `units/conversions.sqlc` reads each fusion part that carries a
+#   factor as an edge from its part layer's unit to its composed layer's unit, so the corpus is a
+#   graph and this walks it.
 #
-# ⛔⛔⛔ CONTAINMENT AND NOT EQUALITY, AND ARITHMETIC FORCES IT RATHER THAN TASTE. Two separate
-#    reasons, and both are worth knowing.
+# Containment, not equality
+#   Arithmetic forces it rather than taste, for two separate reasons, and both are worth knowing.
 #
-#    ⭐ THE FACTORS ARE INTERVALS. `merge-holding-composition` files its month as
-#      [672, 720, 744] and says why: "a month is not 720 hours; it is [672, 720, 744] and which
-#      one you got depends on which month." Three intervals multiplied give an interval, so the
-#      most a receiver can ask is that ONE IS INSIDE IT.
+# The factors are intervals
+#   `merge-holding-composition` files its month as [672, 720, 744] and says why: "a month is not
+#   720 hours; it is [672, 720, 744] and which one you got depends on which month." Three
+#   intervals multiplied give an interval, so the most a receiver can ask is that one is inside
+#   it.
 #
-#    ⭐ AND NO DOCUMENT COULD CLOSE IT EXACTLY EVEN AT THE MODE. Every cycle in this graph runs
-#      through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal has only twos and fives under
-#      the line, so no pair of filable decimals multiplies to 1/720. The nine is the obstruction
-#      and it is a fact about the corpus's own calendar rather than about anybody's care.
+# No document could close it exactly, even at the mode
+#   Every cycle in this graph runs through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal
+#   has only twos and fives under the line, so no pair of filable decimals multiplies to 1/720.
+#   The nine is the obstruction, and it is a fact about the corpus's own calendar rather than
+#   about anybody's care. Proof: `src/proofs/README.md`, entry `cycle_closes`.
 #
-# ⚠️⚠️ THE WIDTH IS THE DEPENDENCY PROBLEM AND NOT MEASUREMENT ERROR. The month that turns
-#    cards into card-hours is the SAME month that turns node-hours back into cards. Multiplying
-#    the intervals treats them as two independent months and spans nine per cent either way; a
-#    receiver who knew they were one month would get exactly one. Third site in this repository
-#    for the same fact, after `merge-holding-composition/compute`'s shares and the composed
-#    remainder beside them. ⛔ SO A TIGHTER RULE WOULD ACCUSE A CORRECT FILING, which is why
-#    this one is as loose as it is.
+# The width is the dependency problem
+#   It is not measurement error. The month that turns cards into card-hours is the same month
+#   that turns node-hours back into cards. Multiplying the intervals treats them as two
+#   independent months and spans nine per cent either way; a receiver who knew they were one
+#   month would get exactly one. This is the third site in this repository for the same fact,
+#   after `merge-holding-composition/compute`'s shares and the composed remainder beside them.
+#   So a tighter rule would accuse a correct filing, which is why this one is as loose as it is.
 #
-# ⭐ ONE ROW PER CYCLE AND NOT PER ROTATION. A three-edge cycle is found three times, once from
-#   each unit; the walk keeps the rotation that starts at the smallest unit so a reader counts
-#   cycles rather than starting points.
-# ⛔⛔ THERE IS NO DEPTH BOUND HERE AND THERE WAS ONE. `WHERE w.depth < 6` stood beside the path
-#    guard below, and composition/descent.sqlc's own header says why that is wrong: *a depth bound
-#    is a guess about how deep a legitimate composition goes*. It was also REDUNDANT: the guard
-#    already refuses to revisit a non-start unit, so the walk terminates on its own, bounded by
-#    the number of units there are.
+# One row per cycle, not per rotation
+#   A three-edge cycle is found three times, once from each unit; the walk keeps the rotation that
+#   starts at the smallest unit so a reader counts cycles rather than starting points.
 #
-# ⭐ MEASURED THREE WAYS BEFORE REMOVING IT, AND IT CHANGED NOTHING. The verdict is identical with
-#   the bound, without it, and with it tightened BELOW the graph's own depth. The walk produces
-#   the same rows at bound 6 and at bound 20, reaching the same depth either way, in the same two
-#   milliseconds. It pruned nothing.
+# No depth bound
+#   A depth bound beside the path guard would be wrong, and composition/descent.sqlc's own header
+#   says why: *a depth bound is a guess about how deep a legitimate composition goes*. It would
+#   also be redundant: the guard already refuses to revisit a non-start unit, so the walk
+#   terminates on its own, bounded by the number of units there are.
 #
-# ⛔ WHAT IT ADDED WAS A SILENT BLIND SPOT. The unit count bounds any acyclic path, and a cycle
-#   longer than the bound would have been missed with NO vacuum verdict and a clean pass, which is
-#   worse than ⛔ VACUOUS: coverage would still show a row examined and passing.
+# What a bound would add is a silent blind spot
+#   The unit count bounds any acyclic path, and a cycle longer than the bound would be missed
+#   with no vacuum verdict and a clean pass. That is worse than vacuous: coverage would still show
+#   a row examined and passing.
+#
+# Probe
+#   Put `WHERE w.depth < 6` beside the path guard, then raise it to 20, then tighten it below the
+#   graph's own depth. The verdict must be identical in every case and to the unbounded walk; a
+#   bound here prunes nothing.
 -- units/conversions.sqlc walked until a unit repeats; the product against one.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

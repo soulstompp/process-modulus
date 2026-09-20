@@ -1,11 +1,15 @@
 -- §8  Layer pairs another document watched move together, held by a filing that has not looked.
+# One row per layer pair another document watched move together, held by a filing that has not
+# looked, with that filing's own search and extent.
 #
-# ⛔⛔⛔ A REFERRAL, NEVER A VIOLATION. A filing is not the system. Nobody named here filed
-# anything wrong, and `enterprise-contract` says so itself: its coupling search is `unmeasured`
-# and the note explains that refutation.xml observed the same two layers in a later quarter, so
-# the absence is the honest prior state rather than a claim of independence.
+# A referral, never a violation
+#   A filing is not the system. Nobody named here filed anything wrong, and `enterprise-contract`
+#   says so itself: its coupling search is `unmeasured` and the note explains that refutation.xml
+#   observed the same two layers in a later quarter, so the absence is the honest prior state
+#   rather than a claim of independence.
 #
-# ⭐ THE AUTHOR KNEW AND WROTE IT IN PROSE. No query found it until this one.
+# The author knew and wrote it in prose
+#   No query found it until this one.
 -- entries/spillovers.sqlc, as referrals rather than findings.
 SELECT s.borne_by                       AS "borne_by!",
        s.from_layer                     AS "from_layer!",

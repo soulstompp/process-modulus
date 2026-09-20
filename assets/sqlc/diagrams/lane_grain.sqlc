@@ -1,32 +1,37 @@
-# EVERY REFERENCE INTO THE LAYER DIMENSION, WITH WHAT THE REFERRING KEY ADDS TO IT. One row per
+# Every reference into the layer dimension, with what the referring key adds to it. One row per
 # foreign key into `pm.layer`, and `whole` where it names the layer entire.
 #
-# ⭐⭐⭐ THIS IS WHAT A PARTITION ACTUALLY LOOKS LIKE, AND IT IS THE PRECONDITION OF "A LAYER IS A
-#    LANE". `(filing, layer)` is a partition cell because it is the COARSEST KEY THAT NOTHING
-#    REFINES: every table mentioning a layer either EXTENDS it with a second dimension
-#    (`slack` + buffer, `holder` + kind, `draw`/`induction` + operation) or RELATES two whole
-#    layers (`coupling`, `part`). Not one of them names a PIECE of a layer. If any did, a lane
-#    would have to be that finer thing and the whole mapping would move down a level.
+# What a partition looks like
+#   This is the precondition of "a layer is a lane". `(filing, layer)` is a partition cell because
+#   it is the coarsest key that nothing refines: every table mentioning a layer either extends it
+#   with a second dimension (`slack` + buffer, `holder` + kind, `draw`/`induction` + operation) or
+#   relates two whole layers (`coupling`, `part`). Not one of them names a piece of a layer. If any
+#   did, a lane would have to be that finer thing and the whole mapping would move down a level.
 #
-# ⭐⭐ AND IT IS WHY EMITTING ONE LANE SET IS A SOUND ELIMINATION RATHER THAN A SIMPLIFICATION.
-#    D and N are two fact tables on ONE conformed dimension, so their lane sets are two
-#    enumerations of the same 51 cells. `|D lanes ∪ N lanes| = |D| + |N| - e` with `e` the cells
-#    themselves, which is the fold with the overlap DERIVED rather than filed: the overlap
-#    of two lane sets IS the layer set, and the layer set is a relation with a name.
+# One lane set is a sound elimination
+#   That is why emitting one lane set is a sound elimination rather than a simplification. D and N
+#   are two fact tables on one conformed dimension, so their lane sets are two enumerations of the
+#   same cells. Writing `lanes(D)` for the lanes D's rows fall into,
+#   `|lanes(D) ∪ lanes(N)| = |lanes(D)| + |lanes(N)| - e` with `e` the lanes both reach, which is
+#   the fold with the overlap derived rather than filed: the overlap of two lane sets is the layer
+#   set, and the layer set is a relation with a name.
 #
-# ⛔ THE ENGINES DO NOT SUBDIVIDE THE PARTITION, AND THAT IS THE THIRD ELIMINATION, ALREADY MADE
-#   BY THE MODEL. `pm.draw` has no `buffer` column: a draw is against a LAYER, never against one
-#   of its three engines, because `layers/absorption.sqlc` states they are SUBSTITUTES. So D is
-#   P x L and not P x L x 3, and the buffer attribution nobody can make is eliminated before any
-#   diagram exists. ⚠️ What the engines DO explain is why a lane is EMPTY: `pm.slack` holds three
-#   rows per layer and every one of them renders as `none`.
-# ⛔⛔ AND IT SEES THE SCHEMA ONLY, WHICH IS WORTH KNOWING BECAUSE THE KEY CAN BE LOST OUTSIDE IT.
-#    This reads `pg_constraint`, so it can prove every foreign key into `pm.layer` names both
-#    columns and can prove nothing about a RELATION that flattens them. Two places have done it:
-#    `rank/graph_edges.sqlc` concatenates on purpose, because everything downstream of it counts
-#    and a count needs only distinct ids; and three rules put a claim address in the checker's
-#    own `layer` column, which `checks/grain.sqlc`'s `unresolvable` arm now refuses. ⭐ Two
-#    guards, one property: this one holds it in the schema, that one holds it in the output.
+# The engines do not subdivide the partition
+#   That is the third elimination, already made by the model. `pm.draw` has no `buffer` column: a
+#   draw is against a layer, never against one of its three engines, because
+#   `layers/absorption.sqlc` states they are substitutes. So D is P x L and not P x L x 3, and the
+#   buffer attribution nobody can make is eliminated before any diagram exists. What the engines
+#   do explain is why a lane is empty: `pm.slack` holds three rows per layer and every one of them
+#   renders as `none`.
+#
+# It sees the schema only
+#   That is worth knowing, because the key can be lost outside it. This reads `pg_constraint`, so
+#   it can prove every foreign key into `pm.layer` names both columns and can prove nothing about a
+#   relation that flattens them. Two places have done it: `rank/graph_edges.sqlc` concatenates on
+#   purpose, because everything downstream of it counts and a count needs only distinct ids; and
+#   rules have put a claim address in the checker's own `layer` column, which
+#   `checks/grain.sqlc`'s `unresolvable` arm refuses. Two guards, one property: this one holds it
+#   in the schema, that one holds it in the output.
 -- pg_constraint, for the foreign keys into pm.layer; the grain the lane mapping rests on.
 SELECT c.conrelid::regclass::text                       AS referrer,
        pg_get_constraintdef(c.oid)                      AS reference,

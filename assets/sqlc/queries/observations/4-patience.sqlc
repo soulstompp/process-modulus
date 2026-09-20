@@ -1,13 +1,16 @@
 -- §4  How long each layer's demand survives being unanswered.
+# One row per layer: whether its patience is filed, its mode and unit, and the unit of the demand
+# it qualifies.
 #
-# ⭐⭐⭐ IT IS THE HALF OF THE TIME AXIS THE SCHEMA FILED AS MISSING, and one layer in forty
-# fills it. `pm:Divisibility/window` is the SUPPLY's duty cycle; a patience is the mirror on
-# the DEMAND side, and until the element existed there was nowhere to file it but a slack's
-# absence.
+# The missing half of the time axis
+#   It is the half the schema filed as missing, and few layers fill it. `pm:Divisibility/window`
+#   is the supply's duty cycle; a patience is the mirror on the demand side, and without the
+#   element there is nowhere to file it but a slack's absence.
 #
-# ⛔ A PATIENCE IS NOT A TIME SLACK AND THE UNITS ARE HOW YOU TELL. A slack is quoted in the
-# unit of the shares it bounds; a patience is a span of time that bounds no shares. Nothing
-# compares the two columns, and this is where a reader can.
+# A patience is not a time slack
+#   The units are how you tell. A slack is quoted in the unit of the shares it bounds; a patience
+#   is a span of time that bounds no shares. Nothing compares the two columns, and this is where a
+#   reader can.
 -- layers/patience.sqlc, beside the demand each patience qualifies.
 SELECT p.filing                            AS "filing!",
        p.layer                             AS "layer!",

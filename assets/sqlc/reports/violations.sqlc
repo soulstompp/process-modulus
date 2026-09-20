@@ -1,12 +1,13 @@
-# THE ROWS THAT BREACH A RULE. One row per violation: which rule, which layer of which filing,
+# The rows that breach a rule. One row per violation: which rule, which layer of which filing,
 # and what it says.
 #
-# ⭐ AN EMPTY RESULT MEANS EVERY RULE HELD -- and is worth exactly as much as reports/coverage
-#   says it is. That is why the two are never read apart: a bound with nothing to bound passes
-#   loudest.
+# An empty result means every rule held
+#   And it is worth exactly as much as reports/coverage says it is. That is why the two are never
+#   read apart: a bound with nothing to bound passes loudest.
 #
-# ⛔ THIS IS A RESTRICTION OF checks/all.sqlc AND NOTHING ELSE. It cannot disagree with the
-#   coverage table, because the coverage table is a grouping of the same relation.
+# A restriction of checks/all.sqlc and nothing else
+#   It cannot disagree with the coverage table, because the coverage table is a grouping of the
+#   same relation.
 -- checks/all.sqlc, restricted to the rows that fail.
 SELECT c.rule, c.filing, c.layer, c.detail
 FROM (

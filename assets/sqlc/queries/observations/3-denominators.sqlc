@@ -1,12 +1,14 @@
 -- §3  Every denominator the corpus leans on, and what it sits under.
+# One row per (kind, denominator), with how many claims carry it and what they are filed on.
 #
-# ⭐⭐⭐ `week` AND `semana` ARE TWO DENOMINATORS, NOT ONE. That is the entire argument for
-# pm:StatedDenominator: a `LIKE` reads a denominator out of free text and silently decides the
-# Portuguese token IS the English one. Here they are separate rows because a
-# filer wrote each of them.
+# `week` and `semana` are two denominators
+#   Not one. That is the entire argument for pm:StatedDenominator: a `LIKE` reads a denominator
+#   out of free text and silently decides the Portuguese token is the English one. Here they are
+#   separate rows because a filer wrote each of them.
 #
-# ⛔ AND `each` IS NOT `period`. `GPU-hour per GPU` carries a denominator that is not a cycle,
-# which is the case a string search cannot see and a typed element cannot miss.
+# `each` is not `period`
+#   `GPU-hour per GPU` carries a denominator that is not a cycle, which is the case a string
+#   search cannot see and a typed element cannot miss.
 -- units/denominators.sqlc, the census over every claim carrying one.
 SELECT d.kind          AS "kind!",
        d.denominator   AS "denominator!",

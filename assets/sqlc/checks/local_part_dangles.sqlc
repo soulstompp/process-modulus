@@ -1,14 +1,14 @@
-# EVERY PART A FILING DRAWS FROM ITS OWN STACK, BESIDE WHETHER THAT LAYER IS ACTUALLY THERE.
-# One row per local part, `violates` where it names a layer this document does not have.
+# Every part a filing draws from its own stack, beside whether that layer is actually there. One
+# row per local part, `violates` where it names a layer this document does not have.
 #
-# ⭐⭐ THE RULE: a local part names a layer in its own stack. A FOREIGN part pointing at
-#    nothing is unresolvable and forgivable -- the other document may simply not be in this
-#    corpus. A LOCAL one pointing at nothing is a document contradicting itself inside a single
-#    file, with everything it needs to notice sitting right there.
+# A local part names a layer in its own stack
+#   A foreign part pointing at nothing is unresolvable and forgivable: the other document may
+#   simply not be in this corpus. A local one pointing at nothing is a document contradicting
+#   itself inside a single file, with everything it needs to notice sitting right there.
 #
-# ⛔ XSD 1.0 CANNOT MAKE A KEYREF CONDITIONAL ON ANOTHER FIELD'S VALUE, which is why this is a
-#   query. `composedLayerName` cannot be pointed at "the local stack, but only when the
-#   notation matches mine".
+# Why this is a query
+#   XSD 1.0 cannot make a keyref conditional on another field's value. `composedLayerName` cannot
+#   be pointed at "the local stack, but only when the notation matches mine".
 -- asrt:Part whose pm:ForeignId/notation is its own composition's, against pm.layer.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

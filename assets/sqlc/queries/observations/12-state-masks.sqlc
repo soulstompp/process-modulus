@@ -1,7 +1,15 @@
-# ⭐ WHICH OF THE FOUR ABSENCE REASONS EACH QUESTION HAS EVER TAKEN, sorted so that the sites
-# reaching `none` sit together and the ones that never do sit together. The split is not
-# cosmetic: it is the `pm:Absence` / `pm:ClaimAbsence` boundary, printed from the data rather
-# than read off the schema, and a site on the wrong side of it is a defect.
+# Which of the four absence reasons each question has ever taken. One row per absence-bearing
+# question: its reasons as a four-bit word, and how many filings stand behind it.
+#
+# The split is a schema boundary
+#   The rows are sorted so that the sites reaching `none` sit together and the ones that never do
+#   sit together. The split is not cosmetic: it is the `pm:Absence` / `pm:ClaimAbsence` boundary,
+#   printed from the data rather than read off the schema, and a site on the wrong side of it is a
+#   defect.
+#
+# Sorted on the bit, not the string
+#   A collation that files punctuation after letters buries the split this query exists to show,
+#   so the `none` bit is pulled out and ordered explicitly.
 -- §12  Every absence-bearing question as a four-bit word: n·u·a·d.
 SELECT m.question       AS "question!",
        m.mask           AS "mask!",
@@ -10,7 +18,4 @@ SELECT m.question       AS "question!",
 FROM (
     :compose(epistemics/state_masks.sqlc)
 ) m
--- ⛔ THE SORT IS ON THE BIT, NOT THE STRING. A collation that files punctuation
---   after letters buries the split this query exists to show, so the `none` bit is
---   pulled out and ordered explicitly.
 ORDER BY (m.mask LIKE 'n%') DESC, m.filings DESC, m.question

@@ -1,33 +1,34 @@
-# THE LAYERS THAT DENY HAVING A REMAINDER AT ALL. One row per layer filing the second branch
-# of the `StatedRemainder` wrapper -- a typed reason there is no remainder, and the note that
-# argues for it.
+# The layers that deny having a remainder at all. One row per layer filing the second branch of
+# the `StatedRemainder` wrapper: a typed reason there is no remainder, and the note that argues for
+# it.
 #
-# ⭐⭐⭐ THIS IS THE MODEL BEING CONTRADICTED IN ITS OWN FORMAT, WHICH IS WHAT THE WRAPPER IS
-#    FOR. The model claims every layer has a remainder. Requiring the wrapper forces a sender
-#    who disagrees to say so explicitly rather than leaving a field empty. Every row here is
-#    somebody exercising that right.
+# The model contradicted in its own format
+#   This is what the wrapper is for. The model claims every layer has a remainder. Requiring the
+#   wrapper forces a sender who disagrees to say so explicitly rather than leaving a field empty.
+#   Every row here is somebody exercising that right.
 #
-# ⛔⛔ AND THE RIGHT IS NARROWER THAN IT LOOKS, WHICH IS WHY THIS ARM IS A `ClaimAbsence`.
-#    "There is no remainder" reads two ways: nothing to subtract from, or the difference is
-#    zero. Only the first is an absence. A difference of zero is a CLEARANCE -- `Fit` settles
-#    the line-to-line case in prose, "minimum clearance is zero" -- carrying a quantity of
-#    [0, 0, 0] and a sign, and an absence throws the sign away. So `none` is not spellable
-#    here, and a layer that means "the two coincide exactly" files the clearance.
+# Why this arm is a `ClaimAbsence`
+#   The right is narrower than it looks. "There is no remainder" reads two ways: nothing to
+#   subtract from, or the difference is zero. Only the first is an absence. A difference of zero
+#   is a clearance (`Fit` settles the line-to-line case in prose, "minimum clearance is zero"),
+#   carrying a quantity of [0, 0, 0] and a sign, and an absence throws the sign away. So `none` is
+#   not spellable here, and a layer that means "the two coincide exactly" files the clearance.
 #
-# ⛔⛔ AND FOR TWO REVISIONS THESE ROWS WERE INVISIBLE. `ingest.sql` read only the first branch,
-#    so a denial arrived as five NULLs -- sign, absorber and quantity all blank -- which is
-#    exactly the shape of a document that said nothing. One of the two notes says so in as many
-#    words: "filed as a counter-example ... NOT AS A GAP IN THIS DOCUMENT". A gap is what was
-#    stored. The note is carried here because keeping only the reason keeps the fact and loses
-#    the argument.
+# Why the note is carried
+#   When `ingest.sql` read only the first branch, a denial arrived as five NULLs (sign, absorber
+#   and quantity all blank), which is exactly the shape of a document that said nothing. One of
+#   the notes says so in as many words: "filed as a counter-example ... not as a gap in this
+#   document". A gap is what that reading stores. The note is carried here because keeping only
+#   the reason keeps the fact and loses the argument.
 #
-# ⭐ RUN THIS ALONE AND READ THE NOTES. Two rows, and both now say the same thing in different
-#   words: this layer states no nameplate, so `r = n - d` has no `n` and the question is
-#   malformed rather than answered with nothing. ⚠️ NEITHER MAY SAY "a supply with no quantum
-#   divides exactly", which is a different claim and a false one: no quantum kills the RESIDUE
-#   term of `r = m*q - (demand mod q)` and leaves `n - d` standing. Let the notes disagree with
-#   the structure and the rule downstream prints the right reason
-#   ("no nameplate is stated") beside the wrong one for two revisions.
+# Run this alone and read the notes
+#   They say the same thing in different words: this layer states no nameplate, so `r = n - d`
+#   has no `n` and the question is malformed rather than answered with nothing. Neither may say
+#   "a supply with no quantum divides exactly", which is a different claim and a false one: no
+#   quantum kills the residue term of `r = m*q - (demand mod q)` (layers/decomposed.sqlc) and
+#   leaves `n - d` standing. Let
+#   the notes disagree with the structure and the rule downstream prints the right reason ("no
+#   nameplate is stated") beside the wrong one.
 -- pm:Layer/pm:remainder taking the pm:absent branch of pm:StatedRemainder.
 SELECT l.filing, l.layer,
        l.remainder_absent      AS reason,

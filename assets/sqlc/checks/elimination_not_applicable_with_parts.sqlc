@@ -1,11 +1,12 @@
-# EVERY FUSION CALLING THE DOUBLE-COUNTING QUESTION MALFORMED, BESIDE HOW MANY PARTS IT HAS.
-# One row per examined fusion, `violates` where it has more than one.
+# Every fusion calling the double-counting question malformed, beside how many parts it has. One
+# row per examined fusion, `violates` where it has more than one.
 #
-# ⭐⭐ THE RULE: a fusion calls double counting malformed only when it has one part. Between a
-#    set of one nothing can be counted twice, so `notApplicable` is exactly right there.
-#    Between two or more the question HAS a population, and `notApplicable` becomes a claim
-#    that two supplies cannot possibly overlap -- a judgement about the world, which belongs in
-#    `observed` where somebody signs it rather than in an absence that reads as a technicality.
+# Malformed only with one part
+#   The rule: a fusion calls double counting malformed only when it has one part. Between a set
+#   of one nothing can be counted twice, so `notApplicable` is exactly right there. Between two
+#   or more the question has a population, and `notApplicable` becomes a claim that two supplies
+#   cannot possibly overlap: a judgement about the world, which belongs in `observed` where
+#   somebody signs it rather than in an absence that reads as a technicality.
 -- asrt:eliminations with pm:absent/reason = notApplicable, counted over asrt:Part.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

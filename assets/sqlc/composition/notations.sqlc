@@ -1,22 +1,24 @@
-# WHAT EACH FILING CALLS ITSELF, AND WHO SAYS SO. One row per declared notation: the URI a part
+# What each filing calls itself, and who says so. One row per declared notation: the URI a part
 # reference points at, the filing in this corpus it resolves to, and the party that asserted the
 # identity.
 #
-# ⭐⭐⭐ THE RESOLUTION IS A READER'S ASSERTION AND NOT A DOCUMENT'S, WHICH IS WHY IT IS A ROW.
-#    Nothing inside a filing says which document its `ForeignId/notation` points at -- the
-#    corpus's own README records that finding. Somebody had to decide, and `asserted_by` is where
-#    that decision is signed. A model that resolved silently would be inventing a fact about the
-#    world in the middle of a join.
+# The resolution is a reader's assertion
+#   The resolution is a reader's assertion and not a document's, which is why it is a row. Nothing
+#   inside a filing says which document its `ForeignId/notation` points at; the corpus's own README
+#   records that finding. Somebody had to decide, and `asserted_by` is where that decision is
+#   signed. A model that resolved silently would be inventing a fact about the world in the middle
+#   of a join.
 #
-# ⛔⛔ IT IS THE JOIN EVERY READER OF `pm.filing_identity` WOULD OTHERWISE WRITE AGAIN.
-#    `composition/parts.sqlc`, `local_parts.sqlc`, `epistemics/documents.sqlc` and
-#    `epistemics/absences.sqlc` all need it. ⚠️ `composition/parts.sqlc`'s own header says the
-#    resolution is written once -- true of the resolved PART, and not of the identity table
-#    underneath it, which is what this file names.
+# The join every reader would otherwise write again
+#   Every reader of `pm.filing_identity` needs it: `composition/parts.sqlc`,
+#   `composition/local_parts.sqlc`, `epistemics/documents.sqlc` and `epistemics/absences.sqlc`.
+#   `composition/parts.sqlc`'s own header says the resolution is written once, which is true of
+#   the resolved part and not of the identity table underneath it, which is what this file names.
 #
-# ⭐ `absent` IS A NOTATION NOBODY COULD RESOLVE. It is kept rather than filtered: a reference
-#   that points nowhere is the population `checks/unresolved_part.sqlc` exists to find, and a
-#   relation that dropped it would hand that rule an empty question.
+# `absent` is a notation nobody could resolve
+#   It is kept rather than filtered: a reference that points nowhere is the population
+#   `checks/unresolved_part.sqlc` exists to find, and a relation that dropped it would hand that
+#   rule an empty question.
 -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi

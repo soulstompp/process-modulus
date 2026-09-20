@@ -1,21 +1,21 @@
-# THE DOCUMENTS THAT ATTEST TO A WORLD. One row per filing somebody wrote about a real
-# system, which is the only set a finding may be counted over.
+# The documents that attest to a world. One row per filing somebody wrote about a real system,
+# which is the only set a finding may be counted over.
 #
-# ⭐ A ROW HERE IS EVIDENCE. A row in scope/fixtures.sqlc is a stipulation, and the two
-#   cannot be pooled without turning a finding into a lie: `assets/fixtures/every-absence.xml`
-#   asserts coupling independence ON PURPOSE, to prove the branch works. Counted as
-#   evidence it would answer "has anybody tested the independence assumption?" with a yes
-#   that nobody earned.
+# A row here is evidence
+#   A row in scope/fixtures.sqlc is a stipulation, and the two cannot be pooled without turning
+#   a finding into a lie: `assets/fixtures/every-absence.xml` asserts coupling independence on
+#   purpose, to prove the branch works. Counted as evidence it would answer "has anybody tested
+#   the independence assumption?" with a yes that nobody earned.
 #
-# ⭐⭐ AND THE `kind` FILTER IS NEW, BECAUSE `kind` COULD NOT CARRY IT BEFORE. `asrt:coverage`
-#    and `asrt:run` are observations too -- a real witness really looked -- but what they
-#    looked AT is a corpus, not a world. Counted here they would answer a question about
-#    businesses with a claim about the evidence. While `kind` was two-valued there was no way
-#    to say so; reading it off the root element is what made this line writable.
+# The `kind` filter
+#   `asrt:coverage` and `asrt:run` are observations too (a real witness really looked), but what
+#   they looked at is a corpus, not a world. Counted here they would answer a question about
+#   businesses with a claim about the evidence. `kind` is read off the root element, which is
+#   what lets this line say so; a two-valued `kind` could not.
 #
-# ⛔ THE POSITIVE SET IS NAMED RATHER THAN THE EXCLUSION. `NOT IN ('coverage','run')` grows
-#   silently wrong the next time a root is added to assertion.xsd; this list has to be looked
-#   at.
+# The positive set is named, not the exclusion
+#   `NOT IN ('coverage','run')` grows silently wrong the next time a root is added to
+#   assertion.xsd; this list has to be looked at.
 -- from pm.filing where evidence = 'observation' and the kind attests to a world.
 SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f

@@ -1,21 +1,24 @@
-# HOW MUCH OF THE SYSTEM THIS CORPUS CLAIMS TO HOLD. One row per extent a stack declares,
-# counted over the documents that attest to a world.
+# How much of the system this corpus claims to hold. One row per extent a stack declares, counted
+# over the documents that attest to a world.
 #
-# ⭐⭐⭐ THE SAME SHAPE AS THE COUPLING SEARCH, ONE LEVEL UP, AND THE SAME TRAP. `scoped` says
-#    somebody established what lies outside this stack and excluded it on purpose.
-#    `unbounded` says nobody looked. Rendered as one boolean -- "is this stack complete?" --
-#    a bounded selection and an unexamined one are the same row, and the difference is gone
-#    for good. It is the coupling search's distinction applied to the stack itself.
+# The coupling search, one level up
+#   The same shape, and the same trap. `scoped` says somebody established what lies outside this
+#   stack and excluded it on purpose. `unbounded` says nobody looked. Rendered as one boolean, "is
+#   this stack complete?", a bounded selection and an unexamined one are the same row, and the
+#   difference is gone for good. It is the coupling search's distinction applied to the stack
+#   itself.
 #
-# ⛔⛔ AND THE ANSWER NOBODY IN THIS CORPUS GIVES IS THE ONE WORTH NAMING. Not one filing
-#    claims `complete`. A stack is a PROJECTION of one system, held by whoever filed it, and
-#    reading it as an enumeration of the system is what turns a second document's extra layer
-#    into an accusation that the first omitted something. The corpus declining to claim
-#    completeness is the model's own reading, filed rather than asserted.
+# The answer nobody gives
+#   The answer nobody in this corpus gives is the one worth naming: no filing claims `complete`.
+#   A stack is a projection of one system, held by whoever filed it, and reading it as an
+#   enumeration of the system is what turns a second document's extra layer into an accusation
+#   that the first omitted something. The corpus declining to claim completeness is the model's
+#   own reading, filed rather than asserted.
 #
-# ⛔ `complete` IS FALSIFIABLE IN PRINCIPLE AND BY NOTHING HERE, which is why this is a report
-#   and not a rule. What would refute it is another filing holding a layer OF THE SAME SYSTEM
-#   that this one lacks -- and no document names a system, only a filing.
+# A report, not a rule
+#   `complete` is falsifiable in principle and by nothing here, which is why this is a report and
+#   not a rule. What would refute it is another filing holding a layer of the same system that
+#   this one lacks, and no document names a system, only a filing.
 -- pm:Stack/pm:scope over scope/corpus.sqlc; the extent axis is documented on that element.
 SELECT CASE
          WHEN sc.extent = 'complete'  THEN 'the whole system is in this stack'

@@ -1,14 +1,16 @@
-# THE CLAIMS FILED AS A SINGLE NUMBER, WHEREVER IN A DOCUMENT THEY SIT. One row per claim
-# whose low, mode and high coincide -- a figure with no width at all.
+# The claims filed as a single number, wherever in a document they sit. One row per claim whose
+# low, mode and high coincide: a figure with no width at all.
 #
-# ⭐ A POINT IS A REAL CLAIM AND NOT A DEGENERATE ONE. "Exactly twelve people" is a stronger
-#   statement than "between ten and fourteen", and the model lets somebody make it. Half the
-#   claims in this corpus are points, and almost none of them are demands: a nameplate, a
-#   quantum and a duty-cycle window are the things somebody usually knows exactly.
+# A point is a real claim, not a degenerate one
+#   "Exactly twelve people" is a stronger statement than "between ten and fourteen", and the model
+#   lets somebody make it. Many claims in this corpus are points, and almost none of them are
+#   demands: a nameplate, a quantum and a duty-cycle window are the things somebody usually knows
+#   exactly.
 #
-# ⛔ BUT A POINT HAS NO RANGE TO TIGHTEN, so a stated `narrowsWhen` on one is either a paste
-#   from a neighbouring claim or a claim filed at the wrong width. `notApplicable` is the
-#   filing that says so honestly, and it is what the schema asks for here.
+# A point has no range to tighten
+#   So a stated `narrowsWhen` on one is either a paste from a neighbouring claim or a claim filed at
+#   the wrong width. `notApplicable` is the filing that says so honestly, and it is what the schema
+#   asks for here.
 -- pm:Claim where low = high, at every element that carries one.
 SELECT c.*
 FROM (

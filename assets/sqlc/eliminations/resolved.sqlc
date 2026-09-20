@@ -1,14 +1,23 @@
-# THE `between` REFERENCES THAT LAND ON A LAYER THIS CORPUS HOLDS. One row per resolved reference,
+# The `between` references that land on a layer this corpus holds. One row per resolved reference,
 # carrying the filing the notation resolves to.
 #
-# ⭐⭐ THE POSITIVE SET, AND ITS COMPLEMENT IS THE INTERESTING ONE. Name the union
-#    and take its complement, because in a model about typed absence the positive set is always
-#    the meaningful one. `eliminations/references.sqlc` minus this is *the references that point
-#    outside what is here*, which the schema calls ORDINARY rather than wrong.
+# The positive set, named
+#   Its complement is the interesting one. Name the union and take its complement, because in a
+#   model about typed absence the positive set is always the meaningful one.
+#   `eliminations/references.sqlc` minus this is *the references that point outside what is here*,
+#   which the schema calls ordinary rather than wrong.
 #
-# ⛔ RESOLUTION IS A READER'S ASSERTION ONE STEP REMOVED, exactly as it is for a part:
-#    `filing_identity` is what a document says about itself, and without it a cross-document
-#    reference cannot be resolved from the corpus even in principle.
+# Resolution is a reader's assertion one step removed
+#   Exactly as it is for a part: `filing_identity` is what a document says about itself, and without
+#   it a cross-document reference cannot be resolved from the corpus even in principle.
+#
+# `pm.layer` directly, not `layers/every_layer.sqlc`
+#   The last join is a membership test: does the layer this reference names exist.
+#   `layers/every_layer.sqlc` is the layer dimension, reserved for denominators. Composed here it
+#   would drag the entire dimension into the transitive closure of most of the checker, and any
+#   reach-containment law over a rule is vacuous the moment the dimension is inside its closure,
+#   because the dimension reaches everything by construction. `algebra/dimension_use.sqlc` states
+#   the rule and enforces it over the compose DAG.
 -- eliminations/references.sqlc joined through pm.filing_identity to pm.layer.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, fi.filing AS resolved_filing, b.layer, b.regime
@@ -18,12 +27,4 @@ FROM      (
 JOIN      (
     :compose(composition/notations.sqlc)
 ) fi ON fi.notation = b.notation
--- ⛔⛔⛔ `pm.layer` DIRECTLY, AND NOT `layers/every_layer.sqlc`, WHICH IS THE WHOLE POINT OF THIS
---    LINE. This is a MEMBERSHIP test: does the layer this reference names exist. That relation is
---    the layer DIMENSION, reserved for denominators, and composing it here dragged the entire
---    dimension into the transitive closure of two thirds of the checker. Measured: 20 of 29 rules
---    reached `every_layer` through this one edge, and 1 does without it. ⛔ Any reach-containment
---    law over a rule is vacuous the moment the dimension is inside its closure, because the
---    dimension reaches everything by construction. `layers/every_layer.sqlc`'s own header now
---    carries the rule and `algebra/dimension_use.sqlc` enforces it over the compose DAG.
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = b.layer

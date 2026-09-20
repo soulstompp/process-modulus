@@ -1,13 +1,15 @@
-# THE CLAIMS THAT SPAN A WIDTH, WHEREVER IN A DOCUMENT THEY SIT. One row per claim whose low
-# and high differ, so there is something a narrowing statement could actually reduce.
+# The claims that span a width, wherever in a document they sit. One row per claim whose low and
+# high differ, so there is something a narrowing statement could actually reduce.
 #
-# ⭐⭐ THIS IS THE DENOMINATOR FOR EVERY QUESTION ABOUT UNCERTAINTY IN A FILING. Judging
-#    whether a narrowing sentence WOULD narrow the range is prose and belongs to a person.
-#    Counting how many ranges decline to say anything at all is arithmetic, and it turns
-#    "a claim without one is weaker" from an opinion into a figure.
+# The denominator for every question about uncertainty
+#   This is the denominator for every question about uncertainty in a filing. Judging whether a
+#   narrowing sentence would narrow the range is prose and belongs to a person. Counting how many
+#   ranges decline to say anything at all is arithmetic, and it turns "a claim without one is
+#   weaker" from an opinion into a figure.
 #
-# ⛔ AND THE MIRROR OF THE POINT RULE LIVES HERE: a range filing `narrowsWhen` as
-#   `notApplicable` is claiming it has no range, in a row that demonstrably has one.
+# The mirror of the point rule
+#   A range filing `narrowsWhen` as `notApplicable` is claiming it has no range, in a row that
+#   demonstrably has one.
 -- pm:Claim where low <> high, at every element that carries one.
 SELECT c.*
 FROM (

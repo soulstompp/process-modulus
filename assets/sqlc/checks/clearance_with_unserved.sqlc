@@ -1,15 +1,16 @@
-# EVERY HOLDER FILED AGAINST A LAYER WHOSE FIT IS CLEARANCE, BESIDE WHETHER THAT HOLDER IS
-# ONE OF THE TWO THAT CANNOT BE THERE. One row per examined holder, `violates` on a
-# `customer` or `unrealised`.
+# Every holder filed against a layer whose fit is clearance, beside whether that holder is one of
+# the two that cannot be there. One row per examined holder, `violates` on a `customer` or
+# `unrealised`.
 #
-# ⭐⭐ THE RULE: a clearance fit rules out customer and unrealised. Clearance means the
-#    nameplate is above demand ACROSS THE WHOLE RANGE -- so there is no unmet demand anywhere
-#    in it for somebody to have gone without. Naming one of those holders is a document
-#    contradicting its own classification.
+# Clearance leaves nobody unserved
+#   The rule: a clearance fit rules out customer and unrealised. Clearance means the nameplate is
+#   above demand across the whole range, so there is no unmet demand anywhere in it for somebody
+#   to have gone without. Naming one of those holders is a document contradicting its own
+#   classification.
 #
-# ⛔ A CLEARANCE LAYER WITH NO HOLDERS AT ALL IS NOT EXAMINED. The rule needs a holder row to
-#   look at, so counting those layers would inflate the denominator with rows the join never
-#   reaches.
+# A clearance layer with no holders is not examined
+#   The rule needs a holder row to look at, so counting those layers would inflate the
+#   denominator with rows the join never reaches.
 -- pm:Remainder/sign = clearance against pm:HolderKind customer/unrealised.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

@@ -1,15 +1,17 @@
-# THE PARTS THAT CROSS A DOCUMENT, WHICH IS THE `callActivity` POPULATION AND NOT THE WHOLE PART
-# TABLE. One row per part whose target lives in another filing.
+# The parts that cross a document, which is the `callActivity` population and not the whole part
+# table. One row per part whose target lives in another filing.
 #
-# ⭐⭐⭐ THE PIN IS IN THE FILE NAME BECAUSE IT IS NOT IN THE KEY, AND A RELATION THAT RESTRICTS A DIMENSION MUST DECLARE IT.
-#    `|callActivity| + |subProcess| = |part|` is one law over two elements, and a law of that
-#    shape lets a LOCAL part be rendered as a flow node. A local fusion is a partition of the
-#    composed layer, not an activity inside it, so the two halves are two laws.
+# The pin is in the file name
+#   Because it is not in the key, and a relation that restricts a dimension must declare it.
+#   `|callActivity| + |subProcess| = |part|` is one law over two elements, and a law of that shape
+#   lets a local part be rendered as a flow node. A local fusion is a partition of the composed
+#   layer, not an activity inside it, so the two halves are two laws.
 #
-# ⛔⛔ AND SPLITTING THEM IS WHAT LETS THE `invents` STATE BE MEASURED. Only a foreign part goes
-#   through `calledElement`, which is a QName of a PROCESS, and that is the flattening that can put
-#   a cycle in the emitted call graph which `F` does not have. A law over the union of both cannot
-#   say how much of the emission is exposed to it. This one can: it IS the exposed population.
+# Splitting them measures `invents`
+#   Only a foreign part goes through `calledElement`, which is a QName of a process, and that is
+#   the flattening that can put a cycle in the emitted call graph which `F` does not have. A law
+#   over the union of both cannot say how much of the emission is exposed to it. This one can: it
+#   is the exposed population.
 -- diagrams/calls.sqlc pinned to the parts that leave their own document.
 SELECT c.composition, c.composed_layer, c.part_notation, c.part_filing, c.part_layer
 FROM (

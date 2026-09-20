@@ -1,19 +1,19 @@
-# WHAT EACH DOCUMENT SAYS ABOUT COUPLINGS, AND WHETHER IT SAYS ANYTHING AT ALL. One row per
-# filing in the chosen scope: how many couplings it states, and what its coupling SEARCH
+# What each document says about couplings, and whether it says anything at all. One row per
+# filing in the chosen scope: how many couplings it states, and what its coupling search
 # reported if it states none.
 #
-# ⭐⭐⭐ THE TWO COLUMNS ARE TWO DIFFERENT FACTS AND AN EMPTY COUPLING TABLE CARRIES ONLY THE
-#    FIRST. A filing with no coupling rows is a stack of independent layers OR a document
-#    where nobody looked, and which one it is has never been in the coupling table. It is in
-#    the search beside it, which is why that element had to exist.
+# Two columns, two facts
+#   An empty coupling table carries only the first. A filing with no coupling rows is a stack of
+#   independent layers or a document where nobody looked, and which one it is has never been in
+#   the coupling table. It is in the search beside it, which is why that element had to exist.
 #
-# ⭐⭐ THE SCOPE IS A SLOT BECAUSE THE TWO CALLERS GENUINELY DISAGREE, AND BOTH ARE RIGHT.
-#    `rules.sql` asks this of the CORPUS: "has anybody tested the independence assumption" is
-#    a claim about the evidence, and a fixture that asserts independence on purpose would
-#    answer it with a yes nobody earned. `matrices.sql` asks it of EVERY filing, because it is
-#    a tour of what the matrix cannot express and the stipulations demonstrate that best.
-#    ⛔ Written into each of those files instead, it is one relation with identical joins and
-#      two scopes. That is how two copies of one relation start.
+# The scope is a slot
+#   The two callers genuinely disagree, and both are right. `rules.sql` asks this of the corpus:
+#   "has anybody tested the independence assumption" is a claim about the evidence, and a fixture
+#   that asserts independence on purpose would answer it with a yes nobody earned. `matrices.sql`
+#   asks it of every filing, because it is a tour of what the matrix cannot express and the
+#   stipulations demonstrate that best. Written into each of those files instead, it is one
+#   relation with identical joins and two scopes. That is how two copies of one relation start.
 -- pm:Stack/pm:couplings against pm:couplings/pm:absent, over a scope the caller names.
 SELECT f.filing,
        count(c.filing) AS couplings_filed,

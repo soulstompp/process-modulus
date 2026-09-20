@@ -1,14 +1,17 @@
 -- §6  What the fixtures decline to answer, which is the whole reason they exist.
+# One row per (question, reason) the fixtures file, with how many times.
 #
-# ⭐⭐ REPORTS ABOUT THE WORLD MUST NOT COUNT STIPULATIONS, AND THIS IS THE OTHER HALF OF THAT
-# RULE. `rules.sql` composes reports/absences_in_the_corpus.sqlc and correctly does not compose
-# this one: a fixture asserting independence on purpose would answer "has anybody tested the
-# assumption?" with a yes nobody earned. But the fixture census is still worth reading -- it is
-# just not a finding, so it belongs in an observation and not in a report of record.
+# Reports about the world must not count stipulations
+#   This is the other half of that rule. `rules.sql` composes reports/absences_in_the_corpus.sqlc
+#   and correctly does not compose this one: a fixture asserting independence on purpose would
+#   answer "has anybody tested the assumption?" with a yes nobody earned. But the fixture census
+#   is still worth reading. It is just not a finding, so it belongs in an observation and not in a
+#   report of record.
 #
-# ⛔ THIS SECTION IS ITS CALLER, AND THAT IS THE POINT OF THE SECTION. A relation that composes,
-# emits, and is read by nothing reads from the outside exactly like a relation that does not
-# exist, which is what examples/observations/main.rs refuses to allow.
+# This section is its caller
+#   That is the point of the section. A relation that composes, emits, and is read by nothing
+#   reads from the outside exactly like a relation that does not exist, which is what
+#   examples/observations/main.rs refuses to allow.
 -- reports/absences_in_the_fixtures.sqlc, given the caller that makes it readable.
 SELECT a.question AS "question!", a.reason::text AS "reason!", a.times AS "times!"
 FROM (

@@ -1,13 +1,12 @@
 -- §2  Every computation this corpus declines to perform, and what stopped it.
+# One row per suspended instance. The arithmetic is not wrong here and the document is not wrong
+# here; somebody said they did not measure something and the model took them at their word.
 #
-# ONE ROW PER SUSPENDED INSTANCE. The arithmetic is not wrong here and the document is not
-# wrong here; somebody said they did not measure something and the model took them at their
-# word.
-#
-# ⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED, and this is the only place the
-#   whole of it is visible at once. The gated relations -- layers/remainder.sqlc,
-#   entries/borne.sqlc, composition/owed_equality.sqlc -- each drop their own suspended rows
-#   with a WHERE, correctly, and a row that has been dropped cannot say why it went.
+# Suspended is a third outcome
+#   Beside passed and failed, and this is the only place the whole of it is visible at once. The
+#   gated relations, layers/remainder.sqlc, entries/borne.sqlc and composition/owed_equality.sqlc,
+#   each drop their own suspended rows with a WHERE, correctly, and a row that has been dropped
+#   cannot say why it went.
 -- arithmetic/all.sqlc restricted to the rows no site could compute.
 SELECT z.site                    AS "site!",
        z.filing                  AS "filing!",

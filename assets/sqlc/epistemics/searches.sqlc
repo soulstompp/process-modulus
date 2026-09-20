@@ -1,25 +1,27 @@
-# DID ANYBODY LOOK? One row per question a document was asked about its own diligence,
-# carrying what it answered.
+# Did anybody look? One row per question a document was asked about its own diligence, carrying
+# what it answered.
 #
-# ⭐⭐⭐ THIS IS THE ROW THAT MAKES AN EMPTY TABLE READABLE, AND WITHOUT IT AN EMPTY TABLE IS
-#    AMBIGUOUS IN THE WORST WAY. A filing with no couplings has either a stack of independent
-#    layers or nobody who looked; a fusion with no eliminations has either no double counting
-#    or no search for it. Those are opposite claims and the tall table renders them
-#    identically. The search element is where the difference lives.
+# The row that makes an empty table readable
+#   Without it an empty table is ambiguous in the worst way. A filing with no couplings has either a
+#   stack of independent layers or nobody who looked; a fusion with no eliminations has either no
+#   double counting or no search for it. Those are opposite claims and the tall table renders them
+#   identically. The search element is where the difference lives.
 #
-# ⭐⭐ AND THE ANSWER DECIDES WHICH ARITHMETIC IS OWED, which is what raises this above
-#    bookkeeping. `none` or `notApplicable` on a fusion: the composed figure must equal the
-#    sum of its converted parts EXACTLY. `unmeasured`: no equality is owed at all, and a
-#    checker reporting one is reporting about nothing.
+# The answer decides which arithmetic is owed
+#   That is what raises this above bookkeeping. `none` or `notApplicable` on a fusion: the composed
+#   figure must equal the sum of its converted parts exactly. `unmeasured`: no equality is owed at
+#   all, and a checker reporting one is reporting about nothing.
 #
-# ⛔ A NULL `answer` IS NOT AN ABSENCE HERE. It means the document actually filed the thing --
-#   real couplings, real eliminations -- so the search question is answered by the content.
+# A null `answer` is not an absence here
+#   It means the document actually filed the thing (real couplings, real eliminations), so the
+#   search question is answered by the content.
 #
-# ⭐⭐ THE TWO MEMBERS ARE FILES, AND THAT IS WHAT MAKES THIS UNION HONEST. Build both arms
-#    inline against their base tables and every caller wanting one KIND of search filters on the
-#    `looked_for` string this file invented: a union taken back apart by string comparison at
-#    every call site, and callers that give up and read the base table instead. A
-#    `:union` whose members are not files is a union nobody can compose half of.
+# The two members are files
+#   That is what makes this union honest. Build both arms inline against their base tables and
+#   every caller wanting one kind of search filters on the `looked_for` string this file invented:
+#   a union taken back apart by string comparison at every call site, and callers that give up and
+#   read the base table instead. A union whose members are not files is a union nobody can compose
+#   half of.
 -- pm:Stack/pm:couplings and asrt:Fusion/asrt:eliminations, each with its pm:absent.
 SELECT cs.filing, 'couplings between layers' AS looked_for, '(the stack)' AS about,
        cs.answer, cs.note

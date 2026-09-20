@@ -1,18 +1,19 @@
-# THE OPERATIONS THAT BOTH DRAW AND INDUCE -- the entries DᵀN would have. One row per
+# The operations that both draw and induce: the entries DᵀN would have. One row per
 # (operation, drawn-from layer, committed-to layer): an operation consuming from one layer
 # while committing on another is a cross-layer edge, and the join on the shared operation
-# index is what a matrix product IS.
+# index is what a matrix product is.
 #
-# ⛔⛔ THE INCIDENCE COMPOSES; THE QUANTITIES DO NOT. Multiply the two magnitudes and the
-#    answer comes out in people·launches, which is not a rate of anything, because each
-#    layer carries its own unit. So this relation reports REACHABILITY and leaves the
-#    numbers beside it unmultiplied. There is also no firing count per operation, on
-#    purpose: sequence and timing are BPMN's job and this model does not compete for it.
+# The incidence composes; the quantities do not
+#   Multiply the two magnitudes and the answer comes out in people·launches, which is not a rate
+#   of anything, because each layer carries its own unit. So this relation reports reachability
+#   and leaves the numbers beside it unmultiplied. There is also no firing count per operation, on
+#   purpose: sequence and timing are BPMN's job and this model does not compete for it.
 #
-# ⭐ IN THIS CORPUS EXACTLY ONE OPERATION QUALIFIES AND ITS DRAW IS UNMEASURED, so the
-#   product cannot be computed at all. The matrix that would show cross-layer structure is
-#   empty precisely because the interesting quantity has no instrument behind it, which is
-#   the thing this model exists to be able to say.
+# Empty for want of an instrument
+#   In this corpus exactly one operation qualifies and its draw is unmeasured, so the product
+#   cannot be computed at all. The matrix that would show cross-layer structure is empty precisely
+#   because the interesting quantity has no instrument behind it, which is the thing this model
+#   exists to be able to say.
 -- the shared index is (filing, operation); pm:Operation carries both children.
 SELECT d.filing, d.operation,
        d.layer AS drawn_from, d.mode AS drawn,

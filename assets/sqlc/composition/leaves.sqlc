@@ -1,34 +1,41 @@
-# THE BOTTOM OF A SUM'S DESCENT. One row per reached layer that is not itself built from parts,
-# with the route that reached it -- so a leaf on two branches appears twice.
+# The bottom of a sum's descent. One row per reached layer that is not itself built from parts,
+# with the route that reached it, so a leaf on two branches appears twice.
 #
-# ⛔⛔ IT IS NOT THE BOTTOM OF EVERY DESCENT, AND WHICH BOTTOM APPLIES DEPENDS ON THE QUANTITY
-#    RATHER THAN ON THE GRAPH. A sum over parts bottoms out here, because below an F-terminal
-#    layer there is nothing left to add. A REMAINDER bottoms out EARLIER, at the first node
-#    whose own `n` and `d` were not both scaled by one factor with width, because differencing
-#    them is legitimate there and the filed figure is a claim its composer stands behind.
-#    composition/unsettled.sqlc is that predicate and composition/settled_remainders.sqlc is
-#    that walk. A leaf satisfies it trivially, which is why this relation looks like the
-#    general case and is not.
+# Not the bottom of every descent
+#   Which bottom applies depends on the quantity rather than on the graph. A sum over parts bottoms
+#   out here, because below an F-terminal layer there is nothing left to add. A remainder bottoms
+#   out earlier, at the first node whose own `n` and `d` were not both scaled by one factor with
+#   width, because differencing them is legitimate there and the filed figure is a claim its
+#   composer stands behind. composition/unsettled.sqlc is that predicate and
+#   composition/settled_remainders.sqlc is that walk. A leaf satisfies it trivially, which is why
+#   this relation looks like the general case and is not.
 #
-# ⭐⭐ A LEAF IS DEFINED BY WHAT IT IS NOT, WHICH IS WHY THIS IS AN ANTI-JOIN AGAINST A NAMED
-#    RELATION RATHER THAN A `NOT EXISTS` INSIDE A PREDICATE. composition/fusions.sqlc is
-#    "the layers that are assembled"; a reached layer missing from it is a layer somebody
-#    measured directly. Naming the positive relation makes the negation readable and gives
-#    the same set a second use elsewhere.
+# A leaf is defined by what it is not
+#   That is why this is an anti-join against a named relation rather than a `NOT EXISTS` inside a
+#   predicate. composition/fusions.sqlc is "the layers that are assembled"; a reached layer missing
+#   from it is a layer somebody measured directly. Naming the positive relation makes the negation
+#   readable and gives the same set a second use elsewhere.
 #
-# ⛔ COUNT THE ROWS PER (ROOT, LEAF) AND ANYTHING ABOVE ONE IS THE SAME SUPPLY ENTERING ONE
-#   TOTAL TWICE. Both routes are in the `path` column, which is what makes the finding
-#   actionable instead of merely true.
-# ⚠️ AN ANTI-JOIN THAT MATCHES NOTHING RETURNS THE WHOLE LEFT SIDE AND LOOKS LIKE A WORKING
-#   RELATION. Nothing about the row count says the exclusion happened.
-#   ⭐ THE LAW IS RECOMPUTED RATHER THAN RECORDED, algebra/leaves.sqlc, every run. It is also
-#   the one law with a live counter-example: rewrite this file as `EXCEPT` and it reports
-#   28 = 15 + 5, because descent is a bag on the key and EXCEPT deduplicates eight rows away.
+# More than one row per (root, leaf) is double supply
+#   Count the rows per (root, leaf) and anything above one is the same supply entering one total
+#   twice. Both routes are in the `path` column, which is what makes the finding actionable instead
+#   of merely true.
 #
-# ⭐⭐ `f.filing` IS THE RIGHT COLUMN TO TEST, AND THE CHOICE IS NOT FREE. It is the join key and
-#    `pm.part.composition` is NOT NULL, so a matched row can never carry a NULL there. Testing a
-#    NULLABLE column of the right-hand relation instead would keep matched rows whose payload
-#    happens to be null -- an anti-join that quietly under-removes, with no symptom.
+# An anti-join that matches nothing looks like a working relation
+#   It returns the whole left side, and nothing about the row count says the exclusion happened.
+#   The law is recomputed rather than recorded, algebra/leaves.sqlc, every run. It is also the one
+#   law with a live counter-example, below.
+#
+# `f.filing` is the right column to test
+#   The choice is not free. It is the join key and `pm.part.composition` is NOT NULL, so a matched
+#   row can never carry a NULL there. Testing a nullable column of the right-hand relation instead
+#   would keep matched rows whose payload happens to be null: an anti-join that quietly
+#   under-removes, with no symptom.
+#
+# Probe
+#   examples/probes runs it as `leaves`.
+#   Rewrite this file as `EXCEPT` and algebra/leaves.sqlc must fail, because descent is a bag on the
+#   key and `EXCEPT` deduplicates rows away.
 -- asrt:Part followed to a layer that names no parts of its own.
 SELECT d.*
 FROM      (

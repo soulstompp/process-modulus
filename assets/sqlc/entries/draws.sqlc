@@ -1,9 +1,10 @@
-# D, THE DRAW MATRIX: what an operation takes from a layer, now. One row per
-# (filing, operation, layer) -- the sparse form of a P x L matrix, where no row means that
+# D, the draw matrix: what an operation takes from a layer, now. One row per
+# (filing, operation, layer), the sparse form of a P x L matrix, where no row means that
 # operation draws nothing from that layer.
 #
-# ⛔ A DRAW IS CONSUMPTION THAT HAPPENED. Compare entries/inductions.sqlc, which is the same
-#   shape and a different fact, and is deliberately a second table for that reason.
+# A draw is consumption that happened
+#   Compare entries/inductions.sqlc, which is the same shape and a different fact, and is
+#   deliberately a second table for that reason.
 -- pm:Operation/pm:Draw.
 SELECT d.filing, d.operation, d.layer,
        d.low, d.mode, d.high, d.unit, d.absent

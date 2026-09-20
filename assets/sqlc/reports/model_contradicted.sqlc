@@ -1,26 +1,26 @@
-# THE LAYERS THAT DENY THE MODEL'S CENTRAL CLAIM, AND THE ARGUMENT EACH ONE MAKES. One row per
+# The layers that deny the model's central claim, and the argument each one makes. One row per
 # corpus layer filing the `absent` branch of `StatedRemainder`, beside how many corpus layers
 # there are to deny it.
 #
-# ⭐⭐⭐ THE PAIR WITH THE INDEPENDENCE REPORT IS THE POINT. This model makes two claims a
-#    document can refute in the model's own format, and each has a wrapper built to carry the
-#    refusal. `Coupling` says the layers hold their remainders INDEPENDENTLY -- and the search
-#    beside it records whether anybody looked. `StatedRemainder` says EVERY LAYER HAS A
-#    REMAINDER -- and requiring the wrapper forces a sender who disagrees to say so explicitly
-#    rather than leaving a field empty. One has never been confirmed and has once been
-#    contradicted. This is the other one.
+# The pair with the independence report
+#   That pair is the point. This model makes two claims a document can refute in the model's own
+#   format, and each has a wrapper built to carry the refusal. `Coupling` says the layers hold
+#   their remainders independently, and the search beside it records whether anybody looked.
+#   `StatedRemainder` says every layer has a remainder, and requiring the wrapper forces a sender
+#   who disagrees to say so explicitly rather than leaving a field empty. One has never been
+#   confirmed and has been contradicted. This is the other one.
 #
-# ⛔⛔ AND THESE ROWS WERE INVISIBLE UNTIL `ingest.sql` READ THE SECOND BRANCH. A denial arrived
-#    as five NULLs -- sign, absorber and quantity all blank -- which is exactly the shape of a
-#    document that said nothing. `refutation/object-storage` anticipated that in its own note:
-#    "filed as a counter-example to the claim that every layer carries a remainder, NOT AS A GAP
-#    IN THIS DOCUMENT". A gap is what was stored.
+# The rows need the second branch
+#   They are visible only because `ingest.sql` reads the second branch. Read without it, a denial
+#   arrives as five NULLs, with sign, absorber and quantity all blank, which is exactly the shape
+#   of a document that said nothing. `refutation/object-storage` anticipated that in its own note:
+#   "filed as a counter-example to the claim that every layer carries a remainder, not as a gap in
+#   this document". An ingest that read only the first branch once stored exactly that gap.
 #
-# ⛔ CORPUS ONLY, ON THE SAME ARGUMENT AS THE INDEPENDENCE REPORT. "The model has been
-#   contradicted" is a claim about the EVIDENCE. A fixture that denies a remainder proves the
-#   branch works and says nothing whatever about the world, so counting one here would
-#   manufacture a refutation nobody made.
---
+# Corpus only
+#   On the same argument as the independence report. "The model has been contradicted" is a claim
+#   about the evidence. A fixture that denies a remainder proves the branch works and says nothing
+#   whatever about the world, so counting one here would manufacture a refutation nobody made.
 -- pm:StatedRemainder's absent branch, over the corpus.
 SELECT d.filing, d.layer, d.reason,
        regexp_replace(d.argument, '\s+', ' ', 'g') AS the_counter_example,

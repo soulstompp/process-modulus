@@ -1,43 +1,48 @@
-# THIS REPOSITORY'S OWN COMPOSE DAG. One row per `(parent, child)` pair of templates, with how
+# This repository's own compose DAG. One row per `(parent, child)` pair of templates, with how
 # many times the parent splices the child.
 #
-# ⭐⭐⭐ IT SITS BESIDE `rank/graph_edges.sqlc` AND THAT IS THE POINT. That relation is the edge
-#    list of the graphs the MODEL composes; this is the edge list of the graph this REPOSITORY
-#    composes. Same shape, and `references/substitution.md`'s claim is that they are the same
-#    algebra: a term over named closed expressions with substitution as the only operator. Two
-#    edge lists in one directory is that claim stopping being a sentence.
+# Beside `rank/graph_edges.sqlc`, on purpose
+#   That relation is the edge list of the graphs the model composes; this is the edge list of
+#   the graph this repository composes. Same shape, and the claim is that they are the same
+#   algebra: a term over named closed expressions with substitution as the only operator. Two
+#   edge lists in one directory is that claim stopping being a sentence.
 #
-# ⛔⛔ AND `splices` IS WHERE THE TWO GRAPHS RULE OPPOSITE WAYS ON ONE FACT. A parent composing a
-#    child twice is ORDINARY: `references/planner.md` measured it and the repeated relation is
-#    read once, shared hit 9,883 and read 0, because a query is IDEMPOTENT. The identical shape
-#    in `pm.part` is `checks/jagged_layer`, a VIOLATION, because supply is a CONSERVED carrier
-#    and one total closes over both occurrences. ⭐ That difference is what this model adds to
-#    `sql-composer` and to BPMN 2.0. `queries/observations/19-duplication.sqlc` is the crossing,
-#    and it is a query because both sides are relations.
+# Where the two graphs rule opposite ways
+#   `splices` is where the two graphs rule opposite ways on one fact. A parent composing a child
+#   twice is ordinary: the repeated relation is read once, because a query is idempotent. The
+#   identical shape in `pm.part` is `checks/jagged_layer`, a violation, because supply is a
+#   conserved carrier and one total closes over both occurrences. That difference is what this
+#   model adds to `sql-composer` and to BPMN 2.0. `queries/observations/19-duplication.sqlc` is
+#   the crossing, and it is a query because both sides are relations.
 #
-# ⚠️ IT IS FILESYSTEM-FED AND OUTSIDE `pm`, WHICH IS A LINE WORTH KNOWING WHERE IT IS. Everything
-#   in `pm` descends from a filed document; this descends from `assets/sqlc/`. So a relation may
-#   read it to say something about THIS REPOSITORY and must never join it to a filing to say
-#   something about a subject. Same line `diagrams/lane_grain.sqlc` crosses to read
-#   `pg_constraint`.
+# Filesystem-fed and outside `pm`
+#   That is a line worth knowing the position of. Everything in `pm` descends from a filed
+#   document; this descends from `assets/sqlc/`. So a relation may read it to say something about
+#   this repository and must never join it to a filing to say something about a subject. It is
+#   the same line `diagrams/lane_grain.sqlc` crosses to read `pg_constraint`.
 #
-# ⭐ THE SCAN IS NOT THE POINT: THE JOIN IS. `examples/shared/tree/mod.rs` is the one scanner, shared by
-#   `compositions`, `soundness` and `observations`. What a `BTreeMap` in a Rust program cannot do
-#   is meet a relation, so any law that bounds one side of the tree by the other needs the DAG
-#   here rather than there.
+# The join is the point, not the scan
+#   `examples/shared/tree/mod.rs` is the one scanner, shared by `compositions`, `soundness` and
+#   `observations`. What a `BTreeMap` in a Rust program cannot do is meet a relation, so any law
+#   that bounds one side of the tree by the other needs the DAG here rather than there.
 #
-# ⭐⭐⭐ AND `inner_joins` IS THE SYNTAX. Who composes whom does not say HOW, and the how is what
-#    decides whether a bound survives:
-#    driving a query from a relation or left-joining it asks *what is missing from the whole*,
-#    inner-joining it asks *does this one pair exist*, and the second hands the whole composed
-#    relation to every consumer downstream. It is in the SQL text, so the program that reads the
-#    text classifies it and the fact lands here rather than in a second scanner.
+# `inner_joins` is the syntax
+#   Who composes whom does not say how, and the how is what decides whether a bound survives:
+#   driving a query from a relation or left-joining it asks *what is missing from the whole*,
+#   inner-joining it asks *does this one pair exist*, and the second hands the whole composed
+#   relation to every consumer downstream. It is in the SQL text, so the program that reads the
+#   text classifies it and the fact lands here rather than in a second scanner.
 #
-# ⚠️ AND `assets/dag/edges.sql` CAN GO STALE, which is the cost of the generate-then-load shape.
-#   `examples/soundness/main.rs` re-derives the pairs through the same module and compares, so a
-#   `:compose` added without rerunning the emitter fails the build rather than being loaded as
-#   an older tree. That is a staleness check and NOT two independent routes: it shares the
-#   scanner, so it catches the artifact drifting and could not catch the scanner being wrong.
+# `assets/dag/edges.sql` can go stale
+#   That is the cost of the generate-then-load shape. `examples/soundness/main.rs` re-derives
+#   the pairs through the same module and compares, so a `:compose` added without rerunning the
+#   emitter fails the build rather than being loaded as an older tree. That is a staleness check
+#   and not two independent routes: it shares the scanner, so it catches the artifact drifting
+#   and could not catch the scanner being wrong.
+#
+# Probe
+#   Run a parent that composes one child twice under `EXPLAIN (ANALYZE, BUFFERS)`: the repeated
+#   relation must be served from shared hits, with no reads.
 -- public.compose_edge, generated by examples/compositions/main.rs from assets/sqlc/.
 SELECT e.parent, e.child, e.splices, e.inner_joins
 FROM public.compose_edge e

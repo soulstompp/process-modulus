@@ -1,22 +1,24 @@
-# THE HOLDERS WHOSE SHARE THE ABSORBING BUFFER ACTUALLY TOOK. One row per holder of a kind that
+# The holders whose share the absorbing buffer actually took. One row per holder of a kind that
 # represents demand the system met: `booked`, `counterparty`, `people`.
 #
-# ⭐⭐⭐ IT IS THE POSITIVE SET OF THE MODEL'S OWN INEQUALITY, AND THE SIDE MOST LIKELY TO GO
-#    UNNAMED. The rule is `Σ_{j served} H[l,j] <= S[l, A(l)]`: what was absorbed is bounded by
-#    what could absorb. With only the complement in a file, a caller spells this side out as
-#    `LEFT JOIN entries/unserved_holders.sqlc USING (filing, layer, kind)` followed by
-#    `u.kind IS NULL` -- an anti-join standing in for a kind test on a column already in hand,
-#    written once per caller, in a relation nobody can run alone and count.
+# The positive set of the model's own inequality
+#   It is also the side most likely to go unnamed. The rule is `Σ_{j served} H[l,j] <= S[l, A(l)]`:
+#   what was absorbed is bounded by what could absorb. With only the complement in a file, a caller
+#   spells this side out as `LEFT JOIN entries/unserved_holders.sqlc USING (filing, layer, kind)`
+#   followed by `u.kind IS NULL`: an anti-join standing in for a kind test on a column already in
+#   hand, written once per caller, in a relation nobody can run alone and count.
 #
-# ⛔⛔ IT IS WRITTEN AS THE KINDS IT KEEPS, NOT AS A NEGATION OF ITS SIBLING. `NOT IN
-#    ('customer','unrealised')` would make this file's meaning depend on a list living somewhere
-#    else, and a sixth `pm:HolderKind` added to the schema would silently join the served side
-#    without anybody deciding it should. Naming the three is the decision, made here, visibly.
+# Written as the kinds it keeps
+#   Not as a negation of its sibling. `NOT IN ('customer','unrealised')` would make this file's
+#   meaning depend on a list living somewhere else, and a sixth `pm:HolderKind` added to the schema
+#   would silently join the served side without anybody deciding it should. Naming the three is the
+#   decision, made here, visibly.
 #
-# ⭐ TOGETHER WITH entries/unserved_holders.sqlc IT EXHAUSTS entries/holders.sqlc, and that is not
+# Served and unserved exhaust the holders
+#   Together with entries/unserved_holders.sqlc it exhausts entries/holders.sqlc, and that is not
 #   an assumption: algebra/borne.sqlc asserts `Σ all = Σ served + Σ unserved` on every run, and it
-#   composes BOTH files rather than re-deriving the split, so the law is about these relations
-#   and not about a copy of them.
+#   composes both files rather than re-deriving the split, so the law is about these relations and
+#   not about a copy of them.
 -- pm:HolderKind values `booked`, `counterparty` and `people`.
 SELECT h.*
 FROM (

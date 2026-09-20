@@ -1,19 +1,20 @@
 -- §7b  How many remainders the arithmetic can reach at all, which is §7's denominator.
+# One row, one number: the layers where `r = n - d` is computable, because both operands are
+# stated. layers/remainder.sqlc inner-joins demand to nameplate, so its cardinality is the answer
+# and nothing further is filtered here.
 #
-# ONE ROW, ONE NUMBER: the layers where `r = n - d` is computable, because both operands are
-# stated. layers/remainder.sqlc inner-joins demand to nameplate, so its cardinality IS the
-# answer and nothing further is filtered here.
+# One population, not two copies
+#   It exists so the example stops reaching past two relations into `pm.layer` and
+#   `pm.nameplate`. Written inline in Rust the count is a join with the two `IS NOT NULL`
+#   predicates spelled out again, the same two predicates layers/demand.sqlc and
+#   layers/nameplate.sqlc already own. Two copies of one population, and the day either wrapper
+#   narrows, the example keeps passing while measuring a different set.
 #
-# ⭐⭐ IT EXISTS SO THE EXAMPLE STOPS REACHING PAST TWO RELATIONS INTO `pm.layer` AND
-#    `pm.nameplate`. Written inline in Rust the count is a join with the two `IS NOT NULL`
-#    predicates spelled out again -- the same two predicates layers/demand.sqlc and
-#    layers/nameplate.sqlc already own. Two copies of one population, and the day either
-#    wrapper narrows, the example keeps passing while measuring a different set.
-#
-# ⛔ THE ASSERTION IT FEEDS IS A SECOND WITNESS, NOT THE FIRST. algebra/remainder_standing.sqlc
-#   asserts the same equality by counting layers/remainder.sqlc against
-#   layers/remainder_scope.sqlc, and examples/soundness/main.rs runs it. This route reaches the same
-#   number through the example that prints the standings, which is the point of having two.
+# A second witness, not the first
+#   The assertion it feeds is a second witness. algebra/remainder_standing.sqlc asserts the same
+#   equality by counting layers/remainder.sqlc against layers/remainder_scope.sqlc, and
+#   examples/soundness/main.rs runs it. This route reaches the same number through the example
+#   that prints the standings, which is the point of having two.
 -- layers/remainder.sqlc, counted.
 SELECT count(*) AS "computable!"
 FROM (

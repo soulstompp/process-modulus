@@ -1,34 +1,39 @@
-# THE NAMEPLATE AMOUNTS WHOSE UNIT CARRIES A PERIOD. One row per layer whose supply is quoted
-# as a RATE -- `4 GPU-hours per week` -- as against a STOCK, `12 people`.
+# The nameplate amounts whose unit carries a period. One row per layer whose supply is quoted as
+# a rate (`4 GPU-hours per week`) as against a stock, `12 people`.
 #
-# ⭐⭐ WHY THE DISTINCTION IS A RELATION AND NOT AN `IF`. "What fraction of the period is this
-#    supply available?" is a malformed question against a stock: `12 people` has no period, so
-#    "five days" has nothing to be five days of. Against a rate it is perfectly answerable, and
-#    `notApplicable` there is a refusal dressed as a category error. The set of units that have
-#    a period is therefore the thing that decides whether an absence is honest.
+# Why the distinction is a relation and not an `IF`
+#   "What fraction of the period is this supply available?" is a malformed question against a
+#   stock: `12 people` has no period, so "five days" has nothing to be five days of. Against a
+#   rate it is perfectly answerable, and `notApplicable` there is a refusal dressed as a
+#   category error. The set of units that have a period is therefore the thing that decides
+#   whether an absence is honest.
 #
-# ⛔⭐⭐ A DENOMINATOR IS NOT A PERIOD, AND THE NAME OF THIS FILE IS THE PREDICATE IT TESTS.
-#    `LIKE '% per %' OR LIKE '% por %'` finds a denominator; this rule needs a PERIOD, and the
-#    corpus separates them -- `asrt:factor` files `GPU-hour per GPU`, whose denominator is a
-#    GPU. At nameplate grain the two agree on every filing here, so a relation can carry the
-#    wrong predicate and the right rows until somebody files the case that splits them.
+# A denominator is not a period
+#   The name of this file is the predicate it tests. `LIKE '% per %' OR LIKE '% por %'` finds a
+#   denominator; this rule needs a period, and the corpus separates them: `asrt:factor` files
+#   `GPU-hour per GPU`, whose denominator is a GPU. At nameplate grain the two agree on every
+#   filing here, so a relation can carry the wrong predicate and the right rows until somebody
+#   files the case that splits them.
 #
-# ⭐⭐ AND THE TWO EDITIONS STAY OUT OF THE SQL ENTIRELY. `shifts per week` and `turnos por
-#    semana` both file `pm:denominator/pm:period`, so nothing here decides that `semana` IS
-#    `week`. Written as an `OR` over two spellings that judgement belongs to no filing.
+# The two editions stay out of the SQL entirely
+#   `shifts per week` and `turnos por semana` both file `pm:denominator/pm:period`, so nothing
+#   here decides that `semana` is `week`. Written as an `OR` over two spellings, that judgement
+#   belongs to no filing.
 #
-# ⛔⛔ `owns` IS A TWO-SEGMENT PATH AND NOT AN ELEMENT NAME, WHICH IS WHAT KEEPS THIS ONE ROW
-#    PER LAYER. `Demand/amount` and `Nameplate/amount` are the same element NAME, so a
-#    name-keyed `owns` makes this relation answer for the demand too and return TWO ROWS PER
-#    LAYER. A semi-join consumer cannot see the duplicate; a fault of that shape sits here
-#    undetected until something JOINS on it. A duty cycle is a fraction of the NAMEPLATE's
-#    period, and the demand's period is a different fact belonging to a different question.
-#    ⛔ AND THE DISAGREEING LAYER ALREADY EXISTS, so this is live rather than latent.
-#    `every-absence/delivery` quotes its DEMAND `per day` and files no nameplate amount at
-#    all, so a name-keyed predicate admits it on the strength of a fact about demand. It costs
-#    nothing only because that layer's window is `unmeasured`, and
-#    `window_not_applicable_on_a_rate` examines only `notApplicable` windows. One filing away
-#    from a wrong verdict is not the same as safe.
+# `owns` is a two-segment path, not an element name
+#   That is what keeps this one row per layer. `Demand/amount` and `Nameplate/amount` are the
+#   same element name, so a name-keyed `owns` makes this relation answer for the demand too and
+#   return two rows per layer. A semi-join consumer cannot see the duplicate; a fault of that
+#   shape sits here undetected until something joins on it. A duty cycle is a fraction of the
+#   nameplate's period, and the demand's period is a different fact belonging to a different
+#   question.
+#
+# The disagreeing layer already exists
+#   So this is live rather than latent. `every-absence/delivery` quotes its demand `per day` and
+#   files no nameplate amount at all, so a name-keyed predicate admits it on the strength of a
+#   fact about demand. It costs nothing only because that layer's window is `unmeasured`, and
+#   `window_not_applicable_on_a_rate` examines only `notApplicable` windows. One filing away
+#   from a wrong verdict is not the same as safe.
 -- pm:Claim/pm:denominator/pm:period, at pm:Nameplate/amount.
 SELECT c.filing, c.layer, c.unit, c.denominator AS period
 FROM      (

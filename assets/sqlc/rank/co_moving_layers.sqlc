@@ -1,33 +1,42 @@
-# THE LAYERS WHOSE REMAINDERS MUST MOVE TOGETHER, DERIVED. One row per ordered pair reachable from
+# The layers whose remainders must move together, derived. One row per ordered pair reachable from
 # each other through parts, plus the reflexive pair for each member.
 #
-# ⭐⭐⭐ `F⁺ ∩ (F⁺)ᵀ`, WHICH IS THE MODEL'S FOURTH FALSIFIER MADE COMPUTABLE. `pm:Layer` states it:
-#    *if two candidate layers' remainders always move together, they were never two layers.* If A
-#    is composed from B while B is composed from A there is no perturbation of one that leaves the
-#    other fixed, so the pair fails the definition of a layer: the two cells are one cell.
+# The fourth falsifier, computed
+#   `F⁺ ∩ (F⁺)ᵀ`. `pm:Layer` states the falsifier: *if two candidate layers' remainders always move
+#   together, they were never two layers.* If A is composed from B while B is composed from A, no
+#   perturbation of one leaves the other fixed, so the pair fails the definition of a layer: the
+#   two cells are one cell.
 #
-# ⭐⭐ AND IT IS A RANK DEFICIENCY, WHICH IS THE SAME DEFECT IN THE OTHER ALGEBRA. Composition is
-#    the linear map `x = (F Phi - E) x`, and two composed layers on a loop have linearly DEPENDENT
-#    rows in it. Ordinal rank fails to exist and matrix rank falls at the same moment, for the same
-#    reason. rank/evaluation_order.sqlc is the first half of that sentence.
+# The same defect in the other algebra: a rank deficiency
+#   Composition over the layers is `x = F Phi x - e`, with `e` the filed eliminations, which asks
+#   `(I - F Phi) x = -e` to have one solution. Two composed layers on a loop make `I - F Phi`
+#   singular wherever the factors round the loop multiply to 1, which is what a loop of one unit
+#   has: ordinal rank fails to exist and matrix rank falls at the same moment, for the same reason.
+#   rank/evaluation_order.sqlc is the ordinal half.
 #
-# ⭐ ONE SELF-JOIN, NOT A SECOND WALK. composition/descent.sqlc is already the transitive closure,
-#   so intersecting it with its converse gives an equivalence, and the classes fall out of a window
-#   because transitivity guarantees every member sees the same set.
+# One self-join, not a second walk
+#   composition/descent.sqlc is already the transitive closure, so intersecting it with its converse
+#   gives an equivalence. The classes fall out of a window, because transitivity guarantees every
+#   member sees the same set.
 #
-# ⛔ EMPTY IS THE GOOD OUTCOME AND IT IS ALSO WHAT AN UNREACHED RELATION RETURNS. It is empty on
-#   this corpus. Probe it: close a loop across two documents inside a transaction and roll back,
-#   and watch both instruments move.
+# Why the window sits outside the subquery
+#   The deduplication happens in the subquery and the window runs over its result. A window beside
+#   `SELECT DISTINCT` in one statement runs first, so `members` would count descent rows rather
+#   than layers.
 #
-# ⚠️ IT DOES NOT REPLACE THE FILER'S ATTESTATION. `pm:Stack` requires `couplings` because nobody
-#   could check independence from the data; this means the corpus can now CONTRADICT the answer,
-#   which is strictly more than it could do before and strictly less than deciding it.
+# Reading an empty result
+#   Empty is the good outcome, and it is also what an unreached relation returns. It is empty on
+#   this corpus.
+#
+# It does not replace the filer's attestation
+#   `pm:Stack` requires `couplings` because nobody could check independence from the data, and it
+#   still does. This relation lets the corpus contradict the filer's answer, which is strictly more
+#   than it could do before and strictly less than deciding the answer.
+#
+# Probe
+#   Close a loop across two documents inside a transaction and roll back; both this relation and
+#   checks/layers_move_together must move.
 -- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
---
--- ⛔ THE WINDOW RUNS BEFORE `DISTINCT`, WHICH COST A WRONG NUMBER. Written as one SELECT DISTINCT
---   with `count(*) OVER` beside it, `members` counted DESCENT ROWS and not layers, so a class of
---   two reported five and the rule's detail said so in words. The dedup has to happen in a
---   subquery and the window has to sit outside it.
 SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
        min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
        count(*) OVER w                                                    AS members

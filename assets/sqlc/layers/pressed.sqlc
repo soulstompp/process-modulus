@@ -1,15 +1,17 @@
-# THE LAYERS WHOSE REMAINDER IS CLAIMED TO BE ON OR OVER THE LINE. One row per layer filing
-# `interference` or `transition` -- demand meets or exceeds supply somewhere in the range.
+# The layers whose remainder is claimed to be on or over the line. One row per layer filing
+# `interference` or `transition`: demand meets or exceeds supply somewhere in the range.
 #
-# ⭐⭐ THIS IS THE SIDE WHERE SOMEBODY HAS TO BEAR SOMETHING. Under a clearance the supply is
-#    above demand everywhere and there is nothing to absorb; here there is, so the holder
-#    shares have a magnitude to add up to and the absorbing buffer has a size to fit inside.
-#    checks/clearance_with_unserved.sqlc ranges over the complement.
+# The side where somebody bears something
+#   Under a clearance the supply is above demand everywhere and there is nothing to absorb; here
+#   there is, so the holder shares have a magnitude to add up to and the absorbing buffer has a
+#   size to fit inside. checks/clearance_with_unserved.sqlc ranges over the complement.
 #
-# ⛔ ON OR OVER THE LINE IS NOT THE SAME QUESTION AS "WHAT DID THE BUFFER ABSORB", and the
-#   one consumer of this relation narrows it again to `interference` for exactly that reason
-#   -- see entries/borne.sqlc, where the narrowing is argued. Under a `transition` both sides
-#   are live at once and no single magnitude here says which one a share is on.
+# Not the same question as what the buffer absorbed
+#   On or over the line is not the same question as "what did the buffer absorb", and both
+#   consumers of this relation, entries/borne.sqlc and arithmetic/shares_bounded.sqlc, narrow it
+#   again to `interference` for exactly that reason; borne is where the narrowing is argued. Under
+#   a `transition` both sides are live at once and no single magnitude here says which one a share
+#   is on.
 -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
 FROM (

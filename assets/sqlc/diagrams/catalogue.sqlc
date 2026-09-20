@@ -1,13 +1,15 @@
-# EVERY TABLE THE `pm` SCHEMA ACTUALLY HAS, READ FROM THE CATALOGUE. One row per table.
+# Every table the `pm` schema actually has, read from the catalogue. One row per table.
 #
-# ⭐⭐⭐ THE POPULATION OF THE DOMAIN-OBJECT CONTRACT, AND THE DATABASE IS THE ONLY HONEST SOURCE
-#    FOR IT. diagrams/domain_objects.sqlc declares what each relational object renders as; this is
-#    what there is to declare about. Parsing `CREATE TABLE` out of the `.ddl` would be a second
-#    reading of the same file the schema was loaded from, so a table added and never loaded would
-#    still appear and the contract would agree with a database that does not exist.
+# The population of the domain-object contract
+#   The database is the only honest source for it. diagrams/domain_objects.sqlc declares what each
+#   relational object renders as; this is what there is to declare about. Parsing `CREATE TABLE`
+#   out of the `.ddl` would be a second reading of the same file the schema was loaded from, so a
+#   table added and never loaded would still appear and the contract would agree with a database
+#   that does not exist.
 #
-# ⛔ IT IS THE ONE RELATION HERE THAT READS OUTSIDE `pm`, and it is the reason: a contract needs a
-#   population it did not write. `information_schema` is SQL-standard and every engine has it.
+# The one relation here that reads outside `pm`
+#   That is the reason for it: a contract needs a population it did not write.
+#   `information_schema` is SQL-standard and every engine has it.
 -- information_schema.tables restricted to the schema this model owns.
 SELECT t.table_name::text AS object
 FROM information_schema.tables t

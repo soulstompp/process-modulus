@@ -1,26 +1,29 @@
-# TWO PARTS OF ONE COMPOSED LAYER, DRAWN FROM ONE FILING, WITH WHAT EACH CONTRIBUTES. One row
-# per ordered pair of part layers that the same fusion absorbs from the same part filing,
-# carrying each side's conversion factor.
+# Two parts of one composed layer, drawn from one filing, with what each contributes. One row per
+# ordered pair of part layers that the same fusion absorbs from the same part filing, carrying each
+# side's conversion factor.
 #
-# ⭐⭐⭐ THIS IS THE `INSIDE ONE FUSION` SELF-JOIN, AND IT IS NOT THE OTHER ONE. Two self-joins of
-#    composition/parts.sqlc live in this tree and they answer opposite questions:
-#      here                       join on the COMPOSED LAYER -> two parts inside one total
-#      eliminations/derived.sqlc  join on the PART           -> one part inside two totals
-#    The first is a fusion's internal structure, which is what an `asrt:Elimination` speaks
-#    about: its `between` names which of ITS OWN parts overlap. The second is two documents
-#    reaching for the same supply, which is a referral to a person. Same operands, different
-#    key, and unifying them would be a category error.
+# The self-join inside one fusion
+#   This is the self-join inside one fusion, and it is not the other one. Two self-joins of
+#   composition/parts.sqlc live in this tree and they answer opposite questions:
+#     here                       join on the composed layer -> two parts inside one total
+#     eliminations/derived.sqlc  join on the part           -> one part inside two totals
+#   The first is a fusion's internal structure, which is what an `asrt:Elimination` speaks about:
+#   its `between` names which of its own parts overlap. The second is two documents reaching for
+#   the same supply, which is a referral to a person. Same operands, different key, and unifying
+#   them would be a category error.
 #
-# ⭐⭐ IT IS ORDERED RATHER THAN UNORDERED, AND THAT IS WHAT ITS CALLER NEEDS. A coupling has a
-#    direction, `from` and `to`, so reports/coupling_absorbed_by_a_fusion.sqlc must be able to
-#    look up the pair the coupling names in the order the coupling names it. Its sibling
-#    eliminations/derived.sqlc takes the row comparison `<` instead, because an overlap has no
-#    direction and reporting it twice would be reporting it twice.
+# Ordered, because its caller needs the order
+#   It is ordered rather than unordered. A coupling has a direction, `from` and `to`, so
+#   reports/coupling_absorbed_by_a_fusion.sqlc must be able to look up the pair the coupling names
+#   in the order the coupling names it. Its sibling eliminations/derived.sqlc takes the row
+#   comparison `<` instead, because an overlap has no direction and reporting it twice would be
+#   reporting it twice.
 #
-# ⛔ THE REFLEXIVE PAIR IS KEPT ON PURPOSE. A layer is trivially a sibling of itself, and the
-#   caller wants that row: a coupling whose ends are the same layer is unreachable through
-#   pm.coupling's own key, so excluding it here would be guarding against something the schema
-#   already forbids while silently changing what a future caller sees.
+# The reflexive pair is kept on purpose
+#   A layer is trivially a sibling of itself, and the caller wants that row: a coupling whose ends
+#   are the same layer is unreachable through pm.coupling's own key, so excluding it here would be
+#   guarding against something the schema already forbids while silently changing what a future
+#   caller sees.
 -- composition/parts.sqlc crossed with itself on the composed layer and the part filing.
 SELECT x.composition, x.composed_layer,
        x.part_filing,

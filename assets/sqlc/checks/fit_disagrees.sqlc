@@ -1,19 +1,22 @@
-# EVERY LAYER THAT FILES A SIGN, BESIDE THE SIGN ITS OWN RANGES IMPLY. One row per examined
+# Every layer that files a sign, beside the sign its own ranges imply. One row per examined
 # layer, `violates` where the two disagree.
 #
-# ⭐⭐⭐ THE RULE: the filed sign agrees with the range comparison. This is the flagship of
-#    the whole file, because it is a rule XSD 1.0 cannot express AT ALL -- it compares one
-#    element against two others in the same document, which a grammar has no vocabulary for --
-#    and it is one line of SQL.
+# The filed sign agrees with the ranges
+#   The rule: the filed sign agrees with the range comparison. This is the flagship of the whole
+#   file, because it is a rule XSD 1.0 cannot express at all (it compares one element against two
+#   others in the same document, which a grammar has no vocabulary for), and it is one line of
+#   SQL.
 #
-# ⭐ RUN THIS ALONE RATHER THAN READING THE VIOLATIONS TABLE. Empty output proves nothing; a
-#   full table of layers with their two signs side by side shows the model agreeing with real
+# Run it alone
+#   Run this alone rather than reading the violations table. Empty output proves nothing; a full
+#   table of layers with their two signs side by side shows the model agreeing with real
 #   documents, which is the thing actually worth seeing.
 #
-# ⛔ ONLY A STATED SIGN IS HERE. A `derived` sign IS the comparison and cannot disagree with
-#   it; `unmeasured` and `notApplicable` file nothing to compare. Reporting those as passes
-#   would count layers this rule never looked at -- and reporting them as failures is what
-#   actually happened, once, to the first fixture that filed one.
+# Only a stated sign is here
+#   A `derived` sign is the comparison and cannot disagree with it; `unmeasured` and
+#   `notApplicable` file nothing to compare. Reporting those as passes would count layers this
+#   rule never looked at, and reporting them as failures wrongly accuses a fixture that files
+#   one.
 -- pm:Remainder/sign against pm:Demand and pm:Nameplate; conformance rule "sign agrees".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

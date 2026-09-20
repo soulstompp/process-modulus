@@ -1,27 +1,30 @@
 -- §7  Which buffers the corpus actually sizes, and the one that reads zero.
+# One row per (corpus layer, buffer): whether that buffer was sized, and the typed absence if not.
+# A bound is worth exactly as much as the rows it has to bound, so this is the coverage for the
+# two inequalities built on `S`.
 #
-# ONE ROW PER (CORPUS LAYER, BUFFER): whether that buffer was SIZED, and the typed absence if
-# not. A bound is worth exactly as much as the rows it has to bound, so this IS the coverage
-# for the two inequalities built on `S`.
+# The two inequalities
+#   `Σ_{j ≠ unrealised} H[l,j] ≤ S[l, A(l)]` bounds the filed shares against the slack of the
+#   buffer the remainder names as its absorber, and the `capacity` rows close a second inequality
+#   on top of that, the one bounding what a filing's own demand and nameplate say could have gone
+#   unserved.
 #
-# ⭐ `Σ_{j ≠ unrealised} H[l,j] ≤ S[l, A(l)]` bounds the filed shares against the slack of the
-# buffer the remainder names as its absorber, and the `capacity` rows close a second inequality
-# on top of that, the one bounding what a filing's own demand and nameplate say could have
-# gone unserved.
+# The interesting answer reads zero
+#   And there are two ways to read zero. Every corpus layer that sizes its capacity slack sizes it
+#   at [0,0,0], a filer saying the supply cannot be run above its rating at any price. That is the
+#   tightest possible bound rather than a missing one, so the shortfall inequality is exercised,
+#   not silent.
 #
-# ⛔⛔ THE INTERESTING ANSWER IS THE ONE THAT READS ZERO, AND THERE ARE TWO WAYS TO READ ZERO.
-# Eleven corpus layers size their capacity slack and every one sizes it at [0,0,0], a filer
-# saying the supply cannot be run above its rating at any price. That is the TIGHTEST possible
-# bound rather than a missing one, so the shortfall inequality is exercised, not silent.
+# Prose about this column goes stale
+#   A sentence like "no layer in this corpus sizes its capacity slack" is true until a spelling
+#   moves, and this one moves: turn the `absent/reason = none` slacks into claimed zeros and the
+#   column fills while any prose beside it stands still, because nothing printed the number.
+#   examples/observations/main.rs prints it. A bound with nothing to bound passes loudest, so the
+#   trap is real; it is just not this column.
 #
-# ⚠️ A SENTENCE LIKE "NO LAYER IN THIS CORPUS SIZES ITS CAPACITY SLACK" IS TRUE UNTIL A
-# SPELLING MOVES, AND THIS ONE MOVES: turn the `absent/reason = none` slacks into claimed zeros
-# and the column fills while any prose beside it stands still, because nothing printed the
-# number. examples/observations/main.rs prints it. A bound with nothing to bound passes loudest, so
-# the trap is real; it is just not this column today.
-#
-# ⚠️ A NULL `absent` BESIDE AN UNSIZED ROW IS NOT THE SAME AS `unmeasured`. The schema's CHECK
-# constraints decide which combinations are legal; this query only reports what is there.
+# A NULL `absent` is not `unmeasured`
+#   A NULL `absent` beside an unsized row is not the same as `unmeasured`. The schema's CHECK
+#   constraints decide which combinations are legal; this query only reports what is there.
 -- entries/slacks.sqlc at corpus scope.
 SELECT s.filing            AS "filing!",
        s.layer             AS "layer!",

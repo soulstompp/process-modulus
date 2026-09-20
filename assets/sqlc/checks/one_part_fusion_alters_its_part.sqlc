@@ -1,28 +1,37 @@
-# EVERY FUSION OF ONE PART THAT ELIMINATES NOTHING, BESIDE THE PART IT CARRIES. One row per
-# such fusion per quantity, `violates` where the composed figure is not the part's.
+# Every fusion of one part that eliminates nothing, beside the part it carries. One row per such
+# fusion per quantity, `violates` where the composed figure is not the part's.
 #
-# ⭐⭐ THE RULE: a fusion of one part with nothing eliminated carries that part unchanged. There
-#    is nothing to sum, nothing to subtract and no judgement to make, so a difference here has
-#    no defence. `every-local-part` states the case it is testing: "A one-part fusion is not
-#    degenerate: it says this reviewer read that layer and carried it." Carrying is an
-#    assertion and therefore a thing that can be got wrong.
+# One part, nothing eliminated, carried unchanged
+#   The rule: a fusion of one part with nothing eliminated carries that part unchanged. There is
+#   nothing to sum, nothing to subtract and no judgement to make, so a difference here has no
+#   defence. `every-local-part` states the case it is testing: "A one-part fusion is not
+#   degenerate: it says this reviewer read that layer and carried it." Carrying is an assertion
+#   and therefore a thing that can be got wrong.
 #
-# ⛔⛔⛔ AND IT IS THE ONLY RULE THAT ASKS ABOUT A COMPOSED NAMEPLATE OR A COMPOSED SLACK.
-#    `fusion_sum_disagrees` reads `composition/fused.sqlc`, which answers `'demand' AS quantity`
-#    as a literal, and `window_lost_or_summed` covers the calendar. Demonstrated 2026-09-06:
-#    `merge-group-composition/compute-us` had its composed nameplate moved from 8 GPU to 40 GPU
-#    -- five times the one part it is composed from -- and no composition rule noticed.
-#    ⚠️ THIS DOES NOT CLOSE THAT HOLE, it only closes the case where the arithmetic is trivial.
-#    A MULTI-part fusion can still move its nameplate freely, and the corpus files SIX SIZED
-#    `nameplate` eliminations and TWO `draw` ones that no relation reads.
+# The only rule on a composed nameplate or slack
+#   `fusion_sum_disagrees` reads `composition/fused.sqlc`, which answers `'demand' AS quantity`
+#   as a literal, and `window_lost_or_summed` covers the calendar. Without this rule, a one-part
+#   fusion's composed nameplate can move to a multiple of its only part and no composition rule
+#   notices.
 #
-# ⛔ IT COMPARES FIGURES AND NOT UNITS, deliberately. A single part may be converted into the
-#   composed layer's unit, so a unit that differs is what `asrt:factor` is FOR. The figure is
+# What it does not close
+#   It closes only the case where the arithmetic is trivial. A multi-part fusion can still move
+#   its nameplate freely, and the corpus files sized `nameplate` eliminations and `draw` ones
+#   that no relation reads.
+#
+# Figures, not units
+#   It compares figures and not units, deliberately. A single part may be converted into the
+#   composed layer's unit, so a unit that differs is what `asrt:factor` is for. The figure is
 #   compared after conversion; `quantum_unit_mismatch` and `slack_unit_mismatch` own the units.
 #
-# ⭐ SUSPENSION IS INHERITED RATHER THAN RESTATED. composition/carried.sqlc excludes anything
-#   suspended and anything with an elimination filed, so this rule never has to decide what is
-#   owed: it examines only the fusions where the answer is forced.
+# Suspension is inherited, not restated
+#   composition/carried.sqlc excludes anything suspended and anything with an elimination filed,
+#   so this rule never has to decide what is owed: it examines only the fusions where the answer
+#   is forced.
+#
+# Probe
+#   Move the composed nameplate of `merge-group-composition/compute-us` to five times the one
+#   part it is composed from; this rule must fire.
 -- composition/carried.sqlc: the part's figure against the composed layer's, per quantity.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

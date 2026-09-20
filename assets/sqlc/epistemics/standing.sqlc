@@ -1,29 +1,26 @@
-# WHO STANDS BEHIND EACH CLAIM, AND ON WHAT AUTHORITY. One row per three-point claim in the
-# corpus: the party asserting it, the standing they claim, and the typed reason where they
-# claim none.
+# Who stands behind each claim, and on what authority. One row per three-point claim in the corpus:
+# the party asserting it, the standing they claim, and the typed reason where they claim none.
 #
-# ⭐⭐⭐ THE AXIS THE SCHEMA CALLS LOAD-BEARING AND THE DATABASE COULD NOT SEE. `pm:Provenance`
-#    appeared nowhere in ingest.sqlc until 0.4 -- no table, no column, no path -- so `standing`,
-#    which `Dependence` describes as "the axis separating a statutory auditor's observation
-#    from a controller's hunch", was filed 117 times and readable by nothing below the XML. It
-#    is reached by asking a different question: tests/state_coverage.rs declares a verdict per
-#    wrapper, and a wrapper missing from that table is a wrapper nobody has measured.
+# The axis the schema calls load-bearing
+#   `Dependence` describes `standing` as "the axis separating a statutory auditor's observation from
+#   a controller's hunch". When ingest.sqlc has no table, column or path for `pm:Provenance`, the
+#   standing is filed and readable by nothing below the XML. That gap is reached by asking a
+#   different question: tests/state_coverage.rs declares a verdict per wrapper, and a wrapper
+#   missing from that table is a wrapper nobody has measured.
 #
-# ⛔⛔ AND THE FIRST THING IT SAYS IS THAT ALMOST NOBODY CLAIMS ANY. One stated standing in the
-#    whole corpus against 116 explicit refusals and 124 claims carrying no provenance element
-#    at all. ⚠️ Two of those three figures move with the corpus and one does not, so quoting
-#    them here is quoting a number nobody recounts: adding the Portuguese twins doubles the
-#    refusals and leaves the claims where they were. examples/observations/main.rs prints all three,
-#    which makes a move a diff rather than a comment nobody rereads.
+# Almost nobody claims any
+#   The first thing it says is that stated standings are rare, against explicit refusals and claims
+#   carrying no provenance element at all. Run examples/observations/main.rs for the three figures;
+#   it prints all three, which makes a move a diff rather than a comment nobody rereads.
 #
-#    That is a finding about the EVIDENCE and not a defect in it -- `unmeasured` here reads
-#    "no standing vocabulary is published for this assertion", which is the honest answer when
-#    no authority publishes a list to borrow from.
+#   That is a finding about the evidence and not a defect in it: `unmeasured` here reads "no
+#   standing vocabulary is published for this assertion", which is the honest answer when no
+#   authority publishes a list to borrow from.
 #
-# ⭐ THE THREE STATES ARE NOT TWO. A claim with no `provenance` element said nothing; one whose
-#   `standing` is `absent` was asked and answered. Folding them would count a silence as a
-#   refusal, which is the same collapse `StatedBorrowedTerm`'s own annotation refuses at
-#   `Regime/framework`.
+# The three states are not two
+#   A claim with no `provenance` element said nothing; one whose `standing` is `absent` was asked
+#   and answered. Folding them would count a silence as a refusal, which is the same collapse
+#   `StatedBorrowedTerm`'s own annotation refuses at `Regime/framework`.
 -- pm:Claim/pm:provenance, with pm:StatedBorrowedTerm at pm:standing.
 SELECT c.filing, c.seq, c.owns, c.layer,
        c.prov_party AS party,

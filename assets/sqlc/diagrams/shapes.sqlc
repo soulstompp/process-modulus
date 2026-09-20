@@ -1,26 +1,28 @@
-# EVERYTHING THE DIAGRAM INTERCHANGE OWES A SHAPE OR AN EDGE. One row per drawn element.
+# Everything the diagram interchange owes a shape or an edge. One row per drawn element.
 #
-# ⭐⭐⭐ EVERY DRAWN ELEMENT IS HERE, INCLUDING THE THREE THAT ARE DERIVED. A `group`, an
-#    `association` and a `textAnnotation` are each computed from the primitives' boxes, and it is
-#    tempting to leave them out on the argument that a derived value can disagree with what
-#    computes it. ⛔ That argument is about the wrong column: this relation carries no `x` and no
-#    `y` for ANYTHING. It says which elements OWE a shape, never where the shape is, so a row
-#    here files no coordinate and the derivation stays in `examples/diagramming/main.rs`, which
-#    computes the primitives' geometry anyway.
+# Every drawn element is here
+#   Including the three that are derived. A `group`, an `association` and a `textAnnotation` are
+#   each computed from the primitives' boxes, and it is tempting to leave them out on the argument
+#   that a derived value can disagree with what computes it. That argument is about the wrong
+#   column: this relation carries no `x` and no `y` for anything. It says which elements owe a
+#   shape, never where the shape is, so a row here files no coordinate and the derivation stays in
+#   `examples/diagramming/main.rs`, which computes the primitives' geometry anyway.
 #
-# ⛔ AND AN ELEMENT WITH NO ROW HERE GETS NO DIAGRAM INTERCHANGE, so `examples/rendering/main.rs` must
-#    derive its geometry a second time from the artifact it just read, and any other reader loses
-#    it silently: absent DI is not an error, it is nothing drawn.
+# No row, no diagram interchange
+#   An element with no row here gets no diagram interchange, so `examples/rendering/main.rs` must
+#   derive its geometry a second time from the artifact it just read, and any other reader loses
+#   it silently: absent DI is not an error, it is nothing drawn.
 #
-# ⛔ IT IS STILL THE SAME TEST `eliminations/derived.sqlc` PASSES, and the test still bites. A
-#   magnitude that can be derived must not be FILED; a coordinate that can be derived must not be
-#   filed either. Neither is filed here. Deriving one INTO AN ARTIFACT is what both stages do and
-#   what the test was never about.
+# The same test `eliminations/derived.sqlc` passes
+#   And the test still bites. A magnitude that can be derived must not be filed; a coordinate that
+#   can be derived must not be filed either. Neither is filed here. Deriving one into an artifact
+#   is what both stages do and what the test was never about.
 #
-# ⚠️ `di` IS DECLARED BECAUSE BPMN HAS TWO CARRIERS AND THEY ARE NOT INTERCHANGEABLE. A box is a
-#   `bpmndi:BPMNShape` with `dc:Bounds`; a route is a `bpmndi:BPMNEdge` with `di:waypoint`s, in a
-#   third namespace. An association is the only thing here that is a route, and counting it with
-#   the boxes would make `|shapes|` a number that matches nothing in the document.
+# `di` is declared
+#   BPMN has two carriers and they are not interchangeable. A box is a `bpmndi:BPMNShape` with
+#   `dc:Bounds`; a route is a `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. An
+#   association is the only thing here that is a route, and counting it with the boxes would make
+#   `|shapes|` a number that matches nothing in the document.
 -- BPMN 2.0 DI: a bpmndi:BPMNShape per box and a bpmndi:BPMNEdge per route.
 SELECT p.filing AS document, 'pool' AS shape_of, p.filing AS subject, 'shape' AS di
 FROM ( :compose(diagrams/pools.sqlc) ) p

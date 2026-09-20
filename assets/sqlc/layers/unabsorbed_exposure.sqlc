@@ -1,28 +1,32 @@
-# EVERY EXPOSURE THAT HAD NOWHERE TO GO. One row per layer where every buffer is accounted for
-# and none of them has room, beside the exposure its own two measurements imply.
+# Every exposure that had nowhere to go. One row per layer where every buffer is accounted for and
+# none of them has room, beside the exposure its own two measurements imply.
 #
-# ⭐⭐⭐ THE ARGUMENT IS THE WHOLE ROW AND NEVER ONE COLUMN. Read as "the capacity buffer is a
-#    stated zero" this is one route closed rather than nowhere to go: the same layer could
-#    still have drawn on stock or made the demand wait. Two rules rest on this
-#    population, and from that premise both conclude that somebody went without, which does not
-#    carry it. `S` is an L x 3 matrix and the three buffers are substitutes; the index belongs
-#    in a column, which is where assets/ddl/schema.ddl has always kept it.
+# The argument is the whole row
+#   The argument is the whole row and never one column. Read as "the capacity buffer is a stated
+#   zero", this is one route closed rather than nowhere to go: the same layer could still have
+#   drawn on stock or made the demand wait. Two rules rest on this population, and from that
+#   premise both conclude that somebody went without, which does not carry it. `S` is an L x 3
+#   matrix and the three buffers are substitutes; the index belongs in a column, which is where
+#   assets/ddl/schema.ddl has always kept it.
 #
-# ⭐⭐ AND THE ESCAPE CLAUSE THAT MAKES IT SOUND IS WRITTEN FOR ONE BUFFER AND TRUE OF THREE. "An
-#    absent capacity slack licenses none of this, because nobody knows whether the supply could
-#    have stretched." The same holds of inventory and of time, and a clause carried to one of
-#    three reads as though the other two were settled.
+# The escape clause holds for all three buffers
+#   The escape clause that makes it sound is written for one buffer and true of three. "An absent
+#   capacity slack licenses none of this, because nobody knows whether the supply could have
+#   stretched." The same holds of inventory and of time, and a clause carried to one of three
+#   reads as though the other two were settled.
 #
-# ✅⛔ AND IT RESTS ON `stated`, NOT ON `measured`. Once every zero carried a `boundOrigin` the
-#    population could be read back, and none of the capacity zeros was measured: `contractual`,
-#    a reserved block somebody negotiated, and `intrinsic`, a material limit. A shelf life
-#    entails a zero, a negotiation fixes one, an observation records one, and all three are
-#    somebody saying the buffer is empty and standing behind it.
+# It rests on `stated`, not on `measured`
+#   Every zero carries a `boundOrigin`, so the population can be read back, and none of the
+#   capacity zeros was measured: `contractual`, a reserved block somebody negotiated, and
+#   `intrinsic`, a material limit. A shelf life entails a zero, a negotiation fixes one, an
+#   observation records one, and all three are somebody saying the buffer is empty and standing
+#   behind it.
 #
-# ⛔ TWO RULES READ THIS RELATION AND THEY ASK DIFFERENT QUESTIONS OF IT. One wants the layers
-#   with no named holder; the other wants every one of them, against the shares that were
-#   admitted. Inlined at both call sites, these joins are two copies of one population, which
-#   is one edit away from two populations under one argument.
+# Two rules, two questions
+#   Two rules read this relation and they ask different questions of it. One wants the layers with
+#   no named holder; the other wants every one of them, against the shares that were admitted.
+#   Inlined at both call sites, these joins are two copies of one population, which is one edit
+#   away from two populations under one argument.
 -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
 FROM (

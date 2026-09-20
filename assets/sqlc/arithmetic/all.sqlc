@@ -1,19 +1,22 @@
-# EVERY INSTANCE OF EVERY COMPUTATION THIS MODEL PERFORMS, WITH A VERDICT ON WHETHER IT MAY BE
-# PERFORMED. One row per (site, examined item): which arithmetic, which layer of which filing,
+# Every instance of every computation this model performs, with a verdict on whether it may be
+# performed. One row per (site, examined item): which arithmetic, which layer of which filing,
 # whether the operands are there and commensurable, and a sentence saying what is in the way.
 #
-# ⭐⭐⭐ THIS IS THE RELATION examples/readiness/main.rs IS A VIEW OF, AND IT ANSWERS A DIFFERENT
-#    QUESTION FROM checks/all.sqlc. A check says the document contradicts the model. This says
-#    you cannot compute here at all -- which is not a defect in the document and not a pass
-#    either. Reporting the second as the first accuses a filer of a gap they told you about.
+# Not a check
+#   This is the relation examples/readiness/main.rs is a view of, and it answers a different
+#   question from checks/all.sqlc. A check says the document contradicts the model. This says you
+#   cannot compute here at all, which is not a defect in the document and not a pass either.
+#   Reporting the second as the first accuses a filer of a gap they told you about.
 #
-# ⭐⭐ THREE VERDICTS, NOT TWO. `computable`, `suspended`, `not comparable`. The middle one is
-#    the one a boolean cannot hold, and it is the common case: sixteen of thirty-six layers
-#    cannot sum their shares because somebody declined to measure one.
+# Three verdicts, not two
+#   `computable`, `suspended`, `not comparable`. The middle one is the one a boolean cannot hold,
+#   and it is the common case on this corpus: many layers cannot sum their shares because
+#   somebody declined to measure one.
 #
-# ⛔ THE CONTRACT EVERY SITE KEEPS: one plain SELECT, no leading WITH, returning exactly
-#   `(site, filing, layer, verdict, detail)`, with `verdict` NULL only on the roster row that
-#   says a site examined nothing. Same shape as checks/, same reason.
+# The contract every site keeps
+#   One plain SELECT, no leading WITH, returning exactly `(site, filing, layer, verdict, detail)`,
+#   with `verdict` NULL only on the roster row that says a site examined nothing. Same shape as
+#   checks/, for the same reason.
 -- arithmetic/roster.sqlc joined to each site's own population.
 :union(ALL arithmetic/remainder.sqlc,
            arithmetic/shares_sum.sqlc,
