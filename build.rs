@@ -227,7 +227,7 @@ fn roster(examples: &[Example]) -> String {
          Read them rendered, or run them:\n\n\
          ```text\n\
          cargo doc --examples --open\n\
-         cargo run --example matrices\n\
+         cargo run --example soundness\n\
          ```\n\n\
          ⚠️ `docs.rs` builds the library only, so the pages behind this table exist wherever \
          `cargo doc --examples` was run. The sources travel with the crate either way.\n",

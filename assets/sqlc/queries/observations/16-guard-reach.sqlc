@@ -259,9 +259,6 @@ denied_remainders AS MATERIALIZED (
 every_layer AS MATERIALIZED (
     :define(layers/every_layer.sqlc)
 ),
-signed AS MATERIALIZED (
-    :define(layers/signed.sqlc)
-),
 conversions AS MATERIALIZED (
     :define(units/conversions.sqlc)
 ),

@@ -42,11 +42,10 @@ const ROOTS: [&str; 1] = ["README.md"];
 /// because `tests/examples.rs` already holds that table against each program's own first line, in
 /// both directions and both languages, and `build.rs` generates the crate's copy from the same
 /// source. A second law over the same edges would be a fork of a working one.
-const INDEX: [(&str, &str); 8] = [
+const INDEX: [(&str, &str); 7] = [
     ("README.md", "schema"),
     ("README.md", "assets"),
     ("README.md", "conformance"),
-    ("README.md", "src/proofs"),
     ("README.md", "examples"),
     ("assets/README.md", "assets/corpus"),
     ("assets/README.md", "assets/fixtures"),

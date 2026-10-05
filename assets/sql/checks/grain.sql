@@ -1517,15 +1517,6 @@ FROM (
 WHERE r.sign IN ('interference', 'transition')
 
 ),
-signed AS MATERIALIZED (
-    -- pm:Remainder/sign, stated rather than absent.
-SELECT r.*
-FROM (
-    SELECT * FROM remainder
-) r
-WHERE r.sign IS NOT NULL
-
-),
 unabsorbed_exposure AS MATERIALIZED (
     -- layers/exposure_scope.sqlc, restricted to the standing that licenses a conclusion.
 SELECT s.*
@@ -1620,7 +1611,13 @@ LEFT JOIN (
            s.sign IS DISTINCT FROM s.derived_fit::pm.fit AS violates,
            format('filed %s, ranges say %s', s.sign, s.derived_fit) AS detail
     FROM (
-        SELECT * FROM signed
+        -- pm:Remainder/sign, stated rather than absent.
+SELECT r.*
+FROM (
+    SELECT * FROM remainder
+) r
+WHERE r.sign IS NOT NULL
+
     ) s
 ) p ON true
 WHERE r.slug = 'fit_disagrees'

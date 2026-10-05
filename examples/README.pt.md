@@ -24,12 +24,10 @@ como o `build.rs` decide o que entra na tabela abaixo.
 | exemplo | a pergunta a que responde | base de dados |
 |---|---|---|
 | [`combinatorics`](combinatorics/) | O que se pode ler de uma classificação, e cada lei daqui lê aquilo que se confia que lê? | sim |
-| [`columns`](columns/) | Que matriz neste repositório tem um espaço de colunas, e o que vive na metade dele que nenhum potencial explica? | não |
 | [`compositions`](compositions/) | As composições que este repositório tem, e as três precondições que fazem delas uma álgebra. | não |
 | [`diagramming`](diagramming/) | O modelo, traduzido para BPMN 2.0, e as leis que dizem que a tradução foi fiel. | sim |
 | [`generation`](generation/) | Uma execução do modelo chega sequer a arquivar? | sim |
 | [`graphs`](graphs/) | Os três grafos que este modelo compõe, como os lane sets de uma só pool. | sim |
-| [`matrices`](matrices/) | A segunda testemunha: a mesma aritmética, calculada por outra via. | sim |
 | [`observations`](observations/) | O que o conjunto de documentos diz de facto, e se alguma coisa está a olhar. | sim |
 | [`probes`](probes/) | Se cada lei já foi VISTA A FALHAR, e cada declaração correta vista a sobreviver a uma edição que não a pode acusar. | sim |
 | [`readiness`](readiness/) | Antes da aritmética: pode-se sequer calcular aqui? | sim |
@@ -45,7 +43,7 @@ portanto falham em vez de correr. O [`README.pt.md`](../README.pt.md) da raiz te
 constroem a base de dados.
 
 ```text
-cargo run --example matrices          # um deles
+cargo run --example soundness          # um deles
 cargo doc --examples --open           # os cabeçalhos de todos, compostos
 ```
 

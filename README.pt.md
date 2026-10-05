@@ -182,7 +182,6 @@ esta tabela é uma porta de entrada e não uma segunda cópia.
 | [`schema/`](schema/) | o próprio artefacto, e os cinco documentos que permite a qualquer um escrever |
 | [`assets/`](assets/) | a prova, a maquinaria que a lê, e o que é gerado a partir das duas |
 | [`conformance/`](conformance/) | o que um perfil pode estreitar, e que regras nenhum validador alcança |
-| [`src/proofs/`](src/proofs/) | As equações que este modelo enuncia, cada uma mostrada válida por um programa que o `cargo test` corre. |
 | [`examples/`](examples/) | Os exemplos, e a pergunta que cada um põe ao modelo |
 
 ⭐ Nada do que está acima é repetido aqui, de propósito. Um documento que tivesse de ser resumido

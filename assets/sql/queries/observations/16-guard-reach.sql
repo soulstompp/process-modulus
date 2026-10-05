@@ -1867,15 +1867,6 @@ SELECT l.filing, l.layer
 FROM pm.layer l
 
 ),
-signed AS MATERIALIZED (
-    -- pm:Remainder/sign, stated rather than absent.
-SELECT r.*
-FROM (
-    SELECT * FROM remainder
-) r
-WHERE r.sign IS NOT NULL
-
-),
 conversions AS MATERIALIZED (
     -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
@@ -1961,7 +1952,13 @@ LEFT JOIN (
            s.sign IS DISTINCT FROM s.derived_fit::pm.fit AS violates,
            format('filed %s, ranges say %s', s.sign, s.derived_fit) AS detail
     FROM (
-        SELECT * FROM signed
+        -- pm:Remainder/sign, stated rather than absent.
+SELECT r.*
+FROM (
+    SELECT * FROM remainder
+) r
+WHERE r.sign IS NOT NULL
+
     ) s
 ) p ON true
 WHERE r.slug = 'fit_disagrees'

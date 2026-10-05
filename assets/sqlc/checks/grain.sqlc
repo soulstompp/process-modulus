@@ -261,9 +261,6 @@ lumpy AS MATERIALIZED (
 pressed AS MATERIALIZED (
     :define(layers/pressed.sqlc)
 ),
-signed AS MATERIALIZED (
-    :define(layers/signed.sqlc)
-),
 unabsorbed_exposure AS MATERIALIZED (
     :define(layers/unabsorbed_exposure.sqlc)
 ),

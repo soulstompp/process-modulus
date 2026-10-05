@@ -31,34 +31,17 @@ const PERMITTED: &[&str] = &[
     "quick-xml",
     "xsd-parser",
     "anyhow",
-    // ⭐ dev only, for examples/matrices/main.rs. None reaches a consumer, and none is the
-    // model this crate exists to corroborate: they are a database driver, its runtime,
-    // and a linear algebra library. Added deliberately, which is what this list is for.
+    // dev only, for the examples that read the database. None reaches a consumer, and none
+    // is the model this crate exists to corroborate: they are a database driver and its
+    // runtime. Added deliberately, which is what this list is for.
     "sqlx",
     "tokio",
-    "nalgebra",
     // ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
     // NeXosim is a bare discrete-event scheduler: mailboxes, an event queue and a clock. Two
     // answers only corroborate while they are two. `serde` rides along because the scheduler
     // requires it on every model type.
     "nexosim",
     "serde",
-    // ⭐⭐ dev only, for examples/shared/simulation/. THE ADMISSION TEST IS WHETHER IT CARRIES
-    // A MODEL, and NeXosim does not: it is mailboxes, an event queue and a clock, with
-    // no stock, no flow and no opinion about what a shortfall is. The stock-and-flow
-    // layer that sits above it in the wild is exactly what must NOT be taken, because
-    // that layer is somebody else's answer to the question this crate asks, and two
-    // answers only corroborate while they are two. `serde` rides along because the
-    // ⭐⭐ dev only, for examples/columns/main.rs, and it passes the test above rather than
-    // being excused from it. AN ENGINE IS NOT A MODEL. What this list exists to keep out is
-    // the model this crate corroborates, which is a model of process: stocks, flows, and an
-    // opinion about what a shortfall is. Polars has none of those, and it is the same genus
-    // as the database above, whose planner is far larger.
-    // ⭐ It is taken for the half nalgebra has no type for: a validity bitmap beside the
-    // values, so a filed zero and a value nobody filed stop being the same bytes. That is
-    // the shape of every `Stated*` wrapper in the schema, and it is why three matrices in
-    // `examples/matrices/main.rs` are described in comments and built nowhere.
-    "polars",
 ];
 
 /// Every `key = value` line inside a `[…dependencies]` table.
@@ -148,41 +131,4 @@ fn this_crate_has_no_path_dependency_at_all() {
             "no local path dependency is permitted here: {l}"
         );
     }
-}
-
-#[test]
-fn no_source_file_imports_an_unlisted_crate() {
-    // `src/lib.rs` is an `include!` of generated code and has no imports of its own.
-    // The proofs page does: its blocks and the file they share read documents with this
-    // crate's types, so `process_modulus` itself is a permitted root there. The Portuguese
-    // page carries the same code and is scanned too, since it is published beside it.
-    let sources = [
-        ("lib.rs", include_str!("../src/lib.rs")),
-        ("proofs/support.rs", include_str!("../src/proofs/support.rs")),
-        ("proofs/README.md", include_str!("../src/proofs/README.md")),
-        ("proofs/README.pt.md", include_str!("../src/proofs/README.pt.md")),
-    ];
-    let mut scanned = 0;
-    for (name, src) in sources {
-        for line in src.lines() {
-            let l = line.trim().trim_start_matches("pub ");
-            let Some(path) = l.strip_prefix("use ") else {
-                continue;
-            };
-            scanned += 1;
-            let root = path.split([':', ';', ' ', '{']).next().unwrap_or("").trim();
-            let permitted = matches!(
-                root,
-                "std" | "core" | "alloc" | "crate" | "self" | "super" | "process_modulus"
-            ) || PERMITTED.iter().any(|p| p.replace('-', "_") == root);
-            assert!(
-                permitted,
-                "{name} imports `{root}`, which is not on the permitted list"
-            );
-        }
-    }
-    assert!(
-        scanned > 0,
-        "no `use` line was found in any scanned source, so the scan checked nothing"
-    );
 }

@@ -175,7 +175,6 @@ this table is a way in rather than a second copy of it.
 | [`schema/`](schema/) | the deliverable itself, and the five documents it lets anybody write |
 | [`assets/`](assets/) | the evidence, the machinery that reads it, and what is generated from both |
 | [`conformance/`](conformance/) | what a profile may narrow, and which rules no validator reaches at all |
-| [`src/proofs/`](src/proofs/) | The equations this model states, each shown to hold by a program that `cargo test` runs. |
 | [`examples/`](examples/) | The examples, and the question each one puts to the model |
 
 ⭐ Nothing above is restated here, on purpose. A document that had to be summarised in its parent

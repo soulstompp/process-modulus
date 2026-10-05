@@ -8,7 +8,13 @@ LEFT JOIN (
            s.sign IS DISTINCT FROM s.derived_fit::pm.fit AS violates,
            format('filed %s, ranges say %s', s.sign, s.derived_fit) AS detail
     FROM (
-        SELECT * FROM layers.signed
+        -- pm:Remainder/sign, stated rather than absent.
+SELECT r.*
+FROM (
+    SELECT * FROM layers.remainder
+) r
+WHERE r.sign IS NOT NULL
+
     ) s
 ) p ON true
 WHERE r.slug = 'fit_disagrees'

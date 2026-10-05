@@ -33,8 +33,8 @@ anyhow = "1"
 
 # ⛔ DEV ONLY, AND THE DISTINCTION IS LOAD-BEARING. These do not propagate: `cargo add
 # process-modulus` still pulls `xsd-parser-types` and `quick-xml` and nothing else, so
-# "a schema, not a library" survives. They exist for `examples/matrices/main.rs`, which checks
-# the SQL in `assets/sql/` against an independent computation.
+# "a schema, not a library" survives. They exist for the examples, which run
+# the SQL in `assets/sql/` against a database.
 #
 # ⚠️ Each name here is also a deliberate edit to PERMITTED in tests/independence.rs,
 # which allowlists every dependency table. That test's doc says adding a name is the
@@ -47,7 +47,6 @@ anyhow = "1"
 # so building needs no database; `cargo sqlx prepare` regenerates it.
 sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "postgres", "macros"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-nalgebra = "0.34"
 
 # ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
 # `examples/shared/simulation/` builds a bench on NeXosim, which is a bare discrete-event
@@ -62,27 +61,3 @@ nalgebra = "0.34"
 nexosim = "1.0"
 serde   = { version = "1", features = ["derive"] }
 
-# ⭐⭐ A SECOND RELATIONAL ENGINE, AND THAT IS WHY IT IS TAKEN RATHER THAN DESPITE IT. The
-# admission test is whether a dependency carries THE MODEL THIS CRATE CORROBORATES, which is a
-# model of process: stocks, flows, and an opinion about what a shortfall is. Polars has none.
-# It is the same genus as the database already here, and `sqlx` plus Postgres is by far the
-# largest query planner in this tree. An engine is not a model.
-#
-# ⭐ The positive argument is the nalgebra one, one level up. `examples/matrices` recomputes the
-# ARITHMETIC in a second engine and asserts the two agree; this recomputes a RELATION in one,
-# and two engines sharing no code is what makes the agreement evidence.
-#
-# ⛔ `sql` is NOT among the features. Composing SQL is this repository's own subject and
-# `assets/sqlc/` is the answer to it; a second SQL dialect would be a fork of that decision.
-# What is taken is the expression API, which is a different thing from a second dialect.
-#
-# ⛔ `parquet` IS NOT A CHOICE AND NOTHING HERE WRITES PARQUET. It is an upstream feature-gating
-# bug: `polars-stream` 0.55.2's IPC source names `io_sources::parquet`, which is itself gated
-# behind `parquet`, so `ipc` without it fails to compile under `lazy`. Removing it will look
-# like tidying and will break the build with an error naming neither feature. Re-test on a
-# version bump; it should go the moment upstream gates that line.
-#
-# ⚠️ It also decides who can open the output, and neither audience runs Rust. Arrow IPC is
-# `pl.read_ipc` or `pyarrow.feather` in Python and `arrow::read_ipc_file` in R, with no
-# conversion step and no code from here. A hand-rolled buffer would have served neither.
-polars = { version = "0.55.2", default-features = false, features = ["lazy", "ipc", "parquet", "dtype-struct"] }

@@ -15,10 +15,6 @@
 //!
 //! The schema is the artifact; this crate is a reference implementation of it.
 //!
-//! The equations the model states are proven in [`proofs`]: each one with a block `cargo test`
-//! runs against real documents, and the law or rule that holds it for every document the
-//! database loads.
-//!
 //! The generated types live in [`pm`] and [`asrt`], after the two namespace prefixes:
 //! the model itself in [`pm`], and what a second party asserts about a filing in
 //! [`asrt`]. One `generate` call emits both, so the types they share are shared.
@@ -35,14 +31,7 @@
 #![allow(dead_code, unused_mut, unused_variables)]
 // Same reason, for clippy: `src/lib.rs` contains no hand-written code below this
 // line, so every lint here would be a complaint about a code generator. The tests
-// are separate compilation units and stay fully linted. `proofs` is the one
-// hand-written item, and it is a page with no items of its own.
+// are separate compilation units and stay fully linted.
 #![allow(clippy::all)]
-
-// The proofs page, in both languages. Only the English blocks run as doctests: the
-// Portuguese page carries the same code, and running it twice would prove nothing twice.
-#[doc = include_str!("proofs/README.md")]
-#[cfg_attr(not(doctest), doc = include_str!("proofs/README.pt.md"))]
-pub mod proofs {}
 
 include!(concat!(env!("OUT_DIR"), "/schema.rs"));

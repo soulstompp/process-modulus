@@ -22,12 +22,10 @@ decides what belongs in the table below.
 | example | the question it answers | database |
 |---|---|---|
 | [`combinatorics`](combinatorics/) | What can be read off a classification, and does each law here read what it is trusted to? | yes |
-| [`columns`](columns/) | Which matrix in this repository has a column space, and what lives in the half of it no potential explains? | no |
 | [`compositions`](compositions/) | The compositions this repository has, and the three preconditions that make them an algebra. | no |
 | [`diagramming`](diagramming/) | The model, translated into BPMN 2.0, and the laws that say the translation was faithful. | yes |
 | [`generation`](generation/) | Does a run of the model file at all? | yes |
 | [`graphs`](graphs/) | The three graphs this model composes, as the lane sets of one pool. | yes |
-| [`matrices`](matrices/) | The second witness: the same arithmetic, computed a different way. | yes |
 | [`observations`](observations/) | What the corpus actually says, and whether anything is looking. | yes |
 | [`probes`](probes/) | Whether each law has ever been SEEN TO FAIL, and each correct filing seen to survive an edit that must not accuse it. | yes |
 | [`readiness`](readiness/) | Before the arithmetic: may you compute here at all? | yes |
@@ -42,7 +40,7 @@ proof that passes because it did not execute is the vacuity this repository keep
 fail to run instead. The root [`README.md`](../README.md) has the steps that build the database.
 
 ```text
-cargo run --example matrices          # one of them
+cargo run --example soundness          # one of them
 cargo doc --examples --open           # all of their headers, rendered
 ```
 
