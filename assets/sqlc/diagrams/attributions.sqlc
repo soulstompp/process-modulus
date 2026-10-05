@@ -13,25 +13,7 @@
 #   One row per eliminated quantity and `between`, so an elimination against two quantities that
 #   runs against one layer is drawn once per quantity.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- eliminations/resolved.sqlc projected to the two ends of the relationship.
-WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-eliminations_between AS NOT MATERIALIZED (
-    :define(eliminations/between.sqlc)
-),
-eliminations_references AS NOT MATERIALIZED (
-    :define(eliminations/references.sqlc)
-),
-resolved AS NOT MATERIALIZED (
-    :define(eliminations/resolved.sqlc)
-)
 SELECT b.composition, b.composed_layer, b.notation, b.resolved_filing, b.layer
 FROM (
     :compose(eliminations/resolved.sqlc)

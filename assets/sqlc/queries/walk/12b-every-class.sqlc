@@ -1,0 +1,7 @@
+# Step 12 of the walk in assets/sqlc/README.md, its second half: every class of every
+# classification, with where it stands.
+-- §12 The whole structure: every class, its standing, and the reason for a class nothing lands in.
+SELECT relation, class, standing, reason
+FROM (
+    :compose(epistemics/class_domain.sqlc)
+) d;

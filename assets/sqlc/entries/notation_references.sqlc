@@ -30,16 +30,7 @@
 #   travels beside the filing. So the pair identifies a position relative to a document nobody here
 #   holds, which is exactly the property that makes the crossing cost the receiver nothing.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.
-WITH
-operations AS NOT MATERIALIZED (
-    :define(entries/operations.sqlc)
-)
 SELECT o.filing, o.label, o.foreign_notation, o.foreign_id
 FROM ( :compose(entries/operations.sqlc) ) o
 WHERE o.foreign_notation IS NOT NULL

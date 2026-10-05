@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §8  Layer pairs another document watched move together, held by a filing that has not looked.\n-- entries/spillovers.sqlc, as referrals rather than findings.\nWITH entries_couplings AS (\n-- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.\nSELECT c.filing, c.from_layer, c.to_layer,\n       c.low, c.mode, c.high, c.unit, c.strength_absent, c.observation\nFROM pm.coupling c\n),\nlayers_every_layer AS (\n-- pm:Stack/pm:layer, keyed and nothing more.\nSELECT l.filing, l.layer\nFROM pm.layer l\n),\nepistemics_coupling_searches AS (\n-- pm:Stack/pm:couplings/pm:absent, one row per filing asked.\nSELECT cs.filing, cs.absent AS answer, cs.note\nFROM pm.coupling_search cs\n),\nepistemics_scopes AS (\n-- pm:Stack/pm:scope, with its pm:basis.\nSELECT ss.filing, ss.extent, ss.basis, ss.absent\nFROM pm.stack_scope ss\n),\nentries_spillovers AS (\n-- pm:couplings/pm:coupling, projected onto every other filing holding both of its ends.\nSELECT c.filing        AS observed_in,\n       b.filing        AS borne_by,\n       c.from_layer,\n       c.to_layer,\n       c.mode          AS observed_mode,\n       c.unit          AS observed_unit,\n       s.answer        AS their_search,\n       sc.extent       AS their_extent\nFROM      (\n    SELECT * FROM entries_couplings\n) c\nJOIN      (\n    SELECT * FROM layers_every_layer\n) b  ON b.layer = c.from_layer AND b.filing <> c.filing\nJOIN      (\n    SELECT * FROM layers_every_layer\n) b2 ON b2.filing = b.filing AND b2.layer = c.to_layer\nLEFT JOIN (\n    SELECT * FROM epistemics_coupling_searches\n) s  ON s.filing = b.filing\nLEFT JOIN (\n    SELECT * FROM epistemics_scopes\n) sc ON sc.filing = b.filing\n)\nSELECT s.borne_by                       AS \"borne_by!\",\n       s.from_layer                     AS \"from_layer!\",\n       s.to_layer                       AS \"to_layer!\",\n       s.observed_in                    AS \"observed_in!\",\n       coalesce(s.their_search::text, 'a coupling of its own') AS \"their_search!\",\n       coalesce(s.their_extent, '')     AS \"their_extent!\"\nFROM (\n    SELECT * FROM entries_spillovers\n) s\nORDER BY s.borne_by, s.from_layer, s.to_layer\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "borne_by!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.layer",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "from_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.coupling",
+            "name": "from_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "to_layer!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.coupling",
+            "name": "to_layer"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "observed_in!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.coupling",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "their_search!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "their_extent!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "edce8be5b9cab03b38b200d351cc239028b0cb6a910345345f4467ec3a81f6fa"
+}

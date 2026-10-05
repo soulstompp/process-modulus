@@ -26,16 +26,7 @@
 #   `partitionElement` and `partitionElementRef` for what a partition is by, per lane, where this
 #   model files one basis per stack. That is the grain axis running backwards for once.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
-WITH
-scopes AS NOT MATERIALIZED (
-    :define(epistemics/scopes.sqlc)
-)
 SELECT s.filing, s.extent, s.basis
 FROM (
     :compose(epistemics/scopes.sqlc)

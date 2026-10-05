@@ -1,0 +1,13 @@
+# Step 12 of the walk in assets/sqlc/README.md, its first half: every rule, with what it examined
+# and what broke it.
+-- §12 The whole structure: every rule on the roster, the rows it examined, and the rows it broke.
+SELECT r.rule,
+       count(c.rule)                      AS examined,
+       count(*) FILTER (WHERE c.violates) AS broken
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    :compose(checks/all.sqlc)
+) c ON c.rule = r.rule
+GROUP BY r.rule;

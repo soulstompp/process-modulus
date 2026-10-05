@@ -1,7 +1,6 @@
 -- diagrams/domain_objects.sqlc's governance claims against diagrams/roster.sqlc.
-WITH
-domain_objects AS NOT MATERIALIZED (
-    -- the pm.* tables against BPMN 2.0's element vocabulary, as data an emitter reads.
+WITH diagrams_domain_objects AS (
+-- the pm.* tables against BPMN 2.0's element vocabulary, as data an emitter reads.
 SELECT * FROM (VALUES
   ('source', 'definitions', NULL, 'definitions', NULL, NULL, 'the document itself. A BPMN file is a definitions document'),
   ('filing', 'participant', NULL, 'pools', NULL, NULL, 'the participant that renders the document as a pool'),
@@ -34,10 +33,9 @@ SELECT * FROM (VALUES
 
   ('holder',               NULL, 'misreads', NULL, NULL, NULL,      'resourceRole and performer have the right shape and the wrong claim: they say who acts, and a holder is who bears. Four of the five kinds name no party at all')
 ) AS d(object, element, absent, governed_by, loses_kind, loses, why)
-
 ),
-roster AS NOT MATERIALIZED (
-    -- the cardinality identities a BPMN emission owes, against the relation supplying each expected count.
+diagrams_roster AS (
+-- the cardinality identities a BPMN emission owes, against the relation supplying each expected count.
 SELECT * FROM (VALUES
   ('pools',   '|participant| = |filing|',      'epistemics/documents',     'participant',
               'a document rendered as two pools, or two rendered as one'),
@@ -94,15 +92,14 @@ SELECT * FROM (VALUES
   ('documentation', '|documentation| = |sentence a relation states|', 'diagrams/annotated', 'documentation',
               'Documentation is not a container, which is what separates this row from the other four. They frame a document and must appear once; this is an annotation and may sit on any base element, so one per document fires the moment a lane is annotated, which is a law right about a fact and wrong about a kind. And the identity beside it is prose where the model side is a relation, so `diagrams/annotated.sqlc` can grow an arm with this count staying exact and the sentence describing it going stale. A count is also the wrong instrument here and always was, which is what `states` is for: every document can carry the right number of sentences and each say something no relation states, with the count exact for any corpus size. examples/diagramming/main.rs reads every one back and asks what states it')
 ) AS l(slug, law, model_side, element, catches)
-
 )
 SELECT d.object, d.element, d.governed_by, d.loses,
        (d.governed_by IS NOT NULL AND l.slug IS NULL)          AS names_a_law_that_is_not_there,
        (d.governed_by IS NULL AND d.loses IS NULL)             AS ungoverned_and_unexplained
 FROM      (
-    SELECT * FROM domain_objects
+    SELECT * FROM diagrams_domain_objects
 ) d
 LEFT JOIN (
-    SELECT * FROM roster
+    SELECT * FROM diagrams_roster
 ) l ON l.slug = d.governed_by
 WHERE d.element IS NOT NULL

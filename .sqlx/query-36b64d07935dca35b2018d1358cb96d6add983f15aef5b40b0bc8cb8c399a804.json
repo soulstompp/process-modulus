@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.\nWITH entries_inductions AS (\n-- pm:Operation/pm:Induction, carrying pm:decidedBy.\nSELECT n.filing, n.operation, n.layer,\n       n.low, n.mode, n.high, n.unit, n.absent, n.decider\nFROM pm.induction n\n)\nSELECT DISTINCT i.filing, i.layer\nFROM (\n    SELECT * FROM entries_inductions\n) i\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.induction",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "layer",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.induction",
+            "name": "layer"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "36b64d07935dca35b2018d1358cb96d6add983f15aef5b40b0bc8cb8c399a804"
+}

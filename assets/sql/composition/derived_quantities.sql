@@ -1,31 +1,81 @@
 -- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
 WITH
-root AS (
-    SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
-    FROM      ( SELECT * FROM layers.summed_quantities ) s
-    LEFT JOIN (
-        SELECT * FROM folds.fusion_parts
-    ) b ON b.composition = s.filing AND b.composed_layer = s.layer
-    WHERE s.derivation IS NOT NULL
+layers_summed_quantities AS (
+-- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
+SELECT l.filing, l.layer, 'demand'::pm.summed_quantity AS quantity,
+       l.demand_low AS low, l.demand_mode AS mode, l.demand_high AS high, l.demand_unit AS unit,
+       l.demand_absent AS absent, l.demand_derivation AS derivation
+FROM pm.layer l
+UNION ALL
+SELECT n.filing, n.layer, 'nameplate'::pm.summed_quantity,
+       n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,
+       n.amount_derivation
+FROM pm.nameplate n
+UNION ALL
+SELECT n.filing, n.layer, 'draw'::pm.summed_quantity,
+       n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent, n.draw_derivation
+FROM pm.nameplate n
 ),
-node AS (
-    SELECT w.root_filing, w.root_layer, w.quantity, w.filing, w.layer, w.depth,
-           w.factor_low, w.factor_mode, w.factor_high, w.part_of, w.conversion_absent,
-           w.conversion_derivation, w.is_cycle,
-           w.low, w.mode, w.high, w.unit, w.absent, w.derivation, w.is_fusion
-    FROM ( -- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+composition_part_references AS (
+-- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
+SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
+       CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state
+            WHEN p.factor_absent     IS NOT NULL THEN 'absent'::public.factor_state
+            WHEN p.factor_derivation IS NOT NULL THEN 'derivation'::public.factor_state
+            ELSE                                      'omitted'::public.factor_state END AS factor_state,
+       p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version
+FROM pm.part p
+),
+folds_fusion_parts AS (
+-- composition/part_references.sqlc folded to one row per fusion it names.
+SELECT r.composition, r.composed_layer, count(*) AS parts
+FROM (
+    SELECT * FROM composition_part_references
+) r
+GROUP BY r.composition, r.composed_layer
+),
+composition_notations AS (
+-- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+),
+composition_parts AS (
+-- pm.part joined through pm.filing_identity to pm.layer.
+SELECT p.composition, p.composed_layer,
+       p.part_filing AS part_notation,
+       fi.filing     AS part_filing,
+       p.part_layer,
+       p.part_regime,
+       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
+       p.factor_state
+FROM      (
+    SELECT * FROM composition_part_references
+) p
+JOIN      (
+    SELECT * FROM composition_notations
+) fi ON fi.notation = p.part_filing
+JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
+),
+composition_fusions AS (
+-- asrt:Fusion: the composed layer it names, and asrt:observed.
+SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
+FROM pm.fusion f
+),
+composition_derived_frontier AS (
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
-    SELECT * FROM composition.parts
+    SELECT * FROM composition_parts
 ),
 figure AS (
     SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent, s.derivation,
            (f.filing IS NOT NULL) AS is_fusion
     FROM      (
-        SELECT * FROM layers.summed_quantities
+        SELECT * FROM layers_summed_quantities
     ) s
     LEFT JOIN (
-        SELECT * FROM composition.fusions
+        SELECT * FROM composition_fusions
     ) f ON f.filing = s.filing AND f.layer = s.layer
 ),
 walk(root_filing, root_layer, quantity, filing, layer, depth,
@@ -59,7 +109,50 @@ SELECT root_filing, root_layer, quantity, filing, layer, depth,
        factor_low, factor_mode, factor_high, factor_absent, part_of, conversion_absent,
        conversion_derivation, low, mode, high, unit, absent, derivation, is_fusion, is_cycle
 FROM walk
- ) w
+),
+eliminations_filed AS (
+-- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.derivation, e.reason, e.claim_seq
+FROM pm.elimination e
+),
+eliminations_searched AS (
+-- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
+FROM pm.elimination_search es
+),
+composition_unresolved_parts AS (
+-- composition/part_references.sqlc less composition/parts.sqlc, per fusion and reference.
+SELECT r.composition, r.composed_layer,
+       NULL::pm.summed_quantity AS quantity,
+       'a part resolves to no filing here' AS suspended_because,
+       r.part_filing || '/' || r.part_layer AS note
+FROM      (
+    SELECT * FROM composition_part_references
+) r
+LEFT JOIN (
+    SELECT * FROM composition_parts
+) p ON  p.composition    = r.composition
+    AND p.composed_layer = r.composed_layer
+    AND p.part_notation  = r.part_filing
+    AND p.part_layer     = r.part_layer
+WHERE p.composition IS NULL
+),
+root AS (
+    SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
+    FROM      ( SELECT * FROM layers_summed_quantities ) s
+    LEFT JOIN (
+        SELECT * FROM folds_fusion_parts
+    ) b ON b.composition = s.filing AND b.composed_layer = s.layer
+    WHERE s.derivation IS NOT NULL
+),
+node AS (
+    SELECT w.root_filing, w.root_layer, w.quantity, w.filing, w.layer, w.depth,
+           w.factor_low, w.factor_mode, w.factor_high, w.part_of, w.conversion_absent,
+           w.conversion_derivation, w.is_cycle,
+           w.low, w.mode, w.high, w.unit, w.absent, w.derivation, w.is_fusion
+    FROM ( SELECT * FROM composition_derived_frontier ) w
 ),
 passed AS (
     SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity, r.filing, r.layer,
@@ -80,14 +173,14 @@ elimination AS (
            e.absent AS e_absent, e.derivation AS e_derivation,
            es.answer AS searched
     FROM      passed p
-    LEFT JOIN ( SELECT * FROM eliminations.filed ) e
+    LEFT JOIN ( SELECT * FROM eliminations_filed ) e
            ON e.composition = p.filing AND e.composed_layer = p.layer AND e.quantity = p.quantity
-    LEFT JOIN ( SELECT * FROM eliminations.searched ) es
+    LEFT JOIN ( SELECT * FROM eliminations_searched ) es
            ON es.composition = p.filing AND es.composed_layer = p.layer
 ),
 unresolved AS MATERIALIZED (
     SELECT DISTINCT u.composition, u.composed_layer
-    FROM ( SELECT * FROM composition.unresolved_parts ) u
+    FROM ( SELECT * FROM composition_unresolved_parts ) u
 ),
 reason AS (
     SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity,

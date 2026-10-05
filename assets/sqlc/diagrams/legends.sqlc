@@ -53,61 +53,7 @@
 #   `states` the emitter never read would be decorative, which that law refuses by scraping the
 #   `query_file!` literals out of its own source rather than trusting this column.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- the notes a correct reading requires; BPMN 2.0 tTextAnnotation, drawn and unattached.
-WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-part_references AS NOT MATERIALIZED (
-    :define(composition/part_references.sqlc)
-),
-parts AS NOT MATERIALIZED (
-    :define(composition/parts.sqlc)
-),
-calls AS NOT MATERIALIZED (
-    :define(diagrams/calls.sqlc)
-),
-inductions AS NOT MATERIALIZED (
-    :define(entries/inductions.sqlc)
-),
-categories AS NOT MATERIALIZED (
-    :define(diagrams/categories.sqlc)
-),
-couplings AS NOT MATERIALIZED (
-    :define(entries/couplings.sqlc)
-),
-dependences AS NOT MATERIALIZED (
-    :define(diagrams/dependences.sqlc)
-),
-foreign_calls AS NOT MATERIALIZED (
-    :define(diagrams/foreign_calls.sqlc)
-),
-draws AS NOT MATERIALIZED (
-    :define(entries/draws.sqlc)
-),
-lane_membership AS NOT MATERIALIZED (
-    :define(diagrams/lane_membership.sqlc)
-),
-epistemics_scopes AS NOT MATERIALIZED (
-    :define(epistemics/scopes.sqlc)
-),
-diagrams_scopes AS NOT MATERIALIZED (
-    :define(diagrams/scopes.sqlc)
-),
-coupling_searches AS NOT MATERIALIZED (
-    :define(epistemics/coupling_searches.sqlc)
-),
-searches AS NOT MATERIALIZED (
-    :define(diagrams/searches.sqlc)
-),
-every_layer AS NOT MATERIALIZED (
-    :define(layers/every_layer.sqlc)
-)
 SELECT s.filing, 'scope' AS note, 'diagrams/scopes.sqlc' AS states
 FROM ( :compose(diagrams/scopes.sqlc) ) s
 UNION ALL

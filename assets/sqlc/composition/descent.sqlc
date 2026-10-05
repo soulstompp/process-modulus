@@ -67,7 +67,7 @@
 #   accumulation is read in `composition/remainder_frontier.sqlc`, the same walk carrying a stop
 #   condition, and from there in `composition/settled_remainders.sqlc` and
 #   `composition/carried_eliminations.sqlc`. So the two sections above argue for a capability this
-#   relation offers a reader of the view rather than one its own consumers use, and the argument
+#   relation offers a reader who runs it rather than one its own consumers use, and the argument
 #   is kept here because this is where the columns are.
 #
 # Do not merge it with the remainder frontier
@@ -77,8 +77,8 @@
 #   over this relation's result.
 #
 # The cycle clause's own path is not returned
-#   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type, which a view
-#   cannot hold. The walk returns `is_cycle` and every column of its own, and not that one.
+#   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type. The walk
+#   returns `is_cycle` and every column of its own, and not that one.
 -- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
 WITH RECURSIVE
 resolved AS (

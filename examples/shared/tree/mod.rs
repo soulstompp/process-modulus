@@ -64,13 +64,6 @@ pub fn sql_only(body: &str) -> String {
 /// The `.sqlc` paths a template READS. Three forms occur: `:compose(path)`, `:union(ALL a, b)`,
 /// and a slot fill, `:compose(shape, @scope = path)`.
 ///
-/// ⛔ `:define` IS NOT ONE OF THEM, AND THAT IS THE WHOLE POINT OF THE DAG. This tree's edges are
-/// the model's own derivation order: a remainder reads a demand and a nameplate because a
-/// remainder IS their difference. A `:define` says only where a body is written, so a statement
-/// that fences its plan by defining its vocabulary derives from nothing new and must not appear
-/// to. Counting them put six hundred edges into `public.compose_edge` and slowed every relation
-/// that reads the DAG. `definitions` is how to ask the other question.
-///
 /// ⛔ THE THIRD IS THE ONE WORTH BEING CAREFUL ABOUT: the filler is the only reference a
 /// `scope/` relation ever gets, so a parser that stopped at the `@` would report every scope
 /// as an orphan. A bare `@scope` inside a shape names no file and drops out on its own.
@@ -79,13 +72,6 @@ pub fn sql_only(body: &str) -> String {
 /// the composer has is here. Add one here before adding it to the tree.
 pub fn references(sql: &str) -> Vec<String> {
     paths(sql, &[":compose(", ":union("])
-}
-
-/// The `.sqlc` paths a template defines for itself: its own vocabulary, written at the top so
-/// that everything below says a name instead of repeating a relation. A statement only ever
-/// defines what its body composes, so these are never new relations in the tree.
-pub fn definitions(sql: &str) -> Vec<String> {
-    paths(sql, &[":define("])
 }
 
 fn paths(sql: &str, opens: &[&str]) -> Vec<String> {

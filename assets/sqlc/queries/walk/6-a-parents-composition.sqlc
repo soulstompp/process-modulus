@@ -1,0 +1,17 @@
+# Step 6 of the walk in assets/sqlc/README.md: a parent's composed figure, its parts' sum, and
+# what the parent removed.
+-- §6 A parent's composition: the sum of the parts, what was removed, and what was filed.
+SELECT f.composed_layer, f.quantity,
+       f.sum_low, f.sum_mode, f.sum_high,
+       e.low  AS removed_low,
+       e.mode AS removed_mode,
+       e.high AS removed_high,
+       f.filed_low, f.filed_mode, f.filed_high
+FROM      (
+    :compose(composition/fused.sqlc)
+) f
+LEFT JOIN (
+    :compose(eliminations/filed.sqlc)
+) e USING (composition, composed_layer, quantity)
+WHERE f.composition = 'merge-group-composition'
+  AND f.composed_layer IN ('labour', 'shift-line');

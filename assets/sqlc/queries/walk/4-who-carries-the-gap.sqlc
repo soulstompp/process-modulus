@@ -1,0 +1,13 @@
+# Step 4 of the walk in assets/sqlc/README.md: the remainder beside the shares its holders carry.
+-- §4 Who carries the gap: the remainder, the holders' shares, and what no share states.
+SELECT r.layer,
+       r.m_low, r.m_mode, r.m_high,
+       h.shares_low, h.shares_mode, h.shares_high,
+       h.unstated
+FROM      (
+    :compose(layers/remainder.sqlc)
+) r
+LEFT JOIN (
+    :compose(entries/holder_totals.sqlc)
+) h USING (filing, layer)
+WHERE r.filing = 'enterprise-contract';

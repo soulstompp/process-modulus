@@ -1,10 +1,8 @@
 -- asrt:Composition/asrt:citation, flattened to the one string a documentation element can hold.
-WITH
-citations AS NOT MATERIALIZED (
-    -- asrt:composition/asrt:citation, one row each.
+WITH composition_citations AS (
+-- asrt:composition/asrt:citation, one row each.
 SELECT c.composition, c.seq, c.taxonomy, c.instrument, c.clause, c.version
 FROM pm.composition_citation c
-
 )
 SELECT c.composition,
        c.instrument
@@ -12,5 +10,5 @@ SELECT c.composition,
          || coalesce(' (' || c.version || ')', '')
          || ' under ' || c.taxonomy AS cited
 FROM (
-    SELECT * FROM citations
+    SELECT * FROM composition_citations
 ) c

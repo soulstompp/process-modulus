@@ -17,10 +17,10 @@
 #
 # ⛔ `codomain` is the type's BARE NAME, because `pg_typeof` is not one spelling
 #   `pg_typeof(x)::text` renders through the session's `search_path`: the same column prints
-#   `pm.fit` to a client with the default path and `fit` under the `SET search_path TO pm, public`
-#   that assets/sql/views.sql installs. A roster comparing against a literal is then right in one
-#   session and wrong in the other, which examples/probes caught by running the law under the
-#   second. `pg_type.typname` is what assets/ddl/schema.ddl wrote and does not move.
+#   `pm.fit` to a client with the default path and `fit` under `SET search_path TO pm, public`.
+#   A roster comparing against a literal is then right in one session and wrong in the other,
+#   which examples/probes caught by running the law under the second. `pg_type.typname` is what
+#   assets/ddl/schema.ddl wrote and does not move.
 #
 # `ball` is the key, spelled, not a witness column
 #   Each arm concatenates the whole key of the relation it reads, so `count(ball)` and

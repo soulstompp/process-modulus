@@ -1,0 +1,15 @@
+# Step 10 of the walk in assets/sqlc/README.md: which parts' quantities a parent composes, and
+# which it sets beside its own.
+-- §10 What is kept, and what is left: part quantities composed, set beside, and in all.
+SELECT count(*) FILTER (WHERE c.layer IS NULL)     AS not_composed,
+       count(*) FILTER (WHERE c.layer IS NOT NULL) AS set_beside,
+       count(*)                                    AS all_part_quantities
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+JOIN (
+    :compose(layers/quantities.sqlc)
+) q ON q.filing = p.part_filing AND q.layer = p.part_layer
+LEFT JOIN (
+    :compose(layers/quantities.sqlc)
+) c ON c.filing = p.composition AND c.layer = p.composed_layer AND c.quantity = q.quantity;

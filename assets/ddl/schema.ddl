@@ -112,9 +112,8 @@ CREATE TYPE narrowing_kind AS ENUM ('instrument', 'intervention', 'experiment');
 --   `sql-composer`, and keeping both halves in SQL makes that comparison a query anybody can run.
 --   Deduplicating to a bare edge would throw the argument away.
 --
--- Dropped by name, with what reads it
---   `DROP SCHEMA pm CASCADE` above does not reach `public`. The views that read the table go with
---   it, and `assets/sql/views.sql` creates them again after the ingest.
+-- Dropped by name
+--   `DROP SCHEMA pm CASCADE` above does not reach `public`.
 -- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS public.compose_edge CASCADE;
 CREATE TABLE public.compose_edge (
@@ -155,8 +154,7 @@ CREATE TABLE public.compose_edge (
 --
 -- Why in `public`, dropped by name
 --   These describe this repository's queries rather than a subject, for `compose_edge`'s reason,
---   and `DROP SCHEMA pm CASCADE` above does not reach them. The views that read them go with
---   them, and `assets/sql/views.sql` creates them again after the ingest.
+--   and `DROP SCHEMA pm CASCADE` above does not reach them.
 -- ---------------------------------------------------------------------------
 DROP TYPE IF EXISTS public.arithmetic_verdict CASCADE;
 DROP TYPE IF EXISTS public.remainder_standing CASCADE;

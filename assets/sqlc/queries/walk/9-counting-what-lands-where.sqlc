@@ -1,0 +1,8 @@
+# Step 9 of the walk in assets/sqlc/README.md: where every remainder lands among its classes.
+-- §9 Counting what lands where: the remainder's classes, and what lands in each.
+SELECT relation, class, subject, balls
+FROM (
+    :compose(epistemics/classes.sqlc)
+) c
+WHERE relation = 'layers/remainder.sqlc'
+ORDER BY ord;

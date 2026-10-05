@@ -37,28 +37,7 @@
 #   cannot produce. Every lane count stays exact through that, which is why it is the emitter's
 #   obligation and not a count's.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- composition/descent.sqlc aggregated to the deepest arrival under each layer.
-WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-part_references AS NOT MATERIALIZED (
-    :define(composition/part_references.sqlc)
-),
-parts AS NOT MATERIALIZED (
-    :define(composition/parts.sqlc)
-),
-descent AS NOT MATERIALIZED (
-    :define(composition/descent.sqlc)
-),
-every_layer AS NOT MATERIALIZED (
-    :define(layers/every_layer.sqlc)
-)
 SELECT l.filing, l.layer,
        CASE WHEN coalesce(bool_or(d.is_cycle), false) THEN NULL
             ELSE coalesce(max(d.depth), 0) END AS rank,

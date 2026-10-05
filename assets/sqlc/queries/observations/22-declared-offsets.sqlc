@@ -57,18 +57,6 @@
 #   `eliminations/derived.sqlc` uses for the other projection of this incidence.
 -- asrt:Fusion/asrt:Part crossed with itself on the fusion, carrying each part's factor.
 WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-part_references AS NOT MATERIALIZED (
-    :define(composition/part_references.sqlc)
-),
-parts AS NOT MATERIALIZED (
-    :define(composition/parts.sqlc)
-),
-fusions AS NOT MATERIALIZED (
-    :define(composition/fusions.sqlc)
-),
 sized AS (
     SELECT p.composition, p.composed_layer,
            p.part_filing, p.part_layer, p.factor_state,

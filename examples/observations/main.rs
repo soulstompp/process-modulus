@@ -61,13 +61,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let composed: BTreeSet<String> = files.iter().flat_map(|(_, b)| references(&emitted(b))).collect();
 
     // A root is reached by no other template. It earns its place by being run: as a psql entry
-    // point, or by an example naming its composed output.
+    // point, or by an example naming its composed output. Each step of the walk in
+    // assets/sqlc/README.md is a psql entry point, which the page runs.
     let examples = sources::all();
-    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc", "views.sqlc"];
+    let entry_points = ["ingest.sqlc", "rules.sqlc", "matrices.sqlc", "invariance.sqlc"];
+    let walk = "queries/walk/";
 
     let mut unobserved: Vec<&str> = Vec::new();
     for (name, _) in &files {
-        if composed.contains(name) || entry_points.contains(&name.as_str()) {
+        if composed.contains(name) || entry_points.contains(&name.as_str()) || name.starts_with(walk) {
             continue;
         }
         let emitted = format!("assets/sql/{}", name.replace(".sqlc", ".sql"));

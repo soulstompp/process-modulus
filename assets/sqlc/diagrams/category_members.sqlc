@@ -18,16 +18,7 @@
 #   The wider relation carries three points, a unit, a typed absence and `decider`; none of it
 #   composes here, for the reason diagrams/lane_members.sqlc gives.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
-WITH
-inductions AS NOT MATERIALIZED (
-    :define(entries/inductions.sqlc)
-)
 SELECT i.filing, i.operation, i.layer
 FROM (
     :compose(entries/inductions.sqlc)

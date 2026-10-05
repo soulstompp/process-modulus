@@ -1,0 +1,9 @@
+# Step 8 of the walk in assets/sqlc/README.md: the live window of the shift line, filed and
+# composed.
+-- §8 Windows: each shift line's window and the unit its amount counts in.
+SELECT filing, layer, window_mode, window_unit, amount_unit
+FROM (
+    :compose(layers/windows.sqlc)
+) w
+WHERE layer IN ('shift-line', 'linha-partilhada')
+  AND window_mode IS NOT NULL;

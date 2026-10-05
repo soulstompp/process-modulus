@@ -1,0 +1,61 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §5  Which buffers the corpus sizes, and which of them read zero.\n-- reports/slack_census.sqlc over every filing, projected for the example.\nWITH entries_slacks AS (\n-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.\nSELECT s.filing, s.layer, s.buffer,\n       s.low, s.mode, s.high, s.unit, s.absent,\n       (s.low IS NOT NULL) AS sized,\n       s.derivation\nFROM pm.slack s\n),\nscope_every_filing AS (\n-- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.\nSELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,\n       f.prov_party, f.prov_entered_by, f.prov_approved_by,\n       f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note\nFROM pm.filing f\n)\nSELECT c.buffer         AS \"buffer!\",\n       c.evidence       AS \"evidence\",\n       c.sized          AS \"sized!\",\n       c.sized_at_zero  AS \"sized_at_zero!\",\n       c.absent         AS \"absent!\",\n       c.rows           AS \"rows!\"\nFROM (\n    -- entries/slacks.sqlc by buffer, split by evidence, restricted by the caller's @scope.\nSELECT s.buffer::text                                          AS buffer,\n       f.evidence                                              AS evidence,\n       count(*) FILTER (WHERE s.sized)                         AS sized,\n       count(*) FILTER (WHERE s.sized AND s.high = 0)          AS sized_at_zero,\n       count(*) FILTER (WHERE s.absent IS NOT NULL)            AS absent,\n       count(*) FILTER (WHERE s.absent = 'unmeasured')         AS nobody_measured,\n       count(*) FILTER (WHERE s.absent = 'notApplicable')      AS not_applicable,\n       count(*) FILTER (WHERE s.derivation IS NOT NULL)        AS derived,\n       count(*)                                                AS rows\nFROM      (\n    SELECT * FROM entries_slacks\n) s\nJOIN      (\n    SELECT * FROM scope_every_filing\n) f USING (filing)\nGROUP BY s.buffer, f.evidence\nORDER BY s.buffer, f.evidence\n\n) c\nORDER BY c.buffer, c.evidence\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "buffer!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "evidence",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing",
+            "name": "evidence"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "sized!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "sized_at_zero!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "absent!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "rows!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      true,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "a96ec71f7cf14db809216b5873b253d54baf805926baef7b03cb3c29de458738"
+}

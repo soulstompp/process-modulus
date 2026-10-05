@@ -32,11 +32,6 @@ use tree::{emitted, references, sql_only, templates};
 /// named here rather than tolerated by a count, so that a SECOND orphan fails the build.
 const ISOLATED: &[(&str, &str)] = &[
     ("ingest.sqlc", "the XMLTABLE loader; psql runs it before anything composes"),
-    // ⭐ It DEFINES every view and READS nothing, and the difference is the DAG's whole subject.
-    //   An edge here means a relation is built out of another one; the registry is built out of
-    //   nothing and says where each body is written. Counting its definitions as edges would make
-    //   the model's derivation order include a file about placement.
-    ("views.sqlc", "the view registry; it defines every view and derives from none of them"),
 ];
 
 fn main() {

@@ -1,0 +1,7 @@
+# Step 11 of the walk in assets/sqlc/README.md: whether the paths parts and units make come round.
+-- §11 The graphs the filings make: each graph across the whole corpus.
+SELECT graph, n_nodes, m_edges, c_components, cycle_space_dim
+FROM (
+    :compose(rank/graph_measures.sqlc)
+) g
+WHERE filing IS NULL;

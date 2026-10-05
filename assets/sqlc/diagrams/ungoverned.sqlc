@@ -20,19 +20,7 @@
 #   element declared, not rendered, and no cardinality law able to see the difference is a fact
 #   this repository is willing to hold, and not one it will hold silently.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- diagrams/domain_objects.sqlc's governance claims against diagrams/roster.sqlc.
-WITH
-domain_objects AS NOT MATERIALIZED (
-    :define(diagrams/domain_objects.sqlc)
-),
-roster AS NOT MATERIALIZED (
-    :define(diagrams/roster.sqlc)
-)
 SELECT d.object, d.element, d.governed_by, d.loses,
        (d.governed_by IS NOT NULL AND l.slug IS NULL)          AS names_a_law_that_is_not_there,
        (d.governed_by IS NULL AND d.loses IS NULL)             AS ungoverned_and_unexplained

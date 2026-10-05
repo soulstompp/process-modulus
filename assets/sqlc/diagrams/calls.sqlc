@@ -13,22 +13,7 @@
 #   needs a feature for NUMERIC. The schema refused to hand a magnitude to a program with no use
 #   for one, which is the DDL's typed absences paying out in a second language.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
-WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-part_references AS NOT MATERIALIZED (
-    :define(composition/part_references.sqlc)
-),
-parts AS NOT MATERIALIZED (
-    :define(composition/parts.sqlc)
-)
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (

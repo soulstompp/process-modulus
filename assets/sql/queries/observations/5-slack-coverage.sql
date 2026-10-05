@@ -1,5 +1,20 @@
 -- §5  Which buffers the corpus sizes, and which of them read zero.
 -- reports/slack_census.sqlc over every filing, projected for the example.
+WITH entries_slacks AS (
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.derivation
+FROM pm.slack s
+),
+scope_every_filing AS (
+-- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
+       f.prov_party, f.prov_entered_by, f.prov_approved_by,
+       f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
+FROM pm.filing f
+)
 SELECT c.buffer         AS "buffer!",
        c.evidence       AS "evidence",
        c.sized          AS "sized!",
@@ -18,10 +33,10 @@ SELECT s.buffer::text                                          AS buffer,
        count(*) FILTER (WHERE s.derivation IS NOT NULL)        AS derived,
        count(*)                                                AS rows
 FROM      (
-    SELECT * FROM entries.slacks
+    SELECT * FROM entries_slacks
 ) s
 JOIN      (
-    SELECT * FROM scope.every_filing
+    SELECT * FROM scope_every_filing
 ) f USING (filing)
 GROUP BY s.buffer, f.evidence
 ORDER BY s.buffer, f.evidence

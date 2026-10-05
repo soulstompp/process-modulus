@@ -25,25 +25,7 @@
 #   A local part is a `childLaneSet` and already keyed `(filing, layer)`, so it never lost the
 #   grain and owes no repair.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
-WITH
-notations AS NOT MATERIALIZED (
-    :define(composition/notations.sqlc)
-),
-part_references AS NOT MATERIALIZED (
-    :define(composition/part_references.sqlc)
-),
-parts AS NOT MATERIALIZED (
-    :define(composition/parts.sqlc)
-),
-calls AS NOT MATERIALIZED (
-    :define(diagrams/calls.sqlc)
-)
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
     :compose(diagrams/calls.sqlc)

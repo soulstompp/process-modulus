@@ -1,0 +1,16 @@
+# Step 5 of the walk in assets/sqlc/README.md: each layer's exposure beside its capacity slack and
+# what goes unserved.
+-- §5 The slack, and the worst case: exposure, capacity slack, and the unserved high.
+SELECT e.layer, e.exposure,
+       s.high          AS capacity_slack,
+       u.unserved_high
+FROM      (
+    :compose(layers/exposure_scope.sqlc)
+) e
+LEFT JOIN (
+    :compose(entries/slacks.sqlc)
+) s ON s.filing = e.filing AND s.layer = e.layer AND s.buffer = 'capacity'
+LEFT JOIN (
+    :compose(entries/unserved_totals.sqlc)
+) u ON u.filing = e.filing AND u.layer = e.layer
+WHERE e.filing = 'enterprise-contract';

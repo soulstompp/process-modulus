@@ -1,0 +1,66 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §17 Every operation beside the notation position it names, or the fact that it names none.\n-- entries/operations.sqlc against entries/notation_references.sqlc, the whole beside the part.\nWITH entries_operations AS (\n-- pm:Operation, keyed (filing, label), with the notation position or the reason there is none.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::text AS foreign_absent\nFROM pm.operation o\n),\nentries_notation_references AS (\n-- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.\nSELECT o.filing, o.label, o.foreign_notation, o.foreign_id\nFROM ( SELECT * FROM entries_operations ) o\nWHERE o.foreign_notation IS NOT NULL\n)\nSELECT o.filing                                       AS \"filing!\",\n       o.label                                        AS \"label!\",\n       coalesce(r.foreign_notation, '')               AS \"notation!\",\n       coalesce(r.foreign_id, '')                     AS \"node!\",\n       coalesce(o.foreign_absent, '')                 AS \"why_not!\",\n       (r.filing IS NOT NULL)                         AS \"crosses!\"\nFROM      (\n    SELECT * FROM entries_operations\n) o\nLEFT JOIN (\n    SELECT * FROM entries_notation_references\n) r USING (filing, label)\nORDER BY (r.filing IS NOT NULL) DESC, 1, 2\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "filing!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "filing"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "label!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.operation",
+            "name": "label"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "notation!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "node!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "why_not!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "crosses!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "55f7fae1cf3c564a28e54a79e94d326ae9e0f084304a309705a16da93a8aae2e"
+}

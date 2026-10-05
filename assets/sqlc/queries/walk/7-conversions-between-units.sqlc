@@ -1,0 +1,15 @@
+# Step 7 of the walk in assets/sqlc/README.md: how parts counted in different units meet in one
+# composed layer.
+-- §7 Conversions between units: each part's factor, and its figures once converted.
+SELECT p.part_layer, p.factor_low, p.factor_mode, p.factor_high,
+       c.quantity, c.low, c.mode, c.high
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+JOIN (
+    :compose(composition/converted.sqlc)
+) c ON c.composition = p.composition AND c.composed_layer = p.composed_layer
+   AND c.part_filing = p.part_filing AND c.part_layer = p.part_layer
+WHERE p.composition = 'merge-holding-composition'
+  AND p.composed_layer = 'compute'
+ORDER BY c.quantity, p.part_layer;

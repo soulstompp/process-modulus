@@ -1,13 +1,6 @@
 -- asrt:Fusion/asrt:Part crossing a document; BPMN 2.0 tRelationship source/target.
-WITH
-notations AS NOT MATERIALIZED (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-),
-part_references AS NOT MATERIALIZED (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
+WITH composition_part_references AS (
+-- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state
@@ -16,49 +9,14 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regi
             ELSE                                      'omitted'::public.factor_state END AS factor_state,
        p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version
 FROM pm.part p
-
 ),
-parts AS NOT MATERIALIZED (
-    -- pm.part joined through pm.filing_identity to pm.layer.
-SELECT p.composition, p.composed_layer,
-       p.part_filing AS part_notation,
-       fi.filing     AS part_filing,
-       p.part_layer,
-       p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
-       p.factor_state
-FROM      (
-    SELECT * FROM part_references
-) p
-JOIN      (
-    SELECT * FROM notations
-) fi ON fi.notation = p.part_filing
-JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
-
-),
-calls AS NOT MATERIALIZED (
-    -- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
-WITH
-notations AS NOT MATERIALIZED (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+composition_notations AS (
+-- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
-
 ),
-part_references AS NOT MATERIALIZED (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
-SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
-       p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
-       CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state
-            WHEN p.factor_absent     IS NOT NULL THEN 'absent'::public.factor_state
-            WHEN p.factor_derivation IS NOT NULL THEN 'derivation'::public.factor_state
-            ELSE                                      'omitted'::public.factor_state END AS factor_state,
-       p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version
-FROM pm.part p
-
-),
-parts AS NOT MATERIALIZED (
-    -- pm.part joined through pm.filing_identity to pm.layer.
+composition_parts AS (
+-- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
@@ -67,23 +25,23 @@ SELECT p.composition, p.composed_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        p.factor_state
 FROM      (
-    SELECT * FROM part_references
+    SELECT * FROM composition_part_references
 ) p
 JOIN      (
-    SELECT * FROM notations
+    SELECT * FROM composition_notations
 ) fi ON fi.notation = p.part_filing
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
-
-)
+),
+diagrams_calls AS (
+-- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (
-    SELECT * FROM parts
+    SELECT * FROM composition_parts
 ) p
-
 )
 SELECT c.composition, c.composed_layer, c.part_filing, c.part_layer, c.part_notation
 FROM (
-    SELECT * FROM calls
+    SELECT * FROM diagrams_calls
 ) c
 WHERE NOT c.is_local

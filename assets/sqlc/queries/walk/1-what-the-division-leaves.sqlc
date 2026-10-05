@@ -1,0 +1,16 @@
+# Step 1 of the walk in assets/sqlc/README.md: how short each layer is, and whether it is short
+# wherever demand lands.
+-- §1 What the division leaves: each layer's remainder at its three corners, and its fit.
+SELECT layer, d_unit AS unit,
+       n_low  - d_high AS at_worst,
+       n_mode - d_mode AS most_likely,
+       n_high - d_low  AS at_best,
+       CASE WHEN n_low  - d_high >= 0 THEN 'clearance'
+            WHEN n_high - d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS fit
+FROM (
+    :compose(layers/figures.sqlc)
+) f
+WHERE filing = 'enterprise-contract'
+  AND d_low IS NOT NULL
+  AND n_low IS NOT NULL;

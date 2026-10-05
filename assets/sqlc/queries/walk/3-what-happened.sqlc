@@ -1,0 +1,7 @@
+# Step 3 of the walk in assets/sqlc/README.md: what each layer committed beside what was drawn.
+-- §3 What happened: the nameplate beside the draw.
+SELECT layer, n_mode AS committed, draw_low, draw_mode, draw_high
+FROM (
+    :compose(layers/drawn.sqlc)
+) d
+WHERE filing = 'enterprise-contract';

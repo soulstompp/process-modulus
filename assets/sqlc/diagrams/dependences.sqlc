@@ -26,16 +26,7 @@
 #   So the artifact says that two layers are coupled and cannot say what was seen. That is a
 #   `loses`, and a wide one. It is still the first time the fact appears at all.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- pm:Stack/pm:Coupling projected to its two ends; BPMN 2.0 tAssociation sourceRef/targetRef.
-WITH
-couplings AS NOT MATERIALIZED (
-    :define(entries/couplings.sqlc)
-)
 SELECT c.filing, c.from_layer, c.to_layer
 FROM (
     :compose(entries/couplings.sqlc)

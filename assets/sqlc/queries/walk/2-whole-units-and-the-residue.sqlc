@@ -1,0 +1,14 @@
+# Step 2 of the walk in assets/sqlc/README.md: how many whole units each layer commits and is
+# asked for, and what is left over.
+-- §2 Whole units, and the residue: the whole unit, the units committed and asked, the residue.
+SELECT layer, quantum_mode AS whole_unit,
+       round(n_mode / quantum_mode, 2) AS units_committed,
+       floor(d_mode / quantum_mode)    AS units_asked,
+       mod(d_low,  quantum_mode)       AS residue_low,
+       mod(d_mode, quantum_mode)       AS residue_mode,
+       mod(d_high, quantum_mode)       AS residue_high
+FROM (
+    :compose(layers/lumpy.sqlc)
+) l
+WHERE filing = 'enterprise-contract'
+  AND d_low IS NOT NULL;

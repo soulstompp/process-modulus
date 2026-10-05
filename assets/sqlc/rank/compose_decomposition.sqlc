@@ -32,13 +32,6 @@
 #   Move a template into the directory of everything it composes and recompose: the summed cycle
 #   space must rise, and `corpus_wide` must not move at all.
 -- rank/compose_measures.sqlc at both scopes: the whole against the sum of the parts.
-WITH
-compose_edges AS NOT MATERIALIZED (
-    :define(rank/compose_edges.sqlc)
-),
-compose_measures AS NOT MATERIALIZED (
-    :define(rank/compose_measures.sqlc)
-)
 SELECT w.cycle_space_dim                                                   AS corpus_wide,
        coalesce(sum(p.cycle_space_dim), 0)::bigint                         AS summed_per_directory,
        w.cycle_space_dim = coalesce(sum(p.cycle_space_dim), 0)::bigint     AS survives_the_cut,

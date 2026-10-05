@@ -13,16 +13,7 @@
 #   needs a feature for NUMERIC. The schema refused to hand a magnitude to a program with no use
 #   for one, which is the DDL's typed absences paying out in a second language.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
-WITH
-draws AS NOT MATERIALIZED (
-    :define(entries/draws.sqlc)
-)
 SELECT d.filing, d.operation, d.layer
 FROM (
     :compose(entries/draws.sqlc)

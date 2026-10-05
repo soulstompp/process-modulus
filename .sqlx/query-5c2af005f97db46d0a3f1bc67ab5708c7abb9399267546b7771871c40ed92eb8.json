@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- composition/notations.sqlc projected to the resolution alone; one import per notation.\nWITH composition_notations AS (\n-- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.\nSELECT fi.notation, fi.filing, fi.asserted_by, fi.absent\nFROM pm.filing_identity fi\n)\nSELECT n.notation, n.filing\nFROM (\n    SELECT * FROM composition_notations\n) n\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "notation",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing_identity",
+            "name": "notation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "filing",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "pm.filing_identity",
+            "name": "filing"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      false
+    ]
+  },
+  "hash": "5c2af005f97db46d0a3f1bc67ab5708c7abb9399267546b7771871c40ed92eb8"
+}

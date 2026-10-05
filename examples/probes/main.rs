@@ -790,9 +790,8 @@ fn statements_read_at_compile_time() -> BTreeSet<String> {
     found
 }
 
-/// Where the statements a probe edits are read from: the composition with every statement inline.
-/// The tracked `assets/sql/` names a shared statement by its view, so an edit anchored inside one
-/// would find nothing there; the inline form carries every statement's text in the file that runs.
+/// Where the statements a probe edits are read from: the composition with every statement inline,
+/// the form each probe's anchor count is taken on.
 const INLINE: &str = "target/sql-inline";
 
 /// The newest modification time anywhere under `dir`, or None if it holds no file.

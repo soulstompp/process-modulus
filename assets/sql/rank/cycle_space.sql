@@ -1,19 +1,6 @@
 -- rank/graph_measures.sqlc at the corpus-wide scope: the two graphs as incidence matrices.
-WITH
-fusions AS NOT MATERIALIZED (
-    -- asrt:Fusion: the composed layer it names, and asrt:observed.
-SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
-FROM pm.fusion f
-
-),
-notations AS NOT MATERIALIZED (
-    -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
-SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
-FROM pm.filing_identity fi
-
-),
-part_references AS NOT MATERIALIZED (
-    -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
+WITH composition_part_references AS (
+-- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        CASE WHEN p.factor_low        IS NOT NULL THEN 'stated'::public.factor_state
@@ -22,10 +9,14 @@ SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regi
             ELSE                                      'omitted'::public.factor_state END AS factor_state,
        p.part_party, p.part_registration_taxonomy, p.part_registration_value, p.part_version
 FROM pm.part p
-
 ),
-parts AS NOT MATERIALIZED (
-    -- pm.part joined through pm.filing_identity to pm.layer.
+composition_notations AS (
+-- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
+SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
+FROM pm.filing_identity fi
+),
+composition_parts AS (
+-- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,
        fi.filing     AS part_filing,
@@ -34,57 +25,15 @@ SELECT p.composition, p.composed_layer,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        p.factor_state
 FROM      (
-    SELECT * FROM part_references
+    SELECT * FROM composition_part_references
 ) p
 JOIN      (
-    SELECT * FROM notations
+    SELECT * FROM composition_notations
 ) fi ON fi.notation = p.part_filing
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
-
 ),
-unresolved_parts AS NOT MATERIALIZED (
-    -- composition/part_references.sqlc less composition/parts.sqlc, per fusion and reference.
-SELECT r.composition, r.composed_layer,
-       NULL::pm.summed_quantity AS quantity,
-       'a part resolves to no filing here' AS suspended_because,
-       r.part_filing || '/' || r.part_layer AS note
-FROM      (
-    SELECT * FROM part_references
-) r
-LEFT JOIN (
-    SELECT * FROM parts
-) p ON  p.composition    = r.composition
-    AND p.composed_layer = r.composed_layer
-    AND p.part_notation  = r.part_filing
-    AND p.part_layer     = r.part_layer
-WHERE p.composition IS NULL
-
-),
-filed AS NOT MATERIALIZED (
-    -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
-SELECT e.composition, e.composed_layer, e.quantity,
-       e.low, e.mode, e.high, e.unit,
-       e.absent, e.derivation, e.reason, e.claim_seq
-FROM pm.elimination e
-
-),
-searched AS NOT MATERIALIZED (
-    -- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
-SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
-FROM pm.elimination_search es
-
-),
-fusion_parts AS NOT MATERIALIZED (
-    -- composition/part_references.sqlc folded to one row per fusion it names.
-SELECT r.composition, r.composed_layer, count(*) AS parts
-FROM (
-    SELECT * FROM part_references
-) r
-GROUP BY r.composition, r.composed_layer
-
-),
-summed_quantities AS NOT MATERIALIZED (
-    -- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
+layers_summed_quantities AS (
+-- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
 SELECT l.filing, l.layer, 'demand'::pm.summed_quantity AS quantity,
        l.demand_low AS low, l.demand_mode AS mode, l.demand_high AS high, l.demand_unit AS unit,
        l.demand_absent AS absent, l.demand_derivation AS derivation
@@ -98,37 +47,34 @@ UNION ALL
 SELECT n.filing, n.layer, 'draw'::pm.summed_quantity,
        n.draw_low, n.draw_mode, n.draw_high, n.draw_unit, n.draw_absent, n.draw_derivation
 FROM pm.nameplate n
-
 ),
-derived_quantities AS NOT MATERIALIZED (
-    -- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
-WITH
-root AS (
-    SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
-    FROM      ( SELECT * FROM summed_quantities ) s
-    LEFT JOIN (
-        SELECT * FROM fusion_parts
-    ) b ON b.composition = s.filing AND b.composed_layer = s.layer
-    WHERE s.derivation IS NOT NULL
+folds_fusion_parts AS (
+-- composition/part_references.sqlc folded to one row per fusion it names.
+SELECT r.composition, r.composed_layer, count(*) AS parts
+FROM (
+    SELECT * FROM composition_part_references
+) r
+GROUP BY r.composition, r.composed_layer
 ),
-node AS (
-    SELECT w.root_filing, w.root_layer, w.quantity, w.filing, w.layer, w.depth,
-           w.factor_low, w.factor_mode, w.factor_high, w.part_of, w.conversion_absent,
-           w.conversion_derivation, w.is_cycle,
-           w.low, w.mode, w.high, w.unit, w.absent, w.derivation, w.is_fusion
-    FROM ( -- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+composition_fusions AS (
+-- asrt:Fusion: the composed layer it names, and asrt:observed.
+SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
+FROM pm.fusion f
+),
+composition_derived_frontier AS (
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
-    SELECT * FROM parts
+    SELECT * FROM composition_parts
 ),
 figure AS (
     SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent, s.derivation,
            (f.filing IS NOT NULL) AS is_fusion
     FROM      (
-        SELECT * FROM summed_quantities
+        SELECT * FROM layers_summed_quantities
     ) s
     LEFT JOIN (
-        SELECT * FROM fusions
+        SELECT * FROM composition_fusions
     ) f ON f.filing = s.filing AND f.layer = s.layer
 ),
 walk(root_filing, root_layer, quantity, filing, layer, depth,
@@ -162,7 +108,53 @@ SELECT root_filing, root_layer, quantity, filing, layer, depth,
        factor_low, factor_mode, factor_high, factor_absent, part_of, conversion_absent,
        conversion_derivation, low, mode, high, unit, absent, derivation, is_fusion, is_cycle
 FROM walk
- ) w
+),
+eliminations_filed AS (
+-- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
+SELECT e.composition, e.composed_layer, e.quantity,
+       e.low, e.mode, e.high, e.unit,
+       e.absent, e.derivation, e.reason, e.claim_seq
+FROM pm.elimination e
+),
+eliminations_searched AS (
+-- asrt:Fusion/asrt:eliminations/asrt:absent, one row per composed layer asked.
+SELECT es.composition, es.composed_layer, es.absent AS answer, es.note
+FROM pm.elimination_search es
+),
+composition_unresolved_parts AS (
+-- composition/part_references.sqlc less composition/parts.sqlc, per fusion and reference.
+SELECT r.composition, r.composed_layer,
+       NULL::pm.summed_quantity AS quantity,
+       'a part resolves to no filing here' AS suspended_because,
+       r.part_filing || '/' || r.part_layer AS note
+FROM      (
+    SELECT * FROM composition_part_references
+) r
+LEFT JOIN (
+    SELECT * FROM composition_parts
+) p ON  p.composition    = r.composition
+    AND p.composed_layer = r.composed_layer
+    AND p.part_notation  = r.part_filing
+    AND p.part_layer     = r.part_layer
+WHERE p.composition IS NULL
+),
+composition_derived_quantities AS (
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+WITH
+root AS (
+    SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
+    FROM      ( SELECT * FROM layers_summed_quantities ) s
+    LEFT JOIN (
+        SELECT * FROM folds_fusion_parts
+    ) b ON b.composition = s.filing AND b.composed_layer = s.layer
+    WHERE s.derivation IS NOT NULL
+),
+node AS (
+    SELECT w.root_filing, w.root_layer, w.quantity, w.filing, w.layer, w.depth,
+           w.factor_low, w.factor_mode, w.factor_high, w.part_of, w.conversion_absent,
+           w.conversion_derivation, w.is_cycle,
+           w.low, w.mode, w.high, w.unit, w.absent, w.derivation, w.is_fusion
+    FROM ( SELECT * FROM composition_derived_frontier ) w
 ),
 passed AS (
     SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity, r.filing, r.layer,
@@ -183,14 +175,14 @@ elimination AS (
            e.absent AS e_absent, e.derivation AS e_derivation,
            es.answer AS searched
     FROM      passed p
-    LEFT JOIN ( SELECT * FROM filed ) e
+    LEFT JOIN ( SELECT * FROM eliminations_filed ) e
            ON e.composition = p.filing AND e.composed_layer = p.layer AND e.quantity = p.quantity
-    LEFT JOIN ( SELECT * FROM searched ) es
+    LEFT JOIN ( SELECT * FROM eliminations_searched ) es
            ON es.composition = p.filing AND es.composed_layer = p.layer
 ),
 unresolved AS MATERIALIZED (
     SELECT DISTINCT u.composition, u.composed_layer
-    FROM ( SELECT * FROM unresolved_parts ) u
+    FROM ( SELECT * FROM composition_unresolved_parts ) u
 ),
 reason AS (
     SELECT r.filing AS root_filing, r.layer AS root_layer, r.quantity,
@@ -298,16 +290,15 @@ LEFT JOIN (
     FROM blocked
     GROUP BY root_filing, root_layer, quantity
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
-
 ),
-resolved_quantities AS NOT MATERIALIZED (
-    -- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+composition_resolved_quantities AS (
+-- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
        NULL::text             AS blocked_because
 FROM (
-    SELECT * FROM summed_quantities
+    SELECT * FROM layers_summed_quantities
 ) s
 WHERE s.derivation IS NULL
 UNION ALL
@@ -317,21 +308,11 @@ SELECT d.filing, d.layer, d.quantity, d.low, d.mode, d.high, d.unit,
        d.derivation,
        d.blocked_because
 FROM (
-    SELECT * FROM derived_quantities
+    SELECT * FROM composition_derived_quantities
 ) d
-
 ),
-slacks AS NOT MATERIALIZED (
-    -- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
-SELECT s.filing, s.layer, s.buffer,
-       s.low, s.mode, s.high, s.unit, s.absent,
-       (s.low IS NOT NULL) AS sized,
-       s.derivation
-FROM pm.slack s
-
-),
-demand AS NOT MATERIALIZED (
-    -- composition/resolved_quantities.sqlc's pm:Layer/pm:Demand, where it has a figure.
+layers_demand AS (
+-- composition/resolved_quantities.sqlc's pm:Layer/pm:Demand, where it has a figure.
 SELECT q.filing, q.layer,
        q.low  AS d_low,
        q.mode AS d_mode,
@@ -340,14 +321,13 @@ SELECT q.filing, q.layer,
        q.low = q.high AS is_a_point,
        q.derived AS d_derived
 FROM (
-    SELECT * FROM resolved_quantities
+    SELECT * FROM composition_resolved_quantities
 ) q
 WHERE q.quantity = 'demand'
   AND q.low IS NOT NULL
-
 ),
-layers_nameplate AS NOT MATERIALIZED (
-    -- pm:Layer/pm:Nameplate, its Divisibility and its window, with the amount from
+layers_nameplate AS (
+-- pm:Layer/pm:Nameplate, its Divisibility and its window, with the amount from
 -- composition/derived_quantities.sqlc where it is filed `derived`.
 SELECT n.filing, n.layer,
        n.amount_low  AS n_low,
@@ -371,17 +351,24 @@ SELECT n.filing, n.layer, q.low, q.mode, q.high, q.unit, true,
        n.window_absent
 FROM pm.nameplate n
 JOIN (
-    SELECT * FROM derived_quantities
+    SELECT * FROM composition_derived_quantities
 ) q ON q.filing = n.filing AND q.layer = n.layer AND q.quantity = 'nameplate'
 WHERE q.low IS NOT NULL
-
 ),
-quantities AS NOT MATERIALIZED (
-    -- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
+entries_slacks AS (
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+SELECT s.filing, s.layer, s.buffer,
+       s.low, s.mode, s.high, s.unit, s.absent,
+       (s.low IS NOT NULL) AS sized,
+       s.derivation
+FROM pm.slack s
+),
+layers_quantities AS (
+-- pm:Layer's own quantities: demand, nameplate and the three buffer slacks, keyed by element.
 SELECT d.filing, d.layer, 'demand'::public.layer_quantity AS quantity,
        d.d_low AS low, d.d_mode AS mode, d.d_high AS high, d.d_unit AS unit
 FROM (
-    SELECT * FROM demand
+    SELECT * FROM layers_demand
 ) d
 UNION ALL
 SELECT n.filing, n.layer, 'nameplate'::public.layer_quantity,
@@ -393,13 +380,12 @@ UNION ALL
 SELECT s.filing, s.layer, (s.buffer || 'Slack')::public.layer_quantity,
        s.low, s.mode, s.high, s.unit
 FROM (
-    SELECT * FROM slacks
+    SELECT * FROM entries_slacks
 ) s
 WHERE s.low IS NOT NULL
-
 ),
-part_quantities AS NOT MATERIALIZED (
-    -- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed layer.
+composition_part_quantities AS (
+-- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed layer.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        p.factor_state, p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        part.quantity,
@@ -407,53 +393,50 @@ SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_l
        comp.low  AS composed_low, comp.mode AS composed_mode, comp.high AS composed_high,
        comp.unit AS composed_unit
 FROM      (
-    SELECT * FROM parts
+    SELECT * FROM composition_parts
 ) p
 JOIN      (
-    SELECT * FROM quantities
+    SELECT * FROM layers_quantities
 ) part ON part.filing = p.part_filing AND part.layer = p.part_layer
 JOIN      (
-    SELECT * FROM quantities
+    SELECT * FROM layers_quantities
 ) comp ON comp.filing = p.composition AND comp.layer = p.composed_layer
       AND comp.quantity = part.quantity
-
 ),
-conversions AS NOT MATERIALIZED (
-    -- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
+units_conversions AS (
+-- asrt:Part/asrt:factor at the nameplate, as part-layer-unit to composed-layer-unit.
 SELECT DISTINCT
        p.part_unit     AS from_unit,
        p.composed_unit AS to_unit,
        p.factor_low, p.factor_mode, p.factor_high,
        p.composition AS filing, p.composed_layer AS layer
 FROM (
-    SELECT * FROM part_quantities
+    SELECT * FROM composition_part_quantities
 ) p
 WHERE p.quantity = 'nameplate'
   AND p.factor_state = 'stated'
-
 ),
-graph_edges AS NOT MATERIALIZED (
-    -- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.
+rank_graph_edges AS (
+-- composition/parts.sqlc and units/conversions.sqlc, each labelled with the graph it is an edge of.
 SELECT 'layers' AS graph,
        p.composition                            AS filing,
        p.composition  || '/' || p.composed_layer AS from_node,
        p.part_filing  || '/' || p.part_layer     AS to_node
 FROM (
-    SELECT * FROM parts
+    SELECT * FROM composition_parts
 ) p
 UNION ALL
 SELECT 'units', c.filing, c.from_unit, c.to_unit
 FROM (
-    SELECT * FROM conversions
+    SELECT * FROM units_conversions
 ) c
-
 ),
-graph_measures AS NOT MATERIALIZED (
-    -- rank/graph_edges.sqlc, symmetrised and walked for components, counted at both scopes.
+rank_graph_measures AS (
+-- rank/graph_edges.sqlc, symmetrised and walked for components, counted at both scopes.
 WITH RECURSIVE
 edges AS (
     SELECT DISTINCT g.graph, g.filing, g.from_node AS a, g.to_node AS b
-    FROM ( SELECT * FROM graph_edges ) g
+    FROM ( SELECT * FROM rank_graph_edges ) g
 ),
 scoped AS (
     SELECT DISTINCT graph, NULL::text AS filing, a, b FROM edges
@@ -482,10 +465,9 @@ SELECT n.graph, n.filing,
 FROM nodes n
 JOIN comp c ON c.graph = n.graph AND c.filing IS NOT DISTINCT FROM n.filing AND c.root = n.u
 GROUP BY n.graph, n.filing
-
 )
 SELECT m.graph, m.n_nodes, m.m_edges, m.c_components, m.cycle_space_dim, m.rank_of_incidence
 FROM (
-    SELECT * FROM graph_measures
+    SELECT * FROM rank_graph_measures
 ) m
 WHERE m.filing IS NULL

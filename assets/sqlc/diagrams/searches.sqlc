@@ -23,16 +23,7 @@
 #   The answer rides the laneSet's own documentation, because the laneSet is the partition the
 #   search is about.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation.
-WITH
-coupling_searches AS NOT MATERIALIZED (
-    :define(epistemics/coupling_searches.sqlc)
-)
 SELECT s.filing,
        coalesce(s.answer::text, 'stated') AS answer
 FROM (

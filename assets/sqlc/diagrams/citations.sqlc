@@ -20,16 +20,7 @@
 #   while crossing several regime boundaries. The emission cannot fix that and must not paper over
 #   it.
 #
-# Defined, not read
-#   A program reads these columns, so this statement defines its vocabulary in its own
-#   WITH clause: a view keeps the rows and loses the column's origin, which is where
-#   NOT NULL lives. assets/sqlc/views.sqlc says what a definition is.
-#
 -- asrt:Composition/asrt:citation, flattened to the one string a documentation element can hold.
-WITH
-citations AS NOT MATERIALIZED (
-    :define(composition/citations.sqlc)
-)
 SELECT c.composition,
        c.instrument
          || coalesce(' clause ' || c.clause, '')
