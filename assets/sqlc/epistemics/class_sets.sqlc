@@ -1,0 +1,41 @@
+# Every classification this tree makes, declared. One row per classifying relation: the relation,
+# the type its classes belong to, and what one counted row of it IS.
+#
+# `subject` is the unit of the count, and it is declared because it cannot be recovered
+#   A census counts rows, and a row of `arithmetic/all.sqlc` is not the same kind of thing as a
+#   row of `checks/fit_axes.sqlc`. Eight relations here count in six different units, so a number
+#   read across them means nothing and a threshold set across them would be wrong six ways. The
+#   column is `checks/roster.sqlc`'s, the same word for the same job: `examples/soundness/main.rs`
+#   §4 already holds it for rules, and *"the coverage number has a UNIT now"* is what that bought.
+#
+# The relation is not derived from the tree
+#   A contract must not be derived from what it governs, so this is a `VALUES` literal like every
+#   other roster here. Read the eight names off `epistemics/class_cells.sqlc` and this file could
+#   never disagree with it, and `algebra/class_domain.sqlc` would be anti-joining a set against
+#   itself.
+#
+# `filed` says whether a ball is something a document filed
+#   Six of the eight classify rows somebody filed, so restricting them to a set of documents is a
+#   real question and reports/class_census.sqlc asks it. Three do not: this tree's own rules are
+#   not filed by anybody. Their classes are identical under every scope, so a scoped report must
+#   leave them out rather
+#   than print a zero that reads like a finding. algebra/class_domain.sqlc holds the flag against
+#   whether any ball of that relation carries a filing, so the two cannot drift.
+#
+# `codomain` is the type's bare name, never a rendered one
+#   `pg_typeof(x)::text` spells a type through the session's `search_path`, so the same class
+#   prints `pm.fit` to one client and `fit` to another, and a literal here would be right in one
+#   session and wrong in the next. epistemics/class_cells.sqlc reads `pg_type.typname` instead,
+#   which is the name assets/ddl/schema.ddl wrote. `algebra/class_domain.sqlc` compares the two,
+#   so a type renamed in the DDL fails here rather than silently classifying nothing.
+-- the eight classifications, their codomains, the unit each counts in, and whether it is filed.
+SELECT * FROM (VALUES
+  ('arithmetic/all.sqlc',              'arithmetic_verdict', 'computation', true),
+  ('layers/remainder.sqlc',            'fit',                'layer',       true),
+  ('layers/remainder_scope.sqlc',      'remainder_standing', 'layer',       true),
+  ('layers/exposure_scope.sqlc',       'exposure_standing',  'layer',       true),
+  ('layers/quantities.sqlc',           'layer_quantity',     'quantity',    true),
+  ('composition/part_references.sqlc', 'factor_state',       'part',        true),
+  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        false),
+  ('checks/fit_domain.sqlc',           'fit_standing',       'rule cell',   false)
+) AS s(relation, codomain, subject, filed)

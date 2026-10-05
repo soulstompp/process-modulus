@@ -16,7 +16,8 @@
 #   rather than vanish from a GROUP BY. `law` is the roster's `slug` and not its formula, because
 #   several laws share one formula.
 -- algebra/roster.sqlc joined to each law's own subjects.
-:union(ALL algebra/dimension_use.sqlc,
+:union(ALL algebra/class_domain.sqlc,
+           algebra/dimension_use.sqlc,
            algebra/compose_decomposition.sqlc,
            algebra/decomposition.sqlc,
            algebra/cycle_space.sqlc,

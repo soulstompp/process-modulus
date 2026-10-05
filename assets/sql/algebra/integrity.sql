@@ -101,6 +101,30 @@ LEFT JOIN (
                       count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
                       count(*) FILTER (WHERE NOT s.declared)            AS undeclared
                FROM ( SELECT * FROM folds.derivation_subjects ) s ) f
+        UNION ALL
+        SELECT 'classes',
+               (SELECT count(*) FROM ( SELECT * FROM epistemics.class_domain ) o
+                WHERE o.standing = 'exercised') AS roster,
+               (SELECT count(*) FROM ( SELECT o.relation || ' / ' || o.class
+                                       FROM ( SELECT * FROM epistemics.class_domain ) o
+                                       WHERE o.standing = 'exercised'
+                                       EXCEPT
+                                       SELECT z.relation || ' / ' || z.class
+                                       FROM ( SELECT * FROM epistemics.classes ) z
+                                       WHERE z.balls > 0 ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT z.relation || ' / ' || z.class
+                                       FROM ( SELECT * FROM epistemics.classes ) z
+                                       WHERE z.balls > 0
+                                       EXCEPT
+                                       SELECT o.relation || ' / ' || o.class
+                                       FROM ( SELECT * FROM epistemics.class_domain ) o
+                                       WHERE o.standing = 'exercised' ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( SELECT * FROM folds.class_subjects ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'integrity'

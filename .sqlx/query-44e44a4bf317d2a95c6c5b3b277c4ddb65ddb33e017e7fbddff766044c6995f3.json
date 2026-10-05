@@ -1,0 +1,93 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3  Every classification this tree makes, against the set of classes it declares.\n-- epistemics/classes.sqlc beside its declared standings, in each type's declared order.\nSELECT c.relation AS \"relation!\", c.codomain AS \"codomain!\", c.class AS \"class!\",\n       c.subject AS \"subject?\", c.balls AS \"balls!\",\n       d.standing::text AS \"standing?\", d.reason AS \"reason?\"\nFROM      (\n    SELECT * FROM epistemics.classes\n) c\nLEFT JOIN (\n    SELECT * FROM epistemics.class_domain\n) d ON d.relation = c.relation AND d.class = c.class\nORDER BY c.relation, c.ord\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "relation!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.classes",
+            "name": "relation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "codomain!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.classes",
+            "name": "codomain"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "class!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.classes",
+            "name": "class"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "subject?",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.classes",
+            "name": "subject"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "balls!",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "epistemics.classes",
+            "name": "balls"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "standing?",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "reason?",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.class_domain",
+            "name": "reason"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      true
+    ]
+  },
+  "hash": "44e44a4bf317d2a95c6c5b3b277c4ddb65ddb33e017e7fbddff766044c6995f3"
+}

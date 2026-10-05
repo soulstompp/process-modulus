@@ -1,0 +1,55 @@
+# Every classification this tree makes, against the set of classes it declares, over every loaded
+# document. One row per (relation, class): the relation that classifies, the type its classes
+# belong to, what one counted row IS, and how many landed in the class.
+#
+# The classes are part of the function
+#   A classification is a function from rows to classes. The partition laws in algebra/ prove that
+#   each row landed in exactly one class, which survives any renaming of the classes. Which classes
+#   there are is the type's job: each set here is an enum, so a misspelt class fails when the query
+#   is parsed. Neither can show which classes are empty, and an empty class is often the finding.
+#
+# Pooled on purpose, and that is what makes it the contract's population
+#   This counts the corpus and the fixtures together, because the question it answers is whether
+#   anything in this repository computes the class at all. A class no document reaches under any
+#   scope is a class no relation here can produce, and folds/class_subjects.sqlc holds
+#   epistemics/class_domain.sqlc to exactly that.
+#   ⛔ It is therefore NOT a reading of the evidence. What a chosen set of documents shows is a
+#   different question with a different answer, and reports/class_census.sqlc is where it is put;
+#   `assets/fixtures/README.md` argues why a dark state means opposite things in the two places.
+#
+# `subject` is the unit, and a count without one is not a number
+#   The eight relations count in six units, so `balls` is comparable down a relation's own arm and
+#   nowhere else. epistemics/class_sets.sqlc declares the unit and this carries it beside the
+#   count so a reader never has to infer it. The join is LEFT so a relation missing from that
+#   roster arrives with a NULL subject and is reported by algebra/class_domain.sqlc, rather than
+#   having its classes vanish.
+#
+# `filed_balls` is how the `filed` flag is held
+#   epistemics/class_sets.sqlc declares whether a relation classifies rows a document filed, and
+#   this counts the balls that actually carry one. The two are compared by
+#   algebra/class_domain.sqlc, so a relation whose arm stops carrying a filing, or starts, is a
+#   failure rather than a report that quietly narrows. It is the same aggregate, one more column,
+#   which is why the flag costs no extra pass over the eight arms.
+#
+# `ord` is the declared order, and it is a column because it cannot be recovered
+#   Each type's members come out in the order the type declares them, which is the `CASE`
+#   precedence of the relation that assigns them. A consumer grouping alone has nothing to sort
+#   on but the class text, which is alphabetical and says nothing, and precedence is the argument
+#   `layers/exposure_scope.sqlc` makes in prose, so losing it loses a reading.
+#
+# Why `codomain` is `pg_typeof`
+#   Taking the type from the class itself lets a caller hold every enum in schema `public` against
+#   this relation using the catalog, which Postgres writes. A query-side class set added to
+#   schema.ddl without an arm in epistemics/class_cells.sqlc fails `examples/combinatorics/main.rs`.
+-- epistemics/class_cells.sqlc counted per class over every loaded document, with its declared unit.
+SELECT k.relation, k.codomain, k.class, s.subject,
+       count(k.ball)   AS balls,
+       count(k.filing) AS filed_balls,
+       k.ord
+FROM      (
+    :compose(epistemics/class_cells.sqlc)
+) k
+LEFT JOIN (
+    :compose(epistemics/class_sets.sqlc)
+) s ON s.relation = k.relation
+GROUP BY k.relation, k.codomain, k.class, s.subject, k.ord

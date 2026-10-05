@@ -1,0 +1,31 @@
+-- §3b  The same classes, counted over the corpus and over the fixtures instead of pooled.
+# One row per (relation, class) of every classification whose rows are filed: what the documents
+# attesting to a real system put there, and what the documents stipulating a state put there.
+#
+# The two numbers answer different questions, and the pooled one answers neither
+#   A class empty in the corpus and filled in the fixtures is a state this repository invented
+#   because nothing real produced it: a finding about the evidence. A class empty in the fixtures
+#   is a state no stipulation exercises: a gap in coverage. Added together they say only that
+#   somebody somewhere filed one, which is the question `epistemics/classes.sqlc` answers for the
+#   contract and the only question pooling can answer honestly.
+#
+# Why this could not be a filter over §3
+#   §3 counts, so the set of documents it counted over is part of its result rather than an
+#   input a reader still holds. Restricting its rows afterwards chooses which totals to look
+#   at, never what each total counted. Both columns here come from `reports/class_census.sqlc`,
+#   which takes the document set as a slot and is composed twice.
+#
+# Two classifications are absent, and that is their subject rather than an omission
+#   `checks/fit_axes.sqlc` and `checks/fit_domain.sqlc` classify this tree's own RULES, which
+#   nobody files, so their classes are identical under every scope and a zero here would read as
+#   a gap in evidence that does not exist.
+-- reports/class_census.sqlc at both scopes, matched on the class.
+SELECT k.relation AS "relation!", k.class AS "class!", k.subject AS "subject?",
+       k.balls AS "corpus!", f.balls AS "fixtures?"
+FROM      (
+    :compose(reports/classes_in_the_corpus.sqlc)
+) k
+LEFT JOIN (
+    :compose(reports/classes_in_the_fixtures.sqlc)
+) f ON f.relation = k.relation AND f.class = k.class
+ORDER BY k.relation, k.ord

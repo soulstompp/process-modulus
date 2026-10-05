@@ -205,6 +205,36 @@ const PROBES: &[Probe] = &[
         says: "a rule whose closure reaches no fit declares that it reads one",
     },
     Probe {
+        id: "class_domain / standing",
+        doc: None,
+        rows: NO_ROWS,
+        statement: "algebra/class_domain",
+        swap: Some(("  ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',",
+                    "  ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'exercised',", 1)),
+        expect: Only(&["a standing that disagrees with the count"]),
+        says: "a class declared exercised that nothing lands in, which is an accounted-for zero claiming to be a real one",
+    },
+    Probe {
+        id: "class_domain / codomain",
+        doc: None,
+        rows: NO_ROWS,
+        statement: "algebra/class_domain",
+        swap: Some(("  ('layers/quantities.sqlc',           'layer_quantity',     'quantity',    true),",
+                    "  ('layers/quantities.sqlc',           'layer_quantities',   'quantity',    true),", 2)),
+        expect: Only(&["a classification nobody declared"]),
+        says: "a class set naming a type the classification does not sort into, which is what renaming an enum and not the roster produces",
+    },
+    Probe {
+        id: "class_domain / filed",
+        doc: None,
+        rows: NO_ROWS,
+        statement: "algebra/class_domain",
+        swap: Some(("  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        false)",
+                    "  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        true)", 2)),
+        expect: Only(&["a filed flag that disagrees with the balls"]),
+        says: "a classification of this tree's own rules declared to be filed by documents, which would put a scope over rows no scope can restrict",
+    },
+    Probe {
         id: "fusion_sum",
         doc: None,
         rows: NO_ROWS,
@@ -634,9 +664,17 @@ const PROBES: &[Probe] = &[
         // ⭐ `fit_domain` moves for the reason the first acquittal gives: `compute` is the one
         //   clearance layer that states its remainder quantity, and a factor with no figure
         //   leaves its remainder with none either.
+        // ⭐⭐ AND `class_domain` MOVES BECAUSE THIS EDIT IS THE DOCUMENT THAT CLASS WAS WAITING
+        //   FOR. `epistemics/class_domain.sqlc` declares `composition/part_references.sqlc`'s
+        //   `derivation` class OPEN, with the reason that nothing computes a factor from the unit
+        //   graph, so a part filing one would name an output no receiver produces. This probe
+        //   files exactly that, the class fills, and the law reports the standing as stale. ⛔ It
+        //   is not an acquittal failing: the mutant IS the state the reason says does not exist,
+        //   and a law that stayed quiet here would be a roster nobody could expire.
         expect: Verdicts {
             rules: &[],
-            laws: &[("fit_domain", "stated_quantity_is_not_the_magnitude")],
+            laws: &[("class_domain", "a standing that disagrees with the count"),
+                    ("fit_domain", "stated_quantity_is_not_the_magnitude")],
         },
         says: "a composer names the unit graph as the source of a GPU-to-GPU-hour factor: the sums it feeds are lifted under that name, and no reader multiplies by one",
     },
@@ -757,6 +795,31 @@ fn statements_read_at_compile_time() -> BTreeSet<String> {
 /// would find nothing there; the inline form carries every statement's text in the file that runs.
 const INLINE: &str = "target/sql-inline";
 
+/// The newest modification time anywhere under `dir`, or None if it holds no file.
+fn newest_under(dir: &Path) -> Option<std::time::SystemTime> {
+    walk_times(dir).into_iter().max()
+}
+
+/// The oldest modification time anywhere under `dir`, or None if it holds no file. The OLDEST is
+/// what matters: one file recomposed by hand must not vouch for the rest of the tree.
+fn oldest_under(dir: &Path) -> Option<std::time::SystemTime> {
+    walk_times(dir).into_iter().min()
+}
+
+fn walk_times(dir: &Path) -> Vec<std::time::SystemTime> {
+    let mut out = Vec::new();
+    let Ok(entries) = fs::read_dir(dir) else { return out };
+    for e in entries.flatten() {
+        let path = e.path();
+        if path.is_dir() {
+            out.extend(walk_times(&path));
+        } else if let Ok(m) = e.metadata().and_then(|m| m.modified()) {
+            out.push(m);
+        }
+    }
+    out
+}
+
 /// A composed statement as the body of a subquery: provenance lines and the final `;` removed.
 fn body(sql: &str) -> String {
     sql.lines()
@@ -798,12 +861,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL")
         .map_err(|_| "DATABASE_URL is unset. This example edits the loaded rows and rolls every edit back.")?;
 
-    if !Path::new(INLINE).join("algebra/all.sql").is_file() {
-        return Err(format!(
-            "{INLINE}/ holds no composition. The probes edit statements inline; compose them with \
-             `cargo sqlc compose --source assets/sqlc --target {INLINE} --skip-prepare`."
-        )
-        .into());
+    // ⛔⛔ PRESENCE IS NOT FRESHNESS, AND THIS CHECKED ONLY PRESENCE FOR AS LONG AS IT EXISTED.
+    //   `target/` is not rebuilt by anything here: no build.rs, no test, no other example writes
+    //   this tree, so a composition made once by hand passes an is_file() guard forever. A law
+    //   added since is simply missing, and reads as a bare NotFound with no file named; a law
+    //   whose text moved fails loudly on its anchor count, which is the designed behaviour, but a
+    //   law edited somewhere its anchor does not touch would be probed in its old form and pass.
+    //   ⭐ The tree is 444MB and takes under five seconds to compose, in a program that then
+    //   spends minutes building and running a script two orders of magnitude larger. So it is
+    //   worth nothing to keep and everything to check, and the cheap check is the mtimes.
+    let newest_source = newest_under(Path::new("assets/sqlc"));
+    let oldest_inline = oldest_under(Path::new(INLINE));
+    let recompose = format!(
+        "compose it with `cargo sqlc compose --source assets/sqlc --target {INLINE} --skip-prepare`"
+    );
+    match (newest_source, oldest_inline) {
+        (_, None) => {
+            return Err(format!("{INLINE}/ holds no composition. The probes edit statements \
+                                inline; {recompose}.").into());
+        }
+        (Some(src), Some(inl)) if src > inl => {
+            return Err(format!(
+                "{INLINE}/ is older than assets/sqlc/, so the probes would edit a composition \
+                 this tree no longer produces and a law changed since would be judged in its old \
+                 form. {recompose}."
+            )
+            .into());
+        }
+        _ => {}
     }
     let inline = |name: &str| fs::read_to_string(format!("{INLINE}/{name}.sql"));
     let ingest = fs::read_to_string("assets/sql/ingest.sql")?;

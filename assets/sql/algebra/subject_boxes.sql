@@ -46,6 +46,12 @@ LEFT JOIN (
         FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
                       0::bigint AS unbalanced
                FROM ( SELECT * FROM folds.derivation_subjects ) s ) f
+        UNION ALL
+        SELECT 'classes', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(k.ball) FROM ( SELECT * FROM epistemics.class_cells ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( SELECT * FROM folds.class_subjects ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'subject_boxes'

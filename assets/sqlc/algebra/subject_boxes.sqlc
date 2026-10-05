@@ -16,9 +16,15 @@
 #   So the rows summed over every subject are held to count(*) of the population, taken without the
 #   fold.
 #
-# Six of the seven
+# Seven of the eight
 #   The laws' own contract is not here: its population is algebra/all.sqlc, and this law is one of
 #   its arms. folds/law_subjects.sqlc says what holds that fold instead.
+#
+# What `classes` counts on each side
+#   Its fold's `rows` is how many rows landed in a class, so summing them over every subject must
+#   give the number of rows every classification classified, which is the non-null balls of
+#   epistemics/class_cells.sqlc taken without the fold. A class nothing lands in contributes zero
+#   to both sides, which is why dropping the empty classes from the fold cannot move this.
 #
 # Probe
 #   examples/probes runs it as `subject_boxes`: in the composed text the rules fold's `silent` box
@@ -72,6 +78,12 @@ LEFT JOIN (
         FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
                       0::bigint AS unbalanced
                FROM ( :compose(folds/derivation_subjects.sqlc) ) s ) f
+        UNION ALL
+        SELECT 'classes', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(k.ball) FROM ( :compose(epistemics/class_cells.sqlc) ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( :compose(folds/class_subjects.sqlc) ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'subject_boxes'

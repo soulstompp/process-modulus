@@ -1,0 +1,92 @@
+# Where every class of every classification stands. One row per (relation, class): the relation
+# that classifies, the class, the standing, and the argument for a class nothing lands in.
+#
+# Every class is declared
+#   The classes are the members of the codomain each relation on epistemics/class_sets.sqlc sorts
+#   into, and each is one of three things:
+#     exercised something loaded lands in the class.
+#     outside   the classifying relation's own population cannot produce it. The reason names why.
+#     open      the class is producible and nothing loaded reaches it. The reason says what a
+#               document there would be.
+#
+# Both directions are held
+#   algebra/class_domain.sqlc fails when an exercised class counts nothing and when an outside or
+#   open class counts something. So an open class that a new document fills stops the build until
+#   it is declared exercised, and filing one is a deliberate act; an outside class that fills means
+#   the classifying relation's population moved and its reason is no longer true.
+#
+# An open class is a referral, and a referral needs an address
+#   A classification counted onto its codomain prints its empty classes, and printing them asserts
+#   nothing: a reader cannot tell the good outcome from the gap by looking at a zero. The reason
+#   is where that difference is written down, so the law reports the classes nobody has accounted
+#   for rather than every class nobody filled.
+#
+# `held_by` separates a law from a sentence
+#   A reason with a law behind it survives the corpus changing under it: `algebra/layer_units`
+#   runs every time the laws run, so the day a layer files two units the reason fails before the
+#   class does. A reason with NULL here is prose, true when it was written and checked by nothing,
+#   which is the standing `arithmetic/roster.sqlc` gives a site whose `guarded_by` is null.
+#
+# The standing is declared over the pooled count, never over one scope
+#   epistemics/classes.sqlc counts every loaded document, corpus and fixtures together, because
+#   the question here is whether anything in this repository computes the class at all. What a
+#   particular set of documents shows is a different question and reports/class_census.sqlc is
+#   where it is asked; `assets/fixtures/README.md` argues why the two must not be merged.
+#
+# ⛔ This relation is NOT one of the eight, on purpose
+#   Its `standing` column is `public.fit_standing`, which checks/fit_domain.sqlc already
+#   classifies, so the type is read and nothing here is uncounted. Giving it an arm of its own in
+#   epistemics/class_cells.sqlc would put this file inside the population that
+#   folds/class_subjects.sqlc differences it against, and examples/soundness/main.rs §5 refuses
+#   exactly that: a contract whose two sides share a file has one witness wearing two hats.
+#
+# One standing type at two positions
+#   `exercised`, `outside` and `open` mean here what they mean over a rule's fit cells, which is
+#   why there is no second enumeration of the same three words. A cell of a rule's axis and a
+#   member of a codomain are the same kind of declared position, and the day the two readings come
+#   apart is the day to split the type, not before.
+-- every member of every codomain on epistemics/class_sets.sqlc, with its standing and reason.
+SELECT * FROM (VALUES
+  ('arithmetic/all.sqlc', 'suspended', 'exercised'::public.fit_standing, NULL::text, NULL::text),
+  ('arithmetic/all.sqlc', 'not comparable', 'open',
+   'every pair of magnitudes this corpus puts together shares a unit, and a unit is a property of a claim rather than of a layer, so nothing in the schema stops the pair from disagreeing',
+   'algebra/layer_units'),
+  ('arithmetic/all.sqlc', 'computable', 'exercised', NULL, NULL),
+
+  ('layers/remainder.sqlc', 'clearance',    'exercised', NULL, NULL),
+  ('layers/remainder.sqlc', 'transition',   'exercised', NULL, NULL),
+  ('layers/remainder.sqlc', 'interference', 'exercised', NULL, NULL),
+
+  ('layers/remainder_scope.sqlc', 'takes a spillover',              'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'nobody bounded the set',         'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'set bounded, pairs untested',    'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'bounded and the pairs answered', 'exercised', NULL, NULL),
+
+  ('layers/exposure_scope.sqlc', 'a buffer nobody sized', 'exercised', NULL, NULL),
+  ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',
+   'no layer sizes every buffer and has room in one: ignorance outranks room, so the three layers that do have room sit under a buffer nobody sized',
+   NULL),
+  ('layers/exposure_scope.sqlc', 'every buffer sized and empty', 'exercised', NULL, NULL),
+
+  ('layers/quantities.sqlc', 'demand',         'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'nameplate',      'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'inventorySlack', 'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'capacitySlack',  'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'timeSlack',      'exercised', NULL, NULL),
+
+  ('checks/fit_axes.sqlc', 'filed sign',            'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'derived fit',           'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'filed against derived', 'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'not read',              'exercised', NULL, NULL),
+
+  ('checks/fit_domain.sqlc', 'exercised', 'exercised', NULL, NULL),
+  ('checks/fit_domain.sqlc', 'outside',   'exercised', NULL, NULL),
+  ('checks/fit_domain.sqlc', 'open',      'exercised', NULL, NULL),
+
+  ('composition/part_references.sqlc', 'omitted', 'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'stated',  'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'absent',  'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'derivation', 'open',
+   'nothing computes a factor from the unit graph or from the fusion sum, so a part filing one would be naming an output no receiver produces; identities/roster.sqlc declares fusionSum and conversionPath for the position and neither is implemented',
+   NULL)
+) AS d(relation, class, standing, reason, held_by)

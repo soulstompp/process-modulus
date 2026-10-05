@@ -1,0 +1,9 @@
+# What this repository had to invent. The class census over the documents that stipulate a state.
+#
+# An empty class here is a defect
+#   Every zero is a state the model admits and no stipulation exercises, so nothing in this
+#   repository has ever seen a relation classify one. That is a gap in coverage, and the work it
+#   calls for is a fixture rather than a finding. `reports/classes_in_the_corpus.sqlc` asks the
+#   other half, and `assets/fixtures/README.md` is why the two are counted apart.
+-- reports/class_census.sqlc at fixtures scope.
+:compose(reports/class_census.sqlc, @scope = scope/fixtures.sqlc)

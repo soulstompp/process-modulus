@@ -14,7 +14,7 @@
 # Each contract's outer join on its own, then their union
 #   Each arm composes one fold, `roster ⟗ population` grouped per subject, and each fold keeps the
 #   boxes its own verdict has. The union keeps the columns every contract shares, and the caller,
-#   holding all seven, names each arm; no fold knows it has siblings.
+#   holding all eight, names each arm; no fold knows it has siblings.
 #
 # The regions of the outer join
 #   `declared` and `rows > 0` are the two sides: declared with no row is a roster naming something
@@ -23,7 +23,7 @@
 #
 # `answered` for a population with no verdict
 #   The three contracts with a verdict count `answered`, `silent` and `vacuous` in their own folds.
-#   The four others carry no verdict: a catalogue row naming a table is the whole answer to whether
+#   The five others carry no verdict: a catalogue row naming a table is the whole answer to whether
 #   the table exists, so the union gives them `rows` as `answered`, and zero for `silent` and
 #   `vacuous`, because nothing in them can be withheld. Every reader treats a row of those
 #   populations as its own answer, so nothing a reader distinguishes is merged by saying so.
@@ -31,9 +31,19 @@
 # Who reads it
 #   reports/integrity.sqlc crosses it with the problems a contract can have and keeps the ones found;
 #   rank/guard_reach.sqlc counts, per contract, the declared subjects some answered row reaches.
-#   algebra/integrity.sqlc and algebra/subject_boxes.sqlc hold six of the seven folds from outside;
-#   the laws' own fold cannot be held from algebra/, whose relation it counts.
--- the seven contracts' folds, each labelled with the contract it counts.
+#   algebra/integrity.sqlc and algebra/subject_boxes.sqlc hold seven of the eight folds from
+#   outside; the laws' own fold cannot be held from algebra/, whose relation it counts.
+#
+# What the eighth declares, and why its roster is not the enum
+#   Seven contracts govern artifacts somebody authored here: a rule, a site, a law, a table, a
+#   diagram law, an absence column, a derivation column. `classes` governs the members of the
+#   enums in assets/ddl/schema.ddl, and it is the first whose population is written by Postgres
+#   rather than by this tree since `diagrams` took its from `information_schema`. ⛔ Its roster
+#   could NOT be `enum_range`: nothing can land outside an enum, so the region *produced, but
+#   nothing declares it* would be uninhabitable and the fold would have one side instead of two.
+#   epistemics/class_domain.sqlc is authored for that reason, and the disagreement it can then
+#   report is between two files that share no code, assets/ddl/schema.ddl and itself.
+-- the eight contracts' folds, each labelled with the contract it counts.
 SELECT 'rules' AS contract, f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
 FROM ( :compose(folds/rule_subjects.sqlc) ) f
 UNION ALL
@@ -54,3 +64,6 @@ FROM ( :compose(folds/absence_subjects.sqlc) ) f
 UNION ALL
 SELECT 'derivations', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
 FROM ( :compose(folds/derivation_subjects.sqlc) ) f
+UNION ALL
+SELECT 'classes', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( :compose(folds/class_subjects.sqlc) ) f

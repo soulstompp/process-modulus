@@ -1,0 +1,10 @@
+# What the evidence has landed in. The class census over the documents that attest to a real
+# system.
+#
+# An empty class here is a finding
+#   Every zero is a state the model admits, some relation computes, and no real filing has ever
+#   produced. So it is a claim about where the evidence stops rather than about the machinery, and
+#   the work it calls for is a document: an entity that files this state, or an instrument that
+#   would let one be measured. `reports/classes_in_the_fixtures.sqlc` asks the other half.
+-- reports/class_census.sqlc at corpus scope.
+:compose(reports/class_census.sqlc, @scope = scope/corpus.sqlc)

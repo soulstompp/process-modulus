@@ -1,0 +1,155 @@
+# Every class set's declaration, held against the codomain it names and against what landed in it.
+# One row per condition, over epistemics/class_sets.sqlc, epistemics/class_domain.sqlc and
+# epistemics/classes.sqlc.
+#
+# What it asserts
+#   - every classification the census produces is declared on epistemics/class_sets.sqlc, and
+#     every declared one produces something, so neither roster nor census may grow alone;
+#   - every member of every declared codomain has exactly one row in
+#     epistemics/class_domain.sqlc, and no row there names a class its codomain does not have;
+#   - a class stands `occupied` exactly when the pooled census counts a row in it, so an `open`
+#     class a document fills and an `occupied` class that empties both fail;
+#   - `filed` is true exactly when some ball of that relation carries a filing.
+#
+# A partition law cannot see an empty class
+#   The partition laws in algebra/ assert the premise, that every row landed in exactly one class,
+#   and the premise survives a class nothing lands in. Surjectivity onto the declared set is the
+#   separate question, and it is only as strong as where the set came from: here every set is an
+#   enum, which Postgres enforces, so a zero is a fact about what was filed rather than about a
+#   label somebody forgot to spell. That is the strongest codomain in the tree, and it is why this
+#   law is worth stating over these eight relations and not over a set written in `CASE` arms.
+#
+# The bare form would accuse the good outcome
+#   Measured before it was written: 29 classes, three of them empty, and every one of the three is the
+#   outcome the model wants. A law reporting every empty class would be false on all three, which
+#   is the shape a repair takes when it is pointed at the wrong object. So the subject is
+#   never the empty class, it is the class whose STANDING and whose COUNT disagree, in either
+#   direction.
+#
+# Two routes that share no code
+#   The codomain and its members come from `enum_range` over assets/ddl/schema.ddl, which Postgres
+#   parses; the standings are a `VALUES` literal somebody wrote. A member added to a type fails
+#   here until a cell declares it, and a cell naming a member the type lost fails until it is
+#   removed. Neither file can be derived from the other, which is what makes their agreement
+#   evidence rather than a tautology.
+#
+# One join, read six ways, because a scan of the census is not free
+#   The census is eight `enum_range` arms over eight relations, and composing it once per condition
+#   would put six copies of all eight into every caller that inlines rather than reading the view.
+#   `examples/probes` inlines, so the copies land in a script that is already large enough to be
+#   the thing that fails. The regions of a full outer join are what the conditions are, exactly as
+#   folds/contract_subjects.sqlc reads `roster ⟗ population`, so one join answers all six.
+#
+# Probe
+#   Delete the `layers/exposure_scope.sqlc` row from epistemics/class_domain.sqlc, recompose, and
+#   `a class the roster does not name` must report it alone. Change that row's class text to
+#   `a buffer with room` and `a roster row naming no class` must report it instead. Change its
+#   standing to `occupied` and `a standing that disagrees with the count` must report it. Delete
+#   the `checks/fit_axes.sqlc` row from epistemics/class_sets.sqlc and
+#   `a classification nobody declared` must report it. Set that row's `filed` to `true` and
+#   `a filed flag that disagrees with the balls` must report it. Revert each.
+-- algebra/roster.sqlc against class_sets ⟗ class_domain ⟗ classes, read six ways.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    :compose(algebra/roster.sqlc)
+) a
+LEFT JOIN (
+    WITH census AS (
+        :compose(epistemics/classes.sqlc)
+    ),
+    sets AS (
+        :compose(epistemics/class_sets.sqlc)
+    ),
+    cells AS (
+        :compose(epistemics/class_domain.sqlc)
+    ),
+    joined AS (
+        SELECT c.relation   AS census_relation,
+               c.class      AS census_class,
+               c.balls      AS balls,
+               d.relation   AS cell_relation,
+               d.class      AS cell_class,
+               d.standing   AS standing
+        FROM      census c
+        FULL JOIN cells  d ON d.relation = c.relation AND d.class = c.class
+    ),
+    per_set AS (
+        SELECT coalesce(s.relation, g.relation)          AS relation,
+               s.relation IS NOT NULL                    AS declared,
+               g.relation IS NOT NULL                    AS produced,
+               s.codomain                                AS declared_codomain,
+               g.codomain                                AS produced_codomain,
+               s.filed                                   AS filed,
+               coalesce(g.filed_balls, 0) > 0            AS any_filed
+        FROM      sets s
+        FULL JOIN (
+            SELECT relation, min(codomain) AS codomain, sum(filed_balls) AS filed_balls
+            FROM census GROUP BY relation
+        ) g ON g.relation = s.relation
+    )
+    SELECT 'a class the roster does not name' AS subject,
+           count(*) FILTER (WHERE cell_relation IS NULL) = 0                      AS holds,
+           format('%s class(es) of a declared codomain with no cell: %s',
+                  count(*) FILTER (WHERE cell_relation IS NULL),
+                  coalesce(string_agg(census_relation || ' ' || census_class, ', '
+                                      ORDER BY census_relation, census_class)
+                           FILTER (WHERE cell_relation IS NULL), '(none)'))       AS detail
+    FROM joined
+    UNION ALL
+    SELECT 'a roster row naming no class',
+           count(*) FILTER (WHERE census_relation IS NULL) = 0,
+           format('%s cell(s) naming a class their codomain does not have: %s',
+                  count(*) FILTER (WHERE census_relation IS NULL),
+                  coalesce(string_agg(cell_relation || ' ' || cell_class, ', '
+                                      ORDER BY cell_relation, cell_class)
+                           FILTER (WHERE census_relation IS NULL), '(none)'))
+    FROM joined
+    UNION ALL
+    SELECT 'a class declared twice',
+           count(*) = 0,
+           format('%s class(es) with more than one cell: %s',
+                  count(*),
+                  coalesce(string_agg(relation || ' ' || class || ' (' || n || ')', ', '
+                                      ORDER BY relation, class), '(none)'))
+    FROM (
+        SELECT d.relation, d.class, count(*) AS n
+        FROM cells d GROUP BY d.relation, d.class HAVING count(*) > 1
+    ) dup
+    UNION ALL
+    SELECT 'a standing that disagrees with the count',
+           count(*) FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                              AND (standing = 'exercised') <> (balls > 0)) = 0,
+           format('%s class(es) whose standing and count disagree: %s',
+                  count(*) FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                                     AND (standing = 'exercised') <> (balls > 0)),
+                  coalesce(string_agg(cell_relation || ' ' || cell_class
+                                      || ' ' || standing || ' with ' || balls, ', '
+                                      ORDER BY cell_relation, cell_class)
+                           FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                                     AND (standing = 'exercised') <> (balls > 0)), '(none)'))
+    FROM joined
+    UNION ALL
+    SELECT 'a classification nobody declared',
+           count(*) FILTER (WHERE NOT declared OR NOT produced
+                              OR declared_codomain IS DISTINCT FROM produced_codomain) = 0,
+           format('%s classification(s) the two rosters disagree on: %s',
+                  count(*) FILTER (WHERE NOT declared OR NOT produced
+                                     OR declared_codomain IS DISTINCT FROM produced_codomain),
+                  coalesce(string_agg(relation || ' declared '
+                                      || coalesce(declared_codomain, '(nothing)') || ', produces '
+                                      || coalesce(produced_codomain, '(nothing)'), ', '
+                                      ORDER BY relation)
+                           FILTER (WHERE NOT declared OR NOT produced
+                                     OR declared_codomain IS DISTINCT FROM produced_codomain),
+                           '(none)'))
+    FROM per_set
+    UNION ALL
+    SELECT 'a filed flag that disagrees with the balls',
+           count(*) FILTER (WHERE declared AND produced AND filed <> any_filed) = 0,
+           format('%s classification(s) whose filed flag is wrong: %s',
+                  count(*) FILTER (WHERE declared AND produced AND filed <> any_filed),
+                  coalesce(string_agg(relation || ' declared ' || filed, ', ' ORDER BY relation)
+                           FILTER (WHERE declared AND produced AND filed <> any_filed), '(none)'))
+    FROM per_set
+) p ON true
+WHERE a.slug = 'class_domain'

@@ -436,6 +436,21 @@ composition_image AS MATERIALIZED (
 fit_coverage AS MATERIALIZED (
     :define(reports/fit_coverage.sqlc)
 ),
+class_sets AS MATERIALIZED (
+    :define(epistemics/class_sets.sqlc)
+),
+class_domain AS MATERIALIZED (
+    :define(epistemics/class_domain.sqlc)
+),
+class_cells AS MATERIALIZED (
+    :define(epistemics/class_cells.sqlc)
+),
+classes AS MATERIALIZED (
+    :define(epistemics/classes.sqlc)
+),
+class_subjects AS MATERIALIZED (
+    :define(folds/class_subjects.sqlc)
+),
 algebra_all AS MATERIALIZED (
     :define(algebra/all.sqlc)
 ),

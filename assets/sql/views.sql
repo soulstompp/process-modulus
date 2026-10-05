@@ -81,7 +81,8 @@ SELECT * FROM (VALUES
   ('part_quantities',  '|A| = |A∖B| + |A⋉B|',        'composition/part_quantities',      'difference', 'set: one row per part and quantity'),
   ('figures',          '|D ∪ N| = |D| + |N| − |D ∩ N|', 'layers/figures',                  'union',      'set: one row per layer'),
   ('served_totals',    'Σheld = Σserved + Σunserved, per layer', 'folds/served_totals',     'additive',   'bag: γ over holders'),
-  ('layer_units',      'a pin is the whole relation: the payload constant on the key, the pinned value reaching it', 'units/conversions', 'dependency', 'set: one row per condition')
+  ('layer_units',      'a pin is the whole relation: the payload constant on the key, the pinned value reaching it', 'units/conversions', 'dependency', 'set: one row per condition'),
+  ('class_domain',     'every class of every declared codomain stands where its count puts it', 'epistemics/class_domain', 'roster',     'set: one row per condition')
 ) AS a(slug, law, governs, form, multiplicity)
 ;
 CREATE VIEW epistemics.absence_questions AS -- epistemics/absences.sqlc's arms, each against the pm column of type absence_reason it reads.
@@ -5471,7 +5472,259 @@ FROM (
     SELECT * FROM eliminations.searched
 ) es
 ;
+CREATE VIEW epistemics.class_sets AS -- the eight classifications, their codomains, the unit each counts in, and whether it is filed.
+SELECT * FROM (VALUES
+  ('arithmetic/all.sqlc',              'arithmetic_verdict', 'computation', true),
+  ('layers/remainder.sqlc',            'fit',                'layer',       true),
+  ('layers/remainder_scope.sqlc',      'remainder_standing', 'layer',       true),
+  ('layers/exposure_scope.sqlc',       'exposure_standing',  'layer',       true),
+  ('layers/quantities.sqlc',           'layer_quantity',     'quantity',    true),
+  ('composition/part_references.sqlc', 'factor_state',       'part',        true),
+  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        false),
+  ('checks/fit_domain.sqlc',           'fit_standing',       'rule cell',   false)
+) AS s(relation, codomain, subject, filed)
+;
+CREATE VIEW epistemics.class_domain AS -- every member of every codomain on epistemics/class_sets.sqlc, with its standing and reason.
+SELECT * FROM (VALUES
+  ('arithmetic/all.sqlc', 'suspended', 'exercised'::public.fit_standing, NULL::text, NULL::text),
+  ('arithmetic/all.sqlc', 'not comparable', 'open',
+   'every pair of magnitudes this corpus puts together shares a unit, and a unit is a property of a claim rather than of a layer, so nothing in the schema stops the pair from disagreeing',
+   'algebra/layer_units'),
+  ('arithmetic/all.sqlc', 'computable', 'exercised', NULL, NULL),
+
+  ('layers/remainder.sqlc', 'clearance',    'exercised', NULL, NULL),
+  ('layers/remainder.sqlc', 'transition',   'exercised', NULL, NULL),
+  ('layers/remainder.sqlc', 'interference', 'exercised', NULL, NULL),
+
+  ('layers/remainder_scope.sqlc', 'takes a spillover',              'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'nobody bounded the set',         'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'set bounded, pairs untested',    'exercised', NULL, NULL),
+  ('layers/remainder_scope.sqlc', 'bounded and the pairs answered', 'exercised', NULL, NULL),
+
+  ('layers/exposure_scope.sqlc', 'a buffer nobody sized', 'exercised', NULL, NULL),
+  ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',
+   'no layer sizes every buffer and has room in one: ignorance outranks room, so the three layers that do have room sit under a buffer nobody sized',
+   NULL),
+  ('layers/exposure_scope.sqlc', 'every buffer sized and empty', 'exercised', NULL, NULL),
+
+  ('layers/quantities.sqlc', 'demand',         'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'nameplate',      'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'inventorySlack', 'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'capacitySlack',  'exercised', NULL, NULL),
+  ('layers/quantities.sqlc', 'timeSlack',      'exercised', NULL, NULL),
+
+  ('checks/fit_axes.sqlc', 'filed sign',            'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'derived fit',           'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'filed against derived', 'exercised', NULL, NULL),
+  ('checks/fit_axes.sqlc', 'not read',              'exercised', NULL, NULL),
+
+  ('checks/fit_domain.sqlc', 'exercised', 'exercised', NULL, NULL),
+  ('checks/fit_domain.sqlc', 'outside',   'exercised', NULL, NULL),
+  ('checks/fit_domain.sqlc', 'open',      'exercised', NULL, NULL),
+
+  ('composition/part_references.sqlc', 'omitted', 'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'stated',  'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'absent',  'exercised', NULL, NULL),
+  ('composition/part_references.sqlc', 'derivation', 'open',
+   'nothing computes a factor from the unit graph or from the fusion sum, so a part filing one would be naming an output no receiver produces; identities/roster.sqlc declares fusionSum and conversionPath for the position and neither is implemented',
+   NULL)
+) AS d(relation, class, standing, reason, held_by)
+;
+CREATE VIEW epistemics.class_cells AS -- every declared class of eight codomains, LEFT JOINed to the rows that landed in it.
+SELECT 'arithmetic/all.sqlc' AS relation, (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)) AS codomain,
+       c.class::text AS class, c.ord,
+       z.site || ' / ' || z.filing || ' / ' || z.layer AS ball,
+       z.filing AS filing
+FROM unnest(enum_range(NULL::public.arithmetic_verdict)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM arithmetic.all
+) z ON z.verdict = c.class
+UNION ALL
+SELECT 'layers/remainder_scope.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::public.remainder_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM layers.remainder_scope
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'layers/exposure_scope.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::public.exposure_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM layers.exposure_scope
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'layers/remainder.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::pm.fit)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM layers.remainder
+) z ON z.derived_fit = c.class
+UNION ALL
+SELECT 'checks/fit_axes.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.slug, NULL
+FROM unnest(enum_range(NULL::public.fit_axis)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM checks.fit_axes
+) z ON z.axis = c.class
+UNION ALL
+SELECT 'checks/fit_domain.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.slug || ' / ' || coalesce(z.fit::text, 'no fit'), NULL
+FROM unnest(enum_range(NULL::public.fit_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM checks.fit_domain
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'composition/part_references.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.composition || ' / ' || z.composed_layer || ' / ' || z.part_filing || ' / ' || z.part_layer,
+       z.composition
+FROM unnest(enum_range(NULL::public.factor_state)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM composition.part_references
+) z ON z.factor_state = c.class
+UNION ALL
+SELECT 'layers/quantities.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer || ' / ' || z.quantity::text, z.filing
+FROM unnest(enum_range(NULL::public.layer_quantity)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    SELECT * FROM layers.quantities
+) z ON z.quantity = c.class
+;
+CREATE VIEW epistemics.classes AS -- epistemics/class_cells.sqlc counted per class over every loaded document, with its declared unit.
+SELECT k.relation, k.codomain, k.class, s.subject,
+       count(k.ball)   AS balls,
+       count(k.filing) AS filed_balls,
+       k.ord
+FROM      (
+    SELECT * FROM epistemics.class_cells
+) k
+LEFT JOIN (
+    SELECT * FROM epistemics.class_sets
+) s ON s.relation = k.relation
+GROUP BY k.relation, k.codomain, k.class, s.subject, k.ord
+;
+CREATE VIEW folds.class_subjects AS -- epistemics/class_domain.sqlc's occupancy claims against epistemics/classes.sqlc, one row per class.
+SELECT coalesce(d.relation, c.relation) || ' / ' || coalesce(d.class, c.class) AS subject,
+       d.class IS NOT NULL                                                    AS declared,
+       coalesce(c.balls, 0)                                                   AS rows
+FROM      (
+    SELECT o.relation, o.class
+    FROM ( SELECT * FROM epistemics.class_domain ) o
+    WHERE o.standing = 'exercised'
+) d
+FULL JOIN (
+    SELECT z.relation, z.class, z.balls
+    FROM ( SELECT * FROM epistemics.classes ) z
+    WHERE z.balls > 0
+) c ON c.relation = d.relation AND c.class = d.class
+;
 CREATE VIEW algebra.all AS -- algebra/roster.sqlc joined to each law's own subjects.
+-- algebra/roster.sqlc against class_sets ⟗ class_domain ⟗ classes, read six ways.
+SELECT a.slug AS law, p.subject, p.holds, p.detail
+FROM      (
+    SELECT * FROM algebra.roster
+) a
+LEFT JOIN (
+    WITH census AS (
+        SELECT * FROM epistemics.classes
+    ),
+    sets AS (
+        SELECT * FROM epistemics.class_sets
+    ),
+    cells AS (
+        SELECT * FROM epistemics.class_domain
+    ),
+    joined AS (
+        SELECT c.relation   AS census_relation,
+               c.class      AS census_class,
+               c.balls      AS balls,
+               d.relation   AS cell_relation,
+               d.class      AS cell_class,
+               d.standing   AS standing
+        FROM      census c
+        FULL JOIN cells  d ON d.relation = c.relation AND d.class = c.class
+    ),
+    per_set AS (
+        SELECT coalesce(s.relation, g.relation)          AS relation,
+               s.relation IS NOT NULL                    AS declared,
+               g.relation IS NOT NULL                    AS produced,
+               s.codomain                                AS declared_codomain,
+               g.codomain                                AS produced_codomain,
+               s.filed                                   AS filed,
+               coalesce(g.filed_balls, 0) > 0            AS any_filed
+        FROM      sets s
+        FULL JOIN (
+            SELECT relation, min(codomain) AS codomain, sum(filed_balls) AS filed_balls
+            FROM census GROUP BY relation
+        ) g ON g.relation = s.relation
+    )
+    SELECT 'a class the roster does not name' AS subject,
+           count(*) FILTER (WHERE cell_relation IS NULL) = 0                      AS holds,
+           format('%s class(es) of a declared codomain with no cell: %s',
+                  count(*) FILTER (WHERE cell_relation IS NULL),
+                  coalesce(string_agg(census_relation || ' ' || census_class, ', '
+                                      ORDER BY census_relation, census_class)
+                           FILTER (WHERE cell_relation IS NULL), '(none)'))       AS detail
+    FROM joined
+    UNION ALL
+    SELECT 'a roster row naming no class',
+           count(*) FILTER (WHERE census_relation IS NULL) = 0,
+           format('%s cell(s) naming a class their codomain does not have: %s',
+                  count(*) FILTER (WHERE census_relation IS NULL),
+                  coalesce(string_agg(cell_relation || ' ' || cell_class, ', '
+                                      ORDER BY cell_relation, cell_class)
+                           FILTER (WHERE census_relation IS NULL), '(none)'))
+    FROM joined
+    UNION ALL
+    SELECT 'a class declared twice',
+           count(*) = 0,
+           format('%s class(es) with more than one cell: %s',
+                  count(*),
+                  coalesce(string_agg(relation || ' ' || class || ' (' || n || ')', ', '
+                                      ORDER BY relation, class), '(none)'))
+    FROM (
+        SELECT d.relation, d.class, count(*) AS n
+        FROM cells d GROUP BY d.relation, d.class HAVING count(*) > 1
+    ) dup
+    UNION ALL
+    SELECT 'a standing that disagrees with the count',
+           count(*) FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                              AND (standing = 'exercised') <> (balls > 0)) = 0,
+           format('%s class(es) whose standing and count disagree: %s',
+                  count(*) FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                                     AND (standing = 'exercised') <> (balls > 0)),
+                  coalesce(string_agg(cell_relation || ' ' || cell_class
+                                      || ' ' || standing || ' with ' || balls, ', '
+                                      ORDER BY cell_relation, cell_class)
+                           FILTER (WHERE census_relation IS NOT NULL AND cell_relation IS NOT NULL
+                                     AND (standing = 'exercised') <> (balls > 0)), '(none)'))
+    FROM joined
+    UNION ALL
+    SELECT 'a classification nobody declared',
+           count(*) FILTER (WHERE NOT declared OR NOT produced
+                              OR declared_codomain IS DISTINCT FROM produced_codomain) = 0,
+           format('%s classification(s) the two rosters disagree on: %s',
+                  count(*) FILTER (WHERE NOT declared OR NOT produced
+                                     OR declared_codomain IS DISTINCT FROM produced_codomain),
+                  coalesce(string_agg(relation || ' declared '
+                                      || coalesce(declared_codomain, '(nothing)') || ', produces '
+                                      || coalesce(produced_codomain, '(nothing)'), ', '
+                                      ORDER BY relation)
+                           FILTER (WHERE NOT declared OR NOT produced
+                                     OR declared_codomain IS DISTINCT FROM produced_codomain),
+                           '(none)'))
+    FROM per_set
+    UNION ALL
+    SELECT 'a filed flag that disagrees with the balls',
+           count(*) FILTER (WHERE declared AND produced AND filed <> any_filed) = 0,
+           format('%s classification(s) whose filed flag is wrong: %s',
+                  count(*) FILTER (WHERE declared AND produced AND filed <> any_filed),
+                  coalesce(string_agg(relation || ' declared ' || filed, ', ' ORDER BY relation)
+                           FILTER (WHERE declared AND produced AND filed <> any_filed), '(none)'))
+    FROM per_set
+) p ON true
+WHERE a.slug = 'class_domain'
+UNION ALL
 -- algebra/roster.sqlc against public.compose_edge: who composes the layer dimension.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -6102,6 +6355,30 @@ LEFT JOIN (
                       count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
                       count(*) FILTER (WHERE NOT s.declared)            AS undeclared
                FROM ( SELECT * FROM folds.derivation_subjects ) s ) f
+        UNION ALL
+        SELECT 'classes',
+               (SELECT count(*) FROM ( SELECT * FROM epistemics.class_domain ) o
+                WHERE o.standing = 'exercised') AS roster,
+               (SELECT count(*) FROM ( SELECT o.relation || ' / ' || o.class
+                                       FROM ( SELECT * FROM epistemics.class_domain ) o
+                                       WHERE o.standing = 'exercised'
+                                       EXCEPT
+                                       SELECT z.relation || ' / ' || z.class
+                                       FROM ( SELECT * FROM epistemics.classes ) z
+                                       WHERE z.balls > 0 ) x) AS missing,
+               (SELECT count(*) FROM ( SELECT z.relation || ' / ' || z.class
+                                       FROM ( SELECT * FROM epistemics.classes ) z
+                                       WHERE z.balls > 0
+                                       EXCEPT
+                                       SELECT o.relation || ' / ' || o.class
+                                       FROM ( SELECT * FROM epistemics.class_domain ) o
+                                       WHERE o.standing = 'exercised' ) x) AS stray,
+               f.declared, f.unproduced, f.produced, f.undeclared
+        FROM ( SELECT count(*) FILTER (WHERE s.declared)                AS declared,
+                      count(*) FILTER (WHERE s.declared AND s.rows = 0) AS unproduced,
+                      count(*) FILTER (WHERE s.declared AND s.rows > 0) AS produced,
+                      count(*) FILTER (WHERE NOT s.declared)            AS undeclared
+               FROM ( SELECT * FROM folds.class_subjects ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'integrity'
@@ -6995,6 +7272,12 @@ LEFT JOIN (
         FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
                       0::bigint AS unbalanced
                FROM ( SELECT * FROM folds.derivation_subjects ) s ) f
+        UNION ALL
+        SELECT 'classes', f.subjects, f.counted, f.unbalanced,
+               (SELECT count(k.ball) FROM ( SELECT * FROM epistemics.class_cells ) k) AS population
+        FROM ( SELECT count(*) AS subjects, sum(s.rows) AS counted,
+                      0::bigint AS unbalanced
+               FROM ( SELECT * FROM folds.class_subjects ) s ) f
     ) x
 ) p ON true
 WHERE a.slug = 'subject_boxes'
@@ -7423,7 +7706,7 @@ FULL JOIN (
 ) w ON w.law = g.slug
 GROUP BY g.slug, w.law
 ;
-CREATE VIEW folds.contract_subjects AS -- the seven contracts' folds, each labelled with the contract it counts.
+CREATE VIEW folds.contract_subjects AS -- the eight contracts' folds, each labelled with the contract it counts.
 SELECT 'rules' AS contract, f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
 FROM ( SELECT * FROM folds.rule_subjects ) f
 UNION ALL
@@ -7444,6 +7727,9 @@ FROM ( SELECT * FROM folds.absence_subjects ) f
 UNION ALL
 SELECT 'derivations', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
 FROM ( SELECT * FROM folds.derivation_subjects ) f
+UNION ALL
+SELECT 'classes', f.subject, f.declared, f.rows, f.rows, 0::bigint, 0::bigint
+FROM ( SELECT * FROM folds.class_subjects ) f
 ;
 CREATE VIEW rank.layer_reach AS -- checks/all.sqlc counted per layer, against layers/every_layer.sqlc as the whole dimension.
 SELECT l.filing,
@@ -7476,4 +7762,9 @@ SELECT f.name AS filing, f.kind, f.evidence
 FROM pm.filing f
 WHERE f.evidence = 'observation'
   AND f.kind IN ('processModulus', 'composition', 'dependence')
+;
+CREATE VIEW scope.fixtures AS -- from pm.filing where evidence = 'stipulation'; see assets/fixtures/README.md.
+SELECT f.name AS filing, f.kind, f.evidence
+FROM pm.filing f
+WHERE f.evidence = 'stipulation'
 ;

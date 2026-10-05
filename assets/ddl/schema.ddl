@@ -185,9 +185,13 @@ CREATE TYPE public.exposure_standing AS ENUM (
 CREATE TYPE public.fit_axis AS ENUM (
     'filed sign', 'derived fit', 'filed against derived', 'not read');
 
--- checks/fit_domain.sqlc: where a rule that reads the fit stands in one cell of its axis. Some
--- document reaches the cell and the rule examines it; the rule's own population excludes it; or
--- the cell is in the domain and nothing loaded reaches it.
+-- Where a declared cell of a domain stands, at two positions. checks/fit_domain.sqlc takes one
+-- cell of a rule's fit axis; epistemics/class_domain.sqlc takes one member of a classification's
+-- codomain. The three readings are the same in both: something loaded reaches the cell; the
+-- population that would fill it excludes it by construction, and the reason names why; or it is
+-- reachable and nothing loaded has reached it, and the reason says what a document there would be.
+-- ⭐ One type at two positions rather than two types: the question is identical and a second
+-- enumeration of the same three words would fork on the first edit.
 CREATE TYPE public.fit_standing AS ENUM ('exercised', 'outside', 'open');
 
 -- composition/part_references.sqlc: how a part files its conversion factor. The element omitted (the

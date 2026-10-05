@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- §3b  The same classes, counted over the corpus and over the fixtures instead of pooled.\n-- reports/class_census.sqlc at both scopes, matched on the class.\nSELECT k.relation AS \"relation!\", k.class AS \"class!\", k.subject AS \"subject?\",\n       k.balls AS \"corpus!\", f.balls AS \"fixtures?\"\nFROM      (\n    -- reports/class_census.sqlc at corpus scope.\n-- epistemics/class_cells.sqlc counted per class, restricted by the caller's @scope.\nSELECT k.relation, k.class, s.subject, count(w.filing) AS balls, k.ord\nFROM      (\n    SELECT * FROM epistemics.class_cells\n) k\nJOIN      (\n    SELECT * FROM epistemics.class_sets\n) s ON s.relation = k.relation AND s.filed\nLEFT JOIN (\n    SELECT * FROM scope.corpus\n) w ON w.filing = k.filing\nGROUP BY k.relation, k.class, s.subject, k.ord\nORDER BY k.relation, k.ord\n\n\n) k\nLEFT JOIN (\n    -- reports/class_census.sqlc at fixtures scope.\n-- epistemics/class_cells.sqlc counted per class, restricted by the caller's @scope.\nSELECT k.relation, k.class, s.subject, count(w.filing) AS balls, k.ord\nFROM      (\n    SELECT * FROM epistemics.class_cells\n) k\nJOIN      (\n    SELECT * FROM epistemics.class_sets\n) s ON s.relation = k.relation AND s.filed\nLEFT JOIN (\n    SELECT * FROM scope.fixtures\n) w ON w.filing = k.filing\nGROUP BY k.relation, k.class, s.subject, k.ord\nORDER BY k.relation, k.ord\n\n\n) f ON f.relation = k.relation AND f.class = k.class\nORDER BY k.relation, k.ord\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "relation!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.class_cells",
+            "name": "relation"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "class!",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.class_cells",
+            "name": "class"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "subject?",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "epistemics.class_sets",
+            "name": "subject"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "corpus!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "fixtures?",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      null,
+      true
+    ]
+  },
+  "hash": "278be17c80afe7329500822fcc2551c9267c5cdd6c5e4f92d503e04a74918ea0"
+}

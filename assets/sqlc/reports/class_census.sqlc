@@ -1,0 +1,45 @@
+# What a set of documents puts in each class of each classification, and which classes it leaves
+# empty. One row per (relation, class) of every classification whose rows are filed, with the
+# count over whichever documents the caller chose.
+#
+# The scope is a slot
+#   That is the point of the file. A census counts, so the set of documents it counts over is part
+#   of its result, and choosing that set is the single decision most easily forgotten: forget it
+#   and a report about the world quietly counts the stipulations written to exercise it. A slot
+#   cannot be forgotten, because a caller that supplies no `@scope` does not compose at all.
+#
+# Two callers, two questions
+#   Over the corpus, an empty class reads as a state nobody has filed yet: a finding about the
+#   evidence, and a claim about where the next document is worth having. Over the fixtures, it
+#   reads as a state this repository has never had to invent, which is a claim about coverage.
+#   `assets/fixtures/README.md` argues why those must never be merged to light a class.
+#
+# ⛔ Not the contract's reading
+#   epistemics/classes.sqlc counts the same cells pooled and is what folds/class_subjects.sqlc
+#   holds the declared standings against, because whether anything computes a class at all does
+#   not depend on which documents are in view. A class occupied there and empty here is the
+#   ordinary case, not a disagreement: it is precisely what this report exists to show.
+#
+# Only the filed classifications
+#   `epistemics/class_sets.sqlc` declares which relations classify rows a document filed. The
+#   other two classify this tree's own rules, whose classes are the same under every scope;
+#   printing them here would put a zero beside a real one and invite it to be read as a gap in
+#   the evidence.
+#
+# The scope is joined to the BALL, not applied after the count
+#   The `LEFT JOIN` keeps every declared class whether or not any of its balls are in scope, so a
+#   class emptied by the restriction is a row with zero rather than a row that vanished. An inner
+#   join here would silently drop exactly the classes this report exists to name.
+-- epistemics/class_cells.sqlc counted per class, restricted by the caller's @scope.
+SELECT k.relation, k.class, s.subject, count(w.filing) AS balls, k.ord
+FROM      (
+    :compose(epistemics/class_cells.sqlc)
+) k
+JOIN      (
+    :compose(epistemics/class_sets.sqlc)
+) s ON s.relation = k.relation AND s.filed
+LEFT JOIN (
+    :compose(@scope)
+) w ON w.filing = k.filing
+GROUP BY k.relation, k.class, s.subject, k.ord
+ORDER BY k.relation, k.ord

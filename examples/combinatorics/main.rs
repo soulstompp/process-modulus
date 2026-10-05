@@ -347,10 +347,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let classes = sqlx::query_file!("assets/sql/queries/combinatorics/3-classifications.sql")
         .fetch_all(&pool)
         .await?;
-    // The outside set comes from the catalog, rendered through `regtype` in this same session so
-    // that it spells a type the way `pg_typeof` did in the query above.
+    // ⛔ The outside set is the catalog's BARE name, not `regtype`. `regtype` renders through the
+    // session's `search_path`, so it spells the same type two ways depending on who is connected,
+    // and the census it is compared against is read by clients with both paths. `typname` is what
+    // assets/ddl/schema.ddl wrote, and `epistemics/class_cells.sqlc` reads the same column.
     let declared: Vec<String> = sqlx::query_scalar(
-        "SELECT t.oid::regtype::text FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace \
+        "SELECT t.typname::text FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace \
          WHERE n.nspname = 'public' AND t.typtype = 'e' ORDER BY 1",
     )
     .fetch_all(&pool)
@@ -391,6 +393,51 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("\n   empty, and a referral rather than a failure:");
     for e in &empties {
         println!("      {e}");
+    }
+
+    // ------------------------------------------------------------------
+    // 3b. The same classes over each scope, which the pooled count cannot be filtered into.
+    // ⭐⭐ A census counts, so the set of documents it counted over is part of its result rather
+    //    than an input a reader still holds. Restricting §3's rows chooses which totals to look
+    //    at, never what each total counted, which is why `reports/class_census.sqlc` takes the
+    //    document set as a SLOT and is composed twice, and why these two columns exist instead
+    //    of a WHERE clause.
+    // ⛔ The two zeros mean opposite things. Empty in the corpus is a state no real filing has
+    //    produced, which is a finding about the evidence. Empty in the fixtures is a state no
+    //    stipulation exercises, which is a gap in this repository's own coverage. Pooling them
+    //    lights the class from either side and answers neither question.
+    // ------------------------------------------------------------------
+    let scoped = sqlx::query_file!("assets/sql/queries/combinatorics/3b-classifications-by-scope.sql")
+        .fetch_all(&pool)
+        .await?;
+    println!("\n3b. the filed classifications, counted apart");
+    println!("   {:<44} {:>8} {:>10}", "relation / class", "corpus", "fixtures");
+    let mut findings = Vec::new();
+    let mut gaps = Vec::new();
+    for r in &scoped {
+        let corpus = r.corpus;
+        let fixtures = r.fixtures.unwrap_or(0);
+        let cell = format!("{} {}", r.relation, r.class);
+        println!("   {cell:<44} {corpus:>8} {fixtures:>10}");
+        if corpus == 0 && fixtures > 0 {
+            findings.push(cell.clone());
+        }
+        if fixtures == 0 && corpus > 0 {
+            gaps.push(cell);
+        }
+    }
+    assert!(!scoped.is_empty(), "the scoped census is empty, so this section read nothing");
+    // ⭐ Neither list is asserted empty, and neither should be. A finding is a claim about the
+    //   world that no law can settle, and a gap is a fixture somebody has not written yet.
+    //   `algebra/class_domain.sqlc` asserts the part that IS settleable: that every class has a
+    //   declared standing and the standing agrees with the pooled count.
+    println!("\n   lit only by a stipulation, so the corpus has never shown it:");
+    for f in &findings {
+        println!("      {f}");
+    }
+    println!("\n   lit only by the corpus, so no fixture pins it:");
+    for g in &gaps {
+        println!("      {g}");
     }
 
     // ------------------------------------------------------------------

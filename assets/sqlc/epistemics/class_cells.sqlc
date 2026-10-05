@@ -1,0 +1,105 @@
+# Every row every classification in this tree produces, against the class it landed in, and every
+# class nothing landed in. One row per landed row: the relation, its codomain, the class, the ball
+# that landed there spelled as its own key, and the document that filed it.
+#
+# Driven from `enum_range`, which is what makes an empty class a row
+#   Grouping classified rows can only list the classes some row took, so it reads the function
+#   onto its image and a zero has nowhere to be. Driving from the declared set and `LEFT JOIN`ing
+#   the rows reads the function onto its codomain. A class nothing landed in is then a row whose
+#   `ball` is NULL, which is the only reason every reader below can count a zero.
+#
+# ⛔ epistemics/class_domain.sqlc is NOT an arm here, and the reason is the contract
+#   Its standings are spelled in `public.fit_standing`, which checks/fit_domain.sqlc already
+#   classifies, so the type is read and nothing is missing. An arm counting its rows would make
+#   the eighth contract's POPULATION compose the ROSTER it is differenced against, which is the
+#   one property examples/soundness/main.rs §5 exists to refuse: the two witnesses would share a
+#   file and their agreement would stop being evidence.
+#
+# ⛔ `codomain` is the type's BARE NAME, because `pg_typeof` is not one spelling
+#   `pg_typeof(x)::text` renders through the session's `search_path`: the same column prints
+#   `pm.fit` to a client with the default path and `fit` under the `SET search_path TO pm, public`
+#   that assets/sql/views.sql installs. A roster comparing against a literal is then right in one
+#   session and wrong in the other, which examples/probes caught by running the law under the
+#   second. `pg_type.typname` is what assets/ddl/schema.ddl wrote and does not move.
+#
+# `ball` is the key, spelled, not a witness column
+#   Each arm concatenates the whole key of the relation it reads, so `count(ball)` and
+#   `count(DISTINCT ball)` are both available and both mean something. Every part of every key was
+#   measured non-null before it was concatenated, so a NULL `ball` says the class is empty and
+#   never that a column was missing. epistemics/class_sets.sqlc declares what one ball IS.
+#
+# `filing` is NULL where the subject is not a document
+#   Six arms classify rows somebody filed, and their `filing` is the document that filed them.
+#   Two do not: checks/fit_axes.sqlc and checks/fit_domain.sqlc classify RULES, and this tree's
+#   own rules are not filed by anybody. Their classes are the same under every scope, so
+#   reports/class_census.sqlc cannot restrict them and does not pretend to.
+#
+# `composition/part_references.sqlc` is scoped by the COMPOSER, not by `part_filing`
+#   `part_filing` is a foreign urn naming the filing a part was taken FROM, and this repository
+#   holds none of them under that spelling: joining it to a scope matches nothing and returns
+#   zero for every class, which reads exactly like a finding. The document that filed the
+#   reference is `composition`, and that is what the scope restricts.
+#
+# Written once, read at two grains
+#   epistemics/classes.sqlc counts it pooled and reports/class_census.sqlc counts it per scope.
+#   The eight arms are here and nowhere else: the same fold written twice is one map with two
+#   unnamed copies, and they drift.
+-- every declared class of eight codomains, LEFT JOINed to the rows that landed in it.
+SELECT 'arithmetic/all.sqlc' AS relation, (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)) AS codomain,
+       c.class::text AS class, c.ord,
+       z.site || ' / ' || z.filing || ' / ' || z.layer AS ball,
+       z.filing AS filing
+FROM unnest(enum_range(NULL::public.arithmetic_verdict)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(arithmetic/all.sqlc)
+) z ON z.verdict = c.class
+UNION ALL
+SELECT 'layers/remainder_scope.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::public.remainder_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(layers/remainder_scope.sqlc)
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'layers/exposure_scope.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::public.exposure_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(layers/exposure_scope.sqlc)
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'layers/remainder.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer, z.filing
+FROM unnest(enum_range(NULL::pm.fit)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(layers/remainder.sqlc)
+) z ON z.derived_fit = c.class
+UNION ALL
+SELECT 'checks/fit_axes.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.slug, NULL
+FROM unnest(enum_range(NULL::public.fit_axis)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(checks/fit_axes.sqlc)
+) z ON z.axis = c.class
+UNION ALL
+SELECT 'checks/fit_domain.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.slug || ' / ' || coalesce(z.fit::text, 'no fit'), NULL
+FROM unnest(enum_range(NULL::public.fit_standing)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(checks/fit_domain.sqlc)
+) z ON z.standing = c.class
+UNION ALL
+SELECT 'composition/part_references.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.composition || ' / ' || z.composed_layer || ' / ' || z.part_filing || ' / ' || z.part_layer,
+       z.composition
+FROM unnest(enum_range(NULL::public.factor_state)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(composition/part_references.sqlc)
+) z ON z.factor_state = c.class
+UNION ALL
+SELECT 'layers/quantities.sqlc', (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)), c.class::text, c.ord,
+       z.filing || ' / ' || z.layer || ' / ' || z.quantity::text, z.filing
+FROM unnest(enum_range(NULL::public.layer_quantity)) WITH ORDINALITY AS c(class, ord)
+LEFT JOIN (
+    :compose(layers/quantities.sqlc)
+) z ON z.quantity = c.class
