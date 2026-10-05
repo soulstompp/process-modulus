@@ -4,15 +4,8 @@
 # Your own write-ups, in progress. Local only until they land in the examples.
 notes/
 
-# Agent / assistant working notes — local only, never pushed.
-docs/plans/
-AGENTS.md
-CLAUDE.md
-.claude/
-.cursor/
+# Per-machine editor settings
 .idea/
-.aider*
-.github/copilot-instructions.md
 
 # Local database credentials. `cargo sqlx prepare` reads DATABASE_URL from here, and the
 # host it points at is nobody else's business.
