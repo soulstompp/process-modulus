@@ -1,0 +1,16 @@
+# Passo 1 do percurso em pt-PT/assets/sqlc/README.md: quanto falta a cada camada, e se lhe falta
+# onde quer que a procura caia.
+-- §1 O que a divisão deixa: o resto de cada camada nos seus três cantos, e o ajustamento.
+SELECT layer AS camada, d_unit AS unidade,
+       n_low  - d_high AS no_pior_caso,
+       n_mode - d_mode AS no_mais_provável,
+       n_high - d_low  AS no_melhor_caso,
+       CASE WHEN n_low  - d_high >= 0 THEN 'clearance'
+            WHEN n_high - d_low  <= 0 THEN 'interference'
+            ELSE 'transition' END AS ajustamento
+FROM (
+    :compose(layers/figures.sqlc)
+) f
+WHERE filing = 'enterprise-contract'
+  AND d_low IS NOT NULL
+  AND n_low IS NOT NULL;

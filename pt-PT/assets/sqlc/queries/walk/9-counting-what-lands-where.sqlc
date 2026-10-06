@@ -1,0 +1,8 @@
+# Passo 9 do percurso em pt-PT/assets/sqlc/README.md: onde cai cada resto, entre as suas classes.
+-- §9 Contar onde cai cada coisa: as classes do resto, e quantos caem em cada uma.
+SELECT relation AS relação, class AS classe, subject AS o_que_se_conta, balls AS quantos
+FROM (
+    :compose(epistemics/classes.sqlc)
+) c
+WHERE relation = 'layers/remainder.sqlc'
+ORDER BY ord;

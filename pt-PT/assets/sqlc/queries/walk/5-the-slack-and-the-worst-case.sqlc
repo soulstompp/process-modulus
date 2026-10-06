@@ -1,0 +1,17 @@
+# Passo 5 do percurso em pt-PT/assets/sqlc/README.md: a exposição de cada camada ao lado da sua
+# folga de capacidade e do que fica por servir.
+-- §5 A folga e o pior caso: a exposição, a folga de capacidade, e o máximo por servir.
+SELECT e.layer         AS camada,
+       e.exposure      AS exposição,
+       s.high          AS folga_de_capacidade,
+       u.unserved_high AS por_servir_máximo
+FROM      (
+    :compose(layers/exposure_scope.sqlc)
+) e
+LEFT JOIN (
+    :compose(entries/slacks.sqlc)
+) s ON s.filing = e.filing AND s.layer = e.layer AND s.buffer = 'capacity'
+LEFT JOIN (
+    :compose(entries/unserved_totals.sqlc)
+) u ON u.filing = e.filing AND u.layer = e.layer
+WHERE e.filing = 'enterprise-contract';

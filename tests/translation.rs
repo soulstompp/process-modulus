@@ -32,7 +32,7 @@ use std::fs;
 
 #[path = "shared/published.rs"]
 mod published;
-use published::{published_documents, root};
+use published::{portuguese_of, published_documents, root};
 
 /// Every declaration that carries a Portuguese annotation today.
 ///
@@ -282,13 +282,12 @@ fn the_untranslated_remainder_is_visible() {
 fn every_published_document_has_a_portuguese_sibling_and_it_is_not_a_stub() {
     for shown in published_documents() {
         let en = root().join(&shown);
-        let stem = en.file_stem().and_then(|s| s.to_str()).expect("a .md path has a stem");
-        let sibling = format!("{stem}.pt.md");
-        let pt = en.with_file_name(&sibling);
+        let sibling = portuguese_of(&shown);
+        let pt = root().join(&sibling);
         let body_pt = fs::read_to_string(&pt).unwrap_or_else(|_| {
             panic!(
-                "{shown} has no {sibling} beside it, so whatever it explains is explained in \
-                 one language. This model's origin and its hardest jurisdiction are both \
+                "{shown} has no {sibling}, so whatever it explains is explained in one \
+                 language. This model's origin and its hardest jurisdiction are both \
                  Portuguese; the pair is the point."
             )
         });

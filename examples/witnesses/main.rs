@@ -10,7 +10,7 @@
 // A Portuguese page rendered nowhere would be a translation nobody reads, which is the
 // second-class citizenship `tests/translation.rs` exists to refuse.
 #![doc = include_str!("README.md")]
-#![doc = include_str!("README.pt.md")]
+#![doc = include_str!("../../pt-PT/examples/witnesses/README.md")]
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;

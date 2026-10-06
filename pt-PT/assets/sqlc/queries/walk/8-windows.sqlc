@@ -1,0 +1,13 @@
+# Passo 8 do percurso em pt-PT/assets/sqlc/README.md: a janela ativa da linha de turnos, declarada e
+# composta.
+-- §8 Janelas: a janela de cada linha de turnos, e a unidade em que a sua quantidade se conta.
+SELECT filing      AS declaração,
+       layer       AS camada,
+       window_mode AS janela,
+       window_unit AS unidade_da_janela,
+       amount_unit AS unidade_da_quantidade
+FROM (
+    :compose(layers/windows.sqlc)
+) w
+WHERE layer IN ('shift-line', 'linha-partilhada')
+  AND window_mode IS NOT NULL;

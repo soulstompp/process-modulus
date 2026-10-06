@@ -27,7 +27,7 @@
 #[path = "shared/published.rs"]
 mod published;
 
-use published::{entry_of, published_documents, root};
+use published::{entry_of, portuguese_of, published_documents, root};
 use std::fs;
 
 /// The pages that are reached by nothing on purpose, because nothing is above them.
@@ -131,9 +131,10 @@ fn no_published_page_is_reached_by_nothing() {
 #[test]
 fn every_index_entry_is_its_child_own_first_line() {
     for (parent, child) in INDEX {
-        for (suffix, lang) in [(".md", "English"), (".pt.md", "Portuguese")] {
-            let parent_path = parent.replace(".md", suffix);
-            let child_path = format!("{child}/README{suffix}");
+        let english = (parent.to_string(), format!("{child}/README.md"));
+        let portuguese = (portuguese_of(parent), portuguese_of(&english.1));
+        let pairs = [(english, "English"), (portuguese, "Portuguese")];
+        for ((parent_path, child_path), lang) in pairs {
             let entry = entry_of(&read(&child_path));
 
             assert!(
@@ -169,4 +170,70 @@ fn every_declared_index_edge_names_a_published_page() {
             "INDEX declares {parent} as an index and that page is not published"
         );
     }
+}
+
+/// The fenced blocks of a page, in order: the word after the opening fence, and the text inside.
+fn fenced_blocks(body: &str) -> Vec<(String, String)> {
+    let mut blocks = Vec::new();
+    let mut open: Option<(String, Vec<&str>)> = None;
+    for line in body.lines() {
+        match (&mut open, line.strip_prefix("```")) {
+            (None, Some(lang)) => open = Some((lang.trim().to_string(), Vec::new())),
+            (Some(_), Some(_)) => {
+                let (lang, text) = open.take().expect("an open block");
+                blocks.push((lang, text.join("\n")));
+            }
+            (Some((_, text)), None) => text.push(line),
+            (None, None) => {}
+        }
+    }
+    blocks
+}
+
+/// The question a composed file asks: what follows the relations it names at its head.
+fn question_of(file: &str) -> String {
+    let body = read(file);
+    let lines: Vec<&str> = body.lines().collect();
+    let close = lines.iter().rposition(|l| *l == ")").unwrap_or_else(|| {
+        panic!("{file} names no relation at its head, so it has no question to show apart")
+    });
+    lines[close + 1..].join("\n")
+}
+
+/// A query a page shows beside the `psql` lines that run its files is the question those files
+/// end with, in both languages, so the page and the file a reader runs are the same statement.
+#[test]
+fn every_query_shown_beside_its_file_is_the_question_the_file_asks() {
+    let english = published_documents();
+    let pages: Vec<String> =
+        english.iter().cloned().chain(english.iter().map(|p| portuguese_of(p))).collect();
+    let mut shown = 0;
+    for page in &pages {
+        let blocks = fenced_blocks(&read(page));
+        for pair in blocks.windows(2) {
+            let ((query_lang, query), (run_lang, run)) = (&pair[0], &pair[1]);
+            if query_lang != "sql" || run_lang != "sh" {
+                continue;
+            }
+            let files: Option<Vec<&str>> = run
+                .lines()
+                .map(|l| l.strip_prefix("psql -d process_modulus -f "))
+                .map(|f| f.filter(|f| f.contains("assets/sql/queries/")))
+                .collect();
+            let Some(files) = files else { continue };
+            let expected: Vec<String> = files.iter().map(|f| question_of(f)).collect();
+            assert_eq!(
+                query.trim_end(),
+                expected.join("\n\n").trim_end(),
+                "{page} shows a query beside `{run}` that is not the question that file asks. \
+                 The page is copied from the composed file: recompose, then copy its last \
+                 statement after the relations it names."
+            );
+            shown += 1;
+        }
+    }
+    assert!(
+        shown > 0,
+        "no page shows a query beside the line that runs it, so this law examines nothing"
+    );
 }

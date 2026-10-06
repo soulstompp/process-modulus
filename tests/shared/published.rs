@@ -24,8 +24,8 @@ pub fn root() -> PathBuf {
 
 /// Every published English page, as paths relative to the root, sorted.
 ///
-/// ⚠️ English only: a `.pt.md` is the sibling of one of these rather than a page in its own
-/// right, and counting both would make every law here report twice about one document.
+/// English only: a page under `pt-PT/` is the Portuguese of one of these, at the same path under
+/// `pt-PT/`, and counting both would make every law here report twice about one document.
 pub fn published_documents() -> Vec<String> {
     let out = std::process::Command::new("git")
         .args(["ls-files", "--cached", "--others", "--exclude-standard", "-z", "--", "*.md"])
@@ -39,13 +39,21 @@ pub fn published_documents() -> Vec<String> {
     );
     let mut found: Vec<String> = String::from_utf8_lossy(&out.stdout)
         .split('\0')
-        .filter(|p| !p.is_empty() && !p.ends_with(".pt.md"))
+        .filter(|p| !p.is_empty() && !p.starts_with(PORTUGUESE))
         .map(|p| p.to_string())
         .collect();
     found.sort();
     found.dedup();
     assert!(!found.is_empty(), "the repository publishes no markdown, which cannot be right");
     found
+}
+
+/// The tree that holds the Portuguese pages, following the English one.
+pub const PORTUGUESE: &str = "pt-PT/";
+
+/// The Portuguese page of an English one, as a path relative to the root.
+pub fn portuguese_of(english: &str) -> String {
+    format!("{PORTUGUESE}{english}")
 }
 
 /// A page's first line, reduced to the claim it makes.

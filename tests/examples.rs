@@ -19,8 +19,9 @@
 //! origin and its hardest jurisdiction are both Portuguese, and `tests/translation.rs` already
 //! refuses a schema annotation that speaks one language. A program's header is prose that carries
 //! rules no validator reaches, which is the same argument one directory over, so every program
-//! owes a `README.pt.md`, `main.rs` includes BOTH, and `examples/README.pt.md` is bound to the
-//! Portuguese first lines exactly as the English index is bound to the English ones.
+//! owes a page under `pt-PT/examples/`, `main.rs` includes BOTH, and `pt-PT/examples/README.md`
+//! is bound to the Portuguese first lines exactly as the English index is bound to the English
+//! ones.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -38,7 +39,8 @@ struct Program {
     name: String,
     /// The first non-empty line of the program's own `README.md`.
     question: String,
-    /// The same line of `README.pt.md`, with the language label taken off the front.
+    /// The same line of its page under `pt-PT/examples/`, with the language label taken off the
+    /// front.
     question_pt: String,
     /// Whether the program reads a connection string, taken from the CALL and never from the word.
     needs_database: bool,
@@ -51,7 +53,7 @@ const PT_LABEL: &str = "**Português europeu.** ";
 
 /// The one index row per language: which file carries it, and how it spells the database column.
 const INDEXES: [(&str, &str, &str); 2] =
-    [("README.md", "yes", "no"), ("README.pt.md", "sim", "não")];
+    [("examples/README.md", "yes", "no"), ("pt-PT/examples/README.md", "sim", "não")];
 
 fn examples_dir() -> PathBuf {
     Path::new(ROOT).join("examples")
@@ -104,17 +106,20 @@ fn programs() -> Vec<Program> {
                  more than a macro's."
             )
         });
-        let header_pt = fs::read_to_string(path.join("README.pt.md")).unwrap_or_else(|_| {
+        let pt_page = Path::new(ROOT).join("pt-PT/examples").join(&name).join("README.md");
+        let header_pt = fs::read_to_string(&pt_page).unwrap_or_else(|_| {
             panic!(
-                "examples/{name}/ has no README.pt.md, so this program argues its case in one \
-                 language. Portuguese is first class here: see tests/translation.rs."
+                "examples/{name}/ has no pt-PT/examples/{name}/README.md, so this program argues \
+                 its case in one language. Portuguese is first class here: see \
+                 tests/translation.rs."
             )
         });
 
         // ⛔ ONE COPY, ASSERTED. An include and a `//!` block in the same file are two headers,
         // and rustdoc concatenates them, so the drift would show up as a page that reads oddly
         // rather than as an error.
-        for header_file in ["README.md", "README.pt.md"] {
+        let headers = ["README.md".to_string(), format!("../../pt-PT/examples/{name}/README.md")];
+        for header_file in headers {
             assert!(
                 source.contains(&format!("#![doc = include_str!(\"{header_file}\")]")),
                 "examples/{name}/main.rs does not include its {header_file}, so that header is \
@@ -148,12 +153,12 @@ fn programs() -> Vec<Program> {
             .lines()
             .map(str::trim)
             .find(|l| !l.is_empty())
-            .unwrap_or_else(|| panic!("examples/{name}/README.pt.md says nothing"));
+            .unwrap_or_else(|| panic!("pt-PT/examples/{name}/README.md says nothing"));
         let question_pt = first_pt
             .strip_prefix(PT_LABEL)
             .unwrap_or_else(|| {
                 panic!(
-                    "examples/{name}/README.pt.md opens `{first_pt}`. It owes `{PT_LABEL}` and \
+                    "pt-PT/examples/{name}/README.md opens `{first_pt}`. It owes `{PT_LABEL}` and \
                      then the question, because rustdoc renders both files as one page and the \
                      label is what separates them there."
                 )
@@ -161,7 +166,7 @@ fn programs() -> Vec<Program> {
             .to_string();
         assert!(
             !question_pt.is_empty(),
-            "examples/{name}/README.pt.md carries the label and no question after it"
+            "pt-PT/examples/{name}/README.md carries the label and no question after it"
         );
 
         // ⚠️ MEASURED AGAINST ITS OWN SIBLING AND NEVER AGAINST A FIXED FLOOR, which is the
@@ -170,7 +175,7 @@ fn programs() -> Vec<Program> {
         //   longer than English as a rule, so half is generous.
         assert!(
             header_pt.len() * 2 >= header.len(),
-            "examples/{name}/README.pt.md is {} chars against {} of English, which is a summary \
+            "pt-PT/examples/{name}/README.md is {} chars against {} of English, which is a summary \
              rather than a translation. Equal footing means the reader who cannot read the \
              English loses nothing.",
             header_pt.len(),
@@ -194,8 +199,8 @@ fn programs() -> Vec<Program> {
 /// on a table that also holds a row for a program that no longer exists, and that row is the one
 /// a reader would act on.
 fn index_rows(file: &str, yes: &str, no: &str) -> BTreeMap<String, (String, bool)> {
-    let index = fs::read_to_string(examples_dir().join(file)).unwrap_or_else(|_| {
-        panic!("examples/{file} is missing, so browsing examples/ shows no argument at all")
+    let index = fs::read_to_string(Path::new(ROOT).join(file)).unwrap_or_else(|_| {
+        panic!("{file} is missing, so browsing examples/ shows no argument at all")
     });
     let mut rows = BTreeMap::new();
     for line in index.lines() {
@@ -207,13 +212,13 @@ fn index_rows(file: &str, yes: &str, no: &str) -> BTreeMap<String, (String, bool
         assert_eq!(
             cells.len(),
             4,
-            "examples/{file} has a row for `{name}` with {} cells, not the three the table \
+            "{file} has a row for `{name}` with {} cells, not the three the table \
              declares plus its closing bar",
             cells.len()
         );
         assert_eq!(
             cells[0], format!("{name}/)"),
-            "examples/{file} links `{name}` at `{}` rather than at its own directory, so the \
+            "{file} links `{name}` at `{}` rather than at its own directory, so the \
              link a reader follows is not the program the row describes",
             cells[0]
         );
@@ -221,13 +226,13 @@ fn index_rows(file: &str, yes: &str, no: &str) -> BTreeMap<String, (String, bool
             c if c == yes => true,
             c if c == no => false,
             other => panic!(
-                "examples/{file} says `{other}` in the database column for `{name}`. It is \
+                "{file} says `{other}` in the database column for `{name}`. It is \
                  `{yes}` or `{no}`, because a program here either reads a connection string or \
                  does not."
             ),
         };
         let previous = rows.insert(name.to_string(), (cells[1].to_string(), db));
-        assert!(previous.is_none(), "examples/{file} has two rows for `{name}`");
+        assert!(previous.is_none(), "{file} has two rows for `{name}`");
     }
     rows
 }
@@ -242,13 +247,13 @@ fn each_index_names_every_program_and_only_programs() {
 
     for (file, yes, no) in INDEXES {
         let mut rows = index_rows(file, yes, no);
-        let portuguese = file.contains(".pt.");
+        let portuguese = file.starts_with("pt-PT/");
 
         for p in &programs {
             let mine = if portuguese { &p.question_pt } else { &p.question };
             let (question, db) = rows.remove(&p.name).unwrap_or_else(|| {
                 panic!(
-                    "examples/{file} has no row for `{}`, so a reader browsing examples/ cannot \
+                    "{file} has no row for `{}`, so a reader browsing examples/ cannot \
                      find it. Add:\n\n| [`{}`]({}/) | {mine} | {} |",
                     p.name,
                     p.name,
@@ -258,13 +263,13 @@ fn each_index_names_every_program_and_only_programs() {
             });
             assert_eq!(
                 &question, mine,
-                "examples/{file} and examples/{}/{file} disagree about what `{}` answers. The \
+                "{file} and the page of `{}` beside it disagree about what `{}` answers. The \
                  program's own first line is the one that is right.",
                 p.name, p.name
             );
             assert_eq!(
                 db, p.needs_database,
-                "examples/{file} says `{}` needs a database: {db}, and \
+                "{file} says `{}` needs a database: {db}, and \
                  `env::var(\"DATABASE_URL\")` in examples/{}/main.rs says {}.",
                 p.name, p.name, p.needs_database
             );
@@ -272,7 +277,7 @@ fn each_index_names_every_program_and_only_programs() {
 
         assert!(
             rows.is_empty(),
-            "examples/{file} has rows for programs that are not there: {:?}",
+            "{file} has rows for programs that are not there: {:?}",
             rows.keys().collect::<Vec<_>>()
         );
     }

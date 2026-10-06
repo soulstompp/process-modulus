@@ -1,35 +1,31 @@
 Before the arithmetic: may you compute here at all?
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/readiness/README.md`.
 
-`xmllint` says a filing is well formed. `assets/sql/checks/` says it does not contradict
-the model. Neither answers the question this program asks, which is whether the numbers in
-front of you can be put together at all, whether both operands were stated, and whether
-they are numbers of the same thing.
+`xmllint` says a filing is well formed, and the rules say it does not contradict the model. Neither
+answers the question this program asks: whether the figures in front of you can be put together at
+all. Were both stated, and are they figures of the same thing?
 
-⭐⭐⭐ THE COLUMN THAT MATTERS IS THE EMPTY ONE. `arithmetic/roster.sqlc` names every place
-this model combines two magnitudes and, beside each, the rule that checks they are
-commensurable. Six of the nine are blank, a seventh is `(forbidden)`, and two name a rule.
-`r = n − d` is one of the blank ones: thirty-nine layers
-deep, and `layers/remainder.sqlc` carries `d_unit` and `n_unit` as two separate columns and
-subtracts across them with no predicate anywhere.
+`arithmetic/roster.sqlc` names every place the model combines two figures and, beside each, the
+rule that checks they are in the same unit. The column that matters is the empty one. The
+remainder, nameplate less demand, is one of the places with no such rule: `layers/remainder.sqlc`
+carries the demand's unit and the nameplate's unit as two columns and subtracts across them with
+nothing checking they agree.
 
-⛔ A BLANK GUARD BESIDE A ZERO IS NOT A PASS. Every unguarded site is clean in this corpus
-today, which is precisely the state that reads as safe and is not. `NOT CHECKED` is printed
-as `not checked`, never as `ok`, and that distinction is the whole reason this example
-exists.
+A blank check beside a clean result is not a pass. Every unchecked place is clean in this corpus
+today, which is exactly the state that looks safe and is not, so it is printed as `not checked`,
+never as `ok`.
 
-⭐⭐ SUSPENDED IS A THIRD OUTCOME BESIDE PASSED AND FAILED. Ninety-one instances cannot be
-computed because somebody declined to measure an operand. That is not a defect in the
-document and not a pass either, and the gated relations cannot report it: a row dropped by
-a `WHERE` cannot say why it went.
+`suspended` is a third outcome beside passed and failed. A figure that cannot be computed because
+somebody declined to measure one of its parts is neither a defect in the document nor a pass, and a
+query that drops the row with a `WHERE` cannot say why it went. `arithmetic/all.sqlc` keeps every
+such place as a row, with its verdict.
 
-Run it with a loaded database:
+## Running it
+
+It needs the database, reads it, and writes nothing:
 
 ```text
-psql -d process_modulus_proof -f assets/ddl/schema.ddl -f assets/sql/ingest.sql
-DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
+DATABASE_URL="postgres://$USER@localhost/process_modulus?host=/var/run/postgresql" \
   cargo run --example readiness
 ```
-
-⛔ There is no silent skip. No database means it fails to run.

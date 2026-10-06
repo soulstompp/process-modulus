@@ -1,54 +1,43 @@
-The three graphs this model composes, as the lane sets of one pool.
+The three graphs the filings make, each drawn as the lanes of a pool of its own.
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/graphs/README.md`.
 
-⭐⭐⭐ THE BIG POOL IS THE MODEL, AND THE THREE GRAPHS ARE LANE SETS OVER IT. The filing-pools
-`examples/diagramming/main.rs` emits, one per loaded filing, sit INSIDE this one. A `laneSet` is a
-partition claimed exhaustive, and three LANES would put every composition in exactly one.
-Compositions do not sit in exactly one: a relation reading a part AND its factor is in the layer
-graph and in the unit graph, and that is what a factor IS. BPMN permits several lane sets over one
-process for exactly this reason.
+The filings make three graphs. In the first, parts compose into layers. In the second, units
+convert into units. In the third, claimants delegate to claimants. This program writes each graph
+as its own BPMN document, `assets/bpmn/graphs/model-<graph>.bpmn`, with one pool, the model, whose
+lanes are the graph's nodes. The filing pools from `examples/diagramming` are documents of their
+own, and neither contains the other.
 
-⛔⛔ AND THREE LANE SETS CANNOT ALL BE THE CONTAINMENT. An inclusion tree gives each node ONE
-parent, so only one of them can be the nesting a diagram draws. That is why the graph is a
-SLOT here rather than a silent pick: `entries/coupling_presence.sqlc` is asked of the corpus by
-one caller and of every filing by another, both are right, and a caller supplying no `@scope`
-DOES NOT COMPOSE. The choice moves from a habit into the structure.
+## Three sets of lanes, not three lanes
 
-⭐⭐ THE BPMN WORD FOR A SLOT IS ALREADY IN THE SPEC. A `participant` has an OPTIONAL
-`processRef`: supply it and the pool has contents, omit it and you have a BLACK BOX POOL, which
-is first-class BPMN for *a party acts here and what they do is not in this diagram*. An
-unfilled slot IS a black-box participant, and this example emits one for the graph that has no
-edges, rather than pretending it drew something.
+A query can sit in more than one graph. One that reads a part and its conversion factor belongs to
+the layers and to the units at once, and that is what a factor is. So each graph is its own set of
+lanes, as BPMN allows, rather than one lane of a single set. Only one of them can be the nesting a
+drawing shows, so the graph is a slot the caller fills. `entries/coupling_presence.sqlc` is asked
+of the corpus by one caller and of every filing by another, and a caller that names no scope does
+not compose.
 
-⭐⭐⭐ AND WHAT SEPARATES THE THREE GRAPHS IS ONE NUMBER PER GRAPH, NOT THREE DIFFERENT THEORIES.
-For an incidence matrix over `n` nodes, `m` edges and `c` components, the edge space splits into
-the CUT SPACE at dimension `n − c` and the CYCLE SPACE at dimension `m − n + c`. They are
-orthogonal complements and they sum to `m`, so every graph here is one row of the same table, and
-a cycle means something different in each because each graph puts its rule in a different half:
+A graph with no edges is drawn as an empty pool. BPMN's word for that is a black-box participant:
+a party acts here, and what it does is not in this drawing. Delegation is filed nowhere yet, so the
+claimants' graph is drawn that way rather than drawn as if it held something.
 
-| graph | its cycle space | a cycle there is |
-|---|---|---|
-| **layers** | must be **ZERO** | ⛔ a misfiled partition: the cells were one cell |
-| **units** | may be **NONZERO**, and the weights on it must vanish | ⭐ expected, and required to close |
-| **claimants** | unknown, because delegation is filed nowhere | ⛔ not "nobody is accountable"; a slot with no filler |
+## What a loop means in each
 
-⛔ **So "cyclic, therefore no rank" is a confusion between two senses of one word.** A graph with
-cycles has no ORDINAL rank and always has a MATRIX rank.
+| graph | a loop there |
+|---|---|
+| layers | must not happen: it is a layer reached two ways, counted twice up the chain of parents |
+| units | may happen, and converting round it must come back where it started |
+| claimants | cannot be read yet, because nobody files delegation |
 
-⛔ **And "cycle" is a second word with two senses, which is the one that bites here.** `m − n + c`
-counts UNDIRECTED cycles, so a zero says the graph is a FOREST. Well-foundedness is the DIRECTED
-question, whether anything descends forever, and every acyclic digraph has it. A forest is
-well-founded and the converse fails: a diamond is four edges over four nodes in one component, so
-its cycle space is one, and nothing in it descends forever. A zero cycle space hands you the
-ordinal rank; the ordinal rank hands back nothing. **So always say which cycle.** The layer graph
-is both at once, and that is `checks/jagged_layer` holding it there rather than an identity: a
-diamond in it is a layer composed twice, which is why `composition/descent.sqlc` is right that a
-diamond is not a cycle in ITS sense and this table is right that it is one in this one.
-`rank/cycle_space.sqlc` prints both dimensions for every graph that has an edge, this program
-asserts the layer graph's zero against `checks/jagged_layer` finding no violation, and
-`src/proofs/README.md` §10 proves the identities.
+`rank/graph_measures.sqlc` counts each graph's loops, and this program holds the layers' count at
+zero against `checks/jagged_layer` finding no violation. The two share no code, so their agreement
+means something.
+
+## Running it
+
+It needs the database, and writes `assets/bpmn/`:
 
 ```text
-DATABASE_URL=... cargo run --example graphs
+DATABASE_URL="postgres://$USER@localhost/process_modulus?host=/var/run/postgresql" \
+  cargo run --example graphs
 ```

@@ -1,0 +1,13 @@
+# Passo 12 do percurso em pt-PT/assets/sqlc/README.md, a sua primeira metade: cada regra, com o que
+# examinou e o que a quebrou.
+-- §12 A estrutura inteira: cada regra do rol, as linhas que examinou e as que a quebraram.
+SELECT r.rule                             AS regra,
+       count(c.rule)                      AS examinadas,
+       count(*) FILTER (WHERE c.violates) AS quebradas
+FROM      (
+    :compose(checks/roster.sqlc)
+) r
+LEFT JOIN (
+    :compose(checks/all.sqlc)
+) c ON c.rule = r.rule
+GROUP BY r.rule;

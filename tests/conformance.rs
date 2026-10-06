@@ -1,7 +1,7 @@
 //! The two conformance documents say the same thing, or they are two documents.
 //!
 //! ⭐⭐⭐ A TRANSLATION IS NOT A SUMMARY, AND NOTHING WAS CHECKING THE DIFFERENCE.
-//!    `conformance/README.md` and `conformance/README.pt.md` are parallel documents with the
+//!    `conformance/README.md` and `pt-PT/conformance/README.md` are parallel documents with the
 //!    same section headings, and an implementer picks one. When the English table enumerated
 //!    forty-seven rules and the Portuguese one grouped them into seven, the two readers were
 //!    not owed the same thing, and every test in this repository passed.
@@ -19,7 +19,7 @@
 use std::fs;
 
 const EN: &str = "conformance/README.md";
-const PT: &str = "conformance/README.pt.md";
+const PT: &str = "pt-PT/conformance/README.md";
 
 /// The rule rows of the "what a validator cannot reach" table: every table row after the
 /// heading that introduces it, minus the header and separator.

@@ -1,28 +1,33 @@
-The model, translated into BPMN 2.0, and the laws that say the translation was faithful.
+The model drawn as BPMN 2.0, one document per filing, and the checks that the drawing is faithful.
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/diagramming/README.md`.
 
-⭐⭐⭐ THIS IS A COMPOSE STEP, NOT A DRAWING PROGRAM. Modulus is the `.sqlc`, BPMN is
-`assets/sql/`, and this is `cargo sqlc compose`. So `assets/bpmn/` is GENERATED AND WIPED on
-every run and must never be hand edited, every emitted document is complete and openable
-ALONE, and provenance survives INTO the artifact the way the `--` line survives into generated
-SQL. If you found a diagram you want to change, change the model.
+This program draws each filing as a BPMN 2.0 document in `assets/bpmn/filings/`, so a process
+modeller can lay it beside their own model. It works like a compose step: `assets/bpmn/` is written
+fresh on every run and never edited by hand, every document opens on its own, and if a diagram is
+wrong, the model is what changes.
 
-⛔⛔ THE READER OF THE OUTPUT IS THE RDBMS OF THIS PIPELINE. Postgres executes a broken
-difference and returns a plausible table; a brilliant analyst reads a broken diagram and
-reaches a confident conclusion. Neither tells you that you were wrong, and the diagram is the
-worse of the two, because a wrong table gets re-checked and a wrong diagram gets believed and
-put in a deck. `assets/sqlc/diagrams/roster.sqlc` is why the laws below exist at all.
+A drawing is believed in a way a table is not. A wrong table gets checked again; a wrong diagram
+gets put in a deck. So the program checks itself where it cannot be generous:
 
-⭐⭐ THE EMITTER HAS NO JUDGMENT IN IT, AND THE EXPECTED COUNTS ARE NOT ITS OWN. Every
-`pm.*` object renders as whatever `diagrams/domain_objects.sqlc` says, and every count is
-checked against `diagrams/expected.sqlc`, which is computed from the model by relations this
-program does not write. An emitter that computed its own expectation would agree with itself
-whatever it did.
+- **It draws nothing by judgment.** Each relation renders as `diagrams/domain_objects.sqlc` says,
+  or with the stated reason it has no element. A mapping that loses something says how: `demoted`,
+  where a person can still read the fact and a tool cannot follow it, or `absent`, where the
+  drawing does not carry it at all.
+- **Its counts are not its own.** Every count is held against `diagrams/expected.sqlc`, worked out
+  from the model by queries this program does not write. An emitter that computed its own
+  expectation would agree with itself whatever it drew.
+- **Every sentence names its source.** Each sentence on the drawing names the relation that states
+  it, in the file and on the drawn page. Afterwards the program reads them back out and fails on a
+  sentence with no source, a source that is not a relation, or a source it never queried.
+- **What could not be drawn is listed**, because a blank diagram and a diagram of nothing look the
+  same from outside.
 
-⛔ WHAT COULD NOT BE DRAWN IS ENUMERATED, because a blank diagram and a diagram of nothing are
-indistinguishable from outside. That list is the boundary claim performed instead of asserted.
+## Running it
+
+It needs the database, and writes `assets/bpmn/filings/`:
 
 ```text
-DATABASE_URL=... cargo run --example diagramming
+DATABASE_URL="postgres://$USER@localhost/process_modulus?host=/var/run/postgresql" \
+  cargo run --example diagramming
 ```

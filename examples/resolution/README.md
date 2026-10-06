@@ -1,23 +1,31 @@
 What does a lossy instrument cost, in the units the schema files?
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/resolution/README.md`.
 
-The other examples ask whether the arithmetic agrees with itself, whether it may be performed,
-what the corpus says, and whether the queries compute what they claim. This one asks a question
-none of them can: **how much of the answer does the recording throw away**, and is what is left
-still true?
+The other programs ask whether the queries are right and what the corpus says. This one asks how
+much of the answer a recording throws away, and whether what is left is still true.
 
-⭐⭐⭐ IT IS ANSWERABLE HERE AND NOWHERE ELSE. In the wild you hold a log and the history that
-produced it is gone, so the width of what the log fails to pin is a thing to be argued about. In
-a bench you hold both at once. Running the same history through two instruments and comparing
-their readings turns that width into a number, once, under conditions somebody can reproduce.
+It can be answered here and nowhere else. In the wild you hold a log, and the history that produced
+it is gone. In a simulation you hold both, so running one history through two instruments and
+comparing their readings turns what the log fails to pin down into a figure, under conditions
+anybody can reproduce.
 
-⛔⛔ THE TEST IS CONTAINMENT, NOT AGREEMENT. The lossy reading must **admit** the true one. It
-must not equal it: an instrument that returned the truth exactly would not have lost anything,
-and this one demonstrably has. Asserting equality here would be asserting the loss away.
+The test is that the lossy reading contains the true one, never that it equals it. An instrument
+that returned the truth exactly would have lost nothing, and this one plainly has.
 
-⭐⭐ AND THE TWO LOSSES ARE NOT THE SAME SPECIES, WHICH IS THE FINDING THIS PRINTS. Dropping the
-magnitude of a refusal widens a bound and keeps the truth inside it, so the field is still
-filed, as a range, with `pm:Narrowing/kind = instrument`. Losing the ability to tell one unserved
-holder from another pins their SUM and leaves the split free, which no range can express: it is
-a face of the holder simplex and it has to be filed as `unmeasured` on both halves.
+The two losses it prints are not the same kind of loss:
+
+- **Dropping the size of a refusal widens a range and keeps the truth inside it.** The field is
+  still filed, as a range, with `pm:Narrowing/kind = instrument` saying a better instrument would
+  tighten it.
+- **Losing the ability to tell one unserved holder from another fixes their total and leaves the
+  split free.** No range can say that, so both shares are filed `unmeasured`, and the total stands
+  on the remainder.
+
+## Running it
+
+It needs no database:
+
+```text
+cargo run --example resolution
+```

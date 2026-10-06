@@ -1,0 +1,17 @@
+# Passo 4 do percurso em pt-PT/assets/sqlc/README.md: o resto ao lado das quotas de quem o suporta.
+-- §4 Quem suporta a falta: o resto, as quotas de quem o suporta, e o que nenhuma quota declara.
+SELECT r.layer AS camada,
+       r.m_low  AS resto_mínimo,
+       r.m_mode AS resto_mais_provável,
+       r.m_high AS resto_máximo,
+       h.shares_low  AS quotas_mínimas,
+       h.shares_mode AS quotas_mais_prováveis,
+       h.shares_high AS quotas_máximas,
+       h.unstated    AS por_declarar
+FROM      (
+    :compose(layers/remainder.sqlc)
+) r
+LEFT JOIN (
+    :compose(entries/holder_totals.sqlc)
+) h USING (filing, layer)
+WHERE r.filing = 'enterprise-contract';

@@ -1,0 +1,11 @@
+# Passo 3 do percurso em pt-PT/assets/sqlc/README.md: o que cada camada comprometeu, ao lado do que
+# se consumiu.
+-- §3 O que aconteceu: a capacidade nominal ao lado do consumo.
+SELECT layer AS camada, n_mode AS comprometido,
+       draw_low  AS consumo_mínimo,
+       draw_mode AS consumo_mais_provável,
+       draw_high AS consumo_máximo
+FROM (
+    :compose(layers/drawn.sqlc)
+) d
+WHERE filing = 'enterprise-contract';

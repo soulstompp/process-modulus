@@ -1,32 +1,28 @@
-Does a run of the model file at all?
+Does a simulated run of a business file at all?
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/generation/README.md`.
 
-`examples/resolution/main.rs` measures what an instrument throws away, but it measures it in a
-struct this repository invented for the purpose. Nothing about that reaches the schema. This
-one takes the same readings, writes them out as `pm:processModulus`, and puts them through the
-two gates every document in `assets/corpus/` goes through: `xmllint` against the XSD, and the
-conformance rules in `assets/sql/checks/`.
+This program runs a small simulated business on a discrete-event scheduler written by other people
+for other reasons, and knowing nothing about accounting. It writes each run out as a
+`pm:processModulus` filing. Then it puts every filing through the two gates every document in
+`assets/corpus/` goes through: `xmllint` against the schema, and the rules the queries run.
 
-⭐⭐⭐ THE POINT IS NOT THAT A GENERATED FILE VALIDATES. It is that a simulator written by
-other people for other reasons, driven by a bench that knows nothing about accounting, fills
-these fields WITHOUT STRAIN. `tests/independence.rs` holds that corroboration between two
-things sharing a code path is worth nothing; `examples/matrices/main.rs` corroborates the
-arithmetic. This is what corroborates the MODELLING. A field that has to be bent to take a
-simulated fact is a finding about the field.
+The point is not that a generated file validates. It is that a run nobody shaped for this schema
+fills its fields without bending them. A field that has to be bent to take a simulated fact is a
+finding about the field.
 
-⛔⛔ AND THE SECOND FILING IS THE ONE TO WATCH. Every run is filed twice, once from the whole
-history and once from what a stock-and-flow log records. The blinder filing is not a worse
-document, it is a HONEST REPORT OF LESS. If the rules accuse it, they are accusing a filer for
-not owning an instrument, which is the failure mode `a rule that fires on a correct filing`
-exists to hunt. Zero violations on both is the schema's typed absences doing their whole job.
+Every run is filed twice. One filing knows the whole history. The other knows only what a
+stock-and-flow log records, so it files `unmeasured` where the first files a figure. The second is
+not a worse document but an honest report of less. If a rule accused it, the rule would be accusing
+a filer for not owning an instrument. No violation on either filing is the typed blanks doing their
+job.
 
-Run it against a loaded database:
+## Running it
+
+It needs the database. Its documents are loaded inside a transaction that is rolled back, so the
+database is left as it was:
 
 ```text
-DATABASE_URL='postgresql:///process_modulus_proof?host=/var/run/postgresql' \
+DATABASE_URL="postgres://$USER@localhost/process_modulus?host=/var/run/postgresql" \
   cargo run --example generation
 ```
-
-⛔ There is no silent skip. No database means it fails to run. The ingest below happens
-   inside a transaction that is ROLLED BACK, so a loaded corpus is left exactly as it was.

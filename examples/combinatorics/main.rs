@@ -1,4 +1,4 @@
-// This program's documentation is `README.md` and `README.pt.md` in this directory.
+// This program's documentation is `README.md` in this directory and `pt-PT/examples/combinatorics/README.md`.
 //
 // Why the header lives in a README
 //   GitHub renders a directory's README and does not render `//!` blocks, so an argument kept
@@ -11,7 +11,7 @@
 //   joins them into one doc comment. These two files are the same arrangement, and
 //   `tests/translation.rs` checks that neither language is a second-class copy.
 #![doc = include_str!("README.md")]
-#![doc = include_str!("README.pt.md")]
+#![doc = include_str!("../../pt-PT/examples/combinatorics/README.md")]
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;

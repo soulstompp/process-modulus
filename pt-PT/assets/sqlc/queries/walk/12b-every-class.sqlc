@@ -1,0 +1,7 @@
+# Passo 12 do percurso em pt-PT/assets/sqlc/README.md, a sua segunda metade: cada classe de cada
+# classificação, com o lugar onde fica.
+-- §12 A estrutura inteira: cada classe, a sua situação, e a razão de uma classe onde nada cai.
+SELECT relation AS relação, class AS classe, standing AS situação, reason AS razão
+FROM (
+    :compose(epistemics/class_domain.sqlc)
+) d;

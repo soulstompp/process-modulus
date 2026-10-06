@@ -534,12 +534,12 @@ fn files_that_cite_the_schemas() -> Vec<String> {
     let root = env!("CARGO_MANIFEST_DIR");
     let mut out = Vec::new();
     for sub in [
-        "assets/sqlc", "assets/ddl", "assets/fixtures", "conformance", "docs", "examples",
+        "assets/sqlc", "assets/ddl", "assets/fixtures", "conformance", "docs", "examples", "pt-PT",
         "schema", "src", "tests",
     ] {
         walk(&format!("{root}/{sub}"), &mut out);
     }
-    for top in ["README.md", "README.pt.md", "build.rs"] {
+    for top in ["README.md", "build.rs"] {
         out.push(format!("{root}/{top}"));
     }
     out.sort();

@@ -1,0 +1,15 @@
+# Passo 2 do percurso em pt-PT/assets/sqlc/README.md: quantas unidades inteiras cada camada
+# compromete e quantas lhe pedem, e o que sobra.
+-- §2 Unidades inteiras e resíduo:
+-- a unidade inteira, as unidades comprometidas e as pedidas, e o resíduo.
+SELECT layer AS camada, quantum_mode AS unidade_inteira,
+       round(n_mode / quantum_mode, 2) AS unidades_comprometidas,
+       floor(d_mode / quantum_mode)    AS unidades_pedidas,
+       mod(d_low,  quantum_mode)       AS resíduo_na_procura_mínima,
+       mod(d_mode, quantum_mode)       AS resíduo_na_procura_mais_provável,
+       mod(d_high, quantum_mode)       AS resíduo_na_procura_máxima
+FROM (
+    :compose(layers/lumpy.sqlc)
+) l
+WHERE filing = 'enterprise-contract'
+  AND d_low IS NOT NULL;

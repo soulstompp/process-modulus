@@ -1,7 +1,7 @@
 //! The whole structure, run on a PostgreSQL server of the tests' own.
 //!
-//! Every composed statement in `assets/sql/` runs on the loaded documents and finishes. Then the
-//! three answers the structure rests on are read:
+//! Every composed statement in `assets/sql/` and `pt-PT/assets/sql/` runs on the loaded documents
+//! and finishes. Then the three answers the structure rests on are read:
 //!
 //! - every rule on the roster examined rows, and none of them broke it;
 //! - every class of every classification stands somewhere: `exercised`, `outside` or `open`,
@@ -48,6 +48,7 @@ fn every_statement_runs_and_the_structure_holds() {
 
     let mut files = Vec::new();
     statements(Path::new("assets/sql"), &mut files);
+    statements(Path::new("pt-PT/assets/sql"), &mut files);
     files.sort();
     assert!(!files.is_empty(), "no composed statement was found, so this test examines nothing");
     let started = Instant::now();

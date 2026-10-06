@@ -1,0 +1,21 @@
+# Passo 7 do percurso em pt-PT/assets/sqlc/README.md: como partes contadas em unidades diferentes
+# se encontram numa só camada composta.
+-- §7 Conversões entre unidades: o fator de cada parte, e os seus números depois de convertidos.
+SELECT p.part_layer  AS camada_da_parte,
+       p.factor_low  AS fator_mínimo,
+       p.factor_mode AS fator_mais_provável,
+       p.factor_high AS fator_máximo,
+       c.quantity    AS quantidade,
+       c.low         AS mínimo,
+       c.mode        AS mais_provável,
+       c.high        AS máximo
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+JOIN (
+    :compose(composition/converted.sqlc)
+) c ON c.composition = p.composition AND c.composed_layer = p.composed_layer
+   AND c.part_filing = p.part_filing AND c.part_layer = p.part_layer
+WHERE p.composition = 'merge-holding-composition'
+  AND p.composed_layer = 'compute'
+ORDER BY c.quantity, p.part_layer;

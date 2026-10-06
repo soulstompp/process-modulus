@@ -1,0 +1,16 @@
+# Passo 10 do percurso em pt-PT/assets/sqlc/README.md: que quantidades das partes a entidade-mãe
+# põe ao lado de uma quantidade sua da mesma espécie, e quais ficam de fora, sem nenhuma.
+-- §10 O que se guarda e o que fica de fora:
+-- quantidades das partes não compostas, postas ao lado, e todas.
+SELECT count(*) FILTER (WHERE c.layer IS NULL)     AS não_compostas,
+       count(*) FILTER (WHERE c.layer IS NOT NULL) AS postas_ao_lado,
+       count(*)                                    AS todas_as_quantidades
+FROM (
+    :compose(composition/parts.sqlc)
+) p
+JOIN (
+    :compose(layers/quantities.sqlc)
+) q ON q.filing = p.part_filing AND q.layer = p.part_layer
+LEFT JOIN (
+    :compose(layers/quantities.sqlc)
+) c ON c.filing = p.composition AND c.layer = p.composed_layer AND c.quantity = q.quantity;

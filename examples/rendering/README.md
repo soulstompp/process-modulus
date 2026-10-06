@@ -1,37 +1,31 @@
-The layered SVG, which is the `.sqlx` of this pipeline.
+The drawings as layered SVG, read from the BPMN and never from the model.
 
-> **Também disponível em português europeu:** `README.pt.md`, nesta pasta.
+> **Também disponível em português europeu:** `pt-PT/examples/rendering/README.md`.
 
-⭐⭐⭐ IT READS THE BPMN AND NEVER THE MODEL, AND THAT IS THE WHOLE DESIGN. `.sqlx` is metadata
-extracted from the GENERATED `.sql`, not from the `.sqlc`, because a cache derived from the
-source could agree with the source while disagreeing with the artifact it claims to describe,
-which is the definition of a stale cache. So this program opens `assets/bpmn/*.bpmn` and
-nothing else. **It has no database connection**, and that is not a convenience: it is what
-makes "derived from the artifact" structural rather than a promise.
+This program turns `assets/bpmn/*.bpmn` into `assets/svg/`, so a reader can check a drawing with no
+BPMN tool at all. It opens the BPMN and nothing else, and it has no database connection. A picture
+taken from the model could agree with the model while disagreeing with the BPMN it claims to show,
+so it is drawn from the BPMN itself.
 
-⭐⭐ *PROPERLY LAYERED* IS THE ENTIRE SPECIFICATION. `.sqlx` lets a build verify with no
-database present; this lets a reader verify with no BPMN tool present, and it can only do that
-if the structure survives the trip. Every lane becomes its own `<g class="lane">` carrying the
-layer's name in `data-layer`. ⛔ A flattened SVG is a `.sqlx` that lost its column types: it
-still renders, and it verifies nothing.
+**The layers survive.** Every lane becomes its own `<g class="lane">`, carrying the layer's name in
+`data-layer`. A flattened picture would still render and would let nobody check anything.
 
-⭐⭐⭐ AND *LAYERED* IS ONLY HALF OF IT: THE ALPHABET IS THE BPMN ICON SET AND NOTHING ELSE.
-BPMN says which kind an activity is with its BORDER, so the glyph is the discriminator and not
-decoration: a `task` is thin, a `callActivity` is THICK because it is the element that
-substitutes, a `subProcess` carries the ⊞ marker, and a `participant` with no `processRef` is
-an EMPTY POOL, which is the notation for *what they do is not in this diagram*.
+**The shapes are BPMN's own.** BPMN tells an activity's kind by its border, so the shape is the
+information, not decoration. A `task` has a thin border. A `callActivity` has a thick one, because
+it is the element that stands for another process. A `subProcess` carries the ⊞ marker. A
+`participant` with no process is an empty pool, BPMN's way of saying what they do is not in this
+drawing.
 
-⛔⛔ THIS PROGRAM DREW 65 IDENTICAL RECTANGLES FOR 38 TASKS, 17 CALL ACTIVITIES AND 10
-SUB-PROCESSES, AND EVERY LAW IN IT PASSED. The kind was matched and dropped at the parse site,
-three lines above the pen. Both laws here count, and a glyph collapse preserves cardinality by
-construction, so `65 == 65` was true throughout. ⭐ The repair is attribution rather than a
-bigger count, which is the same repair `diagrams/ungoverned.sqlc` made on the model side.
+**It is checked against the BPMN, not against the model.** `examples/diagramming` already checked
+the BPMN against the model, so the two checks together carry the SVG back to the documents, each
+link checked where it can be seen. The checks attribute each shape to its kind rather than only
+counting shapes, because a drawing that turned every kind into one rectangle would keep every
+count right.
 
-⛔⛔ THE LAW IS CHECKED AGAINST THE BPMN, NOT AGAINST `diagrams/expected.sqlc`. A cache is
-verified against the thing it caches. `examples/diagramming/main.rs` already checked the BPMN
-against the model, so the two together carry the SVG back to the corpus by transitivity, and
-each link is checked where it can actually be seen.
+## Running it
+
+It needs no database:
 
 ```text
-cargo run --example rendering        # no DATABASE_URL needed, on purpose
+cargo run --example rendering
 ```

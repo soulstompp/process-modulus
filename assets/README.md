@@ -1,39 +1,34 @@
-# `assets/`: the evidence, the machinery that reads it, and what is generated from both
+# `assets/`: the documents, the queries that read them, and what is generated from both
 
-> **Também disponível em português europeu: [`README.pt.md`](README.pt.md).**
+> **Também disponível em português europeu: [`pt-PT/assets/README.md`](../pt-PT/assets/README.md).**
 
 Two kinds of thing live here, and which kind a directory is decides whether you may edit it.
 
-## Written by hand, and each one argues for itself
+## Written by hand
 
-| directory | what it answers |
+| directory | what it holds |
 |---|---|
-| [`corpus/`](corpus/) | `assets/corpus/`: what a filing looks like, and the one layer the whole model exists for |
-| [`fixtures/`](fixtures/) | `assets/fixtures/`: one document per state, and NOT a second corpus |
-| [`sqlc/`](sqlc/) | The same model, twice: as tables and as matrices |
+| [`corpus/`](corpus/) | `assets/corpus/`: what a filing looks like, and one layer read end to end |
+| [`fixtures/`](fixtures/) | `assets/fixtures/`: one document for each state the schema admits |
+| [`sqlc/`](sqlc/) | `assets/sqlc/`: the queries, and the walk from one remainder to the whole structure |
 
-Each entry above is that directory's own first line. The directory is where it is authoritative,
-and this table is a way in rather than a second copy.
+Each entry is that directory's own first line, and the directory says the rest.
 
-`ddl/schema.ddl` is the fourth hand-written thing here and has no directory of its own. It is the
-relational schema, following the XML schema as closely as the two formalisms allow, so that a
-claim proved against it is a claim about the model rather than about a translation. It is
-deliberately not composed: `sqlc` composes statements and CTEs, and a `CHECK` expression is
-neither.
+`ddl/schema.ddl` is the fourth hand-written thing here. It is the relational schema the documents
+are loaded into, kept as close to the XML schema as the two allow, so that what a query shows about
+the tables it shows about the model. It is written whole rather than composed.
 
-## Generated, and wiped by whatever produces them
+## Generated
 
-⛔⛔ **NONE OF THESE IS EDITED BY HAND, AND NONE OF THEM GETS A README**, because none has an
-argument that is not its producer's. An edit here survives until the next run and then vanishes
-with nothing to tell you.
+Nothing here is edited by hand, and none of it gets a README of its own. An edit survives until the
+next run, then vanishes with nothing to say so.
 
-| directory | written by | and it holds |
+| directory | written by | what it holds |
 |---|---|---|
-| `sql/` | `cargo sqlc compose`, from [`sqlc/`](sqlc/) | every template as a complete runnable query |
-| `dag/` | [`examples/compositions`](../examples/compositions/) | the compose graph as rows, so the tree's own shape is queryable |
-| `bpmn/` | [`examples/diagramming`](../examples/diagramming/) and [`examples/graphs`](../examples/graphs/) | the model translated into BPMN 2.0, one document per filing and one per graph |
-| `svg/` | [`examples/rendering`](../examples/rendering/) | the layered picture, which is a proof a reader can check with no tool at all |
+| `sql/` | `cargo sqlc compose`, from [`sqlc/`](sqlc/) | every query, composed whole and ready to run |
+| `dag/` | [`examples/compositions`](../examples/compositions/) | which query composes which, as rows, so the queries' own shape can be queried |
+| `bpmn/` | [`examples/diagramming`](../examples/diagramming/) and [`examples/graphs`](../examples/graphs/) | the model drawn as BPMN 2.0: one document per filing, and one per graph |
+| `svg/` | [`examples/rendering`](../examples/rendering/) | the drawings, which a reader can check with no tool at all |
 
-⚠️ `bpmn/` and `svg/` are generated **and** committed, for the same reason `sql/` is: a reader
-browsing the repository should see what the pipeline produced without running it first. Committed
-is not the same as editable.
+`sql/`, `bpmn/` and `svg/` are committed so a reader sees what was produced without running
+anything. Committed does not mean editable.

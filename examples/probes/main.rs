@@ -1,7 +1,7 @@
 // ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT, in both
 // languages, for the reason `examples/witnesses/main.rs` gives.
 #![doc = include_str!("README.md")]
-#![doc = include_str!("README.pt.md")]
+#![doc = include_str!("../../pt-PT/examples/probes/README.md")]
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;

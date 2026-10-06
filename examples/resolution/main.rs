@@ -10,7 +10,7 @@
 // A Portuguese page rendered nowhere would be a translation nobody reads, which is the
 // second-class citizenship `tests/translation.rs` exists to refuse.
 #![doc = include_str!("README.md")]
-#![doc = include_str!("README.pt.md")]
+#![doc = include_str!("../../pt-PT/examples/resolution/README.md")]
 
 use std::time::Duration;
 

@@ -1,0 +1,9 @@
+# Passo 11 do percurso em pt-PT/assets/sqlc/README.md: se os caminhos que as partes e as unidades
+# fazem voltam ao ponto de partida.
+-- §11 Os grafos que as declarações formam: cada grafo em todo o corpus.
+SELECT graph AS grafo, n_nodes AS nós, m_edges AS arestas, c_components AS componentes,
+       cycle_space_dim
+FROM (
+    :compose(rank/graph_measures.sqlc)
+) g
+WHERE filing IS NULL;

@@ -1,0 +1,21 @@
+# Passo 6 do percurso em pt-PT/assets/sqlc/README.md: o número composto de uma entidade-mãe, a soma
+# das partes, e o que a entidade-mãe retirou.
+-- §6 A composição de uma entidade-mãe: a soma das partes, o que se retirou, e o que se declarou.
+SELECT f.composed_layer AS camada_composta, f.quantity AS quantidade,
+       f.sum_low    AS soma_mínima,
+       f.sum_mode   AS soma_mais_provável,
+       f.sum_high   AS soma_máxima,
+       e.low        AS retirado_mínimo,
+       e.mode       AS retirado_mais_provável,
+       e.high       AS retirado_máximo,
+       f.filed_low  AS declarado_mínimo,
+       f.filed_mode AS declarado_mais_provável,
+       f.filed_high AS declarado_máximo
+FROM      (
+    :compose(composition/fused.sqlc)
+) f
+LEFT JOIN (
+    :compose(eliminations/filed.sqlc)
+) e USING (composition, composed_layer, quantity)
+WHERE f.composition = 'merge-group-composition'
+  AND f.composed_layer IN ('labour', 'shift-line');

@@ -53,8 +53,10 @@ fn no_named_relation_takes_a_tables_name() {
 
     let mut composed = BTreeSet::new();
     named(Path::new("assets/sql"), "sql", &mut composed);
+    named(Path::new("pt-PT/assets/sql"), "sql", &mut composed);
     let mut own = BTreeSet::new();
     named(Path::new("assets/sqlc"), "sqlc", &mut own);
+    named(Path::new("pt-PT/assets/sqlc"), "sqlc", &mut own);
     let given: BTreeSet<&String> = composed.difference(&own).collect();
     assert!(!given.is_empty(), "no composed statement names a relation, so this test examines nothing");
 
