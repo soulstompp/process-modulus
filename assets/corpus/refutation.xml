@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  WHAT A REFUTATION LOOKS LIKE IN THIS FORMAT. Illustrative figures.
+  What a refutation looks like in this format, with illustrative figures.
 
-  The model makes claims that could be wrong, and this document files two of the
-  counter-examples rather than arguing them:
+  The model makes claims that could be wrong, and this document files two
+  counter-examples rather than arguing them, beside a third case worth seeing:
 
-    1. A LAYER WITH NO QUANTUM AND NO PREMIUM. `object-storage` is bought
-       continuously at the same unit price as any commitment, so its remainder is
-       `none`: somebody looked, and there is nothing left over. If a stack were
-       full of these, the model would have no subject.
+    1. A layer with no quantum and no premium. `object-storage` is bought continuously,
+       at the same unit price as under any commitment, and commits no nameplate, so its
+       remainder is `notApplicable`: there is nothing for demand to come off. If a stack
+       were full of these, the model would have no subject.
 
-    2. A COUPLING. The stack is ASSUMED to be a set of independent quantizations
-       and that assumption has never been tested. A filed coupling says two
-       layers' remainders moved together, which is the model's own falsifier,
-       and it is required to carry what was observed.
+    2. A coupling. A stack is assumed to be a set of layers whose remainders move
+       independently, and the other filings have not tested that. A filed coupling says
+       two layers' remainders moved together, which is the model's own falsifier, and it
+       has to carry what was observed.
 
-    3. A TRANSITION FIT, which is the only one in these examples. `compute` demands
-       [11.0, 13.2, 16.4] against a nameplate of 16, so it is short at the top of
-       its range and spare at the bottom. The remainder magnitude cannot say both,
-       and the fit now does.
+    3. A `transition` fit. `compute` demands 11.0, 13.2 and 16.4 GPU against a nameplate
+       of 16, so it is short at the top of its range and spare at the bottom. The
+       remainder's quantity cannot say both, and the fit does.
 
-  A document with no couplings is not evidence of independence. It is a document
-  where nobody looked. This one looked.
+  A document with no couplings is not evidence of independence. It is a document where
+  nobody looked. This one looked.
 
-  Note that it carries no operations at all: a stack is a complete document.
+  It carries no operations at all: a stack is a complete document.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:filing:acme-platform:2026-Q2-refutation</pm:uri>
   </pm:notation>
@@ -36,12 +35,12 @@
     <pm:attests>observation</pm:attests>
   </pm:evidence>
 
-  <!-- ⭐⭐ TWO REGIMES, ONE ENTITY, AND THAT IS CORRECT RATHER THAN A DUPLICATE.
-       The same Portuguese microentity is `NC-ME` to IES and `M` to SAF-T. The two
-       published four-value lists do not line up: NCRF and NCRF-PE both collapse
-       into S, and O has no AnexoASNC counterpart, so neither code can be derived
-       from the other and neither declaration says what the pair says.
-       ⚠️ The taxonomy URIs are placeholders; a real document names the real ones. -->
+  <!-- Two regimes for one entity, which is correct and not a duplicate. The same
+       Portuguese microentity is `NC-ME` to the IES and `M` to the SAF-T. The two
+       published lists of four values do not line up: NCRF and NCRF-PE both fall into
+       `S`, and `O` has no AnexoASNC counterpart, so neither code can be derived from
+       the other, and neither declaration says what the pair says.
+       The taxonomy URIs are placeholders; a real document names the real ones. -->
   <pm:regime>
     <pm:id>ies-anexo-asnc</pm:id>
     <pm:jurisdiction>PT</pm:jurisdiction>
@@ -51,7 +50,8 @@
         <pm:value>NC-ME</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- ⭐⭐ THE SAME CHART AS saft-referencial BELOW. A chart is national; the -->
+    <!-- The same chart as `saft-referencial` below. A chart is national, and the
+         authority that codes the framework is a separate axis from it. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
@@ -69,7 +69,7 @@
         <pm:value>M</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- ⭐⭐ ...authority that CODES THE FRAMEWORK is a separate axis from it. -->
+    <!-- The same chart again: only the authority that codes the framework differs. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
@@ -85,7 +85,7 @@
     <pm:scope>
       <pm:scope>
         <pm:extent>unbounded</pm:extent>
-        <pm:basis>the three layers the coupling observation runs between. What else exists was not the question this filing put</pm:basis>
+        <pm:basis>the three layers this filing needs: the two the coupling observation runs between, and one bought continuously with no nameplate. What else exists was not the question this filing put</pm:basis>
       </pm:scope>
     </pm:scope>
 
@@ -138,7 +138,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- One value has no range to tighten, so `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -159,8 +159,8 @@
             </pm:absent>
           </pm:amount>
           <!-- no amount was committed, so asking who could have committed a different
-               one is malformed rather than unanswered. The same reason the amount
-               itself is notApplicable. -->
+               one does not apply, rather than going unanswered: the same reason the
+               amount itself is `notApplicable`. -->
           <pm:amountOrigin>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -171,9 +171,9 @@
             <pm:divisibility>
               <pm:continuous>
                 <pm:premium>
-                  <!-- ⭐⭐ THE MIDDLE OF THE SCALE, FILED THE SAME WAY AS ITS TWO ENDS. `Continuous`
-                       reads above 0 / at 0 / below 0, and the middle used to be spelled as an absence
-                       while the ends were claims, so the scale could not be compared as arithmetic. -->
+                  <!-- The middle of the scale, filed the same way as its two ends. A
+                       continuous premium reads above zero, at zero or below zero, and
+                       each of the three is a claim, so all three compare as figures. -->
                   <pm:claim>
                     <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
                     <pm:unit>share of the lumpy unit price</pm:unit>
@@ -204,7 +204,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -214,8 +214,8 @@
               </pm:provenance>
             </pm:claim>
           </pm:capacitySlack>
-          <!-- storage IS the inventory buffer, which is the one layer here
-               where that is straightforwardly true -->
+          <!-- storage is the inventory buffer, the one layer here where that is plainly
+               true -->
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -261,10 +261,10 @@
       <pm:remainder>
         <pm:absent>
           <pm:reason>notApplicable</pm:reason>
-          <pm:note>this layer states no nameplate, so `r = n - d` has nothing to subtract
-                   from and the question is malformed rather than answered with nothing.
-                   Filed as a counter-example to the claim that every layer carries a
-                   remainder, not as a gap in this document.</pm:note>
+          <pm:note>this layer states no nameplate, so there is nothing to take its demand
+                   from, and the question is malformed rather than answered with nothing.
+                   Filed to show that not every layer carries a remainder, not as a gap in
+                   this document.</pm:note>
           <pm:provenance><pm:party>platform</pm:party>
             <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
           </pm:provenance>
@@ -317,7 +317,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- One value has no range to tighten, so `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -399,7 +399,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -416,7 +416,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -458,17 +458,14 @@
       </pm:supply>
       <pm:remainder>
         <pm:remainder>
-          <!-- ⭐ THE ONLY `transition` FIT IN THESE EXAMPLES, AND IT IS WHY THE VALUE
-               EXISTS. Demand [11.0, 13.2, 16.4] against a nameplate of 16 OVERLAPS it:
-               5.0 GPU spare at the bottom of the range, 0.4 GPU short at the top, and
-               both are true of one layer. This filed `clearance` while `Fit` had two
-               members, which was the best available reading and still hid the second
-               half.
-               ⛔ THE MAGNITUDE CANNOT CARRY THAT SECOND HALF, which is the thing to
-               take away. `|16 - d|` is [0.0, 2.8, 5.0] — the CLEARANCE side, because
-               it is the larger one — and the 0.4 of interference sits inside that
-               interval indistinguishable from 0.4 of clearance. The exposure comes
-               from the demand and the nameplate instead: max(0, 16.4 - 16) = 0.4 GPU. -->
+          <!-- A `transition` fit, which is why the value exists. Demand of 11.0, 13.2 and
+               16.4 GPU against a nameplate of 16 overlaps it: 5.0 GPU spare at the bottom
+               of the range and 0.4 GPU short at the top, both true of one layer.
+               The remainder's quantity cannot carry the second half. It is 0.0, 2.8 and
+               5.0 GPU, the spare side, because that side is the larger, and the 0.4 short
+               sits inside it looking exactly like 0.4 spare. The shortfall comes from the
+               demand and the nameplate instead: the highest demand less the nameplate,
+               0.4 GPU. -->
           <pm:sign><pm:fit>transition</pm:fit></pm:sign>
           <pm:absorber>
             <pm:term>
@@ -504,30 +501,29 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- ⭐⭐ AND THE SECOND HOLDER IS FORCED BY THIS SUPPLY'S OWN CAPACITY SLACK.
-               It is a MEASURED ZERO — "a reserved card cannot be
-               run above its rating at any price" — so the 0.4 CANNOT have been absorbed. There is no overtime for
+          <!-- The second holder follows from this supply's own capacity slack. That slack is
+               a measured zero, since a reserved card cannot be run above its rating at any
+               price, so the 0.4 cannot have been absorbed: there is no overtime for
                silicon. Work that could not be absorbed and could not be served went
-               UNSERVED, and unserved demand is `customer` or `unrealised`. `customer`
-               here because the request was MADE and somebody was on the other end of
-               it; `unrealised` would mean it never became anybody's experience at all.
-               ⭐ This layer is the case where "refused" would in fact be accurate — a
-               reserved card errors the call — but the pair of holders also covers the
-               caller who simply waited and left, so the neutral word is what the model
-               uses. See Fit.
-               ⚠️ THE SHARE IS `unmeasured` AND THAT IS THE HONEST FILING, NOT A DODGE.
-               Nobody counts inference requests that never got served. Per Holder, one unmeasured
-               share SUSPENDS the sum rule rather than breaking it — which is right,
-               and doubly right here, because under a transition fit the two sides are
-               anti-correlated and summing them would report a week that never happened.
-               What is known without counting anything is the ceiling: 0.4 GPU. -->
+               unserved, and unserved demand is `customer` or `unrealised`. `customer` here,
+               because the request was made and somebody was on the other end of it;
+               `unrealised` would mean it never reached anybody at all. "Refused" would be
+               accurate on this layer, since a reserved card errors the call, but the pair
+               of holders also covers the caller who waited and left, so the model uses the
+               neutral word (see `Fit`).
+               The share is `unmeasured`, and that is the honest filing: nobody counts
+               inference requests that were never served. One unmeasured share suspends the
+               rule that the shares add up to the remainder, rather than breaking it, and
+               that is right here too, because under a `transition` fit the two sides move
+               in opposite directions, and adding them would report a week that never
+               happened. What is known without counting anything is the ceiling, 0.4 GPU. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>customer</pm:kind>
               <pm:share>
                 <pm:absent>
                   <pm:reason>unmeasured</pm:reason>
-                  <pm:note>a request that went unserved at the top of the demand range leaves no record: it is a failed call, not a transaction. The exposure is derivable and the count is not — at most 0.4 GPU, being max(0, 16.4 - 16)</pm:note>
+                  <pm:note>a request that went unserved at the top of the demand range leaves no record: it is a failed call, not a transaction. The exposure can be worked out and the count cannot: at most 0.4 GPU, the 16.4 at the top of the demand range less the nameplate of 16</pm:note>
                 </pm:absent>
               </pm:share>
             </pm:holder>
@@ -594,7 +590,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
-          <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says WHERE such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
+          <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says where such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
         </pm:absent>
       </pm:timeSlack>
       <pm:supply>
@@ -663,7 +659,7 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+              <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
@@ -673,13 +669,13 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
                 <pm:party>platform</pm:party>
                 <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
               </pm:provenance>
             </pm:claim>
           </pm:inventorySlack>
@@ -733,9 +729,9 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |4 - [4.2, 4.6, 5.5]| = [0.2, 0.6, 1.5] people, and unlike the
-               compute layer above this one does not straddle: the whole demand range
-               sits over the nameplate, so the fit is interference throughout. -->
+          <!-- Derived from this layer's demand and nameplate: 0.2, 0.6 and 1.5 people.
+               Unlike the compute layer above, this one does not straddle: the whole demand
+               range sits above the nameplate, so the fit is `interference` throughout. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -747,7 +743,7 @@
     </pm:layer>
 
     <!-- ============================================================
-         THE FALSIFIER, FILED.
+         THE COUPLING: the model's falsifier, filed.
          ============================================================ -->
     <pm:couplings>
       <pm:coupling>
@@ -759,8 +755,7 @@
                      release cadence. The compute remainder rose and the labour
                      remainder fell together, which is what the stack is assumed not
                      to do. One quarter, one company, and not controlled, but it is
-                     the observation, and it belongs in the document rather than in a
-                     conversation about the document.</pm:observed>
+                     the observation, and it belongs in the document.</pm:observed>
         <pm:strength>
           <pm:claim>
             <pm:low>0.15</pm:low>

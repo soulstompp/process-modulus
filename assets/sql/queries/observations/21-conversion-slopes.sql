@@ -1,4 +1,4 @@
--- §21 Which corner of the path's factor each bound of a carried remainder took, and whether it mattered.
+-- §21 Which end of the path's factor each end of a carried remainder took, and whether it mattered.
 -- composition/conversion_slopes.sqlc, ordered so any biting row reads first.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
@@ -102,7 +102,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -179,7 +180,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -332,7 +334,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -430,7 +433,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit

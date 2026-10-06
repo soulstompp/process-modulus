@@ -3,14 +3,14 @@
 # instrument a composition works under.
 #
 # The empty column is the finding
-#   It is what epistemics/documents.sqlc is for. `pm:processModulus` is the only root that names
-#   no witness, so a stipulation and an observation are the same shape to anything reading the
-#   tree. This section is where somebody looks at that.
+#   It is what epistemics/documents.sqlc is for. `pm:processModulus` is the only root that names no
+#   witness, so a stipulation and an observation are the same shape to anything reading the tree.
+#   This section is where somebody looks at that.
 #
 # The standard a composition works under
 #   That is a different question from the regime. The regime says what the members reported
 #   under; the citation says which instrument governs the act of combining them. It is empty for
-#   every root but `composition`, which is correct rather than thin.
+#   every root but `composition`, which is right rather than thin.
 -- epistemics/documents.sqlc, with the citation a composition works under.
 SELECT d.filing                       AS "filing!",
        d.root                         AS "root!",

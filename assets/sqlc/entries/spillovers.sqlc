@@ -1,24 +1,24 @@
-# One row per layer pair a filing holds that another document observed moving together. The
-# coupling is filed somewhere else; both of its ends are layers of this filing; and so this
-# filing's remainders are not the independent quantizations its own arithmetic takes them for.
+# Each pair of layers a filing holds that another document observed moving together. One row per
+# such pair: the coupling is filed somewhere else, both of its ends are layers of this filing, and
+# so this filing's remainders are not as independent as its own arithmetic takes them to be.
 #
 # Unintended, so both unbalanced and unsettled
 #   A spillover is unintended, and that is why it is neither unbalanced nor unsettled but both. The
-#   layer at the far end is perfectly deliberate in its own filing. What nobody meant is the reach
-#   into your remainder, so neither set of books carries it, and neither filer has anything to
-#   answer for. `merge-group-composition` watched delivery headcount move the shift line;
-#   `merge-us-member` holds both layers and has not looked.
+#   layer at the far end is deliberate in its own filing. What nobody meant is the reach into your
+#   remainder, so neither set of books carries it, and neither filer has anything to answer for.
+#   `merge-group-composition` watched delivery headcount move the shift line; `merge-us-member`
+#   holds both layers and has not looked.
 #
 # A referral, never a violation
-#   A filing is not the system, and a second document's observation is a projection onto this one
-#   rather than an accusation against it. Nobody here filed anything wrong: `enterprise-contract`
-#   states its coupling search as `unmeasured` and its note says in prose exactly what this
-#   relation says in rows: "the same two layers are the subject of refutation.xml ... so this is
-#   the honest prior state rather than a claim of independence". The author knew.
+#   A filing is not the whole system, and a second document's observation is laid onto this one,
+#   not brought against it. Nobody here filed anything wrong: `enterprise-contract` states its
+#   coupling search as `unmeasured`, and its note says in prose what this relation says in rows:
+#   "the same two layers are the subject of refutation.xml ... so this is the honest prior state
+#   rather than a claim of independence". The author knew.
 #
 # The far filing is named; the bound is not copied
-#   merge-holding-composition argues at length that a coupling carried up a level cannot survive at
-#   full strength and had to be re-observed. A number copied across a boundary is a number nobody
+#   merge-holding-composition explains that a coupling carried up a level cannot survive at full
+#   strength and has to be observed again. A number copied across a boundary is a number nobody
 #   took.
 -- pm:couplings/pm:coupling, projected onto every other filing holding both of its ends.
 SELECT c.filing        AS observed_in,

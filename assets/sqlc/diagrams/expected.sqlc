@@ -2,19 +2,17 @@
 # number a correct emission must produce.
 #
 # The specification of a correct translation
-#   It is computable before any translation exists. The emitter is then judged against a number it
+#   It can be computed before any translation exists. The emitter is then judged against a number it
 #   did not produce, which is the only arrangement worth having: an emitter that computed its own
-#   expectation would agree with itself no matter what it did, a slice wearing an aggregate's
-#   shape in a new place.
+#   expectation would agree with itself whatever it did.
 #
 # The caller supplies the label
-#   Each arm counts a different relation and none of them knows which law it serves, and a member
+#   Each branch counts a different relation, and none of them knows which law it serves; a member
 #   that carried its own label would be answering a question about the set it happens to be in.
 #
 # Both directions are checked
-#   A law here with no row on the roster is a count nobody declared, and a roster row with no arm
-#   here is a law nothing computes. reports/integrity.sqlc anti-joins both directions.
-#
+#   A law here with no row on the roster is a count nobody declared, and a roster row with no branch
+#   here is a law nothing computes. reports/integrity.sqlc checks both directions.
 -- diagrams/roster.sqlc's model_side relations, each counted.
 SELECT 'pools'   AS slug, count(*) AS expected FROM ( :compose(epistemics/documents.sqlc) )  x
 UNION ALL

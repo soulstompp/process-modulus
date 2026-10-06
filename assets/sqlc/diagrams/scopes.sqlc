@@ -1,31 +1,29 @@
 # How much of the system each filing's stack holds, and what decided it. One row per filing: the
-# typed extent, and the basis prose that is required beside it.
+# typed extent, and the basis prose required beside it.
 #
 # Why it exists
-#   The emitter once asserted the answer: every document carried the sentence *a partition of
-#   layers claimed exhaustive*, hardcoded, where almost no filing claims `complete`. That is not a
-#   `loses`: the artifact said something the other filings decline to say, which is the `invents`
-#   state in the emitter's own prose. No law here reaches a string literal in a `writeln!`,
-#   because it is not a count of anything.
+#   Without it the emitter would have to assert the answer, and a sentence such as "a division of
+#   layers claimed complete", written into every document, says what almost no filing claims: the
+#   artifact would say something the filings decline to say, the `invents` state, in the emitter's
+#   own prose. No law here reaches a string literal in a `writeln!`, because it is not a count of
+#   anything.
 #
 # Three states, and BPMN renders one
-#   `complete` asserts a boundary, `scoped` says somebody established what lies outside and
-#   excluded it, `unbounded` says nobody looked. `tLaneSet` has no extent attribute of any kind,
-#   and the schema's own gloss is the accusation already written: *a model that renders them
-#   identically cannot tell a bounded selection from an unexamined one*. Run
-#   reports/scope_declared.sqlc for the split across the corpus.
+#   `complete` asserts a boundary, `scoped` says somebody established what lies outside and left it
+#   out, and `unbounded` says nobody looked. `tLaneSet` has no extent attribute of any kind, and the
+#   schema's own gloss already says what is wrong with that: a model that renders them identically
+#   cannot tell a bounded selection from an unexamined one. Run reports/scope_declared.sqlc for the
+#   split across the corpus.
 #
 # The basis travels; the observation does not
-#   The basis travels and the coupling observation does not, and that was measured rather than
-#   assumed. `diagrams/dependences.sqlc` refuses its prose because some observations carry a numeral
-#   onto a page with no unit. No basis carries one, so the same refusal does not apply here, and
-#   applying it anyway would be a rule remembered rather than run.
+#   `diagrams/dependences.sqlc` refuses a coupling's observation because some observations carry a
+#   numeral onto a page with no unit. No basis carries one, so the same refusal does not apply
+#   here, and applying it anyway would be a rule remembered rather than run.
 #
 # BPMN is finer on the basis
 #   BPMN is the finer of the two on the basis and has nothing on the extent. `tLane` carries
-#   `partitionElement` and `partitionElementRef` for what a partition is by, per lane, where this
-#   model files one basis per stack. That is the grain axis running backwards for once.
-#
+#   `partitionElement` and `partitionElementRef` for what a lane set divides by, per lane, where
+#   this model files one basis per stack. That is the grain running the other way for once.
 -- pm:Stack/pm:StatedScope; carried as the laneSet's own documentation beside the coupling search.
 SELECT s.filing, s.extent, s.basis
 FROM (

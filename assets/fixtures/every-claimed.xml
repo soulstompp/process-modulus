@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md. This is not a real
-  witness, it answers for no framework, and its answers must never be compared against the
-  two real coverage documents in assets/corpus/.
+  A stipulation, not a filing. See assets/fixtures/README.md. This is not a real witness: it
+  answers for no framework, and its answers are never to be compared with the two real
+  coverage documents in assets/corpus/.
 
-  ⭐⭐⭐ IT EXISTS FOR ONE VALUE: `claimed = partial`, which `CoverageEntry/complete` could not
-  hold and which no honest witness in the corpus is in. Both real witnesses either code a
-  position, return a TYPED REFUSAL — which is a complete answer under a framework — or say the
-  question is not theirs. None of those is partial.
+  It exists for one value, `claimed` set to `partial`, which no honest witness in the corpus
+  is in. Both real witnesses either code a position, return a typed refusal, which is a
+  complete answer under a framework, or say the question is not theirs. None of those is
+  partial.
 
-  ⚠️ AND THE REASON THIS COULD NOT GO IN THE CORPUS IS WORTH STATING. A coverage entry is a
-  WITNESS'S OWN CLAIM about what its framework does. Writing `partial` into `coverage-us-gaap.xml`
-  would put words in US GAAP's mouth to light a branch, which is the failure `Verdict/diverged`
-  exists to name: a corpus that agrees with the schema by construction measures nothing. Here
-  the witness is openly invented and claims nothing about anybody.
+  Why this cannot go in the corpus: a coverage entry is a witness's own claim about what its
+  framework does. Writing `partial` into `coverage-us-gaap.xml` would put words in US GAAP's
+  mouth to reach a branch, which is the failure `Verdict/diverged` exists to name: a corpus
+  that agrees with the schema by construction measures nothing. Here the witness is openly
+  invented and claims nothing about anybody.
 
-  ⭐⭐ WHAT A PARTIAL ANSWER ACTUALLY LOOKS LIKE, and why it is the most interesting state a
-  witness can be in for THIS corpus specifically. Ask a framework where an evening of absorbed
-  engineering time sits. It has a position for the half that was invoiced by a contractor and
-  NO position for the half a salaried person absorbed — same physical excess, one of it coded,
-  one of it not. `full` would claim the question is answered. `none` would claim it is not the
-  witness's subject. Both are false, and the gap between them is the thing this whole model is
-  about.
+  What a partial answer looks like, and why it is the most telling state a witness can be in
+  for this corpus. Ask a framework where an evening of absorbed engineering time sits. It has
+  a position for the half a contractor invoiced and no position for the half a salaried
+  person absorbed: the same physical excess, one half coded and the other not. `full` would
+  claim the question is answered; `none` would claim it is not the witness's subject. Both
+  are false, and the gap between them is what this whole model is about.
 -->
 <asrt:coverage xmlns:asrt="https://example.invalid/assertion/1.0"
                xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -31,12 +30,12 @@
     <pm:attests>stipulation</pm:attests>
   </asrt:evidence>
 
-  <!-- ⭐ No regime. `Coverage/regime` is optional and its absence is a real state: a witness
-       that is not an accounting model reports under no framework and should not be made to
-       invent one. A fixture is exactly that witness. -->
+  <!-- No regime. `Coverage/regime` is optional, and leaving it out is a real state: a witness
+       that is not an accounting model reports under no framework and is not made to invent
+       one. A fixture is exactly that witness. -->
 
-  <!-- ⭐⭐⭐ THE VALUE THE BOOLEAN COULD NOT HOLD. Half the quantity has a position and half
-       does not, so the witness answers part of the question and says which part. -->
+  <!-- `partial`: half the quantity has a position and half does not, so the witness answers
+       part of the question and says which part. -->
   <asrt:entry>
     <asrt:key>labor.absorbed-evening</asrt:key>
     <asrt:claimed>partial</asrt:claimed>
@@ -53,9 +52,9 @@
                     make visible.</asrt:exception>
   </asrt:entry>
 
-  <!-- ⚠️ A partial claim may also be answered by a REFUSAL, and the two are different
-       documents. Here the witness reaches a typed refusal for part of the question and holds
-       no opinion about the rest, which is neither a complete refusal nor a complete answer. -->
+  <!-- A partial claim may also be answered by a refusal, and the two are different documents.
+       Here the witness reaches a typed refusal for part of the question and holds no opinion
+       about the rest, which is neither a complete refusal nor a complete answer. -->
   <asrt:entry>
     <asrt:key>offering.enterprise-obligation</asrt:key>
     <asrt:claimed>partial</asrt:claimed>
@@ -66,7 +65,7 @@
       </asrt:refuses>
     </asrt:answer>
     <asrt:exception>Stipulated. The revenue half of the obligation is refused for a missing
-                    condition; the CAPACITY the obligation commits is not a financial fact at
+                    condition; the capacity the obligation commits is not a financial fact at
                     all and this witness has no verdict on it.</asrt:exception>
   </asrt:entry>
 

@@ -1,32 +1,29 @@
 # The fusions whose parts carry a conversion nobody sized. One row per such fusion, shaped like the
-# two elimination suspensions beside it so the union stays a union.
+# two elimination suspensions beside it, so the union stays a union.
 #
 # A derived conversion is said to be one
-#   A derivation is an output the receiver computes, not a gap. Nothing yet computes a factor from
-#   the rest of the unit graph or from the fusion's sum, so the sum is still lifted, under the
+#   A derivation is an output the receiver computes, not a gap. Nothing computes a factor from the
+#   rest of the unit graph or from the fusion's sum, so the sum is still suspended, under the
 #   identity's name.
 #
-# The same reason an unsized elimination lifts the sum
-#   An unsized conversion lifts the sum for the same reason an unsized elimination does, and the
-#   schema already made that argument about the other one: "an entry whose `quantity` takes its
-#   absent branch is a composer who found the overlap and could not size it, so the sum is lifted
-#   exactly where the elimination was filed." A factor is the other multiplier in
-#   `Σ converted parts`. If nobody sized it, the converted part is not a number and the sum it
-#   feeds is not owed.
+# The same reason an unsized elimination suspends the sum
+#   The schema makes the argument about eliminations: "an entry whose `quantity` takes its absent
+#   branch is a composer who found the overlap and could not size it, so the sum is lifted exactly
+#   where the elimination was filed." A factor is the other multiplier in the converted parts added
+#   up. If nobody sized it, the converted part is not a number, and the sum it feeds is not owed.
 #
-# It keeps composition/converted.sqlc from under-counting
-#   Without this, the exclusion in composition/converted.sqlc would silently under-count. That
-#   relation drops a part whose factor is typed-absent, because converting it by one would assert
-#   the units agree, which is the claim the filer declined to make. A dropped part in a sum that
-#   still owes equality is a shortfall the checker invented. This is the ground that keeps the two
-#   consistent.
+# It keeps composition/converted.sqlc from counting short
+#   composition/converted.sqlc drops a part whose factor is a typed blank, because converting it by
+#   one would assert the units agree, the claim the filer declined to make. A dropped part in a sum
+#   that still owes equality is a shortfall the check invented. This is the ground that keeps the
+#   two consistent.
 #
-# The population is already suspended on another ground
-#   The population is one, and it is already suspended on another ground.
-#   `every-unsized-conversion/shift-capacity` files its elimination search as `unmeasured` too, so
-#   no verdict moves on this corpus. This makes structural a thing that is true only by luck,
-#   which is the same repair as every CHECK in the DDL.
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+# Its one fusion is already suspended on another ground
+#   `every-unsized-conversion/shift-capacity` is the only such fusion, and it files its elimination
+#   search as `unmeasured` too, so no verdict moves on this corpus. This makes structural something
+#   that is true only by luck, as every CHECK in the DDL does.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'

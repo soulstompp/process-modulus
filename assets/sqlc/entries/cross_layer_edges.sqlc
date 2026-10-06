@@ -1,18 +1,17 @@
-# The operations that both draw and induce: the entries DᵀN would have. One row per
-# (operation, drawn-from layer, committed-to layer): an operation consuming from one layer
-# while committing on another is a cross-layer edge, and the join on the shared operation
-# index is what a matrix product is.
+# The operations that both draw and induce. One row per (operation, layer drawn from, layer
+# committed to): an operation that consumes from one layer while committing on another links the
+# two, and joining draws to inductions on the operation they share finds it.
 #
-# The incidence composes; the quantities do not
-#   Multiply the two magnitudes and the answer comes out in people·launches, which is not a rate
-#   of anything, because each layer carries its own unit. So this relation reports reachability
-#   and leaves the numbers beside it unmultiplied. There is also no firing count per operation, on
-#   purpose: sequence and timing are BPMN's job and this model does not compete for it.
+# The links compose; the quantities do not
+#   Multiply the two amounts and the answer comes out in people·launches, which is not a rate of
+#   anything, because each layer carries its own unit. So this relation reports which layer reaches
+#   which, and leaves the numbers beside it unmultiplied. There is no count of how often an
+#   operation fires either: sequence and timing are BPMN's job, and this model leaves them to it.
 #
-# Empty for want of an instrument
-#   In this corpus exactly one operation qualifies and its draw is unmeasured, so the product
-#   cannot be computed at all. The matrix that would show cross-layer structure is empty precisely
-#   because the interesting quantity has no instrument behind it, which is the thing this model
+# Empty for want of a measurement
+#   In this corpus every operation that qualifies draws an amount nobody measured, so the product
+#   cannot be worked out at all. The column that would show how layers drive one another is empty
+#   because the quantity that matters has no measurement behind it, which is the thing this model
 #   exists to be able to say.
 -- the shared index is (filing, operation); pm:Operation carries both children.
 SELECT d.filing, d.operation,

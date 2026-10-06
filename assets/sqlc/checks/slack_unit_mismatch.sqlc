@@ -1,10 +1,10 @@
-# Every slack/share pair that states both units, beside whether they match. One row per examined
-# pair, `violates` where they differ.
+# Every slack and share pair that states both units, beside whether they match. One row per pair
+# examined, `violates` where they differ.
 #
 # A slack is in the unit of the shares it bounds
-#   The rule: a slack is expressed in the unit of the shares it bounds. An inequality between two
-#   numbers in different units is not a failing comparison, it is a meaningless one, so this is
-#   the precondition that makes checks/share_exceeds_slack.sqlc mean anything at all.
+#   The rule: a slack is expressed in the unit of the shares it bounds. Comparing two numbers in
+#   different units does not fail, it means nothing, so this is what makes
+#   checks/share_exceeds_slack.sqlc mean anything at all.
 -- the slack claims and pm:Remainder/pm:holder claims, each carrying its own unit.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

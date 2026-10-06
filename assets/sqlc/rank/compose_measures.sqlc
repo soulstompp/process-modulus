@@ -1,51 +1,51 @@
-# This repository's own compose DAG, measured, at both scopes. One row per scope, where
-# `scope IS NULL` is the graph taken whole and a non-null scope is one directory's cut of it.
-# Nodes, edges, components, and the two dimensions those three determine.
+# This repository's own compose graph, measured at two scopes. One row per scope: a NULL scope is
+# the graph taken whole, and a scope is one directory's cut of it. Each row counts the graph's
+# nodes, edges and components, and the two figures those counts give.
 #
 # Beside `rank/graph_measures.sqlc`, on purpose
-#   That relation measures the graphs the model composes; this measures the graph this repository
-#   composes. It is the same argument `rank/compose_edges.sqlc` makes for the edge lists, carried
-#   one step further: two edge lists of one shape in one directory was the claim that they are the
-#   same algebra, and two measurement relations are that claim made comparable. Until this file
-#   existed the compose graph had no row anywhere and every dimension of it lived in one program.
+#   That relation measures the graphs the filings make; this measures the graph this repository's
+#   queries make. It carries `rank/compose_edges.sqlc`'s point one step further: two edge lists of
+#   one shape in one directory claim the two graphs are alike, and two measuring relations make them
+#   comparable. Without this file the compose graph would have no row anywhere, and every figure
+#   about it would live in one program.
 #
-# Filesystem-fed and outside `pm`
-#   `public.compose_edge` descends from `assets/sqlc/` rather than from a filed document, so this
+# Read from the files, and outside `pm`
+#   `public.compose_edge` comes from `assets/sqlc/` rather than from a filed document, so this
 #   relation may say something about this repository and must never join a filing to say something
-#   about a subject. That is the line `rank/compose_edges.sqlc` states and this file inherits.
+#   about a subject. That is the line `rank/compose_edges.sqlc` states, and this file keeps to it.
 #
-# The cut is a PARTITION where the model's is a COVER, and the difference is not cosmetic
+# A template is in one directory, where a layer can be under two filings
 #   `rank/graph_measures.sqlc` cuts by filing, and a node may appear under two filings, so the
 #   per-filing node counts sum to more than the whole graph's. A template lives in exactly one
-#   directory, so this cut partitions the nodes and `sum(n_nodes)` equals the whole graph's `n`
-#   exactly. Two different kinds of cut, and a reader who compares the two relations' sums without
+#   directory, so this cut splits the nodes, and `sum(n_nodes)` equals the whole graph's node count
+#   exactly. Two different kinds of cut: a reader who compares the two relations' sums without
 #   noticing will conclude that one of them has lost nodes.
 #
 # Why a directory is the cut worth taking
-#   It is the only partition of these nodes anybody maintains by hand, and it is the one a reader
-#   navigates by. So the question it answers is whether the directory tree is where composition
-#   lives, and `rank/compose_decomposition.sqlc` is where that answer is stated.
+#   It is the only grouping of these nodes anybody keeps by hand, and the one a reader finds their
+#   way by. So the question it answers is whether the directory tree is where composition lives,
+#   and `rank/compose_decomposition.sqlc` states the answer.
 #
-# The directory is the TOP-LEVEL one, which is what `assets/sqlc/README.md` calls a directory
-#   `queries/observations/16-guard-reach.sqlc` is in `queries`, not in `queries/observations`.
-#   That is the partition the README's own directory block lists and the one a reader navigates
-#   by, and it is the coarser of the two available, so a cut at the finer level can only lose
-#   more. Cutting at every level would be a different relation and a different question.
+# The directory is the top-level one, as `assets/sqlc/README.md` uses the word
+#   `queries/observations/16-guard-reach.sqlc` is in `queries`, not in `queries/observations`. That
+#   is the grouping the README's own directory list shows and the one a reader goes by, and it is
+#   the coarser of the two, so a cut at the finer level can only lose more. Cutting at every level
+#   would be a different relation and a different question.
 #
 # A template in no directory gets a scope of its own
 #   A few templates sit at the root of `assets/sqlc/`, so `'(root)'` is a scope like any other.
-#   Dropping them would make the partition a cover again and the sum would stop being a check.
+#   Dropping them would leave nodes in no scope, and the sum would stop being a check.
 #
-# The `'undirected'` sense, and it is the only one this file measures
-#   `n - c` and `m - n + c` are facts about the underlying undirected graph, so the walk
-#   symmetrises before counting, exactly as `rank/graph_measures.sqlc` does. The compose DAG is
-#   well founded and has no DIRECTED cycle at all, which is a different question and a different
-#   sense of the word: `composition/descent.sqlc`'s header sets out all four.
+# Loops without direction, and only those
+#   The two figures are about the graph with the direction of its edges ignored, so the walk adds
+#   each edge both ways before counting, exactly as `rank/graph_measures.sqlc` does. Followed in the
+#   direction of composition, the compose graph has no loop at all, which is a different question
+#   and a different sense of the word: `composition/descent.sqlc`'s header sets out all four.
 #
 # Probe
 #   Move one template into another directory and recompose: the whole-graph row must not move at
-#   all, and the summed cycle space must. A change that moves both is reading the wrong scope.
--- rank/compose_edges.sqlc, symmetrised and walked for components, counted whole and by directory.
+#   all, and the summed loops must. A change that moves both is reading the wrong scope.
+-- rank/compose_edges.sqlc, walked for components both ways, counted whole and by directory.
 WITH RECURSIVE
 edge AS (
     SELECT DISTINCT e.parent AS a, e.child AS b

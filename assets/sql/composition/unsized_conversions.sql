@@ -1,4 +1,5 @@
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,

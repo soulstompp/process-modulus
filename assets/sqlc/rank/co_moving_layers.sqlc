@@ -1,28 +1,29 @@
-# The layers whose remainders must move together, derived. One row per ordered pair reachable from
-# each other through parts, plus the reflexive pair for each member.
+# The layers whose remainders must move together, worked out. One row per ordered pair of layers
+# reachable from each other through parts, plus each member paired with itself.
 #
-# The fourth falsifier, computed
-#   `F⁺ ∩ (F⁺)ᵀ`. `pm:Layer` states the falsifier: *if two candidate layers' remainders always move
-#   together, they were never two layers.* If A is composed from B while B is composed from A, no
-#   perturbation of one leaves the other fixed, so the pair fails the definition of a layer: the
-#   two cells are one cell.
+# The test of a layer, worked out
+#   `pm:Layer` states how a layer could be shown wrong: *if two candidate layers' remainders always
+#   move together, they were never two layers.* If A is composed from B while B is composed from A,
+#   no change to one leaves the other fixed, so the pair fails the definition of a layer: the two
+#   are one.
 #
-# The same defect in the other algebra: a rank deficiency
-#   Composition over the layers is `x = F Phi x - e`, with `e` the filed eliminations, which asks
-#   `(I - F Phi) x = -e` to have one solution. Two composed layers on a loop make `I - F Phi`
-#   singular wherever the factors round the loop multiply to 1, which is what a loop of one unit
-#   has: ordinal rank fails to exist and matrix rank falls at the same moment, for the same reason.
-#   rank/evaluation_order.sqlc is the ordinal half.
+# The same defect, seen from the sums
+#   A composed layer's figure is its converted parts less what its eliminations remove, and the
+#   figures of a stack are settled only if those sums have one answer. Two composed layers on a
+#   loop have no single answer wherever the factors round the loop multiply to 1, which is what a
+#   loop within one unit does: no evaluation order exists and the sums stop having one answer, at
+#   the same moment and for the same reason. rank/evaluation_order.sqlc is the order half.
 #
 # One self-join, not a second walk
-#   composition/descent.sqlc is already the transitive closure, so intersecting it with its converse
-#   gives an equivalence. The classes fall out of a window, because transitivity guarantees every
+#   composition/descent.sqlc already holds everything each layer reaches, so matching it against
+#   itself the other way round gives the pairs that reach each other. The groups fall out of a
+#   window, because a layer that reaches another reaches everything that one reaches, so every
 #   member sees the same set.
 #
 # Why the window sits outside the subquery
-#   The deduplication happens in the subquery and the window runs over its result. A window beside
-#   `SELECT DISTINCT` in one statement runs first, so `members` would count descent rows rather
-#   than layers.
+#   The duplicates are removed in the subquery, and the window runs over its result. A window beside
+#   `SELECT DISTINCT` in one statement runs first, so `members` would count descent rows rather than
+#   layers.
 #
 # Reading an empty result
 #   Empty is the good outcome, and it is also what an unreached relation returns. It is empty on
@@ -30,13 +31,14 @@
 #
 # It does not replace the filer's attestation
 #   `pm:Stack` requires `couplings` because nobody could check independence from the data, and it
-#   still does. This relation lets the corpus contradict the filer's answer, which is strictly more
-#   than it could do before and strictly less than deciding the answer.
+#   still does. This relation lets the corpus contradict the filer's answer, which says more than
+#   nothing and less than deciding the answer.
 #
 # Probe
 #   Close a loop across two documents inside a transaction and roll back; both this relation and
 #   checks/layers_move_together must move.
--- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+-- composition/descent.sqlc matched against itself the other way round;
+-- the groups of layers that reach each other.
 SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
        min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
        count(*) OVER w                                                    AS members

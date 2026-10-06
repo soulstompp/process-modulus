@@ -14,7 +14,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -105,7 +105,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -182,7 +183,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -364,7 +366,8 @@ JOIN (
 WHERE q.low IS NOT NULL
 ),
 composition_attenuated AS (
--- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's nameplate share.
+-- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's
+-- nameplate share.
 SELECT x.upper_filing, x.from_layer, x.to_layer, x.lower_filing, x.share,
        x.lo_low  * x.share AS ceil_low,
        x.lo_mode * x.share AS ceil_mode,

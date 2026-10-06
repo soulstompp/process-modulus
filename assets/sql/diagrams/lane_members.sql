@@ -1,4 +1,4 @@
--- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
+-- entries/draws.sqlc reduced to which operation draws from which layer; one flowNodeRef per entry.
 WITH entries_draws AS (
 -- pm:Operation/pm:Draw.
 SELECT d.filing, d.operation, d.layer,

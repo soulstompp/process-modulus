@@ -1,26 +1,26 @@
-# The duty cycle every supply files, or the typed reason it files none. One row per nameplate: how
-# much of a period the supply is actually available for.
+# How much of its period every supply is actually available for, or the typed reason it files no
+# such figure. One row per nameplate.
 #
-# A second axis of divisibility
-#   A second axis of divisibility and not a third value of the first. A supply can arrive in whole
-#   units and be intermittent in time at once (a truck that comes twice a week is both), so the
-#   amount question and the calendar question are separate columns.
+# A second question beside the whole unit
+#   A supply can arrive in whole units and be available only part of the time, both at once: a
+#   truck that comes twice a week is both. So how much comes and when it comes are separate columns,
+#   and the window is never a third answer to the first question.
 #
-# A blank would mean three things
-#   A blank would mean three things at once, which is why it is typed. Only two of the three are
-#   absences. The first is a value; filed as `absent/reason = none`, it loses both its size and
-#   its origin.
-#     one whole period   the supply runs continuously. A duty fraction of one, filed as a
-#                        value because that is what it is: `1 week` against a period of
-#                        `week`, carrying an origin saying who could shorten it.
-#     `notApplicable`    the unit has no denominator, so "five days of what?" is malformed.
+# Three things a blank could mean
+#   A blank would mean three things at once, which is why it is typed, and only two of the three
+#   are absences.
+#     one whole period   the supply runs all the time. It is filed as the value it is, `1 week`
+#                        against a period of `week`, with an origin saying who could shorten it.
+#                        Filed as `absent` with the reason `none`, it would lose its size and its
+#                        origin.
+#     `notApplicable`    the unit has no period, so "five days of what?" has no answer.
 #     `unmeasured`       nobody asked.
-#   Only the last is arithmetically dangerous, and only because a time slack cannot be derived
-#   from a clearance when nobody knows whether the spare is spread evenly.
+#   Only the last one stops a calculation: a time slack cannot be worked out from a clearance when
+#   nobody knows whether the spare is spread evenly over the period.
 #
 # No stated amount required
-#   This relation deliberately does not require a stated nameplate amount. The window is a
-#   statement about the calendar; a supply nobody has sized still has one.
+#   The window says when the supply is there, and a supply nobody has sized still has one, so this
+#   relation reads nameplates whether or not they state an amount.
 -- pm:Nameplate/pm:Divisibility/pm:window, beside the amount unit that decides if it is answerable.
 SELECT n.filing, n.layer,
        n.window_low, n.window_mode, n.window_high, n.window_unit, n.window_size_absent,

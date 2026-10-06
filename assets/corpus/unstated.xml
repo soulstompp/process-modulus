@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  WHAT A SENDER MAY DECLINE, AND HOW. Illustrative figures.
+  What a sender may decline, and how, with illustrative figures.
 
-  Every other example here states what it knows. This one exercises the opposite
-  half of the bargain: the schema requires elements precisely BECAUSE a typed
-  absence is a legitimate answer, and a required element with no way to decline
-  it forces a sender to invent a fact.
+  The other examples state what they know. This one shows the other half of the bargain:
+  the schema requires elements because a typed absence is a legitimate answer, and a
+  required element with no way to decline it forces a sender to invent a fact. Each
+  declination below takes the place of a workaround that would assert something the
+  sender does not believe:
 
-  Each declination below was unwritable before, and each was filed by a real
-  adopter as a workaround that asserted something they did not believe:
+    * A framework nobody has named yet. `r1` reports under something, and which one is
+      unassigned. Without the absence, the only moves would be to invent a value or to
+      leave the regime out, and leaving it out reads the same as reporting under none.
 
-    1. A FRAMEWORK NOBODY HAS NAMED YET. `r1` reports under something; which one
-       is unassigned. Before, the only moves were to invent a value or omit the
-       regime, and omitting is byte-identical to reporting under none.
+    * A chart that follows an unnamed framework. `r1` declines its chart too, for a
+      reason `none` would get wrong: the size tier picks the framework and the framework
+      picks the chart, so there will be one, and nobody has said which.
 
-    2. REPORTING UNDER NO FRAMEWORK, DELIBERATELY. `r2` is the other half of that
-       pair: somebody looked, and there is no framework. It also AUTHORS ITS OWN
-       CHART: with no publishing authority to borrow from, the entity is the
-       authority for its own account list, and naming itself satisfies BorrowedTerm
-       honestly rather than evading it. ⭐ That is the move the whole US filing
-       population needs, since there is no United States chart of accounts.
+    * Reporting under no framework, on purpose. `r2` is the other half of that pair:
+      somebody looked, and there is no framework. It also writes its own chart: with no
+      publishing authority to borrow from, the entity is the authority for its own
+      account list, and naming itself fills `BorrowedTerm` honestly rather than evading
+      it. A US filing needs the same move, since the United States has no national chart
+      of accounts.
 
-    3. A CHART THAT FOLLOWS AN UNNAMED FRAMEWORK. `r1` declines its chart too, and
-       for a reason `none` would get wrong: the tier picks the framework and the
-       framework picks the chart, so there WILL be one, and nobody has said which.
+    * Questions that do not apply. A margin ratio is not a supply: nothing queues for
+      it, it commits no amount, it is bought neither in whole units nor continuously, it
+      produces nothing to build ahead, and it has no nameplate for a demand to come off.
+      Each of those is filed `notApplicable`. Without that, the only way to file the
+      divisibility would be to assert `continuous` and deny it inside its `premium`,
+      where no query would meet the denial.
 
-    4. AN AXIS THAT DOES NOT APPLY. A margin ratio is not bought in whole units
-       and not bought continuously; there is no per-unit difference between the
-       two, so there is no premium to pay for leaving the type. It is not a
-       supply. Before, the only way to file it was to assert `continuous` and
-       deny it inside the premium, where no query would meet the denial.
+    * A fact not yet established. Whether a resource can be driven past its rating is
+      often the one thing a new sender has not determined, so it is filed `unmeasured`.
 
-    5. A FACT NOT YET ESTABLISHED. Whether a resource can be driven past its
-       rating is often the one thing a new sender has not determined.
-
-  ⭐ Note what is NOT declined: `remainder` is `none`, which is a claim. This
-  document says somebody looked at every one of these.
+  The remainder is where the difference matters most: it is `notApplicable`, not `none`,
+  because `none` would claim the remainder is zero.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:filing:acme-platform:2026-08-30-margin</pm:uri>
   </pm:notation>
@@ -48,7 +47,7 @@
     <pm:attests>observation</pm:attests>
   </pm:evidence>
 
-  <!-- 1. reports under something, not yet named -->
+  <!-- reports under something not yet named -->
   <pm:regime>
     <pm:id>r1</pm:id>
     <pm:jurisdiction>PT</pm:jurisdiction>
@@ -61,9 +60,9 @@
         </pm:provenance>
       </pm:absent>
     </pm:framework>
-    <!-- ⭐ AND THE CHART FOLLOWS THE FRAMEWORK. The tier picks the framework and the
+    <!-- The chart follows the framework. The size tier picks the framework and the
          framework picks the chart, so a tier nobody has assigned leaves both unnamed.
-         ⛔ NOT `none`: there will be a chart; nobody has said which. -->
+         Not `none`: there will be a chart, and nobody has said which. -->
     <pm:chart>
       <pm:absent>
         <pm:reason>unmeasured</pm:reason>
@@ -72,7 +71,7 @@
     </pm:chart>
   </pm:regime>
 
-  <!-- 2. somebody looked; reports under none. And authors its own chart. -->
+  <!-- somebody looked: it reports under no framework, and writes its own chart -->
   <pm:regime>
     <pm:id>r2</pm:id>
     <pm:framework>
@@ -81,8 +80,8 @@
         <pm:note>an internal management view, answerable to no external framework</pm:note>
       </pm:absent>
     </pm:framework>
-    <!-- ⭐⭐ A SELF-AUTHORED CHART NAMES THE ENTITY AS ITS OWN AUTHORITY. `value` is
-         the chart's EDITION, never a position; the position is the answer's half. -->
+    <!-- A chart the entity writes itself names the entity as its own authority. `value`
+         is the chart's edition, never a position; the position belongs to the answer. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:entity-own-chart:2026</pm:taxonomy>
@@ -119,7 +118,8 @@
                 <pm:kind>instrument</pm:kind>
               </pm:narrowing>
             </pm:narrowsWhen>
-            <!-- what BOUNDS the range, which is a different question from what would narrow it -->
+            <!-- what bounds the range, which is a different question from what would
+                 narrow it -->
             <pm:boundOrigin>
               <pm:origin>policy</pm:origin>
             </pm:boundOrigin>
@@ -144,8 +144,8 @@
         </pm:patience>
       </pm:demand>
 
-      <!-- 3. malformed for the same reason: a ratio has no demand that queues, so
-              asking whether it would wait is not a question with an answer -->
+      <!-- the question does not apply: a ratio has no demand that queues, so asking
+           whether it would wait has no answer -->
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>notApplicable</pm:reason>
@@ -160,8 +160,8 @@
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:amount>
 
-          <!-- 4. the question is malformed rather than unanswered: there is no
-                  committed amount here, so there is nobody to ask about changing it -->
+          <!-- the question does not apply, rather than going unanswered: there is no
+               committed amount here, so there is nobody to ask about changing it -->
           <pm:amountOrigin>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -169,7 +169,7 @@
             </pm:absent>
           </pm:amountOrigin>
 
-          <!-- 5. the axis does not apply -->
+          <!-- the axis does not apply -->
           <pm:divisibility>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -177,7 +177,7 @@
             </pm:absent>
           </pm:divisibility>
 
-          <!-- 6. not yet established, and saying so beats guessing -->
+          <!-- not yet established, and saying so beats guessing -->
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -185,8 +185,8 @@
             </pm:absent>
           </pm:capacitySlack>
 
-          <!-- 7. and the third buffer's condition, declined for the same reason as
-                  the others: there is no output here to hold ahead of anything -->
+          <!-- the inventory slack, declined for the same reason as the others: there is
+               no output here to hold ahead of anything -->
           <pm:inventorySlack>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -205,11 +205,12 @@
         </pm:jagged>
       </pm:supply>
 
-      <!-- 8. malformed for the same reason as 3, 4, 5 and 7, and this one is easy to get
-              wrong. `r = n - d` has no `n` here, so the subtraction has no answer rather
-              than an answer of nothing. ⛔ NOT `none`: that would say the remainder IS
-              zero, and a remainder of zero is a clearance fit carrying a quantity of
-              [0, 0, 0] and a sign, which is a filing rather than an absence. -->
+      <!-- the question does not apply, for the same reason as the others above, and this
+           one is easy to get wrong. There is no nameplate here for demand to come off, so
+           the remainder has no answer, rather than an answer of nothing. Not `none`: that
+           would say the remainder is zero, and a zero remainder is filed as a remainder
+           with a `clearance` sign and a quantity of zero, which is a filing, not an
+           absence. -->
       <pm:remainder>
         <pm:absent>
           <pm:reason>notApplicable</pm:reason>

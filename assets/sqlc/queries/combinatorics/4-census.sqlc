@@ -2,14 +2,14 @@
 # One row per question on epistemics/absence_questions.sqlc: the question, the table and column it
 # names, and how many rows epistemics/absences.sqlc filed under that question.
 #
-# Roster and arms are two claims
-#   The census is a function from absences to questions, and the roster says which column each
+# The roster and the arms are two claims
+#   The census files each typed blank under a question, and the roster says which column each
 #   question is. reports/integrity.sqlc holds the roster against the catalog, so every column of
 #   type `absence_reason` has a question: that is a claim about the roster. Whether each arm reads
-#   the column its question names is a claim about the arms, and only attribution reaches it. The
-#   rows filed under a question must be exactly as many as the absences filed in its column, and
-#   `examples/combinatorics/main.rs` counts the column with a query built from the catalog, which
-#   shares nothing with the arm it checks.
+#   the column its question names is a claim about the arms, and only counting reaches it. The rows
+#   filed under a question must be exactly as many as the blanks filed in its column, and
+#   `examples/combinatorics` counts the column with a query built from the catalog, which shares
+#   nothing with the arm it checks.
 #
 # Zero against zero is not agreement
 #   An arm reading the wrong column of an empty pair would pass, so the program prints the questions

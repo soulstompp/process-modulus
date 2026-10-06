@@ -5,7 +5,7 @@ SELECT e.parent, e.child, e.splices, e.inner_joins
 FROM public.compose_edge e
 ),
 rank_compose_measures AS (
--- rank/compose_edges.sqlc, symmetrised and walked for components, counted whole and by directory.
+-- rank/compose_edges.sqlc, walked for components both ways, counted whole and by directory.
 WITH RECURSIVE
 edge AS (
     SELECT DISTINCT e.parent AS a, e.child AS b

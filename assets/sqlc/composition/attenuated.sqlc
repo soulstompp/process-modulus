@@ -2,7 +2,7 @@
 # upper coupling that has a lower coupling underneath it between the same two layers, carrying
 # what the upper filing claims and what the lower one can support.
 #
-# A coupling propagates upward and attenuates
+# A coupling carries upward and weakens
 #   If layer A moves with layer B, and A is fused into a bigger layer one level up, the dependence
 #   survives but weakens, because the composed layer is only partly A. At most A's share of the
 #   composed layer can move, so the upper strength is bounded by the lower strength times that
@@ -11,23 +11,22 @@
 # The share is the nameplate's, read where it is largest
 #   Relief acts on a constraint, and a layer's constraint is its supply, so A's share of X is A's
 #   nameplate, converted into X's unit by the part's factor, over X's filed nameplate. The ceiling
-#   accuses when it is exceeded, so the share is read at its largest: A's high at the factor's
-#   high, over X's low. That may pair corners no single week reaches, and it errs toward not
-#   accusing, which is the direction a bound has to err. Proof: `src/proofs/README.md`, entry
-#   `coupling_attenuates`.
+#   accuses when it is exceeded, so the share is read at its largest: A's highest at the factor's
+#   highest, over X's lowest. That may pair corners no single week reaches, and it errs toward not
+#   accusing, which is the direction a bound has to err.
 #
-# Not derivable, which is why it is checked
+# Worked out across documents, which is why it is checked
 #   A filer could put any number in the upper document; the ceiling comes from two other
-#   documents, which is a comparison no single-document validator can make.
+#   documents, a comparison no single-document validator can make.
 #
-# Seven joins, each narrowing the population
+# Every join narrows the population
 #   The upper coupling, the part carrying its `from` layer, that part's document, the lower
-#   coupling, the part carrying the `to` layer, and the two nameplates the share is computed from. A
-#   coverage table that reproduces only the first two counts more rows than the rule examines, and
-#   can report a thin rule as well covered. That is the trap this repository is written to name,
-#   firing inside its own coverage table, and it is why nothing counts a population except by
-#   composing the population.
--- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's nameplate share.
+#   coupling, the part carrying the `to` layer, and the two nameplates the share is worked out
+#   from. A coverage table that reproduced only the first two would count more rows than the rule
+#   examines and could report a thin rule as well covered, which is why nothing counts a population
+#   except by composing the population.
+-- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's
+-- nameplate share.
 SELECT x.upper_filing, x.from_layer, x.to_layer, x.lower_filing, x.share,
        x.lo_low  * x.share AS ceil_low,
        x.lo_mode * x.share AS ceil_mode,

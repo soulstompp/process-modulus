@@ -1,36 +1,37 @@
-# Every contract's fold held to the rows it counts. One row per contract whose population does
-# not reach algebra/all.sqlc: whether each subject's boxes add up to its rows, and whether the rows
-# add up to the population counted without the fold.
+# Every contract's fold held to the rows it counts. One row per contract whose population does not
+# reach algebra/all.sqlc: whether each subject's boxes add up to its rows, and whether the rows add
+# up to the population counted without the fold.
 #
-# The fibres sum to the whole
-#   A fold counts a population's rows into its subjects and, for a contract with a verdict, into
-#   the verdict's boxes. Each box is its own FILTER, so nothing makes the boxes a partition except
-#   their predicates: two that overlap count a row twice, two that leave a gap count it nowhere, and
-#   `rows` alone notices neither. So every subject's `rows` must be answered + silent + vacuous, and
-#   its `answered` the sum of the verdict's values. For a population with no verdict `rows` is the
-#   only box and there is nothing to add up.
+# The boxes add up to the whole
+#   A fold counts a population's rows into its subjects and, for a contract with a verdict, into the
+#   verdict's boxes. Each box is its own FILTER, so nothing keeps the boxes apart and complete but
+#   their conditions: two that overlap count a row twice, two that leave a gap count it nowhere, and
+#   `rows` alone notices neither. So every subject's `rows` must be `answered` plus `silent` plus
+#   `vacuous`, and its `answered` the sum of the verdict's values. For a population with no
+#   verdict, `rows` is the only box and there is nothing to add up.
 #
 # And the whole needs a second route
-#   The boxes can add up while the rows are wrong: a roster row written twice doubles every count
-#   of its subject, and a population row naming no subject is joined to nothing and counted nowhere.
-#   So the rows summed over every subject are held to count(*) of the population, taken without the
+#   The boxes can add up while the rows are wrong: a roster row written twice doubles every count of
+#   its subject, and a population row naming no subject is joined to nothing and counted nowhere. So
+#   the rows added over every subject are held to `count(*)` of the population, taken without the
 #   fold.
 #
-# Seven of the eight
+# Every contract but the laws' own
 #   The laws' own contract is not here: its population is algebra/all.sqlc, and this law is one of
-#   its arms. folds/law_subjects.sqlc says what holds that fold instead.
+#   its branches. folds/law_subjects.sqlc says what holds that fold instead.
 #
 # What `classes` counts on each side
-#   Its fold's `rows` is how many rows landed in a class, so summing them over every subject must
-#   give the number of rows every classification classified, which is the non-null balls of
-#   epistemics/class_cells.sqlc taken without the fold. A class nothing lands in contributes zero
-#   to both sides, which is why dropping the empty classes from the fold cannot move this.
+#   Its fold's `rows` is how many rows landed in a class, so adding them over every subject must
+#   give the number of rows every classification classified, which is the non-null `ball` values of
+#   epistemics/class_cells.sqlc taken without the fold. A class nothing lands in adds zero to both
+#   sides, which is why dropping the empty classes from the fold cannot move this.
 #
 # Probe
 #   examples/probes runs it as `subject_boxes`: in the composed text the rules fold's `silent` box
 #   stops asking whether a filing was examined, so it takes the roster's own rows too, and the law
 #   must fail for `rules` alone.
--- every fold in folds/ whose population does not reach algebra/all.sqlc, its boxes against its rows and its rows against its population.
+-- every fold in folds/ whose population does not reach algebra/all.sqlc, its boxes against its
+-- rows and its rows against its population.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)

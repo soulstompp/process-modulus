@@ -5,10 +5,10 @@
 #   As a semi-join it says "this layer admits somebody went unserved", which under a clearance fit
 #   is a contradiction, since a supply above demand everywhere leaves nothing unmet. As an
 #   anti-join it says "this layer admits nobody", which under a measured-zero capacity and a live
-#   exposure is a filing with a hole in it. Aggregated it is the quantity that bounds the exposure.
-#   One relation, a semi-join, an anti-join and a sum.
+#   exposure is a filing with a hole in it. Added up, it is the amount that bounds the exposure.
+#   One relation, read as a semi-join, an anti-join and a sum.
 #
-# The other three kinds are not its complement
+# Not just the kinds left over
 #   `booked`, `counterparty` and `people` all name somebody who absorbed the remainder; these two
 #   name demand that was never met at all. That is a difference in kind, not in party.
 -- pm:HolderKind values `customer` and `unrealised`.

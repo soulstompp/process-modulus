@@ -1,17 +1,16 @@
-# Every supply that served something, and whether its draw can be put beside its rating. One row
+# Every supply that served something, and whether its draw can be set beside its rating. One row
 # per layer stating both a draw and a nameplate amount.
 #
 # Three units meet here
-#   `draw <= n + S` reads a draw, a rating and a capacity slack, and a sum and a comparison mean
-#   something only if all three are one unit. This site calls a row `not comparable` where any of
-#   them differs, and checks/draw_exceeds_the_supply.sqlc compares only rows in one unit, so the
-#   rule never adds numbers of different things. Proof: `src/proofs/README.md`, entry
-#   `draw_bound`.
+#   The bound reads a draw, a rating and a capacity slack, and adding and comparing them means
+#   something only when all three are in one unit. This site calls a row `not comparable` where any
+#   of them differs, and checks/draw_exceeds_the_supply.sqlc compares only rows in one unit, so the
+#   rule never adds numbers of different things.
 #
 # An unmeasured capacity slack suspends the bound
-#   It does not zero it. A nameplate is not a ceiling until somebody says the buffer is empty;
-#   layers/drawn.sqlc leaves the column NULL for exactly that reason and this relation reports
-#   the layers it happens to.
+#   It does not make it zero. A nameplate is not a ceiling until somebody says the buffer is empty.
+#   layers/drawn.sqlc leaves the column NULL for that reason, and this relation reports the layers
+#   where it does.
 -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (

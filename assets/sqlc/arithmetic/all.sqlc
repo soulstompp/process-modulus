@@ -1,22 +1,22 @@
-# Every instance of every computation this model performs, with a verdict on whether it may be
-# performed. One row per (site, examined item): which arithmetic, which layer of which filing,
-# whether the operands are there and commensurable, and a sentence saying what is in the way.
+# Every calculation this model makes, at every place it makes it, with a verdict on whether it can
+# be made. One row per (site, item examined): which calculation, which layer of which filing,
+# whether the operands are there and in one unit, and a sentence saying what is in the way.
 #
 # Not a check
-#   This is the relation examples/readiness/main.rs is a view of, and it answers a different
-#   question from checks/all.sqlc. A check says the document contradicts the model. This says you
-#   cannot compute here at all, which is not a defect in the document and not a pass either.
-#   Reporting the second as the first accuses a filer of a gap they told you about.
+#   examples/readiness reports this relation, and it answers a different question from
+#   checks/all.sqlc. A check says the document contradicts the model. This says a figure cannot be
+#   worked out here at all, which is neither a defect in the document nor a pass. Reporting it as a
+#   defect accuses a filer of a gap they declared.
 #
 # Three verdicts, not two
-#   `computable`, `suspended`, `not comparable`. The middle one is the one a boolean cannot hold,
-#   and it is the common case on this corpus: many layers cannot sum their shares because
-#   somebody declined to measure one.
+#   `computable`, `suspended` and `not comparable`. A yes-or-no column cannot hold the middle one,
+#   and on the corpus it is common: many layers cannot add up their shares because somebody chose
+#   not to measure one.
 #
-# The contract every site keeps
-#   One plain SELECT, no leading WITH, returning exactly `(site, filing, layer, verdict, detail)`,
-#   with `verdict` NULL only on the roster row that says a site examined nothing. Same shape as
-#   checks/, for the same reason.
+# What every site returns
+#   One plain SELECT, with no leading WITH, returning exactly `(site, filing, layer, verdict,
+#   detail)`, and `verdict` NULL only on the roster row that says a site examined nothing. The
+#   checks keep the same shape, for the same reason.
 -- arithmetic/roster.sqlc joined to each site's own population.
 :union(ALL arithmetic/remainder.sqlc,
            arithmetic/shares_sum.sqlc,

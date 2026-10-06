@@ -14,7 +14,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -45,7 +45,8 @@ SELECT n.filing, n.layer,
 FROM pm.nameplate n
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,

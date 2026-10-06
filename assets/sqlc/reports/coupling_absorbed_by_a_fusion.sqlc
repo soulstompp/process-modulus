@@ -1,5 +1,5 @@
-# Every coupling, beside the fusion that swallowed it if one did. One row per filed coupling,
-# with the composed layer holding both of its ends where such a layer exists.
+# Every coupling, beside the fusion that swallowed it, if one did. One row per filed coupling, with
+# the composed layer holding both of its ends where such a layer exists.
 #
 # A referral, not a violation
 #   That distinction keeps this file honest. Detecting the structure is mechanical: two coupled
@@ -9,20 +9,20 @@
 #
 # Why it matters
 #   Once two coupled layers are inside one total, their dependence stops being visible from
-#   outside. Whoever reads the composed figure cannot tell that part of it moves together, and
-#   that is exactly the information a fusion is supposed to preserve. The schema asks the composer
-#   to say so; nothing can make them.
+#   outside. Whoever reads the composed figure cannot tell that part of it moves together, and that
+#   is exactly the information a fusion is supposed to keep. The schema asks the composer to say
+#   so; nothing can make them.
 #
-# The unabsorbed rows are the denominator
-#   They are here on purpose. A referral that printed only its findings would be as unreadable as
-#   a rule that printed only its violations: five couplings examined and two absorbed is a
-#   statement; two rows is not.
+# The unabsorbed rows are the base
+#   They are here on purpose. A referral that printed only its findings would be as unreadable as a
+#   rule that printed only its violations: five couplings examined and two absorbed is a statement;
+#   two rows is not.
 #
 # Corpus only
-#   Every report in this directory owes saying so. A referral hands a document to a person to
-#   judge, and a fixture's prose is stipulated rather than authored: there is nobody to refer it
-#   to and nothing for them to weigh. No fixture files a coupling today, so this join changes no
-#   row; that is exactly the moment to write it, rather than the run after the first one does.
+#   Every report in this directory owes saying so. A referral hands a document to a person to judge,
+#   and a fixture's prose is stipulated rather than authored: there is nobody to refer it to and
+#   nothing for them to weigh. No fixture files a coupling, so this join changes no row today, and
+#   it is in place before the first one does.
 -- pm:Coupling against asrt:Fusion/asrt:Part pairs that contain both of its ends, over the corpus.
 SELECT c.filing,
        c.from_layer || ' -> ' || c.to_layer AS coupling,

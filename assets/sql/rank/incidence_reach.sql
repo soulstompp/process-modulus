@@ -1,4 +1,4 @@
--- each incidence and each magnitude, counted against layers/every_layer.sqlc as the denominator.
+-- every relation of either kind, counted against layers/every_layer.sqlc as the base.
 WITH layers_every_layer AS (
 -- pm:Stack/pm:layer, keyed and nothing more.
 SELECT l.filing, l.layer
@@ -85,7 +85,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -162,7 +163,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -344,7 +346,8 @@ JOIN (
 WHERE q.low IS NOT NULL
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -354,16 +357,17 @@ FROM pm.slack s
 SELECT x.relation, x.kind, x.reaches,
        (SELECT count(*) FROM ( SELECT * FROM layers_every_layer ) l) AS of_layers
 FROM      (
-    SELECT 'D draw'      AS relation, 'incidence' AS kind, count(DISTINCT (d.filing, d.layer)) AS reaches
+    SELECT 'draw'        AS relation, 'incidence' AS kind,
+           count(DISTINCT (d.filing, d.layer)) AS reaches
     FROM ( SELECT * FROM entries_draws ) d
     UNION ALL
-    SELECT 'N induction', 'incidence', count(DISTINCT (n.filing, n.layer))
+    SELECT 'induction',   'incidence', count(DISTINCT (n.filing, n.layer))
     FROM ( SELECT * FROM entries_inductions ) n
     UNION ALL
-    SELECT 'C coupling',  'incidence', count(DISTINCT (c.filing, c.from_layer))
+    SELECT 'coupling',    'incidence', count(DISTINCT (c.filing, c.from_layer))
     FROM ( SELECT * FROM entries_couplings ) c
     UNION ALL
-    SELECT 'F part',      'incidence', count(DISTINCT (p.composition, p.composed_layer))
+    SELECT 'part',        'incidence', count(DISTINCT (p.composition, p.composed_layer))
     FROM ( SELECT * FROM composition_parts ) p
     UNION ALL
     SELECT 'nameplate',   'magnitude', count(DISTINCT (n.filing, n.layer))

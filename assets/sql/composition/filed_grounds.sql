@@ -23,7 +23,8 @@ SELECT e.composition, e.composed_layer, e.quantity,
 FROM pm.elimination e
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -69,7 +70,8 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -114,7 +116,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)

@@ -3,26 +3,26 @@
 //! This crate exists partly to corroborate a model built elsewhere by someone
 //! else's reasoning. Corroboration between two things that share a type, an
 //! author, or a code path is worth nothing. The crate boundary is what makes
-//! the agreement evidence, and it is exactly the kind of property that erodes
-//! the first time somebody needs "just one type" from the other side.
+//! the agreement evidence, and it is the kind of property that erodes the
+//! first time somebody needs "just one type" from the other side.
 //!
-//! If one of these ever fails, the fix is NOT to add an exception.
+//! If one of these fails, the fix is not to add an exception.
 //!
-//! **An allowlist, not a denylist.** An earlier draft named the one crate family
-//! to be avoided. That pins the property to a name: it passes the moment the
-//! thing on the other side is called something else, and a renamed sibling is
-//! exactly the case that matters. Declaring the complete permitted set fails
-//! closed instead: anything unlisted is a finding, whatever it is called.
+//! **An allowlist, not a denylist.** Naming the crates to avoid pins the
+//! property to a name: it passes the moment the thing on the other side is
+//! called something else, and a renamed sibling is the case that matters.
+//! Declaring the complete permitted set fails closed instead: anything
+//! unlisted is a finding, whatever it is called.
 //!
-//! **Scoped to the dependency tables on purpose.** A draft that scanned the whole
-//! manifest would fail on its own comments, which name the boundary in prose,
-//! a test manufacturing the finding it reports.
+//! **Scoped to the dependency tables on purpose.** A scan of the whole
+//! manifest would also read its comments, which name the boundary in prose,
+//! and report a finding the test made itself.
 
 const MANIFEST: &str = include_str!("../Cargo.toml");
 
 /// The complete set of crates this one may depend on, from any table.
 ///
-/// ⛔ Adding a name here is the whole decision. It is meant to be a deliberate,
+/// Adding a name here is the decision to take that crate. It is meant to be a
 /// reviewed edit rather than a formality, because every entry is a route by
 /// which someone else's types could arrive.
 const PERMITTED: &[&str] = &[
@@ -33,13 +33,13 @@ const PERMITTED: &[&str] = &[
     "anyhow",
     // dev only, for the examples that read the database. None reaches a consumer, and none
     // is the model this crate exists to corroborate: they are a database driver and its
-    // runtime. Added deliberately, which is what this list is for.
+    // runtime. Each is added on purpose, which is what this list is for.
     "sqlx",
     "tokio",
-    // ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
-    // NeXosim is a bare discrete-event scheduler: mailboxes, an event queue and a clock. Two
-    // answers only corroborate while they are two. `serde` rides along because the scheduler
-    // requires it on every model type.
+    // The generator. It is safe to take because it is not a model: NeXosim is a bare
+    // discrete-event scheduler, with mailboxes, an event queue and a clock, and two answers
+    // corroborate each other only while they are two. `serde` rides along because the
+    // scheduler requires it on every model type.
     "nexosim",
     "serde",
 ];
@@ -68,17 +68,17 @@ fn dependency_name(line: &str) -> &str {
 
 #[test]
 fn the_dependency_scan_still_finds_the_tables() {
-    // ⛔ Without this, every assertion below passes vacuously the moment the
-    // section parser stops finding a table, the failure mode that makes a
-    // green gate meaningless. It asserts the PARSER works, not that deps exist,
-    // because [dependencies] here is legitimately empty.
+    // Without this, every assertion below passes with nothing to examine the
+    // moment the section parser stops finding a table, and a passing gate then
+    // means nothing. It asserts that the parser finds a table, not that any
+    // dependency exists.
     let saw_a_table = MANIFEST.lines().any(|l| {
         let l = l.trim();
         l.starts_with('[') && l.contains("dependencies")
     });
     assert!(
         saw_a_table,
-        "no [...dependencies] table found in the manifest, so the checks below prove nothing"
+        "no [...dependencies] table found in the manifest, so the checks below check nothing"
     );
 }
 
@@ -95,17 +95,16 @@ fn every_dependency_is_on_the_permitted_list() {
     }
 }
 
-/// ⛔⛔⛔ AND THE LIST MAY NOT NAME WHAT THE MANIFEST DOES NOT TAKE, which is the half that was
-/// missing and the half that would have caught a real mistake. `every_dependency_is_on_the_
-/// permitted_list` asks that every dependency is permitted; nothing asked that every permission
-/// is used. A name sitting on the list with no dependency behind it is worse than dead weight:
-/// it is a decision recorded as taken when nobody took it, and the file's own doc says adding a
-/// name IS the decision.
+/// And the list names nothing the manifest does not take.
+/// `every_dependency_is_on_the_permitted_list` asks that every dependency is permitted; this asks
+/// that every permission is used. A name sitting on the list with no dependency behind it is
+/// worse than dead weight: it is a decision recorded as taken when nobody took it, and adding a
+/// name is the decision.
 ///
-/// ⚠️ AND THE ONE-WAY GATE CANNOT SEE IT. `contains` asks whether a dependency is on the list;
-/// nothing asks the converse, so a name can sit here with no manifest entry behind it and every
-/// test still passes. What ships is an allowlist pre-authorising a crate this one does not take,
-/// in a file whose entire purpose is that the list and the manifest agree.
+/// The one-way check cannot see it. `contains` asks whether a dependency is on the list, so
+/// without this a name can sit here with no manifest entry behind it while every other test
+/// passes, and the allowlist pre-authorises a crate this one does not take, in a file whose
+/// purpose is that the list and the manifest agree.
 #[test]
 fn every_permitted_name_is_a_dependency_the_manifest_takes() {
     let taken: Vec<String> = dependency_lines()
@@ -115,14 +114,16 @@ fn every_permitted_name_is_a_dependency_the_manifest_takes() {
     for p in PERMITTED {
         assert!(
             taken.iter().any(|t| t == p),
-            "`{p}` is on the permitted list and this crate does not depend on it. A permission              nobody uses is a decision recorded as taken: remove the name, and add it back with              the dependency it authorises. Taken: {taken:?}"
+            "`{p}` is on the permitted list and this crate does not depend on it. A permission \
+             nobody uses is a decision recorded as taken: remove the name, and add it back with \
+             the dependency it authorises. Taken: {taken:?}"
         );
     }
 }
 
 #[test]
 fn this_crate_has_no_path_dependency_at_all() {
-    // Broader than the rule needs, deliberately: a path dependency on anything
+    // Broader than the rule needs, on purpose: a path dependency on anything
     // local is a route back to another author's types via one more hop, and it
     // is the route a rename would otherwise hide.
     for l in dependency_lines() {

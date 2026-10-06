@@ -1,16 +1,16 @@
-# Which of the four absence reasons each question has ever taken. One row per absence-bearing
-# question: its reasons as a four-bit word, and how many filings stand behind it.
+# Which of the three reasons each question has taken. One row per question that takes a typed
+# blank: its reasons as a three-letter word, and how many filings stand behind it.
 #
 # The split is a schema boundary
-#   The rows are sorted so that the sites reaching `none` sit together and the ones that never do
-#   sit together. The split is not cosmetic: it is the `pm:Absence` / `pm:ClaimAbsence` boundary,
-#   printed from the data rather than read off the schema, and a site on the wrong side of it is a
-#   defect.
+#   The rows are sorted so that the questions reaching `none` sit together, and the ones that never
+#   do sit together. The split is not cosmetic: it is the `pm:Absence` / `pm:ClaimAbsence`
+#   boundary, printed from the data rather than read off the schema, and a question on the wrong
+#   side of it is a defect.
 #
-# Sorted on the bit, not the string
+# Sorted on the letter, not the string
 #   A collation that files punctuation after letters buries the split this query exists to show,
-#   so the `none` bit is pulled out and ordered explicitly.
--- §12  Every absence-bearing question as a four-bit word: n·u·a·d.
+#   so the `none` letter is pulled out and ordered explicitly.
+-- §12  Every question that takes a typed blank, as a three-letter word: n·u·a.
 SELECT m.question       AS "question!",
        m.mask           AS "mask!",
        m.filings        AS "filings!",

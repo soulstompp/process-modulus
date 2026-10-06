@@ -1,7 +1,7 @@
 # What the uncertainty in this corpus is made of. One row per kind of width, with how many claims
 # are that kind.
 #
-# The grain question
+# Ignorance or variation
 #   How much of the width here is ignorance, where a better instrument reveals the number that was
 #   always there, and how much is the world actually moving, where no measurement helps and only
 #   changing the process does? The two look identical on a page and call for completely different

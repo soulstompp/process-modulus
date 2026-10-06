@@ -1,35 +1,58 @@
-# Every pressed layer whose absorbing buffer is sized and whose served shares are all stated, beside
-# what it was asked to hold. One row per examined layer, `violates` where the shares exceed the
-# slack.
+# Every pressed layer whose absorbing buffer is sized and whose served shares are all stated,
+# beside what it was asked to hold. One row per layer examined, `violates` where the whole range of
+# the shares is above the whole slack.
 #
 # A share fits inside its buffer
-#   The rule: a share does not exceed the slack of the buffer that absorbed it. The remainder
-#   names an absorber; the absorber names a buffer; the buffer has a size. Shares attributed to
-#   it have to fit inside it, which is the inequality that makes a buffer a quantity rather than
-#   a label.
+#   The rule: a share does not exceed the slack of the buffer that absorbed it. The remainder names
+#   an absorber, the absorber names a buffer, and the buffer has a size. Shares attributed to it
+#   have to fit inside it, which is what makes a buffer a quantity rather than a label.
+#
+# Three answers, as checks/draw_exceeds_the_supply.sqlc gives them
+#   The shares and the slack are both ranges. The whole range of the shares fits inside the
+#   smallest slack, or the two ranges overlap, or the whole range of the shares is above the
+#   largest slack. The most likely values decide none of the three.
+#
+# Only an excess across the whole range is a violation
+#   The smallest load above the largest slack is a filing error with no defence. Ranges that
+#   overlap are a document that cannot settle its own question, and reporting that as a breach
+#   would accuse a filer of something their figures do not say. `detail` says which of the three a
+#   row is.
 #
 # `customer` and `unrealised` are exempt
 #   They are the overflow rather than a load, and a `transition` layer is not examined at all;
-#   see entries/borne.sqlc, where both are argued. Exempting `unrealised` alone is not enough:
-#   where a filing states a capacity of zero, as refutation#compute does, the inequality reads a
-#   clearance-side share against an interference-side bound.
+#   entries/borne.sqlc gives the reasons for both. Exempting `unrealised` alone is not enough:
+#   where a filing states a capacity of zero, as `refutation/compute` does, the comparison would
+#   read a share from the clearance side against a bound from the interference side.
 #
 # One unstated share leaves the layer unexamined
 #   A share filed `unmeasured`, or as `sharesSum`'s output, is not in the sum, so a layer carrying
-#   one sums to less than the buffer holds. A sum that fits proves nothing then, and a verdict of
-#   passing would be the check supplying the missing share as zero. So the layer is left out, as
+#   one adds up to less than the buffer holds. A sum that fits shows nothing then, and a passing
+#   verdict would be the check supplying the missing share as zero. So the layer is left out, as
 #   checks/shares_do_not_sum.sqlc and checks/exposure_unaccounted.sqlc leave theirs, and
 #   arithmetic/shares_bounded.sqlc says it is suspended.
--- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber through pm.buffer_term.
+-- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber
+-- through pm.buffer_term.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)
 ) r
 LEFT JOIN (
     SELECT b.filing, b.layer,
-           coalesce(b.borne > b.slack_mode + 1e-9, false) AS violates,
-           format('%s attributed to the %s buffer, whose slack is %s',
-                  b.borne, b.buffer, b.slack_mode) AS detail
+           -- the smallest load above the largest slack
+           coalesce(b.borne_low > b.slack_high + 1e-9, false)          AS violates,
+           CASE WHEN b.borne_low  > b.slack_high + 1e-9
+                THEN format('[%s, %s] attributed to the %s buffer, whose slack is at most %s: '
+                            'the whole range is over the line',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_high)
+                WHEN b.borne_high <= b.slack_low + 1e-9
+                THEN format('[%s, %s] attributed to the %s buffer, whose slack is at least %s: '
+                            'the whole range clears',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_low)
+                ELSE format('[%s, %s] attributed to the %s buffer, whose slack is [%s, %s]: the '
+                            'ranges overlap, so this document does not settle whether the buffer '
+                            'was overrun',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_low, b.slack_high)
+           END                                                         AS detail
     FROM (
         :compose(entries/borne.sqlc)
     ) b

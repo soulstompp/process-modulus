@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/observations/README.md")]
 
@@ -21,16 +19,16 @@ use std::path::{Path, PathBuf};
 #[path = "../shared/tree/mod.rs"]
 mod tree;
 
-// ⛔ AND THE SCAN OF THIS DIRECTORY IS SHARED FOR THE SAME REASON. `examples/compositions/main.rs`
-// asks the identical question of `examples/`, and two copies of one walk is how the two answers
-// start to differ.
+// The scan of the examples is shared for the same reason. `examples/compositions/main.rs` asks
+// the same question of `examples/`, and two copies of one walk are how two answers start to
+// differ.
 #[path = "../shared/sources/mod.rs"]
 mod sources;
 use tree::{emitted, references, templates};
 
 /// Documents that are parsed only by Rust tests and never reach the database, each with the
-/// reason. ⛔ Adding a name here is the whole decision: it removes a document from every SQL
-/// query, every check and every report at once, and the only thing that says so is this list.
+/// reason. Adding a name here is the whole decision: it excuses a document from every SQL query,
+/// every check and every report at once, and this list is the only thing that says so.
 const RUST_ONLY: &[(&str, &str)] = &[
     ("coverage-us-gaap", "a coverage assertion; tests/coverage_parse.rs"),
     ("coverage-pt-ncrf-pe", "a coverage assertion; tests/coverage_parse.rs"),
@@ -79,16 +77,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     unobserved.sort_unstable();
 
-    // ⛔ A template carrying an open `@slot` emits no .sql and is a shape rather than a query,
-    //   so it is reached through its fillers and never directly. That is handled above by the
-    //   `composed` set: a shape is always composed by whoever fills it.
+    // A template carrying an open `@slot` emits no .sql and is a shape rather than a query, so it
+    // is reached through its fillers and never directly. The `composed` set above covers it: a
+    // shape is always composed by whoever fills it.
     println!(
         "1. relations: {} templates, {} reached by something",
         files.len(),
         files.len() - unobserved.len()
     );
     for u in &unobserved {
-        println!("   ⛔ {u} is read by nothing");
+        println!("   {u} is read by nothing");
     }
 
     let on_disk: Vec<PathBuf> = ["assets/corpus", "assets/fixtures"]
@@ -122,12 +120,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("      · {name:<32} {why}");
     }
     for u in &unreached {
-        println!("   ⛔ {u}.xml is reached by nothing at all");
+        println!("   {u}.xml is reached by nothing at all");
     }
 
-    // ⛔⛔⛔ THE ASSERTION THIS EXAMPLE EXISTS FOR. A relation nobody reads and a document
-    //     nobody parses are both invisible, and invisible reads from the outside exactly like
-    //     absent. `layers/drawn.sqlc` was absent for months and nothing said so.
+    // The assertion this example exists for. A relation nobody reads and a document nobody
+    // parses are both invisible, and from the outside invisible reads exactly like absent.
     assert!(
         unobserved.is_empty() && unreached.is_empty(),
         "something in the tree is reached by nothing"
@@ -145,13 +142,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         docs.len(),
         no_witness
     );
-    println!("   ⛔ every one of those {no_witness} is a pm:processModulus. It is the only root");
+    println!("   every one of those {no_witness} is a pm:processModulus. It is the only root");
     println!("      that carries no document-level provenance, so a stipulation and an");
     println!("      observation are the same shape to anything reading the tree.");
-    // ⭐ The standard a composition works under, a different question from the regime: the
-    //   regime is what the MEMBERS reported under, the citation is what governs combining them.
+    // The standard a composition works under, a different question from the regime: the regime
+    // is what the members reported under, and the citation is what governs combining them.
     let cited: Vec<_> = docs.iter().filter(|d| !d.under.is_empty()).collect();
-    println!("   ⭐ {} document(s) name the instrument they compose under:", cited.len());
+    println!("   {} document(s) name the instrument they compose under:", cited.len());
     for d in &cited {
         println!("      {:<32} {}", d.filing, d.under);
     }
@@ -171,7 +168,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for d in &denoms {
         println!("   {:<8} {:<14} {:>4}  {}", d.kind, d.denominator, d.claims, d.filed_on);
     }
-    println!("   ⭐ `week` and `semana` are two rows because two filers wrote two tokens.");
+    println!("   `week` and `semana` are two rows because two filers wrote two tokens.");
 
     let patience = sqlx::query_file!("assets/sql/queries/observations/4-patience.sql")
         .fetch_all(&pool)
@@ -208,9 +205,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             s.absent
         );
     }
-    // ⭐ Printed, never pinned. The day somebody sizes a capacity slack above zero this line
-    //   changes and nothing fails, which is the difference between an observation and a rule.
-    println!("   ⭐ A sized zero is the TIGHTEST bound, not a missing one.");
+    // Printed, never asserted. When somebody sizes a capacity slack above zero, this table
+    // changes and nothing fails, which is the difference between an observation and a rule.
+    println!("   A sized zero is the tightest bound, not a missing one.");
 
     let fixtures = sqlx::query_file!("assets/sql/queries/observations/6-absences-in-the-fixtures.sql")
         .fetch_all(&pool)
@@ -221,7 +218,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         total,
         fixtures.len()
     );
-    println!("   stipulation is for. ⛔ Not counted as evidence anywhere; rules.sql composes the");
+    println!("   stipulation is for. Not counted as evidence anywhere; rules.sql composes the");
     println!("   corpus census and correctly not this one.");
 
     // ------------------------------------------------------------------
@@ -244,10 +241,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   {:<32} {:>3}   {}", s.standing, s.remainders, s.filings);
     }
 
-    // ⛔⛔ THE SECOND ASSERTION, AND IT IS ABOUT COVERAGE RATHER THAN ABOUT ANSWERS. Every
-    //    remainder the arithmetic can reach must appear in layers/remainder_scope.sqlc with
-    //    some standing. `nobody bounded the set` is a perfectly honest standing and fails
-    //    nothing; a remainder that never had the question put to it is the failure.
+    // The second assertion, about coverage rather than answers. Every remainder the arithmetic
+    // can reach must appear in layers/remainder_scope.sqlc with some standing. `nobody bounded
+    // the set` is an honest standing and fails nothing; a remainder that never had the question
+    // put to it is the failure.
     assert_eq!(
         asked, computable,
         "a remainder reaches the arithmetic without appearing in layers/remainder_scope.sqlc"
@@ -263,12 +260,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             s.borne_by, s.from_layer, s.to_layer, s.observed_in, s.their_search
         );
     }
-    println!("   ⛔ Not violations. A filing is not the system, and one document's observation");
-    println!("      is a projection onto another rather than an accusation against it.");
+    println!("   Not violations. A filing is not the system, and one document's observation");
+    println!("      is a view of another rather than an accusation against it.");
 
-    // ⭐ The union of the two search relations, which neither half can answer: how often does
-    //   anybody look at all? That is a fact about the practice rather than about either
-    //   mechanism, and it is the only thing that reads epistemics/searches.sqlc whole.
+    // The union of the two search relations, which neither half can answer: how often does
+    // anybody look at all? That is a fact about the practice rather than about either mechanism,
+    // so this section reads epistemics/searches.sqlc whole.
     let diligence = sqlx::query_file!("assets/sql/queries/observations/9-diligence.sql")
         .fetch_all(&pool)
         .await?;
@@ -282,12 +279,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("      {:<20} {:>3}", d.answer, d.times);
     }
 
-    // ⭐⭐⭐ THE EVIDENCE FOR AN ELIMINATION, AND THE ONLY DIRECTION THAT FINDS A MISSING ONE.
-    //    `asrt:Elimination/between` is repeating and no rule reads it, so nothing puts it under
-    //    pressure to have a column, a table or an ingest, and eight filed instances are parsed
-    //    out of the corpus and thrown away on every load. The query side cannot find that: a
-    //    rule reads what it needs, so a field nothing reads is under no pressure to exist. The
-    //    question that finds it is "can this document be written back out from what is stored".
+    // The evidence for an elimination. `asrt:Elimination/between` repeats, and no rule reads it,
+    // so no rule would ever ask for a column, a table or an ingest for it: a rule reads what it
+    // needs, and a field nothing reads is under no pressure to exist. What keeps it is asking
+    // whether a document can be written back out from what is stored, and this section reads it.
     let evidence =
         sqlx::query_file!("assets/sql/queries/observations/10-elimination-evidence.sql")
             .fetch_all(&pool)
@@ -304,22 +299,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             e.composition, e.composed_layer, e.quantity, e.size, e.between
         );
     }
-    println!("   ⛔ `(none named)` is not a defect. `between` is minOccurs=0, and a composer");
+    println!("   `(none named)` is not a defect. `between` is minOccurs=0, and a composer");
     println!("      eliminating against a member that files nothing has nothing to name.");
 
     // ------------------------------------------------------------------
-    // ⛔⛔⛔ THE CORPUS DIRECTORY AGAINST WHAT INGEST LOADED, WHICH NO RELATION HERE CAN ASK.
-    //    Everything in this file is DERIVED FROM WHAT LOADED, so it can report a document that
-    //    arrived and was never decided about and it can NEVER report one that is on disk and did
-    //    not arrive: an unloaded file leaves no row to read. That is `diagrams/notation.sqlc`'s
-    //    argument one stage earlier in the pipeline, and it wants the same repair: declare it.
+    // The corpus directory against what ingest loaded, which no relation can ask. Every other
+    // section is derived from what loaded, so it can report a document that arrived and never one
+    // that is on disk and did not arrive: an unloaded file leaves no row to read. So which
+    // documents exist, and why any of them does not load, is declared in
+    // `scope/documents_on_disk.sqlc`, as `diagrams/notation.sqlc` declares its population one
+    // stage earlier, and checked here against the directory.
     //
-    // ⭐⭐ IT WAS STATED, IN PROSE, IN `assets/ddl/schema.ddl` BESIDE THE `kind` CHECK, and the
-    //    comment is correct and no program read it. So a fourth kind added tomorrow loads nothing
-    //    and says nothing, and the day ingest learns to load one the sentence goes quietly stale.
-    //    ⛔ THE LAW RUNS BOTH WAYS on purpose: a row saying `loaded` whose filing is absent is an
-    //    ingest that broke, and a row saying `not loaded` whose filing is PRESENT is this roster
-    //    gone stale. A comment can only ever fail in the first direction.
+    // The check runs both ways, on purpose: a row saying `loaded` whose filing is absent is an
+    // ingest that broke, and a row saying `not loaded` whose filing is present is the roster gone
+    // stale.
     // ------------------------------------------------------------------
     let on_disk = sqlx::query_file!("assets/sql/scope/documents_on_disk.sql")
         .fetch_all(&pool)
@@ -367,32 +360,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         unloaded
     );
     for d in on_disk.iter().filter(|d| d.loaded != Some(true)) {
-        println!("   ⛔ {:<32} [{}] {}", d.document.as_deref().unwrap_or("?"),
+        println!("   {:<32} [{}] {}", d.document.as_deref().unwrap_or("?"),
                  d.kind.as_deref().unwrap_or("?"),
                  d.not_loaded_because.as_deref().unwrap_or(""));
     }
     assert!(wrong.is_empty(), "the corpus roster disagrees with the database: {wrong:?}");
-    println!("   ⭐ Three document KINDS the schema admits and ingest does not read yet. The");
-    println!("      `filing.kind` CHECK holds all five so the domain closes where the SCHEMA");
-    println!("      closes; this is the same boundary, in a form a program can fail on.");
+    println!("   Document kinds the schema admits and ingest does not read. The `filing.kind`");
+    println!("      CHECK holds every kind, so the domain closes where the schema closes; this is");
+    println!("      the same boundary, in a form a program can fail on.");
 
-    // ⭐⭐⭐ THE SAME EIGHT ROWS AS A POINTER RATHER THAN AS EVIDENCE, WHICH IS THE DIFFERENCE
-    //    THAT HID THEM. §11 above reads `between` as what an elimination is ABOUT; this reads it
-    //    as what the document POINTS AT. The model has two `pm:ForeignId` references and only the
-    //    part has a relation naming it as one, so an enumeration of what this model reaches in
-    //    other documents returns half the answer and nothing says which half.
+    // The same rows, read as what the document points at rather than as evidence. §11 reads
+    // `between` as what an elimination is about; this reads it as a reference into another
+    // document, beside the part's, so a list of what this model reaches in other documents is
+    // whole.
     //
-    // ⛔⛔ REPORTED, NEVER ASSERTED. A dangling PART is a violation because the fusion sum needs
-    //    it; a dangling `between` is ORDINARY and the schema says so. That licence is exactly why
-    //    the relation went unwritten: this tree grows by rules, and `between` is the one
-    //    cross-document reference no rule MAY check.
+    // Reported, never asserted. A dangling part is a violation, because the fusion sum needs it;
+    // a dangling `between` is ordinary, and the schema says so. `between` is the one reference
+    // into another document that no rule may check.
     let refs =
         sqlx::query_file!("assets/sql/queries/observations/10b-elimination-references.sql")
             .fetch_all(&pool)
             .await?;
     let lands = refs.iter().filter(|r| r.resolves).count();
     println!(
-        "\n11b. what each elimination POINTS AT: {} of {} land on a layer this corpus holds",
+        "\n11b. what each elimination points at: {} of {} land on a layer this corpus holds",
         lands,
         refs.len()
     );
@@ -402,14 +393,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             r.composition, r.composed_layer, r.quantity, r.party, r.layer, r.lands_on
         );
     }
-    println!("   ⛔ `(outside this corpus)` is not a defect either, and for a sharper reason than");
-    println!("      `(none named)` above: the schema REFUSES a keyref that would force the subset,");
+    println!("   `(outside this corpus)` is not a defect either, and for a sharper reason than");
+    println!("      `(none named)` above: the schema refuses a keyref forcing the subset,");
     println!("      because a group eliminating against a member that files nothing is ordinary.");
 
-    // The greatest element of the intersection of the parts' divisor sets, each quantum converted
+    // The largest unit that every part's quantum is a whole number of, each quantum converted
     // into the composed layer's unit first. Where a factor is unmeasured, or the converted quanta
     // still sit in different units, the row carries the typed absence rather than a number the
-    // fold would happily have produced. Proven in `src/proofs/README.md`, entry `composed_quantum`.
+    // arithmetic would otherwise produce.
     let quanta = sqlx::query_file!("assets/sql/queries/observations/11-composed-quantum.sql")
         .fetch_all(&pool)
         .await?;
@@ -472,21 +463,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   The agreeing rows are the control: no factor on their walk has width, so nothing");
     println!("   could separate the two figures. Only a spread factor can, and it does.");
 
-    // ⭐⭐⭐ THE ONE OBSERVATION THAT IS ABOUT THE SCHEMA RATHER THAN THE BUSINESS. Every other
-    //    section here asks what the filings say; this asks which STATES they have ever reached.
-    //    `AbsenceReason` is four members, so the answer per question is a four-bit word, and
-    //    the split between the words carrying `n` and the words not carrying it is the
-    //    `pm:Absence` / `pm:ClaimAbsence` boundary, printed from the data instead of read off
-    //    the grammar. A question on the wrong side of it is a defect, and one was: `StatedFit`
-    //    admits `none` in the grammar while `remainder sign` never once takes it, and its own
-    //    annotation refuses the state in prose.
+    // The one observation about the schema rather than the business. Every other section asks
+    // what the filings say; this asks which states they have taken. `AbsenceReason` has three
+    // members, so the answer per question is a three-letter word, and the split between the
+    // words carrying `n` and the words without it is the `pm:Absence` / `pm:ClaimAbsence`
+    // boundary, printed from the data instead of read off the schema. A question on the wrong
+    // side of it is a defect.
     let masks = sqlx::query_file!("assets/sql/queries/observations/12-state-masks.sql")
         .fetch_all(&pool)
         .await?;
     let reaching = masks.iter().filter(|m| m.mask.starts_with('n')).count();
     println!(
         "
-14. which of the four absence reasons has each question ever taken? {} of {} reach `none`",
+14. which of the three absence reasons has each question taken? {} of {} reach `none`",
         reaching,
         masks.len()
     );
@@ -499,16 +488,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if m.as_none > 0 { format!(", {} as `none`", m.as_none) } else { String::new() }
         );
     }
-    println!("   ⭐ Read the column, not the rows. A bit a type ADMITS and no document has ever");
-    println!("      set is either a state nobody needs or a state the type should not have, and");
-    println!("      both deserve a sentence. Four passes of reading annotations missed the one");
-    println!("      this found.");
+    println!("   Read the column, not the rows. A reason a type admits and no document has");
+    println!("      taken is either a state nobody needs or a state the type should not have,");
+    println!("      and both deserve a sentence.");
+    println!("      Either way it is a question for a person to look at, not a failure.");
 
-    // ⭐⭐⭐ THE ONLY SECTION HERE THAT MEASURES WORK RATHER THAN CONTENT. checks/jagged_layer
-    //    reports that a fusion's parts overlap; this asks how much supply is in the total
-    //    twice, and only where the composer filed no elimination at all. A filing that found
-    //    its own double counting and sized it never appears, however large the overlap was,
-    //    because that is the party who can actually see it doing the job.
+    // The one section that measures work rather than content. checks/jagged_layer reports that a
+    // fusion's parts overlap; this asks how much supply is in the total twice, and only where the
+    // composer filed no elimination at all. A filing that found its own double counting and sized
+    // it never appears, however large the overlap, because the party who can see it is doing the
+    // job.
     let jagged = sqlx::query_file!("assets/sql/queries/observations/14-jagged-layers.sql")
         .fetch_all(&pool)
         .await?;
@@ -526,19 +515,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     if jagged.is_empty() {
-        println!("   ⭐ None. Every fusion in this corpus draws each part once, so nobody");
+        println!("   None. Every fusion in this corpus draws each part once, so nobody");
         println!("      downstream is correcting an overlap a filer could have wrapped.");
     }
 
-    // ⭐⭐⭐ THE MEASUREMENT THAT EXPLAINS THE DIAGRAM. The relations a notation would have drawn
-    //    as arrows reach a handful of layers; the magnitudes reach nearly all of them. So the
-    //    incidence side of this model is sparse and the magnitude side is total, and BPMN can
-    //    carry only the first. A reader who finds an emitted diagram thin has read a faithful
-    //    rendering of the part a notation can hold.
+    // The measurement that explains the diagram. The relations a notation would draw as arrows,
+    // the links between layers, reach a handful of layers; the figures reach nearly all of them.
+    // The links are sparse and the figures cover everything, and BPMN can carry only the links.
+    // A reader who finds a diagram thin has read a faithful drawing of the part a notation can
+    // hold.
     let cover = sqlx::query_file!("assets/sql/queries/observations/15-rank.sql")
         .fetch_all(&pool)
         .await?;
-    println!("\n16. what the layer dimension carries, incidence against magnitude");
+    println!("\n16. what the layer dimension carries, links against figures");
     for c in &cover {
         println!("   {:<8} {:<12} reaches {:>3} of {}", c.kind, c.relation, c.reaches, c.of);
     }
@@ -546,98 +535,90 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mag: i64 = cover.iter().filter(|c| c.kind == "magnitude").map(|c| c.reaches).min().unwrap_or(0);
     assert!(
         inc < mag,
-        "the incidence reaches as far as the magnitudes, so the claim that a notation carries \
+        "the links reach as far as the figures, so the claim that a notation carries \
          only the sparse half has lost its subject and this section demonstrates nothing"
     );
-    println!("   ⭐ `diagrams/domain_objects.sqlc` says which tables render as a BPMN element and");
+    println!("   `diagrams/domain_objects.sqlc` says which tables render as a BPMN element and");
     println!("      which are refused with a typed reason; this is how much each of them holds.");
     println!("      The largest tables here have no element at all.");
 
-    // ⭐⭐⭐ THE ORDINAL RANK, WHICH IS WHAT WELL-FOUNDEDNESS GIVES YOU. `rank(x) = sup{rank(y)+1}`
-    //    exists exactly when nothing expands to itself, so a cycle is the case where there is no
-    //    order to evaluate in. This is that order, and it is a WINDOW over a closure that already
-    //    exists rather than a second walk.
+    // The order a fusion may be evaluated in. Each layer comes after every layer it is composed
+    // from, which is possible only when nothing is composed from itself: a loop leaves no order
+    // to evaluate in. The order is a window over a closure that already exists, not a second walk.
     let order = sqlx::query_file!("assets/sql/rank/evaluation_order.sql").fetch_all(&pool).await?;
     let mut tiers: std::collections::BTreeMap<i32, usize> = std::collections::BTreeMap::new();
     for o in &order {
         *tiers.entry(o.rank.unwrap_or(0) as i32).or_default() += 1;
     }
-    println!("\n17. the order a fusion may be evaluated in, by ordinal rank");
+    println!("\n17. the order a fusion may be evaluated in, by rank");
     for (r, n) in &tiers {
         println!("   rank {r}   {n:>3} layers");
     }
-    println!("   ⛔ Rank is the MAXIMUM depth over all paths, and `descent`'s `depth` is per path.");
+    println!("   The rank is the deepest over all paths, and `descent`'s `depth` is per path.");
     println!("      They agree on this corpus by luck; a jagged partition separates them.");
 
-    // ⭐⭐⭐ THE PARAMETER THE GRAPHS ACTUALLY DIFFER ON. `rank = n - c`, cycle space `= m - n + c`.
-    //    A graph with cycles has no ORDINAL rank and always has a MATRIX rank.
+    // What the graphs differ on. For each graph the query counts its nodes, its edges, its
+    // separate pieces, and the loops it has when the direction of its edges is ignored.
     //
-    // ⛔ AND SAY WHICH CYCLE, BECAUSE THE TWO SENSES DO NOT COINCIDE. `m - n + c` counts UNDIRECTED
-    //    cycles, so a zero says FOREST, which is strictly stronger than well-founded: a diamond is
-    //    four edges over four nodes in one component, cycle space 1, and nothing in it descends
-    //    forever. So the layer graph's 0 measures MORE than its well-foundedness, and what holds it
-    //    there is `checks/jagged_layer` rather than an identity. The unit graph's is 1, and that is
-    //    the subspace `checks/conversion_cycle_does_not_close` is really testing.
+    // A loop counted that way is not one a fusion can descend forever: a diamond, two layers
+    // composed from one part and then into one total, is a loop here and still has an order. So
+    // no such loops in the layer graph says more than that it has an order, and what keeps them
+    // out is `checks/jagged_layer`. The loops in the unit graph are what
+    // `checks/conversion_cycle_does_not_close` tests.
     let cyc = sqlx::query_file!("assets/sql/rank/cycle_space.sql").fetch_all(&pool).await?;
-    println!("\n19. the graphs this model composes, as incidence matrices");
+    println!("\n19. the graphs this model composes, counted");
     for c in &cyc {
-        println!("   {:<8} n {:>3}  m {:>3}  components {:>3}   rank {:>3}   cycle space {}",
+        println!("   {:<8} nodes {:>3}  edges {:>3}  pieces {:>3}   tree edges {:>3}   loops {}",
                  c.graph.as_deref().unwrap_or("?"), c.n_nodes.unwrap_or(0), c.m_edges.unwrap_or(0),
                  c.c_components.unwrap_or(0), c.rank_of_incidence.unwrap_or(0),
                  c.cycle_space_dim.unwrap_or(0));
     }
-    println!("   ⭐ A ZERO cycle space says the graph is a FOREST, which is stronger than");
-    println!("      well-founded: a diamond descends nowhere forever and still carries a cycle");
-    println!("      here. So the layer graph's zero is `checks/jagged_layer` holding it, and the");
-    println!("      ordinal rank above is what a forest gives you free. The unit graph's is not");
-    println!("      zero, and its rule is that the weights on it vanish: a potential exists.");
+    println!("   No loops, counted with direction ignored, says more than that the graph has");
+    println!("      an order: a diamond descends nowhere for ever and still counts as a loop.");
+    println!("      So the layer graph's zero is `checks/jagged_layer` holding it, and the rank");
+    println!("      above comes free with it. The unit graph has loops, and its rule is that");
+    println!("      converting all the way round one returns what it started with.");
 
-    // ⭐⭐ AND THE OTHER RANK, IN THE OTHER ALGEBRA. Read composition as the map `F Phi - E` and
-    //    two layers on a loop have linearly dependent rows in it: ordinal rank stops existing and
-    //    matrix rank falls at the same moment. `pm:Layer` calls the pair one layer.
+    // Layers whose remainders must move together. A composition converts each part by its factor
+    // and takes the eliminations off; two layers on a loop of that composition cannot change one
+    // without the other, and `pm:Layer` calls such a pair one layer.
     //
-    // ⛔ `F Phi - E` IS THE DIAGNOSTIC AND NOT THE ARITHMETIC ANY FILING STATES HERE. An
-    //    elimination's quantity is a `pm:StatedEliminatedQuantity`, which admits a claim, a typed
-    //    absence OR a derivation, so a computed `e` is a document the schema allows and
-    //    `pm.elimination.derivation` is the column that holds it. A FIXTURE REACHES THAT ARM and no
-    //    corpus document does, so on every document about a business `e` is a figure somebody wrote
-    //    down, which is why it is a magnitude `checks/fusion_sum_disagrees` compares against rather
-    //    than a term a rule solves for.
+    // That composed arithmetic is a check, not something a filing states here. An elimination's
+    // quantity is a `pm:StatedEliminatedQuantity`, which admits a claim, a typed absence or a
+    // derivation, so a computed elimination is a document the schema allows, and
+    // `pm.elimination.derivation` is the column that holds it. A fixture reaches that arm and no
+    // corpus document does, so on every document about a business the elimination is a figure
+    // somebody wrote down, which is why `checks/fusion_sum_disagrees` compares against it rather
+    // than solving for it.
     //
-    // ⚠️ AND REACHING THE ARM IS NOT COMPUTING IT. Nothing here derives the figure the identity
-    //    names, so a derived elimination SUSPENDS its quantity's sum under that name rather than
-    //    sizing it: `eliminations/unsized.sqlc` is where it is lifted. The linear map is reachable,
-    //    the grammar has been reached, and the computation behind it is not wired in. Count the
-    //    column rather than trusting this comment:
-    //    `SELECT count(*) FROM pm.elimination WHERE derivation IS NOT NULL`.
+    // Reaching the arm is not computing it. Nothing here works out the figure the identity names,
+    // so a derived elimination suspends its quantity's sum under that name rather than sizing it;
+    // `eliminations/unsized.sqlc` is where it is lifted. Count the column rather than trust this
+    // comment: `SELECT count(*) FROM pm.elimination WHERE derivation IS NOT NULL`.
     //
-    // ⭐⭐⭐ AND WHAT MAKES THE DIAGNOSTIC LEGITIMATE AT ANY DEPTH IS THAT A PATH OF CONVERSIONS IS
-    //    ONE CONVERSION. A factor is strictly positive, so it cannot change its operand's sign, so
-    //    the corner the operand takes is the same at every level and a chain of factors collapses
-    //    into their product. That is what lets `composition/settled_remainders.sqlc` multiply the
-    //    path's factors in and read one row per settled node instead of recursing, and it is why
-    //    depth costs the rank nothing: nesting adds witnesses, never arithmetic. Proof:
-    //    `src/proofs/README.md`, entry `conversion_collapses`.
+    // A path of conversions is one conversion: `composition/settled_remainders.sqlc` multiplies
+    // the path's factors together and reads one row per settled node instead of recursing, so
+    // nesting adds witnesses, never arithmetic.
     let comoving = sqlx::query_file!("assets/sql/rank/co_moving_layers.sql").fetch_all(&pool).await?;
-    println!("\n18. layers whose remainders must move together, the fourth falsifier computed: {}",
+    println!("\n18. layers whose remainders must move together: {}",
              comoving.len());
     if comoving.is_empty() {
-        println!("   ⭐ None. Every layer in this corpus can be perturbed without moving another");
+        println!("   None. Every layer in this corpus can be changed without moving another");
         println!("      through the composition, so no filed pair fails `pm:Layer`'s own test.");
     }
 
-    // ⭐⭐⭐ AND THE SAME MEASUREMENT TURNED ON THE THING DOING THE CHECKING. Branch one of
-    //    `reports/integrity.sqlc` takes a roster away from a population, and every check joins the
-    //    roster so that a rule examining nothing still emits a row carrying its NAME. Where that
-    //    row is the only one, the difference has the roster on both ends and cannot report.
+    // The same measurement turned on the checks themselves. `reports/integrity.sqlc` compares
+    // each roster with its population, and every check joins the roster so that a rule examining
+    // nothing still emits a row carrying its name. Where that row is the only one, both sides of
+    // the comparison come from the roster, and it cannot report.
     //
-    // ⛔ SO THE SUBJECTS SHORT HERE ARE EXACTLY THE RULES `reports/coverage.sqlc` CALLS VACUOUS,
-    //    and the two tables move in opposite directions on one event: the day a filing sizes a
-    //    buffer and attributes a share to it, coverage improves and this shortfall goes to zero.
+    // So the subjects short here are the rules `reports/coverage.sqlc` calls vacuous, and the two
+    // tables move in opposite directions on one event: when a filing sizes a buffer and
+    // attributes a share to it, coverage improves and this shortfall shrinks.
     //
-    // ⚠️ `ok` IS TWO DIFFERENT FACTS. `diagrams` earns it from a population the contract did not
-    //    write, `information_schema`; `arithmetic` and `algebra` are built exactly like `rules`
-    //    and are merely populated everywhere on this corpus.
+    // `ok` is two different facts. `diagrams` earns it from a population the contract did not
+    // write, `information_schema`; `arithmetic` and `algebra` are built like `rules` and are
+    // simply populated everywhere in this corpus.
     let guards = sqlx::query_file!("assets/sql/queries/observations/16-guard-reach.sql")
         .fetch_all(&pool)
         .await?;
@@ -646,7 +627,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   {:<11} {:>2} of {:>2} witnessed by the population, {:>2} by the roster alone   {}",
                  g.contract, g.witnessed, g.subjects, g.roster_only, g.verdict);
     }
-    println!("   ⭐ `witnessed` is where the two sides of the difference are different rows.");
+    println!("   `witnessed` is where the two sides of the difference are different rows.");
     println!("      The rest is the roster agreeing with itself, which is what tests/independence.rs");
     println!("      refuses to count as corroboration anywhere else. `diagrams/domain_objects.sqlc`");
     println!("      states the rule for the contract side; this is the side nothing states.");
@@ -656,22 +637,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          grades printed above are about nothing"
     );
 
-    // ⭐⭐⭐ THE THIRD `pm:ForeignId`, AND A RELATION SHOWS ONLY WHAT THE INGEST KEEPS.
-    //    `pm:Operation/foreignId` is the whole BPMN interface, and an ingest that drops it leaves
-    //    the corpus filing a node id, the database holding none, and every relation that could
-    //    show the crossing derived from a table that threw it away. The column is this section's
-    //    only source, so the report exists exactly as far as the ingest carries the field.
+    // The operation's reference, and a relation shows only what the ingest keeps.
+    // `pm:Operation/foreignId` is the whole interface to BPMN, and an ingest that dropped it would
+    // leave the corpus filing a node id, the database holding none, and every relation that could
+    // show the crossing derived from a table that threw it away. The column is this section's only
+    // source, so the report goes exactly as far as the ingest carries the field.
     //
-    // ⛔ REPORTED, NEVER ASSERTED, and for a sharper reason than `between`. A `between` MAY
-    //    resolve and happens not to; this one CANNOT, because the document it names is not in
-    //    the corpus and no authority publishes the list. There is no rule to write.
+    // Reported, never asserted, and for a sharper reason than `between`. A `between` may resolve;
+    // this one cannot, because the document it names is not in the corpus and no authority
+    // publishes the list. There is no rule to write.
     let crossings =
         sqlx::query_file!("assets/sql/queries/observations/17-notation-references.sql")
             .fetch_all(&pool)
             .await?;
     let crossing = crossings.iter().filter(|c| c.crosses).count();
     println!(
-        "\n21. what each operation POINTS AT in a process notation: {} of {} name a node",
+        "\n21. what each operation points at in a process notation: {} of {} name a node",
         crossing,
         crossings.len()
     );
@@ -680,7 +661,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                  if c.crosses { c.notation.as_str() } else { "(no position stated)" },
                  if c.crosses { c.node.as_str() } else { c.why_not.as_str() });
     }
-    println!("   ⭐ The rows that name nothing are the argument, and each one now says WHICH");
+    println!("   The rows that name nothing are the argument, and each one says which");
     println!("      nothing: `none` is in no notation and somebody looked, `unmeasured` is a");
     println!("      notation exists and nobody located it, `notApplicable` is no notation at all.");
     println!("      Most filings declare no operation either, so this model does not need a process");
@@ -697,16 +678,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          is a claim about nothing"
     );
 
-    // ⭐⭐⭐ THE LAYER DIMENSION READ DOWN THE OTHER AXIS. `rank/incidence_reach.sqlc` counts, per
-    //    RELATION, how much of the dimension it touches, so it says `49 of 51` and never which
-    //    two. This is the transpose, where the subject is the layer and the shortfall has a name.
+    // The layer dimension read the other way. `rank/incidence_reach.sqlc` counts, per relation,
+    // how much of the dimension it touches, so it says how many layers and never which. Here the
+    // subject is the layer, so a shortfall has a name.
     //
-    // ⛔⛔ AND THE FIRST MEASUREMENT TAKEN THIS WAY WAS WRONG, WHICH IS WORTH KEEPING. It said
-    //    two layers were unreachable. Three rules were putting a claim ADDRESS in the contract's
-    //    `layer` column, 324 distinct pairs naming no layer, so the join dropped them and the
-    //    shortfall was an artifact of the key. With the subject declared `claim` and the claim's
-    //    own layer reported, it is zero. A cover measured through a key that does not resolve
-    //    measures the key.
+    // A count of the rules that reach a layer is only as good as the key it joins on: a key that
+    // does not resolve to a layer drops rows, and the count then measures the key. So a rule whose
+    // subject is a claim is counted against the claim's own layer.
     let cover = sqlx::query_file!("assets/sql/queries/observations/18-layer-reach.sql")
         .fetch_all(&pool)
         .await?;
@@ -720,7 +698,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for c in cover.iter().take(4) {
         println!("   {:<26} {:<22} {:>2} rules, {} violated", c.filing, c.layer, c.examined_by, c.violated);
     }
-    println!("   ⭐ The thin end is the finding and it is not a violation. A layer whose nameplate");
+    println!("   The thin end is the finding and it is not a violation. A layer whose nameplate");
     println!("      is a typed absence has no row in the vectors most rules compose, so it is");
     println!("      filed correctly, validates, and is reachable by almost nothing. That is this");
     println!("      model's boundary measured from inside rather than argued in a paragraph.");
@@ -734,11 +712,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "no layer reached this measurement, so the range printed above is about nothing"
     );
 
-    // ⭐⭐⭐ THE REPOSITORY'S CENTRAL CLAIM ABOUT ITSELF, AS A QUERY RATHER THAN A SENTENCE. A
-    //    parent composing a child twice is ordinary and a fusion reaching a layer twice is a
-    //    violation, and both are one name arriving twice under one fold. The comparison needs
-    //    both halves in one relation: a claim whose two graphs live in a Rust `BTreeMap` and a
-    //    SQL table is one a program can hold a single side of and never join.
+    // The repository's central claim about itself, as a query. A parent composing a child twice
+    // is ordinary, and a fusion reaching a layer twice is a violation; both are one name arriving
+    // twice under one total. The comparison needs both halves in one relation, so both graphs are
+    // tables: one held in a Rust map and the other in SQL could never be joined.
     let dup = sqlx::query_file!("assets/sql/queries/observations/19-duplication.sql")
         .fetch_all(&pool)
         .await?;
@@ -746,7 +723,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for d in &dup {
         println!("   {:<18} {:>3} of {:>4} edges   {}", d.graph, d.duplicated, d.edges, d.verdict);
     }
-    println!("   ⛔ The COUNTS are not comparable and must not be compared: one graph is however");
+    println!("   The counts are not comparable and must not be compared: one graph is however");
     println!("      much SQL somebody wrote, the other is however many fusions a corpus files.");
     println!("      What is comparable is the verdict, and it is opposite on one column.");
     assert!(
@@ -755,11 +732,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          nothing and the opposite verdicts are about one thing"
     );
 
-    // ⭐⭐ THE ONE WIDTH IN THIS MODEL THAT NARROWS WHAT IT TOUCHES. Every other term widens the
-    //    figure it enters. An elimination subtracted bound by bound sends its own width the other
-    //    way, because the low rises and the high falls together, so a composer LESS sure how much
-    //    was double counted files a MORE precise composed figure. Neither reading is a defect and
-    //    no rule is owed; what was missing was any way to count which filings are in which arm.
+    // The one width in this model that narrows what it touches. Every other term widens the
+    // figure it enters. An elimination taken off bound by bound sends its width the other way: its
+    // low comes off the low and its high off the high, so a composer less sure how much was double
+    // counted files a more precise composed figure. Neither reading is a defect and no rule is
+    // owed; this section counts which filings are in which arm.
     let mono = sqlx::query_file!("assets/sql/queries/observations/20-elimination-monotonicity.sql")
         .fetch_all(&pool)
         .await?;
@@ -774,18 +751,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("   {:<28}    {}", "", m.what_the_bound_rests_on);
         }
     }
-    println!("   ⛔ The crossed reading is reached only where bound by bound would leave the claim");
-    println!("      disordered, so it is rare BY CONSTRUCTION. Its arm emptying would mean the");
+    println!("   The crossed reading is reached only where bound by bound would leave the claim");
+    println!("      disordered, so it is rare by construction. Its arm emptying would mean the");
     println!("      fixture that exercises it had stopped, not that the model had changed.");
     assert!(
         mono.iter().any(|m| m.isotone == Some(true)) && mono.iter().any(|m| m.isotone == Some(false)),
         "one arm of this classification is empty, so the column reports the corpus rather than \
          the two readings the arithmetic actually has"
     );
-    // ⛔⛔ THE KEY IS CHECKED BY THE FIGURES AND COULD NOT BE CHECKED BY A COUNT. `claim_seq` is a
-    //    document ordinal, so a join on it returns one claim per elimination whether or not it is
-    //    the right claim: shifted by one it still returns a row for every elimination and almost
-    //    none of the figures agree. So the claim's own three points ride along and are compared.
+    // The key is checked by the figures, because a count could not check it. `claim_seq` is a
+    // position in the document, so a join on it returns one claim per elimination whether or not
+    // it is the right claim: shifted by one, it still returns a row for every elimination, and
+    // almost none of the figures agree. So the claim's own three values ride along and are
+    // compared.
     let placed: Vec<_> = mono.iter().filter(|m| m.low.is_some()).collect();
     assert!(
         !placed.is_empty()
@@ -803,11 +781,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          reports this corpus rather than the two answers a filing may give"
     );
 
-    // ⭐⭐⭐ AND THE CONVERSION'S OTHER BRANCH, WHICH NO FILING REACHES. A demand cannot be
-    //    negative so it converts bound by bound; a remainder can, so it converts by corners. The
-    //    corner rule changes a figure only where a factor has width AND the operand is negative at
-    //    that bound, and the two populations here do not overlap. Both asserts below are the point:
-    //    an empty intersection is a fact about the evidence only while both sides are sizeable.
+    // The conversion's other branch. A demand cannot be negative, so it converts bound by bound;
+    // a remainder can, so it converts by corners. Taking corners changes a figure only where a
+    // factor has width and the operand is negative at that bound, and the count printed below is
+    // how often the two meet. The assertion is what makes that count mean something: an empty
+    // overlap is a fact about the evidence only while both sides have members.
     let slopes = sqlx::query_file!("assets/sql/queries/observations/21-conversion-slopes.sql")
         .fetch_all(&pool)
         .await?;
@@ -817,26 +795,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("\n25. which corner of the factor each bound of a carried remainder took");
     println!("   {:>3} settled nodes carried up", slopes.len());
     println!("   {spread:>3} under a factor with width");
-    println!("   {negative:>3} whose remainder is negative at its low, so that bound takes the factor's HIGH");
+    println!("   {negative:>3} whose remainder is negative at its low, so that bound takes the factor's high");
     println!("   {bites:>3} where taking corners gave a different figure from multiplying bound by bound");
-    println!("   ⛔ Zero is not a reason to simplify the arithmetic. It says the two populations");
+    println!("   Zero is not a reason to simplify the arithmetic. It says the two populations");
     println!("      above do not overlap in this corpus. A negative remainder is the interference");
     println!("      case the model exists to measure and a factor with width is ordinary; what is");
-    println!("      empty is the intersection, and the identity is proved against a constructed");
-    println!("      operand precisely because no filing reaches it.");
+    println!("      empty is the overlap, and no filing in this corpus reaches it, so the corner");
+    println!("      rule is kept for the filing that will.");
     assert!(
         spread > 0 && negative > 0,
         "one side of this intersection is empty, so `{bites} bites` is vacuous for a reason that \
          has nothing to do with the corner rule"
     );
 
-    // ⭐⭐⭐ THE CONFORMANCE ROW THAT HAS NO RULE, GIVEN A MAGNITUDE AT LAST. A fusion adds its
-    //    converted parts, so moving supply from one part to another at the rate below leaves the
-    //    composed figure exactly where it was. That invisibility is not a side effect of the
-    //    arithmetic, it IS the claim the fusion makes, and `asrt:Fusion` is explicit that no
-    //    validator reaches the judgement behind it. What a validator CAN do is say how much is
-    //    being asserted, so that the reader the schema invites to disagree has something to
-    //    disagree with. Nothing measured this before.
+    // The conformance row that has no rule, given a magnitude. A fusion adds its converted parts,
+    // so moving supply from one part to another at the rate below leaves the composed figure
+    // exactly where it was. That invisibility is the claim the fusion makes, not a side effect of
+    // the arithmetic, and `asrt:Fusion` says no validator reaches the judgement behind it. What a
+    // query can do is say how much is being asserted, so the reader the schema invites to
+    // disagree has something to disagree with.
     let offsets = sqlx::query_file!("assets/sql/queries/observations/22-declared-offsets.sql")
         .fetch_all(&pool)
         .await?;
@@ -856,13 +833,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ),
         }
     }
-    println!("   ⛔ One row per PAIR, which is not the dimension. A fusion of k parts licenses");
-    println!("      C(k,2) pairs and k-1 independent offsets, and those agree only up to k = 2.");
-    println!("      Every fusion filed here is binary, so the two totals match for a reason that");
-    println!("      is a fact about this corpus. rank/composition_kernel is the dimension.");
-    // ⛔ Both arms, because a rate column that is everywhere 1 reports that no fusion converts
-    //    rather than that conversion leaves the offset at par, and an empty absence arm would
-    //    mean the undetermined case is being asserted rather than exercised.
+    println!("   One row per pair of parts, which is not the number of independent offsets. A");
+    println!("      fusion of two parts has one of each; past two parts, the pairs outnumber the");
+    println!("      offsets. Every fusion filed here has two parts, so the two totals match for a");
+    println!("      reason that is a fact about this corpus. rank/composition_kernel counts them.");
+    // Both arms, because a rate column that is 1 everywhere reports that no fusion converts
+    // rather than that conversion leaves the offset at par, and an empty absence arm would mean
+    // the undetermined case is asserted rather than exercised.
     assert!(
         offsets.iter().any(|o| o.determined && o.rate_mode.is_some_and(|r| (r - 1.0).abs() > 1e-9)),
         "every declared offset is at par, so this relation cannot distinguish a fusion that \

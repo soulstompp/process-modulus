@@ -1,25 +1,24 @@
-# The jagged fusions split by whether anybody filed an elimination, checked as a partition. One
-# row: whether |jagged| = |unadmitted| + |jagged ⋉ filed eliminations|.
+# The fusions whose parts overlap, split by whether anybody filed an elimination. One row: whether
+# every overlap is either unadmitted or covered by a filed elimination, counted row for row.
 #
-# The difference is the argument
-#   The observation is a difference. §14 reports the overlap nobody admitted, which is
-#   composition/jagged_layers.sqlc minus the fusions that filed an elimination. Get the anti-join
-#   backwards and it reports the filings that did their own cleanup as though they had not, which
-#   is the opposite accusation with the same column names and a believable count.
+# The difference is the finding
+#   queries/observations/14-jagged-layers.sqlc reports the overlap nobody admitted, which is
+#   composition/jagged_layers.sqlc less the fusions that filed an elimination. Get the anti-join
+#   backwards and it reports the filings that did their own cleaning up as though they had not,
+#   which is the opposite accusation with the same column names and a believable count.
 #
-# The left operand is a bag on the compared attributes
-#   One fusion can double count more than one layer, and each is its own row and its own repair,
-#   so `EXCEPT` would collapse a fusion with three overlaps into one and the observation would
-#   under-report the work by two. The anti-join preserves the multiplicity; this law is what says
-#   so.
+# The left operand repeats rows on the compared columns
+#   One fusion can double count more than one layer, and each is its own row and its own repair, so
+#   `EXCEPT` would collapse a fusion with three overlaps into one, and the observation would report
+#   two fewer repairs than there are. The anti-join keeps the repeats; this law is what says so.
 #
-# Vacuous on a clean corpus, correctly
-#   No fusion here is jagged, so the law reads 0 = 0 + 0. It binds the moment one is, and
-#   examples/soundness/main.rs runs it either way.
+# Examining nothing on a clean corpus, correctly
+#   No fusion here has overlapping parts, so all three counts are zero. The law binds the moment one
+#   does, and examples/soundness runs it either way.
 #
 # Probe
 #   File a part that a sibling already reaches; this law must still hold.
--- composition/jagged_layers.sqlc partitioned by eliminations/filed.sqlc, multiplicity preserved.
+-- composition/jagged_layers.sqlc split by eliminations/filed.sqlc, repeats kept.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -27,7 +26,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/jagged_layers' AS subject,
            x.total = x.kept + x.removed AS holds,
-           format('%s jagged rows = %s nobody admitted + %s on a fusion that filed one', 
+           format('%s jagged rows: %s nobody admitted, %s on a fusion that filed one', 
                   x.total, x.kept, x.removed) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j) AS total,

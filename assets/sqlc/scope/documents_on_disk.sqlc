@@ -1,34 +1,35 @@
-# Every document in `assets/corpus/`, and whether ingest loads it. One row per file, with a
-# typed reason where it does not.
+# Every document in `assets/corpus/`, and whether ingest loads it. One row per file, with a typed
+# reason where it does not.
 #
 # A `VALUES` literal, one stage earlier
-#   The argument is `diagrams/notation.sqlc`'s argument one stage earlier. Every relation in
-#   this tree is derived from what loaded, so it can report a document that arrived and was
-#   never decided about, and it can never report a document that is on disk and did not arrive:
-#   an unloaded file leaves no row to read. The unloaded half of the corpus is unreachable from
-#   the database by construction, so it has to be declared.
+#   It is `diagrams/notation.sqlc`'s argument one stage earlier. Every relation here is built from
+#   what loaded, so it can report a document that arrived and was never decided about, and it can
+#   never report a document that is on disk and did not arrive: an unloaded file leaves no row to
+#   read. The unloaded half of the corpus cannot be reached from the database at all, so it has to
+#   be declared.
 #
 # Prose is not enough to carry it
 #   `assets/ddl/schema.ddl` says it beside the `kind` CHECK: *documents rooted at `coverage`,
-#   `dependence` and `run` that ingest does not yet load*. That comment is correct and no
-#   program reads it, so a fourth kind added tomorrow loads nothing and says nothing, and the
-#   day ingest learns to load one the sentence goes quietly stale. A claim in prose is
-#   ungoverned wherever it sits, and a DDL comment is prose.
+#   `dependence` and `run` that ingest does not yet load*. That comment is right and no program
+#   reads it, so a fourth kind added tomorrow would load nothing and say nothing, and the day ingest
+#   learns to load one, the sentence goes quietly stale. A claim in prose is checked by nothing
+#   wherever it sits, and a DDL comment is prose.
 #
 # `not_loaded_because` is a typed reason, not an apology
-#   `ingest` is a state of this repository's work; `kind` is a property of the document. They
-#   are different facts and a single boolean would flatten them, which is the schema's own `<>`
-#   discipline in a roster.
+#   Whether ingest loads it is a state of this repository's work; `kind` is a property of the
+#   document. They are different facts, and a single boolean would flatten them, which is the
+#   schema's own way of keeping two facts apart, applied to a roster.
 #
-# The law is two-way
-#   That is the point. A row saying `loaded` whose filing is absent is an ingest that broke; a
-#   row saying `not loaded` whose filing is present is this roster gone stale, and that is the
-#   direction a comment can never fail in. The day `coverage` loads, this file fails the build
-#   until somebody updates it.
+# The law runs both ways
+#   A row saying `loaded` whose filing is absent is an ingest that broke; a row saying `not loaded`
+#   whose filing is present is this roster gone stale, and that is the direction a comment can
+#   never fail in. The day `coverage` loads, this file fails until somebody updates it.
 -- the corpus directory as data; assets/ddl/schema.ddl's `filing.kind` CHECK is the domain.
 SELECT * FROM (VALUES
   ('contrato-empresarial'::text,        'processModulus'::text, true,  NULL::text),
-  ('coverage-pt-ncrf-pe',               'coverage',       false, 'ingest does not read a document rooted at `coverage`. `tests/coverage_parse.rs` asserts the property it exists to prove, at the XML level, so the document is checked and not stored'),
+  ('coverage-pt-ncrf-pe',               'coverage',       false,
+   'ingest does not read a document rooted at `coverage`. `tests/coverage_parse.rs` checks the '
+   'property it exists to show, at the XML level, so the document is checked and not stored'),
   ('coverage-us-gaap',                  'coverage',       false, 'the same, in the other regime. The pair is the subject: two regimes stay comparable exactly where the two witnesses cite one taxonomy'),
   ('dependence-group-consolidation',    'dependence',     false, 'ingest does not read a document rooted at `dependence`. It carries the only `asrt:DependenceEntry` in the corpus, so `from` and `to` are the two uses of `asrt:FiledLayer` with no apparatus, where `Part/layer` and `Elimination/between` both have one'),
   ('enterprise-contract',               'processModulus', true,  NULL),

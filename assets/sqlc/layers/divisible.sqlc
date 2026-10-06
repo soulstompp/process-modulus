@@ -1,14 +1,19 @@
 # The lumpy layers whose quantum can actually divide something. One row per lumpy layer whose
-# quantum is strictly positive.
+# quantum is above zero at every point.
 #
 # A quantum of zero divides nothing
-#   So "the nameplate is a whole multiple of the quantum" has no population on such a layer:
-#   every number is a multiple of zero or none is, depending which convention you reach for, and
-#   neither answer is about the supply. This relation is the honest denominator for that rule, and
-#   counting all lumpy layers instead inflates it with rows the arithmetic cannot touch.
--- pm:LumpyQuantum/size, strictly positive.
+#   So "the nameplate is a whole number of quanta" has no population on such a layer: every number
+#   is a multiple of zero or none is, depending on which convention you reach for, and neither
+#   answer is about the supply. This relation is the honest base for that rule, and counting every
+#   lumpy layer instead would swell it with rows the arithmetic cannot touch.
+#
+# Above zero at its low
+#   The rule reads each point of the nameplate against the same point of the quantum, so a quantum
+#   whose low is zero leaves its lowest point with nothing to divide by. The low is the test: a
+#   quantum's three points are in order, so a low above zero puts the other two above it.
+-- pm:LumpyQuantum/size, strictly positive at its low.
 SELECT l.*
 FROM (
     :compose(layers/lumpy.sqlc)
 ) l
-WHERE l.quantum_mode > 0
+WHERE l.quantum_low > 0

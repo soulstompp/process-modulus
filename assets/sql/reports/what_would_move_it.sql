@@ -24,9 +24,10 @@ SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
        n.narrows_kind AS kind, n.narrows_absent AS absent, n.narrows_condition AS condition,
        CASE
          WHEN n.narrows_kind = 'instrument'      THEN 'ignorance: measure it better'
-         WHEN n.narrows_kind = 'intervention'    THEN 'VARIATION: only changing the process helps'
+         WHEN n.narrows_kind = 'intervention'    THEN 'variation: only changing the process helps'
          WHEN n.narrows_kind = 'experiment'      THEN 'unknown, deliberately: an experiment would say'
-         WHEN n.narrows_absent = 'none'          THEN 'VARIATION: somebody looked, nothing would narrow it'
+         WHEN n.narrows_absent = 'none'
+              THEN 'variation: somebody looked, nothing would narrow it'
          WHEN n.narrows_absent = 'notApplicable' THEN 'no range to narrow (a point value)'
          WHEN n.narrows_derivation IS NOT NULL
               THEN format('computed: it narrows as the terms of `%s` do', n.narrows_derivation)
@@ -46,7 +47,8 @@ SELECT b.filing, b.seq, b.owns, b.origin, b.origin_absent AS absent,
               THEN format('stated in a sibling element (`%s`)', b.origin_derivation)
          WHEN b.origin_derivation IS NOT NULL
               THEN format('the edge of the terms `%s` computes the claim from', b.origin_derivation)
-         WHEN b.origin_absent = 'none'      THEN 'NOTHING sets it -- the range is where the measurements fell'
+         WHEN b.origin_absent = 'none'
+              THEN 'nothing sets it: the range is where the measurements fell'
          WHEN b.origin_absent = 'unmeasured' THEN 'nobody has asked'
          ELSE 'not a bound on a committed quantity'
        END AS who_owns_the_edge,

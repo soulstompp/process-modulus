@@ -1,4 +1,5 @@
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,

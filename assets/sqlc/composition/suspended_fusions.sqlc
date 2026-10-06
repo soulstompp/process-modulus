@@ -1,18 +1,17 @@
 # The fusions that owe no exact sum. One row per suspended fusion per quantity, and never more than
 # one however many grounds a composer filed.
 #
-# A suspension is a set, its reasons a bag
-#   A suspension is a set and its reasons are a bag, and keeping them in one relation puts a bag
-#   where every caller wants a set. `composition/suspension_grounds.sqlc` is the bag: one row per
-#   ground, carrying `suspended_because` for anybody who needs to say why. This is the projection
-#   onto the key that matters, and it is what an anti-join or a count should read.
+# One row per suspension, every ground elsewhere
+#   A suspension happens once, and its reasons can be several, so keeping them in one relation would
+#   repeat rows where every caller wants one. `composition/suspension_grounds.sqlc` keeps every
+#   ground, one row each, carrying `suspended_because` for anybody who needs to say why. This keeps
+#   only the key that matters, and it is what an anti-join or a count should read.
 #
-# The `DISTINCT` is load-bearing
-#   It is load-bearing rather than defensive. `every-unsized-conversion/shift-capacity` files an
-#   unsearched elimination and an unsized conversion, so it appears twice upstream and is suspended
-#   once. Dropping the projection inflates every count of suspended fusions by one row per extra
-#   ground.
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+# The `DISTINCT` carries weight
+#   It is not defensive. `every-unsized-conversion/shift-capacity` files an unsearched elimination
+#   and an unsized conversion, so it appears twice in the grounds and is suspended once. Dropping
+#   the `DISTINCT` would add one row to every count of suspended fusions per extra ground.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     :compose(composition/suspension_grounds.sqlc)

@@ -1,35 +1,29 @@
-# Every graph this model composes, measured, at both scopes. One row per (graph, filing), where
-# `filing IS NULL` is the graph taken whole and a non-null filing is that filing's cut of it.
-# Nodes, edges, components, and the two dimensions those three determine.
+# Every graph the filings make, measured at two scopes. One row per (graph, filing): a NULL filing
+# is the graph taken whole, and a filing is that filing's cut of it. Each row counts the graph's
+# nodes, edges and components, and the two figures those counts give, `rank_of_incidence` and
+# `cycle_space_dim`.
 #
-# The undirected walk lives here once
-#   `rank/cycle_space.sqlc` is this relation at the corpus-wide scope and
-#   `rank/decomposition.sqlc` is the comparison across scopes, so neither carries `nodes`, `sym`,
-#   `reach` or `comp` of its own: the recursion that finds connected components is one relation
-#   and the two readings are aggregations of it.
+# The walk that finds components lives here once
+#   `rank/cycle_space.sqlc` reads this relation across the whole corpus, and
+#   `rank/decomposition.sqlc` compares the two scopes, so neither keeps `nodes`, `sym`, `reach` or
+#   `comp` of its own: the recursion that finds connected components is one relation, and the two
+#   readings count over it. A copy of the walk that differed by a column on each line would pass any
+#   check that compares lines, so the walk lives in one place.
 #
-# A near-copy is invisible to a line scan
-#   A near-copy that differs by one column per line is invisible to any scan that compares
-#   lines, so a duplicate of this walk would have to be found by reading. Both instruments are
-#   needed and neither subsumes the other.
-#
-# Strang's arithmetic, once
-#   For an incidence matrix over `n` nodes, `m` edges and `c` components, the rank is `n - c` and
-#   the cycle space is the left nullspace at dimension `m - n + c`. Either formula spelled out in
-#   two files is two places for a sign to be wrong and one law that is green either way.
+# The two figures, worked out once
+#   Both come from the node, edge and component counts, and they are written here and nowhere else,
+#   so a sign cannot differ between two files.
 #
 # `m_edges` counts distinct edges
-#   The other reading is available and wrong. Building the whole-graph scope with `UNION ALL` and
-#   counting `count(*)` counts (filing, edge) pairs, so an edge filed under two filings inflates
-#   `m` without touching `n` or `c` and moves the cycle space by one per repeat. The two agree
-#   while no edge is filed twice, which is the state of this corpus, so nothing distinguishes
-#   them here. `m - n + c` means distinct edges.
+#   An edge filed under two filings counts once in the whole graph. Counting (filing, edge) pairs
+#   would raise `m_edges` without moving the nodes or the components, and add one to
+#   `cycle_space_dim` for each repeat. No edge is filed twice in this corpus, so the two counts
+#   agree here, and distinct edges are the ones that are right.
 #
-# The per-filing scope is a cut, not a subgraph sum
-#   Cutting a graph by filing can destroy a cycle that spans two of them, which is the whole
-#   point of `rank/decomposition.sqlc`: the unit graph's only cycle is corpus-wide and vanishes
-#   under the cut, and that is why `examples/diagramming/main.rs` may draw the layer graph per
-#   filing and not the unit graph.
+# The per-filing scope is a cut
+#   Cutting a graph by filing can break a loop that runs through two filings. The unit graph's one
+#   loop runs through the whole corpus and disappears under the cut, which is why
+#   `examples/diagramming` draws the layer graph per filing and not the unit graph.
 -- rank/graph_edges.sqlc, symmetrised and walked for components, counted at both scopes.
 WITH RECURSIVE
 edges AS (

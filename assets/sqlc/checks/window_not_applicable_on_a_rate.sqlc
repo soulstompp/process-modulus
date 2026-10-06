@@ -1,27 +1,23 @@
-# Every nameplate calling the duty-cycle question malformed, beside whether its unit runs on a
-# period. One row per examined nameplate, `violates` where the unit does have one.
+# Every nameplate calling the window question malformed, beside whether its unit runs on a
+# period. One row per nameplate examined, `violates` where the unit does have one.
 #
 # `notApplicable` only where the unit has no period
 #   The rule: a window is notApplicable only where the unit has no period. `12 people` has no
 #   period, so "five days" has nothing to be five days of and the question really is malformed.
-#   `4 GPU-hours per week` has one, so the question is perfectly answerable, and `notApplicable`
-#   there is a refusal dressed as a category error.
+#   `4 GPU-hours per week` has one, so the question can be answered, and `notApplicable` there is a
+#   refusal dressed as a category error.
 #
 # A nameplate with no unit is not examined
-#   That is the repair. `refutation`'s `object-storage` files its amount `notApplicable` (there
-#   is no unit at all) and its window `notApplicable` too. A NULL unit matches no `LIKE`, so a
-#   semi-join against a parsed denominator passes it, on the grounds that a unit which does not
-#   exist has no denominator. That is an unknown answered as a no. layers/absorber.sqlc states
-#   the principle: a question nobody can answer gets no row rather than a pass.
+#   `refutation`'s `object-storage` files its amount `notApplicable` (there is no unit at all) and
+#   its window `notApplicable` too. A unit that does not exist has no period, but passing it on
+#   those grounds answers an unknown with a no. layers/absorber.sqlc states the principle: a
+#   question nobody can answer gets no row rather than a pass.
 #
-# The semi-join reads a filed fact, never a parsed one
-#   Against free text, `LIKE '% per %' OR LIKE '% por %'` guesses the denominator out of the unit
-#   string and silently decides that `semana` is `week`: a reader's judgement written in SQL,
-#   which no comment on the query side can fix.
-#
-#   It is also the wrong predicate: a `LIKE` finds a denominator, and this rule needs a period.
-#   `pm:StatedDenominator` separates them, so the semi-join is against units/with_a_period.sqlc
-#   and `GPU-hour per GPU` does not count as a rate.
+# The period is a filed fact, never read out of the unit's text
+#   Guessing the denominator from the unit's text would decide quietly that `semana` is `week`, a
+#   reader's judgement written in SQL. It would also find a denominator, where this rule needs a
+#   period. `pm:StatedDenominator` keeps the two apart, so the semi-join is against
+#   units/with_a_period.sqlc, and `GPU-hour per GPU` does not count as a rate.
 -- pm:Divisibility/window with pm:absent/reason = notApplicable, against pm:Claim/pm:denominator.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

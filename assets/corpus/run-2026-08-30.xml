@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⭐ A RUN PROMOTED TO EVIDENCE: what a report cites when it argues from a trial.
-  ⛔ NOT a runner's working ledger, which is local, append-only, grows forever and is
-  a claim about ONE MACHINE.
+  A run promoted to evidence: what a report cites when it argues from a trial. It is not a
+  runner's working ledger, which is local, append-only, grows forever and is a claim about
+  one machine.
 
   Read the verdicts in this order, because the interesting one is not the failure:
 
-    notable    ⭐⭐ NOT CLAIMED, AND THE WITNESS ANSWERED ANYWAY. Never a failure, and
-               usually the most valuable line here: the witness admitted something we
-               assumed it must refuse. Either the model is stronger than we thought
-               or a guard is not guarding, and both are findings.
-    diverged   claimed, differs, and NOT declared, the one to fix. Three legitimate
-               responses: fix the witness, fix the case, or declare the exception.
-    unclaimed  quiet and correct.
+    notable    not claimed, and the witness answered anyway. Never a failure, and usually
+               the most valuable line here: the witness answered something the model
+               assumes it must refuse, so either the model is stronger than it says or a
+               guard is not guarding, and both are findings.
+    diverged   claimed, different, and not declared: the one to fix. It has three
+               legitimate responses: fix the witness, fix the case, or declare the
+               exception.
+    agreed     claimed, and the answer matches.
 
-  ⚠️ Illustrative.
+  Illustrative.
 -->
 <asrt:run xmlns:asrt="https://example.invalid/assertion/1.0"
           xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -37,8 +38,8 @@
     </asrt:answer>
   </asrt:result>
 
-  <!-- ⭐⭐ THE LINE WORTH READING. The witness did not claim this question and
-       answered it anyway, so a guard we believed was there is not. -->
+  <!-- The line worth reading. The witness did not claim this question and answered it
+       anyway, so a guard believed to be there is not. -->
   <asrt:result>
     <asrt:key>capability.backlog</asrt:key>
     <asrt:verdict>notable</asrt:verdict>

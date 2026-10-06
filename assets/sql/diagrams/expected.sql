@@ -5,14 +5,15 @@ SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
 FROM pm.filing f
 ),
 epistemics_documents AS (
--- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
+-- The top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
 SELECT s.name AS filing,
        x.root, x.ns,
        fi.notation, fi.absent AS notation_absent,
@@ -72,7 +73,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 diagrams_calls AS (
--- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+-- composition/parts.sqlc reduced to which layer is composed from which; one call activity per part.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (
@@ -109,7 +110,8 @@ FROM (
 ) i
 ),
 diagrams_category_members AS (
--- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
+-- pm:Operation/pm:Induction as which layer, never how much; BPMN 2.0
+-- tFlowElement/categoryValueRef.
 SELECT i.filing, i.operation, i.layer
 FROM (
     SELECT * FROM entries_inductions
@@ -167,7 +169,7 @@ SELECT d.filing, d.operation, d.layer,
 FROM pm.draw d
 ),
 diagrams_lane_members AS (
--- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
+-- entries/draws.sqlc reduced to which operation draws from which layer; one flowNodeRef per entry.
 SELECT d.filing, d.operation, d.layer
 FROM (
     SELECT * FROM entries_draws

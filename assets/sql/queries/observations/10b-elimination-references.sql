@@ -1,4 +1,4 @@
--- §10b Every `between` as a cross-document REFERENCE, beside whether it lands on a layer here.
+-- §10b Every `between` as a reference to another document, beside whether it lands on a layer here.
 -- eliminations/references.sqlc against eliminations/resolved.sqlc, the whole beside the half.
 WITH eliminations_between AS (
 -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.

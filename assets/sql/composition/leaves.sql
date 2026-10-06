@@ -33,7 +33,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts

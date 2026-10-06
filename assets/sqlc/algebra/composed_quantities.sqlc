@@ -1,33 +1,33 @@
-# The filed figures the example reads, against the sums that are not owed, checked as a partition
-# of every stated demand, nameplate and draw. One row: whether |stated| = |3b| +
-# |stated ⋉ suspended|.
+# The filed figures of every composed layer, against the sums that are not owed, checked against
+# every stated demand, nameplate and draw. One row: whether every stated figure is either in
+# composition/composed_quantities.sqlc or suspended, counted row for row.
 #
 # `kept` composes the subject
-#   `kept` composes the subject rather than re-deriving it, and that is the whole point of the
-#   law. Spell the anti-join out inline and it governs a copy of
-#   queries/matrices/3b-composed-quantities.sqlc: change that file's WHERE and this law still passes,
-#   which is the one failure a soundness contract cannot afford because it is invisible.
-#   algebra/owed_equality.sqlc composes composition/owed_equality.sqlc for the same reason.
+#   `kept` composes the subject rather than working it out again, and that is the point of the
+#   law. Spell the anti-join out here and it governs a copy of
+#   composition/composed_quantities.sqlc: change that file's WHERE and this law still
+#   passes, a failure nobody would see. algebra/owed_equality.sqlc composes
+#   composition/owed_equality.sqlc for the same reason.
 #
 # Why not `EXCEPT`
-#   The left operand is a set here, so this one could convert to `EXCEPT`, and must not. The
-#   query carries the figure's three points and the eliminations beside them, and `EXCEPT`
-#   returns only what both arms can spell. π does not distribute over ∖: project first and you
-#   subtract on fewer attributes. The anti-join is correct for payload, not merely habitual.
--- layers/summed_quantities.sqlc partitioned by the query the roster names as this law's subject.
+#   The left operand has no repeated rows here, so this one could be written with `EXCEPT`, and
+#   must not be. The query carries the figure's three values and the eliminations beside them, and
+#   `EXCEPT` returns only the columns both sides share: taking the columns first would subtract on
+#   fewer of them. The anti-join is right for the columns it carries.
+-- layers/summed_quantities.sqlc split by the query the roster names as this law's subject.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
 ) a
 LEFT JOIN (
-    SELECT 'queries/matrices/3b-composed-quantities' AS subject,
+    SELECT 'composition/composed_quantities' AS subject,
            x.total = x.kept + x.removed AS holds,
-           format('%s stated figures = %s carried + %s suspended', x.total, x.kept, x.removed)
+           format('%s stated figures: %s carried, %s suspended', x.total, x.kept, x.removed)
                AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) d
                WHERE d.low IS NOT NULL)                                              AS total,
-             (SELECT count(*) FROM ( :compose(queries/matrices/3b-composed-quantities.sqlc) ) k)
+             (SELECT count(*) FROM ( :compose(composition/composed_quantities.sqlc) ) k)
                                                                                      AS kept,
              (SELECT count(*) FROM ( :compose(layers/summed_quantities.sqlc) ) d
                WHERE d.low IS NOT NULL

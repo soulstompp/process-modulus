@@ -1,36 +1,35 @@
-# What each rule actually examined, and whether that is enough to mean anything. One row per
-# rule: how many items it looked at, how many breached it, and a verdict on the count itself.
+# What each rule actually examined, and whether that is enough to mean anything. One row per rule:
+# how many items it looked at, how many breached it, and a verdict on the count itself.
 #
 # A rule that examined nothing did not pass
 #   This repository names the trap in one sentence, "a bound with nothing to bound passes
 #   loudest", and this is where it is answered rather than restated. An empty violations table
-#   beside a zero here is a checker reporting on its own silence.
-#     examined = 0  `VACUOUS`. The rule proves nothing whatever.
+#   beside a zero here is a check reporting on its own silence.
+#     examined = 0  `VACUOUS`. The rule shows nothing whatever.
 #     examined < 3  `thin`. One or two rows is a demonstration, not evidence.
 #     otherwise     `ok`.
 #
 # A thin verdict is about authorship
 #   It is usually a fact about authorship, not about the world. If a rule examines one row, the
-#   question is who wrote the corpus and what they filed, not whether the model is wrong. A
-#   fixture can raise the number honestly, because a fixture is a stipulation; a corpus filing
-#   cannot, because that would mean inventing an observation nobody made.
+#   question is who wrote the corpus and what they filed, not whether the model is wrong. A fixture
+#   can raise the number honestly, because a fixture is a stipulation; a corpus filing cannot,
+#   because that would mean making up an observation nobody made.
 #
 # Why this groups over a roster join
 #   The vacuous row is the whole reason this is a `GROUP BY` over a roster join rather than over a
-#   population. Group a filtered population and a rule with nothing to examine produces no row at
-#   all, so the checker's most important verdict would be delivered by silence, which is
-#   indistinguishable from the rule not existing. Every check emits its roster row first, so
-#   `examined = 0` is a row you can read.
+#   population. Group a filtered population, and a rule with nothing to examine produces no row at
+#   all, so the most important verdict would be delivered by silence, which cannot be told from the
+#   rule not existing. Every check emits its roster row first, so `examined = 0` is a row you can
+#   read.
 #
 # One relation, no restated population
-#   Every count here is over the same relation the violations are filtered from. Nothing restates
-#   a population, so nothing here can be about a different set of rows than the rule it reports
-#   on.
+#   Every count here is over the same relation the violations are filtered from. Nothing restates a
+#   population, so nothing here can be about a different set of rows than the rule it reports on.
 -- folds/rule_subjects.sqlc, one row per rule either side names.
 SELECT f.subject                        AS rule,
        f.answered                       AS examined,
        f.violated                       AS violations,
-       CASE WHEN f.answered = 0 THEN '⛔ VACUOUS - proves nothing'
+       CASE WHEN f.answered = 0 THEN 'vacuous: examined nothing'
             WHEN f.answered < 3 THEN 'thin'
             ELSE 'ok' END               AS verdict
 FROM (

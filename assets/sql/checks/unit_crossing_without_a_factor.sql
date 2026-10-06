@@ -14,7 +14,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -99,7 +99,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -176,7 +177,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -329,7 +331,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -393,7 +396,8 @@ JOIN (
 WHERE q.low IS NOT NULL
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -422,7 +426,8 @@ FROM (
 WHERE s.low IS NOT NULL
 ),
 composition_part_quantities AS (
--- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed layer.
+-- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed
+-- layer.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        p.factor_state, p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        part.quantity,
@@ -455,7 +460,8 @@ LEFT JOIN (
                            WHEN 'stated'     THEN 'filed'
                            WHEN 'absent'     THEN format('filed as `%s`', p.factor_absent)
                            WHEN 'derivation' THEN format('filed as the output of `%s`', p.factor_derivation)
-                           WHEN 'omitted'    THEN 'NOT FILED, so a reader supplies one' END) AS detail
+                           WHEN 'omitted'    THEN 'not filed, so a reader supplies one'
+                      END) AS detail
         FROM (
             SELECT * FROM composition_part_quantities
         ) p

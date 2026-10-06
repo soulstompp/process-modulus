@@ -1,9 +1,9 @@
 //! Running a generated filing through the corpus's own ingest and rules.
 //!
-//! ⭐⭐⭐ EVERY LINE OF THE EXTRACTION IS BYTE-IDENTICAL TO `assets/sql/ingest.sql`, which is the
-//! whole reason for building the script this way rather than writing a second ingest. A generated
-//! filing that passed only because it went through a friendlier reader would corroborate nothing.
-//! The edits are two lines added to the list of documents and the final `COMMIT` becoming a
+//! Every line of the extraction is the same, byte for byte, as `assets/sql/ingest.sql`, so a
+//! generated filing goes through the very reader the corpus goes through. A filing that passed
+//! only through a friendlier reader would corroborate nothing. The edits are two lines per
+//! generated filing added to the list of documents, and the final `COMMIT` replaced by a
 //! `ROLLBACK`, so a loaded corpus survives the run untouched.
 
 use std::fmt::Write as _;
@@ -20,8 +20,8 @@ pub fn build_script(written: &[(String, PathBuf)]) -> Result<String, Box<dyn std
     let mut s = String::new();
     let mut spliced = false;
     for line in ingest.lines() {
-        // ⛔ The transaction must stay open so the rules can see the generated rows and the
-        //   rollback can take them away again.
+        // The transaction stays open, so the rules see the generated rows and the rollback takes
+        // them away again.
         if line.trim() == "COMMIT;" {
             continue;
         }
@@ -57,8 +57,8 @@ pub fn build_script(written: &[(String, PathBuf)]) -> Result<String, Box<dyn std
         "SELECT 'VIOLATION', filing, rule, layer, coalesce(detail, '') FROM v WHERE violates;"
     )?;
 
-    // ⭐ DISTINCT RULES, NOT ROWS. A filing with forty layers appears in one rule forty times,
-    //   which says nothing about how much of the rule set it exercised.
+    // Distinct rules, not rows. A filing with forty layers appears in one rule forty times, which
+    // says nothing about how much of the rule set it exercised.
     writeln!(s, "WITH v AS (\n{checks}\n)")?;
     writeln!(
         s,
@@ -67,14 +67,12 @@ pub fn build_script(written: &[(String, PathBuf)]) -> Result<String, Box<dyn std
          FROM v WHERE filing IN ({generated}) GROUP BY filing;"
     )?;
 
-    // ⭐⭐⭐ THE MOST USEFUL LINE IN THE WHOLE EXAMPLE, AND IT IS ABOUT WHAT THE BENCH CANNOT DO.
-    //    A generated filing passing every rule is worth little without knowing which rules it
-    //    never reached. These are the ones some real document exercises and no generated one
-    //    does, which is a list of what the bench would have to grow to be a corpus.
+    // What the bench cannot do. A generated filing passing every rule is worth little without
+    // knowing which rules it never reached. These are the rules some real document exercises and
+    // no generated one does: what the bench would have to grow to be a corpus.
     //
-    // ⛔ AN ANTI-JOIN AND NOT AN `EXCEPT`. `examples/soundness/main.rs` argues at length that a set
-    //   difference fails to a plausible table rather than to an error, and the argument does not
-    //   stop applying because this file is an example.
+    // An anti-join and not an `EXCEPT`: a set difference fails to a plausible table rather than
+    // to an error, as `examples/soundness/main.rs` explains.
     writeln!(s, "WITH v AS (\n{checks}\n)")?;
     writeln!(
         s,

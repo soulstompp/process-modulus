@@ -1,4 +1,5 @@
--- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they
+-- compose".
 WITH checks_roster AS (
 -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
@@ -14,7 +15,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -75,7 +76,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -103,7 +104,7 @@ SELECT root_filing, root_layer, filing, layer, depth, path,
 FROM walk
 ),
 composition_reachable AS (
--- composition/descent.sqlc unioned with the identity on composition/parts.sqlc: F* = F+ ∪ I.
+-- composition/descent.sqlc unioned with each part reaching itself, from composition/parts.sqlc.
 SELECT DISTINCT root_filing, root_layer, filing, layer
 FROM (
     SELECT * FROM composition_descent
@@ -115,8 +116,8 @@ FROM (
 ) p
 ),
 composition_jagged_layers AS (
--- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
--- composition/descent.sqlc, for the layer two sibling parts both reach.
+-- composition/parts.sqlc joined to itself on the fusion, against composition/descent.sqlc with
+-- each layer reaching itself, for the layer two sibling parts both reach.
 SELECT DISTINCT
        a.composition    AS filing,
        a.composed_layer AS layer,

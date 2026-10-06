@@ -1,53 +1,45 @@
-# The composition map's null space has the dimension the layer graph says it has. One row.
+# The room to shift supply between parts without moving any composed figure is what the layer graph
+# says it is. One row.
 #
 # The identity
-#   A part belongs to one fusion, so folding the parts onto their fusions gives fibre sizes whose
-#   sum is the number of parts and whose box count is the rank of `F`. The layer graph counts the
-#   same parts as edges. So `Σ parts = m` and `dim ker(F Phi) = Σ (parts - 1) = m - |fusions|`,
-#   and neither side is free to move alone.
-#   Proof: `src/proofs/README.md`, entry `composition_kernel`.
+#   A part belongs to one fusion. Each fusion's room is one fewer than its parts, so the room across
+#   the corpus is the number of parts less the number of fusions. The layer graph counts the same
+#   parts as edges, so the two counts are read from each end, and neither side is free to move
+#   alone.
 #
-# Unconditional, and the forest form is the special case
-#   Euler gives `m = n - c + dim(cycle)`, so on a graph whose cycle space is zero the identity
-#   reads `dim ker = (n - c) - |fusions|`, which is the leaf count less the component count. That
-#   is the form worth carrying in the head, and it is not the form asserted here: gating this law
-#   on the cycle space would make it abstain exactly when the graph got interesting, and
-#   `algebra/cycle_space.sqlc` is already the law that holds the forest.
+# Unconditional
+#   Where the layer graph has no loops, the identity can be read off the layers at the bottom and
+#   the separate pieces of the graph. That form is not the one asserted here: making this law
+#   depend on the graph having no loops would make it abstain exactly when the graph got
+#   interesting, and `algebra/cycle_space.sqlc` already holds the loops at zero.
 #
-# What it can actually catch, which is not the arithmetic
-#   `Σ (parts - 1) = Σ parts - |fusions|` is true of any fold, so the content of this law is the
-#   crossing: that the fold's `Σ parts` is the graph's `m` and the fold's box count is the graph's
-#   rank contribution. `rank/graph_edges.sqlc` flattens a layer's `(filing, layer)` into one
-#   string on a `/`, and `rank/graph_measures.sqlc` counts the edges `DISTINCT (graph, filing,
-#   from_node, to_node)` afterwards. The flattening is injective on this corpus by luck rather
-#   than by construction, and it is the one place that has to be true. Two layers colliding under
-#   it, or one fusion naming one layer twice, drops `m` below `Σ parts` and this law is what
+# What it can catch, which is not the arithmetic
+#   One fewer per fusion, added up, is the parts less the fusions for any grouping, so what this law
+#   checks is the crossing: that the grouping's count of parts is the graph's count of edges.
+#   `rank/graph_edges.sqlc` joins a layer's `(filing, layer)` into one string on a `/`, and
+#   `rank/graph_measures.sqlc` counts the edges `DISTINCT (graph, filing, from_node, to_node)`
+#   afterwards. Joining into one string keeps layers apart on this corpus by luck rather than by
+#   design, and it is the one place that has to be true. Two layers colliding under it, or one
+#   fusion naming one layer twice, drops the edge count below the part count, and this law is what
 #   notices.
 #
-# The other three subspaces have their own laws
-#   This one is the null space on the part side. `algebra/composition_row_space.sqlc` is the row
-#   space beside it, `algebra/composition_image.sqlc` is the column space and the left null space
-#   on the fusion side, and `algebra/composition_closure.sqlc` is what becomes of this dimension
-#   once compositions nest. Four laws over one map, because it has four subspaces.
+# Its three companions
+#   This one is the room on the part side. `algebra/composition_row_space.sqlc` is the one way each
+#   fusion's figure moves, beside it; `algebra/composition_image.sqlc` is what the parts can reach
+#   on the fusion side; and `algebra/composition_closure.sqlc` is what becomes of this count once
+#   compositions nest. Four laws over one composition map.
 #
-# Where the independent route is
-#   Two relations reading one source by different code is the weaker half of the claim. The
-#   stronger half is `examples/matrices/main.rs`, which builds `F` and `Phi` as dense matrices and
-#   takes the rank by elimination, sharing nothing with either side of this law. A law and a
-#   program disagreeing is the finding; this law alone would leave the dimension unchecked
-#   against any arithmetic at all.
-#
-# Not vacuous by construction
-#   A corpus with no fusions satisfies the identity as `0 = 0`. The floor requires parts, fusions
-#   and edges before the comparison counts, so an empty corpus reports that it examined nothing
-#   rather than that the model holds.
+# Not passing on nothing
+#   A corpus with no fusions satisfies the identity as nought equals nought. The floor requires
+#   parts, fusions and edges before the comparison counts, so an empty corpus reports that it
+#   examined nothing rather than that the model holds.
 #
 # Probe
 #   examples/probes runs it as `composition_kernel`, by collapsing every part layer of one filing
-#   onto the filing's own name in the composed SQL: `m` falls and `Σ parts` does not.
-#   ⛔ Dropping the `DISTINCT` in `rank/graph_measures.sqlc` moves nothing instead, because this
-#   corpus files no duplicate edge, so it is not a probe of anything.
--- rank/composition_kernel.sqlc folded, against rank/graph_measures.sqlc's layer row.
+#   onto the filing's own name in the composed SQL: the edge count falls and the part count does
+#   not. Dropping the `DISTINCT` in `rank/graph_measures.sqlc` moves nothing instead, because the
+#   corpus files no edge twice, so it is not a probe of anything.
+-- rank/composition_kernel.sqlc gathered, against rank/graph_measures.sqlc's layer row.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -57,8 +49,8 @@ LEFT JOIN (
            x.parts > 0 AND x.fusions > 0 AND x.edges > 0
            AND x.parts = x.edges
            AND x.kernel = x.edges - x.fusions                                        AS holds,
-           format('dim ker %s over %s part(s) in %s fusion(s); the layer graph has %s edge(s), '
-                  '%s node(s), %s component(s) and cycle space %s',
+           format('room for %s move(s) over %s part(s) in %s fusion(s); the layer graph has '
+                  '%s edge(s), %s node(s), %s component(s) and %s independent loop(s)',
                   x.kernel, x.parts, x.fusions, x.edges,
                   x.nodes, x.components, x.dim)                                      AS detail
     FROM (

@@ -1,4 +1,4 @@
--- composition/fusions.sqlc against the fusions that are a row of F Phi.
+-- composition/fusions.sqlc against the fusions that have a resolved part.
 WITH composition_fusions AS (
 -- asrt:Fusion: the composed layer it names, and asrt:observed.
 SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
@@ -38,7 +38,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 rank_composition_kernel AS (
--- asrt:Fusion/asrt:Part folded onto its fusion: the fibre size, and the block dimension it fixes.
+-- asrt:Fusion/asrt:Part counted per fusion: its parts, and the offsets that count fixes.
 SELECT p.composition,
        p.composed_layer,
        count(*)     AS parts,

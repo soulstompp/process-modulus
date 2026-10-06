@@ -1,7 +1,8 @@
 -- §5  Which buffers the corpus sizes, and which of them read zero.
 -- reports/slack_census.sqlc over every filing, projected for the example.
 WITH entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -9,7 +10,8 @@ SELECT s.filing, s.layer, s.buffer,
 FROM pm.slack s
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note

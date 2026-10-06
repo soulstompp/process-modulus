@@ -1,25 +1,21 @@
 //! Every example's own source, as one string, read once.
 //!
-//! ⛔⛔ TWO PROGRAMS ASK THE SAME QUESTION OF THIS DIRECTORY, and `examples/compositions/main.rs`
-//! says outright in its own comment that keeping the two in step matters more than either being
-//! clever. They were two copies of a `read_dir` over `examples/`, and a copy is a copy: when the
-//! programs moved into directories of their own, both copies began reading DIRECTORIES.
-//! `read_to_string` fails on a directory, `unwrap_or_default` turns that into an empty string,
-//! and the question *is this relation run by an example* starts answering no about every relation
-//! in the tree.
+//! Two programs, `compositions` and `observations`, ask this directory the same question: is this
+//! relation run by an example? They read it through this one function, so their answers stay in
+//! step. Each program lives in a directory of its own, so the walk recurses: a reader that stopped
+//! at the top level would meet directories, and a directory read as a file gives an empty string
+//! that answers no for every relation in the tree.
 //!
-//! ⭐⭐ SO THE WALK IS ONE FUNCTION, IT RECURSES, AND IT REFUSES AN EMPTY ANSWER. A scan whose
-//! population can silently become nothing is the vacuity this repository keeps naming: the answer
-//! it gives is a confident no, which reads exactly like a finding.
+//! The walk refuses an empty answer. A scan whose population can silently become nothing gives a
+//! confident no, which reads exactly like a finding.
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Every `.rs` file under `examples/`, concatenated.
 ///
-/// ⚠️ The order is a function of the PATHS, so two machines build the same string. Nothing here
-/// depends on it today, and a scan whose result depends on directory order is a scan that answers
-/// differently on two machines for reasons nobody can see.
+/// The files are sorted by path, so every machine builds the same string. A scan that followed
+/// directory order could answer differently on two machines for reasons nobody can see.
 pub fn all() -> String {
     let mut paths = Vec::new();
     collect(Path::new("examples"), &mut paths);

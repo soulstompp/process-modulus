@@ -1,54 +1,52 @@
-# Every cycle in the unit graph, beside the product of the factors round it. One row per cycle,
-# `violates` where one does not lie inside that product.
+# Every loop in the unit graph, beside the product of the conversion factors round it. One row per
+# loop, `violates` where one does not lie inside that product.
 #
-# A cycle of conversions must come back
-#   The rule: convert a quantity all the way round a cycle of units and you must be able to get
+# A loop of conversions must come back
+#   The rule: convert a quantity all the way round a loop of units and you must be able to get
 #   back what you started with. `units/conversions.sqlc` reads each fusion part that carries a
-#   factor as an edge from its part layer's unit to its composed layer's unit, so the corpus is a
-#   graph and this walks it.
+#   factor as an edge from its part layer's unit to its composed layer's unit, so the filings make
+#   a graph, and this walks it.
 #
-# Containment, not equality
-#   Arithmetic forces it rather than taste, for two separate reasons, and both are worth knowing.
+# Inside, not equal
+#   One must lie inside the product rather than equal it, for two separate reasons.
 #
-# The factors are intervals
-#   `merge-holding-composition` files its month as [672, 720, 744] and says why: "a month is not
-#   720 hours; it is [672, 720, 744] and which one you got depends on which month." Three
-#   intervals multiplied give an interval, so the most a receiver can ask is that one is inside
-#   it.
+# The factors are ranges
+#   `merge-holding-composition` files its month as 672, 720 and 744 hours and says why: a month is
+#   not 720 hours, and which one you got depends on which month. Multiplying ranges gives a range,
+#   so the most a receiver can ask is that one is inside it.
 #
-# No document could close it exactly, even at the mode
-#   Every cycle in this graph runs through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal
-#   has only twos and fives under the line, so no pair of filable decimals multiplies to 1/720.
-#   The nine is the obstruction, and it is a fact about the corpus's own calendar rather than
-#   about anybody's care. Proof: `src/proofs/README.md`, entry `cycle_closes`.
+# No document could close it exactly, even at the most likely value
+#   Every loop in this graph runs through 720, and one over 720 has no exact decimal, so no pair of
+#   factors a document can file multiplies to exactly one over 720. That comes from the corpus's
+#   own calendar, not from anybody's care.
 #
-# The width is the dependency problem
-#   It is not measurement error. The month that turns cards into card-hours is the same month
-#   that turns node-hours back into cards. Multiplying the intervals treats them as two
-#   independent months and spans nine per cent either way; a receiver who knew they were one
-#   month would get exactly one. This is the third site in this repository for the same fact,
-#   after `merge-holding-composition/compute`'s shares and the composed remainder beside them.
-#   So a tighter rule would accuse a correct filing, which is why this one is as loose as it is.
+# The width comes from one month counted twice
+#   It is not measurement error. The month that turns cards into card-hours is the same month that
+#   turns node-hours back into cards. Multiplying the ranges treats them as two separate months and
+#   spans nine per cent either way; a receiver who knew they were one month would get exactly one.
+#   `merge-holding-composition/compute`'s shares and the composed remainder beside them show the
+#   same thing. A tighter rule would accuse a correct filing, which is why this one is as loose as
+#   it is.
 #
-# One row per cycle, not per rotation
-#   A three-edge cycle is found three times, once from each unit; the walk keeps the rotation that
-#   starts at the smallest unit so a reader counts cycles rather than starting points.
+# One row per loop, not per starting point
+#   A three-edge loop is found three times, once from each unit. The walk keeps the one that starts
+#   at the smallest unit, so a reader counts loops rather than starting points.
 #
-# No depth bound
-#   A depth bound beside the path guard would be wrong, and composition/descent.sqlc's own header
-#   says why: *a depth bound is a guess about how deep a legitimate composition goes*. It would
-#   also be redundant: the guard already refuses to revisit a non-start unit, so the walk
-#   terminates on its own, bounded by the number of units there are.
+# No depth limit
+#   A depth limit beside the path guard would be wrong, and composition/descent.sqlc says why: a
+#   depth limit is a guess about how deep a legitimate composition goes. It would also add
+#   nothing: the guard already refuses to revisit a unit other than the start, so the walk ends on
+#   its own, after at most as many steps as there are units.
 #
-# What a bound would add is a silent blind spot
-#   The unit count bounds any acyclic path, and a cycle longer than the bound would be missed
-#   with no vacuum verdict and a clean pass. That is worse than vacuous: coverage would still show
-#   a row examined and passing.
+# What a limit would add is a blind spot
+#   The number of units already limits any path without a loop, and a loop longer than an explicit
+#   limit would be missed with no verdict saying the rule examined nothing and a clean pass. That
+#   is worse than examining nothing: coverage would still show a row examined and passing.
 #
 # Probe
 #   Put `WHERE w.depth < 6` beside the path guard, then raise it to 20, then tighten it below the
-#   graph's own depth. The verdict must be identical in every case and to the unbounded walk; a
-#   bound here prunes nothing.
+#   graph's own depth. The verdict must be identical in every case and to the unlimited walk; a
+#   limit here removes nothing.
 -- units/conversions.sqlc walked until a unit repeats; the product against one.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -75,7 +73,7 @@ LEFT JOIN (
            format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
                   array_to_string(w.path, ' to '),
                   round(w.p_low, 6), round(w.p_high, 6),
-                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'does not lie' END)
            AS detail
     FROM walk w
     WHERE w.at = w.start

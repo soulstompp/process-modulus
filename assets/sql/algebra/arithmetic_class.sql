@@ -1,70 +1,194 @@
 -- arithmetic/all.sqlc, one candidate to exactly one verdict.
 WITH algebra_roster AS (
--- the set-algebraic laws this tree's relations claim to obey.
+-- the laws these queries' relations claim to obey.
 SELECT * FROM (VALUES
-  ('decomposition',    '|E| = Σ_filing |E_filing|',  'rank/decomposition',               'partition',  'bag: one edge counted in both scopes'),
-  ('compose_decomposition','|N| = Σ_dir |N_dir|, |E| = Σ_dir |E_dir| + crossing', 'rank/compose_decomposition', 'partition', 'set: a template is in exactly one directory'),
-  ('cycle_space',      'dim ker B = 0 ⟺ |jagged| = 0','rank/cycle_space',                 'value',      'set: one row, the layer graph against its rule'),
-  ('composition_kernel','dim ker F Φ = m − |fusions|','rank/composition_kernel',        'value',      'set: one row, the fusion fold against the layer graph'),
-  ('composition_row_space','dim row ⊕ dim ker = parts, per fibre; Σ dim row = rank', 'rank/composition_row_space', 'value', 'set: one row per fusion, folded to two subjects'),
-  ('composition_image', '|declared| = rank + dim ker (F Φ)ᵀ, and the left null is empty', 'rank/composition_image', 'value', 'set: one row per composition'),
-  ('composition_closure','dim ker Ψ = Σ dim ker over the levels = |leaves| − 1, and Ψ''s own row is positive', 'rank/composition_closure', 'value', 'set: one row per fusion taken as a root'),
-  ('dimension_use',    'parents(dimension) ⊆ declared', 'algebra/dimension_use',         'roster',     'set: one row per undeclared parent'),
-  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
-  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
-  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
-  ('composed_quantities','|A| = |A∖B| + |A⋉B|',      'queries/matrices/3b-composed-quantities','difference','set'),
-  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
-  ('carried',          '|A| = |A∖B| + |A⋉B|',        'composition/carried',              'difference', 'bag: anti-join preserves it'),
-  ('owed_remainder',   '|A| = |A∖B| + |A⋉B|',        'composition/owed_remainder',       'difference', 'set'),
-  ('settled_remainders','|A| = |A∖B| + |A⋉B|',       'composition/settled_remainders',   'difference', 'bag: one row per path'),
-  ('unresolved_parts', '|A| = |A∖B| + |A⋉B|',        'composition/unresolved_parts',     'difference', 'set: pm.part''s key'),
-  ('remainder_in_force','|A| = |A∖B| + |A⋉B|',       'layers/remainder',                 'difference', 'set: one row per layer'),
-  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
-  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
-  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
-  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
-  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL'),
-  ('part_regimes',     '|A| = |A∖B| + |A⋉B|',        'checks/part_regime_disagrees',     'difference', 'set: pm.part''s key'),
-  ('crossed_remainder','r = [n_low − d_high, n_mode − d_mode, n_high − d_low]', 'layers/remainder', 'value', 'set: one row per remainder'),
-  ('exposure',         'exposure = max(−r_low, 0)',  'layers/remainder',                 'value',      'set: one row per remainder'),
-  ('remainder_decomposes','r = m·q − (d mod q)',     'layers/decomposed',                'value',      'set: one row per lumpy remainder'),
-  ('sawtooth',         'one tooth ⇒ residues ordered', 'layers/decomposed',              'value',      'set: one row per demand inside one tooth'),
-  ('composed_quantum', 'g divides the composed nameplate', 'composition/composed_quantum', 'value',     'set: one row per composed layer with a quantum'),
-  ('fusion_sum',       'x_composed = F Φ x_parts − e, per quantity', 'composition/fused',   'value',      'set: one row per owed fusion quantity'),
-  ('composed_remainder','r = F Φ r_parts − e_n + e_d, inside n − d', 'composition/fused_remainders', 'value', 'set: one row per owed composed remainder'),
-  ('derived_quantities','x_derived = F Φ x_parts − e, one level at a time', 'composition/derived_quantities', 'value', 'set: one row per figure filed as its fusion''s sum'),
-  ('conforms',         'no loaded document violates a rule', 'checks/all',               'conformance', 'set: one row per rule'),
-  ('fit_domain',       'axis ⇔ closure reaches the fit; exercised ⇔ examined > 0', 'reports/fit_coverage', 'roster', 'set: one row per rule'),
-  ('absences_filed',   'census(columns) = census(elements), per filing, group and reason', 'epistemics/absences', 'roster', 'set: one row per group of positions'),
-  ('derivations_filed', 'census(columns) = census(elements), per filing, position and identity', 'epistemics/derivations', 'roster', 'set: one row per position'),
-  ('fusions_have_parts', 'parts → fusions is onto: no fusion names no part; Σ parts = |references|', 'folds/fusion_parts', 'partition', 'set: one row per composition'),
-  ('searches_answered', 'each search: entries filed ⇔ no reason typed', 'epistemics/searches', 'partition', 'set: one row per search'),
-  ('subject_boxes',    'rows = Σ boxes per subject; Σ rows = |population|', 'folds/contract_subjects', 'partition', 'bag: a population counted into its subjects'),
-  ('factor_state',     'each part in the factor state its columns file', 'composition/part_references', 'partition', 'set: pm.part''s key'),
-  ('fusion_quantities', '|A| = |A∖B| + |A⋉B|',       'composition/fusion_quantities',    'difference', 'set: one row per layer and quantity'),
-  ('part_sums',        'Σ over fusions of Σ parts = Σ parts', 'folds/part_sums',           'additive',   'bag: every part counted'),
-  ('suspended_quantities', '|A| = |A∖B| + |A⋉B|',   'composition/suspended_quantities', 'difference', 'set: one row per fusion and quantity'),
-  ('unsized_conversions_are_unsettled', 'π(A) ⊆ B: a conversion nobody could size cannot be differenced', 'composition/unsized_conversions', 'containment', 'set: one row per composed layer'),
-  ('part_quantities',  '|A| = |A∖B| + |A⋉B|',        'composition/part_quantities',      'difference', 'set: one row per part and quantity'),
-  ('figures',          '|D ∪ N| = |D| + |N| − |D ∩ N|', 'layers/figures',                  'union',      'set: one row per layer'),
-  ('served_totals',    'Σheld = Σserved + Σunserved, per layer', 'folds/served_totals',     'additive',   'bag: γ over holders'),
-  ('layer_units',      'a pin is the whole relation: the payload constant on the key, the pinned value reaching it', 'units/conversions', 'dependency', 'set: one row per condition'),
-  ('class_domain',     'every class of every declared codomain stands where its count puts it', 'epistemics/class_domain', 'roster',     'set: one row per condition')
+  ('decomposition',
+   'cutting the graph by filing loses no edge',
+   'rank/decomposition', 'partition', 'repeats: one edge counted in both scopes'),
+  ('compose_decomposition',
+   'cut by directory, every template is in one directory and every edge is kept or crossing',
+   'rank/compose_decomposition', 'partition',
+   'no repeats: a template is in exactly one directory'),
+  ('cycle_space',
+   'the layer graph has a loop exactly when some fusion''s parts overlap',
+   'rank/cycle_space', 'value', 'no repeats: one row, the layer graph against its rule'),
+  ('composition_kernel',
+   'the room to move parts without moving a composed figure is the parts less the fusions',
+   'rank/composition_kernel', 'value',
+   'no repeats: one row, the fusion fold against the layer graph'),
+  ('composition_row_space',
+   'per fusion, the one way its figure moves and the ways that leave it still make up every '
+   'part, and the parts and the fusions agree on how many figures the parts can move',
+   'rank/composition_row_space', 'value',
+   'no repeats: one row per fusion, folded to two subjects'),
+  ('composition_image',
+   'nothing on the fusion side is out of reach of the parts, and where something would be, a '
+   'rule accuses somebody',
+   'rank/composition_image', 'value', 'no repeats: one row per composition'),
+  ('composition_closure',
+   'under any fusion, the room to move the layers at the bottom is the room inside each fusion '
+   'below it, added up',
+   'rank/composition_closure', 'value', 'no repeats: one row per fusion taken as a root'),
+  ('dimension_use',
+   'only a declared template composes the list of every layer',
+   'algebra/dimension_use', 'roster', 'no repeats: one row per undeclared parent'),
+  ('owed_equality',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/owed_equality', 'difference', 'no repeats'),
+  ('leaves',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/leaves', 'difference', 'repeats: removing them would be a defect'),
+  ('jagged_layers',
+   'what the difference keeps and what it removes make up the whole left side',
+   'queries/observations/14-jagged-layers', 'difference', 'repeats: one row per doubled layer'),
+  ('composed_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/composed_quantities', 'difference', 'no repeats'),
+  ('integrity',
+   'what the difference keeps and what it removes make up the whole left side',
+   'reports/integrity', 'difference', 'repeats: removing them is intended'),
+  ('carried',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/carried', 'difference', 'repeats: the anti-join keeps them'),
+  ('owed_remainder',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/owed_remainder', 'difference', 'no repeats'),
+  ('settled_remainders',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/settled_remainders', 'difference', 'repeats: one row per path'),
+  ('unresolved_parts',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/unresolved_parts', 'difference', 'no repeats: pm.part''s key'),
+  ('remainder_in_force',
+   'what the difference keeps and what it removes make up the whole left side',
+   'layers/remainder', 'difference', 'no repeats: one row per layer'),
+  ('borne',
+   'what every holder holds is what a buffer absorbed plus what went unserved',
+   'entries/borne', 'additive', 'repeats: added up over holders'),
+  ('arithmetic_class',
+   'each candidate in exactly one class',
+   'arithmetic/all', 'partition', 'no repeats'),
+  ('remainder_standing',
+   'each remainder in exactly one standing',
+   'layers/remainder_scope', 'partition', 'no repeats'),
+  ('exposure_standing',
+   'each exposed layer in exactly one standing',
+   'layers/exposure_scope', 'partition', 'no repeats'),
+  ('searches',
+   'the union holding both searches has as many rows as the two added together',
+   'epistemics/searches', 'union', 'repeats: UNION ALL'),
+  ('part_regimes',
+   'what the difference keeps and what it removes make up the whole left side',
+   'checks/part_regime_disagrees', 'difference', 'no repeats: pm.part''s key'),
+  ('crossed_remainder',
+   'the remainder''s low is the nameplate''s low less the demand''s high, its most likely is '
+   'the two most likely values, and its high the nameplate''s high less the demand''s low',
+   'layers/remainder', 'value', 'no repeats: one row per remainder'),
+  ('exposure',
+   'exposure is the largest demand less the smallest supply, and never below zero',
+   'layers/remainder', 'value', 'no repeats: one row per remainder'),
+  ('remainder_decomposes',
+   'the whole quanta, times the quantum, less the residue, give back the remainder',
+   'layers/decomposed', 'value', 'no repeats: one row per lumpy remainder'),
+  ('sawtooth',
+   'a demand inside one whole quantum keeps its residues in order',
+   'layers/decomposed', 'value', 'no repeats: one row per demand inside one whole quantum'),
+  ('composed_quantum',
+   'the composed quantum divides the composed nameplate',
+   'composition/composed_quantum', 'value',
+   'no repeats: one row per composed layer with a quantum'),
+  ('fusion_sum',
+   'a composed figure is its parts, converted and added up, less its eliminations, per quantity',
+   'composition/fused', 'value', 'no repeats: one row per owed fusion quantity'),
+  ('composed_remainder',
+   'a composed remainder worked out through its parts lies inside the composed totals'' remainder',
+   'composition/fused_remainders', 'value', 'no repeats: one row per owed composed remainder'),
+  ('derived_quantities',
+   'a figure filed as derived is its parts, converted and added up, less its eliminations, one '
+   'level at a time',
+   'composition/derived_quantities', 'value',
+   'no repeats: one row per figure filed as its fusion''s sum'),
+  ('conforms',
+   'no loaded document violates a rule',
+   'checks/all', 'conformance', 'no repeats: one row per rule'),
+  ('fit_domain',
+   'a rule declares a fit axis exactly when it reaches the fit, and a cell exercised exactly when '
+   'it examined something there',
+   'reports/fit_coverage', 'roster', 'no repeats: one row per rule'),
+  ('absences_filed',
+   'the blanks counted from the columns are the blanks counted from the elements, per filing, '
+   'group and reason',
+   'epistemics/absences', 'roster', 'no repeats: one row per group of positions'),
+  ('derivations_filed',
+   'the derivations counted from the columns are those counted from the elements, per filing, '
+   'position and identity',
+   'epistemics/derivations', 'roster', 'no repeats: one row per position'),
+  ('fusions_have_parts',
+   'every fusion names at least one part, and its parts, counted fusion by fusion, add up to the '
+   'part references',
+   'folds/fusion_parts', 'partition', 'no repeats: one row per composition'),
+  ('searches_answered',
+   'each search either filed what it found or typed why it filed nothing, and never both',
+   'epistemics/searches', 'partition', 'no repeats: one row per search'),
+  ('subject_boxes',
+   'each subject''s boxes add up to its rows, and the rows add up to the population',
+   'folds/contract_subjects', 'partition', 'repeats: a population counted into its subjects'),
+  ('factor_state',
+   'each part in the factor state its columns file',
+   'composition/part_references', 'partition', 'no repeats: pm.part''s key'),
+  ('fusion_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/fusion_quantities', 'difference', 'no repeats: one row per layer and quantity'),
+  ('part_sums',
+   'the parts added up fusion by fusion come to the parts added up whole',
+   'folds/part_sums', 'additive', 'repeats: every part counted'),
+  ('suspended_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/suspended_quantities', 'difference', 'no repeats: one row per fusion and quantity'),
+  ('unsized_conversions_are_unsettled',
+   'a layer whose conversion nobody could size is a layer whose own totals cannot be subtracted',
+   'composition/unsized_conversions', 'containment', 'no repeats: one row per composed layer'),
+  ('part_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/part_quantities', 'difference', 'no repeats: one row per part and quantity'),
+  ('figures',
+   'the layers with a figure are those with a demand, plus those with a nameplate, less those '
+   'with both',
+   'layers/figures', 'union', 'no repeats: one row per layer'),
+  ('served_totals',
+   'what a layer holds is what was served plus what went unserved',
+   'folds/served_totals', 'additive', 'repeats: added up over holders'),
+  ('layer_units',
+   'one value read stands for the whole relation: every value under the key is the same, and '
+   'the one read reaches every key',
+   'units/conversions', 'dependency', 'no repeats: one row per condition'),
+  ('class_domain',
+   'every class of every declared type stands where its count puts it',
+   'epistemics/class_domain', 'roster', 'no repeats: one row per condition')
 ) AS a(slug, law, governs, form, multiplicity)
 ),
 arithmetic_roster AS (
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)
 ),
 layers_summed_quantities AS (
@@ -130,7 +254,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -207,7 +332,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -360,7 +486,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -440,7 +567,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -453,7 +581,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -477,7 +606,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -516,8 +646,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -565,8 +696,9 @@ JOIN      (
 ) l ON l.composition = o.filing AND l.composed_layer = o.layer
 ),
 arithmetic_remainder AS (
--- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc drops either,
--- with composition/figureless_remainders.sqlc for a layer whose n - d is not its remainder.
+-- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc
+-- drops either, with composition/figureless_remainders.sqlc for a layer whose totals do not give
+-- its remainder.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -684,7 +816,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -800,7 +932,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
@@ -973,7 +1106,8 @@ FROM pm.layer l
 JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.absorber_value
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -1025,7 +1159,8 @@ FROM (
 WHERE r.sign IN ('interference', 'transition')
 ),
 arithmetic_shares_bounded AS (
--- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under interference.
+-- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under
+-- interference.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -1096,7 +1231,8 @@ LEFT JOIN (
 WHERE a.slug = 'whole_multiple'
 ),
 layers_drawn AS (
--- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc
+-- and entries/slacks.sqlc's capacity slack.
 SELECT dr.filing, dr.layer,
        dr.low  AS draw_low,
        dr.mode AS draw_mode,
@@ -1151,7 +1287,8 @@ LEFT JOIN (
 WHERE a.slug = 'draw_bounded'
 ),
 layers_absorption AS (
--- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row in the demand's unit.
+-- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack,
+-- summed across the layer in the demand's unit.
 SELECT s.filing, s.layer,
        sum(coalesce(s.high, 0))
          FILTER (WHERE (s.sized AND s.unit IS NOT DISTINCT FROM d.d_unit)
@@ -1203,8 +1340,9 @@ SELECT h.filing, h.layer,
        count(*)                                        AS holders,
        count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
        count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
-       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_low)                                 AS unserved_low,
        sum(h.share_mode)                                AS unserved_mode,
+       sum(h.share_high)                                AS unserved_high,
        array_agg(DISTINCT h.share_unit)                 AS share_units
 FROM (
     SELECT * FROM entries_unserved_holders
@@ -1212,7 +1350,8 @@ FROM (
 GROUP BY h.filing, h.layer
 ),
 arithmetic_exposure_bounded AS (
--- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer
+-- and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -1284,7 +1423,7 @@ WHERE a.slug = 'time_slack_derived'
 layers_filed_against_derived AS (
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent, l.qty_derivation,
        r.r_low, r.r_mode, r.r_high, r.unit,
        r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,
@@ -1298,17 +1437,22 @@ JOIN      (
 ) r USING (filing, layer)
 ),
 arithmetic_filed_remainder AS (
--- pm:Remainder/pm:quantity against the layer's own r = n - d.
+-- pm:Remainder/pm:quantity against the size of the layer's remainder in force, via
+-- layers/filed_against_derived.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
 ) a
 LEFT JOIN (
     SELECT l.filing, l.layer,
-           CASE WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
+           CASE WHEN l.qty_derivation IS NOT NULL            THEN 'computable'::public.arithmetic_verdict
+                WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
                 WHEN l.qty_unit IS DISTINCT FROM l.unit      THEN 'not comparable'::public.arithmetic_verdict
                 ELSE 'computable'::public.arithmetic_verdict END AS verdict,
-           CASE WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
+           CASE WHEN l.qty_derivation IS NOT NULL
+                     THEN format('filed as the `%s` derivation, which works out to %s %s',
+                                 l.qty_derivation, round(l.m_mode, 3), l.unit)
+                WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
                 ELSE format('filed %s %s against a derived magnitude %s %s',
                             l.qty_mode, l.qty_unit, round(l.m_mode, 3), l.unit) END AS detail
     FROM      (
@@ -1318,7 +1462,8 @@ LEFT JOIN (
 WHERE a.slug = 'filed_remainder'
 ),
 composition_underived_parts AS (
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
@@ -1333,20 +1478,21 @@ WHERE d.low IS NULL
 GROUP BY p.composition, p.composed_layer, d.quantity
 ),
 composition_suspension_grounds AS (
--- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
+-- be computed.
 SELECT * FROM composition_filed_grounds
 UNION ALL
 SELECT * FROM composition_underived_parts
 ),
 composition_suspended_fusions AS (
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     SELECT * FROM composition_suspension_grounds
 ) g
 ),
 composition_suspended_quantities AS (
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     SELECT * FROM composition_suspended_fusions
@@ -1384,7 +1530,8 @@ EXCEPT
 )
 ),
 arithmetic_fusion_sum AS (
--- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and composition/derived_quantities.sqlc.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and
+-- composition/derived_quantities.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster

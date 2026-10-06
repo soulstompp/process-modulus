@@ -1,63 +1,60 @@
-# The null space of the whole descent under a fusion, taken twice. One row per fusion that has a
-# resolved part: how deep its closure goes, how many fusions and how many leaf layers it reaches,
-# the dimension of the composite map's null space, and the sum of the blocks below it.
+# The offsets the whole descent under a fusion cannot see, counted two ways. One row per fusion
+# that has a resolved part: how deep its descent goes, how many fusions and how many leaf layers it
+# reaches, the offsets the root's one figure cannot see, and the sum of the fusions' own offsets
+# below it.
 #
-# What the composite map is
-#   One level of the fold sends a fusion's parts to its figure. Nesting composes those levels, so
-#   the map from the LEAF layers under a root to that root's single figure is the product of the
-#   levels between them, and `composition/descent.sqlc` is the relation that walks it. For maps
-#   that are onto, the null space of a composite is the sum of the null spaces of its factors, so
-#   the closure under a root owes two routes to one number and this relation reports both.
-#   Proof: `src/proofs/README.md`, entry `kernel_closes`.
+# What is counted
+#   One level of composition sends a fusion's parts to its figure. Nesting stacks those levels, so
+#   the leaf layers under a root reach that root's one figure through every level between them, and
+#   `composition/descent.sqlc` walks it. Because every level reaches the whole of its figure, the
+#   offsets the root cannot see are those of every level added together, so the descent under a
+#   root owes two routes to one number, and this relation reports both.
 #
-# The composite's own dimension is `leaves - 1`
-#   The root is one figure, every level below it is onto, and a composite of onto maps is onto, so
-#   the map from the leaves to that figure is onto a single dimension and its null space is
-#   everything else. `rank/composition_image.sqlc` is where the surjectivity at one level is held;
-#   without it this column is not the dimension of anything.
+# `closure_kernel` is `leaves - 1`
+#   The root is one figure, and every level below it reaches the whole of its figure, so the leaves
+#   reach the root's figure and everything else about them is an offset it cannot see.
+#   `rank/composition_image.sqlc` is where each level is held to reaching the whole of its figure;
+#   without it, this column counts nothing.
 #
-# The other route is the blocks, and they are summed over DISTINCT fusions
-#   Each fusion below the root contributes its own block once, however many paths arrive at it, so
-#   the walk is reduced to one row per reached layer before anything is summed. That reduction is
-#   deliberate and it is what gives the two routes something to disagree about: a layer reached
-#   twice raises the block sum through the fusion that reached it a second time while leaving the
-#   leaf count exactly where it was.
+# The other route adds the fusions' offsets, each fusion once
+#   Each fusion below the root adds its own offsets once, however many paths arrive at it, so the
+#   walk is reduced to one row per reached layer before anything is summed. That reduction is
+#   deliberate, and it gives the two routes something to disagree about: a layer reached twice
+#   raises `sum_kernel` through the fusion that reached it a second time, while leaving the leaf
+#   count exactly where it was.
 #
-# So the two agree exactly where the descent is a tree
-#   A root whose closure has `L` leaves and `F` fusions and whose descent is a tree has `L + F - 1`
-#   parts in it, and the blocks sum to `parts - F`, which is `L - 1`. Take either the second path
-#   to a leaf or a cycle away from that and the arithmetic parts company. `checks/jagged_layer.sqlc`
-#   accuses the first and `checks/layers_move_together.sqlc` reports the second, so this relation
-#   is a third instrument over both, reading the closure rather than the siblings.
+# So the two agree exactly where no layer is reached twice
+#   Where no layer is reached by two paths and nothing loops, the two counts are equal. A second
+#   path to a leaf, or a loop, sets them apart: `checks/jagged_layer.sqlc` accuses the first and
+#   `checks/layers_move_together.sqlc` reports the second, so this relation is a third check over
+#   both, reading the whole descent rather than the siblings.
 #
-# The row space of the closure is the path product, and it is positive or it is unstated
-#   The composite is onto one figure, so its row space is one dimension whatever the depth, and
-#   the generator of it is the vector of PATH PRODUCTS, one per leaf, which
-#   `composition/descent.sqlc` accumulates as it walks. Every factor on a path is strictly
-#   positive, so every entry of that generator is too, and the closure inherits the block-level
-#   property whole: no non-negative assignment to the leaves is invisible to the root.
-#   `leaves_positive` and `leaves_unknown` are that statement counted, and they must exhaust the
-#   leaves. A leaf reached through a part whose factor is a typed absence is in the second column,
-#   because nobody has said what its path multiplies by, and that is a different fact from a
-#   direction of zero.
+# Every leaf counts toward the root, or its factor is unstated
+#   `row_dim` is 1: the root reads its leaves as one figure, each leaf weighted by the product of
+#   the factors on its path, which `composition/descent.sqlc` carries as it walks. Every factor on a
+#   path is above zero, so every leaf's weight is too, and the descent keeps what one level has: no
+#   assignment of non-negative amounts to the leaves is invisible to the root. `leaves_positive`
+#   and `leaves_unknown` count that, and together they must cover the leaves. A leaf reached through
+#   a part whose factor is a typed blank is in the second column, because nobody has said what its
+#   path multiplies by, and that is a different fact from a weight of zero.
 #
-# A fusion nothing resolved is a leaf here, and it is the right answer
+# A fusion nothing resolved is a leaf here, and that is right
 #   `rank/composition_kernel.sqlc` has no row for a fusion whose every part names a filing this
-#   corpus does not hold, so nothing descends through it and it is counted among the leaves. That
-#   is what the matrix sees: no columns under it, nothing below it to reach.
+#   corpus does not hold, so nothing descends through it, and it is counted among the leaves. That
+#   is what the arithmetic sees: no parts under it, nothing below it to reach.
 #   `rank/composition_image.sqlc` is where the state itself is reported.
 #
-# Every fusion is a root of its own closure
-#   Not only the fusions nothing composes. A fusion in the middle of a stack has a closure under
-#   it and owes the same identity, so keying this on the tops of the trees would leave the
-#   interior untested and would report one defect once per ancestor above it.
+# Every fusion is a root of its own descent
+#   Not only the fusions nothing composes. A fusion in the middle of a stack has a descent under it
+#   and owes the same agreement, so keying this on the tops alone would leave the middle untested,
+#   and would report one defect once per ancestor above it.
 #
 # Probe
-#   `algebra/composition_closure.sqlc` holds the two routes together. In a rolled-back
-#   transaction, give a fusion a part naming a layer already reachable beneath it through another
-#   composition: the block sum rises, the leaf count does not, and this is the relation that says
-#   so.
--- composition/descent.sqlc reduced to one row per reached layer, against rank/composition_kernel.sqlc.
+#   `algebra/composition_closure.sqlc` holds the two routes together. In a rolled-back transaction,
+#   give a fusion a part naming a layer already reachable beneath it through another composition:
+#   the offsets summed rise, the leaf count does not, and this is the relation that says so.
+-- composition/descent.sqlc reduced to one row per reached layer,
+-- against rank/composition_kernel.sqlc.
 SELECT r.composition,
        r.composed_layer,
        coalesce(b.deepest, 0)                             AS deepest,

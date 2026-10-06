@@ -84,8 +84,9 @@ impl Server {
         self.run(self.psql(DATABASE).arg("-f").arg(path))
     }
 
-    /// The rows `sql` returns, each a list of its columns, a NULL as an empty string. The statement
-    /// goes to `psql` on its standard input, since a composed one is longer than an argument may be.
+    /// The rows `sql` returns, each a list of its columns, a NULL as an empty string. The
+    /// statement goes to `psql` on its standard input, since a composed one is longer than an
+    /// argument may be.
     pub fn query(&self, sql: &str) -> Result<Vec<Vec<String>>, String> {
         let mut psql = self.psql(DATABASE);
         psql.args(["-A", "-t", "-F", &COLUMN.to_string(), "-R", &ROW.to_string(), "-f", "-"])

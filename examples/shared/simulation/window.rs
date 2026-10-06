@@ -1,8 +1,8 @@
 //! Assembling the bench and taking the history off it.
 //!
-//! ⭐⭐ THE WINDOW IS THE FILING'S UNIT AND THE SIMULATION'S UNIT AT ONCE. `pm:Layer` totals are
-//! always over a stated period, and here that period is literally where the simulation was
-//! stopped. Nothing about the fold has to guess what a window was.
+//! The window is the filing's period and the simulation's at once. `pm:Layer` totals are always
+//! over a stated period, and here that period ends where the simulation stops, so nothing that
+//! adds up the history has to guess what the window was.
 
 use std::time::Duration;
 
@@ -18,7 +18,7 @@ pub struct Run {
     pub settings: Settings,
     pub seed: u64,
     pub window: Duration,
-    /// ⭐ THE WHOLE TRUTH, which exists here and nowhere downstream of an instrument.
+    /// The whole history, which exists here and nowhere after an instrument has read it.
     pub history: Vec<Record>,
 }
 
@@ -57,17 +57,17 @@ pub fn run(settings: Settings, seed: u64, window: Duration) -> Result<Run, Simul
 
 /// A layer able to meet its demand with room to spare, so nothing goes unserved.
 ///
-/// ⭐ THE LOAD IS TUNED, NOT ARBITRARY. One lot of 10 a minute is 3600 over a six hour window;
-/// asks average 3.5 every 30 seconds is about 2500. Left far slacker than this the line spills
-/// most of what it makes and no buffer is ever under pressure, which exercises nothing.
+/// The load is tuned. One lot of 10 a minute is 3600 over a six hour window; asks averaging 3.5
+/// every 30 seconds come to about 2500. Far slacker than this, the line spills most of what it
+/// makes and no buffer is ever under pressure, which exercises nothing.
 pub fn slack_settings() -> Settings {
     Settings {
         lot: 10.0,
         cycle: Duration::from_secs(60),
         stock_cap: 100.0,
         queue_cap: 8,
-        // ⛔ NO OVERTIME ON THE SLACK LINE, and that is what makes `capacitySlack` a typed
-        //   absence rather than a zero on the filing it produces.
+        // No overtime on the slack line, which makes `capacitySlack` a typed absence rather than
+        // a zero on the filing it produces.
         overtime_lots: 0,
         patience: Duration::from_secs(300),
         mean_gap: Duration::from_secs(30),
@@ -80,9 +80,9 @@ pub fn slack_settings() -> Settings {
 
 /// The same layer asked for more than it can make, which is the population the model exists for.
 ///
-/// ⛔ AN ASK EVERY 15 SECONDS IS ABOUT 5000 AGAINST A NAMEPLATE OF 3600. The excess has to go
-/// somewhere and the three buffers are the only places, so this is the setting where the
-/// substitution is visible rather than assumed.
+/// An ask every 15 seconds is about 5000 against a nameplate of 3600. The excess has to go
+/// somewhere and the three buffers are the only places, so this is the setting where one buffer
+/// standing in for another is seen rather than assumed.
 pub fn short_settings() -> Settings {
     Settings {
         mean_gap: Duration::from_secs(15),
@@ -93,15 +93,15 @@ pub fn short_settings() -> Settings {
 /// Short in the same degree, but with a deep queue and little patience, so the shortfall lands on
 /// a different holder.
 ///
-/// ⭐⭐⭐ THE SAME SHORTFALL, A DIFFERENT PARTY BEARING IT. `short_settings` turns demand away at
-/// the door, which nobody experiences, so it is `unrealised`. This one lets it in, makes it wait
-/// and loses it, which somebody did experience, so it is `customer`. Nothing about the physics of
-/// the line differs: the lot, the cycle and the load are identical. Only the time buffer is
-/// arranged differently, and the holder changes.
+/// The same shortfall, borne by a different party. `short_settings` turns demand away at the
+/// door, which nobody experiences, so it is `unrealised`. This one lets it in, makes it wait and
+/// loses it, which somebody did experience, so it is `customer`. The physics of the line is the
+/// same: the lot, the cycle and the load are identical. Only the time buffer is arranged
+/// differently, and the holder changes.
 ///
-/// ⛔ THIS IS THE SETTING A STOCK-AND-FLOW FRAMEWORK CANNOT REACH AT ALL. Reneging requires
-/// patience, and a resource that waits for ever never gives up, so the `customer` column of the
-/// holder matrix is not merely unmeasured there, it is unreachable.
+/// A stock-and-flow framework cannot reach this setting at all. Giving up requires patience, and
+/// a resource that waits for ever never gives up, so there the `customer` share is not just
+/// unmeasured but cannot arise.
 pub fn queued_settings() -> Settings {
     Settings {
         queue_cap: 40,
@@ -112,15 +112,13 @@ pub fn queued_settings() -> Settings {
 
 /// Short in the same degree again, and this time the line is allowed to run above its rating.
 ///
-/// ⭐⭐⭐ THE SETTING TWO RULES IN `assets/sql/checks/` HAVE BEEN WAITING FOR. Nothing in the
-/// corpus files a sized `capacitySlack`, so `share_exceeds_slack` and `exposure_unaccounted`
-/// examine nothing anywhere, and the vacuum has stood as a judgement rather than a finding. A
-/// line with overtime puts a `people` holder on an interference layer, which is the population
-/// both rules range over.
+/// The setting `share_exceeds_slack` in `assets/sql/checks/` is written for. A line with overtime
+/// files a sized `capacitySlack`, names `capacity` as the absorber, and puts a `people` share on
+/// an interference layer, to be held against that slack.
 ///
-/// ⛔ THIRTY LOTS ON A RATING OF THREE HUNDRED AND SIXTY is under a tenth, which is what an
-/// overtime allowance looks like. Sized generously it would swallow the whole shortfall and the
-/// unserved holders would empty, which exercises a different thing.
+/// Thirty lots on a rating of three hundred and sixty is under a tenth, which is what an overtime
+/// allowance looks like. Sized generously, it would swallow the whole shortfall and the unserved
+/// holders would be empty, which exercises something else.
 pub fn overtime_settings() -> Settings {
     Settings {
         overtime_lots: 30,
@@ -128,41 +126,12 @@ pub fn overtime_settings() -> Settings {
     }
 }
 
-/// The same load again with all three buffers at zero, which is the one case `exposure_unaccounted`
-/// ranges over and no document in the corpus has ever filed.
-///
-/// ⭐⭐⭐ AND RUNNING IT IS WHAT TURNS THAT VACUUM FROM A JUDGEMENT INTO A STRUCTURAL FACT. With
-/// nothing held, nobody waiting and no room above the rating, the ONLY way an ask can be met is
-/// for supply and demand to coincide exactly in time, which in continuous time is a measure-zero
-/// event. So a layer with every buffer sized and empty delivers essentially nothing, and the rule's
-/// population is empty in any real corpus because such a business does not run rather than because
-/// the rule is wrong. That is a far stronger answer than "no filing happens to have one".
-///
-/// ⚠️ THE FILING IT PRODUCES IS DEGENERATE AND IT IS SUPPOSED TO BE. A rating of 3600 that delivers
-/// nothing is not a shop anybody runs; it is the corner the inequality is written for, and a rule
-/// with no reachable corner cannot be falsified.
-/// Whole-unit asks over a wide range, for a supply that must be filled in whole lots.
-///
-/// ⭐ THE RANGE REACHES PAST THE FROBENIUS NUMBER ON PURPOSE. With lots of five and twelve the
-/// largest unfillable ask is forty three, so a run whose asks stop at forty would see nothing but
-/// gaps and conclude the remainder is permanent.
-/// A line running close enough to its rating that the answer depends on how long you look.
-///
-/// ⭐ NINETY FIVE PER CENT LOADED IS NOT AN EDGE CASE, IT IS THE TARGET. A shop deliberately run
-/// near its capacity is the ordinary case, and it is exactly where a six hour figure and a fifteen
-/// minute figure stop agreeing about whether anybody was turned away.
-/// A batch line whose window is not a whole number of cycles, which is most real windows.
-///
-/// ⭐⭐⭐ A LOT OF FIVE HUNDRED EVERY FIFTY MINUTES OVER AN EIGHT HOUR SHIFT IS 9.6 CYCLES. The
-/// line can deliver nine whole lots in the shift and carries most of a tenth across the boundary
-/// as work in progress. There is no element anywhere in the schema for that carried part:
-/// `inventorySlack` is finished OUTPUT held ahead, and a half built lot is not output.
 /// A line whose output perishes the instant it is made, which is what a service is.
 ///
-/// ⭐⭐⭐ AN EMERGENCY DEPARTMENT HAS NO INVENTORY BUFFER AND CANNOT HAVE ONE. You cannot treat
-/// patients in advance and stockpile the treatment. Factory Physics says the variability has to
-/// go somewhere, so with one of the three buffers structurally absent it must all land on time and
-/// capacity, and the time buffer is a waiting room with a patience on it.
+/// An emergency department has no inventory buffer and cannot have one: nobody can treat patients
+/// in advance and stockpile the treatment. Factory Physics says the variability has to go
+/// somewhere, so with one of the three buffers absent it all lands on time and capacity, and the
+/// time buffer is a waiting room with a patience on it.
 pub fn perishable_settings() -> Settings {
     Settings {
         stock_cap: 0.0,
@@ -172,6 +141,12 @@ pub fn perishable_settings() -> Settings {
     }
 }
 
+/// A batch line whose window is not a whole number of cycles, which is most real windows.
+///
+/// A lot of five hundred every fifty minutes over an eight hour shift is 9.6 cycles. The line can
+/// deliver nine whole lots in the shift and carries most of a tenth across the boundary as work in
+/// progress. The schema has no element for that carried part: `inventorySlack` is finished output
+/// held ahead, and a half built lot is not output.
 pub fn batch_settings() -> Settings {
     Settings {
         lot: 500.0,
@@ -185,6 +160,11 @@ pub fn batch_settings() -> Settings {
     }
 }
 
+/// A line running close enough to its rating that the answer depends on how long you look.
+///
+/// Ninety-five per cent loaded is the ordinary case, not an edge: shops are run near capacity on
+/// purpose, and that is where a six hour figure and a fifteen minute figure stop agreeing about
+/// whether anybody was turned away.
 pub fn tight_settings() -> Settings {
     Settings {
         mean_gap: Duration::from_secs(22),
@@ -192,6 +172,11 @@ pub fn tight_settings() -> Settings {
     }
 }
 
+/// Whole-unit asks over a wide range, for a supply that must be filled in whole lots.
+///
+/// The range reaches past the largest ask the lots cannot fill, on purpose. With lots of five and
+/// twelve that ask is forty-three, so a run whose asks stopped at forty would never see an ask
+/// past it and could conclude the remainder never stops.
 pub fn lotted_settings() -> Settings {
     Settings {
         size_low: 1.0,
@@ -202,6 +187,18 @@ pub fn lotted_settings() -> Settings {
     }
 }
 
+/// The same load again with all three buffers at zero, which is the case `exposure_unaccounted`
+/// ranges over.
+///
+/// Running it shows why real filings do not reach that case. With nothing held, nobody waiting and
+/// no room above the rating, an ask can be met only if it arrives at the very instant a lot is
+/// made, which practically never happens. So a layer with every buffer sized and empty delivers
+/// essentially nothing: the rule's population is empty in a real corpus because such a business
+/// does not run, not because the rule is wrong.
+///
+/// The filing it produces is an extreme case, on purpose. A rating of 3600 that delivers nothing
+/// is not a shop anybody runs; it is the corner the rule is written for, and a rule whose corner
+/// nothing reaches can never be seen to fail.
 pub fn starved_settings() -> Settings {
     Settings {
         stock_cap: 0.0,

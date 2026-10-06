@@ -3,34 +3,33 @@
 # who owns the edge it would have to move.
 #
 # The grain is the claim, not the layer
-#   That is the whole point of the file. `Claim` is the most reused type in the schema: demands,
+#   That is what this file is for. `Claim` is the most reused type in the schema: demands,
 #   nameplates, quanta, windows, draws, slacks, shares, factors, coupling strengths and eliminated
-#   quantities are all Claims. Every one of those lives in the table of the thing it describes,
-#   which is the right shape for asking about a demand and the wrong shape for asking about a
-#   claim. Their parents are many different tables, across two schemas.
+#   quantities are all claims. Each lives in the table of the thing it describes, which is the right
+#   shape for asking about a demand and the wrong shape for asking about a claim. Their parents are
+#   many different tables, across two schemas.
 #
-# `layer` lets a claim-grained relation join back
-#   The ancestor axis supplies it at ingest; NULL means the claim is about a relation between
-#   layers (a coupling strength, an elimination quantity, a part factor) rather than about one.
-#   Without it a rule needing both grains has to read the per-table copy and reach one parent of
-#   many.
+# `layer` lets a relation at the claim's grain join back
+#   The ancestor axis supplies it at ingest. NULL means the claim is about something between layers
+#   (a coupling strength, an elimination quantity, a part factor) rather than about one. Without
+#   it, a rule needing both grains has to read the per-table copy and reach one parent of many.
 #
 # The half of the pair easiest to lose
 #   Keyed on a bare document ordinal with no way back to the claim, `narrowsWhen` and `boundOrigin`
-#   can be counted and never compared against the width they describe, and both rules that make
-#   that comparison then run over `layer.demand_*`: a minority of the claims, and one with no point
-#   value among them. One reports vacuous; the other passes on a corpus containing a violation it
-#   cannot reach.
+#   could be counted but never compared with the width they describe, and both rules that make that
+#   comparison would run over `layer.demand_*`: a minority of the claims, and one with no single
+#   value among them. One would report vacuous; the other would pass on a corpus containing a
+#   violation it cannot reach.
 #
 # Everything the claim said comes with it
-#   Its provenance whole, and the date it holds at, so a relation reading claims reads all a
+#   Its whole provenance, and the date it holds at, so a relation reading claims reads everything a
 #   document attached to one rather than a selection somebody thought worth keeping.
 #
-# The two columns are one instrument
+# The two columns work together
 #   `narrowsWhen` says what would make the range smaller; `boundOrigin` says who owns the edge it
-#   would have to move. Same width, and three different courses of action depending on the answers:
-#   renegotiate, measure again, or accept it. Read apart they are two censuses; read together they
-#   are advice.
+#   would have to move. The same width calls for three different courses of action depending on the
+#   answers: renegotiate, measure again, or accept it. Read apart they are two counts; read
+#   together they are advice.
 -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
 SELECT c.filing, c.seq, c.owns, c.layer,
        c.low, c.mode, c.high, c.unit,

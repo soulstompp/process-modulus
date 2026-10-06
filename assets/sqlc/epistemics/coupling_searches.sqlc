@@ -3,20 +3,20 @@
 #
 # Independent layers, or nobody who looked
 #   A stack with no couplings filed has either independent layers or nobody who looked, and an
-#   empty coupling table renders those two identically. They are opposite claims: one licenses
+#   empty coupling table shows those two the same way. They are opposite claims: one licenses
 #   treating each remainder on its own, the other says nothing at all. This is where the difference
 #   lives.
 #
-# A null `answer` is not an absence
+# A NULL `answer` is not a blank
 #   It means the document filed real couplings, so the search question is answered by the content
 #   rather than by a reason.
 #
-# Its own file, so the union can be taken half at a time
-#   epistemics/searches.sqlc unions this with the elimination search. Built inline as one relation
-#   with a `looked_for` string, every caller wanting one kind of search has to filter on that
-#   string, and callers give up and read pm.coupling_search raw. entries/coupling_presence.sqlc and
-#   reports/independence_tested.sqlc compose this half directly. A union whose members were never
-#   files is a union nobody can compose half of.
+# A file of its own, so the union can be taken half at a time
+#   epistemics/searches.sqlc unites this with the elimination search. Built inline as one relation
+#   with a `looked_for` string, every caller wanting one kind of search would filter on that string,
+#   and callers would give up and read pm.coupling_search raw. entries/coupling_presence.sqlc and
+#   reports/independence_tested.sqlc compose this half directly. A union whose members are not files
+#   is a union nobody can compose half of.
 -- pm:Stack/pm:couplings/pm:absent, one row per filing asked.
 SELECT cs.filing, cs.absent AS answer, cs.note
 FROM pm.coupling_search cs

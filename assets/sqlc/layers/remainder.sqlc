@@ -1,70 +1,58 @@
-# r, the remainder vector, with its sign derived and its exposure measured. One row per layer that
-# states both a demand and a nameplate and has a legitimate remainder. The key is (filing, layer) and every downstream fit
-# question reads this relation.
+# Each layer's remainder, with its fit worked out and its exposure measured. One row per layer that
+# states both a demand and a nameplate and has a remainder this model can stand behind. The key is
+# (filing, layer), and every question about a layer's fit reads this relation.
 #
-# It chooses between two arithmetics
-#   The choice is the whole file. On a layer built from parts, `r` is `F Φ r_parts - e_n + e_d`,
-#   each part's own remainder converted once, so a shared conversion factor appears once per term.
-#   Everywhere else `r` is `n - d` from the two filed totals with the bounds crossed. The two agree
-#   on every layer whose factors are point values, which is all but the composed layers carrying
-#   a factor with spread, and there the crossed difference counts that factor's spread twice and
-#   comes out wider.
+# Two ways to work out a remainder
+#   On a layer a parent composes from parts, the remainder is each part's own remainder, converted
+#   once into the parent's unit, less what the parent removed from its demand and its nameplate.
+#   Everywhere else it is the nameplate less the demand, from the two filed totals, each end of the
+#   one set against the opposite end of the other. The two agree on every layer whose conversion
+#   factors are single values. Where a factor is a range, the totals take that range in twice, and
+#   the second way comes out wider.
 #
-# The crossed difference is a bound there
-#   So the crossed difference is a bound on those layers and not their remainder, and taking it as
-#   the remainder makes `derived_fit` read `transition` on a filing that is correctly `clearance`.
-#   checks/fit_disagrees compares the filed sign against `derived_fit`, so the flagship rule is
-#   what would have reported a document that is right.
-
-# And where the pivot is lifted there is no remainder at all
-#   On those layers the pivot is the only legitimate figure, so where the composed remainder is
-#   lifted the row is dropped rather than filled with the crossed difference;
-#   composition/figureless_remainders.sqlc names them. `asrt:Part` says the
-#   converted remainder is "never re-derived", and a fallback to `n - d` there hands every rule
-#   below a figure that accuses a correct stated quantity. arithmetic/remainder.sqlc gives the
+# The wider figure only bounds the remainder
+#   On those layers the totals give a bound, not the remainder. Read as the remainder, it would make
+#   `derived_fit` read `transition` on a filing that is rightly `clearance`, and
+#   checks/fit_disagrees, which compares the filed sign with `derived_fit`, would report a document
+#   that is right.
+#
+# Where the parts' remainder is suspended, there is no row
+#   On a composed layer the remainder from the parts is the only figure this relation stands behind.
+#   Where it is suspended, the row is dropped rather than filled from the totals, and
+#   composition/figureless_remainders.sqlc names those layers. `asrt:Part` says a converted
+#   remainder is never worked out again from the totals, and a figure from the totals there would
+#   accuse a correct stated quantity in every rule below. arithmetic/remainder.sqlc gives the
 #   dropped layer its row and its reason, and algebra/remainder_in_force.sqlc counts the drop.
 #
-# Recomputed from whichever `r` is in force
-#   `derived_fit` and `exposure` are recomputed from whichever `r` is in force, never carried
-#   across from the other. `exposure` is `greatest(-r_low, 0)`, which is `d_high - n_low` on the
-#   differenced reading and generalises to the pivoted one without a second expression.
+# Everything is read from the remainder in force
+#   The inner query picks the remainder in force, and the outer one works out the fit, the exposure
+#   and the magnitude from it, so none of the three can read a different remainder from the others.
 #
 # `derived_fit` compares two ranges
-#   It is a comparison of two ranges and not of two points: ISO 286's own criterion, borrowed
-#   intact. `clearance` = supply exceeds demand across the whole range. `interference` = demand
-#   exceeds supply across the whole range. `transition` = the ranges overlap, so which one wins
-#   depends on where in the range you land. That third case is the one a two-valued encoding
-#   cannot name, and the corpus contains it.
+#   It compares the supply's range with the demand's, as ISO 286 compares a fit. `clearance`: supply
+#   exceeds demand across the whole range. `interference`: demand exceeds supply across the whole
+#   range. `transition`: the ranges overlap, so which one wins depends on where things land. A
+#   yes-or-no reading cannot name the third case, and the corpus files it.
 #
-# The arm order is a decision
-#   The arm order in `derived_fit` is a decision and not an artefact. The three criteria are
-#   disjoint everywhere except at one pair, a point nameplate equal to a point demand, where
-#   `clearance` and `interference` both hold: chaining them forces
-#   `n_low >= d_high >= d_low >= n_high >= n_low`, so every bound is equal and `r = [0, 0, 0]`.
-#   The first arm wins and returns `clearance`. ISO 286 counts line-to-line, minimum clearance
-#   zero, as a clearance fit, and this pair meets its interference clause too, so the choice is
-#   this model's, extending ISO's answer. It is also the only reading whose consequence is right:
-#   nothing went unmet, so checks/clearance_with_unserved rules out the two holders that cannot
-#   be there. ⚠️ Swapping these two arms would silently reclassify that pair,
-#   and `Fit`'s annotation says so in prose rather than leaving it here.
+# Which arm comes first
+#   The three cases never overlap except where a single nameplate value equals a single demand
+#   value. There `clearance` and `interference` both hold, and the remainder is zero at every point.
+#   The first arm wins and returns `clearance`. ISO 286 counts a fit with zero minimum clearance as
+#   a clearance fit, and this model carries that answer over to the case. It is also the reading
+#   whose consequence is right: nothing went unmet, so checks/clearance_with_unserved rules out the
+#   two holders that cannot be there. Swapping the two arms would reclassify that case, and `Fit`'s
+#   annotation states the order for that reason.
 #
 # What `exposure` is
-#   `exposure` is what the filing's own numbers say could have gone unserved: the largest demand
-#   against the smallest supply, floored at zero. It is not a measurement anybody made; it is the
-#   ceiling their two measurements imply, which is why the rule built on it compares against what
-#   they admit went unserved rather than against a reading.
+#   What the filing's own numbers say could have gone unserved: the largest demand against the
+#   smallest supply, never below zero. Nobody measured it. It is the most the two filed ranges
+#   allow, so the rule built on it compares it with what the filing says went unserved.
 #
-# The magnitude `|r|`
-#   `m_low`, `m_mode`, `m_high` are `|r|` as a three-point claim, computed once here so that every
-#   rule comparing against `|nameplate - demand|` reads the same figure:
-#   checks/shares_do_not_sum and checks/stated_quantity_is_not_the_magnitude. `abs` is not
-#   monotone across zero, so where `r` straddles zero the low bound is 0 and the high bound is the
-#   larger of `|r_low|` and `|r_high|`; elsewhere the two bounds are those absolute values in order.
-#   Proof: `src/proofs/README.md`, entries `crossed_subtraction`, `magnitude` and `exposure`.
-#
-# One `r`, then everything read from it
-#   The inner query picks the `r` in force; the outer one derives the fit, the exposure and the
-#   magnitude from it, so none of the three can read a different `r` from the others.
+# The magnitude
+#   `m_low`, `m_mode` and `m_high` are the size of the remainder whichever way it points, as three
+#   values, worked out once here so that checks/shares_do_not_sum and
+#   checks/stated_quantity_is_not_the_magnitude read the same figure. Where the remainder runs from
+#   short to spare, its smallest size is zero.
 -- layers/differenced_remainder.sqlc, overridden by composition/fused_remainders.sqlc where a
 -- composed layer owes an exact remainder, less composition/figureless_remainders.sqlc.
 SELECT x.filing, x.layer,

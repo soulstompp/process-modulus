@@ -1,6 +1,7 @@
--- epistemics/class_domain.sqlc's occupancy claims against epistemics/classes.sqlc, one row per class.
+-- epistemics/class_domain.sqlc's exercised classes against epistemics/classes.sqlc,
+-- one row per class.
 WITH epistemics_class_domain AS (
--- every member of every codomain on epistemics/class_sets.sqlc, with its standing and reason.
+-- every class of every type on epistemics/class_sets.sqlc, with its standing and reason.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc', 'suspended', 'exercised'::public.fit_standing, NULL::text, NULL::text),
   ('arithmetic/all.sqlc', 'not comparable', 'open',
@@ -19,7 +20,8 @@ SELECT * FROM (VALUES
 
   ('layers/exposure_scope.sqlc', 'a buffer nobody sized', 'exercised', NULL, NULL),
   ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',
-   'no layer sizes every buffer and has room in one: ignorance outranks room, so the three layers that do have room sit under a buffer nobody sized',
+   'no layer sizes every buffer and has room in one: ignorance outranks room, so every layer '
+   'that does have room sits under a buffer nobody sized',
    NULL),
   ('layers/exposure_scope.sqlc', 'every buffer sized and empty', 'exercised', NULL, NULL),
 
@@ -47,17 +49,27 @@ SELECT * FROM (VALUES
 ) AS d(relation, class, standing, reason, held_by)
 ),
 arithmetic_roster AS (
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)
 ),
 layers_summed_quantities AS (
@@ -123,7 +135,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -200,7 +213,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -353,7 +367,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -433,7 +448,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -446,7 +462,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -470,7 +487,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -509,8 +527,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -558,8 +577,9 @@ JOIN      (
 ) l ON l.composition = o.filing AND l.composed_layer = o.layer
 ),
 arithmetic_remainder AS (
--- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc drops either,
--- with composition/figureless_remainders.sqlc for a layer whose n - d is not its remainder.
+-- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc
+-- drops either, with composition/figureless_remainders.sqlc for a layer whose totals do not give
+-- its remainder.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -677,7 +697,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -793,7 +813,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
@@ -966,7 +987,8 @@ FROM pm.layer l
 JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.absorber_value
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -1018,7 +1040,8 @@ FROM (
 WHERE r.sign IN ('interference', 'transition')
 ),
 arithmetic_shares_bounded AS (
--- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under interference.
+-- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under
+-- interference.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -1089,7 +1112,8 @@ LEFT JOIN (
 WHERE a.slug = 'whole_multiple'
 ),
 layers_drawn AS (
--- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc
+-- and entries/slacks.sqlc's capacity slack.
 SELECT dr.filing, dr.layer,
        dr.low  AS draw_low,
        dr.mode AS draw_mode,
@@ -1144,7 +1168,8 @@ LEFT JOIN (
 WHERE a.slug = 'draw_bounded'
 ),
 layers_absorption AS (
--- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row in the demand's unit.
+-- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack,
+-- summed across the layer in the demand's unit.
 SELECT s.filing, s.layer,
        sum(coalesce(s.high, 0))
          FILTER (WHERE (s.sized AND s.unit IS NOT DISTINCT FROM d.d_unit)
@@ -1196,8 +1221,9 @@ SELECT h.filing, h.layer,
        count(*)                                        AS holders,
        count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
        count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
-       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_low)                                 AS unserved_low,
        sum(h.share_mode)                                AS unserved_mode,
+       sum(h.share_high)                                AS unserved_high,
        array_agg(DISTINCT h.share_unit)                 AS share_units
 FROM (
     SELECT * FROM entries_unserved_holders
@@ -1205,7 +1231,8 @@ FROM (
 GROUP BY h.filing, h.layer
 ),
 arithmetic_exposure_bounded AS (
--- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer
+-- and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -1277,7 +1304,7 @@ WHERE a.slug = 'time_slack_derived'
 layers_filed_against_derived AS (
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent, l.qty_derivation,
        r.r_low, r.r_mode, r.r_high, r.unit,
        r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,
@@ -1291,17 +1318,22 @@ JOIN      (
 ) r USING (filing, layer)
 ),
 arithmetic_filed_remainder AS (
--- pm:Remainder/pm:quantity against the layer's own r = n - d.
+-- pm:Remainder/pm:quantity against the size of the layer's remainder in force, via
+-- layers/filed_against_derived.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
 ) a
 LEFT JOIN (
     SELECT l.filing, l.layer,
-           CASE WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
+           CASE WHEN l.qty_derivation IS NOT NULL            THEN 'computable'::public.arithmetic_verdict
+                WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
                 WHEN l.qty_unit IS DISTINCT FROM l.unit      THEN 'not comparable'::public.arithmetic_verdict
                 ELSE 'computable'::public.arithmetic_verdict END AS verdict,
-           CASE WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
+           CASE WHEN l.qty_derivation IS NOT NULL
+                     THEN format('filed as the `%s` derivation, which works out to %s %s',
+                                 l.qty_derivation, round(l.m_mode, 3), l.unit)
+                WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
                 ELSE format('filed %s %s against a derived magnitude %s %s',
                             l.qty_mode, l.qty_unit, round(l.m_mode, 3), l.unit) END AS detail
     FROM      (
@@ -1311,7 +1343,8 @@ LEFT JOIN (
 WHERE a.slug = 'filed_remainder'
 ),
 composition_underived_parts AS (
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
@@ -1326,20 +1359,21 @@ WHERE d.low IS NULL
 GROUP BY p.composition, p.composed_layer, d.quantity
 ),
 composition_suspension_grounds AS (
--- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
+-- be computed.
 SELECT * FROM composition_filed_grounds
 UNION ALL
 SELECT * FROM composition_underived_parts
 ),
 composition_suspended_fusions AS (
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     SELECT * FROM composition_suspension_grounds
 ) g
 ),
 composition_suspended_quantities AS (
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     SELECT * FROM composition_suspended_fusions
@@ -1377,7 +1411,8 @@ EXCEPT
 )
 ),
 arithmetic_fusion_sum AS (
--- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and composition/derived_quantities.sqlc.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and
+-- composition/derived_quantities.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -1498,7 +1533,8 @@ LEFT JOIN (
 ) sc ON sc.filing = b.filing
 ),
 layers_remainder_scope AS (
--- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent and entries/spillovers.sqlc.
+-- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent
+-- and entries/spillovers.sqlc.
 SELECT r.filing, r.layer,
        sc.extent,
        cs.answer AS search,
@@ -1635,7 +1671,7 @@ FROM (
 WHERE s.low IS NOT NULL
 ),
 epistemics_class_cells AS (
--- every declared class of eight codomains, LEFT JOINed to the rows that landed in it.
+-- every declared class of every classification, LEFT JOINed to the rows that landed in it.
 SELECT 'arithmetic/all.sqlc' AS relation, (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)) AS codomain,
        c.class::text AS class, c.ord,
        z.site || ' / ' || z.filing || ' / ' || z.layer AS ball,
@@ -1696,7 +1732,7 @@ LEFT JOIN (
 ) z ON z.quantity = c.class
 ),
 epistemics_class_sets AS (
--- the eight classifications, their codomains, the unit each counts in, and whether it is filed.
+-- every classification, its type, what each counts, and whether it is filed.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc',              'arithmetic_verdict', 'computation', true),
   ('layers/remainder.sqlc',            'fit',                'layer',       true),

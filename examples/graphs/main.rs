@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/graphs/README.md")]
 
@@ -16,26 +14,26 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::fs;
 
-/// ⛔ THIS PROGRAM OWNS THIS DIRECTORY, AND CREATES IT. Writing into `assets/bpmn/` beside
-/// `examples/diagramming/main.rs`, which WIPES what it owns, leaves these three documents surviving
-/// only when that example runs first, and leaves this one depending on the other having run at
+/// This program owns this directory, and creates it. Writing into `assets/bpmn/` beside
+/// `examples/diagramming/main.rs`, which wipes what it owns, would leave these documents
+/// surviving only when that example ran first, and this one depending on the other having run at
 /// all.
 const OUT: &str = "assets/bpmn/graphs";
 
-/// Every row set this program serializes, in a total order that is a function of the ROWS.
+/// Every row set this program writes out, in a total order that depends only on the rows.
 ///
-/// ⛔⛔⛆ A TRACKED GENERATED ARTIFACT MUST NOT DEPEND ON THE PLAN. Two databases loaded from one
-///   corpus by one ingest returned `flowNodeRef` in different orders, so the emitted documents
-///   differed byte for byte while meaning the same thing. `assets/sql/` has `--verify` behind it
-///   and these have nothing, so the difference was invisible until two machines compared.
+/// A tracked generated file must not depend on the plan. Two databases loaded from one corpus by
+/// one ingest can return `flowNodeRef` in different orders, and the documents then differ byte for
+/// byte while meaning the same thing. `assets/sql/` has `--verify` behind it and these have
+/// nothing, so the difference would show only when two machines compared.
 ///
-/// ⭐⭐ AND THE ORDER IS NOT OWED BY `assets/sqlc/`. A relation is a SET; an `ORDER BY` there is
-///   spliced into a subquery at every call site and discarded by the outer query, so it would be
-///   a claim that holds only where the relation happens to be read at the top. Serializing a set
-///   into a document is where a total order is owed, and that is here.
+/// The order is not owed by `assets/sqlc/`. A relation is a set; an `ORDER BY` there is spliced
+/// into a subquery at every call site and discarded by the outer query, so it would hold only
+/// where the relation happens to be read at the top. Writing a set into a document is where a
+/// total order is owed, and that is here.
 ///
-/// ⛔ OVER EVERY COLUMN, because a key that is not unique leaves its ties to the planner, which
-///   is the same defect one layer down.
+/// Over every column, because a key that is not unique leaves its ties to the planner, which is
+/// the same defect one layer down.
 fn ordered<T: std::fmt::Debug>(mut v: Vec<T>) -> Vec<T> {
     v.sort_by_cached_key(|r| format!("{r:?}"));
     v
@@ -62,24 +60,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|_| "DATABASE_URL is unset, and the graphs are relations.")?;
     let pool = database::connect(&url).await?;
 
-    // ⛔ THE ROSTER IS THE ONLY PLACE A GRAPH IS NAMED. A `VALUES` literal, because derived from
-    //   the tree it could never report that a declared graph has nothing behind it, and the
-    //   claimant row is precisely that case.
+    // The roster is the only place a graph is named. A `VALUES` literal, because derived from the
+    // tree it could never report that a declared graph has nothing behind it, and the claimant row
+    // is that case.
     let graphs = ordered(sqlx::query_file!("assets/sql/diagrams/graphs.sql").fetch_all(&pool).await?);
     let edges = ordered(sqlx::query_file!("assets/sql/rank/graph_edges.sql").fetch_all(&pool).await?);
-    // ⭐⭐⭐ THE NODES ARE A RELATION NOW, NOT A DEDUP'D `Vec<&str>` OF ENDPOINTS. Derived here,
-    //    a node was a display string with nothing joinable behind it, so the layer graph drew
-    //    37 lanes carrying no fact about a layer except its name. `rank/graph_nodes.sqlc` joins
-    //    each graph's node facts at real grain and flattens afterwards, which is the same
-    //    concatenation in the order that keeps the key usable.
+    // The nodes are a relation, not a list of endpoints made unique here. Derived here, a node
+    // would be a display string with nothing joinable behind it, and the layer graph would draw
+    // lanes carrying no fact about a layer except its name. `rank/graph_nodes.sqlc` joins each
+    // graph's node facts at their own grain and flattens afterwards, the same concatenation in
+    // the order that keeps the key usable.
     let gnodes = ordered(sqlx::query_file!("assets/sql/rank/graph_nodes.sql").fetch_all(&pool).await?);
     let cyc = ordered(sqlx::query_file!("assets/sql/rank/cycle_space.sql").fetch_all(&pool).await?);
 
-    // ⛔⛔⛔ WHICH NODES CARRY A RANK IS A CLAIM, SO IT IS ASSERTED RATHER THAN TRUSTED. The join
-    //    in `rank/graph_nodes.sqlc` is on `(filing, layer)`, and a join that stopped matching
-    //    would return the same 47 nodes with every rank NULL: the node count, the edge count,
-    //    the cycle space and the drawing's lane count all stay exactly right, and the only
-    //    symptom is 37 labels quietly missing from a picture nobody diffs. Count the item.
+    // Which nodes carry a `rank` is a claim, so it is asserted rather than trusted. The join in
+    // `rank/graph_nodes.sqlc` is on `(filing, layer)`, and a join that stopped matching would
+    // return the same nodes with every `rank` NULL: the node count, the edge count, the measures
+    // and the drawing's lane count would all stay right, and the only symptom would be labels
+    // quietly missing from a picture nobody diffs. Count the item.
     let (no_rank, wrong_rank): (Vec<_>, Vec<_>) = (
         gnodes.iter().filter(|n| n.graph.as_deref() == Some("layers") && n.rank.is_none())
               .filter_map(|n| n.node.clone()).collect(),
@@ -93,22 +91,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     assert!(
         wrong_rank.is_empty(),
-        "a node that is not a layer carries a rank. Rank is max(depth) over F, a relation on \
-         layers, so this states an ordinal for a subject the model has no ordinal for: \
+        "a node that is not a layer carries a rank. The rank is the deepest a layer sits in the \
+         composition, a fact about layers, so this places something with no place in that order: \
          {wrong_rank:?}"
     );
     println!(
-        "\n   ⭐ {} layer-graph nodes, every one with its rank joined at (filing, layer); {} \
+        "\n   {} layer-graph nodes, every one with its rank joined at (filing, layer); {} \
          unit nodes, none with a rank, because rank is not a fact about a unit.",
         gnodes.iter().filter(|n| n.graph.as_deref() == Some("layers")).count(),
         gnodes.iter().filter(|n| n.graph.as_deref() == Some("units")).count(),
     );
 
-    println!("THE THREE GRAPHS, AS LANE SETS OF ONE POOL\n");
-    // ⛔ WIPED, and only this program's own subdirectory. A stale document is a claim about a
-    //   model that has moved, and wiping a directory ANOTHER program also writes is how these
-    //   three vanish: `examples/diagramming/main.rs` wipes a shared parent, leaving them only when
-    //   this example runs second.
+    println!("The graphs, as lane sets of one pool\n");
+    // Wiped, and only this program's own subdirectory. A stale document is a claim about a model
+    // that has moved, and wiping a directory another program also writes is how documents vanish:
+    // with one parent shared and wiped, these would survive only when this example ran second.
     if std::path::Path::new(OUT).exists() {
         fs::remove_dir_all(OUT)?;
     }
@@ -125,11 +122,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .iter()
             .filter_map(|n| Some((n.node.as_deref()?, n.rank?)))
             .collect();
-        // ⭐⭐⭐ WHAT COULD CONTRADICT THIS NODE. `rank/layer_reach.sqlc` counts the rules whose
-        //    population contains the layer and how many of them said no. A drawing carrying only
-        //    what was filed is a drawing a reader believes; this is the half that lets them
-        //    argue with it, and on a clean corpus the second number is 0 everywhere, which is
-        //    why `examples/witnesses/main.rs` has to be run against it before it means anything.
+        // What could contradict this node. `rank/layer_reach.sqlc` counts the rules whose
+        // population contains the layer, and how many of them said no. A drawing carrying only
+        // what was filed is a drawing a reader believes; this is the half that lets them argue
+        // with it. On a clean corpus the second number is 0 everywhere, which is why
+        // `examples/witnesses/main.rs` has to be run against it before it means anything.
         let cover_of: BTreeMap<&str, (i64, i64)> = mine_nodes
             .iter()
             .filter_map(|n| Some((n.node.as_deref()?, (n.examined_by?, n.violated?))))
@@ -144,23 +141,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("     an edge is   {}", g.edge_is.as_deref().unwrap_or(""));
         println!("     a cycle is   ({}) {}",
                  g.cycle_sense.as_deref().unwrap_or("?"), g.a_cycle_is.as_deref().unwrap_or(""));
-        println!("     governed by  {}", g.governed_by.as_deref().unwrap_or("⛔ nothing"));
+        println!("     governed by  {}", g.governed_by.as_deref().unwrap_or("nothing"));
         match space {
             Some(s) => println!(
-                "     measured     {} nodes, {} edges, {} components, rank {}, cycle space {}",
+                "     measured     {} nodes, {} edges, {} pieces, tree edges {}, loops {}",
                 s.n_nodes.unwrap_or(0), s.m_edges.unwrap_or(0), s.c_components.unwrap_or(0),
                 s.rank_of_incidence.unwrap_or(0), s.cycle_space_dim.unwrap_or(0)),
-            None => println!("     measured     ⛔ nothing to measure: no edges are filed"),
+            None => println!("     measured     nothing to measure: no edges are filed"),
         }
 
         // ------------------------------------------------------------------
-        // One document per FILLING of the slot. The shape is the same; the graph slides in.
+        // One document per filling of the slot. The shape is the same; the graph slides in.
         // ------------------------------------------------------------------
         let mut x = String::new();
         writeln!(x, r#"<?xml version="1.0" encoding="UTF-8"?>"#)?;
-        writeln!(x, "<!-- GENERATED by examples/graphs/main.rs. DO NOT EDIT.")?;
-        writeln!(x, "     The big pool, with the `{name}` graph filling the slot. The")?;
-        writeln!(x, "     filing-pools of examples/diagramming/main.rs sit inside this one. -->")?;
+        writeln!(x, "<!-- Generated by examples/graphs from the loaded documents. \
+                     Do not edit by hand.")?;
+        writeln!(x, "     The `{name}` graph of every loaded document, as one pool. The \
+                     filing documents")?;
+        writeln!(x, "     in assets/bpmn/filings/ are separate pools, and neither contains \
+                     the other. -->")?;
         writeln!(x, r#"<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL""#)?;
         writeln!(x, "             xmlns:tns=\"urn:example:process-modulus:graph:{}\"", esc(name))?;
         writeln!(x, "             xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"")?;
@@ -169,10 +169,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         writeln!(x, "             id=\"{}\">", id("defs", name))?;
         writeln!(x, "  <collaboration id=\"{}\">", id("collab", name))?;
         if nodes.is_empty() {
-            // ⛔⛔ A BLACK BOX PARTICIPANT: no `processRef`, which is BPMN saying a party acts
-            //    here and what they do is not in this diagram. It is the honest rendering of a
-            //    relation nothing files, and it is NOT an empty lane set pretending to be a
-            //    drawing.
+            // A black-box participant: no `processRef`, which is BPMN saying a party acts here
+            // and what they do is not in this diagram. It is the true rendering of a relation
+            // nothing files, not an empty lane set posing as a drawing.
             writeln!(x, "    <participant id=\"{}\" name=\"{}\"/>", id("pool", name), esc(name))?;
             black_boxes.push(name.to_string());
         } else {
@@ -182,48 +181,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         writeln!(x, "  </collaboration>")?;
         if !nodes.is_empty() {
             writeln!(x, "  <process id=\"{}\" isExecutable=\"false\">", id("proc", name))?;
-            // ⭐⭐ THE ROSTER ALREADY NAMED THE RULE AND THE EMISSION DROPPED IT. `governed_by`
-            //   is on `diagrams/graphs.sqlc` and reached the terminal and no artifact, so a
-            //   reader holding the drawing had the cycle's MEANING and no route to the relation
-            //   that rules on one. ⛔ A NULL here is not a blank: it is the claimant graph, whose
-            //   cycles nothing judges, and the sentence says so rather than omitting the clause.
-            // ⛔ THE SENSE GOES AFTER THE EMITTER'S OWN CLAUSE, NEVER INSIDE IT. The SVG stage's
-            //   fate roster claims this sentence by the literal `; a cycle here is `, and that
-            //   needle is the emitter's on purpose: one taken from a model VALUE leaves the next
-            //   graph's sentence unclaimed the day one is added. `cycle_sense` is a model value.
-            writeln!(x, "    <documentation>{}; a cycle here is {}, in the {} sense. The edges: \
-                         [assets/sqlc/rank/graph_edges.sqlc]; a cycle is ruled on by {}\
-                         </documentation>",
+            // The roster names the rule, so the document carries it. `governed_by` is on
+            // `diagrams/graphs.sqlc`, and written into the document it gives a reader holding the
+            // drawing a route from what a loop means to the relation that rules on one. A NULL
+            // here is not a blank: it is the claimant graph, whose loops nothing judges, and the
+            // sentence says so rather than leaving out the clause.
+            //
+            // The sense goes after the emitter's own clause, never inside it. The SVG stage's fate
+            // roster claims this sentence by the literal `; a cycle here is `, and that needle is
+            // the emitter's on purpose: one taken from a model value would leave the next graph's
+            // sentence unclaimed when one is added. `cycle_sense` is a model value.
+            writeln!(x, "    <documentation>{}; a cycle here is {}, in the {} sense. The edges \
+                         come from [assets/sqlc/rank/graph_edges.sqlc], and a cycle is checked \
+                         by {}</documentation>",
                      esc(g.edge_is.as_deref().unwrap_or("")),
                      esc(g.a_cycle_is.as_deref().unwrap_or("")),
                      esc(g.cycle_sense.as_deref().unwrap_or("")),
                      match g.governed_by.as_deref() {
                          Some(r) => format!("[assets/sqlc/{r}.sqlc]"),
-                         None => "⛔ NOTHING; no rule in this repository examines one".to_string(),
+                         None => "no rule in this repository".to_string(),
                      })?;
             writeln!(x, "    <laneSet id=\"{}\" name=\"{}\">", id("lanes", name), esc(name))?;
             for n in &nodes {
                 writeln!(x, "      <lane id=\"{}\" name=\"{}\">", id("lane", n), esc(n))?;
-                // ⛔ ONLY WHERE THE GRAPH HAS ONE. Rank is `max(depth)` over F, a relation on
-                //   LAYERS, so a unit has no position in that order and none is missing. ⚠️ An
-                //   emitter that writes no rank leaves the renderer its own sentinel to draw,
-                //   which puts a number this model cannot produce on the page and makes one
-                //   layer read two different ranks in the two drawings its links connect.
+                // Only where the graph has one. `rank` is the deepest a layer sits in the
+                // composition, a fact about layers, so a unit has no position in that order and
+                // none is missing. An emitter that wrote no rank would leave the renderer its own
+                // placeholder to draw, putting a number this model cannot produce on the page and
+                // making one layer read two different ranks in the two drawings its links connect.
                 if let Some(r) = rank_of.get(*n) {
-                    writeln!(x, "        <documentation>rank {r}; nothing beneath this layer \
-                                 needs evaluating first at rank 0, and a higher rank waits on \
-                                 every arrival below it \
+                    writeln!(x, "        <documentation>rank {r}: the number of levels of parts \
+                                 beneath this layer. At 0 it waits on nothing; above 0 it waits \
+                                 for every part below it to arrive \
                                  [assets/sqlc/rank/evaluation_order.sqlc]</documentation>")?;
                 }
-                // ⛔ NO ROW MEANS OUTSIDE THE CHECKER'S DIMENSION, NOT ZERO RULES. No rule
-                //   declares a unit as its subject, so a unit is not thinly checked: the
-                //   question does not reach it, and a `0` here would say somebody looked.
+                // No row means outside what the rules examine, not zero rules. No rule declares a
+                // unit as its subject, so a unit is not thinly checked: the question does not
+                // reach it, and a `0` here would say somebody looked.
                 if let Some((examined, violated)) = cover_of.get(*n) {
                     writeln!(x, "        <documentation>refutable by {examined} rule(s), \
-                                 {violated} of which say no. ⛔ A HIGH COUNT IS NOT A PASS AND A \
-                                 LOW ONE IS NOT A FAULT: it is how many different questions this \
-                                 repository can put to this layer, so a layer near the bottom is \
-                                 one that a single repair would silence \
+                                 {violated} of which say no. A high count is not a pass, and a \
+                                 low one is not a fault: the count is how many different \
+                                 questions this repository can ask of this layer, so a layer \
+                                 with a low count is one that a single repair would silence \
                                  [assets/sqlc/rank/layer_reach.sqlc]</documentation>")?;
                 }
                 for e in mine.iter().filter(|e| e.from_node.as_deref() == Some(*n)) {
@@ -240,14 +240,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             writeln!(x, "  </process>")?;
         }
-        // ⭐⭐⭐ THE DIAGRAM'S PLACE IN THIS DOCUMENT TOO, AND THE SECOND EMITTER OWED IT AS SOON
-        //    AS THE FIRST DECLARED ONE. `examples/rendering/main.rs` now DRAWS what a document
-        //    declares rather than inventing coordinates, so a document that declares nothing
-        //    cannot be drawn -- and it refused these three by name, which is the emitter roster
-        //    from the previous pass paying out: two producers, one contract.
+        // The diagram's place goes in this document too. `examples/rendering/main.rs` draws what
+        // a document declares rather than inventing coordinates, so a document that declares
+        // nothing cannot be drawn: two producers, one contract.
         //
-        // ⛔ FLAT, BECAUSE THIS GRAPH IS FLAT. One lane per node, one row of boxes; there is no
-        //   `childLaneSet` here, so there is no nesting for the geometry to recurse through.
+        // Flat, because this graph is flat. One lane per node, one row of boxes; there is no
+        // `childLaneSet` here, so there is no nesting for the geometry to recurse through.
         if !nodes.is_empty() {
             let lane_h = 34usize;
             let node_h = 22usize;
@@ -312,9 +310,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     assert_eq!(emitted, graphs.len(), "one emission per filling, and the roster is the fillings");
 
-    // ⛔⛔ THE SAME LAW THIS PROGRAM'S SIBLING CARRIES: every row set is ordered before it is
-    //    serialized, asserted on the source. Measured, a `CLUSTER` on `pm.part` changes no row
-    //    and changes these documents, and nothing downstream could tell that from a real edit.
+    // The same law this program's sibling carries: every row set is ordered before it is written
+    // out, asserted on the source. A `CLUSTER` on `pm.part` changes no row and would change these
+    // documents, and nothing downstream could tell that from a real edit.
     let own = std::fs::read_to_string(file!())?;
     let needle = concat!("fetch_", "all(&pool)");
     let escaped: Vec<usize> = own
@@ -330,10 +328,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "a row set reaches the emission with no total order: line(s) {escaped:?}"
     );
 
-    // ⛔⛔ AND THE POINTER THE ARTIFACT NOW CARRIES HAS TO RESOLVE. `governed_by` reaches a
-    //   reader inside the emitted `documentation`, so a rule that was renamed away leaves a
-    //   citation in an artifact naming a relation nobody can open. A dangling reference in a
-    //   drawing is worse than none: it reads as a rule that exists.
+    // The pointer the document carries has to resolve. `governed_by` reaches a reader inside the
+    // emitted `documentation`, so a rule renamed away would leave a citation naming a relation
+    // nobody can open. A dangling reference in a drawing is worse than none: it reads as a rule
+    // that exists.
     let dangling: Vec<String> = graphs
         .iter()
         .filter_map(|g| g.governed_by.as_deref())
@@ -346,17 +344,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          a reader to a file that does not exist: {dangling:?}"
     );
 
-    // ⛔⛔ AND RESOLVING IS NOT ENOUGH: THE CITED RULE MUST BE THE ONE THAT HOLDS THE DIMENSION.
-    //    The check above only asked that the path exist, so a graph could cite any relation in
-    //    the tree and the emitter would carry it into a reader's document as the rule that
-    //    governs its cycles. It did: the layer row cited `checks/layers_move_together`, which
-    //    rules on the DIRECTED sense, the classes of mutual reachability, while the dimension
-    //    this program holds at zero forty lines above is the UNDIRECTED one. A diamond separates
-    //    them, and nothing here could tell.
+    // Resolving is not enough: the cited rule must be the one that holds the count. The check
+    // above asks only that the path exist, so a graph could cite any relation in the tree and the
+    // emitter would carry it into a reader's document as the rule that governs its loops.
+    // `checks/layers_move_together`, for one, rules on loops with direction kept, the classes of
+    // layers that reach each other, while the count this program holds at zero ignores direction;
+    // a diamond separates the two.
     //
-    // ⭐ The pairs below are the rules this repository actually uses to decide each graph's
-    //    undirected cycle space. `jagged_layer` is the one queried above; `conversion_cycle`
-    //    is the interval form `checks/conversion_cycle_does_not_close` asks of the unit graph.
+    // The pairs below are the rules this repository uses to decide each graph's loops with
+    // direction ignored. `jagged_layer` is the one queried further down;
+    // `checks/conversion_cycle_does_not_close` asks the unit graph the same question with ranges.
     for (graph, rule) in [
         ("layers", "checks/jagged_layer"),
         ("units", "checks/conversion_cycle_does_not_close"),
@@ -368,25 +365,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         assert_eq!(
             row.cycle_sense.as_deref(),
             Some("undirected"),
-            "`{graph}` declares the `{}` sense, and the dimension this repository rules on for \
-             it is the undirected one",
+            "`{graph}` declares the `{}` sense, and the loops this repository rules on for \
+             it are counted with direction ignored",
             row.cycle_sense.as_deref().unwrap_or("?")
         );
         assert_eq!(
             row.governed_by.as_deref(),
             Some(rule),
-            "`{graph}` cites `{}` as what governs its cycles, and the rule that holds its \
-             undirected cycle space is `{rule}`. A citation that merely resolves sends a reader \
+            "`{graph}` cites `{}` as what governs its loops, and the rule that holds its \
+             loops, direction ignored, is `{rule}`. A citation that merely resolves sends a reader \
              to a rule about a different sense of the word",
             row.governed_by.as_deref().unwrap_or("nothing")
         );
     }
 
-    println!("⭐ One emission per FILLING of the slot, and the roster is the only place a graph is");
+    println!("One emission per filling of the slot, and the roster is the only place a graph is");
     println!("   named. An edge belonging to an unnamed graph fails the run: a filling for a slot");
     println!("   nobody declared is exactly what `@scope` refuses in the SQL.");
     if !black_boxes.is_empty() {
-        println!("\n⛔ BLACK BOX, no processRef: {}", black_boxes.join(", "));
+        println!("\nBlack box, no processRef: {}", black_boxes.join(", "));
         println!("   That is BPMN for `a party acts here and what they do is not in this diagram`,");
         println!("   and it is the honest rendering of a relation nothing files. Delegation has no");
         println!("   table: `prov_entered_by` and `prov_approved_by` are bare tokens with no");
@@ -394,46 +391,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("   it did not fix when it split one free-text field into three columns.");
     }
     // ------------------------------------------------------------------
-    // ⭐⭐⭐ TWO INSTRUMENTS, ONE FACT, AND THEY ARE REQUIRED TO AGREE. `checks/jagged_layer`
-    //    walks (root, leaf) pairs and gives every fusion a verdict. `rank/cycle_space` counts
-    //    edges, nodes and components. They are computing the same thing: an undirected cycle in
-    //    `F` IS two distinct paths between one pair, which is a layer arriving twice under one
-    //    fold. Eighteen verdicts and one number, and neither is derived from the other.
+    // Two counts of one fact, required to agree. `checks/jagged_layer` walks every (root, leaf)
+    // pair and gives every fusion a verdict. `rank/cycle_space` counts edges, nodes and separate
+    // pieces, and from them the loops the layer graph has with direction ignored. They answer the
+    // same question: such a loop in the composition is two distinct paths between one pair of
+    // layers, which is a layer arriving twice under one total. Neither is derived from the other.
     //
-    // ⭐⭐ AND THE CYCLE SPACE MAKES §4's DISCRIMINATOR FOR FREE, WITH NO SPECIAL CASE. Two paths
-    //    from ONE node is a cycle, so a jagged partition counts. Two paths from two UNCONNECTED
-    //    nodes is a tree JOIN and contributes nothing, so `eliminations/derived.sqlc`'s two-root
-    //    sharing does not count, which is exactly this repository's position that it is a REFERRAL
-    //    and never a violation. The corpus carries one of those and the cycle space stays flat.
+    // The same count tells the two kinds of sharing apart with no special case. Two paths from
+    // one layer make a loop, so a jagged partition counts. Two paths from two unconnected roots
+    // join two separate trees and add no loop, so `eliminations/derived.sqlc`'s sharing between
+    // two roots does not count, which is this repository's position that it is a referral and
+    // never a violation.
     //
-    // ⛔⛔ THE ARITHMETIC BEHIND IT, WHICH IS WHY A FUSION IS ONLY SOMETIMES A MERGE. Adding a
-    //    fusion with `k` parts moves `m - n + c`. Across `k` DIFFERENT components:
-    //    `dn=+1, dm=+k, dc=-(k-1)`, so the dimension is UNCHANGED and the wrap is free. With two
-    //    parts inside ONE component: `dn=+1, dm=+2, dc=0`, so the dimension RISES BY ONE. Reaching
-    //    into a component you already reach is a double count wearing a merge's shape.
+    // Why a fusion is only sometimes a merge. A fusion whose parts sit in different pieces of the
+    // graph joins them and adds no loop; a fusion with two parts inside one piece adds one.
+    // Reaching into a piece you already reach is a double count in a merge's shape.
     //
-    // ⚠️ SO NO LEGITIMATE FILING CAN MAKE THE UNIT CYCLE APPEAR IN `F`. Making the layer graph
-    //   cyclic requires a within-component fusion, which is a violation, and every filing that
-    //   could hold both ends of the unit cycle would be fusing ACROSS components, which is free.
-    //   The overlay is where that cycle lives, and it is irreducible rather than a convenience.
+    // So no legitimate filing can make the unit graph's loop appear in the composition. Making
+    // the layer graph loop needs a fusion within one piece, which is a violation, and every filing
+    // that could hold both ends of the unit loop would be fusing across pieces, which adds none.
+    // The unit graph is where that loop lives, and it cannot be moved into the composition.
     //
-    // ⛔⛔ AND THE EQUIVALENCE IS ON ZERO VERSUS NONZERO, NEVER ON THE TWO COUNTS. The cycle
-    //   space counts INDEPENDENT cycles; the rule counts VIOLATING FUSIONS, and one cycle can
-    //   accuse more than one fusion. The probe below returns 1 and 2, which is the equivalence
-    //   holding rather than failing, and an `assert_eq!` on the numbers would have been a
-    //   coincidence waiting to break.
+    // The agreement is on zero against more than zero, never on the two counts. One count is of
+    // independent loops, the rule's is of violating fusions, and one loop can accuse more than
+    // one fusion, so an `assert_eq!` on the numbers would be a coincidence waiting to break.
     //
-    // ⭐ THE PROBE, AND IT REUSES `examples/witnesses/main.rs`'s OWN MUTATION rather than inventing
-    //   one: in `assets/fixtures/every-local-part.xml` make the first `as-contracted` read
-    //   `both-views`, so a layer is composed from ITSELF, then reload the schema and the ingest.
-    //
-    //       variant                cycle_space   jagged_violations
-    //       as filed                        0                   0
-    //       composed from itself            1                   2
-    //       restored                        0                   0
-    //
-    //   Both instruments move on the same edit and neither reads the other, which is what makes
-    //   a green agreement here evidence instead of two comments agreeing.
+    // A probe for it reuses `examples/witnesses/main.rs`'s own mutation: in
+    // `assets/fixtures/every-local-part.xml`, make the first `as-contracted` read `both-views`, so
+    // a layer is composed from itself, then reload the schema and the ingest. Both counts move on
+    // that edit, and neither reads the other, which is what makes their agreement evidence rather
+    // than two comments agreeing.
     // ------------------------------------------------------------------
     let jagged = ordered(sqlx::query_file!("assets/sql/checks/jagged_layer.sql").fetch_all(&pool).await?);
     let lay = cyc
@@ -444,49 +431,47 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let violations = jagged.iter().filter(|j| j.violates == Some(true)).count();
     let examined = jagged.iter().filter(|j| j.violates.is_some()).count();
 
-    println!("\nTHE SAME FACT, COUNTED TWO WAYS");
-    println!("   rank/cycle_space   layers: dim {dim} over {} nodes and {} edges in {} components",
+    println!("\nThe same fact, counted two ways");
+    println!("   rank/cycle_space   layers: {dim} loops over {} nodes and {} edges in {} pieces",
              lay.n_nodes.unwrap_or(-1), lay.m_edges.unwrap_or(-1), lay.c_components.unwrap_or(-1));
     println!("   checks/jagged_layer        {violations} violation(s) of {examined} fusions examined");
 
-    // ⛔ NON-VACUITY FIRST, BECAUSE `0 == 0` IS TRUE OF AN EMPTY GRAPH AND AN UNRUN RULE. A green
-    //   equivalence between two instruments that both examined nothing is two comments agreeing.
+    // Something must have been examined first, because `0 == 0` is true of an empty graph and of
+    // a rule never run. Two counts that both examined nothing agreeing is two comments agreeing.
     assert!(
         lay.n_nodes.unwrap_or(0) > 0 && lay.m_edges.unwrap_or(0) > 0,
-        "the layer graph is empty, so its cycle space is 0 for the wrong reason"
+        "the layer graph is empty, so its count of loops is 0 for the wrong reason"
     );
     assert!(examined > 0, "checks/jagged_layer examined nothing, so its 0 is a vacuum");
 
     assert_eq!(
         dim == 0,
         violations == 0,
-        "the cycle space and the jagged-partition rule disagree about the same corpus: an \
-         undirected cycle in F is two paths under one fold, so dim {dim} and {violations} \
+        "the loop count and the jagged-partition rule disagree about the same corpus: a loop \
+         in the composition is two paths under one total, so {dim} loops and {violations} \
          violation(s) cannot both be right"
     );
-    println!("   ⭐ An undirected cycle in F IS a layer arriving twice under one fold, so these");
-    println!("      two are one statement. The two-root sharing in eliminations/derived is a tree");
-    println!("      JOIN between unconnected roots and correctly moves neither.");
+    println!("   A loop in the composition is a layer arriving twice under one total, so these");
+    println!("      two are one statement. The two-root sharing in eliminations/derived joins two");
+    println!("      unconnected trees and correctly moves neither.");
 
     // ------------------------------------------------------------------
-    // ⛔⛔⛔ THE CITATION CONTRACT, WHICH THIS DIRECTORY DID NOT HAVE. `examples/diagramming/main.rs`
-    //    holds it over `assets/bpmn/filings/` and reads only its own directory, so every
-    //    sentence these three documents carry has been unattributed and unchecked for as long
-    //    as they have existed: the cycle gloss, the rank, and now the coverage. Two emitters,
-    //    one contract, and the second was governed by nothing.
+    // The citation contract for this directory. `examples/diagramming/main.rs` holds it over
+    // `assets/bpmn/filings/` and reads only its own directory, so this program holds it over its
+    // own: every sentence these documents carry, the loop gloss, the rank and the coverage, is
+    // checked here. Two emitters, one contract.
     //
-    // ⭐ A sentence about a FILING is the model's voice and comes from a relation. The check is
-    //   the same one, three arms: the cited file exists, this program actually queried it, and
-    //   no sentence is unattributed. `query_file!` takes a literal, so what was queried is
-    //   readable out of this program's own source.
+    // A sentence about a filing is the model's voice and comes from a relation. The check has
+    // three arms: the cited file exists, this program queried it, and no sentence is
+    // unattributed. `query_file!` takes a literal, so what was queried can be read out of this
+    // program's own source.
     // ------------------------------------------------------------------
-    // ⛔⛔⛔ AND `QUERIED` HAS TO MEAN THE COMPOSE CLOSURE, WHICH IS WHERE THIS LAW DIFFERS FROM
-    //    `examples/diagramming/main.rs`'s. That program reads the relation that states each fact
-    //    directly, so a direct-query set is enough there. This one reads `rank/graph_nodes.sqlc`
-    //    and gets the rank and the coverage THROUGH it, so citing `rank/evaluation_order.sqlc`
-    //    is the honest pointer and a direct-query test calls it decorative. ⭐ Written the strict
-    //    way first, it accused all 74 of its own sentences, which is the law being wrong about
-    //    what a citation is FOR: it names where the fact is stated, not where it was fetched.
+    // `queried` has to mean everything composed beneath what is queried, which is where this law
+    // differs from `examples/diagramming/main.rs`'s. That program reads the relation that states
+    // each fact directly, so the set of direct queries is enough there. This one reads
+    // `rank/graph_nodes.sqlc` and gets the rank and the coverage through it, so citing
+    // `rank/evaluation_order.sqlc` is the true pointer, and a test of direct queries alone would
+    // call it decorative. A citation names where a fact is stated, not where it was fetched.
     let mut queried: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
     let own = fs::read_to_string(file!())?;
     let mut rest = own.as_str();
@@ -500,11 +485,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     assert!(!queried.is_empty(), "the query scan found nothing, so the citation law below is vacuous");
-    // ⭐⭐⭐ THE CLOSURE COMES FROM THE RELATION, NOT FROM A SCAN IN THIS FILE. An inline
-    //    `:compose(` reader here would duplicate `examples/shared/tree` in a program that has a
-    //    database open the whole time. `public.compose_edge` is that fact as a relation, so the
-    //    closure is a walk over rows and the source tree is read once, by the program whose job
-    //    that is.
+    // The closure comes from the relation, not from a scan in this file. An inline `:compose(`
+    // reader here would duplicate `examples/shared/tree` in a program that has a database open
+    // the whole time. `public.compose_edge` is that fact as a relation, so the closure is a walk
+    // over rows, and the source tree is read once, by the program whose job that is.
     let seeded = queried.len();
     let dag = ordered(sqlx::query_file!("assets/sql/rank/compose_edges.sql").fetch_all(&pool).await?);
     let mut frontier: Vec<String> = queried.iter().cloned().collect();
@@ -517,19 +501,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    // ⭐⭐ AND A ROSTER'S OWN DATA IS THE SECOND ROUTE. `diagrams/graphs.sqlc` carries the rule
-    //    that judges each graph's cycles as a VALUE, and the emitter writes that value into the
-    //    document so a reader can reach the rule. Nothing composes it and nothing should: it is
-    //    a pointer the roster states, and the honest test is that the emitter actually read it.
+    // A roster's own data is the second route. `diagrams/graphs.sqlc` carries the rule that judges
+    // each graph's loops as a value, and the emitter writes that value into the document so a
+    // reader can reach the rule. Nothing composes it, and nothing should: it is a pointer the
+    // roster states, and the true test is that the emitter read it.
     for g in &graphs {
         if let Some(r) = g.governed_by.as_deref() {
             queried.insert(format!("assets/sqlc/{r}.sqlc"));
         }
     }
-    println!("\n   ⭐ {seeded} relations queried directly, {} in their compose closure plus the",
+    println!("\n   {seeded} relations queried directly, {} in their compose closure plus the",
              queried.len() - seeded);
     println!("      rules the graph roster names as data. A citation points at where a fact is");
-    println!("      STATED, and this emitter reaches most of its facts through composition.");
+    println!("      stated, and this emitter reaches most of its facts through composition.");
     let (mut sentences, mut unattributed, mut dangling, mut unread) = (0usize, vec![], vec![], vec![]);
     for e in fs::read_dir(OUT)?.flatten() {
         let path = e.path();
@@ -580,9 +564,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "a sentence cites a relation this program never queried, so the citation is decorative \
          and the sentence is still the emitter's own claim: {unread:?}"
     );
-    println!("\n   ⭐ {sentences} sentences across these documents, 0 unattributed. This directory");
-    println!("      had no citation law at all: diagramming.rs holds one and reads only its own");
-    println!("      directory, so a second emitter's sentences were governed by nothing.");
+    println!("\n   {sentences} sentences across these documents, 0 unattributed. This directory");
+    println!("      has its own citation law: diagramming.rs holds one and reads only its own");
+    println!("      directory, so this emitter's sentences are checked here.");
 
     println!("\nAll checks passed.");
     Ok(())

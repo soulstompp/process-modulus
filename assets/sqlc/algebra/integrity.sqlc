@@ -1,7 +1,8 @@
-# Every contract's outer join held to the same two differences taken by EXCEPT. One row per
-# contract whose population does not reach algebra/all.sqlc: whether |roster| = |declared but
-# unproduced| + |roster ⋉ population|, each term read off the contract's fold, and whether the fold's
-# two one-sided regions are the two differences EXCEPT takes.
+# Every contract's outer join held to the same two differences taken by EXCEPT. One row per contract
+# whose population does not reach algebra/all.sqlc: whether the roster's count is the subjects
+# declared and never produced plus the roster's subjects that have rows, each read off the
+# contract's fold, and whether the fold's two one-sided regions are the two differences EXCEPT
+# takes.
 #
 # Two operators for one set
 #   Each fold in folds/ reads both differences off a full outer join of its roster and its
@@ -10,22 +11,22 @@
 #   count, and holds the fold to them. A join key that stopped matching would put every subject in
 #   both one-sided regions of the fold and leave the EXCEPTs where they were.
 #
-# The dedup is intended
+# Removing repeats is intended
 #   `checks/all.sqlc` carries many rows over far fewer distinct rule names, and EXCEPT collapses
 #   them, which is the question: which names appear that nothing declares. The folds keep the rows
 #   and count them, and algebra/subject_boxes.sqlc is the law about the counts. This one is about
 #   the names.
 #
-# Seven of the eight
+# Every contract but the laws' own
 #   The laws' own contract is not here: its population is algebra/all.sqlc, and this law is one of
-#   its arms. folds/law_subjects.sqlc says what holds that fold instead.
+#   its branches. folds/law_subjects.sqlc says what holds that fold instead.
 #
-# What `classes` differences by EXCEPT
-#   Its roster is the cells epistemics/class_domain.sqlc declares `exercised`, and its population
-#   is the classes epistemics/classes.sqlc counts a row in. A cell declared exercised that nothing
+# What `classes` takes the differences of
+#   Its roster is the cells epistemics/class_domain.sqlc declares `exercised`, and its population is
+#   the classes epistemics/classes.sqlc counts a row in. A cell declared exercised that nothing
 #   lands in is `missing`; a class with rows that no cell claims is `stray`. The cells declared
-#   `outside` or `open` are on neither side by construction, which is the whole reason the roster
-#   carries a standing rather than a list of names.
+#   `outside` or `open` are on neither side by construction, which is why the roster carries a
+#   standing rather than a list of names.
 #
 # The second witness for reports/integrity.sqlc
 #   reports/integrity.sqlc restricts the same folds, and an empty result is also what a broken
@@ -34,7 +35,8 @@
 # Probe
 #   examples/probes runs it as `integrity`: in the composed text the rules fold's join key stops
 #   matching, and the law must fail for `rules` alone.
--- every fold in folds/ whose population does not reach algebra/all.sqlc, against its roster and its population by EXCEPT.
+-- every fold in folds/ whose population does not reach algebra/all.sqlc, against its roster and
+-- its population by EXCEPT.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -45,7 +47,8 @@ LEFT JOIN (
              AND x.declared = x.roster
              AND x.unproduced = x.missing
              AND x.undeclared = x.stray AS holds,
-           format('%s declared = %s unproduced + %s produced, %s undeclared; by EXCEPT, %s on the roster, %s unproduced, %s undeclared',
+           format('%s declared: %s unproduced, %s produced, %s undeclared; '
+                  'by EXCEPT, %s on the roster, %s unproduced, %s undeclared',
                   x.declared, x.unproduced, x.produced, x.undeclared, x.roster, x.missing, x.stray) AS detail
     FROM (
         SELECT 'rules' AS contract,

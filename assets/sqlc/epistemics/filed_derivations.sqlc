@@ -4,11 +4,11 @@
 #
 # The relation for the type, beside the census for the positions
 #   epistemics/derivations.sqlc reads each position's identity from the column on the table of the
-#   thing it computes, and that column holds the identity alone. This is the same set read from the
+#   thing it works out, and that column holds the identity alone. This is the same set read from the
 #   elements, with everything a filer wrote beside it. algebra/derivations_filed.sqlc holds the two
 #   routes against each other.
 #
-# `owns` is the position the identity computes
+# `owns` is the position the identity works out
 #   It is spelled as epistemics/claims.sqlc and epistemics/filed_absences.sqlc spell it,
 #   `parent/wrapper`, and `element` is where the derivation sits. They differ only for a claim's
 #   edge and narrowing, whose elements every claim shares: there `owns` is the claim's own position,

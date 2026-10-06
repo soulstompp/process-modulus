@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- GENERATED from assets/bpmn/filings/merge-holding-composition.bpmn by examples/rendering/main.rs. DO NOT EDIT.
+<!-- Generated from assets/bpmn/filings/merge-holding-composition.bpmn by examples/rendering. Do not edit by hand.
      Every lane is its own group carrying the layer name; every activity is drawn
      with the BPMN glyph for its kind, thin for a task and thick for a call. That is
      what *properly layered* means, and it is what lets a reader check the partition
@@ -52,11 +52,11 @@
   </g>
   <g class="note" id="legend"><title>legend</title>
     <path id="legend-bracket" d="M20 218 h-8 v88 h8" class="noteBox"/>
-    <text id="legend-0-says" x="26" y="230" class="noteText">A DOTTED ARROW between two lanes is an observed DEPENDENCE, not a supply edge, and never evidence for a fusion.</text>
+    <text id="legend-0-says" x="26" y="230" class="noteText">A dotted arrow between two lanes is a dependence somebody observed: not a supply edge, and never evidence for a fusion.</text>
     <text id="legend-0-source" x="26" y="242" class="noteCite">assets/sqlc/diagrams/dependences.sqlc</text>
-    <text id="legend-1-says" x="26" y="260" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-says" x="26" y="260" class="noteText">Scope: scoped. The pool is the whole system only when the filing says `complete`.</text>
     <text id="legend-1-source" x="26" y="272" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
-    <text id="legend-2-says" x="26" y="290" class="noteText">COUPLING SEARCH: stated. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-says" x="26" y="290" class="noteText">Coupling search: stated. An absent dependence line is not independence.</text>
     <text id="legend-2-source" x="26" y="302" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
   </g>
 </svg>

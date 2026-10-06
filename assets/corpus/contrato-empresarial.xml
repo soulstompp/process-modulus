@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  A versao portuguesa do exemplo de referência: as mesmas quatro camadas e as mesmas duas
-  operações, declaradas por uma microentidade ao abrigo do AnexoASNC da IES. Números
-  ilustrativos, não sao de ninguém.
+  A versão portuguesa do exemplo de referência, com as mesmas quatro camadas e as mesmas
+  duas operações, declaradas por uma microentidade pelo AnexoASNC da IES, e com números
+  ilustrativos que não são de ninguém.
 
-  O que esta aqui para mostrar:
-    * o resto da camada de pessoal repartido entre `people` e `unrealised` com ambas as
-      parcelas `unmeasured` — o argumento do quarto amortecedor, escrito em vez de
-      discutido, é a admissão de que o resto se divide sem inventar a divisão
-    * um quantum contratual (um bloco reservado de 8 GPU) ao lado de um intrínseco
-      (uma vaga de entrega por trimestre, uma pessoa)
-    * uma INDUÇÃO: um compromisso assumido por um interveniente que se torna um consumo
-      noutra camada, com quem decidiu nomeado
-    * uma base de mensuração declarada `notApplicable` porque a quantidade e física
-    * as três MARGENS DE AMORTECEDOR declaradas e diferentes por camada: só a
-      capacidade entregável pode ser adiantada, e o pessoal é a única oferta que corre
-      acima da sua capacidade nominal
-    * ⭐ UMA OFERTA CONTINUAMENTE DISPONÍVEL, o único tipo cuja janela é o período
-      inteiro. A `cobertura-de-suporte` declara uma fração de serviço de UM como o
-      valor que é, `1 semana` para um período de `semana` com `origin` `contractual`,
-      porque uma obrigação permanente é uma cláusula que alguém assinou e poderia
-      renegociar. Escrita como ausência não diria nada sobre qual das três origens a
-      pôs lá
-    * uma FOLGA cujo resto continua a ser pago: cobertura comprometida, faturada e não
-      chamada, detida por `booked`, com `absorber` `none` porque nenhum amortecedor
-      esticou, pôs em fila ou guardou o que quer que fosse
+  O que mostra:
+    * o resto da camada de pessoal repartido entre `people` e `unrealised`, com as duas
+      quotas `unmeasured`: sabe-se que o resto se divide, e ninguém inventa a divisão;
+    * um quantum contratual, um bloco reservado de 8 GPU, ao lado de dois intrínsecos, uma
+      pessoa e uma vaga de entrega por trimestre;
+    * uma indução, ou seja, um compromisso que uma parte assume e que se torna consumo
+      noutra camada, com o nome de quem decide;
+    * uma base de mensuração declarada `notApplicable`, porque a quantidade é física;
+    * as três folgas de amortecedor declaradas, diferentes de camada para camada: só a
+      capacidade entregável se pode adiantar, e o pessoal é a única oferta que trabalha
+      acima da sua capacidade nominal;
+    * uma oferta disponível a toda a hora, o único caso em que a janela ocupa o período
+      inteiro: a `cobertura-de-suporte` declara `1 semana` para um período de `semana`,
+      com origem `contractual`, porque a obrigação é uma cláusula que alguém assinou e pode
+      renegociar, e, declarada como ausência, não diria que origem a pôs lá;
+    * um `clearance` cujo resto continua a ser pago, cobertura comprometida, faturada e
+      nunca chamada, que fica em `booked`, com `absorber` `none`, porque nenhum amortecedor
+      esticou, pôs em fila ou guardou fosse o que fosse.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- QUE DECLARAÇÃO E ESTA. Uma parte noutro sitio cita exatamente este URN;
-       uma declaração que não se consegue nomear a si própria não pode ser citada. -->
+  <!-- Que declaração é esta: o URN que uma parte ou uma dependência cita para apontar para
+       este documento. -->
   <pm:notation>
     <pm:uri>urn:example:declaracao:padaria-do-largo:2026-08-30</pm:uri>
   </pm:notation>
@@ -37,10 +34,10 @@
     <pm:attests>observation</pm:attests>
   </pm:evidence>
 
-  <!-- Ao abrigo do que este documento reporta.
-       Uma microentidade portuguesa reporta sob o AnexoASNC da IES, e ao contrário do
-       seu irmão norte-americano NÃO precisa de se nomear a si própria como autoridade
-       do plano de contas: Portugal publica um plano nacional, o SNC. -->
+  <!-- Sob que regime reporta este documento. Uma microentidade portuguesa reporta pelo
+       AnexoASNC da IES e, ao contrário da congénere americana, não tem de ser ela a
+       autoridade do seu plano de contas, uma vez que Portugal publica um plano nacional,
+       o SNC. -->
   <pm:regime>
     <pm:id>ies-anexo-asnc</pm:id>
     <pm:jurisdiction>PT</pm:jurisdiction>
@@ -50,7 +47,8 @@
         <pm:value>NCRF-PE</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- HÁ AQUI UM PLANO NACIONAL, portanto a entidade empresta em vez de autorar. -->
+    <!-- Aqui há um plano nacional, pelo que a entidade vai buscar o termo ao SNC em vez de
+         ser ela a autoridade. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
@@ -63,7 +61,7 @@
     <pm:scope>
       <pm:scope>
         <pm:extent>unbounded</pm:extent>
-        <pm:basis>as três camadas sobre as quais esta declaração foi escrita para argumentar. Ninguém perguntou que mais a casa opera que fosse uma camada</pm:basis>
+        <pm:basis>as quatro camadas de que trata esta declaração; que mais opera a casa que fosse uma camada, isso ninguém perguntou</pm:basis>
       </pm:scope>
     </pm:scope>
 
@@ -98,7 +96,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>padaria-do-largo</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-30</pm:asOf>
           </pm:claim>
@@ -110,20 +108,17 @@
         </pm:patience>
       </pm:demand>
 
-      <!-- ⛔⛔ `unmeasured` E NÃO `none`. Dizer que a procura aqui não sobrevive de todo a
-           ser retida tornaria o amortecedor de tempo indisponível e deixaria o resto sem
-           outro sitio para ir que não `people`. Isso seria o documento a viciar a sua
-           própria conclusao: o trabalho da casa FICA mesmo em fila é parte dele é servido
-           tarde. O que ninguém mediu é quanto tempo sobrevive lá — e a parcela que se
-           perde é `unrealised` e não `people`. Declarar isto honestamente repoe a saída
-           cómoda em cima da mesa e faz de `absorber = capacity`, abaixo, uma afirmação com
-           que um leitor pode discutir, o que e mais forte do que ganhar por construção. -->
+      <!-- `unmeasured`, e não `none`: o trabalho da casa fica mesmo em fila, e parte dele
+           é servido tarde. O que ninguém mediu é quanto tempo aguenta lá antes de se
+           perder, e a parte que se perde é `unrealised`, não `people`; o amortecedor de
+           tempo fica assim em aberto, e o `capacity` declarado mais abaixo passa a ser uma
+           afirmação que quem lê pode pesar contra ele. -->
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
           <pm:note>o trabalho em fila sobrevive de facto à espera, e quanto tempo até se perder em silêncio nunca foi medido. A parcela que se perde é `unrealised` e não `people`</pm:note>
           <pm:provenance><pm:party>padaria-do-largo</pm:party>
-            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
           </pm:provenance>
           <pm:asOf>2026-08-30</pm:asOf>
         </pm:absent>
@@ -157,8 +152,8 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- o quadro de pessoal é nosso para fixar, portanto a falta de uma pessoa
-               abaixo é uma decisão é não uma restrição -->
+          <!-- o quadro de pessoal fixamo-lo nós, pelo que a pessoa que falta, mais abaixo,
+               é uma decisão e não uma restrição -->
           <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
@@ -193,7 +188,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>a capacidade nominal é cotada em `pessoas`, uma existência sem período, portanto não há ciclo de que se possa estar ativo numa parte</pm:note>
+                  <pm:note>a capacidade nominal é cotada em `pessoas`, uma existência sem período, pelo que não há período de que uma janela possa ser parte</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -201,7 +196,7 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>uma pessoa pode trabalhar acima da sua capacidade nominal e na maioria das pilhas é a única oferta que o consegue. ATÉ QUE PONTO ACIMA, e durante quanto tempo, ninguém aqui mediu — que é todo o assunto deste modelo e a razão de isto não ser um valor booleano</pm:note>
+              <pm:note>uma pessoa pode trabalhar acima da sua capacidade nominal e, na maioria das pilhas, é a única oferta que o consegue; até que ponto acima, e durante quanto tempo, isso ninguém aqui mediu</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
@@ -211,13 +206,13 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- Um só valor não tem intervalo que se estreite, daí o `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
                 <pm:party>padaria-do-largo</pm:party>
                 <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                <pm:note>a capacidade não usada hoje está PERDIDA. As horas não usadas da semana passada não podem ser armazenadas para servir esta semana, e é por isso que `absorber = inventory` nesta camada é lisamente falso</pm:note>
+                <pm:note>a capacidade que hoje não se usa perde-se, já que as horas não usadas da semana passada não se podem armazenar para servir esta, pelo que o `inventory` nunca é o `absorber` desta camada</pm:note>
               </pm:provenance>
             </pm:claim>
           </pm:inventorySlack>
@@ -228,7 +223,7 @@
               <pm:reason>unmeasured</pm:reason>
               <pm:note>nenhum instrumento regista as horas absorvidas acima do quadro de pessoal</pm:note>
               <pm:provenance><pm:party>padaria-do-largo</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-30</pm:asOf>
             </pm:absent>
@@ -251,21 +246,18 @@
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- O QUE NÃO TEM INSTRUMENTO E A PARCELA, NÃO O RESTO. A grandeza e
-               |4 - [4,5, 5,2, 6,0]| = [0,5, 1,2, 2,0] pessoas e o documento já a
-               determina. O que ninguém regista é quanto disso a equipa absorveu, é essa
-               e uma afirmação bem mais pequena e bem mais afiada do que "não sabemos
-               qual é o resto".
-               DOIS DETENTORES, E O SEGUNDO E O QUE A NOTA DO PRÓPRIO `timeSlack` desta
-               camada pede: o trabalho que fica em fila, espera e se perde em silencio e
-               `unrealised` e não `people`. Declarar só `people` diria que a equipa
-               absorveu tudo, o que a nota contradiz na mesma camada.
-               AMBAS AS PARCELAS SAO `unmeasured` E A DIVISÃO ENTRE ELAS E O ESSENCIAL.
-               Segundo o Holder, uma parcela não declarada suspende a regra da soma em vez
-               de a quebrar, portanto nada aqui é inventado para fazer passar uma
-               verificação aritmética. O que o segundo detentor acrescenta é a ADMISSÃO de
-               que o resto se divide — e qual das duas metades cresceu é a pergunta que
-               alguem teria de instrumentar para responder. -->
+          <!-- O que não tem instrumento é a quota, não o resto: o resto decorre da procura
+               e da capacidade nominal desta mesma camada, 0,5, 1,2 e 2,0 pessoas, e o
+               documento já o fixa, ao passo que quanto dele a equipa absorveu, isso,
+               ninguém o regista.
+               Declaram-se dois `holder` porque a nota do `timeSlack` desta camada pede o
+               segundo: o trabalho que fica em fila, espera e se perde em silêncio é
+               `unrealised`, não `people`, e declarar só `people` seria dizer que a equipa
+               absorveu tudo, quando a nota diz outra coisa.
+               As duas quotas estão `unmeasured`, e é a divisão entre elas que fica em
+               aberto. Uma quota por declarar suspende a regra de as quotas somarem o resto,
+               em vez de a quebrar, pelo que nada aqui é inventado para passar numa
+               verificação; e saber qual das duas cresceu é o que alguém teria de medir. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>unrealised</pm:kind>
@@ -274,7 +266,7 @@
                   <pm:reason>unmeasured</pm:reason>
                   <pm:note>trabalho que ficou em fila, esperou e se perdeu antes de alguém lhe chegar. Nada regista um pedido que nunca foi servido, e é por isso que isto é `unrealised` e não uma parcela `people` menor</pm:note>
                   <pm:provenance><pm:party>padaria-do-largo</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-30</pm:asOf>
                 </pm:absent>
@@ -289,16 +281,17 @@
                   <pm:reason>unmeasured</pm:reason>
                   <pm:note>a absorção não tem contraparte e por isso não tem transação</pm:note>
                   <pm:provenance><pm:party>padaria-do-largo</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-30</pm:asOf>
                 </pm:absent>
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derivado: |capacidade nominal - procura| = |4 - [4,5, 5,2, 6,0]| = [0,5, 1,2, 2,0]
-               pessoas. Disso, m·q = 1 pessoa é a decisão de quadro (amountOrigin =
-               policy) e 0,2 é o resíduo que efetivo nenhum remove. -->
+          <!-- Calculado a partir da procura e da capacidade nominal desta camada: 0,5, 1,2 e
+               2,0 pessoas. Dos 1,2 do caso mais provável, uma pessoa inteira é a decisão de
+               quadro (`amountOrigin` `policy`), e os 0,2 são o resíduo que nenhuma
+               contratação remove. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -310,7 +303,7 @@
     </pm:layer>
 
     <!-- ============================================================
-         COMPUTAÇÃO: um quantum contratual, é o resto fica registado.
+         COMPUTAÇÃO: um quantum contratual, e o resto fica escriturado.
          ============================================================ -->
     <pm:layer>
       <pm:name>computacao</pm:name>
@@ -340,7 +333,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>padaria-do-largo</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-30</pm:asOf>
           </pm:claim>
@@ -360,7 +353,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- Um só valor não tem intervalo que se estreite, daí o `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -399,9 +392,10 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- OS DOIS EIXOS A SEPARAREM-SE, QUE E A RAZÃO DE HAVER DOIS ELEMENTOS.
-               Quem vende fixa o bloco em oito GPU (um tamanho CONTRATUAL, abaixo).
-               Quantos blocos detemos é o nosso orcamento, e de mais ninguém. -->
+          <!-- Quem fixa o tamanho de um bloco e quem fixa quantos blocos temos são partes
+               diferentes, e é por isso que há dois elementos: quem vende fixa o bloco em
+               8 GPU, um tamanho contratual (mais abaixo), e quantos blocos temos é o nosso
+               orçamento, e de mais ninguém. -->
           <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
@@ -431,13 +425,13 @@
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
-                <!-- quem vende fixa isto, e quem vende pode altera-lo -->
+                <!-- quem vende fixa isto, e quem vende pode alterá-lo -->
                 <pm:origin>contractual</pm:origin>
               </pm:lumpy>
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>a capacidade nominal é cotada em `GPU`, uma existência sem período, portanto não há ciclo de que se possa estar ativo numa parte</pm:note>
+                  <pm:note>a capacidade nominal é cotada em `GPU`, uma existência sem período, pelo que não há período de que uma janela possa ser parte</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -449,7 +443,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- Um só valor não tem intervalo que se estreite, daí o `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -459,7 +453,8 @@
               </pm:provenance>
             </pm:claim>
           </pm:capacitySlack>
-          <!-- uma hora-GPU reservada e não consumida esta perdida; não ha nada para adiantar -->
+          <!-- uma hora de GPU reservada e não consumida perde-se; não há nada que se possa
+               adiantar -->
           <pm:inventorySlack>
             <pm:claim>
               <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
@@ -467,7 +462,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- Um só valor não tem intervalo que se estreite, daí o `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -503,7 +498,7 @@
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>padaria-do-largo</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-30</pm:asOf>
             </pm:claim>
@@ -526,9 +521,9 @@
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- um só detentor a suportar tudo, portanto a parcela E a grandeza é a
-               verificação da soma e trivial aqui. E declarada a mesma: uma parcela que
-               por acaso é o todo continua a ser um facto diferente do total. -->
+          <!-- Um só `holder` suporta tudo, pelo que a quota é o resto inteiro e as quotas
+               somam sem esforço; declara-se mesmo assim, porque uma quota que calha ser o
+               todo é um facto diferente do total. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>booked</pm:kind>
@@ -559,10 +554,10 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derivado: |capacidade nominal - procura| = |8 - [3,1, 4,4, 6,0]| = [2,0, 3,6, 4,9]
-               GPU. INTEIRAMENTE RESÍDUO. O bloco é indivisível em 8 é a procura nunca
-               lá chega, portanto m·q não contribui com nada que uma compra menor pudesse
-               remover: o resto desta camada é do tipo irredutível. -->
+          <!-- Calculado a partir da procura e da capacidade nominal desta camada: 2,0, 3,6 e
+               4,9 GPU. É tudo resíduo: o bloco é indivisível em 8 GPU e a procura nunca lá
+               chega, pelo que comprar menos blocos não tiraria nada dele, e o resto desta
+               camada é do género que decisão nenhuma remove. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -602,7 +597,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>product</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-30</pm:asOf>
           </pm:claim>
@@ -649,18 +644,17 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- NÃO `intrinsic`, E A CONTENÇÃO E O ESSENCIAL. O que limita isto a
-               três e o débito da equipa da casa, que é outra camada. Declarar
-               `intrinsic` afirmaria que ninguém o consegue mexer e esconderia uma
-               dependência num campo onde ninguém iria procurar. Se a dependência for
-               real pertence a pm:coupling com a observação que a produziu, e ninguém
-               aqui fez ainda essa observação. -->
+          <!-- Não é `intrinsic`. O que limita isto a três é o débito da equipa da casa, que
+               é outra camada, e declarar `intrinsic` seria dizer que ninguém lhe pode
+               mexer, escondendo uma dependência num campo onde ninguém vai procurar; se a
+               dependência for real, pertence a um `pm:coupling`, com a observação que a
+               sustenta, e essa observação ninguém aqui a fez. -->
           <pm:amountOrigin>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
               <pm:note>limitado pelo débito da entrega e não por uma decisão tomada aqui; se isso é um acoplamento não foi observado</pm:note>
               <pm:provenance><pm:party>product</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-30</pm:asOf>
             </pm:absent>
@@ -668,15 +662,13 @@
           <pm:divisibility>
             <pm:divisibility>
               <pm:lumpy>
-                <!-- `lançamentos por trimestre` E NÃO `lançamentos`. Um quantum e o
-                     tamanho de uma unidade da CAPACIDADE NOMINAL que divide — vive sob
-                     `nameplate/divisibility` — e esta capacidade nominal é uma taxa. O
-                     sinal e aritmético e não estilístico: o essencial de um quantum e que
-                     `procura / q` e `capacidade nominal / q` sejam CONTAGENS, e
-                     `(lançamentos por trimestre) / lançamentos` não é uma contagem, é uma
-                     frequência. So calhou dar certo aqui porque o tamanho é 1.
-                     A unidade indivisível não e "um lançamento". E UMA VAGA DE ENTREGA
-                     POR TRIMESTRE, e e disso que não se conseguem deter dois terços. -->
+                <!-- `lançamentos por trimestre`, e não `lançamentos`. Um quantum é o
+                     tamanho de uma unidade da capacidade nominal que divide, e fica em
+                     `nameplate/divisibility`, na unidade da própria capacidade nominal,
+                     para que a capacidade nominal e a procura deem, cada uma, uma
+                     contagem de unidades inteiras; como esta capacidade nominal é uma
+                     taxa, a unidade não é um lançamento, é uma vaga de entrega por
+                     trimestre, aquilo de que ninguém consegue ter dois terços. -->
                 <pm:size>
                   <pm:claim>
                     <pm:low>1</pm:low>
@@ -700,13 +692,13 @@
                     </pm:boundOrigin>
                   </pm:claim>
                 </pm:size>
-                <!-- não se entrega dois terços de uma integração, a preco nenhum -->
+                <!-- não se entregam dois terços de uma integração, seja a que preço for -->
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
               <pm:window>
                 <pm:absent>
                   <pm:reason>unmeasured</pm:reason>
-                  <pm:note>`lançamentos por trimestre` TEM período, portanto a pergunta é bem formada aqui — e ninguém mediu em que parte do trimestre a equipa consegue de facto entregar</pm:note>
+                  <pm:note>`lançamentos por trimestre` tem período, pelo que aqui a pergunta faz sentido; em que parte do trimestre a equipa consegue de facto entregar, isso ninguém mediu</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -718,7 +710,7 @@
               <pm:denominator>
                 <pm:period>trimestre</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- Um só valor não tem intervalo que se estreite, daí o `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -728,34 +720,27 @@
               </pm:provenance>
             </pm:claim>
           </pm:capacitySlack>
-          <!-- VERDADE AQUI E FALSO NAS OUTRAS DUAS. Uma entrega pode ser adiantada e retida,
-               e é isso que faz de `absorber = inventory` nesta camada uma afirmação e
-               não uma desculpa -->
-          <!-- UMA MARGEM DIMENSIONADA, E É ISSO QUE TORNA A ATRIBUIÇÃO ABAIXO
-               VERIFICÁVEL EM VEZ DE MERAMENTE COERENTE. Esta camada diz
-               `absorber = inventory`, e enquanto isso esteve guardado por um valor
-               booleano a afirmação não podia estar errada: `true` não custa nada e
-               qualquer tamanho de resto podia ser estacionado atras dele. Um número
-               limita-o. O trabalho de integração pode ficar acabado e por entregar
-               durante cerca de dois trimestrês de entregas antes de apodrecer contra uma
-               plataforma que continua a mexer-se, portanto o amortecedor leva dois a seis
-               e a parcela de cliente de três tem onde assentar de facto.
-               Esta apertado no limite inferior de proposito. Se o trimestre for dos maus
-               o amortecedor leva dois é o excesso já esta em dois.
-               ⭐⭐ AND NOTE WHAT WAS MEASURED VERSUS WHAT IS FILED, BECAUSE THIS IS THE
-               ONE PLACE IN THE CORPUS THE CONVERSION WAS DONE AND IT IS INVISIBLE ONCE
-               DONE. "Two quarters' worth" is a DURATION — how long the work keeps. The
-               field takes a QUANTITY, because it is compared against a holder share and
-               shares are in the layer's unit. The bridge is `quantity = duration x rate`:
-               two quarters at roughly three launches a quarter is the six at the high
-               bound. Nobody can see that multiplication in the numbers, só it is said
-               here. -->
+          <!-- Das quatro camadas deste documento, só nesta se pode adiantar trabalho e
+               guardá-lo, porque um lançamento pode ficar pronto antes de sair, e é isso
+               que faz do `inventory` desta camada uma afirmação e não uma desculpa. -->
+          <!-- O valor limita essa afirmação, pelo que não se pode estacionar atrás dela um
+               resto de qualquer tamanho. O trabalho de integração pode ficar pronto e por
+               entregar durante cerca de dois trimestres de lançamentos antes de apodrecer
+               contra uma plataforma que não para de se mexer, e por isso o amortecedor leva
+               de 2 a 6, e a quota de cliente, que vai até 3, tem onde assentar de facto.
+               Está justo no limite inferior de propósito: num trimestre mau, o amortecedor
+               leva 2 e o excesso já vai em 2.
+               O que se mediu foi uma duração, quanto tempo o trabalho aguenta; o que se
+               declara é uma quantidade, porque é comparada com as quotas, e as quotas estão
+               na unidade da camada. Dois trimestres a cerca de três lançamentos por
+               trimestre dão os 6 do limite superior, e como essa multiplicação não se vê
+               nos valores, fica dita aqui. -->
 
-               <!-- A UNIDADE E `lançamentos por trimestre` E NÃO `trimestres`, PELA MESMA
-                    RAZÃO QUE O QUANTUM ACIMA. Uma margem na unidade errada é apanhada por
-                    `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`; uma margem
-                    que salte a multiplicação e fique com a unidade certa não é apanhada
-                    por nada. -->
+               <!-- A unidade é `lançamentos por trimestre`, e não `trimestres`, pela mesma
+                    razão do quantum acima. Uma folga na unidade errada é apanhada pelo
+                    `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`; já uma
+                    folga que salte a multiplicação e fique com a unidade certa não é
+                    apanhada por nada. -->
           <pm:inventorySlack>
             <pm:claim>
               <pm:low>2</pm:low>
@@ -771,17 +756,17 @@
                   <pm:kind>instrument</pm:kind>
                 </pm:narrowing>
               </pm:narrowsWhen>
-              <!-- QUEM FIXOU ISTO. Ninguém o escolheu e ninguém o pode negociar: o
-                   trabalho de integração apodrece contra uma plataforma que continua a
-                   mexer-se, e o ritmo a que ela se mexe não é nosso. `intrinsic`,
-                   portanto, e essa e uma afirmação que alguem pode disputar — a um leitor
-                   que ache que o prazo de validade é na verdade uma POLÍTICA de cadência
-                   de versões foi dado o sitio onde o dizer. -->
+              <!-- Quem fixou este limite: ninguém o escolheu e ninguém o pode negociar,
+                   porque o trabalho de integração apodrece contra uma plataforma que não
+                   para de se mexer, e o ritmo a que ela se mexe não é nosso. Daí o
+                   `intrinsic`, uma afirmação que alguém pode contestar: quem ache que o
+                   prazo de validade é, afinal, uma política de cadência de versões tem
+                   aqui o sítio onde o dizer. -->
               <pm:boundOrigin>
                 <pm:origin>intrinsic</pm:origin>
               </pm:boundOrigin>
               <pm:provenance><pm:party>product</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-30</pm:asOf>
             </pm:claim>
@@ -831,13 +816,12 @@
               <pm:value>inventory</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- DOIS DETENTORES, E ESTE E O CASO QUE FORÇOU A FORMA. A anotação do
-               próprio Fit nomeia TANTO `customer` COMO `unrealised` para um excesso não
-               servido, porque um cliente que esperou e um cliente que nunca chegou sao
-               pessoas diferentes e só uma delas ainda é sua. Um detentor unico obrigava
-               quem declara a escolher um e deitar o outro fora.
+          <!-- Dois `holder`. O `Fit` nomeia tanto o `customer` como o `unrealised` para um
+               excesso que ficou por servir, porque um cliente que esperou e um cliente que
+               nunca chegou são pessoas diferentes, e só um deles continua a ser cliente;
+               um só `holder` obrigaria quem declara a escolher um e a deitar fora o outro.
 
-               As parcelas somam a grandeza derivada: [1,2,3] + [1,1,2] = [2,3,5]. -->
+               As duas quotas somam o resto calculado, 2, 3 e 5 lançamentos por trimestre. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>customer</pm:kind>
@@ -863,7 +847,7 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>product</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-30</pm:asOf>
                 </pm:claim>
@@ -895,18 +879,18 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>product</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-30</pm:asOf>
                 </pm:claim>
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derivado: |capacidade nominal - procura| = |3 - [5, 6, 8]| = [2, 3, 5] lançamentos
-               por trimestre. INTEIRAMENTE DECISAO. O quantum é uma entrega é a procura é
-               um número inteiro delas, portanto o resíduo é zero e cada unidade deste
-               resto e um compromisso que alguem podia ter assumido de outra maneira. A
-               camada com o maior resto deste documento não tem nada de irredutível. -->
+          <!-- Calculado a partir da procura e da capacidade nominal desta camada: 2, 3 e 5
+               lançamentos por trimestre. É tudo decisão: o quantum é uma vaga de entrega e
+               a procura vem em lançamentos inteiros, pelo que não há resíduo, e cada
+               unidade deste resto é um compromisso que alguém podia ter assumido de outra
+               maneira. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -918,22 +902,21 @@
     </pm:layer>
 
     <!-- ============================================================
-         COBERTURA DE SUPORTE: A PRIMEIRA OFERTA CONTINUAMENTE DISPONÍVEL DESTE
-         CORPUS, e está aqui pelo ciclo de serviço e não pelos números.
+         COBERTURA DE SUPORTE: uma oferta disponível a toda a hora, que está aqui pela
+         janela e não pelos números.
 
-         ⭐⭐⭐ A JANELA É O PERÍODO INTEIRO E AINDA ASSIM É UMA JANELA DECLARADA. A
-         cobertura corre todas as horas de todos os dias, portanto a fração de serviço
-         é um — e um é um valor, não uma ausência. O `pm:Divisibility/window`
-         transporta [1, 1, 1] semana para uma placa cotada por semana, e o
-         `LumpyQuantum/origin` transporta a única coisa que importa a seu respeito:
-         ALGUÉM PROMETEU ISTO. Passe a doze horas em dias úteis e a placa cai para
-         menos de metade. Isso é uma alavanca, e é legível aqui porque a janela foi
-         declarada em vez de recusada.
+         A cobertura funciona todas as horas de todos os dias, pelo que a janela ocupa o
+         período inteiro, e mesmo assim declara-se, porque um período inteiro é um valor
+         e não uma ausência. O `pm:Divisibility/window` leva 1 semana para uma capacidade
+         nominal cotada à semana, e o `LumpyQuantum/origin` leva o que importa a esse
+         respeito: alguém prometeu isto. Passe-se a doze horas nos dias úteis e a
+         capacidade nominal cai para menos de metade, o que é uma alavanca, e vê-se aqui
+         porque a janela foi declarada em vez de recusada.
 
-         ⛔ UM `notApplicable` SERIA FALSO AQUI e o `window_not_applicable_on_a_rate`
-         diz porquê: `horas-engenheiro por semana` tem período debaixo do traço,
-         portanto a pergunta do ciclo de serviço é perfeitamente respondível e
-         recusá-la é uma recusa vestida de erro de categoria.
+         Um `notApplicable` seria falso, e o `window_not_applicable_on_a_rate` diz
+         porquê: `horas-engenheiro por semana` tem um período debaixo do traço, pelo que
+         a pergunta da janela tem resposta, e recusá-la seria uma recusa disfarçada de
+         erro de categoria.
          ============================================================ -->
     <pm:layer>
       <pm:name>cobertura-de-suporte</pm:name>
@@ -950,7 +933,7 @@
             </pm:denominator>
             <pm:narrowsWhen>
               <pm:narrowing>
-                <pm:condition>o tempo de tratamento do incidente é lido do relógio do bilhete em vez de estimado ao fechar</pm:condition>
+                <pm:condition>o tempo de tratamento do incidente é lido do registo de tempos do pedido de apoio em vez de estimado ao fechar</pm:condition>
                 <pm:kind>instrument</pm:kind>
               </pm:narrowing>
             </pm:narrowsWhen>
@@ -961,20 +944,19 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>padaria-do-largo</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-30</pm:asOf>
           </pm:claim>
         </pm:amount>
 
-        <!-- ⭐⭐ A SEGUNDA PACIÊNCIA DECLARADA DESTE CORPUS, E A SUA ARESTA É O SLA.
-             Quanto tempo um incidente sem resposta continua a ser um incidente antes de
-             o cliente escalar por cima de nós. `contractual` porque o objetivo de
-             resposta está escrito no contrato: os três números são a distribuição que
-             esses termos limitam, e é por isso que a aresta e o intervalo são dois
-             elementos.
-             ⛔ A UNIDADE É `horas` E NÃO `horas-engenheiro por semana`: uma paciência é
-             um lapso de tempo e não limita quotas nenhumas. -->
+        <!-- Uma paciência declarada, cuja fronteira é o nível de serviço: quanto tempo um
+             incidente sem resposta continua a ser incidente antes de o cliente passar por
+             cima de nós. É `contractual`, porque o objetivo de resposta está escrito no
+             contrato, e os três valores são a dispersão que esses termos limitam, o que
+             explica que a fronteira e o intervalo sejam dois elementos.
+             A unidade é `horas`, e não `horas-engenheiro por semana`, porque uma
+             paciência é um intervalo de tempo e não limita quota nenhuma. -->
         <pm:patience>
           <pm:claim>
             <pm:low>0.25</pm:low>
@@ -1052,8 +1034,9 @@
             </pm:claim>
           </pm:amount>
 
-          <!-- ⭐ UM ENGENHEIRO, SEMPRE. 168 horas-engenheiro por semana é uma pessoa de
-               cobertura sem falha nenhuma, que é o que o contrato compromete e nada mais. -->
+          <!-- Um engenheiro, sempre: 168 horas-engenheiro por semana são uma pessoa de
+               cobertura sem uma única falha, que é o que o contrato compromete, e nada
+               mais. -->
           <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
 
           <pm:divisibility>
@@ -1081,11 +1064,10 @@
                 <pm:origin>contractual</pm:origin>
               </pm:lumpy>
 
-              <!-- ⭐⭐⭐ A FRAÇÃO DE SERVIÇO É UM, DECLARADA COMO O VALOR QUE É.
-                   Uma semana inteira de um período de uma semana, que é o aspeto de uma
-                   fração de serviço de um quando cotada na unidade do próprio período.
-                   `contractual` e não `policy`: a obrigação permanente é uma cláusula do
-                   contrato, e quem a poderia mudar é quem a poderia renegociar. -->
+              <!-- A janela é o período inteiro, declarada como o valor que é: uma semana
+                   inteira de um período de uma semana, na unidade do próprio período. É
+                   `contractual`, e não `policy`, porque a cobertura permanente é uma
+                   cláusula do contrato, e só quem a pudesse renegociar a poderia mudar. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -1131,12 +1113,12 @@
             </pm:claim>
           </pm:capacitySlack>
 
-          <!-- ⛔⛔ ZERO, E intrinsic, E É O FACTO QUE DEFINE A CAMADA.
-               A cobertura não se pode construir de antemão. Uma hora parada às 03:00 de
-               domingo não se guarda para o incidente de segunda, e é por isso que se tem
-               de comprar o ciclo de serviço inteiro em vez da parte movimentada dele.
-               ⭐ Uma folga de zero é a MENOR FOLGA e não a ausência de uma: [0, 0, 0] na
-               unidade em que é zero, conforme o `ClaimAbsenceReason`. -->
+          <!-- Zero, e `intrinsic`, e é isso que define esta camada: a cobertura não se
+               pode fazer de antemão. Uma hora parada às 03:00 de domingo não se guarda
+               para o incidente de segunda-feira, e é por isso que se tem de comprar a
+               janela inteira e não só a parte movimentada. Uma folga de zero é a menor
+               folga que há, e não a falta de uma: zero nos três pontos, na unidade em que
+               é zero, como diz o `ClaimAbsenceReason`. -->
           <pm:inventorySlack>
             <pm:claim>
               <pm:low>0</pm:low>
@@ -1174,7 +1156,7 @@
               <pm:boundOrigin>
                 <pm:absent>
                   <pm:reason>none</pm:reason>
-                  <pm:note>nothing sets this bound. It is what the ticket clock recorded</pm:note>
+                  <pm:note>nada fixa este limite: é o que o registo de tempos dos pedidos de apoio marcou</pm:note>
                 </pm:absent>
               </pm:boundOrigin>
             </pm:claim>
@@ -1182,28 +1164,28 @@
           <pm:measurementBasis>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
-              <pm:note>horas de um relógio de bilhetes não têm base de mensuração contabilística</pm:note>
+              <pm:note>horas tiradas do registo de tempos dos pedidos de apoio não têm base de mensuração contabilística</pm:note>
             </pm:absent>
           </pm:measurementBasis>
         </pm:jagged>
       </pm:supply>
 
-      <!-- ⭐⭐ UMA FOLGA, E A COBERTURA QUE FICOU POR USAR É PAGA NA MESMA.
-           placa.low 168 ≥ procura.high 147, portanto o intervalo INTEIRO folga e nada
-           ficou por servir: o `customer` e o `unrealised` estão excluídos aqui
-           exatamente como o `clearance_with_unserved` exige. O que sobra é
-           168 − [92, 118, 147] = [21, 50, 76] horas-engenheiro por semana de cobertura
-           comprometida, faturada e não consumida, e assenta em `booked` porque um
-           contrato é precisamente o instrumento que a regista. -->
+      <!-- Um `clearance`, e a cobertura que ninguém usou paga-se na mesma. A menor
+           capacidade nominal, 168, fica acima da maior procura, 147, pelo que o intervalo
+           inteiro fica coberto e nada fica por servir, e o `customer` e o `unrealised`
+           ficam excluídos, como o `clearance_with_unserved` exige. O que sobra, 21, 50 e
+           76 horas-engenheiro por semana, é cobertura comprometida, faturada e não usada,
+           e assenta em `booked`, porque um contrato é justamente o instrumento que a
+           regista. -->
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
 
-          <!-- ⭐ E NADA O ABSORVEU, O QUE É UM `none` LEGÍTIMO. Nenhum amortecedor
-               esticou, pôs em fila nem guardou o que quer que fosse: a cobertura estava
-               simplesmente lá e não se quis toda. Contraste com o INVÓLUCRO acima, onde
-               `none` já não se escreve, porque «não há resto» seria afirmar que o resto é
-               zero, e um resto de zero é uma folga declarada. -->
+          <!-- Nada o absorveu, e por isso o `none` está certo: nenhum amortecedor esticou,
+               pôs em fila ou guardou fosse o que fosse, e a cobertura estava lá sem que
+               fizesse falta toda. O invólucro `remainder` de fora não pode dizer `none`,
+               porque «não há resto» seria afirmar que o resto é zero, e um resto zero
+               declara-se como `clearance`. -->
           <pm:absorber>
             <pm:absent>
               <pm:reason>none</pm:reason>
@@ -1224,10 +1206,10 @@
                     <pm:period>semana</pm:period>
                   </pm:denominator>
                   <pm:narrowsWhen>
-                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o que estreitaria isto não é um ato mas um cálculo: esta quota é o intervalo da procura subtraído a uma placa fixa, portanto quem receba, tendo ambos, deriva a sua largura em vez de esperar que alguém volte a medir</pm:note></pm:derivation>
+                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o que estreitaria isto não é um ato mas um cálculo: esta quota é o intervalo da procura subtraído a uma capacidade nominal fixa, pelo que quem recebe, tendo uma e outra, deriva a sua largura em vez de esperar que alguém volte a medir</pm:note></pm:derivation>
                   </pm:narrowsWhen>
                   <pm:boundOrigin>
-                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o limite é o limite da procura, subtraído a uma placa fixa</pm:note></pm:derivation>
+                    <pm:derivation><pm:identity>sharesSum</pm:identity><pm:note>o limite é o da procura, subtraído a uma capacidade nominal fixa</pm:note></pm:derivation>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>padaria-do-largo</pm:party>
                     <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
@@ -1242,26 +1224,26 @@
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
-              <pm:note>calculável a partir da procura e da placa desta camada; quem recebe calcula-o</pm:note>
+              <pm:note>calculável a partir da procura e da capacidade nominal desta camada; quem recebe calcula-o</pm:note>
             </pm:derivation>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
     </pm:layer>
 
-    <!-- nenhum acoplamento declarado: isso é a HIPÓTESE do modelo e não um resultado.
-         Ninguém foi ver. Ver o tipo Coupling. -->
+    <!-- Nenhum acoplamento declarado: é uma hipótese, e não um resultado, porque ninguém
+         foi ver. Ver o tipo `Coupling`. -->
 
     <pm:couplings>
       <pm:absent>
         <pm:reason>unmeasured</pm:reason>
-        <pm:note>ninguém testou se estas três camadas se movem em conjunto. As mesmas duas camadas são o assunto do refutation.xml, que declara um acoplamento observado entre elas num trimestre posterior — portanto este é o estado anterior honesto e não uma afirmação de independência</pm:note>
+        <pm:note>ninguém testou se estas quatro camadas se movem em conjunto, pelo que isto não é uma afirmação de independência; entre duas delas, a `computacao` e o `pessoal`, o refutation.xml declara um acoplamento observado</pm:note>
       </pm:absent>
     </pm:couplings>
   </pm:stack>
 
   <!-- ============================================================
-       AS OPERAÇÕES. Nenhuma ordem e expressa nem implicada.
+       AS OPERAÇÕES. Não se exprime nem se subentende ordem nenhuma.
        ============================================================ -->
   <pm:operation>
     <pm:label>Fechar um contrato empresarial</pm:label>
@@ -1308,14 +1290,15 @@
           </pm:boundOrigin>
         </pm:claim>
       </pm:commitment>
-      <pm:decidedBy>the revenue officer who signs the offering</pm:decidedBy>
+      <pm:decidedBy>o responsável pelas receitas que assina a proposta</pm:decidedBy>
     </pm:induces>
   </pm:operation>
 
   <pm:operation>
     <pm:label>Servir um pedido de inferência</pm:label>
-    <!-- O BPMN para onde esta declaração aponta tem a tarefa do contrato e não esta: servir um
-         pedido fica abaixo do grão a que essa notação está desenhada. Alguém procurou: `none`. -->
+    <!-- O BPMN para onde esta declaração aponta tem a tarefa do contrato e não esta, porque
+         servir um pedido fica abaixo do grão a que essa notação está desenhada; alguém foi
+         ver, e daí o `none`. -->
     <pm:notationPosition>
       <pm:absent>
         <pm:reason>none</pm:reason>

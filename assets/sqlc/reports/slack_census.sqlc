@@ -2,29 +2,28 @@
 # evidence): how many slacks are sized, how many of those read zero, and one column per typed
 # reason the rest are not.
 #
-# It partitions
-#   A breakdown that does not is worse than no breakdown. Counting `sized`, `absent = 'none'` and
+# Every row is counted exactly once
+#   A breakdown that leaves rows out is worse than none. Counting `sized`, `absent = 'none'` and
 #   `absent = 'unmeasured'` gives three figures that do not add up to the total: `notApplicable`
 #   slacks and derived ones fall out silently, and among them is the `clearance` time slack that
 #   entries/derived_time_slacks.sqlc and checks/derived_slack_over_a_window.sqlc exist to talk
-#   about. A census with a residue is a census nobody can check. `sized`, `absent` and `derived`
-#   partition the rows.
+#   about. A census with rows left over is a census nobody can check. `sized`, `absent` and
+#   `derived` together count every row once.
 #
 # `none` is not in the type
-#   A column for `absent = 'none'` would be structurally dead, which is worse than wrong. A slack
-#   is a `pm:StatedClaim`, or a `pm:StatedTimeSlack` for the time buffer, and either way its absent
-#   branch is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, {unmeasured, notApplicable},
-#   and `none` is not in the type.
-#   Such a column could only ever read zero. A sized zero is how this model says "checked, and it
-#   cannot stretch", and it is a slack whose high is zero, which is how layers/absorption.sqlc
-#   reads it too. A mode of zero with room above it can still stretch.
+#   A column for `absent = 'none'` could never be anything but zero, which is worse than wrong. A
+#   slack is a `pm:StatedClaim`, or a `pm:StatedTimeSlack` for the time buffer, and either way its
+#   blank branch is a `pm:ClaimAbsence` carrying `pm:ClaimAbsenceReason`, which allows `unmeasured`
+#   and `notApplicable` and not `none`.
+#   A sized zero is how this model says "checked, and it cannot stretch", and it is a slack whose
+#   high is zero, which is how layers/absorption.sqlc reads it too. A most likely value of zero with
+#   room above it can still stretch.
 #
 # The `@scope` is required
-#   That is the point. A census that joins no scope counts the fixtures, and `assets/fixtures/`
-#   exists to file absences on purpose. Pooling a stipulation with an observation answers "how
-#   much does this corpus measure?" with a number the fixtures manufactured. A caller that
-#   supplies no scope does not compose. reports/absence_census.sqlc is the same slot for the same
-#   reason.
+#   A census that joins no scope counts the fixtures, and `assets/fixtures/` exists to file blanks
+#   on purpose. Adding a stipulation to an observation answers "how much does this corpus measure?"
+#   with a number the fixtures made up. A caller that supplies no scope does not compose.
+#   reports/absence_census.sqlc is the same slot, for the same reason.
 -- entries/slacks.sqlc by buffer, split by evidence, restricted by the caller's @scope.
 SELECT s.buffer::text                                          AS buffer,
        f.evidence                                              AS evidence,

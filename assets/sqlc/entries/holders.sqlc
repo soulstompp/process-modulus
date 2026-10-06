@@ -1,17 +1,18 @@
-# H, the holder matrix: who bears the remainder, and how much of it. One row per
-# (filing, layer, kind), which is the sparse form of an L x 5 matrix. No row means that
-# kind bears nothing, or that nobody said. The two readings are not separated here, which
+# Who bears the remainder, and how much of it. One row per (filing, layer, kind). No row means
+# that kind bears nothing, or that nobody said. This relation does not tell the two apart, which
 # is what `share_absent` is for.
 #
-# A distribution, not a selection
-#   One remainder routinely lands on several parties at once: the firm books part of it, a
+# Shared, not chosen
+#   One remainder often lands on several parties at once: the firm books part of it, a
 #   counterparty absorbs part under contract, and a customer waits for the rest. A single "who
-#   absorbs this" column would have forced the filer to pick one, and picking one is the
-#   flattening the tall table refuses.
+#   absorbs this" column would force the filer to pick one, and picking one is the flattening this
+#   table, one row per kind, refuses.
 #
 # Only `counterparty` names a party and a date
 #   It is the only kind whose bearer is a third party with an agreement behind it. The schema
-#   enforces both directions of that: no other kind may name one, and a counterparty must.
+#   obliges both directions: no other kind names a party or a date, and a counterparty names its
+#   party and should carry its date. A validator cannot check either, because XSD 1.0 cannot make
+#   one element's presence depend on a sibling's value.
 -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
        h.share_low, h.share_mode, h.share_high, h.share_unit, h.share_absent,

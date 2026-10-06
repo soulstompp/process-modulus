@@ -1,47 +1,46 @@
 # Every cross-document part whose framework differs from the one it is composed into. One row per
 # crossing, with both frameworks and whether the composition cites an instrument.
 #
-# No schema change needed
-#   Pair `regime` with `part` and the crossing is already there. `pm.regime` is a tall table
-#   because a `filing.jurisdiction` column cannot hold `refutation`, which reports under two
-#   regimes at once. `merge-group-composition` composes under IFRS-2026 from parts under `NCRF-PE`
-#   and `us-gaap`, which is what consolidation is, and this is the relation that says so.
+# The crossing is already in the tables
+#   Pair `regime` with `part` and the crossing is there. `pm.regime` has one row per regime, because
+#   a `filing.jurisdiction` column could not hold `refutation`, which reports under two regimes at
+#   once. `merge-group-composition` composes under IFRS-2026 from parts under `NCRF-PE` and
+#   `us-gaap`, which is what consolidation is, and this is the relation that says so.
 #
-# The exact analogue of the unit crossing
+# The counterpart of the unit crossing
 #   `checks/unit_crossing_without_a_factor` says: cross a unit boundary and you must file what
-#   converts, because somebody is asserting two units are interchangeable and an assertion needs a
+#   converts, because somebody is asserting two units are interchangeable, and an assertion needs a
 #   filer. Cross a regime boundary and somebody is asserting two frameworks' figures may be added.
 #   `asrt:Composition/citation` carries the instrument and the clause, and that is what reconciles
 #   it.
 #
 # No framework is not the same framework
-#   A filing that states no framework is not a filing in the same framework, and SQL will say it
-#   is. `IS DISTINCT FROM` returns false for two NULLs, so a pair of documents that never named a
-#   regime reads as "no crossing" and vanishes from the population. `crossing_known` carries that
-#   apart, and it is the §9 pattern arriving where nobody had looked for it: the matrix needs the
-#   search beside it. Why a composition names no framework is typed in its own declaration,
-#   `framework_absent` in composition/regimes.sqlc, and epistemics/absences.sqlc reports it; here
-#   it only keeps the crossing unknown.
+#   A filing that states no framework is not a filing in the same framework, and SQL will say it is.
+#   `IS DISTINCT FROM` returns false for two NULLs, so a pair of documents that never named a regime
+#   would read as "no crossing" and vanish from the population. `crossing_known` keeps that apart: a
+#   blank needs the search beside it. Why a composition names no framework is typed in its own
+#   declaration, `framework_absent` in composition/regimes.sqlc, and epistemics/absences.sqlc
+#   reports it; here it only keeps the crossing unknown.
 #
 # `min` pairs the two halves because a term is whole
 #   Where `states = 1`, `min` over the taxonomy and `min` over the value are taken separately and
 #   still come from the one stated declaration, because the schema keeps every term whole: a
-#   declaration filed absent has neither half. A taxonomy left beside an absence would pair with
+#   declaration filed absent has neither half. A taxonomy left beside a blank would pair with
 #   another declaration's value.
 #
 # The composer's assignment, against the composition's own framework
 #   The two frameworks compared are both the composer's: the one it assigns the part, filed as
 #   `asrt:part/asrt:layer/asrt:regime` and read through composition/part_regimes.sqlc, and the one
 #   the composition itself reports under. That is the right pair for a crossing, because the
-#   composer is the one asserting the two frameworks' figures may be added. Whether the part's
-#   own filing agrees with the composer's assignment is a different claim with a different author,
-#   and `checks/part_regime_disagrees` asks it over the same relation: what a filing says about
-#   itself and what somebody says about it are never the same claim.
+#   composer is the one asserting the two frameworks' figures may be added. Whether the part's own
+#   filing agrees with the composer's assignment is a different claim with a different author, and
+#   `checks/part_regime_disagrees` asks it over the same relation: what a filing says about itself
+#   and what somebody says about it are never the same claim.
 #
 # Why not `seq = 1`
 #   `seq = 1` would be a guess that could not announce itself. A filing may declare more than one
-#   regime, which is the whole reason `regime` is tall, and taking the first silently picks one of
-#   them. `states` counts them, and a composition reporting under two frameworks makes "the
+#   regime, which is why `regime` has one row per regime, and taking the first would quietly pick
+#   one of them. `states` counts them, and a composition reporting under two frameworks makes "the
 #   framework it composes into" a question with two answers, so the crossing is not known rather
 #   than absent.
 #

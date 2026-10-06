@@ -2,20 +2,19 @@
 # row per column of type `absence_reason` in schema `pm`: the question as the census names it, the
 # table, the column.
 #
-# What makes the census a bijection
-#   The census is a function from questions to columns. epistemics/absences.sqlc claims every typed
-#   absence in the schema. That claim has two halves and each fails silently: a column with no arm
-#   leaves its absences out of every fold of the census, and an arm reading a column nobody
-#   declared is a question nobody can trace. reports/integrity.sqlc holds this roster against
-#   epistemics/absence_columns.sqlc, which Postgres writes, in both directions;
-#   examples/combinatorics/main.rs counts each question in the census against the filed absences
-#   in the column named here, which is the only way to see an arm that names the right question and
-#   reads the wrong column.
+# One question to one column, and both halves checked
+#   epistemics/absences.sqlc claims every typed blank in the schema. That claim has two halves, and
+#   each fails silently: a column with no arm leaves its blanks out of everything the census
+#   counts, and an arm reading a column nobody declared is a question nobody can trace.
+#   reports/integrity.sqlc holds this roster against epistemics/absence_columns.sqlc, which Postgres
+#   writes, in both directions. `examples/combinatorics` counts each question in the census against
+#   the filed blanks in the column named here, which is the only way to see an arm that names the
+#   right question and reads the wrong column.
 #
 # A bare values literal
-#   A contract must not be derived from what it governs. Reading the questions out of the census
-#   would make every census its own roster, and the catalog side would then be the only thing
-#   standing behind the contract.
+#   A roster is never read from what it governs. Reading the questions out of the census would make
+#   every census its own roster, and the catalog side would be the only thing left standing behind
+#   it.
 -- epistemics/absences.sqlc's arms, each against the pm column of type absence_reason it reads.
 SELECT * FROM (VALUES
   ('demand',                               'layer',              'demand_absent'),

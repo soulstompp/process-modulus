@@ -1,57 +1,53 @@
-# The one direction each fusion's composed figure CAN see, and how much of that direction is
-# known. One row per fusion that has at least one resolved part: its parts, the dimension of its
-# block of the row space, the dimension of its block of the null space, and the state of the
-# factors the direction is built out of.
+# The one direction each fusion's composed figure can see, and how much of that direction is
+# known. One row per fusion that has at least one resolved part: its parts, the one direction its
+# figure reads (`row_dim`), the offsets it cannot see (`kernel_dim`), and the state of the factors
+# the direction is built from.
 #
-# The other half of the part side
-#   `F Phi` sends the part space to the fusion space, and the part space splits in two. One
-#   fusion's row of `F Phi` is `phi` restricted to that fusion's parts and zero everywhere else,
-#   so the rows have disjoint supports and both halves are block diagonal over the SAME fibres:
-#   inside one fusion's block, `span(phi)` is the direction the composed figure reads and
-#   `{v : phi . v = 0}` is everything it cannot. One plus `parts - 1` is `parts`, per fusion and
-#   therefore over the corpus, which is the direct sum written as a count.
-#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+# The other half of the parts
+#   A fusion reads its parts through their factors: the composed figure is the parts added up after
+#   converting each. Inside one fusion, the parts' amounts split in two: the one direction the
+#   figure reads, weighted by the factors, and everything it cannot see. One plus `parts - 1` is
+#   `parts`, per fusion and so over the corpus.
 #
-# The dimension is a literal, and the literal is a claim
-#   `row_dim` is 1 because `phi` restricted to a non-empty fibre is a non-zero vector, and two
-#   things make that true rather than obvious. `pm.part`'s CHECK refuses a factor that is not
-#   strictly positive, and an omitted factor is ONE exactly rather than unknown, so no part can
-#   contribute a zero. A fusion with no part at all would have no non-zero row and no block, and
-#   `algebra/fusions_have_parts.sqlc` is what holds that none is in that state. Written as a
-#   column rather than left to a reader, the claim is somewhere a probe can move it.
+# The 1 is a literal, and the literal is a claim
+#   `row_dim` is 1 because a fusion with at least one part, each part's factor above zero, reads one
+#   figure, and two things make that true rather than obvious. `pm.part`'s CHECK refuses a factor
+#   that is not above zero, and an omitted factor is exactly one rather than unknown, so no part can
+#   contribute a zero. A fusion with no part at all would read nothing, and
+#   `algebra/fusions_have_parts.sqlc` holds that none is in that state. Written as a column rather
+#   than left to a reader, the claim is somewhere a probe can move it.
 #
-# A positive generator, which is why supply cannot hide in the null space
-#   Every entry of the generator is strictly positive, so the row space meets the non-negative
-#   orthant. The null space does not: `phi . v = 0` with `phi` positive forces any non-zero `v` to
-#   carry a plus and a minus. So the offsets a fusion declared immaterial take from one part
-#   exactly what they give another, and there is no non-negative assignment to the parts that the
-#   composed figure fails to see. That is the conserved carrier written as a subspace, and it is
-#   the half of the picture a dimension alone does not carry.
+# Every weight is above zero, so supply cannot hide in an offset
+#   Every factor is above zero, so an offset the figure cannot see must take from one part exactly
+#   what it gives another: it carries a plus and a minus. So the offsets a fusion declared
+#   immaterial move supply between parts and never add or remove it, and no assignment of
+#   non-negative amounts to the parts escapes the composed figure. That is supply counted once, and
+#   a count alone does not carry it.
 #
 # The direction is known only where the factors are
-#   `rank/composition_kernel.sqlc` says why the dimension does not depend on the factors and the
-#   direction does. This relation is where that sentence becomes a column: a part whose factor is
-#   a typed absence or a derivation is still a part, so the block is still there and still has
-#   these two dimensions, and nothing in the corpus says which way either one points. Read
-#   `factors_unknown` before believing a basis.
+#   `rank/composition_kernel.sqlc` says why the count does not depend on the factors and the
+#   direction does. This relation is where that becomes a column: a part whose factor is a typed
+#   blank or a derivation is still a part, so the counts are still there, and nothing in the corpus
+#   says which way either one points. Read `factors_unknown` before believing a direction.
 #
-# What an indeterminate direction is NOT
-#   It is not an unsettled sum. `composition/unsized_conversions.sqlc` is the relation that says
-#   the arithmetic cannot be done, and a fusion may sit in one of these states and not the other:
-#   a factor filed as a derivation nobody has computed leaves the direction unknown while the
-#   figure is still owed. The two questions are about the operand and about the operator.
+# What an unknown direction is not
+#   It is not an unsettled sum. `composition/unsized_conversions.sqlc` is the relation that says the
+#   arithmetic cannot be done, and a fusion may sit in one of these states and not the other: a
+#   factor filed as a derivation nobody has worked out leaves the direction unknown while the
+#   figure is still owed. One question is about the figures, the other about the conversion.
 #
-# Resolved parts, because those are the matrix's columns
-#   The same set `rank/composition_kernel.sqlc` folds, and for the same reason. The two relations
-#   report the same `parts` on every row by construction, which is what lets one law compare a
-#   dimension against a rank without either side choosing its own population.
+# Resolved parts, because only those have figures
+#   The same set `rank/composition_kernel.sqlc` counts, and for the same reason. The two relations
+#   report the same `parts` on every row by construction, which lets one law compare the two counts
+#   without either side choosing its own population.
 #
 # Probe
-#   `algebra/composition_row_space.sqlc` holds `row_dim + kernel_dim = parts` per fusion and the
-#   sum of `row_dim` against the fusion rows counted in `rank/composition_image.sqlc`. Read
-#   `row_dim` as two and both halves fail at once, the first on every fusion and the second with a
-#   rank twice the fusion count.
--- asrt:Fusion/asrt:Part folded onto its fusion: the fibre's generator, and what it is known to.
+#   `algebra/composition_row_space.sqlc` holds `row_dim + kernel_dim = parts` per fusion, and the
+#   sum of `row_dim` against the fusions with parts counted in `rank/composition_image.sqlc`. Read
+#   `row_dim` as two and both fail at once, the first on every fusion and the second with twice the
+#   fusion count.
+-- asrt:Fusion/asrt:Part counted per fusion: the direction its figure reads,
+-- and how well that direction is known.
 SELECT p.composition,
        p.composed_layer,
        count(*)                                                             AS parts,

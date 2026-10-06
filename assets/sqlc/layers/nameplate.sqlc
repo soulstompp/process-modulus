@@ -1,32 +1,32 @@
-# n, the nameplate vector. One row per (filing, layer) that states what the supply can do, as a
-# three-point claim. A layer whose nameplate is a typed absence has no row.
+# Each layer's nameplate. One row per (filing, layer) that states what the supply can do, as a
+# three-point claim. A layer whose nameplate is a typed blank has no row.
 #
-# Divisibility is two independent axes
-#   This relation carries both, because a supply can be lumpy in amount and intermittent in time
-#   at once.
+# Divisibility is two separate questions
+#   This relation carries both, because a supply can arrive in whole units and be available only
+#   part of the time, at once.
 #     `lumpy` + `quantum_*`   the supply arrives in whole units of that size.
 #     `window_*`              the supply is only available for that much of a period.
 #
 # `lumpy` has three states
-#   `lumpy` is nullable and the third state is the point: neither lumpy nor continuous, because
+#   `lumpy` is nullable, and the third state is the point: neither lumpy nor continuous, because
 #   nobody said which. A boolean has two states and this question has three.
 #
-# A derived amount is read computed
-#   As in layers/demand.sqlc, an amount filed `derived` is the figure its fusion computes, and
+# A derived amount is read worked out
+#   As in layers/demand.sqlc, an amount filed `derived` is the figure its fusion works out, and
 #   `n_derived` says so. The quantum, the window and the rest are the layer's own, as filed.
 #
-# Two arms of its own, and why not a restriction
-#   layers/demand.sqlc and layers/drawn.sqlc are composition/resolved_quantities.sqlc restricted to
-#   one quantity. This vector carries the nameplate's own divisibility and window beside the
-#   amount, and joining those columns to the resolved figure puts the computed arm one plan level
-#   deeper under every rule, which is one more than the deepest statements in the tree can be read
-#   back with at compile time. So the amount is stated or computed in two arms here, the same two
-#   arms that relation has, restricted to the nameplate.
+# Two arms of its own, rather than a restriction
+#   layers/demand.sqlc and layers/drawn.sqlc are composition/resolved_quantities.sqlc kept to one
+#   quantity. This relation carries the nameplate's own divisibility and window beside the amount,
+#   and joining those columns to the resolved figure puts the worked-out arm one plan level deeper
+#   under every rule, one more than the deepest statements in the tree can be read back with at
+#   compile time. So the amount is stated or worked out in two arms here, the same two arms that
+#   relation has, kept to the nameplate.
 #
-# An absent window is not a blank
-#   There are only two of them. `notApplicable`: the unit has no denominator, so "five days of
-#   what?" has no answer. `unmeasured`: nobody asked, and that is the state in which a time slack
-#   cannot be derived from a clearance.
+# A blank window is not an empty one
+#   There are only two of them. `notApplicable`: the unit has no period, so "five days of what?"
+#   has no answer. `unmeasured`: nobody asked, and that is the state in which a time slack cannot
+#   be worked out from a clearance.
 -- pm:Layer/pm:Nameplate, its Divisibility and its window, with the amount from
 -- composition/derived_quantities.sqlc where it is filed `derived`.
 SELECT n.filing, n.layer,

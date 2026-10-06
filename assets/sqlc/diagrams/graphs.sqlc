@@ -1,60 +1,56 @@
 # The graphs this model composes, as the lane sets of one pool. One row per graph: what its nodes
-# are, what its edges are, and what a cycle in it means.
+# are, what its edges are, and what a loop in it means.
 #
 # A `VALUES` literal, because it is a contract
-#   Derived from the tree it could never report that a graph has nothing behind it, and the
-#   claimant row is exactly that case: it is declared here and supplies no edges at all, which is
-#   the finding rather than an omission.
+#   Worked out from the queries, it could never report that a graph has nothing behind it, and the
+#   claimant row is that case: it is declared here and supplies no edges at all, which is the
+#   finding rather than an omission.
 #
 # Three lane sets, not three lanes
-#   A `laneSet` is a partition claimed exhaustive, so three lanes would put every composition in
+#   A `laneSet` is a division claimed complete, so three lanes would put every composition in
 #   exactly one, and most compositions touch more than one graph: a relation reading a part and its
-#   factor is in the layer graph and the unit graph, and that is what a factor is. BPMN permits
-#   several lane sets over one process for exactly this reason.
+#   factor is in the layer graph and the unit graph, and that is what a factor is. BPMN allows
+#   several lane sets over one process for this reason.
 #
 # Only one can be the containment
-#   An inclusion tree gives each node one parent, so only one of these can be the nesting a diagram
-#   draws; the others need showing some other way. That is why `examples/diagramming/main.rs`
-#   takes the graph as a slot rather than picking one silently, and why a caller that names none
-#   does not run.
+#   A tree gives each node one parent, so only one of these can be the nesting a diagram draws; the
+#   others need showing some other way. That is why `examples/diagramming` takes the graph as a slot
+#   rather than quietly picking one, and why a caller that names none does not run.
 
-# ⛔ `cycle_sense` exists because the word has four referents in this tree
-#   This relation asks one question, "what does a cycle in it mean", of three graphs, and without
-#   this column it was answered in two different senses. The four are set out in
-#   `composition/descent.sqlc`'s header: undirected, which is a SUBSPACE at dimension `m - n + c`;
-#   directed, which is a PARTITION of the nodes into the classes of `F+ ∩ (F+)ᵀ`; a duty cycle,
-#   which is a RATIO and not a graph object at all; and the loop you can walk, which is what the
-#   other three compose to. A column that does not say which is not comparable across its own
-#   rows, which is the only thing a three-row contract read by one emitter is for.
+# `cycle_sense` says which meaning of the word a row uses
+#   This relation asks one question of three graphs, what a cycle in it means, and the word has
+#   four meanings in these queries, set out in `composition/descent.sqlc`'s header: a loop that
+#   ignores direction, layers that reach each other following direction, the window a supply is
+#   live in, and the loop you can walk round. A column that does not say which cannot be compared
+#   down its own rows, and comparing them is all a three-row contract read by one emitter is for.
 #
-# The layer row answers the UNDIRECTED sense, and it used to answer the directed one
-#   Both are true of the layer graph and they are not interchangeable. `checks/layers_move_together`
-#   rules on the directed sense, the classes of mutual reachability. `checks/jagged_layer` is what
-#   holds the UNDIRECTED dimension at zero, which `algebra/cycle_space` states as
-#   `dim ker B = 0 ⟺ |jagged| = 0` and `examples/graphs/main.rs` asserts on every run. A diamond
-#   separates them: it is acyclic as a digraph, so nothing is mutually reachable and
-#   `layers_move_together` finds nothing, while its cycle space is `4 - 4 + 1 = 1` and
-#   `jagged_layer` accuses. ⛔ This column answers the undirected sense because that is the one the
-#   drawing itself carries: `examples/diagramming/main.rs` computes the emitted call graph's
-#   `m - n + c` and holds it against the model's.
+# The layer row answers the meaning that ignores direction
+#   Both meanings hold of the layer graph, and they are not interchangeable.
+#   `checks/layers_move_together` rules on the one that follows direction, layers that reach each
+#   other. `checks/jagged_layer` holds the loops that ignore direction at zero, which
+#   `algebra/cycle_space` states as no loop exactly where no fusion's parts overlap, and
+#   `examples/graphs` asserts on every run. A diamond separates them: following direction it has
+#   no loop, so no two layers reach each other and `layers_move_together` finds nothing, while
+#   ignoring direction it has one loop, and `jagged_layer` accuses. This column answers the meaning
+#   that ignores direction because that is the one the drawing itself carries:
+#   `examples/diagramming` counts the emitted call graph's loops and holds them against the model's.
 #
-# `governed_by` is now checked against what actually holds the dimension
-#   It used to have to RESOLVE and nothing more, so a graph could cite any relation in the tree
-#   and the emitter would carry the citation into a reader's document. `examples/graphs/main.rs`
-#   now holds each graph to the rule it uses itself.
+# `governed_by` is checked against the rule that holds each graph
+#   `examples/graphs` holds each graph to the rule it uses itself, so a graph cannot cite just any
+#   relation and have the emitter carry the citation into a reader's document.
 -- the three graphs this model composes, as data an emitter chooses between.
 SELECT * FROM (VALUES
-  ('layers',    'a layer, keyed (filing, layer)', 'a part: F : layer -> layer',
+  ('layers',    'a layer, keyed (filing, layer)', 'a part: a layer composed from a layer',
                 'undirected',
-                'a leaf reached down two branches of one fold, which is a double count rather than a partition',
+                'a leaf reached down two branches of one fusion, which counts it twice',
                                                                               'checks/jagged_layer'),
-  ('units',     'a unit',                          'a conversion: phi : unit -> unit',
+  ('units',     'a unit',                          'a conversion: a factor from unit to unit',
                 'undirected',
-                'expected, and required to close: the weights on it must vanish, so a potential exists',
+                'expected, and required to close: converting round it returns what it started with',
                                                                               'checks/conversion_cycle_does_not_close'),
   ('claimants', 'a claimant: software, an agent, a role, a person',
                 'delegation, and nothing files it',
                 'directed',
-                'unknown. Not "nobody is accountable": mutual signing authority is a legitimate cycle',
+                'unknown, and not a fault: mutual signing authority is a legitimate cycle',
                                                                               NULL)
 ) AS g(graph, node_is, edge_is, cycle_sense, a_cycle_is, governed_by)

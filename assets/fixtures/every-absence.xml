@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. Nothing here was observed. This document exists so that
-  the states `assets/corpus/` does not reach are known to validate and to be handled, and it
-  must never be cited as evidence about anything.
+  A stipulation, not a filing. Nothing here was observed. This document exists so that the
+  states `assets/corpus/` does not reach are known to validate and to be handled, and it is
+  never to be cited as evidence about anything.
 
-  ⭐ IT LIGHTS THE FIVE DARK STATES THE COVERAGE MATRIX FOUND, and the sharpest is the FIRST:
+  The states it files, the sharpest first:
 
-    couplings  absent none        somebody looked and the layers ARE independent
-    window     one whole period   a supply that runs continuously against a rate unit
-    sign       absent unmeasured  nobody compared demand against the nameplate
-    sign       derivation fit     both are stated, so the fit is computable
-    boundOrigin absent notApplicable  the claim is not a bound on a committed quantity
+    couplings         absent none            somebody looked, and the layers are independent
+    window            one whole period       a supply that runs continuously against a rate
+                                             unit, as enterprise-contract.xml's support desk
+                                             also files
+    sign              absent unmeasured      nobody compared demand with the nameplate
+    sign              derivation fit         both are stated, so the fit can be computed
+    boundOrigin       absent notApplicable   the claim is not a bound on a committed quantity
+    notationPosition  absent unmeasured      a notation exists, and nobody located this
+                                             operation in it
+    notationPosition  absent notApplicable   this filing has no process notation at all
+    chart             absent none            somebody looked, and the bakery keeps no chart
+    absorber          absent unmeasured      nobody watched which buffer took the counter's
+                                             shortfall
+    demand            absent unmeasured      nobody counted what waits for the proofer
+    remainder         absent unmeasured      so nobody can say whether the proofer has one
+    measurementBasis  absent unmeasured      nobody said what kind of figure the proofer's
+                                             draw is
 
-  ⭐ AND TWO MORE SINCE, both at `notationPosition`, which is where an operation says where it
-  sits in a process notation:
-
-    notationPosition absent unmeasured     a notation exists and nobody located this operation
-    notationPosition absent notApplicable  this filing has no process notation at all
-
-  ⭐ AND FIVE THAT THE SCHEMA ADMITS AND NOTHING HAD FILED, found by building every cell the
-  wrappers admit rather than the ones documents happen to use:
-
-    chart          absent none        somebody looked and the bakery keeps no chart
-    absorber       absent unmeasured  nobody watched which buffer the counter's shortfall took
-    demand         absent unmeasured  nobody counted what waits for the proofer
-    remainder      absent unmeasured  so nobody can say whether the proofer has one
-    measurementBasis absent unmeasured  nobody said what kind of figure the proofer's draw is
-
-  ⚠️ `sign` is the one worth reading twice. `StatedFit`'s annotation spends four paragraphs
-  defending the wrapper's existence and the CORPUS FILES TWENTY-ONE VALUES AND NOT ONE
-  ABSENCE, so every argument in it was untested until this file.
+  `sign` is the one worth reading twice: the corpus files only values for it, so this file
+  is where `StatedFit`'s case for the wrapper is exercised.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:fixture:bakery:every-absence</pm:uri>
   </pm:notation>
@@ -42,8 +38,8 @@
     <pm:attests>stipulation</pm:attests>
   </pm:evidence>
 
-  <!-- ⭐ A BAKERY THAT KEEPS NO BOOKS. `Regime/chart` reserves `none` for "somebody who looked
-       and found there is no chart", which is a different fact from a chart nobody has named
+  <!-- A bakery that keeps no books. On `Regime/chart`, `none` means somebody looked and
+       found there is no chart, which is a different fact from a chart nobody has named
        (`unmeasured`) and from a witness with no accounts to ask about (`notApplicable`). -->
   <pm:regime>
     <pm:id>till-roll</pm:id>
@@ -66,7 +62,7 @@
     <pm:scope>
       <pm:scope>
         <pm:extent>complete</pm:extent>
-        <pm:basis>stipulated: this fixture IS its system, and there is nothing outside it to bring into scope. ⭐ The only place `complete` is honest, because the system is invented</pm:basis>
+        <pm:basis>stipulated: this fixture is its whole system, and there is nothing outside it to bring into scope. `complete` holds here because the system is invented</pm:basis>
       </pm:scope>
     </pm:scope>
 
@@ -113,9 +109,9 @@
         <pm:derivation>
           <pm:identity>clearance</pm:identity>
           <pm:note>stipulated: the line runs continuously and the window says so, so the
-                   spare IS spread evenly across the denominator and the clearance
-                   converts. This is the ONLY combination that licenses a derived time
-                   slack, and it is here to prove the rule has a passing side</pm:note>
+                   spare is spread evenly across the period and the clearance converts. A
+                   time slack can be derived only where the window covers the whole
+                   period, and this layer shows that rule passing</pm:note>
         </pm:derivation>
       </pm:timeSlack>
 
@@ -165,10 +161,8 @@
                 </pm:size>
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
-              <!-- ⭐⭐ THE STATE `assets/corpus/` CANNOT REACH. Its units are almost all
-                   stocks, and of the three with a denominator two have an unmeasured duty
-                   cycle and one is the shared line. A supply that genuinely runs continuously
-                   against a RATE unit files one whole period, and it is here. -->
+              <!-- A supply that runs continuously against a rate unit files one whole period
+                   as its window, as enterprise-contract.xml's support desk does. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -186,7 +180,8 @@
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
-                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <!-- stipulated: the line runs every hour of the period, so the window is
+                       the whole of it -->
                   <pm:origin>policy</pm:origin>
                 </pm:quantum>
               </pm:window>
@@ -204,7 +199,7 @@
               <pm:denominator>
                 <pm:period>day</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -230,10 +225,10 @@
 
       <pm:remainder>
         <pm:remainder>
-          <!-- ⭐⭐ A `fit` DERIVATION, WHICH THE CORPUS NEVER FILES. Demand and nameplate are both
-               stated, so the fit is computable and sending a value here could disagree with
-               its own inputs. `StatedFit`'s annotation makes exactly this argument and had
-               nothing exercising it. -->
+          <!-- A `fit` derivation, which the corpus does not file. Demand and nameplate are
+               both stated, so the fit can be computed, and a value sent here could disagree
+               with its own inputs. `StatedFit` makes this case, and this is where it is
+               exercised. -->
           <pm:sign>
             <pm:derivation>
               <pm:identity>fit</pm:identity>
@@ -289,15 +284,13 @@
                 <pm:kind>instrument</pm:kind>
               </pm:narrowing>
             </pm:narrowsWhen>
-            <!-- ⭐ `notApplicable`, FOR THE SECOND OF THE TWO REASONS THE TYPE LISTS. A share
-                 of customers is not a committed quantity: there is no author to ask about the
-                 edge of it, so the question is malformed rather than unanswered.
-                 ⚠ THIS USED TO SAY THE CORPUS NEVER FILES IT, AND THAT STOPPED BEING TRUE. The
-                 corpus now files `notApplicable` on sixteen jagged draws, all of them the OTHER
-                 reading: an observed count, where the malformation is that a count has no edge
-                 to have been set. A ratio has no author; a count has no spread. Two different
-                 ways for the question to be wrong, and this fixture holds the one the corpus
-                 does not reach. -->
+            <!-- `notApplicable`, for the second of the two reasons the type lists. A share of
+                 customers is not a committed quantity: there is no author to ask about its
+                 edge, so the question does not apply, rather than going unanswered.
+                 The corpus files `notApplicable` here on jagged draws, all for the other
+                 reason: an observed count has no edge that anybody set. A ratio has no
+                 author; a count has no spread. They are two different ways for the question
+                 not to apply, and this fixture holds the one the corpus does not reach. -->
             <pm:boundOrigin>
               <pm:absent>
                 <pm:reason>notApplicable</pm:reason>
@@ -330,9 +323,8 @@
             <pm:absent><pm:reason>notApplicable</pm:reason>
               <pm:note>there is no committed amount here to have an origin</pm:note></pm:absent>
           </pm:amountOrigin>
-          <!-- ⭐ `StatedDivisibility` as `none`, which the corpus also never files: this
-               subject IS a supply and it divides neither way, because a ratio has no unit
-               to come in whole ones of. -->
+          <!-- `StatedDivisibility` as `notApplicable`: a ratio is bought neither in whole
+               units nor continuously, so the question of how it divides does not apply. -->
           <pm:divisibility>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
@@ -363,19 +355,18 @@
 
       <pm:remainder>
         <pm:remainder>
-          <!-- ⭐ `notApplicable`: there is no nameplate to compare against, so asking which
-               way the two ranges sit is MALFORMED rather than unanswered. `StatedFit` names
-               exactly this case — "notApplicable on a layer with no nameplate to compare
-               against" — and nothing in the corpus exercised it. -->
+          <!-- `notApplicable`: there is no nameplate to compare against, so asking which way
+               the two ranges sit does not apply, rather than going unanswered. `StatedFit`
+               names this case, and nothing in the corpus files it. -->
           <pm:sign>
             <pm:absent>
               <pm:reason>notApplicable</pm:reason>
               <pm:note>nothing is committed here, so there is no rating for the demand to sit
-                       above or below and the comparison has no second operand</pm:note>
+                       above or below, and nothing to compare it with</pm:note>
             </pm:absent>
           </pm:sign>
-          <!-- ⭐ `unmeasured`: the shortfall is real and somebody bore it, and nobody watched
-               which buffer took it. Not `none`, which says no buffer did. -->
+          <!-- `unmeasured`: the shortfall is real and somebody bore it, and nobody watched
+               which buffer took it. Not `none`, which would say no buffer did. -->
           <pm:absorber>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -394,7 +385,7 @@
           </pm:holder>
           <pm:quantity>
             <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>with no nameplate there is nothing to difference against</pm:note></pm:absent>
+              <pm:note>with no nameplate there is nothing to subtract the demand from</pm:note></pm:absent>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -500,7 +491,8 @@
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
-                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <!-- stipulated: the line runs every hour of the period, so the window is
+                       the whole of it -->
                   <pm:origin>policy</pm:origin>
                 </pm:quantum>
               </pm:window>
@@ -517,7 +509,7 @@
               <pm:denominator>
                 <pm:period>day</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -567,12 +559,13 @@
     </pm:layer>
 
     <!-- ============================================================
-         DELIVERY. One layer whose RATING nobody has measured, which is
-         the only honest home for `sign absent unmeasured`: with the
-         nameplate absent the fit cannot be derived, and nobody compared.
-         ⚠️ Where both figures ARE stated the honest filing is a `fit` derivation,
-         not `unmeasured` — a receiver can compute it, so claiming nobody
-         knows would be false. That is why this needs its own layer.
+         DELIVERY. One layer whose rating nobody has measured, the only
+         honest home for `sign` absent `unmeasured`: with the nameplate
+         absent the fit cannot be derived, and nobody compared. Where
+         both figures are stated, the honest filing is a `fit`
+         derivation, not `unmeasured`: a receiver can compute it, so
+         claiming nobody knows would be false. That is why this needs a
+         layer of its own.
          ============================================================ -->
     <pm:layer>
       <pm:name>delivery</pm:name>
@@ -613,7 +606,7 @@
       <pm:supply>
         <pm:label>the van round</pm:label>
         <pm:nameplate>
-          <!-- ⭐ THE RATING NOBODY HAS MEASURED. A van round has a capacity and nobody has
+          <!-- The rating nobody has measured. A van round has a capacity and nobody has
                established it, which is different from there being none. -->
           <pm:amount>
             <pm:absent><pm:reason>unmeasured</pm:reason>
@@ -650,7 +643,7 @@
               <pm:denominator>
                 <pm:period>day</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -674,9 +667,9 @@
 
       <pm:remainder>
         <pm:remainder>
-          <!-- ⭐⭐ `unmeasured`, AND IT IS NOT INTERCHANGEABLE WITH `notApplicable` NEXT DOOR.
-               The counter has no rating to compare against and never will; this round HAS one
-               and nobody has measured it. One is a category error, the other is a gap an
+          <!-- `unmeasured`, and it is not interchangeable with the counter's `notApplicable`.
+               The counter has no rating to compare against and never will; this round has one,
+               and nobody has measured it. One is a category error, the other a gap an
                instrument would close. -->
           <pm:sign>
             <pm:absent>
@@ -701,7 +694,7 @@
           </pm:holder>
           <pm:quantity>
             <pm:absent><pm:reason>unmeasured</pm:reason>
-              <pm:note>with no nameplate there is nothing to difference against</pm:note></pm:absent>
+              <pm:note>with no nameplate there is nothing to subtract the demand from</pm:note></pm:absent>
           </pm:quantity>
         </pm:remainder>
       </pm:remainder>
@@ -710,7 +703,7 @@
     <!-- ============================================================
          TWO DOUGH MIXERS, a second fungible pair in their own unit.
          `partIdentity` is an `xs:key`, so no filed layer may be
-         consolidated twice — which is why every-elimination.xml needs
+         consolidated twice, which is why every-elimination.xml needs
          four parts rather than reusing two.
          ============================================================ -->
     <pm:layer>
@@ -802,7 +795,8 @@
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
-                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <!-- stipulated: the line runs every hour of the period, so the window is
+                       the whole of it -->
                   <pm:origin>policy</pm:origin>
                 </pm:quantum>
               </pm:window>
@@ -818,7 +812,7 @@
               <pm:denominator>
                 <pm:period>day</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -952,7 +946,8 @@
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
-                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <!-- stipulated: the line runs every hour of the period, so the window is
+                       the whole of it -->
                   <pm:origin>policy</pm:origin>
                 </pm:quantum>
               </pm:window>
@@ -968,7 +963,7 @@
               <pm:denominator>
                 <pm:period>day</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -1014,14 +1009,14 @@
       </pm:remainder>
     </pm:layer>
 
-    <!-- ⭐⭐⭐ THE ONE THE CORPUS CANNOT FILE, AND THE REASON THIS DIRECTORY EXISTS.
-         `none` here is a HEAVY claim: somebody relieved one layer's constraint and watched
-         the other, and the other did not move. Not one of the seven filings in
-         `assets/corpus/` has done that, which is a fact about the state of the evidence and
-         is reported as one. Stipulating it here proves the branch works and asserts nothing
-         about any business.
-         ⚠️ `Absence/note` says HOW it was established, because `none` without that is a
-         bolder silence than the blank it replaced. -->
+    <!-- The `couplings` at the end of this stack are the state the corpus does not file,
+         and the reason this directory exists. `none` there is a heavy claim: somebody
+         relieved one layer's constraint and watched the other, and the other did not move.
+         No filing in `assets/corpus/` has done that, which is a fact about the state of the
+         evidence and is reported as one. Stipulating it here shows the branch works and
+         asserts nothing about any business.
+         `Absence/note` says how it was established, because `none` without that would be a
+         bolder silence than a blank. -->
     <!-- ============================================================
          A PROOFER NOBODY HAS COUNTED FOR. Its rating is known and what
          waits for it is not, so there is no remainder anybody can take.
@@ -1082,7 +1077,7 @@
             <pm:absent><pm:reason>unmeasured</pm:reason>
               <pm:note>stipulated</pm:note></pm:absent>
           </pm:draw>
-          <!-- ⭐ `unmeasured`, not `notApplicable`: there is a figure to have a basis, and
+          <!-- `unmeasured`, not `notApplicable`: there is a figure to have a basis, and
                nobody has said whether it is a count, a cost or a charge. -->
           <pm:measurementBasis>
             <pm:absent><pm:reason>unmeasured</pm:reason>
@@ -1092,10 +1087,9 @@
         </pm:jagged>
       </pm:supply>
 
-      <!-- ⭐ `StatedRemainder` as `unmeasured`, the state its annotation calls "the honest and
-           commonest answer on a labour layer": with the demand uncounted there is nothing to
-           difference, and whether the proofer has a remainder is a question nobody can answer
-           yet. -->
+      <!-- `StatedRemainder` as `unmeasured`: with the demand uncounted there is nothing to
+           take from the nameplate, and whether the proofer has a remainder is a question
+           nobody can answer yet. -->
       <pm:remainder>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
@@ -1111,24 +1105,23 @@
         <pm:note>stipulated: the oven was taken from one tray size to two over four weeks
                  while the counter rota was held fixed, and the counter's service share did
                  not move outside its filed range. Relief applied to one layer did not reach
-                 the other, which is what independence means and what the corpus has never
-                 actually tested</pm:note>
+                 the other, which is what independence means</pm:note>
       </pm:absent>
     </pm:couplings>
 
   </pm:stack>
 
   <!-- ============================================================
-       ⭐⭐⭐ THE TWO OPERATIONS EXIST FOR `notationPosition` AND FOR NOTHING ELSE. The whole
-       corpus files two operations, both in one filing, and both of them can say where they
-       sit in a process notation. The states nobody could reach are the other two, and they
-       are the ones that decide whether a receiver can lay the two documents side by side:
-       `unmeasured` is a crossing nobody has done yet, `notApplicable` is a crossing there is
-       nothing to do. Until this element was required they were the same silence.
+       THE TWO OPERATIONS exist for `notationPosition` and for nothing else. The corpus's
+       operations either name their place in a process notation or file `none`. The other
+       two states are the ones that decide whether a receiver can lay the two documents side
+       by side: `unmeasured` is a crossing nobody has made yet, `notApplicable` a crossing
+       with nothing to cross to. The element is required, so the two cannot share one
+       silence.
 
-       ⚠️ The draws are stipulated and deliberately thin. This document is not evidence about
-       a bakery; the operations are here to carry the wrapper, and filing a rich draw would
-       invite somebody to read a number off a stipulation.
+       The draws are stipulated and kept thin on purpose. This document is not evidence
+       about a bakery; the operations are here to carry the wrapper, and a rich draw would
+       invite somebody to read a figure off a stipulation.
        ============================================================ -->
   <pm:operation>
     <pm:label>Bake a tray</pm:label>
@@ -1157,7 +1150,7 @@
       <pm:absent>
         <pm:reason>notApplicable</pm:reason>
         <pm:note>stipulated: this bakery has drawn no process notation at all, so there is no
-                 document for an id to name a position in. ⛔ Not `none`, which would say
+                 document for an id to name a position in. It is not `none`, which would say
                  somebody searched a notation and this operation was not in it</pm:note>
       </pm:absent>
     </pm:notationPosition>

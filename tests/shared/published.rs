@@ -1,18 +1,17 @@
 //! What this repository publishes, named once because two laws read it.
 //!
-//! ⛔⛔ THE SET IS ASKED OF GIT RATHER THAN RECONSTRUCTED. `.gitignore` is where this repository
-//! declares what it does not publish, and a second copy of that list inside a test is a fork that
-//! drifts with nothing able to notice. A tree walk was tried first and immediately reported on a
-//! working-notes file nobody ships, which is that fork appearing within one run.
+//! The set is asked of git rather than rebuilt by walking the tree. `.gitignore` is where this
+//! repository declares what it does not publish, and a second copy of that list inside a test
+//! would drift with nothing to notice. A walk of the tree also reports on working notes nobody
+//! ships.
 //!
-//! ⭐ `--others --exclude-standard` is what keeps a law over this set strongest exactly where it
-//! matters most. A page written five minutes ago and not yet committed is already in, and that is
-//! the moment its Portuguese sibling or its place in an index is easiest to forget; asking only
-//! for tracked files would go quiet on precisely the new page the law exists to catch.
+//! `--others --exclude-standard` takes in a page that is written and not yet committed. That is
+//! the moment its Portuguese page or its place in an index is easiest to forget, and asking only
+//! for tracked files would leave out the very page the laws exist to catch.
 
-// ⚠️ Two test crates include this module and neither reads all of it, so every item here is dead
-// code from one side or the other. Allowed at the module rather than per item: a law added later
-// that reads a different part of this file should not have to come back and edit an attribute.
+// Two test crates include this module and neither reads all of it, so every item here is dead
+// code from one side or the other. The allowance sits on the module rather than on each item, so
+// a law that reads a different part of this file does not have to come back and edit an attribute.
 #![allow(dead_code)]
 
 use std::path::PathBuf;
@@ -34,7 +33,7 @@ pub fn published_documents() -> Vec<String> {
         .expect("git is how this repository declares what it publishes, so it must be runnable");
     assert!(
         out.status.success(),
-        "`git ls-files` failed, so the published set is UNKNOWN rather than empty. A law that \
+        "`git ls-files` failed, so the published set is unknown rather than empty. A law that \
          cannot name its own population must say so instead of passing."
     );
     let mut found: Vec<String> = String::from_utf8_lossy(&out.stdout)
@@ -58,12 +57,11 @@ pub fn portuguese_of(english: &str) -> String {
 
 /// A page's first line, reduced to the claim it makes.
 ///
-/// ⭐ THE ENTRY AND THE FIRST LINE ARE ONE STRING, WHICH IS THE WHOLE POINT. A parent that
-/// summarised its child in its own words would be holding a second copy, and the two would
-/// disagree the first time either moved. So the reductions below strip only the decoration a page
-/// needs and an index entry does not: a markdown heading marker, the `**Português europeu.**`
-/// lead every translated page opens with, and a `` `path/`: `` prefix that repeats the link
-/// beside it.
+/// The entry and the first line are one string. A parent that summarised its child in its own
+/// words would hold a second copy, and the two would disagree the first time either moved. So the
+/// reductions below strip only the decoration a page needs and an index entry does not: a markdown
+/// heading marker, the `**Português europeu.**` lead an example's Portuguese page opens with, and
+/// a `` `path/`: `` prefix that repeats the link beside it.
 pub fn entry_of(body: &str) -> String {
     let mut line = body.lines().next().unwrap_or_default().trim().to_string();
     if let Some(rest) = line.strip_prefix("# ") {

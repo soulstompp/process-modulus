@@ -1,29 +1,28 @@
 # The two halves of every claim's uncertainty, read together. One row per combination of what
-# would make a range smaller and who owns the edge it would have to move, counted over the
-# corpus.
+# would make a range smaller and who owns the edge it would have to move, counted over the corpus.
 #
 # One instrument, two tables
-#   `narrowsWhen` and `boundOrigin` are both required and typed on `Claim` precisely because they
-#   are one instrument, and this is the pair the schema was restructured to make askable. The
-#   ingest aligns them on the claim they share, and two censuses never show the crossing. This is
+#   `narrowsWhen` and `boundOrigin` are both required and typed on `Claim` because they work as one
+#   instrument, and this is the pair the schema makes it possible to ask about. The ingest lines
+#   them up on the claim they share, and two separate censuses never show where they cross. This is
 #   the relation that joins them.
 #
 # Read the largest cell first
-#   It is the one that should smart. "Nobody has said what would narrow this" crossed with
-#   "nothing sets this bound" is a claim with no course of action and no owner: a bare number pair
-#   wearing a three-point estimate's clothes. Neither census alone can see it: in one it is an
-#   unremarkable `unmeasured`, in the other an unremarkable `none`. It is the honest measure of
-#   how much of this corpus is decoration.
+#   It is the one that should hurt. "Nobody has said what would narrow this" crossed with "nothing
+#   sets this bound" is a claim with no course of action and no owner: a bare pair of numbers
+#   dressed as a three-point estimate. Neither census alone can see it: in one it is an unremarkable
+#   `unmeasured`, in the other an unremarkable `none`. It is the honest measure of how much of this
+#   corpus is decoration.
 #
 # The small cells hold the advice
-#   `instrument` against `contractual` says measure it and then go renegotiate; `intervention`
+#   `instrument` against `contractual` says measure it and then go and renegotiate; `intervention`
 #   against `intrinsic` says the bound does not move at all, so the only way out is to stop being
 #   bound by that thing, which is exactly what the row filing it proposes, in prose.
 #
 # Corpus only
-#   The fixtures file combinations on purpose to prove the branches work, and counting a
-#   stipulation as evidence of what people actually write is the error this whole scope/
-#   directory exists to prevent.
+#   The fixtures file combinations on purpose to show the branches work, and counting a stipulation
+#   as evidence of what people actually write is the error the whole scope/ directory exists to
+#   prevent.
 -- epistemics/widths.sqlc against epistemics/edges.sqlc, joined on the claim they share.
 SELECT w.what_the_width_is_made_of AS what_would_narrow_it,
        e.who_owns_the_edge         AS who_owns_the_edge,

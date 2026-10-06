@@ -1,34 +1,31 @@
-# The same system said a different way. One row per relabelling: what it rewrites, the sentence
-# in the schema that says a rule must not notice, and whether the model claims the verdicts hold
-# still.
+# The same system said a different way. One row per relabelling: what it rewrites, the sentence in
+# the schema that says a rule must not notice, and whether the model claims the verdicts hold still.
 #
 # A covering word is a claim about what the rules cannot see
-#   Without this roster nothing here would test it. `HolderKind` says "unserved" and not
-#   "refused", and argues the choice: both of the other two name an actor, a card that errors a
-#   request did refuse it, a caller who waits past their patience was refused by nobody. Then
-#   the load-bearing sentence: both land in the same two holders, so the word covering them must
-#   not decide which happened. That is a falsifiable statement about every rule in checks/, and
-#   a statement like that asserted in prose and checked by nothing is the condition the whole
-#   checks/ tree exists to end.
+#   Without this roster nothing here would test it. `HolderKind` says "unserved", not "refused" or
+#   "turned away", and gives its reason: those two name somebody who acts. A card that errors a
+#   request did refuse it; a caller who waits past their patience was refused by nobody. Then the
+#   sentence that carries the weight: both land in the same two holders, so the word covering them
+#   must not decide which happened. That is a statement about every rule in checks/ that a document
+#   could refute, and a statement like that, asserted in prose and checked by nothing, is what
+#   checks/ exists to end.
 #
 # The test is a rewrite, not a new filing
 #   Say the shortfall twice, once as a refusal and once as a decay, holding the demand, the
-#   nameplate, the remainder, the fit, the holders and every magnitude fixed. If a rule returns
-#   a different verdict on the two, the rule decided which happened, and the covering word has a
+#   nameplate, the remainder, the fit, the holders and every magnitude fixed. If a rule returns a
+#   different verdict on the two, the rule decided which happened, and the covering word has a
 #   counter-example.
 #
 # The third row is the defeater
-#   It is not optional. Two relabellings expected to hold still are two ways of learning
-#   nothing, because a harness that compares a relation to itself reports `steady` for every
-#   input including a broken one. `unserved_as_absorbed` crosses a line the rules do read, so it
-#   must move; the day it does not, the diff is wrong and the other two rows are worth nothing.
-#   Same argument as the three deliberate defects the validator was made to reject before any
-#   pass was believed.
+#   It is not optional. Two relabellings expected to hold still are two ways of learning nothing,
+#   because a harness that compares a relation with itself reports `steady` for every input,
+#   including a broken one. `unserved_as_absorbed` crosses a line the rules do read, so it must
+#   move; the day it does not, the comparison is wrong and the other two rows are worth nothing.
 #
 # `expected` is the gate, `swaps` is the parameter
-#   The rewrites live in assets/sql/invariance.sql as statements, because a perturbation is not
-#   a relation; what each one is for is here, where it can be read without running anything.
--- pm:HolderKind, the "unserved" annotation; pm:Layer/pm:timeSlack, "the holder does not get to refuse".
+#   The rewrites live in assets/sql/invariance.sql as statements, because a change to the data is
+#   not a relation; what each one is for is here, where it can be read without running anything.
+-- pm:HolderKind, the "unserved" annotation, and pm:Layer/pm:timeSlack.
 SELECT * FROM (VALUES
   ('refusal_as_decay',
    'capacity slack <-> time slack, on a layer whose shortfall nobody could serve',

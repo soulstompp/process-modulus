@@ -1,29 +1,28 @@
-# F and Φ, resolved all the way to a layer that is actually here. One row per part whose notation
-# names a document in this corpus and whose layer is in that document.
+# The parts and their factors, resolved all the way to a layer that is actually here. One row per
+# part whose notation names a document in this corpus and whose layer is in that document.
 #
 # One resolution, written once
-#   Every question about composition (convert the parts, walk the descent, find a leaf, attenuate
-#   a coupling) starts by turning a notation into a filing and a filing plus a layer into a row.
-#   Written once, the resolution rule is one thing that can be corrected in one place.
+#   Every question about composition (convert the parts, walk the composition, find the bottom,
+#   weaken a coupling) starts by turning a notation into a filing, and a filing plus a layer into a
+#   row. Written once, the rule for resolving is one thing that can be corrected in one place.
 #
-# A missing row is a dangling reference
-#   A row present in composition/part_references.sqlc and missing from here is a dangling
-#   reference, and the difference between the two relations is exactly the violation set of that
-#   rule. The rule is an anti-join rather than a `NOT EXISTS`, because "the parts that resolve" is
-#   the relation worth naming and "the parts that do not" is its complement.
+# A missing row is a reference to nothing
+#   A row present in composition/part_references.sqlc and missing from here is a reference to
+#   nothing, and the difference between the two relations is exactly what that rule finds. The rule
+#   is an anti-join rather than a `NOT EXISTS`, because "the parts that resolve" is the relation
+#   worth naming and "the parts that do not" is the rest.
 #
-# Resolution is a reader's assertion one step removed
-#   `filing_identity` says which document claims which notation, and `asserted_by` records who
-#   said it. Filled in as "the reader, from the filename", that would be a guess dressed as data;
-#   these are read out of the documents.
+# Resolution rests on what a document says about itself
+#   `filing_identity` says which document claims which notation, and `asserted_by` records who said
+#   it. Filled in as "the reader, from the filename", that would be a guess dressed as data; these
+#   are read out of the documents.
 #
 # `pm.layer` directly, not `layers/every_layer.sqlc`
-#   The last join is a membership test: does the layer this reference names exist.
-#   `layers/every_layer.sqlc` is the layer dimension, reserved for denominators. Composed here it
-#   would drag the entire dimension into the transitive closure of most of the checker's rules,
-#   and any reach-containment law over a rule is vacuous the moment the dimension is inside its
-#   closure, because the dimension reaches everything by construction. `algebra/dimension_use.sqlc`
-#   states the rule and enforces it over the compose DAG.
+#   The last join only asks whether the layer this reference names exists.
+#   `layers/every_layer.sqlc` lists every layer and is kept for denominators. Composed here, it
+#   would end up among the relations most of the checks compose, and any law asking what a rule
+#   reaches would then hold without testing anything, because that list reaches everything.
+#   `algebra/dimension_use.sqlc` states the rule and enforces it over what every relation composes.
 -- pm.part joined through pm.filing_identity to pm.layer.
 SELECT p.composition, p.composed_layer,
        p.part_filing AS part_notation,

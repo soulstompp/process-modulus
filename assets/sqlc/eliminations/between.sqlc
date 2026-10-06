@@ -1,25 +1,26 @@
 # The layers a double count runs between, which is the evidence for an elimination. One row per
 # `asrt:between` on a filed elimination: which party's filing, which layer of it, under which
-# regime and which version the composer read.
+# regime, and which version the composer read.
 #
 # The subject of an elimination
 #   An elimination without this is a number with no subject. `eliminations/filed.sqlc` says a
-#   composer removed 90 GPU-hours from `merge-holding-composition/compute`. It cannot say what was
-#   counted twice. These rows can: `compute-us` and `compute-pt`, both from `group-parent`, both
-#   under the `group` regime. That is the difference between an adjustment and an argument.
+#   composer removed 40 to 150 GPU-hours, most likely 90, from `merge-holding-composition/compute`.
+#   It cannot say what was counted twice. These rows can: `compute-us` and `compute-pt`, both from
+#   `group-parent`, both under the `group` regime. That is the difference between an adjustment
+#   and an argument.
 #
-# Why it needs a home in the database
-#   Without one, the corpus's `between` rows are read from the XML and dropped on every ingest, and
-#   nothing notices, because no rule reads them: a rule reads only what it needs, so a field no
-#   rule reads is under no pressure to exist. Only asking "can this document be written back out"
-#   finds a hole like this, which is a question the query side structurally cannot ask.
+# Why it has its own table
+#   Without one, the corpus's `between` rows would be read from the XML and dropped on every
+#   ingest, and nothing would notice, because no rule reads them: a rule reads only what it needs,
+#   so a field no rule reads is under no pressure to exist. Only asking whether a document can be
+#   written back out finds a gap like that, and the query side cannot ask it.
 #
 # No foreign key on `notation`
-#   `notation` is a foreign reference and may dangle, so it carries no foreign key, exactly as
-#   `composition/part_references.sqlc` does not. `asrt:Elimination` argues the point directly,
-#   refusing a keyref that would restrict `between` to the fusion's own parts because "a group
-#   eliminating against a member that files nothing, or against a layer folded into a different
-#   composed layer, is ordinary".
+#   `notation` is a reference to another document and may point at nothing, so it carries no
+#   foreign key, as `composition/part_references.sqlc` carries none. `asrt:Elimination` refuses a
+#   keyref that would restrict `between` to the fusion's own parts, because "a group eliminating
+#   against a member that files nothing, or against a layer folded into a different composed
+#   layer, is ordinary".
 -- asrt:Fusion/asrt:eliminations/asrt:elimination/asrt:between, one row each.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, b.layer, b.version, b.regime,

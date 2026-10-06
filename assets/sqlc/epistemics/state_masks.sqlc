@@ -1,37 +1,34 @@
-# Which absence reasons each question has ever taken, as a three-bit word. One row per question,
-# the mask reading `n u a` for none, unmeasured and notApplicable, and a dot where the corpus has
-# never used that reason.
+# Which reasons each question has taken, as a three-letter word. One row per question: the mask
+# reads `n u a` for none, unmeasured and notApplicable, with a dot where no loaded document has
+# used that reason.
 #
-# Reached states as a word
-#   `AbsenceReason` is three members, so a site's reached states are a word rather than a list,
-#   and that is the whole trick. Asked as rows, "which reasons does `remainder sign` file" is a pile
-#   of rows nobody reads. Asked as a word it reads like `.ua`, and it sits beside `boundOrigin`'s
-#   `nua` in a sorted column where the missing bit is the first thing the eye lands on.
+# The reasons a question has taken, as one word
+#   There are three reasons, so the ones a question has taken make a word rather than a list.
+#   Asked as rows, "which reasons does `remainder sign` file" is a pile of rows nobody reads. Asked
+#   as a word, it reads like `.ua`, and it sits beside `boundOrigin`'s `nua` in a sorted column
+#   where the missing letter is the first thing the eye lands on.
 #
-# An admitted bit never set is a question
-#   Sometimes it is a defect. `StatedFit` admitted `nua` while `remainder sign` exercised only
-#   `.ua`, and the element's own annotation refuses the missing bit in prose: overlapping ranges
-#   are a `transition` fit, which the value arm names. The mask is what sets the two side by side.
-#   A word in a sorted column is a comparison a reader makes at a glance; a pile of annotations is
-#   not.
+# A reason allowed and never taken is a question
+#   Sometimes it is a defect: the type allows a reason that its own annotation refuses in prose.
+#   The mask sets what was taken beside what the type allows. A word in a sorted column is a
+#   comparison a reader makes at a glance; a pile of annotations is not.
 #
 # The masks cluster
-#   That is structure rather than trivia. Sort by the word and the wrappers fall into a handful of
-#   kinds. Two questions with one mask are the same kind of question; a mask that is a strict
-#   subset of another is a candidate for the narrower type. A subset is a candidate and never a
-#   verdict: a site may simply be young. The reading is "go and look at this one", which is what an
-#   observation is for.
+#   Sort by the word and the wrappers fall into a handful of kinds. Two questions with one mask are
+#   the same kind of question; a mask that takes fewer reasons than another is a candidate for the
+#   narrower type. It is a candidate and never a verdict: a site may simply be young. The reading is
+#   "go and look at this one", which is what an observation is for.
 #
-# It does not know what is admissible
-#   It knows only what was taken. The admissible word lives in the XSD (`pm:Absence` is `nua`,
+# It does not know what is allowed
+#   It knows only what was taken. What is allowed lives in the XSD (`pm:Absence` is `nua`,
 #   `pm:ClaimAbsence` is `.ua`) and in this database as the `a_..._absence_has_no_none` CHECKs.
-#   Comparing the two is the reader's job, and stating that plainly is better than a relation that
+#   Comparing the two is the reader's job, and saying so plainly is better than a relation that
 #   guesses at a grammar it cannot see.
 #
-# A derivation is not a bit
-#   It is not an absence: it names the identity that computes the position, and
+# A derivation is not a letter
+#   It is not a blank: it names the identity that works out the position, and
 #   epistemics/derivations.sqlc counts it.
--- epistemics/absences.sqlc folded to one three-bit word per question.
+-- epistemics/absences.sqlc folded to one three-letter word per question.
 SELECT a.question,
        (CASE WHEN bool_or(a.reason = 'none')          THEN 'n' ELSE '.' END) ||
        (CASE WHEN bool_or(a.reason = 'unmeasured')    THEN 'u' ELSE '.' END) ||

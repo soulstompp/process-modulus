@@ -1,43 +1,44 @@
-# Every figure filed `derived`, recomputed one level at a time. One row per (filing, layer, quantity)
-# in composition/derived_quantities.sqlc: whether the figure the flat walk computed is what one level
-# of the recursion gives, and whether the two agree on which figures cannot be computed at all.
+# Every figure filed `derived`, worked out again one level at a time. One row per (filing, layer,
+# quantity) in composition/derived_quantities.sqlc: whether the figure the flat walk computed is
+# what one level of the composition gives, and whether the two agree on which figures cannot be
+# computed at all.
 #
 # Two routes that share no code
-#   composition/derived_quantities.sqlc flattens the descent: every stated node at the bottom of a
-#   path, times the product of the factors above it, less every elimination on the way. This law
-#   takes one step instead: the layer's direct parts, each at the figure
+#   composition/derived_quantities.sqlc flattens the composition: every stated layer at the bottom
+#   of a path, times the product of the factors above it, less every elimination on the way. This
+#   law takes one step instead: the layer's direct parts, each at the figure
 #   composition/resolved_quantities.sqlc gives it (stated, or computed if it is derived in turn),
-#   times its own factor, less the layer's own elimination. Linear in every term, so where both
-#   finish they must agree at all three points.
+#   times its own factor, less the layer's own elimination. Neither route does more than add,
+#   subtract and multiply by a factor, so where both finish they must agree at all three values.
 #
 # Which is why the second route is driven from the filings and not from the first
-#   The population this law recomputes is `layers/summed_quantities.sqlc` where a derivation is
-#   named, which is the same set composition/derived_quantities.sqlc starts from and three columns
-#   wide instead of nine. Driving it from the relation under test would have made the sentence
-#   above false: a guard that shares a code path with what it guards is a staleness check, not a
-#   second route. The two sides now meet only at the key.
+#   The population this law works out again is `layers/summed_quantities.sqlc` where a derivation
+#   is named, the same set composition/derived_quantities.sqlc starts from. Driving it from the
+#   relation under test would make the sentence above false: a guard that shares a code path with
+#   what it guards only checks that the two are up to date with each other. The two sides meet only
+#   at the key.
 #
 # Blocked must mean blocked both ways
 #   A figure the walk cannot compute must be one the single step cannot compute either: a direct
 #   part with no figure, a conversion never sized, a search never made, an elimination that cannot
-#   be sized or that inverts the sum, a part that resolves to nothing here, or no parts at all. A
+#   be sized or that turns the sum over, a part that resolves to nothing here, or no parts at all. A
 #   figure one route computes and the other refuses fails here, in either direction.
 #
 # The conversion is one rule here too
-#   Each part is converted at the corner its own sign picks, the same operator
-#   composition/converted.sqlc and composition/settled_remainders.sqlc apply. The two routes are
-#   held apart by what they read and never by how they multiply; a law converting bound by bound
-#   would accuse a correct filing the moment a part's figure went negative.
-#   Proof: `src/proofs/README.md`, entry `two_slopes`. ⛔ No document exercises it, for the reason
-#   composition/derived_quantities.sqlc records: every part of the one filing that derives a
-#   quantity omits its factor, so the corner is a no-op on every row here.
+#   Each part is converted at the corner its own sign picks, as composition/converted.sqlc and
+#   composition/settled_remainders.sqlc convert. The two routes are kept apart by what they read,
+#   never by how they multiply; a law converting bound by bound would accuse a correct filing the
+#   moment a part's figure went below zero. No document exercises it, for the reason
+#   composition/derived_quantities.sqlc gives: every part of the one filing that derives a quantity
+#   omits its factor, so the corner changes nothing on any row here.
 #
 # Probe
-#   examples/probes runs it as `derived_quantities`.
-#   In the composed composition/derived_quantities.sql drop the root's own elimination from the
-#   result: this law must fail for `every-derived-quantity / pair / demand` alone, which is the one
-#   derived figure filed against an elimination.
--- composition/derived_quantities.sqlc against composition/parts.sqlc, composition/resolved_quantities.sqlc and eliminations/filed.sqlc.
+#   examples/probes runs it as `derived_quantities`. In the composed
+#   composition/derived_quantities.sql drop the top layer's own elimination from the result: this
+#   law must fail for `every-derived-quantity / pair / demand` alone, the one derived figure filed
+#   against an elimination.
+-- composition/derived_quantities.sqlc against composition/parts.sqlc,
+-- composition/resolved_quantities.sqlc and eliminations/filed.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)

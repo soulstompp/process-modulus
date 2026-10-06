@@ -1,15 +1,15 @@
 //! Every key in `assets/ddl/schema.ddl`, and the ground it stands on.
 //!
 //! A primary key or a unique constraint is a claim that two rows with the same values are the same
-//! thing. Where the XSD makes that claim, the key is its image. Where the XSD admits two and the
-//! database keeps one, a key is either a refusal no document should meet or, worse, a `DISTINCT`
-//! that merges them: an operation's label was keyed here and in no schema, and two operations
-//! sharing a label loaded as one operation carrying both operations' draws.
+//! thing. Where the XSD makes that claim, the key carries it into the database. Where the XSD
+//! admits two and the database keeps one, a key is either a refusal no document should meet or,
+//! worse, a `DISTINCT` that merges them: an operation's label keyed here and in no schema would
+//! load two operations sharing a label as one operation carrying both operations' draws.
 //!
-//! ⛔ So every key names its ground, and the ground is checked: an XSD identity constraint that
-//! exists, document order, a child the XSD admits once, or a table that is not read from a document.
-//! A key added with no ground fails here, and so does an XSD key over a loaded document that has no
-//! key here.
+//! So every key names its ground, and the ground is checked: an XSD identity constraint that
+//! exists, document order, a child the XSD admits once, or a table that is not read from a
+//! document. A key added with no ground fails here, and so does an XSD key over a loaded document
+//! that has no key here.
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -33,7 +33,7 @@ use Ground::{OnePer, Outside, Positional, Xsd};
 
 /// Every key in the DDL, as (table, `primary` or `unique`, columns), with its ground.
 const KEYS: &[(&str, &str, &str, Ground)] = &[
-    ("public.compose_edge", "primary", "parent, child", Outside("the compose DAG, one row per parent and child template")),
+    ("public.compose_edge", "primary", "parent, child", Outside("the compose graph, one row per parent and child template")),
     ("source", "primary", "name", Outside("one row per document file loaded, by its name")),
     ("filing", "primary", "name", OnePer("root element per document")),
     ("regime", "primary", "filing, seq", Positional),
@@ -68,7 +68,7 @@ const KEYS: &[(&str, &str, &str, Ground)] = &[
     ("composition_citation", "primary", "composition, seq", Positional),
 ];
 
-/// XSD identity constraints over documents the ingest does not load, so no key here images them.
+/// XSD identity constraints over documents the ingest does not load, so no key here carries them.
 const NOT_LOADED: &[(&str, &str, &str)] = &[
     (ASRT, "resultKey", "a `run` document"),
     (ASRT, "entryKey", "a `coverage` document"),
@@ -146,9 +146,9 @@ fn every_key_in_the_ddl_names_its_ground() {
     let stale: Vec<_> = declared.difference(&ddl).collect();
     assert!(
         unground.is_empty() && stale.is_empty(),
-        "keys in schema.ddl with no ground here: {unground:#?}\nkeys here that schema.ddl no longer \
-         has: {stale:#?}\nA key says two rows with the same values are one thing; say why, or key by \
-         position"
+        "keys in schema.ddl with no ground here: {unground:#?}\nkeys here that schema.ddl does \
+         not have: {stale:#?}\nA key says two rows with the same values are one thing; say why, or \
+         key by position"
     );
 }
 
@@ -168,7 +168,7 @@ fn every_xsd_ground_is_declared_in_its_schema() {
 
 #[test]
 fn every_xsd_key_over_a_loaded_document_has_a_key_here() {
-    let imaged: BTreeSet<(&str, &str)> = KEYS
+    let carried: BTreeSet<(&str, &str)> = KEYS
         .iter()
         .filter_map(|(_, _, _, g)| if let Xsd(n) = g { Some(n.iter().copied()) } else { None })
         .flatten()
@@ -179,13 +179,13 @@ fn every_xsd_key_over_a_loaded_document_has_a_key_here() {
         for name in &names {
             let at = (file, name.as_str());
             assert!(
-                imaged.contains(&at) || not_loaded.contains(&at),
-                "{file} keys `{name}` and no key in schema.ddl images it, nor is its document declared \
-                 unloaded here"
+                carried.contains(&at) || not_loaded.contains(&at),
+                "{file} keys `{name}` and no key in schema.ddl carries it, nor is its document \
+                 declared unloaded here"
             );
             assert!(
-                !(imaged.contains(&at) && not_loaded.contains(&at)),
-                "`{name}` in {file} is both imaged and declared unloaded"
+                !(carried.contains(&at) && not_loaded.contains(&at)),
+                "`{name}` in {file} is both carried by a key here and declared unloaded"
             );
         }
         for (f, n, _) in NOT_LOADED.iter().filter(|(f, _, _)| *f == file) {
@@ -209,7 +209,8 @@ fn every_other_ground_says_why() {
     }
 }
 
-/// ⛔ The probe: a key added to the DDL with no ground is seen.
+/// A key added to the DDL with no ground shows in the difference
+/// `every_key_in_the_ddl_names_its_ground` reads.
 #[test]
 fn a_key_nobody_grounded_is_seen() {
     let ddl = read("assets/ddl/schema.ddl");

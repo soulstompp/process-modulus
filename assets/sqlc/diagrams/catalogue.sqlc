@@ -2,10 +2,10 @@
 #
 # The population of the domain-object contract
 #   The database is the only honest source for it. diagrams/domain_objects.sqlc declares what each
-#   relational object renders as; this is what there is to declare about. Parsing `CREATE TABLE`
-#   out of the `.ddl` would be a second reading of the same file the schema was loaded from, so a
-#   table added and never loaded would still appear and the contract would agree with a database
-#   that does not exist.
+#   relational object renders as; this is what there is to declare about. Parsing `CREATE TABLE` out
+#   of the `.ddl` would be a second reading of the file the schema was loaded from, so a table added
+#   and never loaded would still appear, and the contract would agree with a database that does not
+#   exist.
 #
 # The one relation here that reads outside `pm`
 #   That is the reason for it: a contract needs a population it did not write.

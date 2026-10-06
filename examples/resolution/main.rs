@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/resolution/README.md")]
 
@@ -22,10 +20,10 @@ mod simulation;
 use simulation::instrument::{Bounded, DeclaredAskSize, Instrument, buffers, census, relabelled};
 use simulation::window::{Run, queued_settings, run, short_settings, slack_settings};
 
-/// ⭐ THE BOUND IS A STIPULATION AND IT HAS AN AUTHOR. Nothing in a stock-and-flow log says how
-/// big an unrecorded ask was. Somebody has to be willing to say "no order here is smaller than one
-/// or larger than six", which in the schema is a `pm:Claim` whose `pm:provenance` carries a
-/// name. Withhold it and the field is not a wide range, it is absent.
+/// The bound is a stipulation, and it has an author. Nothing in a stock-and-flow log says how big
+/// an unrecorded ask was. Somebody has to be willing to say "no order here is smaller than one or
+/// larger than six", which in the schema is a `pm:Claim` whose `pm:provenance` carries a name.
+/// Without it, the field is not a wide range but absent.
 const DECLARED: DeclaredAskSize = DeclaredAskSize {
     low: 1.0,
     high: 6.0,
@@ -50,7 +48,7 @@ fn main() {
 
     println!();
     if failures == 0 {
-        println!("Every lossy reading admitted the true one, and the pre-image is not a point.");
+        println!("Every lossy reading admitted the truth, and one log fits more than one history.");
     } else {
         println!("{failures} checks failed.");
         std::process::exit(1);
@@ -59,12 +57,11 @@ fn main() {
 
 /// Two histories, one log.
 ///
-/// ⭐⭐⭐ EVERYTHING ABOVE MEASURES THE LOSS. THIS SHOWS THERE IS NO WAY BACK. Take a run, rewrite
-/// every ask that was turned away as one that waited and left, and the other way round. The
-/// magnitudes are the same, the times are the same, the holder split is exactly reversed, and the
-/// stock-and-flow reading is identical. A map with two things in one pre-image has no inverse, so
-/// there is nothing left to argue about: the log names a set of histories and the width of that
-/// set is what the rows above priced.
+/// `report` measures the loss; this shows there is no way back. Take a run, rewrite every ask that
+/// was turned away as one that waited and left, and the other way round. The magnitudes are the
+/// same, the times are the same, the holder split is exactly reversed, and the stock-and-flow
+/// reading is identical. Two histories behind one log mean the log cannot be traced back to the
+/// history: it names a set of histories, and the width of that set is what `report` prices.
 fn exhibit_the_fibre() -> usize {
     let window = Duration::from_secs(6 * 60 * 60);
     let outcome = run(queued_settings(), 1, window).expect("the bench runs");
@@ -102,8 +99,8 @@ fn exhibit_the_fibre() -> usize {
         failed += 1;
     }
 
-    // ⛔ The negative control. If the two histories had the same split, the exhibition would be
-    // of nothing at all and this example would pass while proving no such thing.
+    // The negative control. If the two histories had the same split, they would be one history,
+    // and this example would pass while showing nothing.
     let genuinely_two = truth.customer != other_truth.customer;
     println!(
         "   the two histories file differently     {}",
@@ -113,8 +110,8 @@ fn exhibit_the_fibre() -> usize {
         failed += 1;
     }
 
-    // ⭐ What DID survive, which is the other half of the finding. The sum is pinned by the log
-    // even though neither part is, so the loss is a face of the holder simplex and not a hole.
+    // What did survive, the other half of the finding. The log fixes the sum even though it
+    // fixes neither part, so what is lost is the split between two holders, not the total.
     let sum_survives = truth.unserved == other_truth.unserved;
     println!(
         "   their sum is the same in both          {}",
@@ -128,7 +125,7 @@ fn exhibit_the_fibre() -> usize {
 }
 
 fn yes_no(b: bool) -> &'static str {
-    if b { "yes" } else { "⛔ no" }
+    if b { "yes" } else { "no" }
 }
 
 fn report(name: &str, outcome: &Run) -> usize {
@@ -154,9 +151,10 @@ fn report(name: &str, outcome: &Run) -> usize {
         idled = c.idled,
         wait = c.longest_wait.as_secs()
     );
-    // ⭐ THE LINE NEVER EXCEEDED ITS RATING, checked rather than assumed. There is no branch in
-    //    `layer.rs` that makes a lot early, so if what came off the line ever passed the
-    //    nameplate the physics has drifted from the `capacitySlack = notApplicable` filed below.
+    // The line never exceeds its rating, and this checks it rather than assuming it. These
+    // settings give the line no overtime, so no branch in `layer.rs` makes a lot early; if what
+    // came off the line ever passed the nameplate, the physics would have drifted from the
+    // `notApplicable` printed for the capacity buffer below.
     let (made, rating) = match (truth.made, truth.nameplate) {
         (Bounded::Range { low: m, .. }, Bounded::Range { low: n, .. }) => (m, n),
         _ => unreachable!("the whole history reports both as points"),
@@ -172,8 +170,8 @@ fn report(name: &str, outcome: &Run) -> usize {
         inv = b.inventory_high,
         cap = match b.capacity {
             Some(c) => format!("{c:.0}"),
-            // ⭐ NOT ZERO. There is no branch in the line that makes a lot early, so the buffer
-            //    is absent rather than empty, which is `pm:absent/reason = notApplicable`.
+            // Not zero. Without overtime no branch in the line makes a lot early, so the buffer
+            // is absent rather than empty, which is `pm:absent/reason = notApplicable`.
             None => "notApplicable".to_string(),
         },
         t = b.time_high.as_secs(),
@@ -220,12 +218,12 @@ fn report(name: &str, outcome: &Run) -> usize {
         }
         println!(
             "   {field:<12} {t}   {b}   {u}  {mark}",
-            mark = if ok { "" } else { "  ⛔ DOES NOT ADMIT" }
+            mark = if ok { "" } else { "  does not admit the truth" }
         );
     }
 
-    // ⭐ The width is the answer to the question. A field whose width is zero survived the
-    // projection intact; a field with no width at all did not survive as a number.
+    // The width is the answer to the question. A field whose width is zero came through the log
+    // intact; a field with no width at all did not survive as a number.
     println!();
     for (field, b, t) in [
         ("demand", bounded.demand, truth.demand),
@@ -234,7 +232,7 @@ fn report(name: &str, outcome: &Run) -> usize {
     ] {
         match (b.width(), t.width()) {
             (Some(w), Some(_)) if w < 1e-9 => {
-                println!("   {field:<12} survives the projection exactly")
+                println!("   {field:<12} comes through the log exactly")
             }
             (Some(w), _) => println!("   {field:<12} costs a range {w:.2} wide"),
             (None, _) => println!("   {field:<12} does not survive as a number"),

@@ -1,11 +1,10 @@
-# Did the composer look for double counting, and what does the answer oblige them to? One row
-# per answer, with how many fusions gave it and which arithmetic that leaves owed.
+# Did the composer look for double counting, and what does the answer oblige them to? One row per
+# answer, with how many fusions gave it and which arithmetic that leaves owed.
 #
 # The answer decides the arithmetic owed
-#   The same shape as the coupling search, one document up. `none` or `notApplicable`: the
-#   composed figure must equal the sum of its converted parts exactly. `unmeasured`: no equality
-#   is owed at all, and a checker reporting a pass on one of those rows is reporting about
-#   nothing.
+#   The same shape as the coupling search, one document up. `none` or `notApplicable`: the composed
+#   figure must equal the sum of its converted parts exactly. `unmeasured`: no equality is owed at
+#   all, and a check reporting a pass on one of those rows is reporting about nothing.
 #
 # Corpus only
 #   This is a statement about how real composers file, not about the fixtures written to exercise
@@ -13,7 +12,7 @@
 -- asrt:Fusion/asrt:eliminations/pm:absent, over the corpus.
 SELECT coalesce(s.answer::text, 'eliminations filed') AS the_search,
        count(*) AS fusions,
-       CASE WHEN s.answer = 'unmeasured' THEN 'sum rule SUSPENDED'
+       CASE WHEN s.answer = 'unmeasured' THEN 'sum rule suspended'
             ELSE 'sum rule exact' END AS what_is_owed
 FROM (
     :compose(eliminations/searched.sqlc)

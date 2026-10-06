@@ -1,84 +1,87 @@
-# The composed remainder, pivoted through the parts, beside the one layers/remainder.sqlc derives
+# The composed remainder worked out through the parts, beside the one layers/remainder.sqlc takes
 # from the composed totals. One row per composed layer that owes an exact remainder.
 #
-# Not `n_composed - d_composed`
-#   `r_composed = F Phi r_parts - e_n + e_d`, and the point is that it is not
-#   `n_composed - d_composed`. One conversion factor multiplies both a part's nameplate and its
-#   demand, so the two converted totals are correlated and differencing them counts that factor's
-#   spread twice. Converting each part's own remainder puts one occurrence of the factor on each
-#   term and the correlation is gone. composition/settled_remainders.sqlc is that pivot, one row
-#   per settled node with the path's factors already multiplied in; this is the sum over it plus
-#   the correction.
+# Not the composed nameplate less the composed demand
+#   The composed remainder is the parts' own remainders, converted, less the nameplate elimination
+#   and plus the demand elimination, and the point is that it is not the composed nameplate less
+#   the composed demand. One conversion factor multiplies both a part's nameplate and its demand,
+#   so the two converted totals move together, and subtracting them takes that factor's range in
+#   twice. Converting each part's own remainder takes the factor in once per term.
+#   composition/settled_remainders.sqlc is that conversion, one row per settled layer with the
+#   path's factors already multiplied in; this is the sum over it plus the correction.
 #
 # Both eliminations appear, with opposite signs
 #   Removing double-counted demand raises the remainder; removing double-counted nameplate lowers
-#   it. An identity written in prose and evaluated nowhere can lose a whole term without anything
-#   noticing, and this one lost `+ e_d` while it lived only in a document. This relation is what
-#   evaluates it, and `examples/matrices/main.rs` §4 is where the identity is written down.
+#   it. A sentence that is evaluated nowhere can lose a whole term without anything noticing, and
+#   this relation is what evaluates it.
 #
 # Which corner an elimination takes
-#   An elimination is counted in one quantity, so it moves with that quantity: `e_n` is at the
-#   nameplate's low where the nameplate is low, `e_d` at the demand's high where the demand is
-#   high. Which end of its own range that is, the quantity's sum rule has already decided:
-#   bound by bound it is low with low, and where the sum inverted and took the crossed pairing it
-#   is low with high. eliminations/paired.sqlc decides which, for the eliminations filed here and,
-#   through composition/carried_eliminations.sqlc, for those at the nodes a walk passes, so
-#   `n_at_low`, `n_at_high`, `d_at_low` and `d_at_high` are each elimination read at its own
-#   quantity's corners. Then the corner of `r` decides which end of each quantity is in play:
+#   An elimination is counted in one quantity, so it moves with that quantity: the nameplate
+#   elimination is at the nameplate's low where the nameplate is low, the demand elimination at the
+#   demand's high where the demand is high. Which end of its own range that is, the quantity's sum
+#   rule has already decided: bound by bound it is low with low, and where the sum turned over and
+#   took the crossed pairing it is low with high. eliminations/paired.sqlc decides which, for the
+#   eliminations filed here and, through composition/carried_eliminations.sqlc, for those at the
+#   layers a walk passes, so `n_at_low`, `n_at_high`, `d_at_low` and `d_at_high` are each
+#   elimination read at its own quantity's corners. Then the corner of the remainder decides which
+#   end of each quantity is in play:
 #
-#     no factor spread          the driver is `d`, and `r = n - d` falls as `d` rises, so
-#                               `r_low` takes the nameplate at its low and the demand at its high
-#     spread factor, r > 0      both `n` and `d` scale with the factor, so `r` rises with it,
-#                               and `r_low` takes both quantities at their low
+#   - where no factor is a range, the demand drives it: the remainder falls as the demand rises,
+#     so the lowest remainder takes the nameplate at its low and the demand at its high;
+#   - where a factor is a range and the remainder is above zero, nameplate and demand both scale
+#     with the factor, so the remainder rises with it, and the lowest remainder takes both
+#     quantities at their low.
 #
-#   With no spread this makes the pivot exactly `n_composed - d_composed` crossed, wherever the
-#   composed layer's filed totals are their sums. Proof: `src/proofs/README.md`, entry
-#   `composed_remainder`.
+#   With no factor a range, this makes the remainder exactly the composed nameplate less the
+#   composed demand, each end against the opposite end, wherever the composed layer's filed totals
+#   are their sums.
 #
-# The sign of the sum is not the discriminator
-#   It only looks like one. It agrees with the driver test on every layer whose `r` keeps one
-#   sign, and disagrees where `r` straddles zero, because there the sign changes between the two
-#   corners while the driver does not. `every-local-part/both-views` is that layer: two identical
-#   parts and eliminations equal to one whole copy of each, so removing one copy from two must
-#   leave exactly one copy. Read with the sign test its high comes out 600 too large, which is
-#   `e_d`'s own width.
+# The sign of the sum does not decide it
+#   It only looks as though it does. It agrees with what drives the remainder on every layer whose
+#   remainder stays on one side of zero, and disagrees where the remainder runs from short to
+#   spare, because there the sign changes between the two corners while the driver does not.
+#   `every-local-part/both-views` is that layer: two identical parts and eliminations equal to one
+#   whole copy of each, so removing one copy from two must leave exactly one copy. Read by the sign
+#   its highest value comes out 600 too large, which is the demand elimination's own width.
 #
 # Four layers that tell the rules apart
 #   The figure each must land on:
-#     merge-group-composition/labour            driver d, r < 0        (-3.0, -1.5, -0.4)
-#     merge-holding-composition/compute         driver phi, r > 0      (1414.0, 2857.0, 4085.6)
-#     every-local-part/both-views               driver d, r straddles  (-240, 160, 360)
-#     every-inverting-elimination/shift-capacity  nameplate crossed    (0, 4, 7)
+#   - merge-group-composition/labour, driven by the demand and short: -3.0, -1.5 and -0.4;
+#   - merge-holding-composition/compute, driven by the factor and spare: 1414.0, 2857.0 and
+#     4085.6;
+#   - every-local-part/both-views, driven by the demand, from short to spare: -240, 160 and 360;
+#   - every-inverting-elimination/shift-capacity, its nameplate crossed: 0, 4 and 7.
 #
-# One read of each elimination relation, pivoted
+# One read of each elimination relation, turned into columns
 #   Both quantities' eliminations come from one copy of eliminations/paired.sqlc and one of
 #   composition/carried_eliminations.sqlc, each keyed by quantity and turned into columns with
-#   `FILTER`. A join per quantity asked the same relation twice and planned it twice, and it sits
+#   `FILTER`. A join per quantity would ask the same relation twice and plan it twice, and it sits
 #   under every rule that reads a remainder.
 #
-# The zero fill is sound only inside the owed population
-#   The `coalesce(..., 0)` is sound only because composition/owed_remainder.sqlc is inner joined
-#   first. Inside that population an absent elimination means the composer looked and found no
-#   double counting, which is the number zero. Outside it the same absence means nobody looked,
-#   and filling it would put a claim in the checker the document declined to make. The population
-#   excludes a layer whose walk passes a node whose own sum is suspended, which is what keeps the
-#   carried terms numbers too.
+# The zero fill is right only inside the owed population
+#   The `coalesce(..., 0)` is right only because composition/owed_remainder.sqlc is joined first.
+#   Inside that population an absent elimination means the composer looked and found no double
+#   counting, which is the number zero. Outside it the same blank means nobody looked, and filling
+#   it would put a claim in the check that the document declined to make. The population leaves out
+#   a layer whose walk passes a layer whose own sum is suspended, which keeps the carried terms
+#   numbers too.
 #
-# A filed remainder that adds `e_d` straight
-#   Where a filed remainder adds `e_d` straight it sits one elimination-width below this figure,
-#   which is the right rule for an addition applied to an operand that crosses. Observation 13
-#   prints this relation beside the differenced one. Two figures in one document cannot both be
-#   right where an elimination has spread, and which of them moves is a filer's call rather than
-#   this relation's.
+# A filed remainder that adds the demand elimination straight
+#   Where a filed remainder adds the demand elimination straight, it sits one elimination's width
+#   below this figure, which is the right rule for an addition applied to a figure that runs from
+#   short to spare. queries/observations/13-composed-remainder.sqlc prints this relation beside the
+#   one from the totals. Two figures in one document cannot both be right where an elimination is
+#   a range, and which of them moves is the filer's call rather than this relation's.
 #
 # The two eliminations are not independent
-#   Each is read at the corner of `r` through the quantity it was counted in, so `e_n` and `e_d`
-#   move with the same scenario. Read as independent, as interval arithmetic with no correlation
-#   would, `both-views` comes out at a low of -840: a week in which the double-counted demand is at
-#   its least while the double-counted nameplate is at its most, which the filing's own figures do
-#   not admit. That independent reading is kept for one case only: where the paired reading
-#   inverts, it is the widest ordered claim the terms allow, and the pivot falls back to it.
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+#   Each is read at the corner of the remainder through the quantity it was counted in, so the two
+#   eliminations move with the same scenario. Read as independent of each other, `both-views` comes
+#   out at a low of -840: a week in which the double-counted demand is at its least while the
+#   double-counted nameplate is at its most, which the filing's own figures do not allow. That
+#   independent reading is kept for one case only: where the paired reading turns over, it is the
+#   widest reading in order the terms allow, and the remainder falls back to it.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,

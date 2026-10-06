@@ -1,15 +1,12 @@
-// This program's documentation is `README.md` in this directory and `pt-PT/examples/combinatorics/README.md`.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// Why the header lives in a README
-//   GitHub renders a directory's README and does not render `//!` blocks, so an argument kept
-//   only in the source could not be read where this repository is published. `include_str!`
-//   makes the same file rustdoc's page, so the two renderings cannot disagree, and a missing
-//   header is a compile error rather than a blank row on the front page.
-//
-// Why both languages
-//   Every schema annotation pairs an English block with a Portuguese one, and the generator
-//   joins them into one doc comment. These two files are the same arrangement, and
-//   `tests/translation.rs` checks that neither language is a second-class copy.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/combinatorics/README.md")]
 
@@ -23,7 +20,7 @@ mod tree;
 use tree::templates;
 
 // ----------------------------------------------------------------------
-// The twelvefold way, as data. Three conditions on a function f : N -> X, four readings of it.
+// Balls into boxes, as data: three conditions on where the balls may land, four ways to read it.
 // ----------------------------------------------------------------------
 
 #[derive(Clone, Copy, PartialEq)]
@@ -35,20 +32,22 @@ enum Condition {
 
 #[derive(Clone, Copy, PartialEq)]
 enum Reading {
-    /// f itself: the rows.
+    /// Where each ball landed: the rows.
     Labelled,
-    /// f up to permuting the balls: how many land in each named box, a `GROUP BY … count(*)`.
+    /// Which balls they are is ignored: how many land in each named box, a
+    /// `GROUP BY … count(*)`.
     FibreSizes,
-    /// f up to permuting the boxes: which balls share a box, a self-join on the box.
+    /// Which boxes they are is ignored: which balls share a box, a self-join on the box.
     Kernel,
-    /// f up to both: the profile of fibre sizes, a `GROUP BY` over a `GROUP BY`.
+    /// Both are ignored: how many boxes hold one ball, how many hold two and so on, a `GROUP BY`
+    /// over a `GROUP BY`.
     Shape,
 }
 
 const CONDITIONS: [(Condition, &str); 3] = [
     (Condition::Any, "any"),
-    (Condition::Injective, "injective"),
-    (Condition::Surjective, "surjective"),
+    (Condition::Injective, "at most one per box"),
+    (Condition::Surjective, "no box empty"),
 ];
 
 const READINGS: [(Reading, &str, &str); 4] = [
@@ -58,7 +57,8 @@ const READINGS: [(Reading, &str, &str); 4] = [
     (Reading::Shape, "up to both", "the profile of the counts"),
 ];
 
-/// C(a, b), with the convention C(-1, 0) = 1 that keeps the surjective column right at n = x = 0.
+/// How many ways there are to choose `b` things out of `a`. Choosing none is one way whatever
+/// `a` is, which keeps the `surjective` column right with no balls and no boxes.
 fn binom(a: i64, b: i64) -> i64 {
     if b < 0 {
         return 0;
@@ -72,7 +72,8 @@ fn binom(a: i64, b: i64) -> i64 {
     (0..b).fold(1, |acc, i| acc * (a - i) / (i + 1))
 }
 
-/// S(n, k), set partitions of n into exactly k blocks. S(0, 0) = 1.
+/// How many ways `n` balls split into exactly `k` groups, none empty and the groups unnamed. No
+/// balls in no groups is one way.
 fn stirling(n: usize, k: usize) -> i64 {
     let mut s = vec![vec![0i64; k.max(n) + 1]; n + 1];
     s[0][0] = 1;
@@ -84,7 +85,8 @@ fn stirling(n: usize, k: usize) -> i64 {
     s[n][k]
 }
 
-/// p_k(m), integer partitions of m into exactly k parts. p_0(0) = 1.
+/// How many ways the whole number `m` splits into exactly `k` whole parts, none zero and their
+/// order ignored. Zero in no parts is one way.
 fn parts(m: usize, k: usize) -> i64 {
     let mut p = vec![vec![0i64; k + 1]; m + 1];
     p[0][0] = 1;
@@ -96,7 +98,7 @@ fn parts(m: usize, k: usize) -> i64 {
     p[m][k]
 }
 
-/// The closed form for one cell. Route one of three.
+/// The count for one cell of the table, by formula. The first of three ways to the same count.
 fn formula(c: Condition, r: Reading, n: usize, x: usize) -> i64 {
     let (ni, xi) = (n as i64, x as i64);
     let at_most = i64::from(n <= x);
@@ -116,7 +118,8 @@ fn formula(c: Condition, r: Reading, n: usize, x: usize) -> i64 {
     }
 }
 
-/// Every function [n] -> [x], as the vector of its values. x^n of them, and exactly one when n = 0.
+/// Every way `n` balls can land in `x` boxes, each as the list of the box each ball lands in. With
+/// no balls there is exactly one.
 fn functions(n: usize, x: usize) -> Vec<Vec<usize>> {
     let mut out = vec![Vec::new()];
     for _ in 0..n {
@@ -158,7 +161,7 @@ fn holds(c: Condition, f: &[usize], x: usize) -> bool {
     }
 }
 
-/// The reading itself, computed the way the SQL computes it. Route two of three.
+/// The reading itself, computed the way the SQL computes it. The second of the three ways.
 fn read(r: Reading, f: &[usize], x: usize) -> Vec<usize> {
     let mut fibres = vec![0usize; x];
     for &v in f {
@@ -167,8 +170,8 @@ fn read(r: Reading, f: &[usize], x: usize) -> Vec<usize> {
     match r {
         Reading::Labelled => f.to_vec(),
         Reading::FibreSizes => fibres,
-        // Each block named by its least ball, which is what `min(…) OVER (PARTITION BY box)`
-        // does: the boxes' own names are thrown away and nothing a relabelling can change is kept.
+        // Each group is named by its least ball, which is what `min(…) OVER (PARTITION BY box)`
+        // does: the boxes' own names are dropped, and nothing that renaming them changes is kept.
         Reading::Kernel => {
             let mut first: BTreeMap<usize, usize> = BTreeMap::new();
             f.iter()
@@ -184,8 +187,9 @@ fn read(r: Reading, f: &[usize], x: usize) -> Vec<usize> {
     }
 }
 
-/// The orbit, by brute force: apply every permutation the reading forgets and keep the least
-/// result. Route three of three, and it knows nothing about fibres, kernels or profiles.
+/// By brute force: reorder the balls, the boxes or both, as far as the reading ignores them, and
+/// keep the least result. The third of the three ways, and it knows nothing about counts per box,
+/// shared boxes or profiles.
 fn orbit(r: Reading, f: &[usize], balls: &[Vec<usize>], boxes: &[Vec<usize>]) -> Vec<usize> {
     let identity_n = vec![(0..f.len()).collect::<Vec<_>>()];
     let identity_x = vec![(0..boxes.first().map_or(0, Vec::len)).collect::<Vec<_>>()];
@@ -198,7 +202,7 @@ fn orbit(r: Reading, f: &[usize], balls: &[Vec<usize>], boxes: &[Vec<usize>]) ->
     let mut least: Option<Vec<usize>> = None;
     for s in sigmas.iter() {
         for t in taus.iter() {
-            // τ ∘ f ∘ σ⁻¹: move the balls by σ and rename the boxes by τ.
+            // Move the balls by one reordering and rename the boxes by the other.
             let g: Vec<usize> = (0..f.len()).map(|i| t.get(f[s[i]]).copied().unwrap_or(f[s[i]])).collect();
             if least.as_ref().is_none_or(|l| g < *l) {
                 least = Some(g);
@@ -222,12 +226,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     // 1. The table itself, three ways, before anything in this repository is read by it.
     // ------------------------------------------------------------------
-    // Route two against route three is the claim everything below rests on. A reading is
-    // computed the way the SQL computes it; an orbit is computed by applying every permutation
-    // the reading is supposed to forget. If the reading is constant on each orbit it forgets
-    // nothing it should keep, and if it separates orbits it forgets nothing else. Both are
-    // asserted per function rather than per count, because two partitions with the same number
-    // of blocks are not the same partition.
+    // The second way against the third is what everything below rests on. A reading is computed
+    // the way the SQL computes it; the brute force reorders whatever the reading is meant to
+    // ignore. Two assignments the brute force finds the same must read the same, and two it tells
+    // apart must read differently. Both are asserted for each assignment rather than for each
+    // count, because two groupings with the same number of groups are not the same grouping.
     const UPTO: usize = 4;
     let mut cells = 0usize;
     for n in 0..=UPTO {
@@ -244,21 +247,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let seen = by_orbit.entry(o.clone()).or_insert_with(|| v.clone());
                         assert_eq!(
                             *seen, v,
-                            "n={n} x={x} {cname} {rname}: two functions in one orbit read \
-                             differently, so this reading keeps something the orbit forgets"
+                            "n={n} x={x} {cname} {rname}: two assignments alike read \
+                             differently, so this reading keeps something it should ignore"
                         );
                         let back = by_reading.entry(v).or_insert_with(|| o.clone());
                         assert_eq!(
                             *back, o,
-                            "n={n} x={x} {cname} {rname}: two orbits read the same, so this \
-                             reading forgets something the orbit keeps"
+                            "n={n} x={x} {cname} {rname}: two different assignments read the \
+                             same, so this reading ignores something it should keep"
                         );
                     }
                     let want = formula(c, r, n, x);
                     assert_eq!(
                         by_orbit.len() as i64,
                         want,
-                        "n={n} x={x} {cname} {rname}: {} orbits against the closed form's {want}",
+                        "n={n} x={x} {cname} {rname}: {} by brute force, {want} by formula",
                         by_orbit.len()
                     );
                     cells += 1;
@@ -267,11 +270,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     let (n, x) = (4usize, 3usize);
-    println!("1. the twelvefold way, for n = {n} balls and x = {x} boxes\n");
-    println!("   {:<17} {:<27} {:>6} {:>10} {:>11}", "", "in SQL", "any", "injective", "surjective");
+    println!("1. every way to count balls into boxes, for {n} balls and {x} boxes\n");
+    println!("   {:<17} {:<27} {:>6} {:>12} {:>12}", "", "in SQL", "any", "at most 1", "no empty");
     for &(r, rname, sql) in &READINGS {
         println!(
-            "   {:<17} {:<27} {:>6} {:>10} {:>11}",
+            "   {:<17} {:<27} {:>6} {:>12} {:>12}",
             rname,
             sql,
             formula(Condition::Any, r, n, x),
@@ -280,12 +283,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     println!(
-        "\n   {cells} cells, every n and x from 0 to {UPTO}: the closed form, the number of distinct \
-         readings and the\n   number of brute-force orbits agree, and each reading is constant on \
-         its orbits and separates them."
+        "\n   {cells} cells, every count from 0 to {UPTO}: the formula, the number of distinct \
+         readings and the\n   number found by brute force agree, and each reading keeps exactly \
+         what the brute force keeps."
     );
-    println!("   So a GROUP BY count reads a function exactly up to its balls, a self-join exactly");
-    println!("      up to its boxes, and neither can see what the other throws away.");
+    println!("   So a GROUP BY count ignores which balls, a self-join ignores which boxes,");
+    println!("      and neither can see what the other throws away.");
 
     // ------------------------------------------------------------------
     // 2. The compositions, read the four ways: splice site -> template.
@@ -329,16 +332,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   up to the boxes  {shared} groups of parents compose an identical set of children");
     println!(
         "   up to both       {}",
-        shape.iter().map(|(k, t)| format!("{k}^{t}")).collect::<Vec<_>>().join(" ")
+        shape.iter().map(|(k, t)| format!("{t} of {k}")).collect::<Vec<_>>().join(", ")
     );
-    println!("   not injective    {repeated} edges splice one child more than once, harmlessly:");
-    println!("      a query is idempotent where its copies meet in a union, a join or a scalar subquery,");
+    println!("   spliced twice    {repeated} edges splice one child more than once, harmlessly:");
+    println!("      a query's copies agree in a union, a join or a scalar subquery,");
     println!("      and a tagged UNION ALL keeps them apart. A supply is folded with +, and is not.");
-    // The fibres and the shape are two folds of the same rows, so they must carry the same
-    // population. A derivation here that lost an edge would print a plausible shape over fewer
-    // sites.
+    // The counts per template and their profile are two summaries of the same rows, so they must
+    // cover the same splice sites. A step here that lost an edge would print a plausible profile
+    // over fewer sites.
     let from_shape: i64 = shape.iter().map(|(k, t)| k * *t as i64).sum();
-    assert!(!edges.is_empty(), "the compose DAG is empty, so this section read nothing");
+    assert!(!edges.is_empty(), "no template composes another, so this section read nothing");
     assert_eq!(from_shape, sites, "the shape does not sum to the splice sites it was read from");
 
     // ------------------------------------------------------------------
@@ -347,10 +350,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let classes = sqlx::query_file!("assets/sql/queries/combinatorics/3-classifications.sql")
         .fetch_all(&pool)
         .await?;
-    // ⛔ The outside set is the catalog's BARE name, not `regtype`. `regtype` renders through the
-    // session's `search_path`, so it spells the same type two ways depending on who is connected,
-    // and the census it is compared against is read by clients with both paths. `typname` is what
-    // assets/ddl/schema.ddl wrote, and `epistemics/class_cells.sqlc` reads the same column.
+    // The declared class sets are read by the catalog's bare name, not `regtype`. `regtype`
+    // renders through the session's `search_path`, so it spells the same type two ways depending
+    // on who is connected, and the census it is compared with is read by clients on both paths.
+    // `typname` is what assets/ddl/schema.ddl wrote, and `epistemics/class_cells.sqlc` reads the
+    // same column.
     let declared: Vec<String> = sqlx::query_scalar(
         "SELECT t.typname::text FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace \
          WHERE n.nspname = 'public' AND t.typtype = 'e' ORDER BY 1",
@@ -397,15 +401,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------
     // 3b. The same classes over each scope, which the pooled count cannot be filtered into.
-    // ⭐⭐ A census counts, so the set of documents it counted over is part of its result rather
-    //    than an input a reader still holds. Restricting §3's rows chooses which totals to look
-    //    at, never what each total counted, which is why `reports/class_census.sqlc` takes the
-    //    document set as a SLOT and is composed twice, and why these two columns exist instead
-    //    of a WHERE clause.
-    // ⛔ The two zeros mean opposite things. Empty in the corpus is a state no real filing has
-    //    produced, which is a finding about the evidence. Empty in the fixtures is a state no
-    //    stipulation exercises, which is a gap in this repository's own coverage. Pooling them
-    //    lights the class from either side and answers neither question.
+    // A census counts, so the set of documents it counted over is part of its result rather than
+    // an input a reader still holds. Restricting §3's rows chooses which totals to look at, never
+    // what each total counted, which is why `reports/class_census.sqlc` takes the document set as
+    // a slot and is composed twice, and why these two columns exist instead of a WHERE clause.
+    //
+    // The two zeros mean opposite things. Empty in the corpus is a state no real filing has
+    // produced, which is a finding about the evidence. Empty in the fixtures is a state no
+    // stipulation exercises, which is a gap in this repository's own coverage. Pooled, a class
+    // lit from either side answers neither question.
     // ------------------------------------------------------------------
     let scoped = sqlx::query_file!("assets/sql/queries/combinatorics/3b-classifications-by-scope.sql")
         .fetch_all(&pool)
@@ -427,10 +431,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     assert!(!scoped.is_empty(), "the scoped census is empty, so this section read nothing");
-    // ⭐ Neither list is asserted empty, and neither should be. A finding is a claim about the
-    //   world that no law can settle, and a gap is a fixture somebody has not written yet.
-    //   `algebra/class_domain.sqlc` asserts the part that IS settleable: that every class has a
-    //   declared standing and the standing agrees with the pooled count.
+    // Neither list is asserted empty, and neither should be. A finding is a claim about the world
+    // that no law can settle, and a gap is a fixture somebody has not written yet.
+    // `algebra/class_domain.sqlc` asserts the part that can be settled: that every class has a
+    // declared standing, and the standing agrees with the pooled count.
     println!("\n   lit only by a stipulation, so the corpus has never shown it:");
     for f in &findings {
         println!("      {f}");
@@ -502,7 +506,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // ------------------------------------------------------------------
-    // 5. The two self-joins of F, against the fibre profile that fixes their size.
+    // 5. The two self-joins of the parts, against the group sizes that fix how many rows return.
     // ------------------------------------------------------------------
     let kernels = sqlx::query_file!("assets/sql/queries/combinatorics/5-kernels.sql")
         .fetch_all(&pool)
@@ -514,7 +518,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .2
             .push((k.k, k.fibres));
     }
-    println!("\n5. the two self-joins of F, against the fibre profile that fixes their size");
+    println!("\n5. the two pairings of parts, against the group sizes that fix their row counts");
     assert!(!per.is_empty(), "no self-join was profiled, so this law examined nothing");
     for (relation, (pairing, joined, profile)) in &per {
         let pairs = |k: i64| match *pairing {
@@ -525,17 +529,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         let expected: i64 = profile.iter().map(|(k, t)| pairs(*k) * t).sum();
         println!(
-            "   {relation:<32} {pairing:<30} profile {}  ->  {expected} expected, {joined} joined",
-            profile.iter().map(|(k, t)| format!("{k}^{t}")).collect::<Vec<_>>().join(" ")
+            "   {relation:<32} {pairing:<30} groups {}  ->  {expected} expected, {joined} joined",
+            profile.iter().map(|(k, t)| format!("{t} of {k}")).collect::<Vec<_>>().join(", ")
         );
         assert_eq!(
             expected, *joined,
-            "{relation} returned a number of rows its fibre profile does not allow, so its join key \
+            "{relation} returned a number of rows its group sizes do not allow, so its join key \
              or its pairing is not the one its header argues for"
         );
-        // A pair is not a double count once a fibre holds three. Summing every composed layer
-        // that shares a part counts it k times, where the pairs number C(k, 2); the two agree
-        // only at 2.
+        // Once three composed layers share a part, its pairs no longer measure its double count.
+        // A sum over the layers counts the part once more for each layer past the first, while
+        // the pairs among those layers grow faster; the two agree only when two layers share it.
         if pairing.starts_with("unordered") && profile.iter().any(|(k, _)| *k >= 3) {
             let excess: i64 = profile.iter().map(|(k, t)| (k - 1) * t).sum();
             println!("      note: a part feeds three totals: {expected} pairs, but a sum would double count {excess}");

@@ -1,10 +1,10 @@
-# N, the induction matrix: a commitment made here that becomes a draw somewhere else, and
-# who made it. Same shape as D, different fact, hence a different relation.
+# A commitment made here that becomes a draw somewhere else, and who made it. The same shape as
+# entries/draws.sqlc and a different fact, so a different relation.
 #
 # Only an induction names a decider
-#   That is the point of separating the two. A draw is a thing that occurred; an induction is a
-#   thing somebody chose, creating a future draw on a different supply. Folding them into one table
-#   with a flag would have put an event and a decision in one slot.
+#   That is why the two are separate. A draw is something that happened; an induction is something
+#   somebody chose, creating a future draw on a different supply. One table with a flag would put
+#   an event and a decision in one slot.
 -- pm:Operation/pm:Induction, carrying pm:decidedBy.
 SELECT n.filing, n.operation, n.layer,
        n.low, n.mode, n.high, n.unit, n.absent, n.decider

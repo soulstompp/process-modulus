@@ -1,15 +1,15 @@
--- Say each shortfall a second way and re-run every rule.
+-- Say each shortfall a second way and run every rule again.
 #
 #   psql -f assets/ddl/schema.ddl -f assets/sql/ingest.sql -f assets/sql/invariance.sql
 #
 # Why this file exists
-#   `HolderKind` argues one word for two different things, and the argument is good: "unserved"
-#   and not "refused" or "turned away, and the word is load-bearing because both of the other two
-#   name an actor". A reserved card that errors a request did refuse it; a caller who waits past
-#   their patience was refused by nobody, they left. Then the sentence that makes it checkable:
-#   both land in the same two holders, so the word covering them must not decide which happened.
-#   That is not a claim about the type. It is a claim about every rule in checks/, and this file
-#   is what stands behind it.
+#   `HolderKind` uses one word for two different things, and gives a good reason: the word is
+#   "unserved", not "refused" or "turned away", because those two name somebody who acts. A
+#   reserved card that errors a request did refuse it; a caller who waits past their patience was
+#   refused by nobody, they left. Then the sentence that makes it checkable: both land in the same
+#   two holders, so the word covering them must not decide which happened. That is not a claim
+#   about the type. It is a claim about every rule in checks/, and this file is what stands behind
+#   it.
 #
 # A relabelling is not a second filing
 #   Every rewrite below holds the demand, the nameplate, the remainder, the fit, the holders and
@@ -17,32 +17,33 @@
 #   cannot be blamed on a different number; the rule read the word.
 #
 # Nothing here is committed
-#   ⚠️ That is the only reason a perturbation may touch the corpus tables at all. Each rewrite runs
-#   inside its own `BEGIN` and ends at `ROLLBACK`, so the database this reads is the database it
-#   leaves. The recorded verdicts survive because the table holding them is created before the
-#   first rewrite and is never written inside one.
+#   That is the only reason a rewrite may touch the corpus tables at all. Each rewrite runs inside
+#   its own `BEGIN` and ends at `ROLLBACK`, so the database this reads is the database it leaves.
+#   The recorded verdicts survive because the table holding them is created before the first
+#   rewrite and is never written inside one.
 #
 # The third run is expected to move
-#   The file is worthless without it. A diff that is quietly comparing a relation to itself
+#   The file is worthless without it. A comparison that is quietly comparing a relation with itself
 #   reports `steady` for everything, which is exactly what two passing invariants look like.
-#   `unserved_as_absorbed` crosses a line the rules read on purpose, so a `steady` there is not
-#   good news: it says the harness is blind and the other two results mean nothing.
+#   `unserved_as_absorbed` crosses a line the rules read on purpose, so a `steady` there is not good
+#   news: it says the harness is blind and the other two results mean nothing.
 #
-# The diff counts; it does not subtract
-#   The obvious way is wrong. checks/all.sqlc is a bag, for two reasons rather than one. The two
-#   shapes, with the tally left to `checks/grain.sqlc`, which prints it live:
+# The comparison counts; it does not subtract
+#   The obvious way is wrong: checks/all.sqlc can hold the same row more than once, for two reasons
+#   rather than one. The two shapes, with the tally left to `checks/grain.sqlc`, which prints it
+#   live:
 #     repetition  several items per layer saying the same sentence, two shares against one slack,
-#                 so identical rows are legitimately repeated. `rows > sentences`.
+#                 so identical rows are rightly repeated. `rows > sentences`.
 #     grain       the examined item is finer than the `(filing, layer)` the contract names, a part
 #                 or a slack or a claim, and every row says something different. `rows > layers`.
 #   A rule putting a claim address in the `layer` column reads as one row per layer and falls into
 #   neither shape, because the address is unique per row. `checks/grain.sqlc` is where the key is
 #   checked for resolving rather than for being unique.
-#   The repair below is right for both: `EXCEPT` deduplicates, which means a verdict that changes
-#   only how many times it is said survives the difference invisibly, and the file reports
-#   `steady` on a rule that moved. Grouping and comparing the two counts keeps the multiplicity,
-#   and `said_before`/`said_after` show it. It is the same distinction algebra/roster.sqlc
-#   carries in its `multiplicity` column, met here for the same reason.
+#   The grouping below is right for both. `EXCEPT` removes duplicates, so a verdict that changes
+#   only how many times it is said would pass through the difference unseen, and the file would
+#   report `steady` on a rule that moved. Grouping and comparing the two counts keeps how many
+#   times each row is said, and `said_before`/`said_after` show it. It is the same distinction
+#   algebra/roster.sqlc carries in its `multiplicity` column, met here for the same reason.
 #
 # The rewrites are statements, not relations
 #   That is why they live here rather than under relabellings/. What each one is for is a relation
@@ -68,8 +69,8 @@ CREATE TEMP TABLE verdict_before AS
 \echo 'On every layer whose own demand and nameplate imply a shortfall nobody could serve,'
 \echo 'move the empty buffer from capacity to time. Before: the supply had no room to run'
 \echo 'into. After: the demand did not survive the wait. The same quantity goes without,'
-\echo 'to the same holders, and `Layer/timeSlack` says the second one in as many words:'
-\echo '"the holder does not get to refuse, the demand decayed".'
+\echo 'to the same holders, and `Layer/timeSlack` says the second one in as many words: the'
+\echo 'holder does not get to refuse, and the demand decayed.'
 BEGIN;
 
 -- layers/unabsorbed_exposure.sqlc: exactly the population the unserved rules examine.
@@ -113,8 +114,8 @@ SELECT * FROM moved ORDER BY rule, filing, layer;
 -- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
 SELECT r.slug, r.expected, o.observed,
        CASE WHEN r.expected = o.observed  THEN 'held'
-            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
-            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+            WHEN r.expected = 'steady'    THEN 'a rule decided which happened'
+            ELSE 'the harness is blind: every result above means nothing' END AS verdict
 FROM (
     :compose(relabellings/roster.sqlc)
 ) r
@@ -132,12 +133,12 @@ ROLLBACK;
 \echo 'could compare the two shares against each other.'
 BEGIN;
 
-# The swap is a bijection on pm:HolderKind
-#   It is `τ ∘ f` with `τ = (customer unrealised)`, so every holder keeps its figure and only its
-#   word changes. It is a delete and a re-insert because `(filing, layer, kind)` is pm.holder's
-#   key and a one-statement UPDATE exchanging two rows' kinds collides with it halfway. Each row
-#   is rebuilt from its own `to_jsonb` with `kind` replaced, so a column added to pm.holder later
-#   is carried rather than silently nulled.
+# The swap exchanges two kinds and nothing else
+#   Every `customer` becomes `unrealised` and every `unrealised` becomes `customer`, so every holder
+#   keeps its figure and only its word changes. It is a delete and an insert because
+#   `(filing, layer, kind)` is pm.holder's key, and a one-statement UPDATE exchanging two rows'
+#   kinds collides with it halfway. Each row is rebuilt from its own `to_jsonb` with `kind`
+#   replaced, so a column added to pm.holder later is carried rather than silently nulled.
 CREATE TEMP TABLE relabelled_holders AS
 SELECT jsonb_populate_record(NULL::pm.holder,
          to_jsonb(h) || jsonb_build_object('kind',
@@ -170,8 +171,8 @@ SELECT * FROM moved ORDER BY rule, filing, layer;
 -- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
 SELECT r.slug, r.expected, o.observed,
        CASE WHEN r.expected = o.observed  THEN 'held'
-            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
-            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+            WHEN r.expected = 'steady'    THEN 'a rule decided which happened'
+            ELSE 'the harness is blind: every result above means nothing' END AS verdict
 FROM (
     :compose(relabellings/roster.sqlc)
 ) r
@@ -215,8 +216,8 @@ SELECT * FROM moved ORDER BY rule, filing, layer;
 -- relabellings/roster.sqlc supplies the expectation; the count supplies what happened.
 SELECT r.slug, r.expected, o.observed,
        CASE WHEN r.expected = o.observed  THEN 'held'
-            WHEN r.expected = 'steady'    THEN '⛔ A RULE DECIDED WHICH HAPPENED'
-            ELSE '⛔ THE HARNESS IS BLIND: every result above is worthless' END AS verdict
+            WHEN r.expected = 'steady'    THEN 'a rule decided which happened'
+            ELSE 'the harness is blind: every result above means nothing' END AS verdict
 FROM (
     :compose(relabellings/roster.sqlc)
 ) r

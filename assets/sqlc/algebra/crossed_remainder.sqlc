@@ -1,35 +1,40 @@
-# Every remainder, recomputed from the two totals it was differenced from. One row per layer in
-# layers/remainder.sqlc: whether its `r`, its fit and its magnitude are what the definitions give.
+# Every remainder, worked out again from the two totals it came from. One row per layer in
+# layers/remainder.sqlc: whether its remainder, its fit and its magnitude are what the definitions
+# give.
 #
-# A value law
+# A law about values
 #   The other laws on the roster count rows. This one compares numbers. It reads demand and
 #   nameplate from layers/demand.sqlc and layers/nameplate.sqlc rather than from
-#   layers/differenced_remainder.sqlc, so a pairing changed there, the low of `n - d` taken
-#   against `d_low` rather than `d_high`, fails here instead of narrowing every range silently.
+#   layers/differenced_remainder.sqlc, so a pairing changed there, the lowest remainder taken
+#   against the lowest demand rather than the highest, fails here instead of quietly narrowing
+#   every range.
 #
 # What it asserts
-#   - where `r` is not pivoted, `r = [n_low - d_high, n_mode - d_mode, n_high - d_low]`;
-#   - `r_low <= r_mode <= r_high`, which the crossed pairing owes from two ordered claims;
-#   - `derived_fit` is `clearance` exactly where `r_low >= 0`, `interference` exactly where
-#     `r_high <= 0` and `r_low < 0`, and `transition` everywhere else;
-#   - `|r|` is `[greatest(r_low, -r_high, 0), |r_mode|, greatest(r_high, -r_low)]`.
-#   Proof: `src/proofs/README.md`, entries `crossed_subtraction`, `fit_criteria` and `magnitude`.
+#   - where the remainder is not worked out from parts, its lowest value is the lowest nameplate
+#     less the highest demand, its most likely value the most likely nameplate less the most
+#     likely demand, and its highest value the highest nameplate less the lowest demand;
+#   - the remainder is in order, which pairing opposite ends owes from two claims in order;
+#   - `derived_fit` is `clearance` exactly where the lowest remainder is not below zero,
+#     `interference` exactly where the highest is not above zero and the lowest is below it, and
+#     `transition` everywhere else;
+#   - the magnitude is the remainder's size whichever way it points, at all three values, with a
+#     smallest value of zero where the remainder runs from short to spare.
 #
 # The magnitude is written differently on purpose
-#   layers/remainder.sqlc computes the bounds of `|r|` by cases, on whether `r` straddles zero.
-#   Here they are the lowest and highest `|x|` over `[r_low, r_high]` in closed form. The two
-#   agree whenever `r` is ordered, so each checks the other, and a copy of one would check
-#   nothing.
+#   layers/remainder.sqlc works out the magnitude's ends case by case, on whether the remainder runs
+#   from short to spare. Here they are the smallest and largest size over the whole range, in one
+#   expression. The two agree whenever the remainder is in order, so each checks the other, and a
+#   copy of one would check nothing.
 #
-# A pivoted `r` is not a crossed difference
-#   On a composed layer whose remainder composition/fused_remainders.sqlc computes, `r` is the
-#   pivoted sum of the parts and not `n - d`, so the first clause does not apply there. The other
-#   three do: they are about any `r`, wherever it came from.
+# A remainder worked out from parts is not the totals' difference
+#   On a composed layer whose remainder composition/fused_remainders.sqlc works out, the remainder
+#   comes from the parts and not from the totals, so the first clause does not apply there. The
+#   other three do: they hold of any remainder, wherever it came from.
 #
 # Probe
-#   examples/probes runs it as `crossed_remainder`.
-#   Pair `n.n_low - d.d_low` in layers/differenced_remainder.sqlc. Every remainder differenced from
-#   a demand that is not a point, its own or a part's, must fail here.
+#   examples/probes runs it as `crossed_remainder`. Pair `n.n_low - d.d_low` in
+#   layers/differenced_remainder.sqlc. Every remainder taken from a demand that is a range, its own
+#   or a part's, must fail here.
 -- layers/remainder.sqlc against layers/demand.sqlc and layers/nameplate.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -47,8 +52,10 @@ LEFT JOIN (
            AND r.m_low  = greatest(r.r_low, -r.r_high, 0)
            AND r.m_mode = abs(r.r_mode)
            AND r.m_high = greatest(r.r_high, -r.r_low) AS holds,
-           format('%s [%s, %s, %s] from n [%s, %s, %s] and d [%s, %s, %s]; %s; |r| [%s, %s, %s]',
-                  CASE WHEN r.pivoted THEN 'pivoted r' ELSE 'r' END,
+           format('%s [%s, %s, %s] from the nameplate [%s, %s, %s] and the demand [%s, %s, %s]; '
+                  '%s; its size [%s, %s, %s]',
+                  CASE WHEN r.pivoted THEN 'the remainder worked out through the parts'
+                       ELSE 'the remainder' END,
                   r.r_low, r.r_mode, r.r_high, n.n_low, n.n_mode, n.n_high,
                   d.d_low, d.d_mode, d.d_high, r.derived_fit, r.m_low, r.m_mode, r.m_high) AS detail
     FROM      (

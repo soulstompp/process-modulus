@@ -3,7 +3,7 @@
 # there is none on that axis), the declared standing, its reason, and the examined count.
 #
 # Driven from the declared cells
-#   Grouping the examined rows could only list the cells some row reached, and an open cell is
+#   Grouping the examined rows could list only the cells some row reached, and an open cell is
 #   exactly one nothing reached. So the declared cells drive and the rows are joined to them, and
 #   `count(o.layer)` gives an empty cell its zero.
 #

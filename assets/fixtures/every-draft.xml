@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md.
+  A stipulation, not a filing. See assets/fixtures/README.md.
 
-  ⭐⭐⭐ THE DOCUMENT A FIRST-TIME ADOPTER ACTUALLY HAS, and the two states every other document
-  in this repository skips because every other one was written to be cited by another.
+  The document a first-time adopter actually has, and the two states every other document in
+  this repository skips, because every other one was written to be cited by another:
 
     notation  absent unmeasured   nobody has assigned this filing a URN yet
-    scope     absent unmeasured   the question of how much of the system it holds was never put
+    scope     absent unmeasured   nobody has asked how much of the system it holds
 
-  ⚠️ NEITHER IS A DEFECT AND BOTH WOULD BE A BLANK WITHOUT THEIR WRAPPERS. Somebody sat down,
+  Neither is a defect, and both would be a blank without their wrappers. Somebody sat down,
   wrote one layer of their process, and stopped. They have not published it, so nothing can
-  compose it — and that is the honest consequence rather than a gap: a composition asserting a
-  relationship to a filing nobody can identify is asserting a relationship to nothing.
+  compose it, and that is the honest consequence rather than a gap: a composition claiming a
+  relationship to a filing nobody can identify claims a relationship to nothing.
 
-  ⭐ AND THE SCOPE ABSENCE IS THE ONE WORTH READING TWICE. `unbounded` says the filer thought
-  about what lies outside these layers and did not look. `absent reason="unmeasured"` says the
-  question was never put at all. A first draft is the second, and rendering them identically is
-  what made `pm:Stack` read as though it enumerated a system.
+  The scope absence is the one worth reading twice. `unbounded` says the filer thought about
+  what lies outside these layers and did not look; an absent scope with reason `unmeasured`
+  says the question was never put at all. A first draft is the second, and if the two read the
+  same, `pm:Stack` would read as though it listed a whole system.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
@@ -30,7 +30,7 @@
   <pm:evidence>
     <pm:absent>
       <pm:reason>unmeasured</pm:reason>
-      <pm:note>this document does not say whether anything in it was observed. That is the state every document written before pm:evidence existed is in, and a receiver must put it in neither set</pm:note>
+      <pm:note>this document does not say whether anything in it was observed, so a receiver counts it neither as an observation nor as a stipulation</pm:note>
     </pm:absent>
   </pm:evidence>
 
@@ -136,7 +136,8 @@
                       </pm:boundOrigin>
                     </pm:claim>
                   </pm:size>
-                  <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                  <!-- stipulated: the line runs every hour of the period, so the window is
+                       the whole of it -->
                   <pm:origin>policy</pm:origin>
                 </pm:quantum>
               </pm:window>
@@ -152,7 +153,7 @@
               <pm:denominator>
                 <pm:period>shift</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>

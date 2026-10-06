@@ -29,7 +29,8 @@ SELECT e.composition, e.composed_layer, e.quantity,
 FROM pm.elimination e
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -75,7 +76,8 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -115,7 +117,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -179,7 +182,8 @@ FROM (
 GROUP BY r.composition, r.composed_layer
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -227,7 +231,8 @@ SELECT root_filing, root_layer, quantity, filing, layer, depth,
 FROM walk
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -380,7 +385,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_underived_parts AS (
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
@@ -395,20 +401,21 @@ WHERE d.low IS NULL
 GROUP BY p.composition, p.composed_layer, d.quantity
 ),
 composition_suspension_grounds AS (
--- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
+-- be computed.
 SELECT * FROM composition_filed_grounds
 UNION ALL
 SELECT * FROM composition_underived_parts
 ),
 composition_suspended_fusions AS (
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     SELECT * FROM composition_suspension_grounds
 ) g
 ),
 composition_suspended_quantities AS (
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     SELECT * FROM composition_suspended_fusions

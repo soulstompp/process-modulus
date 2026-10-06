@@ -1,25 +1,25 @@
-# The fusions that owe an exact composed remainder, against the ones that do not, checked as a
-# partition of all of them. One row: whether |fusions| = |owed_remainder| + |fusions ⋉ suspended|,
-# and whether no more fusions owe a remainder than have their demand answered.
+# The fusions that owe an exact composed remainder, against the ones that do not. One row: whether
+# every fusion either owes its remainder or is suspended, counted row for row, and whether no more
+# fusions owe a remainder than have their demand answered.
 #
-# The same law at a second population
-#   It is composition/owed_equality.sqlc's law at a second population. That one partitions each
-#   quantity's sum on that quantity's suspensions; a remainder needs both the demand and the
+# The same law on a second population
+#   It is composition/owed_equality.sqlc's law on a second population. That one divides each
+#   quantity's sum by that quantity's suspensions; a remainder needs both the demand and the
 #   nameplate answered, so the two populations differ and each needs its own count.
 #
-# The `IS NULL` arm is not decoration
-#   A list-level suspension carries no quantity at all, so a membership test written with `IN`
-#   alone silently misses the suspension that is broader than either named one. The left side
-#   would then come out larger than composition/owed_equality's.
+# The `IS NULL` branch is not decoration
+#   A suspension of the whole list carries no quantity at all, so a membership test written with
+#   `IN` alone would quietly miss the suspension that is broader than either named one. The left
+#   side would then come out larger than composition/owed_equality's.
 #
-# The invariant to check after any edit
-#   A condition needing both quantities answered cannot own more fusions than one needing demand
-#   alone, so the fusions owing a remainder are never more than those whose demand is answered, and
-#   a violation of that is a dropped suspension rather than a disagreement about the corpus. A
-#   demand is answered where its sum is owed, or where it is filed `derived` and read at the figure
-#   its fusion computes; composition/owed_equality.sqlc leaves the second out, so the two counts
-#   are disjoint and add. The law holds it on every run.
--- composition/fusions.sqlc partitioned by composition/suspended_remainders.sqlc, bounded by
+# What the law also holds
+#   A condition needing both quantities answered cannot cover more fusions than one needing the
+#   demand alone, so the fusions owing a remainder are never more than those whose demand is
+#   answered, and a breach of that is a dropped suspension rather than a disagreement about the
+#   corpus. A demand is answered where its sum is owed, or where it is filed `derived` and read at
+#   the figure its fusion computes; composition/owed_equality.sqlc leaves the second out, so the
+#   two counts never overlap and add. The law holds it on every run.
+-- composition/fusions.sqlc split by composition/suspended_remainders.sqlc, bounded by
 -- composition/owed_equality.sqlc and composition/derived_fusions.sqlc on the demand.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -28,7 +28,8 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/owed_remainder' AS subject,
            x.total = x.kept + x.removed AND x.kept <= x.demand_owed + x.demand_derived AS holds,
-           format('%s fusions = %s owing a remainder + %s suspended; %s owe a demand sum and %s file it derived',
+           format('%s fusions: %s owing a remainder, %s suspended; '
+                  '%s owe a demand sum and %s file it derived',
                   x.total, x.kept, x.removed, x.demand_owed, x.demand_derived) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f)        AS total,

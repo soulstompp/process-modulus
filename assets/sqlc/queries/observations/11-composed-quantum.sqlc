@@ -1,21 +1,21 @@
 -- §11  Whether a fused supply still arrives in whole units, and where that question has no answer.
-# One row per composed layer every one of whose parts is lumpy: the greatest common divisor of the
-# parts' quanta, each converted into the composed layer's unit, and a typed absence where there is
-# none.
+# One row per composed layer all of whose parts are lumpy: the largest whole unit that every part's
+# quantum, converted into the composed layer's unit, is a whole number of, and a typed blank where
+# there is none.
 #
-# Every attainable sum is a multiple of the gcd
-#   Each part's nameplate is a whole number of its own quanta, so every sum the parts could make is
-#   a multiple of the gcd and no larger quantum divides them all. Not every multiple is attainable,
-#   because nobody holds a negative number of units: `q = 4` and `q = 6` never make 2. Proof:
-#   `src/proofs/README.md`, entry `composed_quantum`.
+# The common whole unit
+#   Each part's nameplate is a whole number of its own quanta, so any total the parts make is a
+#   whole number of the common unit, and no larger unit holds for all of them. Not every such total
+#   can be reached, because nobody holds a negative number of units: quanta of 4 and 6 never make
+#   2.
 #
-# Two absences, two facts
+# Two blanks, two facts
 #   `unmeasured` where a part's conversion factor is: nobody sized it, so nobody can say what the
-#   parts share. `notApplicable` where the converted quanta still sit in different units, which is
-#   a question that is malformed rather than unanswered.
+#   parts share. `notApplicable` where the converted quanta still sit in different units, a
+#   question with no meaning rather than one left unanswered.
 #
 # `1` is a real answer
-#   Not a failure. Every integer is a multiple of one, so the constraint is vacuous and the fused
+#   Not a failure. Every amount is a whole number of ones, so nothing is constrained, and the fused
 #   supply is continuous as far as the arithmetic can see.
 -- composition/composed_quantum.sqlc, ordered by whether the question has an answer.
 SELECT c.composition                                   AS "composition!",

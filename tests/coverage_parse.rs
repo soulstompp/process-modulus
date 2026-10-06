@@ -1,10 +1,10 @@
-//! Reads the coverage and run documents, and asserts the property they exist to prove.
+//! Reads the coverage and run documents, and asserts the property they exist to show.
 //!
-//! ⭐ The interesting test here is `two_regimes_are_comparable_where_they_share_an_authority`.
-//! It is not a parser check: it asserts that the SAME questions answered under two
+//! The test that matters here is `two_regimes_are_comparable_where_they_share_an_authority`.
+//! It is not a parser check: it asserts that the same questions answered under two
 //! regimes stay comparable exactly where the two witnesses cite the same taxonomy, and
-//! stop being comparable exactly where they do not. That is the whole reason a refusal
-//! code and a chart position are borrowed terms rather than strings.
+//! stop being comparable exactly where they do not. That is why a refusal code and a
+//! chart position are borrowed terms rather than strings.
 
 use std::collections::HashSet;
 use std::fs;
@@ -50,7 +50,7 @@ fn both_coverage_files_and_the_run_parse() {
     assert!(!r.result.is_empty());
 }
 
-/// ⭐⭐ THE PROPERTY. Two regimes answering one corpus are comparable row by row where
+/// The property. Two regimes answering one corpus are comparable row by row where
 /// they cite the same authority, and legibly incomparable where they do not.
 #[test]
 fn two_regimes_are_comparable_where_they_share_an_authority() {
@@ -61,7 +61,7 @@ fn two_regimes_are_comparable_where_they_share_an_authority() {
     let shared: HashSet<String> = keys(&us).intersection(&keys(&pt)).cloned().collect();
     assert!(
         shared.len() >= 3,
-        "the two witnesses must answer the SAME questions or there is nothing to compare"
+        "the two witnesses must answer the same questions or there is nothing to compare"
     );
 
     // Where both refuse, they draw from one pack, so the codes mean the same thing.
@@ -101,7 +101,7 @@ fn two_regimes_are_comparable_where_they_share_an_authority() {
     );
 }
 
-/// ⛔ An undeclared divergence is a bug; a declared one is a position. The reason is
+/// An undeclared divergence is a bug; a declared one is a position. The reason is
 /// what separates them, so an exception without one is not conformant.
 #[test]
 fn every_declared_exception_carries_a_reason() {
@@ -130,7 +130,7 @@ fn every_declared_exception_carries_a_reason() {
     }
 }
 
-/// ⭐ `notable` is the valuable verdict and the easiest to leave unexplained. A run
+/// `notable` is the valuable verdict and the easiest to leave unexplained. A run
 /// promoted to evidence must say what was observed, or it cannot be checked later.
 #[test]
 fn the_notable_result_carries_its_evidence() {
@@ -159,21 +159,21 @@ fn the_notable_result_carries_its_evidence() {
     }
 }
 
-/// ⭐⭐ THE FIFTH RULE, AND `Regime/chart` IS WHAT MADE IT STATABLE AT ALL.
+/// Every position sits in a chart its own document declares, a rule `Regime/chart` makes
+/// possible to state.
 ///
-/// `Regime`'s annotation asserts a universal -- "any answer naming a position must carry
-/// the chart that codes it" -- and until `chart` existed there was nowhere for the
-/// EXPECTED value to live, so the rule was satisfiable by carrying ANY chart. A regime
-/// declared as a Portuguese microentity whose one answer held a US position validated,
-/// and nothing could say otherwise.
+/// `Regime`'s annotation says that any answer naming a position must carry the chart that
+/// codes it, and `chart` is where the expected chart lives. Without it the rule would be met
+/// by carrying any chart at all: a regime declared as a Portuguese microentity whose one
+/// answer held a US position would validate, and nothing could say otherwise.
 ///
-/// ⛔ `holds` ONLY, NEVER `refuses`. A refusal code comes from a coding pack that is
-/// deliberately SHARED across regimes -- that is the property the test above pins -- so
-/// checking refusals against the chart would break the thing the pack is for.
+/// `holds` only, never `refuses`. A refusal code comes from a coding pack that is shared
+/// across regimes on purpose, which is the property the test above pins, so checking
+/// refusals against the chart would break what the pack is for.
 ///
-/// ⚠️ This is `conformance/README.md`'s owed-rule list, implemented for the documents in
-/// this repository rather than in general. A profile still owes it for documents it has
-/// never seen; the crate can only answer for what it can read.
+/// This is a rule `conformance/README.md` lists as owed, run here for the documents in this
+/// repository rather than in general. A profile still owes it for documents it has never
+/// seen; the crate can only answer for what it can read.
 #[test]
 fn every_position_is_held_in_a_chart_its_own_document_declares() {
     for name in [US, PT] {
@@ -207,34 +207,34 @@ fn every_position_is_held_in_a_chart_its_own_document_declares() {
                 declared.contains(&taxonomy),
                 "{name}: an answer holds a position in `{taxonomy}`, which no regime in \
                  this document declares as its chart. Either the answer is in the wrong \
-                 chart or the regime never said which chart it posts to -- and before \
-                 `Regime/chart` existed, neither could be told from the other"
+                 chart or the regime never said which chart it posts to, and `Regime/chart` \
+                 is what tells the two apart"
             );
         }
     }
 }
 
-/// ⭐⭐⭐ HOW MUCH OF THE QUESTION DOES THIS WITNESS SAY IT ANSWERS? As an `xs:boolean`,
-/// `CoverageEntry/complete` is the pattern this project has caught five times: A TWO-VALUED
-/// ENCODING SURVIVES REVIEW BECAUSE BOTH OF ITS VALUES ARE CORRECT. `true` is right, `false`
-/// is right, and nothing in a boolean field points at what it cannot say.
+/// How much of the question does this witness say it answers? `CoverageEntry/claimed` has
+/// three values rather than a boolean. A two-valued encoding survives review because both of
+/// its values are correct: `true` is right, `false` is right, and nothing in a boolean field
+/// points at what it cannot say.
 ///
-/// ⛔ `false` WAS CARRYING TWO OPPOSITE READINGS. `none` says the question is outside this
+/// A `false` would carry two opposite readings. `none` says the question is outside this
 /// witness's subject; `partial` says it is inside and half covered. A report that merges them
-/// cannot tell a witness that declines from a witness that falls short — and a corpus about
-/// quantities nobody records is asking precisely about the half that is not covered.
+/// cannot tell a witness that declines from a witness that falls short, and a corpus about
+/// quantities nobody records is asking about the half that is not covered.
 ///
-/// ⭐⭐ AND IT IS WHAT MAKES `notable` REACHABLE. `Verdict/notable` is "answered beyond what
-/// was claimed", so a graded claim gives it two more ways to fire, not one.
+/// It is also what makes `notable` reachable. `Verdict/notable` is "answered beyond what was
+/// claimed", so a graded claim gives it two ways to fire rather than one.
 #[test]
 fn a_witness_says_how_much_of_each_question_it_answers() {
     let mut seen = Vec::new();
 
     for name in [US, PT] {
         for e in &coverage(name).entry {
-            // ⛔ A WITNESS THAT TAKES ON NO PART OF A QUESTION HAS ONE HONEST ANSWER, and it
-            // is not a refusal: a refusal is a coded position under a framework, which is a
-            // full answer. `cannotAsk` is the witness saying the question is not its subject.
+            // A witness that takes on no part of a question has one honest answer, and it is
+            // not a refusal: a refusal is a coded position under a framework, which is a full
+            // answer. `cannotAsk` is the witness saying the question is not its subject.
             if e.claimed == ClaimedType::None {
                 assert!(
                     matches!(e.answer, Some(AnswerType::CannotAsk(_)) | None),
@@ -261,13 +261,13 @@ fn a_witness_says_how_much_of_each_question_it_answers() {
          claims the same amount tests nothing about the distinction"
     );
 
-    // ⚠️⚠️ AND THE THIRD VALUE IS UNEXERCISED, WHICH IS RECORDED RATHER THAN PAPERED OVER.
+    // The third value is not exercised, and that is recorded here rather than papered over.
     // No entry in this corpus is a genuine `partial`: both witnesses either code a position,
-    // return a typed refusal — which IS a complete answer under a framework — or say the
+    // return a typed refusal, which is a complete answer under a framework, or say the
     // question is not theirs. A witness that codes the transacted half of an absorbed cost
     // and has no position for the rest would be the case, and nobody has filed one. Inventing
-    // an entry to light this branch would make the corpus agree with the schema by
-    // construction, which is the failure `Verdict/diverged` names.
+    // an entry to reach this branch would make the corpus agree with the schema by
+    // construction, which is the failure `Verdict` refuses: a corpus edited to match.
     assert!(
         !seen.contains(&ClaimedType::Partial),
         "a witness now files `partial`. That is the interesting state and it should be checked \

@@ -1,30 +1,32 @@
-# n − d taken from the two filed totals, with the bounds crossed. One row per layer that states
-# both a demand and a nameplate, so both operands exist. The key is (filing, layer).
+# The nameplate less the demand, from the two filed totals, each end set against the opposite end.
+# One row per layer that states both a demand and a nameplate, so both figures exist. The key is
+# (filing, layer).
 #
-# The operands are one relation's pair
+# Both figures come from one relation
 #   layers/figures.sqlc sets each layer's demand beside its nameplate; this keeps the rows where
 #   both are present.
 #
-# Subtracting two intervals reverses the bounds
-#   The low of n − d pairs n's low against d's high, because the smallest remainder is the
-#   smallest supply meeting the largest demand. Get it backwards and every remainder in the corpus
-#   comes out inside out while every individual number still looks plausible.
+# The ends are crossed
+#   The low end of the remainder pairs the nameplate's low with the demand's high, because the
+#   smallest remainder is the smallest supply meeting the largest demand. Get it backwards and every
+#   remainder in the corpus comes out inside out, while every single number still looks plausible.
 #
 # A bound, not the remainder, on a composed layer
-#   The crossing assumes the two operands are independent, which on a composed layer they need not
-#   be. Where one conversion factor multiplied both the nameplate and the demand of a part, pairing
-#   `n_low` against `d_high` counts that factor's spread twice and the result is wider than the
-#   remainder. This relation is therefore a bound on such a layer and not its remainder;
-#   `composition/fused_remainders.sqlc` computes the remainder by converting each part's own, and
+#   Crossing the ends assumes the two figures move independently, which on a composed layer they
+#   need not. Where one conversion factor multiplied both the nameplate and the demand of a part,
+#   pairing `n_low` with `d_high` takes that factor's range in twice, and the result is wider than
+#   the remainder. On such a layer this relation is a bound, not the remainder;
+#   `composition/fused_remainders.sqlc` works the remainder out by converting each part's own, and
 #   `layers/remainder.sqlc` is the one that chooses between them.
 #
-# Every other layer agrees under both readings
-#   A point factor or no factor leaves nothing to decorrelate. Observation 13 prints the pair and
-#   the agreeing rows are the control.
+# Every other layer agrees both ways
+#   A single-valued factor, or none, leaves nothing to take in twice.
+#   queries/observations/13-composed-remainder.sqlc prints the two figures side by side, and the
+#   rows that agree are the control.
 #
-# The filed sign beside the derived one
+# The filed sign beside the worked-out one
 #   The sign and the absorber are what the filing says, from layers/filed_remainders.sqlc. The join
-#   is a LEFT JOIN because a layer may deny having a remainder and still state both operands; the
+#   is a LEFT JOIN because a layer may deny having a remainder and still state both figures; the
 #   schema empties every part of a denied remainder, so such a layer carries the difference with
 #   nothing filed beside it.
 -- layers/figures.sqlc where both figures are present, beside the sign and absorber of
@@ -34,7 +36,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit

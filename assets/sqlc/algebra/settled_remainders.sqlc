@@ -1,27 +1,31 @@
-# The nodes a remainder descent reaches, against the ones it stops on. One row: whether
-# |frontier| = |settled| + |frontier ⋉ unsettled| + |stopped with no figure|, and whether every node
-# in the third class sits under a remainder that is lifted.
+# The layers a remainder walk reaches, against the ones it stops on. One row: whether every row of
+# composition/remainder_frontier.sqlc is settled, passed through as unsettled, or stopped with no
+# figure, counted row for row, and whether every layer stopped with no figure sits under a
+# remainder that is suspended.
 #
-# The descent prunes and the difference selects
-#   This counts the second. Every row the walk emits is either a stopping point, which carries a
-#   remainder up, or an unsettled node the walk continued through, composition/passed_nodes.sqlc,
-#   which carries nothing and is corrected by composition/carried_eliminations.sqlc instead. A row in neither would be a
-#   subtree silently dropped from a sum, and the two figures would still look like quantities.
+# The walk prunes and the difference selects
+#   This counts the second. Every row the walk gives is either a stopping point, which carries a
+#   remainder up, or an unsettled layer the walk continued through, composition/passed_nodes.sqlc,
+#   which carries nothing and is corrected by composition/carried_eliminations.sqlc instead. A row
+#   in neither would be a branch quietly dropped from a sum, and the two figures would still look
+#   like quantities.
 #
-# A stopping point with no figure is dropped, and only a lift makes that legal
-#   A node whose demand or nameplate is not stated (`unmeasured`, `notApplicable`, or `derived` with
-#   nothing to derive it) is a stopping point with no remainder to difference, so
-#   composition/settled_remainders.sqlc has no row for it: it is dropped from the pivot. That is
-#   correct only because the remainder above it is not owed, which composition/suspended_remainders.sqlc
-#   says of every walk that reaches such a node. So the third class is counted, and each of its rows
-#   must sit under a lifted remainder; one that does not is the silent drop this law exists to catch,
-#   and the pivot above it runs short with nothing else failing.
+# A stopping point with no figure is dropped, and only a suspension makes that right
+#   A layer whose demand or nameplate is not stated (`unmeasured`, `notApplicable`, or `derived`
+#   with nothing to work it out from) is a stopping point with no remainder to subtract, so
+#   composition/settled_remainders.sqlc has no row for it: it is left out of the remainder worked
+#   out from the parts. That is right only because the remainder above it is not owed, which
+#   composition/suspended_remainders.sqlc says of every walk that reaches such a layer. So the third
+#   group is counted, and each of its rows must sit under a suspended remainder; one that does not
+#   is the quiet drop this law is there to catch, and the remainder above it would run short with
+#   nothing else failing.
 #
 # Probe
 #   examples/probes runs it as `settled_remainders`: file a part's demand `derived` with no fusion
-#   behind it, so a walk stops on it with no figure, and remove the lift that answers that stop;
-#   the law must fail naming the remainder above it.
--- composition/remainder_frontier.sqlc partitioned into composition/settled_remainders.sqlc, composition/passed_nodes.sqlc and the stops layers/differenced_remainder.sqlc has no row for,
+#   behind it, so a walk stops on it with no figure, and remove the suspension that answers that
+#   stop; the law must fail naming the remainder above it.
+-- composition/remainder_frontier.sqlc split into composition/settled_remainders.sqlc,
+-- composition/passed_nodes.sqlc and the stops layers/differenced_remainder.sqlc has no row for,
 -- the figureless stops held to composition/suspended_remainders.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -53,7 +57,7 @@ LEFT JOIN (
     )
     SELECT 'composition/settled_remainders' AS subject,
            x.total = x.kept + x.removed + x.figureless AND x.unlifted IS NULL AS holds,
-           format('%s frontier rows = %s settled + %s walked through + %s stopped with no figure%s',
+           format('%s frontier rows: %s settled, %s walked through, %s stopped with no figure%s',
                   x.total, x.kept, x.removed, x.figureless,
                   CASE WHEN x.unlifted IS NOT NULL
                        THEN format('; owed although a node it reaches has none: %s', x.unlifted) END)

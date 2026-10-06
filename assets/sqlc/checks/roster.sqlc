@@ -1,50 +1,48 @@
-# The rules this repository claims to enforce. One row per rule: a slug, what one examined row
-# of it is, and the sentence the schema states it in.
+# The rules this repository claims to enforce. One row per rule: a slug, what one examined row of
+# it is, and the sentence the schema states it in.
 #
 # Why `subject` is declared
-#   The contract's columns name a thing many rules do not examine. `checks/all.sqlc` returns
-#   `(rule, filing, layer, violates, detail)` and its header reads *which layer of which filing
-#   it is*, which is false wherever the examined item is finer than a layer: a part, a slack or a
-#   claim. The identity of that item then survives only inside the prose `detail`.
-#   `examples/soundness/main.rs` §4 prints the tally per subject on every run.
+#   The columns every check returns name a thing many rules do not examine. `checks/all.sqlc`
+#   returns `(rule, filing, layer, violates, detail)` and says which layer of which filing an item
+#   is, which does not hold wherever the item examined is finer than a layer: a part, a slack or a
+#   claim. That item's identity then survives only inside the `detail` sentence.
+#   `examples/soundness` prints the tally per subject on every run.
 #
-# A claim-grained rule still reports the claim's own layer
-#   Returning the claim's address in that column instead, `pm:nameplate/pm:amount claim 7`,
-#   names no filed layer at all, and the multiplicity law here cannot see it: it asks for one row
-#   per `(filing, layer)`, and a value unique per row satisfies that by construction. What makes
-#   the column wrong is exactly what makes that guard pass. So the address belongs in `detail`,
-#   where a finer subject's identity belongs, and `checks/grain.sqlc`'s `unresolvable` arm asks
-#   whether the key resolves rather than whether it is unique.
+# A rule about claims still reports the claim's own layer
+#   Putting the claim's address in that column instead, `pm:nameplate/pm:amount claim 7`, names no
+#   filed layer at all, and the count of rows per key cannot see it: it asks for one row per
+#   `(filing, layer)`, and a value unique per row passes that automatically. What makes the column
+#   wrong is exactly what makes that check pass. So the address belongs in `detail`, and
+#   `checks/grain.sqlc`'s `unresolvable` count asks whether the key resolves rather than whether
+#   it is unique.
 #
-# The coverage number has a unit
-#   It owes printing. *examined 20* means twenty parts for one rule and twenty layers for
-#   another, and a `< 3 is thin` threshold across both grades two different things alike. On
-#   this corpus no rule's verdict changes when counted at layer grain instead, so the harm is
-#   latent rather than live, which is a reason to declare the unit, not a reason to leave it
-#   implicit.
+# The coverage figure has a unit
+#   It owes printing. Twenty examined means twenty parts for one rule and twenty layers for
+#   another, and a threshold below which a rule counts as thin grades two different things alike.
+#   On the corpus no rule's verdict changes when counted per layer instead, so the harm is not
+#   live yet, which is a reason to declare the unit rather than leave it implied.
 #
-# It buys a law
-#   A rule declaring `layer` must have exactly one row per `(filing, layer)`. A layer-grained
-#   rule that starts emitting two rows per layer has changed what it examines, and nothing else
-#   here would notice. The converse is not assertable: a part-grained rule may legitimately see
-#   one part per layer in a given corpus.
+# It gives a law
+#   A rule declaring `layer` must have exactly one row per `(filing, layer)`. A rule about layers
+#   that starts giving two rows per layer has changed what it examines, and nothing else here would
+#   notice. The other direction cannot be asserted: a rule about parts may rightly see one part per
+#   layer in a given corpus.
 #
 # The one place a rule's name is written
-#   Every check joins this roster to learn its own name. That is not tidiness: it is what makes a
-#   rule able to report that it examined nothing. A check that simply filters its population
-#   disappears from a `GROUP BY` when the population is empty, so the single most important
-#   verdict this file can return, vacuous, is exactly the one a grouping cannot produce. Joining
-#   the roster first means the row exists before the population does.
+#   Every check joins this roster to learn its own name, which is what lets a rule report that it
+#   examined nothing. A check that only filters its population disappears from a `GROUP BY` when
+#   the population is empty, so the most important verdict it can return, that it examined
+#   nothing, is exactly the one a grouping cannot produce. Joining the roster first means the row
+#   exists before the population does.
 #
-# A bound with nothing to bound passes loudest
-#   An empty violations table is the good outcome, and it is also what a checker that examines
-#   nothing returns. The two are indistinguishable from the outside, and this relation is what
-#   separates them.
+# A rule with nothing to examine passes loudest
+#   An empty violations table is the good outcome, and it is also what a check that examines
+#   nothing returns. From outside the two look the same, and this relation is what separates them.
 #
 # Both directions are checked
 #   A row here with no check behind it is a claim with nothing under it, and a check with no row
-#   here is a rule nobody declared. Both directions are anti-joined in reports/integrity.sqlc,
-#   which is empty when the two agree.
+#   here is a rule nobody declared. reports/integrity.sqlc checks both directions and is empty when
+#   the two agree.
 -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
   ('fit_disagrees', 'layer', 'sign agrees with the range comparison'),
@@ -59,7 +57,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),

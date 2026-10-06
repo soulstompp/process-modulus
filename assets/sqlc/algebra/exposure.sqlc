@@ -1,26 +1,28 @@
-# Every remainder's exposure, recomputed. One row per layer in layers/remainder.sqlc: whether
-# `exposure` is the largest demand against the smallest supply, floored at zero.
+# Every remainder's exposure, worked out again. One row per layer in layers/remainder.sqlc: whether
+# `exposure` is the largest demand against the smallest supply, never below zero.
 #
 # What it asserts
-#   - where `r` is not pivoted, `exposure = greatest(d_high - n_low, 0)`, from the two totals in
-#     layers/demand.sqlc and layers/nameplate.sqlc;
-#   - where it is pivoted, `exposure = greatest(-pivoted_low, 0)`, from
-#     composition/fused_remainders.sqlc, so the pivoted figure is the one in force;
-#   - `exposure = 0` exactly where `derived_fit` is `clearance`;
-#   - `exposure <= m_high`: nothing can go unserved beyond the largest `|r|` the claims admit.
-#   Proof: `src/proofs/README.md`, entry `exposure`.
+#   - where the remainder is taken from the totals, the exposure is the highest demand less the
+#     lowest nameplate, never below zero, from the two totals in layers/demand.sqlc and
+#     layers/nameplate.sqlc;
+#   - where the remainder is worked out from the parts, the exposure is how far its lowest value
+#     falls below zero, from composition/fused_remainders.sqlc, so that figure is the one in force;
+#   - the exposure is zero exactly where `derived_fit` is `clearance`;
+#   - the exposure is no more than `m_high`: nothing can go unserved beyond the largest magnitude
+#     the claims allow.
 #
 # Why it is a law of its own
-#   layers/remainder.sqlc writes `exposure` as `greatest(-r_low, 0)`, and
-#   layers/differenced_remainder.sqlc writes it as `greatest(d_high - n_low, 0)`. The first is the
-#   figure every rule reads; the second is the definition a filer can check by hand. This law is
-#   where the two are held equal, and where the pivoted reading is held to the pivot.
+#   layers/remainder.sqlc works out `exposure` from the lowest remainder, and
+#   layers/differenced_remainder.sqlc works it out from the highest demand and the lowest
+#   nameplate. The first is the figure every rule reads; the second is the definition a filer can
+#   check by hand. This law is where the two are held equal, and where the figure worked out from
+#   the parts is held to that.
 #
 # Probe
-#   examples/probes runs it as `exposure`.
-#   Write `exposure` as `greatest(x.d_high - x.n_low, 0)` in layers/remainder.sqlc. Every pivoted
-#   layer whose pivot moved the low bound must fail.
--- layers/remainder.sqlc against layers/demand.sqlc, layers/nameplate.sqlc and composition/fused_remainders.sqlc.
+#   examples/probes runs it as `exposure`. Write `exposure` as `greatest(x.d_high - x.n_low, 0)` in
+#   layers/remainder.sqlc. Every composed layer whose parts moved the lowest remainder must fail.
+-- layers/remainder.sqlc against layers/demand.sqlc, layers/nameplate.sqlc and
+-- composition/fused_remainders.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -31,10 +33,12 @@ LEFT JOIN (
                              ELSE greatest(d.d_high - n.n_low, 0) END
            AND (r.exposure = 0) = (r.derived_fit = 'clearance')
            AND r.exposure <= r.m_high AS holds,
-           format('exposure %s from %s; %s; |r| at most %s',
+           format('exposure %s from %s; %s; the remainder''s size at most %s',
                   r.exposure,
-                  CASE WHEN r.pivoted THEN format('the pivoted low %s', f.pivoted_low)
-                       ELSE format('d_high %s against n_low %s', d.d_high, n.n_low) END,
+                  CASE WHEN r.pivoted
+                       THEN format('the low worked out through the parts, %s', f.pivoted_low)
+                       ELSE format('the demand''s high %s against the nameplate''s low %s',
+                                   d.d_high, n.n_low) END,
                   r.derived_fit, r.m_high) AS detail
     FROM      (
         :compose(layers/remainder.sqlc)

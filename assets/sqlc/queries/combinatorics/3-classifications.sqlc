@@ -1,26 +1,26 @@
--- §3  Every classification this tree makes, against the set of classes it declares.
+-- §3  Every classification the queries make, against the classes it declares.
 # One row per (relation, class): the relation that classifies, the type its classes belong to,
-# what one counted row IS, the class, how many landed in it, and the standing somebody declared
-# for it. Every member of every declared set has a row, including the members nothing landed in.
+# what one counted row is, the class, how many landed in it, and the standing somebody declared
+# for it. Every class of every declared type has a row, including the classes nothing landed in.
 #
-# The census moved and the reading stayed
-#   The eight arms that drive each enum's members from `enum_range` are
-#   `epistemics/class_cells.sqlc` now, because a law and two reports wanted them too and a fold
-#   written twice is one map with two unnamed copies. What is left here is the reading: the same
-#   rows, in the order each type declares its members, which is the `CASE` precedence of the
-#   relation that assigns them.
+# The reading of the census
+#   The arms that drive each type's classes from `enum_range` are in `epistemics/class_cells.sqlc`,
+#   which other relations read too, so they are written once. What is here is the reading: the
+#   same rows, in the order each type declares its classes, which is the order of the `CASE` in
+#   the relation that assigns them.
 #
-# `subject` is why two numbers in this column are not comparable
-#   The eight relations count in six units, so `balls` compares down a relation's own arm and
-#   nowhere else: 303 computations and 32 rules are not 335 of anything.
-#   `epistemics/class_sets.sqlc` declares the unit and §3b shows what happens to it under a scope.
+# `subject` is why two numbers in this column do not compare
+#   The relations count different things, so `balls` compares down one relation's own rows and
+#   nowhere else: a count of computations and a count of rules add up to nothing.
+#   `epistemics/class_sets.sqlc` declares what each relation counts, and §3b shows what happens to
+#   it under a scope.
 #
-# An empty class is a referral, and it now has an address
-#   The classes nothing lands in are still printed, and this program still asserts nothing about
-#   them. `algebra/class_domain.sqlc` is what asserts: every class of every declared codomain has
-#   exactly one declared standing, and that standing agrees with the count in both directions. So
-#   a zero a reader sees below stands beside the reason it is a zero, and a zero with no reason
-#   fails the build rather than being observed here.
+# An empty class is a referral, and it has an address
+#   The classes nothing lands in are printed, and this program asserts nothing about them.
+#   `algebra/class_domain.sqlc` is what asserts: every class of every declared type has exactly
+#   one declared standing, and that standing agrees with the count in both directions. So a zero
+#   a reader sees below stands beside the reason it is a zero, and a zero with no reason fails
+#   that law rather than being merely observed here.
 -- epistemics/classes.sqlc beside its declared standings, in each type's declared order.
 SELECT c.relation AS "relation!", c.codomain AS "codomain!", c.class AS "class!",
        c.subject AS "subject?", c.balls AS "balls!",

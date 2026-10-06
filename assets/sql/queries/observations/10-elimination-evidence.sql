@@ -1,4 +1,4 @@
--- §10  What each filed elimination says it is BETWEEN, which is the evidence for the number.
+-- §10  What each filed elimination says it is between, which is the evidence for the number.
 -- eliminations/filed.sqlc with eliminations/between.sqlc folded per elimination.
 WITH eliminations_filed AS (
 -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
@@ -17,10 +17,9 @@ FROM pm.elimination_between b
 SELECT e.composition                              AS "composition!",
        e.composed_layer                           AS "composed_layer!",
        e.quantity::text                           AS "quantity!",
-       -- ⛔ THREE ARMS, NOT TWO. `pm:StatedEliminatedQuantity` admits a figure, a typed absence AND
-       -- a derivation, and reading only the first two returned NULL for the third against a column
-       -- declared NOT NULL. No document could reach it until `every-derived-elimination` filed one,
-       -- so the omission was invisible rather than harmless.
+       -- Three arms: `pm:StatedEliminatedQuantity` admits a figure, a typed absence or a
+       -- derivation, and the column is declared NOT NULL, so all three are read.
+       -- `every-derived-elimination` files the third.
        coalesce(e.mode::text,
                 '(' || e.absent || ')',
                 '(computed: ' || e.derivation || ')')  AS "size!",

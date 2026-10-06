@@ -1,14 +1,13 @@
-# Layers built into two composed layers, and the supply that would enter twice. One row per
-# shared part, with the magnitude the double count would be and the evidence each side attests to.
+# Layers built into two composed layers, and the supply that would enter twice. One row per shared
+# part, with the size the double count would be and the evidence each side attests to.
 #
-# Derived, not filed
-#   Nothing else here can say that. A filed `asrt:Elimination` corrects a composition somebody
-#   performed. This corrects one nobody has performed yet: two documents each built a layer from
-#   the same supply, and the arithmetic that would go wrong has not been done. Pivoting to the
-#   part incidence is what makes the magnitude reachable, because the overlap is a part and a part
-#   carries its own figures.
+# Worked out, not filed
+#   Nothing else here can say this. A filed `asrt:Elimination` corrects a composition somebody
+#   performed. This corrects one nobody has performed yet: two documents each built a layer from the
+#   same supply, and the arithmetic that would go wrong has not been done. Reading the parts is what
+#   makes the size reachable, because the overlap is a part, and a part carries its own figures.
 #
-# The evidence axis is carried, never pooled
+# The evidence is carried, never added together
 #   Two fixtures sharing a part is a stipulation about the schema; two corpus filings sharing one
 #   would be a finding about the world. Counting them together would make the second out of the
 #   first.

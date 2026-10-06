@@ -2,10 +2,9 @@
 # its nameplate, with the quantum that size means and the layer's demand where it states one. Half
 # a truck and half a licence do not exist, and this is the set where that is true.
 #
-# Not the complement of "continuous"
-#   A layer whose divisibility is a typed absence is in neither set: nobody said which it was. The
-#   three-valued reading is the whole reason `lumpy` is a nullable boolean rather than a NOT NULL
-#   one.
+# Not everything that is not "continuous"
+#   A layer whose divisibility is a typed blank is in neither set: nobody said which it was. That
+#   third reading is the whole reason `lumpy` is a nullable boolean rather than a NOT NULL one.
 #
 # Read from the nameplate, not from the remainder
 #   Whether supply arrives in whole units is a fact about the supply, so a lumpy layer that states

@@ -1,4 +1,5 @@
--- composition/parts.sqlc against layers/lumpy.sqlc, converted by asrt:factor and folded by gcd, over every part in composition/part_references.sqlc.
+-- composition/parts.sqlc against layers/lumpy.sqlc, converted by asrt:factor and folded by gcd at
+-- each point, over every part in composition/part_references.sqlc.
 WITH RECURSIVE
 composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
@@ -63,7 +64,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -140,7 +142,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -293,7 +296,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -388,8 +392,13 @@ base AS (
     SELECT p.composition, p.composed_layer,
            CASE WHEN p.factor_state = 'stated' THEN c.n_unit ELSE l.quantum_unit END AS quantum_unit,
            CASE WHEN p.factor_state IN ('omitted', 'stated')
+                THEN least(   l.quantum_low  * coalesce(p.factor_low, 1),
+                              l.quantum_low  * coalesce(p.factor_high, 1)) END   AS quantum_low,
+           CASE WHEN p.factor_state IN ('omitted', 'stated')
                 THEN l.quantum_mode * coalesce(p.factor_mode, 1) END             AS quantum_mode,
-           coalesce(p.factor_low <> p.factor_high, false)                         AS spread,
+           CASE WHEN p.factor_state IN ('omitted', 'stated')
+                THEN greatest(l.quantum_high * coalesce(p.factor_low, 1),
+                              l.quantum_high * coalesce(p.factor_high, 1)) END   AS quantum_high,
            p.factor_absent, p.factor_derivation
     FROM      (
         SELECT * FROM composition_parts
@@ -400,7 +409,7 @@ base AS (
     LEFT JOIN (
         SELECT * FROM layers_nameplate
     ) c ON c.filing = p.composition AND c.layer = p.composed_layer
-    WHERE l.quantum_mode > 0
+    WHERE l.quantum_low > 0
 ),
 every_part AS (
     SELECT p.composition, p.composed_layer, p.parts
@@ -414,7 +423,6 @@ shape AS (
            count(quantum_mode)                              AS sized,
            count(DISTINCT quantum_unit)                     AS units,
            min(quantum_unit)                                AS unit,
-           bool_or(spread)                                  AS spread,
            min(factor_absent)                               AS unsized,
            min(factor_derivation)                           AS unsized_by
     FROM base GROUP BY composition, composed_layer
@@ -426,19 +434,31 @@ ordered AS (
     WHERE b.quantum_mode IS NOT NULL
 ),
 fold AS (
-    SELECT composition, composed_layer, i, quantum_mode AS g FROM ordered WHERE i = 1
+    SELECT composition, composed_layer, i,
+           quantum_low AS g_low, quantum_mode AS g, quantum_high AS g_high
+    FROM ordered WHERE i = 1
   UNION ALL
-    SELECT o.composition, o.composed_layer, o.i, gcd(f.g, o.quantum_mode)
+    SELECT o.composition, o.composed_layer, o.i,
+           gcd(f.g_low, o.quantum_low),
+           gcd(f.g, o.quantum_mode),
+           gcd(f.g_high, o.quantum_high)
     FROM fold f
     JOIN ordered o ON o.composition    = f.composition
                   AND o.composed_layer = f.composed_layer
                   AND o.i              = f.i + 1
 )
-SELECT s.composition, s.composed_layer, e.parts, s.units, s.spread,
+SELECT s.composition, s.composed_layer, e.parts, s.units,
+       coalesce(s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1
+                AND (f.g_low <> f.g OR f.g_high <> f.g), false)
+           AS spread,
        CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN s.unit END
            AS unit,
+       CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g_low END
+           AS composed_quantum_low,
        CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g END
            AS composed_quantum,
+       CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g_high END
+           AS composed_quantum_high,
        CASE WHEN s.unsized IS NOT NULL THEN s.unsized
             WHEN s.unsized_by IS NULL AND s.units > 1 THEN 'notApplicable'::pm.absence_reason END
            AS absent,

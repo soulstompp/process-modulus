@@ -26,7 +26,8 @@ FROM pm.layer l
 WHERE l.remainder_absent IS NULL
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -60,7 +61,8 @@ JOIN pm.narrowing    n USING (filing, seq)
 JOIN pm.bound_origin b USING (filing, seq)
 ),
 epistemics_claim_derivations AS (
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch, at the claim's own position.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch,
+-- at the claim's own position.
 SELECT c.filing, c.seq, c.layer, c.owns, 'pm:claim/pm:boundOrigin' AS element,
        c.origin_derivation AS identity
 FROM (

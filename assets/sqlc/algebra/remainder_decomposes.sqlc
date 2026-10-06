@@ -1,20 +1,21 @@
-# Every lumpy remainder, rebuilt from its split. One row per layer in layers/decomposed.sqlc:
-# whether `m * q - residue` gives back `n - d` at all three crossed pairs.
+# Every lumpy remainder, rebuilt from its split into whole quanta and a residue. One row per layer
+# in layers/decomposed.sqlc: whether the whole quanta, times the quantum, less the residue, give
+# back the remainder at all three crossed pairs.
 #
 # What it asserts
-#   - `m_low * q - d_high_residue = r_low`, and the same at the mode and the high, against the `r`
-#     of layers/differenced_remainder.sqlc, which is computed without any floor;
-#   - every residue lies in `[0, q)`.
-#   Proof: `src/proofs/README.md`, entries `floors_cancel` and `congruence`.
+#   - at the lowest, the most likely and the highest value, the whole quanta times the quantum less
+#     the matching residue equal the remainder of layers/differenced_remainder.sqlc, which is
+#     worked out without rounding anything down;
+#   - every residue is at least zero and less than one quantum.
 #
-# Against the differenced `r`, not the one in force
+# Against the remainder from the totals, not the one in force
 #   The split is of the layer's own two totals. On a composed layer the remainder in force is the
-#   pivot over its parts, a different figure, and the split says nothing about it.
+#   one worked out from its parts, a different figure, and the split says nothing about it.
 #
 # Probe
-#   examples/probes runs it as `remainder_decomposes`.
-#   Form `m_low` from `floor(l.d_low / l.quantum_mode)` in layers/decomposed.sqlc. Every row whose
-#   demand crosses a tooth must fail.
+#   examples/probes runs it as `remainder_decomposes`. Form `m_low` from
+#   `floor(l.d_low / l.quantum_mode)` in layers/decomposed.sqlc. Every row whose demand crosses a
+#   whole quantum must fail.
 -- layers/decomposed.sqlc against layers/differenced_remainder.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -28,7 +29,7 @@ LEFT JOIN (
            AND x.d_low_residue  >= 0 AND x.d_low_residue  < x.q
            AND x.d_mode_residue >= 0 AND x.d_mode_residue < x.q
            AND x.d_high_residue >= 0 AND x.d_high_residue < x.q AS holds,
-           format('m [%s, %s, %s] quanta of %s, residues [%s, %s, %s], against r [%s, %s, %s]',
+           format('[%s, %s, %s] whole quanta of %s, residues [%s, %s, %s], remainder [%s, %s, %s]',
                   round(x.m_low, 6), round(x.m_mode, 6), round(x.m_high, 6), x.q,
                   x.d_high_residue, x.d_mode_residue, x.d_low_residue,
                   r.r_low, r.r_mode, r.r_high) AS detail

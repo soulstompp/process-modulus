@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/generation/README.md")]
 
@@ -95,7 +93,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("   {stem:<28} valid");
         } else {
             invalid += 1;
-            println!("   {stem:<28} ⛔ INVALID");
+            println!("   {stem:<28} invalid");
             for line in String::from_utf8_lossy(&out.stderr).lines().take(6) {
                 println!("      {line}");
             }
@@ -163,7 +161,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if !violations.is_empty() {
         println!("\n   the violations:");
         for v in &violations {
-            println!("     ⛔ {v}");
+            println!("     {v}");
         }
     }
 
@@ -183,8 +181,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         failed += 1;
     }
 
-    // ⛔ THE NEGATIVE CONTROL, AND WITHOUT IT THE LINE ABOVE PROVES NOTHING. A filing so empty
-    //   that no rule had a population to look at would report zero violations and zero work.
+    // The negative control, without which the line above shows nothing. A filing so empty that no
+    // rule had a population to look at would report zero violations and zero work.
     let all_examined = generated.iter().all(|(_, rules, ..)| *rules > 0);
     println!(
         "   and every one of them gave the rules work to do  {}",
@@ -194,9 +192,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         failed += 1;
     }
 
-    // ⭐⭐⭐ THE LINE THIS EXAMPLE EXISTS FOR. The blind filing reports strictly less and must be
-    //    accused of nothing for it. A rule that fires here is firing because a filer lacked an
-    //    instrument, which is not a contradiction in their document.
+    // The line this example exists for. The stock-and-flow filing reports strictly less and must
+    // be accused of nothing for it. A rule that fired here would be firing because a filer lacked
+    // an instrument, which is not a contradiction in their document.
     let blind: i64 = generated
         .iter()
         .filter(|(name, ..)| name.ends_with("stock-and-flow"))
@@ -210,7 +208,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         failed += 1;
     }
 
-    // ⭐⭐ WHAT THE BENCH DOES NOT REACH, WHICH IS THE HONEST OTHER HALF OF A CLEAN RUN.
+    // What the bench does not reach, the other half of a clean run.
     if !unreached.is_empty() {
         println!("\n   {} rules some real document exercises and no generated one does:", unreached.len());
         for rule in &unreached {
@@ -228,5 +226,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn yes_no(b: bool) -> &'static str {
-    if b { "yes" } else { "⛔ no" }
+    if b { "yes" } else { "no" }
 }

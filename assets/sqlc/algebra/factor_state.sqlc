@@ -2,26 +2,27 @@
 # composition/part_references.sqlc holds, how many landed in each state, and how many carry a state
 # their columns contradict.
 #
-# Attribution, not a count per state
-#   The state is a `CASE` in a SELECT list, so every part keeps its row whatever the arms say, and a
-#   count of parts cannot see an arm go wrong. A count per state sees a part change states only
-#   where the totals happen to move. So each part is held to its own columns: `stated` exactly
+# Each part against its columns, not a count per state
+#   The state is a `CASE` in a SELECT list, so every part keeps its row whatever the branches say,
+#   and a count of parts cannot see a branch go wrong. A count per state sees a part change states
+#   only where the totals happen to move. So each part is held to its own columns: `stated` exactly
 #   where a figure is filed, `absent` where a reason is, `derivation` where an identity is, and
 #   `omitted` where none of the three is. A part with no state at all is counted with the rest.
 #
 # Why this needs a law of its own
 #   Every reader asking which kind of factor a part has asks this column, and none of them looks at
-#   the three columns again. An arm that called an absent factor a derivation would move all of them
-#   together and leave each looking consistent with the others.
+#   the three columns again. A branch that called an absent factor a derivation would move all of
+#   them together and leave each looking consistent with the others.
 #
-# The empty state is a finding, not a fault
+# An empty state is a finding, not a fault
 #   Which states the corpus fills is printed in the detail and, driven from the declared set, by
 #   queries/combinatorics/3-classifications.sqlc. A state no part files is a referral.
 #
 # Probe
-#   examples/probes runs it as `factor_state`: in the composed text the arm for a typed absence
+#   examples/probes runs it as `factor_state`: in the composed text the branch for a typed blank
 #   names the derivation state instead, and the law must fail.
--- composition/part_references.sqlc, each part's factor_state against the factor columns it carries.
+-- composition/part_references.sqlc, each part's factor_state against the factor columns it
+-- carries.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)

@@ -1,41 +1,40 @@
-//! ⭐⭐⭐ THE WRITE DIRECTION, WHICH NOTHING HERE HAD EVER RUN.
+//! The write direction: every document is read into the generated types, written back out, and
+//! read again.
 //!
-//! Every parse test in this repository reads a document into the generated types. Not one of
-//! them ever wrote one back out, and `examples/shared/simulation/filing.rs` builds its filings with
-//! `push_str` rather than with the crate, so the serializer that ships to `cargo add
-//! process-modulus` had never been executed here at all. The first person to call it was a
-//! reader from outside, and it silently dropped every child of the root it was given.
+//! The parse tests only read documents, and `examples/shared/simulation/filing.rs` builds its
+//! filings with `push_str` rather than with the crate, so without this file nothing here runs
+//! the serializer that ships to `cargo add process-modulus`. That serializer can silently drop
+//! every child of the root it is given.
 //!
-//! ⛔ THAT DEFECT IS NOT REACHABLE FROM THESE SCHEMAS AND THIS FILE IS STILL THE GATE FOR IT.
-//! It needs an `abstract` substitution-group head, and both schemas here declare none, so what
-//! this file guards is the law rather than today's instance of it: **what the generated types
-//! carry is what the document carries**. A future head, or a bump of `xsd-parser`, gets a
+//! The defect needs an `abstract` substitution-group head, and neither schema here declares one,
+//! so what this file guards is the law rather than one instance of it: **what the generated types
+//! carry is what the document carries**. A future head, or a new version of `xsd-parser`, gets a
 //! verdict from the build instead of from the next reader.
 //!
-//! ⭐⭐ WHY VALUE EQUALITY AND NOT BYTES, and why not validation either. The written document is
-//! shorter than the one read, because comments and indentation are not content, so bytes cannot
-//! be the law. Validation cannot be the law either, and this is the sharp part: a document with
-//! every optional child dropped STILL VALIDATES, since the roles the defect removes are exactly
-//! the ones the schema makes optional. Writing then reading back is the only place where what
-//! the types hold meets what the document holds.
+//! Value equality, not bytes, and not validation either. The written document is shorter than
+//! the one read, because comments and indentation are not content, so bytes cannot be the law.
+//! Validation cannot be the law either: a document with every optional child dropped still
+//! validates, since the roles the defect removes are exactly the ones the schema makes optional.
+//! Writing then reading back is the only place where what the types hold meets what the
+//! document holds.
 //!
-//! ⛔ AND THE CONVERSE, SO THIS FILE IS NOT READ AS MORE THAN IT IS: a value that survives the
-//! trip is not thereby a VALID document. Measured, on the one case the README already names:
-//! drop the `label` from an `Operation`'s flattened `Vec` and the crate serializes it without
-//! error into a document `xmllint` refuses, and that document round trips through here
-//! perfectly, because it is a value the types can hold and the schema cannot. Validity is the
-//! validator's job in both directions.
+//! The converse holds as well, so this file is not read as more than it is: a value that
+//! survives the trip is not thereby a valid document. Drop the `label` from an `Operation`'s
+//! flattened `Vec` and the crate serializes it without error into a document `xmllint` refuses,
+//! and that document round trips through here perfectly, because it is a value the types can
+//! hold and the schema cannot. Validity is the validator's job in both directions.
 //!
-//! ⚠️ WHAT MAKES THIS BITE IS THAT THE PARSER REFUSES WHAT IT CANNOT HOLD. Feed the generated
-//! deserializer an element no field matches and it stops with `Unexpected event: Start(..)`
-//! rather than skipping it. So a role that vanishes from the types cannot come back quietly:
-//! either the reparse refuses the name, or the value compares unequal.
+//! What makes this bite is that the parser refuses what it cannot hold. Fed an element no field
+//! matches, the generated deserializer stops with `Unexpected event: Start(..)` rather than
+//! skipping it. So a role that vanishes from the types cannot come back quietly: either the
+//! reparse refuses the name, or the value compares unequal.
 //!
-//! ⛔ PROVED ABLE TO FAIL, out of tree, because the mutation is a schema edit and this harness
-//! cannot regenerate itself. An `abstract` head over a role at depth 1 of the root gives an
-//! 80-byte document with the root and nothing else. Against it, `assert_eq!` on a value built
-//! per the schema's role list FAILS, and the same assertion on an empty value PASSES on the
-//! identical document. Both halves are why the vacuity guard below is not decoration.
+//! That the law can fail is shown outside the tree, because the mutation is a schema edit and
+//! this harness cannot regenerate itself. An `abstract` head over a role at depth 1 of the root
+//! gives an 80-byte document with the root and nothing else. Against it, `assert_eq!` on a value
+//! built from the schema's role list fails, and the same assertion on an empty value passes on
+//! the identical document. Both halves are why the guard against an empty run below is not
+//! decoration.
 
 use std::fmt::Debug;
 use std::fs;
@@ -109,8 +108,8 @@ fn every_document_survives_being_written() {
             let xml = fs::read_to_string(format!("{root_dir}/{what}"))
                 .unwrap_or_else(|e| panic!("{what}: {e}"));
 
-            // ⚠️ The document's OWN root, read as XML. A composition CONTAINS a
-            // `pm:processModulus`, so anything that merely looks for a name in the text
+            // The document's own root, read as XML. A composition contains a
+            // `pm:processModulus`, so anything that only looks for a name in the text
             // picks the embedded one and reads the wrong type.
             let root = first_element(&xml);
 
@@ -126,9 +125,9 @@ fn every_document_survives_being_written() {
         }
     }
 
-    // ⛔ The guard, and it is the whole reason the assertion above means anything. An empty
-    // value round trips perfectly through a serializer that emits nothing, so a run over no
-    // documents, or over documents reaching only one root, passes while checking nothing.
+    // The guard, and the reason the assertion above means anything. An empty value round
+    // trips perfectly through a serializer that emits nothing, so a run over no documents, or
+    // over documents reaching only one root, passes while checking nothing.
     let tripped = roots.len();
     roots.sort_unstable();
     roots.dedup();
@@ -142,28 +141,28 @@ fn every_document_survives_being_written() {
     assert!(
         tripped >= 20,
         "only {tripped} documents were written back; this law is about content surviving, and \
-         it proves that of exactly as much content as it was handed"
+         it shows that of exactly as much content as it was handed"
     );
 }
 
-/// ⛔⛔ THE WITNESS, KEPT, because a probe that ran once and was reverted is a claim in prose.
-/// The perturbation that proves a law able to fail usually lives in a scratchpad and in one
-/// person's memory, where nothing ever re-runs it, and a law whose witness has gone is
-/// indistinguishable from a law that examines nothing. So the law above ships with the
-/// mutation that makes it fail, and `cargo test` is what re-runs it.
+/// The witness, kept, because a mutation that ran once and was reverted is a claim in prose.
+/// The perturbation that shows a law able to fail usually lives in a scratchpad and in one
+/// person's memory, where nothing re-runs it, and a law whose witness has gone looks the same
+/// as a law that examines nothing. So the law above ships with the mutation that makes it
+/// fail, and `cargo test` re-runs it.
 ///
 /// The mutation is the defect in miniature: a serializer that declines to emit an optional child.
 /// Rather than regenerate from a mutated schema, which this harness cannot do, the child is
 /// dropped from the written document before it is read back, which is the same event seen from
 /// the same side.
 ///
-/// ⭐ WHAT IT PROVES IS NOT THAT SOMETHING FAILED. The stripped document is still well formed and
+/// What it shows is not that something failed. The stripped document is still well formed and
 /// still parses, so neither the reader nor a validator objects. Only the value comparison does,
-/// which is the entire argument for writing this law as an equality.
+/// which is why this law is written as an equality.
 #[test]
 fn a_dropped_child_is_caught_only_by_the_comparison() {
-    // ⚠️ Not `refutation.xml`, which files no operations at all. The guard below caught that
-    // choice, which is the guard doing its job on the witness rather than on the law.
+    // Not `refutation.xml`, which files no operations at all: the guard below refuses a
+    // witness that perturbs nothing, which is the guard doing its job on the witness.
     let path = format!("{}/assets/corpus/enterprise-contract.xml", env!("CARGO_MANIFEST_DIR"));
     let xml = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"));
     let value = ProcessModulusElementType::deserialize(&mut SliceReader::new(&xml))
@@ -184,7 +183,7 @@ fn a_dropped_child_is_caught_only_by_the_comparison() {
     );
 
     let back = ProcessModulusElementType::deserialize(&mut SliceReader::new(&stripped))
-        .expect("⛔ the mutated document STILL PARSES, which is the point of this test");
+        .expect("the mutated document still parses, which is the point of this test");
     assert_ne!(
         back, value,
         "a document missing {dropped} of its operations compared equal to one holding them, so \

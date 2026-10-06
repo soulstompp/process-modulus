@@ -2,7 +2,7 @@
 # corpus does not contain: a `derived` sign, a partial elimination, an asserted independence.
 #
 # Run it alone to see what the corpus is missing
-#   Every row here is a state somebody had to invent because no real filing produced it, so this
+#   Every row here is a state somebody had to make up because no real filing produced it, so this
 #   relation is a readable list of the model's untested edges.
 -- from pm.filing where evidence = 'stipulation'; see assets/fixtures/README.md.
 SELECT f.name AS filing, f.kind, f.evidence

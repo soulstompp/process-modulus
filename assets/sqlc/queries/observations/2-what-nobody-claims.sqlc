@@ -3,11 +3,11 @@
 #
 # Almost nobody claims any standing
 #   Three states, not two: a claim carrying provenance, a claim whose provenance was asked for and
-#   refused, and a claim with no provenance element at all. Folding the last two would count a
+#   refused, and a claim with no provenance element at all. Merging the last two would count a
 #   silence as a refusal.
 #
 # This section is epistemics/standing.sqlc's reader
-#   A relation nothing reads is a relation whose own header quotes a figure nobody recounts.
+#   A relation nothing reads is a relation whose own header quotes a figure nobody counts again.
 -- epistemics/standing.sqlc, folded to its three verdicts.
 SELECT s.what_the_claim_says AS "says!", count(*) AS "claims!"
 FROM (

@@ -1,15 +1,15 @@
-# Where each rule that reads the fit stands in every cell of its axis. One row per (rule, cell):
-# the rule's slug, the fit (NULL where the layer has none on that axis), the standing, and the
-# argument for a cell nothing examines.
+# Where each rule that reads the fit stands in every cell of its side. One row per (rule, cell): the
+# rule's slug, the fit (NULL where the layer has none on that side), the standing, and the reason
+# for a cell nothing examines.
 #
 # Every cell is declared
 #   The cells are the three fits and the case where there is no fit to read: no filed sign, or no
-#   demand and nameplate to derive one from. Each rule on checks/fit_axes.sqlc with an axis owes
+#   demand and nameplate to work one out from. Each rule on checks/fit_axes.sqlc with a side owes
 #   all four, and each is one of three things:
 #     exercised  a loaded document reaches the cell and the rule examines it.
 #     outside    the rule's own population excludes the cell. The reason names where.
-#     open       the cell is in the domain and nothing loaded reaches it. The reason says what a
-#                document there would be.
+#     open       the cell is within the rule's reach and nothing loaded reaches it. The reason
+#                says what a document there would be.
 #
 # Both directions are held
 #   algebra/fit_domain.sqlc fails when an exercised cell examines nothing and when an outside or
@@ -21,8 +21,8 @@
 #   It is where a witness or a fixture would add evidence the corpus cannot. The reasons say which
 #   document is missing, not that anything is wrong with the rule.
 #
-# The filed axis reads the sign, the derived axis the figures
-#   A cell is read on the rule's own axis from checks/fit_axes.sqlc, so `outside` is a statement
+# The filed side reads the sign, the derived side the figures
+#   A cell is read on the rule's own side from checks/fit_axes.sqlc, so `outside` is a statement
 #   about the rule's population and never about checks/fit_disagrees.sqlc: a filed clearance whose
 #   figures give an interference is still in the clearance cell of a filed-sign rule.
 -- the declared standing of each rule on checks/fit_axes.sqlc in each cell of its axis.

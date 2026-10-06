@@ -1,10 +1,10 @@
--- §1  Every law this tree claims, and whether it holds.
-# One row per (law, subject). The cardinalities or figures that decide each law are in `detail`, so a reader
-# can see the arithmetic rather than take the boolean on trust.
+-- §1  Every law the queries claim, and whether it holds.
+# One row per (law, subject). The counts or figures that decide each law are in `detail`, so a
+# reader can see the arithmetic rather than take the boolean on trust.
 #
 # A law with no subjects reports `VACUOUS`
-#   Rather than vanishing, which is why every law joins algebra/roster.sqlc before its
-#   population, the same reason checks/ does.
+#   Rather than vanishing, which is why every law joins algebra/roster.sqlc before its population,
+#   for the same reason checks/ does.
 -- algebra/all.sqlc, as the example reads it.
 SELECT z.law                            AS "law!",
        f.law                            AS "formula!",

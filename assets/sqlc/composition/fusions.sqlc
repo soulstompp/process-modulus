@@ -1,26 +1,26 @@
-# The layers that are built from parts. One row per `asrt:Fusion`, keyed (filing, layer): the set
-# of layers for which a composition rule can be owed at all, and what the composer observed that
-# makes the parts one layer.
+# The layers that are built from parts. One row per `asrt:Fusion`, keyed (filing, layer): the set of
+# layers a composition rule can be owed on at all, and what the composer observed that makes the
+# parts one layer.
 #
-# Read from the fusion, not reassembled from its parts
+# Read from the fusion, not put back together from its parts
 #   A fusion names at least one part, so the parts' distinct composed layers are this set too; that
-#   is the XSD's `minOccurs` and algebra/fusions_have_parts.sqlc holds it. The fusion is where
+#   is the XSD's `minOccurs`, and algebra/fusions_have_parts.sqlc holds it. The fusion is where
 #   `observed` lives, which no part carries.
 #
-# The difference is the atoms
-#   Run this against layers/remainder.sqlc and the difference is the atoms: layers somebody
-#   measured directly rather than assembled. Every fusion arithmetic in this repository ranges
-#   over this relation and stops at that boundary.
+# What is not here was measured directly
+#   Set this against layers/remainder.sqlc and the layers missing from it are the ones somebody
+#   measured directly rather than assembled. Every fusion calculation in this repository runs over
+#   this relation and stops at that boundary.
 #
-# Its complement within a descent is a leaf
+# A reached layer missing from it is at the bottom
 #   That is how composition/leaves.sqlc is defined: a reached layer with no row here is where a
-#   sum's walk bottoms out. Written as an anti-join rather than a `NOT EXISTS`, because "the layers
-#   that are fusions" is the object and "the layers that are not" is what falls out.
+#   sum's walk bottoms out. It is an anti-join rather than a `NOT EXISTS`, because "the layers that
+#   are fusions" is the relation worth naming and "the layers that are not" follows from it.
 #
 # A remainder's walk stops elsewhere
 #   A remainder's walk bottoms out earlier, and this relation does not name that boundary;
-#   composition/unsettled.sqlc does. A row here is a fusion whatever quantity is being folded;
-#   whether a descent should stop on it depends on the quantity.
+#   composition/unsettled.sqlc does. A row here is a fusion whatever quantity is being added up;
+#   whether a walk should stop on it depends on the quantity.
 -- asrt:Fusion: the composed layer it names, and asrt:observed.
 SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f

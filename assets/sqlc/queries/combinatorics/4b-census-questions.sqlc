@@ -4,7 +4,7 @@
 # rows count toward no column. The program takes the difference in Rust, against §4's roster.
 #
 # What it cannot see
-#   Only questions that filed something appear, because a relation derived from rows cannot list an
+#   Only questions that filed something appear, because a relation built from rows cannot list an
 #   arm that produced none. §4 covers that half from the roster's side.
 -- epistemics/absences.sqlc, its questions.
 SELECT DISTINCT a.question AS "question!"

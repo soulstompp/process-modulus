@@ -1,4 +1,4 @@
--- asrt:Fusion/asrt:Part folded onto its fusion: the fibre size, and the block dimension it fixes.
+-- asrt:Fusion/asrt:Part counted per fusion: its parts, and the offsets that count fixes.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,

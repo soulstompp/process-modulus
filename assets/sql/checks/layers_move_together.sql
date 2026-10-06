@@ -1,4 +1,5 @@
--- composition/descent.sqlc intersected with its converse; conformance rule "layers that always move together are one layer".
+-- composition/descent.sqlc against itself reversed; conformance rule "layers that always move
+-- together are one layer".
 WITH checks_roster AS (
 -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
@@ -14,7 +15,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -75,7 +76,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -103,7 +104,8 @@ SELECT root_filing, root_layer, filing, layer, depth, path,
 FROM walk
 ),
 rank_co_moving_layers AS (
--- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+-- composition/descent.sqlc matched against itself the other way round;
+-- the groups of layers that reach each other.
 SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
        min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
        count(*) OVER w                                                    AS members
@@ -130,8 +132,10 @@ LEFT JOIN (
            CASE WHEN c.filing IS NULL
                 THEN format('`%s` holds its remainder independently', f.layer)
                 WHEN c.partner IS NULL
-                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
-                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                THEN format('`%s` is composed from itself, so its figure depends on its own value '
+                            'and there is no order to work it out in', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here are one layer: the repair '
+                            'is to merge them, not to break a part',
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (

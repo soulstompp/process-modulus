@@ -1,4 +1,4 @@
-//! ⭐⭐⭐ EVERY STATE A DOCUMENT CAN BE IN, AT EVERY PLACE THE GRAMMAR LETS IT BE, WITH ONE VERDICT.
+//! Every state a document can be in, at every place the grammar lets it be, with one verdict.
 //!
 //! A document is in one state at every element it reaches: which arm of a choice it took (a value,
 //! an absence, a derivation), which member of an enumeration it named, the reason it gave, the
@@ -6,8 +6,8 @@
 //! universe of those states is generated from both schemas, never listed: every element path from
 //! every root, cut where a type repeats, because the grammar is recursive (an absence carries a
 //! provenance whose standing may itself be absent). A path is its own key. Keying by anything
-//! shorter merges places that mean different things, and every gap this file has ever had was one
-//! such merge, or a hand list that missed a place.
+//! shorter merges places that mean different things, and such a merge, or a hand list that misses
+//! a place, is how a gap opens.
 //!
 //! Every state gets exactly one verdict:
 //!
@@ -29,10 +29,9 @@ use std::fs;
 
 /// Every document in both directories, with the local name of its root element.
 ///
-/// ⛔ Read from the directories, never listed. A hand list here once held sixteen of
-/// twenty-three documents: `contrato-empresarial`, four composition fixtures and both documents
-/// rooted at `dependence` and `run` were never walked, so every state they file was checked by
-/// nothing, and a document added later would have been unwalked the same way.
+/// Read from the directories, never listed. A hand list leaves out whatever nobody remembered to
+/// add, and every state such a document files is then checked by nothing, as is every document
+/// added later.
 fn documents() -> Vec<(String, String)> {
     let mut docs = Vec::new();
     for dir in ["corpus", "fixtures"] {
@@ -72,7 +71,7 @@ fn read(rel: &str) -> String {
     fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"))
 }
 
-/// The two schemas, read as text. ⚠️ Not `read()` above: that one is rooted at `assets/`.
+/// The two schemas, read as text. Not `read()` above: that one is rooted at `assets/`.
 fn schema(name: &str) -> String {
     let path = format!("{}/schema/{name}", env!("CARGO_MANIFEST_DIR"));
     fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path}: {e}"))
@@ -104,7 +103,7 @@ fn element_type(body: &str, element: &str) -> String {
 }
 
 // ---------------------------------------------------------------------------
-// ⭐⭐⭐ A DERIVATION IS THE WRAPPER'S THIRD ARM, AND ITS CELLS ARE THE IDENTITY CATALOGUE'S.
+// A derivation is the wrapper's third arm, and its cells are the identity catalogue's.
 //
 // A figure filed as a derivation names the identity that computes it, and a stated claim may say
 // the same of its edge or of what would narrow it. So a derivation cell is (identity, position,
@@ -160,7 +159,7 @@ fn roster() -> Vec<Cell> {
             }
         })
         .collect();
-    assert!(!cells.is_empty(), "{path}: no rows read, so every comparison below proves nothing");
+    assert!(!cells.is_empty(), "{path}: no rows read, so every comparison below shows nothing");
     cells
 }
 
@@ -272,7 +271,7 @@ fn admitted_derivations() -> BTreeSet<(String, String, String)> {
         }
     }
 
-    assert!(!claim_arms.is_empty(), "no claim wrapper has a derivation arm, so the arms below prove nothing");
+    assert!(!claim_arms.is_empty(), "no claim wrapper has a derivation arm, so the arms below show nothing");
     for (element, ids) in &claim_arms {
         let is_edge = element.ends_with(":boundOrigin");
         let admitted: BTreeSet<&str> = ids.iter().map(String::as_str).collect();
@@ -297,7 +296,7 @@ fn admitted_derivations() -> BTreeSet<(String, String, String)> {
     cells
 }
 
-/// ⭐⭐ THE ROSTER IS THE SCHEMAS' DERIVATION ARMS, BOTH WAYS. A cell the schemas admit with no
+/// The roster is the schemas' derivation arms, both ways. A cell the schemas admit with no
 /// roster row is a derivation nothing here knows how to handle; a roster row the schemas do not
 /// admit is a derivation nobody can file.
 #[test]
@@ -338,8 +337,8 @@ fn has_word(text: &str, word: &str) -> bool {
     })
 }
 
-/// Every statement under `assets/sqlc/` that `rel` composes, itself included: every `.sqlc` path its
-/// SQL lines name, whether in `:compose`, in `:union` or as a slot's filling, followed down.
+/// Every statement under `assets/sqlc/` that `rel` composes, itself included: every `.sqlc` path
+/// its SQL lines name, whether in `:compose`, in `:union` or as a slot's filling, followed down.
 fn closure(rel: &str) -> BTreeSet<String> {
     let mut seen = BTreeSet::new();
     let mut todo = vec![format!("{rel}.sqlc")];
@@ -361,7 +360,7 @@ fn closure(rel: &str) -> BTreeSet<String> {
 }
 
 // ---------------------------------------------------------------------------
-// ⭐⭐⭐ THE UNIVERSE, GENERATED: EVERY STATE A DOCUMENT CAN BE IN, AT EVERY PATH THE GRAMMAR ALLOWS.
+// The universe, generated: every state a document can be in, at every path the grammar allows.
 //
 // A document is in one state at every element the grammar lets it reach: which arm of a choice it
 // took (the value arm included), which member of an enumeration it named, that it omitted an
@@ -753,11 +752,12 @@ fn every_document_path_is_one_the_grammar_reaches() {
 }
 
 // ---------------------------------------------------------------------------
-// ⭐⭐⭐ THE VERDICTS. A declaration is a path suffix and a state; the longest suffix that matches a
-// state gives its verdict, and at equal length a named state beats `*`. ⛔ `*` covers a plain value
-// and an omission and never a member of an enumeration: a member added to the schema is a new state,
-// and it gets a verdict of its own or the build fails. A short suffix speaks for a shared type wherever it sits (`pm:claim/pm:low` for every
-// claim); a longer one is the exception a place makes (`pm:demand/pm:amount/pm:absent/pm:reason`).
+// The verdicts. A declaration is a path suffix and a state; the longest suffix that matches a
+// state gives its verdict, and at equal length a named state beats `*`. `*` covers a plain value
+// and an omission and never a member of an enumeration: a member added to the schema is a new
+// state, and it gets a verdict of its own or the build fails. A short suffix speaks for a shared
+// type wherever it sits (`pm:claim/pm:low` for every claim); a longer one is the exception a
+// place makes (`pm:demand/pm:amount/pm:absent/pm:reason`).
 // ---------------------------------------------------------------------------
 
 #[derive(Clone, Copy, Debug)]
@@ -922,34 +922,34 @@ const DECLARED: &[(&str, &str, Verdict)] = &[
     ("asrt:between/asrt:regime", "*", Handled("eliminations/between", "elimination_between", "regime")),
     ("asrt:between/asrt:registration/pm:taxonomy", "*", Handled("eliminations/between", "elimination_between", "registration_taxonomy")),
     ("asrt:between/asrt:registration/pm:value", "*", Handled("eliminations/between", "elimination_between", "registration_value")),
-    // ---- ⛔ WHAT A REASON MEANS AT ONE PLACE: the absences the grammar admits and the place refuses ----
+    // ---- what a reason means at one place: absences the grammar admits and the place refuses ----
     ("pm:nameplate/pm:divisibility/pm:absent/pm:reason", "value:none", Incoherent(
-        "`continuous` IS the value that says there is no quantum, so `none` is a second spelling of a \
+        "`continuous` is the value that says there is no quantum, so `none` is a second spelling of a \
          member the choice already has. `StatedDivisibility`'s annotation makes this argument for \
          `notApplicable` and stops one short of it",
     )),
     ("pm:claim/pm:denominator/pm:absent/pm:reason", "value:none", Incoherent(
-        "⛔ \"somebody looked and there is no denominator\" is precisely what `notApplicable` says at \
+        "\"somebody looked and there is no denominator\" is precisely what `notApplicable` says at \
          this place. Two spellings of one state is the collapse the wrapper exists to prevent",
     )),
     ("pm:processModulus/pm:evidence/pm:absent/pm:reason", "value:none", Incoherent(
-        "⛔ \"somebody looked and there is nothing to report\" does not parse. A document that exists \
+        "\"somebody looked and there is nothing to report\" does not parse. A document that exists \
          was written by somebody who knew whether they were observing or stipulating, and unlike a \
          `notation` that knowledge is not external, there is no registry to be waiting on",
     )),
     ("pm:processModulus/pm:evidence/pm:absent/pm:reason", "value:notApplicable", Incoherent(
-        "⛔ there is no document the question fails to reach. Every document either reports something \
+        "there is no document the question fails to reach. Every document either reports something \
          somebody saw, or it does not, and a document claiming the question is malformed is claiming \
          to be outside the only distinction that decides whether it may be quoted",
     )),
     ("pm:processModulus/pm:notation/pm:absent/pm:reason", "value:notApplicable", Incoherent(
-        "⛔ a document nobody may reference cannot be composed into anything, and this model exists to \
-         be composed. `none` is the state for a document with no identifier; claiming the QUESTION is \
-         malformed claims the document is outside the population of things that can be cited, which \
-         is a stronger thing than not having a name",
+        "a document nobody may reference cannot be composed into anything, and this model exists \
+         to be composed. `none` is the state for a document with no identifier; claiming the \
+         question is malformed claims the document is outside the population of things that can \
+         be cited, which is a stronger thing than not having a name",
     )),
     ("pm:stack/pm:scope/pm:absent/pm:reason", "value:none", Incoherent(
-        "⭐ a stack has at least one layer, so \"there is no scope\" is not a state a document can be \
+        "a stack has at least one layer, so \"there is no scope\" is not a state a document can be \
          in. The three extents cover the axis and `none` would be a fourth spelling of `complete`",
     )),
     ("pm:stack/pm:scope/pm:absent/pm:reason", "value:notApplicable", Incoherent(
@@ -984,9 +984,9 @@ const DECLARED: &[(&str, &str, Verdict)] = &[
         "a coupling that was observed has a strength, known or not, and `unmeasured` says the second",
     )),
     ("pm:demand/pm:amount/pm:absent/pm:reason", "value:notApplicable", Incoherent(
-        "a layer is where `n - d` is held, so every layer has a demand to ask about. Zero demand is \
-         [0, 0, 0], and a layer whose remainder question is malformed says so once, at \
-         `StatedRemainder`",
+        "a layer is where the nameplate less the demand is held, so every layer has a demand to \
+         ask about. Zero demand is [0, 0, 0], and a layer whose remainder question is malformed \
+         says so once, at `StatedRemainder`",
     )),
     ("asrt:elimination/asrt:quantity/pm:absent/pm:reason", "value:notApplicable", Incoherent(
         "an entry exists because the composer found an overlap against this quantity; how much is \
@@ -994,8 +994,8 @@ const DECLARED: &[(&str, &str, Verdict)] = &[
          `notApplicable`, a one-part fusion",
     )),
     ("asrt:part/asrt:factor/pm:absent/pm:reason", "value:notApplicable", Incoherent(
-        "`Part` says an absent factor means ONE, exactly: a conversion that does not apply is the \
-         omitted element, and `notApplicable` would be a second door to it",
+        "`Part` says an absent factor means a factor of one, exactly: a conversion that does not \
+         apply is the omitted element, and `notApplicable` would be a second door to it",
     )),
     ("pm:remainder/pm:quantity/pm:absent/pm:reason", "value:notApplicable", Incoherent(
         "a remainder filed as a claim has a magnitude to ask about; a layer whose remainder question \
@@ -1121,7 +1121,7 @@ fn standings() -> (Universe, BTreeMap<(String, String), Standing>, Vec<(String, 
     (u, got, none)
 }
 
-/// ⭐⭐⭐ EVERY STATE HAS EXACTLY ONE VERDICT, AND EVERY DECLARATION GIVES ONE.
+/// Every state has exactly one verdict, and every declaration gives one.
 #[test]
 fn every_state_the_grammar_admits_has_one_verdict() {
     let (_, got, none) = standings();
@@ -1193,7 +1193,7 @@ fn every_state_the_grammar_admits_has_one_verdict() {
     println!("{} states: {tally:?}", got.len());
 }
 
-/// ⛔⛔ NO DOCUMENT FILES A STATE THE MODEL CALLS INCOHERENT.
+/// No document files a state the model calls incoherent.
 #[test]
 fn no_document_files_an_incoherent_state() {
     let (u, got, _) = standings();
@@ -1223,7 +1223,7 @@ fn no_document_files_an_incoherent_state() {
     println!("{filed_states} of {states} states are filed by some document");
 }
 
-/// ⭐⭐ EVERY HANDLED STATE IS READ BY THE RELATION NAMED FOR IT: the relation exists, and its
+/// Every handled state is read by the relation named for it: the relation exists, and its
 /// composition reaches a statement that reads the table and the column the state lands in.
 #[test]
 fn every_handler_reads_the_column_its_state_lands_in() {
@@ -1248,7 +1248,7 @@ fn every_handler_reads_the_column_its_state_lands_in() {
     }
 }
 
-/// ⛔ `not stored` IS A FACT ABOUT INGEST, SO INGEST IS WHAT IT IS CHECKED AGAINST: the insert into
+/// `not stored` is a fact about ingest, so ingest is what it is checked against: the insert into
 /// the holder's table reads no path ending at the element.
 #[test]
 fn what_is_declared_not_stored_is_not_stored() {

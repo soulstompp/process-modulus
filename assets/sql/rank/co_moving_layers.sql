@@ -1,4 +1,5 @@
--- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+-- composition/descent.sqlc matched against itself the other way round;
+-- the groups of layers that reach each other.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
@@ -33,7 +34,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts

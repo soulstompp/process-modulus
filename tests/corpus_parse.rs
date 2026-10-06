@@ -73,7 +73,7 @@ fn assert_layer_references_resolve(doc: &ProcessModulusElementType, what: &str) 
 /// a composition's stack is an ordinary filing that happens to be embedded. Leaving those out
 /// would let a corpus check read as coverage while exempting the newest documents, which is
 /// `no_example_is_exempt_from_the_namespace_gate`'s argument one layer down. A `party` on a
-/// `booked` holder inside `merge-group-composition.xml` is the kind of defect only this
+/// `booked` holder inside `merge-group-composition.xml` would be the kind of defect only this
 /// inclusion catches.
 fn corpus() -> Vec<(&'static str, ProcessModulusElementType)> {
     let filings = [
@@ -104,13 +104,13 @@ fn corpus() -> Vec<(&'static str, ProcessModulusElementType)> {
 
 /// The three `Holder` rules XSD 1.0 cannot reach, checked for every holder in every filing.
 ///
-/// ⭐⭐ `party`/`asOf` BELONG TO `counterparty` AND TO NOTHING ELSE, and the trap is a
-/// consolidation: a `booked` share in a group filing IS booked in some member's books, and
-/// naming which one looks exactly like what `party` is for. It is not — on a counterparty
-/// holder `party` names whose OTHER books carry the burden; on a booked holder it would name
-/// which of the filer's OWN units records it. Two relations, one field.
+/// `party` and `asOf` belong to `counterparty` and to nothing else, and the trap is a
+/// consolidation: a `booked` share in a group filing is booked in some member's books, and
+/// naming which one looks exactly like what `party` is for. It is not: on a counterparty
+/// holder `party` names whose other books carry the burden; on a booked holder it would name
+/// which of the filer's own units records it. Two relations, one field.
 ///
-/// ⭐ And the half that matters more: A `counterparty` HOLDER MUST NAME ITS PARTY. A burden
+/// And the half that matters more: a `counterparty` holder must name its party. A burden
 /// asserted to sit in another entity's books with no entity named is a guess wearing the one
 /// holder kind that promises an instrument.
 fn assert_holder_rules(doc: &ProcessModulusElementType, what: &str) {
@@ -180,9 +180,9 @@ fn party_and_as_of_belong_to_a_counterparty_and_to_nothing_else() {
         assert_holder_rules(doc, name);
     }
 
-    // ⚠️ S-15's TRAP, GUARDED. A per-holder rule over a corpus with no counterparty in it
-    // passes without running, and a profile counting rules exercised would score this as
-    // covered while nothing was checked.
+    // A per-holder rule over a corpus with no counterparty in it passes without running, and
+    // a profile counting rules exercised would score this as covered while nothing was
+    // checked.
     let counterparties = corpus
         .iter()
         .flat_map(|(_, d)| &d.stack.layer)
@@ -251,25 +251,23 @@ fn bounds(c: &impl Filed, what: &str) -> (f64, f64, f64) {
 
 /// The fourth-buffer argument, filed, and sharper than a shape assertion can carry it.
 ///
-/// ⭐ The magnitude was never the unmeasured thing. `|4 - [4.5, 5.2, 6.0]|` is
-/// `[0.5, 1.2, 2.0]` people and this document already determines it, so `quantity` is
-/// `derived`. What no instrument reaches is HOW MUCH OF IT THE TEAM ABSORBED, and that
-/// is the holder's `share`.
+/// The magnitude is not the unmeasured thing. A nameplate of 4 against a demand of
+/// [4.5, 5.2, 6.0] people already determines it, so `quantity` is `derived`. What no
+/// instrument reaches is how much of it the team absorbed, and that is the holder's `share`.
 ///
-/// ⛔ Filing the whole remainder as `unmeasured` understates the claim. It says nothing is
+/// Filing the whole remainder as `unmeasured` understates the claim. It says nothing is
 /// known, where in fact the size is known and the bearer is not, which is the more damaging
 /// of the two things to be able to say.
 ///
-/// ⭐⭐ AND THE BEARER IS TWO THINGS, WHICH A SHAPE ASSERTION HERE WOULD DENY.
-/// `let [one_holder] = &r.holder[..]` with the message "labour has one holder, and nobody
-/// has split it" makes the document's own `timeSlack` note unfileable. That note says work
-/// queues, waits and quietly ages out, and that the portion which ages out is `unrealised` and
-/// NOT `people`. With a single `people` holder the document would assert the team absorbed all
-/// of it and contradict itself in the same layer.
+/// And the bearer is two things, which a shape assertion here would deny. Asserting a single
+/// holder would make the document's own `timeSlack` note unfileable. That note says work
+/// queues, waits and quietly ages out, and that the portion which ages out is `unrealised`
+/// and not `people`. With a single `people` holder the document would assert the team
+/// absorbed all of it and contradict itself in the same layer.
 ///
-/// ⚠️ BOTH SHARES ARE STILL `unmeasured`, so nothing was invented to make an arithmetic
-/// check pass — per Holder, one unstated share suspends the sum rather than breaking it.
-/// What the split adds is the ADMISSION that the remainder divides. Which half grew is the
+/// Both shares are still `unmeasured`, so nothing is invented to make an arithmetic check
+/// pass: as `Holder` says, one unstated share suspends the sum rather than breaking it. What
+/// the split adds is the admission that the remainder divides. Which half grew is the
 /// question an instrument would have to answer.
 #[test]
 fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
@@ -330,13 +328,13 @@ fn the_labour_remainder_is_derived_and_splits_across_two_unmeasured_bearers() {
 
 /// Two holders on one remainder, which is the shape a single holder could not carry.
 ///
-/// ⛔ `Fit` names BOTH `customer` and `unrealised` for an unserved excess, because a
+/// `Fit` names both `customer` and `unrealised` for an unserved excess, because a
 /// customer who waited and one who never arrived are different people and only one of
 /// them is still yours. A single slot makes the sender pick one and discard the other, and
-/// the discarded half is frequently the one somebody wanted.
+/// the discarded half is often the one somebody wanted.
 ///
-/// ⭐ It also exercises the sum rule, which XSD 1.0 cannot express: the stated shares
-/// add up to `|nameplate - demand|`.
+/// It also exercises the sum rule, which XSD 1.0 cannot express: the stated shares add up
+/// to the remainder's magnitude.
 #[test]
 fn an_unserved_excess_splits_across_two_holders_that_sum_to_the_magnitude() {
     let doc = load("enterprise-contract.xml");
@@ -363,9 +361,9 @@ fn an_unserved_excess_splits_across_two_holders_that_sum_to_the_magnitude() {
     let (dl, dm, dh) = bounds(&l.demand.amount, "capability demand");
     let (nl, nm, nh) = bounds(&l.supply.nameplate.amount, "capability nameplate");
 
-    // ⚠️ Valid only because this fit is DETERMINATE: the whole demand range sits above
-    // the nameplate, so `n - d` never crosses zero and taking the magnitude is just a
-    // reflection. A straddling range has no single sign and this arithmetic would be
+    // Valid only because this fit is determinate: the whole demand range sits above the
+    // nameplate, so the remainder never crosses zero and taking its magnitude only flips
+    // its sign. A straddling range has no single sign, and this arithmetic would be
     // meaningless there. See the compute layer of refutation.xml, which straddles.
     assert!(
         dl > nh,
@@ -385,9 +383,9 @@ fn an_unserved_excess_splits_across_two_holders_that_sum_to_the_magnitude() {
 
 /// The framework a regime actually names, for the examples that state one.
 ///
-/// ⭐ Every example here names its framework. The wrapper exists for senders who
-/// cannot yet, which is S-1; a test that silently tolerated `absent` would stop
-/// checking the thing it is here to check.
+/// Every example here names its framework. The wrapper exists for senders who
+/// cannot yet, and a test that silently tolerated `absent` would stop checking the
+/// thing it is here to check.
 fn stated_framework(r: &pm::RegimeType) -> &pm::BorrowedTermType {
     match &r.framework {
         StatedBorrowedTermType::Term(t) => t,
@@ -406,10 +404,10 @@ fn a_continuous_supply_files_a_remainder_of_none() {
     let Some(q) = continuous(l) else {
         panic!("object storage is bought continuously in this example, and states so");
     };
-    // ⭐ THE ZERO PREMIUM IS THE COUNTER-EXAMPLE, AND IT IS A CLAIM. `Continuous` reads
-    // above 0 / at 0 / below 0, and the middle is a claim of zero rather than
-    // `absent/reason = none`. Spell it as an absence while the ends stay claims and the
-    // three-point scale stops being comparable as arithmetic.
+    // The zero premium is the counter-example, and it is a claim. `Continuity` reads
+    // above 0, at 0 or below 0, and the middle is a claim of zero rather than
+    // `absent/reason = none`. Spelled as an absence while the ends stay claims, the
+    // three-point scale would stop being comparable as arithmetic.
     let StatedClaimType::Claim(premium) = &q.premium else {
         panic!("the premium should be stated, and a zero premium is a claim of zero");
     };
@@ -422,9 +420,10 @@ fn a_continuous_supply_files_a_remainder_of_none() {
     let StatedRemainderType::Absent(r) = &l.remainder else {
         panic!("this layer states no nameplate, so it can carry no remainder");
     };
-    // ⛔ `notApplicable` AND NOT `none`. `r = n - d` has no `n` here, so the question is
-    // malformed rather than answered with nothing — and `none` is not spellable on a
-    // `StatedRemainder` anyway, because a remainder of zero is a filed clearance.
+    // `notApplicable` and not `none`. With no nameplate there is nothing to take the demand
+    // from, so the question is malformed rather than answered with nothing, and `none` is
+    // not spellable on a `StatedRemainder` anyway, because a remainder of zero is a filed
+    // clearance.
     assert_eq!(r.reason, ClaimAbsenceReasonType::NotApplicable);
 }
 
@@ -508,7 +507,7 @@ fn an_induction_lands_on_a_different_layer_than_the_draw() {
     }
 }
 
-/// ⭐ Two authorities describing ONE entity, and de-duplicating them would destroy a
+/// Two authorities describing one entity, and de-duplicating them would destroy a
 /// fact: the codes are not derivable from each other, so neither declaration says
 /// what the pair says.
 #[test]
@@ -528,7 +527,7 @@ fn one_entity_may_declare_two_regimes() {
     assert_eq!(
         authorities.len(),
         2,
-        "two regimes citing the SAME authority would be a genuine duplicate; two \
+        "two regimes citing the same authority would be a genuine duplicate; two \
          citing different ones are two facts"
     );
 
@@ -548,7 +547,7 @@ fn one_entity_may_declare_two_regimes() {
     }
 }
 
-/// A regime is a DECLARATION, so the schema does not make it plural by accident:
+/// A regime is a declaration, so the schema does not make it plural by accident:
 /// a document reporting under one framework says so once.
 #[test]
 fn a_single_regime_is_the_ordinary_case() {
@@ -558,17 +557,17 @@ fn a_single_regime_is_the_ordinary_case() {
 }
 
 // ==========================================================================
-// WHAT A SENDER MAY DECLINE.
+// What a sender may decline.
 //
-// Each of these was UNWRITABLE before the Stated* pass, and each was filed by a
-// real adopter as a workaround that asserted something they did not believe. A
-// test that only proved the documents parse would not prove the distinction is
-// reachable, so every one below reads the reason back out.
+// Each of these is a state a real adopter needs, and without its typed reason
+// the only way to file it is a workaround that asserts something the adopter
+// does not believe. A test that only showed the documents parse would not show
+// the distinction is reachable, so every one below reads the reason back out.
 // ==========================================================================
 
-/// S-1. The pair that shared one encoding: "reports under something, unnamed"
-/// and "reports under none" are now different documents, and the difference is
-/// readable rather than inferred from an omission.
+/// The pair that would otherwise share one encoding: "reports under something,
+/// unnamed" and "reports under none" are different documents, and the difference
+/// is readable rather than inferred from an omission.
 #[test]
 fn a_regime_can_decline_its_framework_without_merging_none_into_unmeasured() {
     let doc = load("unstated.xml");
@@ -587,12 +586,12 @@ fn a_regime_can_decline_its_framework_without_merging_none_into_unmeasured() {
 
     assert!(
         reasons.contains(&AbsenceReasonType::Unmeasured),
-        "a sender who HAS a framework but cannot name it must be able to say so"
+        "a sender who has a framework but cannot name it must be able to say so"
     );
     assert!(
         reasons.contains(&AbsenceReasonType::None),
-        "a sender who reports under NO framework must be distinguishable from one \
-         who simply omitted the regime -- that merge is what S-1 reported"
+        "a sender who reports under no framework must be distinguishable from one \
+         who simply omitted the regime, or the two read as one"
     );
 }
 
@@ -611,13 +610,13 @@ fn regime<'a>(doc: &'a ProcessModulusElementType, id: &str) -> &'a pm::RegimeTyp
         .unwrap_or_else(|| panic!("no regime `{id}`"))
 }
 
-/// ⭐⭐ S-11. THE STATE THAT WAS UNSAYABLE. A tier nobody has assigned picks no
-/// framework, and the framework picks the chart -- so there WILL be a chart and
-/// nobody has said which. Before the wrapper the only encodings were "this entity
-/// has no chart", which is false, or an invented taxonomy URI.
+/// The state that would otherwise be unsayable. A tier nobody has assigned picks no
+/// framework, and the framework picks the chart, so there will be a chart and nobody
+/// has said which. Without the wrapper the only encodings would be "this entity has no
+/// chart", which is false, or an invented taxonomy URI.
 ///
-/// ⛔ `none` would be the wrong reason here, and the test says so: `none` is a claim
-/// that somebody looked and there is none.
+/// `none` would be the wrong reason here, and the test says so: `none` is a claim that
+/// somebody looked and there is none.
 #[test]
 fn a_regime_can_decline_its_chart_without_claiming_it_has_none() {
     let doc = load("unstated.xml");
@@ -626,7 +625,7 @@ fn a_regime_can_decline_its_chart_without_claiming_it_has_none() {
         StatedBorrowedTermType::Absent(a) => assert_eq!(
             a.reason,
             AbsenceReasonType::Unmeasured,
-            "the tier is unassigned, so the chart is UNNAMED rather than absent"
+            "the tier is unassigned, so the chart is unnamed rather than absent"
         ),
         StatedBorrowedTermType::Term(_) => {
             panic!("r1 is expected to decline the chart its unnamed framework selects")
@@ -634,14 +633,14 @@ fn a_regime_can_decline_its_chart_without_claiming_it_has_none() {
     }
 }
 
-/// ⭐⭐⭐ S-11. THERE IS NO UNITED STATES CHART OF ACCOUNTS. What is published there is
-/// a reporting TAXONOMY -- concepts a filing is tagged with -- and every filer's chart
-/// of accounts is their own and unpublished. The filer is genuinely the authority for
-/// it, so naming themselves satisfies BorrowedTerm rather than evading it.
+/// There is no United States chart of accounts. What is published there is a reporting
+/// taxonomy, the concepts a filing is tagged with, and every filer's chart of accounts is
+/// their own and unpublished. The filer is genuinely the authority for it, so naming
+/// themselves satisfies BorrowedTerm rather than evading it.
 ///
-/// ⛔ THE TEST IS THAT THE CHART IS NOT THE FRAMEWORK'S TAXONOMY, because filing
-/// `http://fasb.org/us-gaap` as a chart is the exact category error the annotation
-/// exists to catch: it declares a chart nobody posts to.
+/// The test is that the chart is not the framework's taxonomy, because filing
+/// `http://fasb.org/us-gaap` as a chart is the category error the annotation exists to
+/// catch: it declares a chart nobody posts to.
 #[test]
 fn a_chart_with_no_publishing_authority_names_the_entity_as_its_own() {
     for (file, id) in [
@@ -665,12 +664,12 @@ fn a_chart_with_no_publishing_authority_names_the_entity_as_its_own() {
     }
 }
 
-/// ⭐⭐ S-9. THE CHART IS A SEPARATE AXIS FROM THE FRAMEWORK, and this is the document
-/// that proves it rather than asserting it: two regimes, two authorities' codings of
-/// one framework -- `NC-ME` to IES and `M` to SAF-T -- and ONE chart between them,
-/// because a chart is national and the authority that codes the framework is not.
+/// The chart is a separate axis from the framework, and this is the document that shows it
+/// rather than asserting it: two regimes, two authorities' codings of one framework (`NC-ME`
+/// to IES and `M` to SAF-T), and one chart between them, because a chart is national and the
+/// authority that codes the framework is not.
 ///
-/// ⛔ If these two ever collapse to one taxonomy, the axis claim has been lost.
+/// If these two collapse to one taxonomy, the claim that they are separate axes is lost.
 #[test]
 fn two_codings_of_one_framework_share_one_chart() {
     let doc = load("refutation.xml");
@@ -691,9 +690,9 @@ fn two_codings_of_one_framework_share_one_chart() {
     );
 }
 
-/// S-8. `notApplicable` is not a kind of divisibility; it is the absence of one.
-/// The workaround it replaces asserted `continuous` and denied it one level down,
-/// where no query would meet the denial.
+/// `notApplicable` is not a kind of divisibility; it is the absence of one. Without it,
+/// the workaround would assert `continuous` and deny it one level down, where no query
+/// would meet the denial.
 #[test]
 fn a_subject_that_is_not_a_supply_can_decline_the_divisibility_axis() {
     let doc = load("unstated.xml");
@@ -705,13 +704,13 @@ fn a_subject_that_is_not_a_supply_can_decline_the_divisibility_axis() {
     assert_eq!(a.reason, AbsenceReasonType::NotApplicable);
 }
 
-/// S-2. The one required value a sender could not decline, and the fact new
-/// senders most often have not established.
+/// A required value a sender can still decline, and the fact new senders most often have
+/// not established.
 ///
-/// ⭐ `unmeasured` AND `none` ARE DIFFERENT DOCUMENTS HERE, WHICH A BOOLEAN CANNOT SAY.
-/// `none` says somebody looked and there is no room above the rating; `unmeasured` says
-/// nobody has established how much room there is. A `true` means both at once and a reader
-/// cannot tell which.
+/// `unmeasured` and a claim of zero are different documents here, which a boolean cannot
+/// say. A claim of zero says somebody looked and there is no room above the rating;
+/// `unmeasured` says nobody has established how much room there is. A `true` would mean both
+/// at once, and a reader could not tell which.
 #[test]
 fn a_capacity_slack_can_be_left_unmeasured_instead_of_guessed() {
     let doc = load("unstated.xml");
@@ -723,9 +722,9 @@ fn a_capacity_slack_can_be_left_unmeasured_instead_of_guessed() {
     assert_eq!(a.reason, ClaimAbsenceReasonType::Unmeasured);
 }
 
-/// S-3 and S-7, which are one repair. Three parties that a single string would flatten
-/// into one are separately joinable here, and `standing` is where `unverified` belongs,
-/// on the assertion and never as a fifth AbsenceReason.
+/// Three parties that a single string would flatten into one are separately joinable here,
+/// and `standing` is where `unverified` belongs: on the assertion, and never as another
+/// absence reason.
 #[test]
 fn provenance_separates_the_three_parties_and_carries_standing() {
     let doc = load("unstated.xml");
@@ -753,17 +752,17 @@ fn provenance_separates_the_three_parties_and_carries_standing() {
     );
 }
 
-/// S-5. What BOUNDS a range is a different question from what would NARROW it,
-/// and a sender with both facts can now file both.
+/// What bounds a range is a different question from what would narrow it, and a sender
+/// with both facts can file both.
 ///
-/// ⛔⛔ AND `narrowsWhen` DOES NOT ANSWER `is_some()`, WHICH IS THE POINT OF S-29. As an
-/// optional bare string its absence means "nobody said" and "nothing would narrow this" and
-/// "there is no range to narrow" all at once — the boolean anti-pattern, in the one field
-/// carrying the model's falsifiability claim. It is a required `StatedNarrowing`, so the
-/// question this test asks is not "is it there" but WHAT IT SAYS.
+/// And `narrowsWhen` does not answer `is_some()`. As an optional bare string its absence
+/// would mean "nobody said" and "nothing would narrow this" and "there is no range to
+/// narrow" all at once: the boolean anti-pattern, in the one field carrying the model's
+/// falsifiability claim. It is a required `StatedNarrowing`, so the question this test asks
+/// is not "is it there" but what it says.
 ///
-/// ⭐ The `kind` is where the fact lives. `instrument` means the width is IGNORANCE and a
-/// better measurement reveals it; `intervention` means the width is VARIATION and only
+/// The `kind` is where the fact lives. `instrument` means the width is ignorance and a
+/// better measurement reveals it; `intervention` means the width is variation and only
 /// changing the process reduces it; `experiment` means the filer does not know which and
 /// is naming what would settle it.
 #[test]
@@ -781,7 +780,7 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
 
     let StatedNarrowingType::Narrowing(n) = &c.narrows_when else {
         panic!(
-            "this claim names what would narrow it; an absence here would be the OTHER \
+            "this claim names what would narrow it; an absence here would be the other \
              fact, that nothing would"
         );
     };
@@ -792,23 +791,23 @@ fn a_claim_can_carry_both_what_bounds_it_and_what_would_narrow_it() {
     assert_eq!(
         n.kind,
         NarrowingKindType::Instrument,
-        "closing the quarter and landing actual cost is a MEASUREMENT arriving, so this \
+        "closing the quarter and landing actual cost is a measurement arriving, so this \
          range is ignorance rather than variation"
     );
 }
 
 /// The couplings a stack filed, or an empty slice where it filed a typed reason instead.
 ///
-/// ⛔⛔ THE EMPTY SLICE AND `absent/reason = none` ARE NOT THE SAME DOCUMENT, and no caller
-/// may treat them as one. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Stack/couplings`
-/// makes a stack tested for independence and a stack nobody looked at byte-identical, which is
+/// The empty slice and `absent/reason = none` are not the same document, and no caller may
+/// treat them as one. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Stack/couplings` would
+/// make a stack tested for independence and a stack nobody looked at byte-identical, which is
 /// the boolean anti-pattern wearing a plural. Use `coupling_absence` when the question is
 /// which.
 ///
-/// ⚠️ THE XSD GUARANTEE IS NOT VISIBLE IN THE TYPE. The choice is "one or more couplings, OR
-/// one absence", and the generator flattens that to a `Vec` that could in principle hold
-/// both. XSD refuses such a document; this helper simply reads the arm that is there, the
-/// same way `lumpy` and `continuous` do for `Divisibility`.
+/// The XSD guarantee is not visible in the type. The choice is "one or more couplings, or one
+/// absence", and the generator flattens that to a `Vec` that could in principle hold both.
+/// XSD refuses such a document; this helper simply reads the arm that is there, the same way
+/// `lumpy` and `continuous` do for `Divisibility`.
 fn couplings(s: &pm::StackType) -> Vec<&pm::CouplingType> {
     s.couplings
         .content
@@ -835,11 +834,10 @@ fn stated(c: &impl Filed) -> Option<(f64, f64, f64, &str)> {
 
 /// The `lumpy` arm of a divisibility, ignoring any `window` beside it.
 ///
-/// ⚠️ `Divisibility` became a SEQUENCE — the `lumpy | continuous` choice, then an optional
-/// `window` — when the time axis arrived, and the generated Rust flattens that to a
-/// `Vec<DivisibilityTypeContent>`. So the XSD's guarantee of exactly one amount arm is no
-/// longer visible in the type, and these three helpers put it back rather than letting every
-/// call site rediscover it.
+/// `Divisibility` is a sequence, the `lumpy | continuous` choice and then the `window`, and the
+/// generated Rust flattens that to a `Vec<DivisibilityTypeContent>`. So the XSD's guarantee of
+/// exactly one amount arm is not visible in the type, and these three helpers put it back
+/// rather than letting every call site rediscover it.
 fn lumpy(l: &pm::LayerType) -> Option<&pm::LumpyQuantumType> {
     let StatedDivisibilityType::Divisibility(d) = &l.supply.nameplate.divisibility else {
         return None;
@@ -874,14 +872,14 @@ fn window(l: &pm::LayerType) -> Option<&pm::LumpyQuantumType> {
 
 /// The typed reason a layer files no window, if that is what it files.
 ///
-/// ⭐ THE TWO HALVES ARE ASKED SEPARATELY ON PURPOSE. `window` above answers "how much of
-/// each period is this supply live for"; this answers "and if you did not say, why not" —
-/// and the three reasons are not interchangeable. `notApplicable` is a unit with no
-/// denominator; `unmeasured` is the one state that leaves a derived `timeSlack` unjustified.
+/// The two halves are asked separately on purpose. `window` above answers "how much of each
+/// period is this supply live for"; this answers "and if you did not say, why not", and the
+/// reasons are not interchangeable. `notApplicable` is a unit with no denominator;
+/// `unmeasured` is the one state that leaves a derived `timeSlack` unjustified.
 ///
-/// ⛔ THERE IS NO FOURTH. "The supply runs continuously" is a VALUE and not an absence: a duty
-/// fraction of one, with an origin saying who could change it. It is filed as one whole
-/// period, and the absence arm is a `ClaimAbsence` so `none` cannot spell it.
+/// There is no other reason. "The supply runs continuously" is a value and not an absence: a
+/// duty fraction of one, with an origin saying who could change it. It is filed as one whole
+/// period, and the absence arm is a `ClaimAbsence`, so `none` cannot spell it.
 fn window_absence(l: &pm::LayerType) -> Option<&pm::ClaimAbsenceType> {
     let StatedDivisibilityType::Divisibility(d) = &l.supply.nameplate.divisibility else {
         return None;
@@ -892,14 +890,14 @@ fn window_absence(l: &pm::LayerType) -> Option<&pm::ClaimAbsenceType> {
     })
 }
 
-/// Whether the supply is live for the WHOLE of its period, which is a duty fraction of one.
+/// Whether the supply is live for the whole of its period, which is a duty fraction of one.
 ///
-/// ⭐⭐ A WHOLE PERIOD IS QUOTED AS `1` IN THE PERIOD'S OWN UNIT, and that is what makes this
+/// A whole period is quoted as `1` in the period's own unit, and that is what makes this
 /// readable without converting anything: `1 week` against a period of `week` is a duty
 /// fraction you can see, and `5 days` against the same period is a proper part. The same
-/// test is `assets/sqlc/layers/derivation_licensed.sqlc`, which deliberately does no unit
-/// arithmetic either — `window_not_applicable_on_a_rate` records what happened the last time
-/// a rule here guessed at units.
+/// test is `assets/sqlc/layers/derivation_licensed.sqlc`, which does no unit arithmetic
+/// either, on purpose: `window_not_applicable_on_a_rate` says why a rule here never guesses
+/// at units.
 fn runs_the_whole_period(l: &pm::LayerType) -> bool {
     let Some(w) = window(l) else { return false };
     let StatedClaimType::Claim(size) = &w.size else {
@@ -919,19 +917,18 @@ fn quantum(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
     stated(&lumpy(l)?.size)
 }
 
-/// ⭐⭐ A QUANTUM IS IN THE UNIT OF THE NAMEPLATE IT DIVIDES, AND THE RULE IS ARITHMETICAL.
+/// A quantum is in the unit of the nameplate it divides.
 ///
-/// `conformance/README.md` states this and nothing enforced it, so one filing read it the
-/// other way for two passes: `enterprise-contract.xml` filed a `capability` layer whose
-/// demand is `launches per quarter` against a quantum of `launches`.
+/// `conformance/README.md` states the rule. Read the other way, a `capability` layer whose
+/// demand is in `launches per quarter` would file a quantum of `launches`.
 ///
-/// ⛔ THE BARE-THING READING IS NOT A STYLE PREFERENCE, IT IS WRONG. The purpose of a
-/// quantum is that `nameplate / q` and `demand / q` are COUNTS. `(launches per quarter) /
-/// launches` is a frequency, and the decomposition it feeds means nothing. The lump on a
-/// rate is a lump OF THE RATE — one launch slot per quarter, not one launch.
+/// That reading is not a style preference, it is wrong. A quantum exists so that the
+/// nameplate and the demand each come to a count of whole units. Launches per quarter divided
+/// by launches is a frequency, and the split it feeds means nothing. The lump on a rate is a
+/// lump of the rate: one launch slot per quarter, not one launch.
 ///
-/// It computed anyway, because the size was 1. That is the whole hazard: a dimensional
-/// error that is numerically invisible until somebody files a quantum larger than one.
+/// It computes anyway when the size is 1. That is the whole hazard: a unit error that is
+/// invisible in the numbers until somebody files a quantum larger than one.
 #[test]
 fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
     let mut checked = 0;
@@ -944,7 +941,7 @@ fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
                 qu, du,
                 "{name} `{}`: a quantum of `{qu}` against a demand of `{du}` cannot be \
                  divided into it. If the supply really comes in a different unit from the \
-                 demand, that is a CONVERSION and it belongs to whoever composes them",
+                 demand, that is a conversion and it belongs to whoever composes them",
                 l.name
             );
             checked += 1;
@@ -957,38 +954,28 @@ fn a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides() {
     );
 }
 
-/// ⛔⛔⛔ THE DECOMPOSITION IS AN IDENTITY, AND ITS TWO HALVES ARE NOT `Claim`s.
+/// The remainder is exact, and its two halves, whole units and residue, are not `Claim`s.
 ///
-/// `conformance/README.md` gives `m = nameplate/q − ⌊demand/q⌋`, `residue = demand mod q`,
-/// `r = m·q − residue`. Substituting `k = n/q` shows the floors cancel outright:
+/// However the nameplate and the demand are filed, ranges or points, the whole units and the
+/// residue put back together give the nameplate less the demand exactly. The first half of
+/// this test checks that on every lumpy layer, the long way round.
 ///
-/// ```text
-/// r = (n/q − ⌊d/q⌋)·q − (d − ⌊d/q⌋·q) = n − d
-/// ```
+/// What is fragile is the split, and in a large share of this corpus rather than at some
+/// exotic edge. The residue starts again from zero at every whole quantum, so a demand range
+/// that crosses one need not give ordered residues at its three points, while a range that
+/// stays between two whole quanta always does. `refutation.xml#compute` files a demand of
+/// `(11, 13.2, 16.4)` against a quantum of 8 and crosses 16, so the residue at its high comes
+/// out below the residue at its mode. A residue like that breaks the first rule in the
+/// conformance table, that a range runs in order, while the demand that gave it is perfectly
+/// well formed.
 ///
-/// ⭐ SO `r` IS EXACT FOR ANY DEMAND AND ANY NAMEPLATE, INTERVAL OR NOT. `⌊⌋` appears twice
-/// with opposite signs and never has to resolve. A finding claiming the decomposition
-/// "assumes point values" was wrong about the part that matters, and the first half of this
-/// test is that correction executed rather than asserted.
-///
-/// What is actually fragile is the split, and it is fragile in a large share of this corpus
-/// rather than at some exotic edge. `d mod q` jumps at every multiple of `q`, so a demand range
-/// that crosses one need not give ordered residues at its three points, while one inside a
-/// single tooth always does. `refutation.xml#compute` has demand `(11, 13.2, 16.4)` at `q = 8`,
-/// crosses 16, and has residues `(3.0, 5.2, 0.4)`. A residue like that violates
-/// `low ≤ mostLikely ≤ high`, the first rule in the conformance table, while the demand that
-/// produced it is perfectly well formed. Proven in `src/proofs/README.md`, entry `sawtooth`.
-///
-/// ⭐⭐ AND THE SCHEMA IS ALREADY SAFE, WHICH IS THE HAPPY PART. `Remainder` carries
-/// `quantity`, `sign`, `absorber` and `holder` — the TOTAL and never the two components.
-/// The shape is right, whether or not the reasoning below is read. What is not safe is
-/// `conformance/README.md` presenting `m·q` and `residue` as though a sender could file
-/// them, and an implementer who reads that block as a filing instruction will produce
-/// documents this schema would reject.
+/// And the schema is safe already. `Remainder` carries `quantity`, `sign`, `absorber` and
+/// `holder`: the total, never the two halves, and `conformance/README.md` says the split is
+/// the receiver's to work out and is never filed.
 #[test]
 fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
     let mut checked = 0;
-    let mut sawtooth: Vec<String> = Vec::new();
+    let mut crossing: Vec<String> = Vec::new();
 
     for (name, doc) in corpus() {
         for l in &doc.stack.layer {
@@ -1002,20 +989,21 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
             assert_eq!(
                 (ql, qh),
                 (qm, qm),
-                "{name} `{}`: an interval quantum makes `⌊d/q⌋` genuinely ambiguous, and \
-                 nothing in this repository has forced that case yet",
+                "{name} `{}`: with a quantum that is a range, how many whole units the demand \
+                 holds is genuinely ambiguous, and no document here files that case",
                 l.name
             );
 
-            // ⭐ The identity, evaluated the long way round: build `m` and the residue as
-            // the conformance block writes them, recombine, and check against `n − d`.
+            // The long way round: build the whole units and the residue, put them back
+            // together, and hold the result to the nameplate less the demand.
             for (n, d) in [(nl, dl), (nm, dm), (nh, dh)] {
                 let residue = d - (d / qm).floor() * qm;
                 let m = n / qm - (d / qm).floor();
                 assert!(
                     ((m * qm - residue) - (n - d)).abs() < 1e-9,
-                    "{name} `{}`: the decomposition is supposed to be `nameplate − demand` \
-                     identically, and at n={n}, d={d}, q={qm} it is not",
+                    "{name} `{}`: the whole units less the residue must equal the nameplate \
+                     less the demand exactly, and at nameplate {n}, demand {d}, quantum {qm} \
+                     they do not",
                     l.name
                 );
             }
@@ -1023,15 +1011,15 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
             let r = |d: f64| d - (d / qm).floor() * qm;
             let (rl, rm, rh) = (r(dl), r(dm), r(dh));
             if (dl / qm).floor() != (dh / qm).floor() {
-                sawtooth.push(format!(
+                crossing.push(format!(
                     "{name}#{} residues ({:.4}, {:.4}, {:.4})",
                     l.name, rl, rm, rh
                 ));
             } else {
                 assert!(
                     rl <= rm && rm <= rh,
-                    "{name} `{}`: a demand inside one tooth of {qm} gave residues \
-                     ({rl}, {rm}, {rh}), which must be ordered",
+                    "{name} `{}`: a demand range between two whole quanta of {qm} gave \
+                     residues ({rl}, {rm}, {rh}), which must be in order",
                     l.name
                 );
             }
@@ -1041,26 +1029,26 @@ fn the_decomposition_is_an_identity_and_its_two_halves_are_not_claims() {
 
     assert!(
         checked >= 15,
-        "only {checked} lumpy layers were reachable; an identity with nothing to check \
-         passes loudest"
+        "only {checked} lumpy layers were reachable; a rule with nothing to check passes \
+         loudest"
     );
     // A share, not a handful, and the share is the argument. A rule broken by one exotic
     // document is an outlier; one that a third of the corpus crosses is a rule nobody can follow.
     assert!(
-        sawtooth.len() * 3 >= checked,
-        "the demand crossing a tooth is supposed to be pervasive, which is what stops anyone \
-         treating the split as generally available. Only {} of {checked}:\n  {}",
-        sawtooth.len(),
-        sawtooth.join("\n  ")
+        crossing.len() * 3 >= checked,
+        "a demand range crossing a whole quantum is supposed to be common, which is what stops \
+         anyone treating the split as generally available. Only {} of {checked}:\n  {}",
+        crossing.len(),
+        crossing.join("\n  ")
     );
 }
 
 /// The slack of the buffer a remainder's `absorber` names, if that buffer has one sized.
 ///
-/// ⚠️ THE UNIT IS RETURNED AND MUST NOT BE DROPPED. `.map(|(lo, ml, hi, _)| ...)` discards it
+/// The unit is returned and must not be dropped. `.map(|(lo, ml, hi, _)| ...)` discards it
 /// on the last field, which makes the bound below a comparison between two bare floats, and
-/// the whole reason that comparison is legitimate is that both sides are in the layer's
-/// unit. See `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`.
+/// that comparison is legitimate only because both sides are in the layer's unit. See
+/// `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`.
 fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
     let StatedRemainderType::Remainder(r) = &l.remainder else {
         return None;
@@ -1076,39 +1064,37 @@ fn absorber_slack(l: &pm::LayerType) -> Option<(f64, f64, f64, &str)> {
     }
 }
 
-/// ⛔⛔⛔ A WINDOW IS A NOTE ON THE UNIT'S DENOMINATOR, SO THE UNIT MUST HAVE ONE.
-///
 /// What a claim files under its line, in words, for a failure message.
 ///
-/// ⭐ THE THREE ARMS ARE THREE DIFFERENT ANSWERS AND ONLY ONE OF THEM IS A CYCLE. `each` is a
-/// denominator that exists and is not a period, `GPU-hour per GPU`, which is precisely the
+/// The three arms are three different answers, and only one of them is a period. `each` is a
+/// denominator that exists and is not a period, as in `GPU-hour per GPU`, which is the
 /// distinction a string test over the unit token cannot make.
 fn denominator_says(d: &pm::StatedDenominatorType) -> String {
     match d {
         pm::StatedDenominatorType::Period(p) => format!("the period `{p}`"),
-        pm::StatedDenominatorType::Each(e) => format!("`each {e}`, which is not a cycle"),
+        pm::StatedDenominatorType::Each(e) => format!("`each {e}`, which is not a period"),
         pm::StatedDenominatorType::Absent(a) => format!("no denominator ({:?})", a.reason),
     }
 }
 
+/// A window is a note on the unit's denominator, so the unit must have one.
+///
 /// The denominator supplies the period, the window supplies the live part of it, and the ratio
-/// is the duty fraction — `3 hours` against `2160 muffins per day` is 3h/1day. Which makes the
-/// denominator rule its precondition rather than a separate convention: the denominator must
-/// cover a whole cycle so that the window has a well-defined thing to be a fraction OF.
+/// is the duty fraction: `3 hours` against `2160 muffins per day` is three hours of one day. So
+/// the denominator rule is its precondition rather than a separate convention: the
+/// denominator must cover a whole period so that the window has something to be a fraction of.
 ///
-/// ⛔ So a window on a STOCK is malformed, not merely unmeasured. `12 people` has no period, so
-/// "5 days" has nothing to be five days of, and `GPU-hour` carries its hour in the numerator —
-/// it is a quantity of resource-time, not a rate. ⭐ That is why this element is rare rather
-/// than under-used: of every nameplate unit in this corpus only `shifts per week`, `turnos por
-/// semana` and `launches per quarter` have a denominator at all.
+/// So a window on a stock is malformed, not merely unmeasured. `12 people` has no period, so
+/// "5 days" has nothing to be five days of, and `GPU-hour` carries its hour in the numerator:
+/// it is a quantity of resource-time, not a rate. That is why this element is rare rather than
+/// under-used: few nameplate units in this corpus have a period under the line.
 ///
-/// ✅ THE MODEL ANSWERS THIS AND A STRING TEST CANNOT. *A unit is an `xs:token` and nothing in
-/// the model distinguishes a rate from a stock* holds only where there is no
-/// `pm:StatedDenominator`. Reading the token for a `per`/`por` word is the `LIKE '% per %'` the
-/// SQL side refuses: it misses `muffins/day`, misses a third language, and counts
-/// `GPU-hour per GPU` as a period when the arm that document files is `each`, explicitly not a
-/// cycle. ⛔ The schema forbids the read in as many words: "a unit is an `xs:token`; nothing may
-/// read inside it".
+/// The model answers this and a string test cannot. A unit is an `xs:token`, and without
+/// `pm:StatedDenominator` nothing in the model would tell a rate from a stock. Reading the
+/// token for a `per` or `por` word is the `LIKE '% per %'` the SQL side refuses: it misses
+/// `muffins/day`, misses a third language, and counts `GPU-hour per GPU` as a period when the
+/// arm that document files is `each`, explicitly not a period. The schema forbids the read in
+/// as many words: a unit is an `xs:token`, and nothing may read inside it.
 #[test]
 fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
     let mut checked = 0;
@@ -1126,8 +1112,8 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
             assert!(
                 matches!(&amount.denominator, pm::StatedDenominatorType::Period(_)),
                 "{name} `{}`: a window is filed against a nameplate in `{}`, which files {}. A \
-                 window is the live PART of a period, so a unit with no period under the line \
-                 gives it nothing to be a fraction of, a stock has no cycle to be live in",
+                 window is the live part of a period, so a unit with no period under the line \
+                 gives it nothing to be a fraction of: a stock has no period to be live in",
                 l.name,
                 amount.unit,
                 denominator_says(&amount.denominator),
@@ -1142,30 +1128,30 @@ fn a_window_requires_a_unit_with_a_period_to_be_a_fraction_of() {
     );
 }
 
-/// ⛔⛔⛔ A WINDOW IS A PROPERTY OF THE MACHINE, SO IT IS CARRIED THROUGH A FUSION AND NEVER
-/// SUMMED. This is the one rule that separates the new time axis from every quantity beside it.
+/// A window is a property of the machine, so it is carried through a fusion and never summed.
+/// This is the rule that separates the time axis from every quantity beside it.
 ///
 /// Demand sums: two members asking for the same line want more line. A window does not, and the
-/// reason is not a convention — both members name THE SAME MACHINE, and a line staffed weekdays
+/// reason is not a convention: both members name the same machine, and a line staffed weekdays
 /// by two customers is still staffed weekdays. Summing would say ten days a week.
 ///
-/// ⭐ IT IS THE NAMEPLATE'S CASE ARRIVING BY ANOTHER ROUTE. The group eliminates the duplicated
-/// nameplate for exactly this reason — two members, one machine — and files the elimination. A
-/// window needs no elimination because it never summed: it is a property, not a quantity, which
-/// is why `EliminationAgainst` has three members and deliberately no fourth.
+/// It is the nameplate's case arriving by another route. The group eliminates the duplicated
+/// nameplate for exactly this reason (two members, one machine) and files the elimination. A
+/// window needs no elimination because it never sums: it is a property, not a quantity, which
+/// is why `EliminationAgainst` has three members and, on purpose, no fourth.
 ///
-/// ⚠️ The two members file it in different languages — `days` and `dias` — so the check is on
-/// the figure. Two parties describing one machine is the case this corpus exists for.
+/// The two members file it in different languages, `days` and `dias`, so the check is on the
+/// figure. Two parties describing one machine is the case this corpus exists for.
 ///
-/// ⛔⛔ AND A WINDOW OF ONE WHOLE PERIOD IS SKIPPED, WHICH IS NOT AN EXEMPTION BUT THE RULE'S
-/// OWN SCOPE. This check compares figures across documents because, in this corpus, a CALENDAR
-/// that carves a period up belongs to exactly one machine: the shared packing line, filed four
-/// times in two languages. A duty fraction of one carves nothing. It says "always on", every
-/// document that files it says the same thing, and there is no calendar to lose in a fusion —
-/// so including them would compare a support desk against a packing line and call the
-/// disagreement a defect. ⚠️ THE NARROWNESS IS A CHOICE AND HAS TO BE VISIBLE AS ONE. Spell
-/// "always on" as `absent/reason = none` and `window()` returns nothing for it, so the same
-/// scope arrives free and nothing shows that anybody chose it.
+/// And a window of one whole period is skipped, which is not an exemption but the rule's own
+/// scope. This check compares figures across documents because, in this corpus, a calendar
+/// that carves a period up belongs to exactly one machine: the shared packing line, filed in
+/// two languages. A duty fraction of one carves nothing. It says "always on", every document
+/// that files it says the same thing, and there is no calendar to lose in a fusion, so
+/// including them would compare a support desk against a packing line and call the
+/// disagreement a defect. The narrowness is a choice and has to be visible as one: spelled as
+/// `absent/reason = none`, "always on" would give `window()` nothing, and the same scope would
+/// arrive free with nothing to show that anybody chose it.
 #[test]
 fn a_window_is_carried_through_a_fusion_and_never_summed() {
     let mut sizes: Vec<(String, f64)> = Vec::new();
@@ -1184,7 +1170,7 @@ fn a_window_is_carried_through_a_fusion_and_never_summed() {
 
     assert!(
         sizes.len() >= 3,
-        "only {} windows were filed; the carry-not-sum rule needs the parts AND the fused \
+        "only {} windows were filed; the carry-not-sum rule needs the parts and the fused \
          layer to be checking anything at all",
         sizes.len()
     );
@@ -1199,8 +1185,8 @@ fn a_window_is_carried_through_a_fusion_and_never_summed() {
         );
     }
 
-    // ⛔ THE PERTURBATION THIS RULE EXISTS FOR. A fused window equal to the sum of its parts
-    // is the mistake a reader who has just learned how `demand` composes will make.
+    // The mistake this rule exists for. A fused window equal to the sum of its parts is what
+    // a reader who has just learned how `demand` composes will write.
     let parts: f64 = sizes
         .iter()
         .filter(|(w, _)| w.contains("member"))
@@ -1218,20 +1204,17 @@ fn a_window_is_carried_through_a_fusion_and_never_summed() {
     );
 }
 
-/// ⛔⛔⛔ A SIZED SLACK SAYS WHO SET IT, AND THE THREE SLACKS WERE THE ONLY CONSTRAINTS IN
-/// THIS MODEL THAT DID NOT.
+/// A sized slack says who set it, as every other constraint in this model does.
 ///
 /// `Nameplate/amountOrigin` says who can hold a different number of units. `LumpyQuantum/origin`
-/// says who sets the size of one. A slack said how much room a buffer has and nothing whatever
-/// about whether anybody could move it — while `Claim/boundOrigin` sat there optional and was
-/// filed exactly ONCE in the whole corpus.
+/// says who sets the size of one. Without its origin a slack would say how much room a buffer
+/// has and nothing whatever about whether anybody could move it.
 ///
-/// ⭐ THE CASE THAT FORCED IT IS AN SLA. Two layers can file the same `timeSlack` and mean
+/// The case that needs it is an SLA. Two layers can file the same `timeSlack` and mean
 /// opposite things: one is how long queued work physically keeps, the other is how long a
 /// contract says the customer waits. The first is not a lever and the second is a negotiation,
-/// and no reader can tell them apart from the number. The corpus files one of each —
-/// `capability` intrinsic, `shift-line` contractual — which is the smallest population that
-/// makes the distinction visible rather than asserted.
+/// and no reader can tell them apart from the number. The corpus files both kinds, so the
+/// distinction is visible rather than asserted.
 #[test]
 fn a_sized_slack_says_who_can_move_it() {
     let mut origins = Vec::new();
@@ -1264,7 +1247,7 @@ fn a_sized_slack_says_who_can_move_it() {
          when nothing is filed",
         origins.len()
     );
-    // ⚠️ ONE ORIGIN ACROSS EVERY SLACK WOULD MEAN THE FIELD IS DECORATION. The point is that
+    // One origin across every slack would mean the field is decoration. The point is that
     // a negotiable slack and a physical one look identical without it, so the corpus has to
     // hold both to be evidence of anything.
     origins.sort();
@@ -1277,20 +1260,21 @@ fn a_sized_slack_says_who_can_move_it() {
     );
 }
 
-/// ⛔⛔ A SLACK IS COMPARED AGAINST HOLDER SHARES, SO IT MUST BE IN THE SHARES' UNIT.
+/// A slack is compared against holder shares, so it must be in the shares' unit.
 ///
-/// The rule `sum of shares <= slack` is arithmetic between two claims, and arithmetic between
-/// two claims is only meaningful when they are measured in the same thing. `Claim` says so
-/// itself — "a unit is NOT a conversion licence, and two claims in different units do not
-/// combine" — and until this test there was nothing checking it for the one comparison the
-/// three slacks exist to make. The quantum has had this check since S-20; the slack had none.
+/// The rule that the shares stay within the slack is arithmetic between two claims, and
+/// arithmetic between two claims means something only when they measure the same thing.
+/// `Claim` says so itself: a unit is not a conversion licence, and two claims in different
+/// units do not combine. This holds the slack to it for the one comparison the three slacks
+/// exist to make, as `a_quantum_is_expressed_in_the_unit_of_the_supply_it_divides` holds the
+/// quantum.
 ///
-/// ⚠️⚠️ AND IT CATCHES LESS THAN IT LOOKS LIKE IT DOES, WHICH IS WORTH SAYING BEFORE ANYBODY
-/// COUNTS IT AS COVERAGE. A buffer's size is naturally measured as a DURATION — how long work
-/// sits, how long before a caller leaves — while this field takes a QUANTITY, so the filer
-/// owes a `quantity = duration x rate` conversion. A filer who skips the multiplication and
-/// writes the right unit on the unconverted number passes this test cleanly. It catches a
-/// MISLABELLED quantity and never a RELABELLED one; only the arithmetic catches that.
+/// And it catches less than it looks as if it does, which is worth saying before anybody
+/// counts it as coverage. A buffer's size is naturally measured as a duration (how long work
+/// sits, how long before a caller leaves) while this field takes a quantity, so the filer owes
+/// a conversion from the duration to a quantity at the rate work arrives. A filer who skips
+/// it and writes the right unit on the unconverted number passes this test cleanly. It
+/// catches a mislabelled quantity and never a relabelled one; only the arithmetic catches that.
 #[test]
 fn a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds() {
     let mut checked = 0;
@@ -1322,7 +1306,7 @@ fn a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds() {
         }
     }
 
-    // The same vacuity trap as the bound itself: every slack was `unmeasured` once.
+    // The same trap as the bound itself: with every slack `unmeasured`, this compares nothing.
     assert!(
         checked >= 2,
         "only {checked} share/slack pairs were reachable; a unit rule with nothing to compare \
@@ -1330,42 +1314,39 @@ fn a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds() {
     );
 }
 
-/// ⛔⛔⛔ A HOLDER'S SHARE MUST NOT EXCEED THE SLACK OF THE BUFFER ITS ABSORBER NAMES.
+/// A holder's share must not exceed the slack of the buffer its absorber names.
 ///
-/// This is the rule the three availability conditions were retyped for, and it could not be
-/// written while they were booleans. A boolean says a buffer is available; it cannot say
-/// AVAILABLE, BARELY. On a conveyor at a hundred slots an hour carrying ninety-five muffins,
-/// five slots an hour are free and that is the whole of the buffer — and a sender attributing
-/// fifty muffins an hour to it could still file `true`, quite honestly. The boolean caught a
-/// CONTRADICTION and never an ATTRIBUTION.
+/// This rule needs the three availability conditions as quantities; as booleans it could not
+/// be written. A boolean says a buffer is available; it cannot say available, barely. On a
+/// conveyor at a hundred slots an hour carrying ninety-five muffins, five slots an hour are
+/// free and that is the whole of the buffer, and a sender attributing fifty muffins an hour
+/// to it could still file `true`, quite honestly. A boolean catches a contradiction and never
+/// an attribution.
 ///
-/// ⚠️ AN EARLIER DRAFT OF THIS COMMENT SIZED THAT BUFFER AT "ABOUT TWELVE MINUTES", which is
-/// the same dimension error `Layer/timeSlack` now warns about at length: twelve minutes is
-/// `q / clearance`, a duration, and what the bound below compares is a quantity in the layer's
-/// unit. Five muffins an hour is the slack; twelve minutes describes the same belt in a
-/// dimension this rule cannot use.
+/// The slack is a quantity in the layer's unit: five muffins an hour. "About twelve minutes"
+/// describes the same belt as a duration, the conversion `Layer/timeSlack` warns about, and
+/// the bound below cannot use it.
 ///
-/// ⭐ THE BOUND IS ON THE INTERFERENCE SIDE ONLY, and `capacitySlack`'s annotation says why:
+/// The bound is on the interference side only, and `capacitySlack`'s annotation says why:
 /// spare capacity under a clearance fit is the unused part of a rating, which the remainder
-/// already carries. A slack is the room at the other end — above the nameplate, in the
-/// stockroom, in the queue — which is what a buffer draws on when demand exceeds supply.
+/// already carries. A slack is the room at the other end (above the nameplate, in the
+/// stockroom, in the queue), which is what a buffer draws on when demand exceeds supply.
 ///
-/// ⭐⭐ AND THE UNSERVED PAIR IS EXEMPT, NOT `unrealised` ALONE, WHICH IS THE INTERESTING
-/// PART. Both name demand nobody met: overflow, not a load the buffer held. Exempting one
-/// of the two summed a customer's borne degradation into the buffer's load.
+/// And the unserved pair is exempt, not `unrealised` alone. Both name demand nobody met:
+/// overflow, not a load the buffer held. Exempting only one of the two would sum a
+/// customer's borne degradation into the buffer's load.
 ///
-/// ⛔⛔ SO THIS RULE EXAMINES NOTHING IN THIS CORPUS, AND THAT IS A FINDING ABOUT THE
-/// EVIDENCE RATHER THAN A GAP IN IT. On every interference layer that sizes its absorbing
-/// buffer, every holder is `customer` or `unrealised`: nothing was absorbed at all, the
-/// demand was turned away. The left side of the inequality is empty because no share was
-/// served, which is the model's own subject stated by the data. `entries/borne.sqlc`
-/// traces the same vacuum stage by stage and `algebra/borne.sqlc` prints it as arithmetic
-/// every run, per layer, rather than as a count in a comment.
+/// So this rule examines nothing in this corpus, and that is a finding about the evidence
+/// rather than a gap in it. On every interference layer that sizes its absorbing buffer,
+/// every holder is `customer` or `unrealised`: nothing was absorbed at all, the demand was
+/// turned away. The left side of the bound is empty because no share was served, which is
+/// the model's own subject stated by the data. `entries/borne.sqlc` traces the same emptiness
+/// stage by stage, and `algebra/borne.sqlc` prints it every run, per layer, rather than as a
+/// count in a comment.
 ///
-/// ⚠️ EVALUATED AT `mostLikely`, following the `sign` rule, which is the existing precedent
-/// for comparing two independent intervals without inventing a convention. A profile
-/// wanting the strict reading — worst share against smallest slack — is choosing a policy,
-/// and that choice belongs to the profile rather than to the model.
+/// Read at both ends, as `checks/share_exceeds_slack.sqlc` reads it: the share breaks the bound
+/// only when the whole of it is above the whole slack, its lowest point above the slack's
+/// highest. Where the two ranges overlap, the document does not settle it.
 #[test]
 fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
     let mut candidates = 0;
@@ -1376,28 +1357,27 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
                 continue;
             };
             // Only an interference side draws on a slack; clearance is spare, not overflow.
-            // ⛔ `transition` IS EXCLUDED, AND THE ARGUMENT FOR ADMITTING IT WAS ANSWERABLE.
-            // It read: a transition layer excluded here is a layer whose overflow nothing
-            // bounds. Its overflow is bounded, `exposure_unaccounted` derives the exposure
-            // from the layer's own demand and nameplate and bounds it against the unserved
-            // shares, which is the comparison a transition admits. What this rule reads is
-            // the holder shares, and under a transition those carry the CLEARANCE magnitude:
-            // `|n - d|` is the larger side and the one a filer can count. Bounding it by the
-            // absorbing slack compares opposite edges of one buffer.
+            // `transition` is excluded, and its overflow is still bounded:
+            // `exposure_unaccounted` derives the exposure from the layer's own demand and
+            // nameplate and bounds it against the unserved shares, which is the comparison a
+            // transition admits. What this rule reads is the holder shares, and under a
+            // transition those carry the clearance magnitude, the larger side and the one a
+            // filer can count. Bounding it by the absorbing slack would compare opposite
+            // edges of one buffer.
             if !matches!(&r.sign, StatedFitType::Fit(FitType::Interference)) {
                 continue;
             }
-            let Some((_, slack, _, _)) = absorber_slack(l) else {
-                continue; // unmeasured or none-with-no-figure: the check SUSPENDS
+            let Some((_, _, slack, _)) = absorber_slack(l) else {
+                continue; // unmeasured or none-with-no-figure: the check suspends
             };
             candidates += 1;
 
-            // ⛔⛔ THE PARTITION, ASSERTED HERE BECAUSE THE EXEMPTION BELOW RESTS ON IT.
-            // `booked`, `counterparty` and `people` name somebody who ABSORBED; `customer`
-            // and `unrealised` name demand nobody met. The two classes must exhaust the
-            // stated shares. If they ever stop doing so, a share is dropped by both and the
+            // The split into two classes, asserted here because the exemption below rests on
+            // it. `booked`, `counterparty` and `people` name somebody who absorbed; `customer`
+            // and `unrealised` name demand nobody met. Between them the two classes must cover
+            // the stated shares. If they stop doing so, a share is dropped by both, and the
             // empty left side below stops being a finding and becomes an artefact nobody can
-            // see. algebra/borne.sqlc asserts the same identity over the same two relations.
+            // see. algebra/borne.sqlc asserts the same over the same two relations.
             let stated_shares = |unserved_class: bool| -> Vec<f64> {
                 r.holder
                     .iter()
@@ -1424,27 +1404,43 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
                 .sum();
             let unserved: f64 = stated_shares(true).iter().sum();
 
-            // ⛔ THE UNSERVED PAIR IS EXEMPT, NOT `unrealised` ALONE. Both name demand
-            // nobody met, overflow, not a load the buffer held, and `Fit` calls the same
-            // pair a violation under a clearance. Exempting one of the two summed a
+            // The unserved pair is exempt, not `unrealised` alone. Both name demand nobody
+            // met, overflow, not a load the buffer held, and `Fit` calls the same pair a
+            // violation under a clearance. Exempting only one of the two would sum a
             // customer's borne degradation into the buffer's load.
             let absorbed = stated_shares(false);
             let borne: f64 = absorbed.iter().sum();
             assert!(
                 (held - borne - unserved).abs() < 1e-9,
                 "{name} `{}`: {held} held is not {borne} absorbed + {unserved} unserved. The \
-                 two holder classes no longer exhaust the stated shares",
+                 two holder classes do not cover the stated shares between them",
                 l.name
             );
             if absorbed.is_empty() {
                 continue; // nothing was attributed to the buffer: no bound to test
             }
+            // The lowest the absorbed shares can be, against the most the slack can hold.
+            let borne_low: f64 = r
+                .holder
+                .iter()
+                .filter_map(|h| match h {
+                    StatedHolderType::Holder(h)
+                        if !matches!(
+                            h.kind,
+                            HolderKindType::Unrealised | HolderKindType::Customer
+                        ) =>
+                    {
+                        stated(&h.share).map(|(low, _, _, _)| low)
+                    }
+                    _ => None,
+                })
+                .sum();
 
             assert!(
-                borne <= slack + 1e-9,
-                "{name} `{}`: {borne} is attributed to the `{}` buffer, whose slack is \
-                 {slack}. A buffer cannot absorb more than it holds, and the excess is \
-                 `unrealised` — demand that overflowed every buffer — not a bigger buffer",
+                borne_low <= slack + 1e-9,
+                "{name} `{}`: at least {borne_low} is attributed to the `{}` buffer, whose slack \
+                 is at most {slack}. A buffer cannot absorb more than it holds, and the excess is \
+                 `unrealised`, demand that overflowed every buffer, not a bigger buffer",
                 l.name,
                 match &r.absorber {
                     StatedBorrowedTermType::Term(t) => t.value.as_str(),
@@ -1455,19 +1451,18 @@ fn a_share_does_not_exceed_the_slack_of_the_buffer_that_absorbed_it() {
         }
     }
 
-    // ⚠️ S-15's TRAP, GUARDING THE POPULATION THAT CAN ACTUALLY GO SILENT. A corpus whose
-    // slacks are all `unmeasured` lets this rule pass by checking nothing, and score as
-    // covered.
+    // The guard is on the population that can go silent. A corpus whose slacks are all
+    // `unmeasured` lets this rule pass by checking nothing, and score as covered.
     //
-    // ⛔⛔ IT READ `checked >= 2`, AND THAT IS THE WRONG STAGE TO GUARD ONCE THE UNSERVED
-    // PAIR IS EXEMPT. `checked` is empty here on purpose: every candidate is removed by the
-    // exemption, not by a filter that matched nothing. Demanding otherwise demands a document
-    // the model predicts is rare, an absorbing holder with a STATED share against a SIZED
-    // slack, where `Remainder` says the share on a labour layer is "unmeasured BY DESIGN AND
-    // PERMANENTLY" and `capacitySlack` says a person is the one supply that can run hot.
+    // It guards the candidates and not `checked`, because with the unserved pair exempt
+    // `checked` is empty here on purpose: every candidate is removed by the exemption, not by
+    // a filter that matched nothing. Demanding otherwise would demand a document the model
+    // predicts is rare, an absorbing holder with a stated share against a sized slack, where
+    // `Remainder` says the share on a labour layer is unmeasured by design and for good, and
+    // `capacitySlack` says a person is the one supply that can run hot.
     //
-    // ⛔ What must not go silent is the population that REACHES the exemption. If an upstream
-    // filter empties that, the partition above never runs and the vacuum stops being a
+    // What must not go silent is the population that reaches the exemption. If an upstream
+    // filter empties that, the split above never runs, and the emptiness stops being a
     // finding about the evidence and becomes a defect nothing reports.
     assert!(
         candidates >= 2,
@@ -1488,10 +1483,10 @@ fn demand_and_nameplate(l: &pm::LayerType) -> Option<(Range, Range)> {
     Some(((dl, dm, dh), (nl, nm, nh)))
 }
 
-/// ⛔⛔ ISO 286'S OWN CRITERION, WHICH COMPARES TWO RANGES AND NEVER TWO POINTS.
+/// ISO 286's own criterion, which compares two ranges and never two points.
 ///
-/// A fit class is decided by how the hole's tolerance zone lies against the shaft's, and it
-/// decides all three cases exhaustively. `mostLikely` decides nothing.
+/// A fit class is decided by how the hole's tolerance zone lies against the shaft's, and that
+/// decides every case among the three. `mostLikely` decides nothing.
 fn iso_fit(d: Range, n: Range) -> FitType {
     if n.0 >= d.2 {
         FitType::Clearance
@@ -1502,32 +1497,29 @@ fn iso_fit(d: Range, n: Range) -> FitType {
     }
 }
 
-/// ⭐ HOW FAR DEMAND CAN RUN PAST THE SUPPLY AT THE WORST CORNER, from `demand` and
+/// How far demand can run past the supply at the worst corner, from `demand` and
 /// `nameplate` and nothing else.
 ///
-/// ⛔ It is NOT recoverable from the remainder magnitude, which is why it is computed here.
-/// `|n - d|` is sign-blind, so under a transition fit it keeps only the LARGER of the two
-/// sides and the smaller one is invisible inside it. On `refutation#compute` the magnitude is
-/// `[0.0, 2.8, 5.0]` — the clearance side — and the 0.4 of interference sits inside that
-/// interval indistinguishable from 0.4 of clearance.
+/// It is not recoverable from the remainder's magnitude, which is why it is computed here.
+/// The magnitude has no sign, so under a transition fit it keeps only the larger of the two
+/// sides, and the smaller one is invisible inside it. On `refutation#compute` the magnitude is
+/// the clearance side, and the interference sits inside that range, indistinguishable from as
+/// much clearance.
 fn exposure(d: Range, n: Range) -> f64 {
     (d.2 - n.0).max(0.0)
 }
 
 /// True where somebody looked at how far this supply can run above its rating and found zero.
-/// ⭐⭐ A MEASURED ZERO, HOWEVER IT IS SPELLED. Read only the absence arm, and a corpus whose
-/// measured-zero capacity slacks are all stated `[0, 0, 0]` silently yields none, so the
-/// assertion downstream falls to zero examined rather than failing on a document. ⭐ The SQL side needs no union for it: `ClaimAbsence` carries no
-/// `none`, so the second spelling does not parse, and `layers/absorption.sqlc` reads the one
-/// spelling straight off `entries/slacks.sqlc`.
 ///
-/// ⛔ A SIZED SLACK IS NOT AUTOMATICALLY HEADROOM. Sized AT ZERO is the strongest statement
-/// the element can make, the supply cannot be run hot at any price, and the `boundOrigin`
+/// A measured zero has one spelling, a claim of `[0, 0, 0]`, so this reads the claim arm.
+/// Reading only the absence arm would find none, and the assertion downstream would examine
+/// nothing rather than fail on a document. `pm:ClaimAbsence` has no `none`, so there is no
+/// second spelling to union with, here or on the SQL side, where `layers/absorption.sqlc`
+/// reads the one spelling straight off `entries/slacks.sqlc`.
+///
+/// A sized slack is not automatically headroom. Sized at zero is the strongest statement the
+/// element can make, that the supply cannot be run hot at any price, and the `boundOrigin`
 /// says by whose authority: a shelf life, a reserved block, or somebody's own ceiling.
-///
-/// ✅ ONE SPELLING. A claim of zero is the only way to say this, and it does not need
-/// unioning with `absent/reason = none`, because `pm:ClaimAbsence` has no `none` to reach
-/// for.
 fn cannot_run_hot(l: &pm::LayerType) -> bool {
     match &l.supply.nameplate.capacity_slack {
         StatedClaimType::Absent(_) => false,
@@ -1535,18 +1527,16 @@ fn cannot_run_hot(l: &pm::LayerType) -> bool {
     }
 }
 
-/// ⛔⛔⛔ THE FIT IS A COMPARISON OF TWO RANGES, AND IT WAS A COMPARISON OF TWO POINTS UNTIL
-/// `Fit` GAINED ITS THIRD MEMBER.
+/// The fit is a comparison of two ranges.
 ///
-/// ⭐ While the enumeration had two members it took ONE value and therefore had to be read at
-/// ONE point, `mostLikely`, while the magnitude beside it was computed across the range. Two
-/// conventions in one type. Three members are read across the range and the conventions
-/// become one, which is most of the argument for the member.
+/// With two members, `Fit` could take one value only by being read at one point,
+/// `mostLikely`, while the magnitude beside it is computed across the range: two conventions
+/// in one type. With three members it is read across the range, and the conventions become
+/// one, which is most of the case for the third member.
 ///
-/// ⚠️ THE CORPUS BARELY MOVED, AND THAT IS THE EVIDENCE RATHER THAN A DISAPPOINTMENT. Twenty
-/// of twenty-one layers classify identically under both rules. The twenty-first is
-/// `refutation#compute`, whose numbers are the ones `Fit`'s own annotation uses to illustrate
-/// a crossing — the schema described the missing member using the one document that had it.
+/// Almost every corpus layer classifies the same either way, and that is the evidence rather
+/// than a disappointment. The one that does not is `refutation#compute`, whose numbers are
+/// the ones `Fit`'s own annotation uses to illustrate a crossing.
 #[test]
 fn a_fit_is_classified_across_the_whole_demand_range() {
     let mut checked = 0;
@@ -1581,28 +1571,28 @@ fn a_fit_is_classified_across_the_whole_demand_range() {
     );
 }
 
-/// ⛔⛔ A SUPPLY THAT CANNOT RUN ABOVE ITS RATING CANNOT HAVE ABSORBED WHAT IT COULD NOT
-/// SERVE, SO THAT DEMAND WENT UNSERVED AND THE UNSERVED SHARE HAS TO APPEAR ON THE LIST.
+/// A supply that cannot run above its rating cannot have absorbed what it could not serve, so
+/// that demand went unserved, and the unserved share has to appear on the list.
 ///
-/// ⭐ Under `interference` `Fit` states this as a UNIVERSAL rule — every holder must be
-/// `customer` or `unrealised`, because the whole remainder is excess. Under `transition` that
-/// would be wrong: part of the range is genuinely clearance, and a `booked` share is
-/// legitimate there. A reserved block paid for and not fully drawn is exactly that. So the
-/// rule weakens to PRESENCE, and the weakening is correct rather than a concession.
+/// Under `interference`, `Fit` states this for every holder: each must be `customer` or
+/// `unrealised`, because the whole remainder is excess. Under `transition` that would be
+/// wrong: part of the range is genuinely clearance, and a `booked` share is legitimate there.
+/// A reserved block paid for and not fully drawn is exactly that. So the rule weakens to
+/// presence, and the weakening is correct rather than a concession.
 ///
-/// ⛔ WHAT CANNOT BE CHECKED HERE IS THE SIZE OF IT, and the reason is worth knowing
-/// before trusting this test: the interference PORTION of a share is not a filed field, and
-/// the magnitude the shares sum to has already swallowed it. `the_unserved_share_does_not_
-/// exceed_the_derived_exposure` bounds it from the other direction, from demand and nameplate.
+/// What cannot be checked here is the size of it, and the reason is worth knowing before
+/// trusting this test: the interference portion of a share is not a filed field, and the
+/// magnitude the shares sum to has already swallowed it.
+/// `the_unserved_share_does_not_exceed_the_derived_exposure` bounds it from the other
+/// direction, from demand and nameplate.
 ///
-/// ⚠️ "UNSERVED" AND NOT "REFUSED": a reserved card that errors a request did refuse it, but a
-/// caller who waits past their patience and leaves was refused by nobody. Both land in these two
-/// holders, so the word must not decide which happened. `Layer/timeSlack` says it outright —
-/// the holder does not get to refuse, the demand DECAYED.
+/// "Unserved" and not "refused": a reserved card that errors a request did refuse it, but a
+/// caller who waits past their patience and leaves was refused by nobody. Both land in these
+/// two holders, so the word must not decide which happened. `Layer/timeSlack` says it
+/// outright: the holder does not get to refuse, the demand decayed.
 ///
-/// ⚠️ `refutation#compute` failed this and nothing caught it, because the universal rule is
-/// gated on `sign = interference` and that layer filed `clearance` at the mode. It is the
-/// defect the third fit member exists to make visible.
+/// A layer whose range crosses and that files `clearance` at the mode would never meet the
+/// rule for `interference`; the third fit member is what makes that layer visible.
 #[test]
 fn a_supply_that_cannot_run_hot_names_whose_demand_went_unserved() {
     let mut checked = 0;
@@ -1634,7 +1624,7 @@ fn a_supply_that_cannot_run_hot_names_whose_demand_went_unserved() {
                 unserved,
                 "{name} `{}`: demand reaches {} against a nameplate of {}, and this supply's \
                  `capacitySlack` is a measured zero — it cannot be run above its rating at \
-                 any price. The {expo:.4} it could not serve therefore went UNSERVED rather \
+                 any price. The {expo:.4} it could not serve therefore went unserved rather \
                  than absorbed, and no holder says so. Unserved demand is `customer` or \
                  `unrealised`",
                 l.name, d.2, n.0
@@ -1651,22 +1641,16 @@ fn a_supply_that_cannot_run_hot_names_whose_demand_went_unserved() {
 
 /// The one place this model measures something with no instrument behind it.
 ///
-/// Everywhere else a slack bounds shares that were already filed. Here the three buffers close an
-/// inequality over quantities a filer had to supply anyway:
+/// Everywhere else a slack bounds shares that were already filed. Here the three buffers close a
+/// bound over quantities a filer had to supply anyway: what your own numbers say could have gone
+/// wrong, the demand's high above the nameplate's low, is at most what the buffers could absorb
+/// at their highs plus what you admit went unserved at its high. The buffers are substitutes
+/// (running hot, drawing on stock, making the demand wait), so all three are added, and one whose
+/// room nobody sized suspends the check: that route's ceiling is unknown, not zero.
+/// `notApplicable` is a route that does not arise and contributes nothing.
 ///
-/// ```text
-/// max(0, demand.high - nameplate.low)  ≤  Σ buffers slack.high + Σ unserved share highs
-/// ```
-///
-/// In words: what your own numbers say could have gone wrong is at most what the buffers could
-/// absorb plus what you admit went unserved. The buffers are substitutes (running hot, drawing on
-/// stock, making the demand wait), so all three are summed, and one whose room nobody sized
-/// suspends the check: that route's ceiling is unknown, not zero. `notApplicable` is a route that
-/// does not arise and contributes nothing. Proven in `src/proofs/README.md`, entry
-/// `exposure_bound`.
-///
-/// Evaluated at one corner, deliberately. The clearance and interference sides are
-/// anti-correlated, so anything summed across the range pairs the slack week's spare with the busy
+/// Evaluated at one corner, on purpose. The clearance and interference sides move in opposite
+/// directions, so anything summed across the range pairs the slack week's spare with the busy
 /// week's unserved demand and reports a state that occurs in no week.
 ///
 /// No corpus layer reaches it. The one with every buffer stated leaves its unserved share
@@ -1761,30 +1745,31 @@ fn the_unserved_share_does_not_exceed_the_derived_exposure() {
     );
 }
 
-/// ⛔⛔ S-29. ALL THREE NARROWING KINDS ARE EXERCISED, AND WITHOUT THIS THEY WOULD NOT BE.
+/// The narrowing kinds are exercised, and so are the two typed absences beside them.
 ///
-/// `narrowsWhen` as an optional bare string makes its absence mean three things at once:
+/// `narrowsWhen` as an optional bare string would make its absence mean three things at once:
 /// nobody said, nothing would narrow it, or there is no range. That is the boolean
-/// anti-pattern in the one field carrying the model's falsifiability claim, and it is the
-/// fourth position to take this shape, beside the three buffer slacks as booleans, `Fit` as
-/// two members where ISO 286 has three, and a `lumpy boolean NOT NULL`
-/// in the DDL met a document filing divisibility as a typed absence.
+/// anti-pattern in the one field carrying the model's falsifiability claim, the same shape as
+/// the three buffer slacks as booleans, `Fit` with two members where ISO 286 has three, and a
+/// `lumpy boolean NOT NULL` in the DDL meeting a document that files divisibility as a typed
+/// absence.
 ///
-/// ⭐ The `kind` is what makes the width's COMPOSITION statable:
+/// The `kind` is what makes the make-up of a range's width statable:
 ///
-/// - `instrument` — the width is IGNORANCE. A better measurement reveals what was always
-///   there. Eighteen of the corpus's twenty-three, and the reading `Claim`'s prose assumes.
-/// - `intervention` — the width is VARIATION. Only changing the process reduces it. The
+/// - `instrument`: the width is ignorance. A better measurement reveals what was always
+///   there. Most of the corpus files this, and it is the reading `Claim`'s prose assumes.
+/// - `intervention`: the width is variation. Only changing the process reduces it. The
 ///   sharpest case is a month being `[672, 720, 744]` hours: billing on a fixed 30-day
-///   cycle removes that, and NO instrument measures it away.
-/// - `experiment` — the filer does not know which, and names what would settle it. This is
+///   period removes that, and no instrument measures it away.
+/// - `experiment`: the filer does not know which, and names what would settle it. This is
 ///   the honest third answer, and it is why the field is not an `ignorance | variation` flag.
 ///
-/// ⚠️ A corpus using only `instrument` would leave two thirds of the enum untested while
-/// every rule above it passed. Hence this test rather than trust.
+/// A corpus using only `instrument` would leave two of the three kinds untested while every
+/// rule above it passed. This walk reaches the claims on a layer, where it finds `instrument`
+/// and both typed absences; the note at its end says where the other two kinds are counted.
 #[test]
 fn the_corpus_exercises_every_narrowing_kind() {
-    // ⚠️ Counters rather than collected references: `corpus()` yields owned documents that
+    // Counters rather than collected references: `corpus()` yields owned documents that
     // drop each iteration, so nothing borrowed from one outlives the loop.
     let (mut instrument, mut stated, mut not_applicable, mut unmeasured) = (0, 0, 0, 0);
 
@@ -1841,20 +1826,19 @@ fn the_corpus_exercises_every_narrowing_kind() {
         "no claim files `unmeasured`, which is what a blank usually means"
     );
 
-    // ⚠️ `intervention` and `experiment` sit on holder shares, coupling strengths and
+    // `intervention` and `experiment` sit on holder shares, coupling strengths and
     // conversion factors, which this walk does not reach. assets/sql/rules.sql groups
     // every narrowing in a document regardless of where it hangs, and reports the split.
 }
 
-/// ⭐⭐⭐ THE MODEL'S CENTRAL ASSUMPTION IS NOW COUNTABLE, AND THAT IS WHAT THE WRAPPER
-/// BOUGHT. A stack asserts that its layers hold their remainders independently. `Coupling`'s
-/// own annotation says a document with no couplings "is not evidence of independence; it is
-/// a document where nobody looked" — and for two revisions the element it says that about was
-/// `minOccurs="0" maxOccurs="unbounded"`, so the schema named the defect and then encoded it.
+/// The model's central assumption is countable, and the wrapper is what makes it so. A stack
+/// asserts that its layers hold their remainders independently. `Coupling`'s own annotation
+/// says a document with no couplings is not evidence of independence but a document where
+/// nobody looked, and an optional, repeatable element would encode exactly that defect.
 ///
-/// ⛔ THIS TEST DOES NOT DEMAND A PARTICULAR ANSWER. It demands that every stack GIVE one,
-/// and that the corpus hold more than a single answer, because a field where every document
-/// says the same thing is decoration.
+/// This test does not demand a particular answer. It demands that every stack give one, and
+/// that the corpus hold more than a single answer, because a field where every document says
+/// the same thing is decoration.
 #[test]
 fn every_stack_says_whether_anybody_looked_for_couplings() {
     let mut filed = 0;
@@ -1876,7 +1860,7 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
                     ks.is_empty(),
                     "{name}: a stack cannot both file couplings and file a reason it has none"
                 );
-                // ⭐ `notApplicable` is a claim about the STACK's shape rather than about
+                // `notApplicable` is a claim about the stack's shape rather than about
                 // anybody's diligence: one layer, so there is no pair to couple.
                 if a.reason == pm::AbsenceReasonType::NotApplicable {
                     assert_eq!(
@@ -1904,12 +1888,12 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
         reasons.len()
     );
 
-    // ⛔⛔ AND HERE IS THE READING AN EMPTY LIST CANNOT PRODUCE. Not one stack in this
-    // corpus files `none` — nobody has relieved a layer's constraint and watched the others
-    // and reported independence. Every stack that declines says `unmeasured` or has no pair
-    // to test, and one stack files a coupling that CONTRADICTS the assumption outright. That
-    // is a fact about the evidence rather than about any one filing, and it is reachable only
-    // because an empty list is not an answer here.
+    // And here is the reading an empty list cannot give. Not one stack in this corpus files
+    // `none`: nobody has relieved a layer's constraint, watched the others and reported
+    // independence. Every stack that declines says `unmeasured` or has no pair to test, and
+    // every stack that files a coupling contradicts the assumption outright. That is a fact
+    // about the evidence rather than about any one filing, and it is reachable only because
+    // an empty list is not an answer here.
     assert!(
         !reasons.contains(&"None".to_string()),
         "a stack now claims tested independence. That is a heavy claim and a welcome one — \
@@ -1917,17 +1901,16 @@ fn every_stack_says_whether_anybody_looked_for_couplings() {
     );
 }
 
-/// ⭐⭐ A WINDOW'S ABSENCE IS FOUR DIFFERENT FACTS AND `Divisibility` ALREADY DESCRIBED THREE
-/// OF THEM IN PROSE IT COULD NOT FILE. It says a window is MALFORMED on a unit with no
-/// denominator, and it calls a supply that is always on one that "does not need saying so".
-/// Those are `notApplicable` and `none`, which a missing element encodes identically and
-/// which are both indistinguishable from nobody having asked.
+/// A window's absence is typed, and the type decides the time slack. `Divisibility` says a
+/// window is malformed on a unit with no denominator, which is `notApplicable`, and a supply
+/// that is always on files a window of one whole period. A missing element would encode both
+/// identically, and both would look the same as nobody having asked.
 ///
-/// ⛔ THE RULE THE DISTINCTION BUYS BACK IS THE ONE THE ELEMENT ASKS FOR. `q / clearance`
-/// assumes the spare is spread evenly across the denominator; a window denies it. So a filed
-/// window forbids a `derived` time slack — and so does `unmeasured`, because nobody knows
-/// whether the spare is spread evenly, which is the case a rule reading presence alone cannot
-/// reach.
+/// The rule the distinction buys back is the one the element asks for. Deriving a time slack
+/// from the clearance assumes the spare is spread evenly across the denominator; a window
+/// denies it. So a filed window forbids a `derived` time slack, and so does `unmeasured`,
+/// because nobody knows whether the spare is spread evenly, which is the case a rule reading
+/// presence alone cannot reach.
 #[test]
 fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived() {
     let mut reasons = Vec::new();
@@ -1947,11 +1930,10 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 l.name
             );
 
-            // `notApplicable` is a claim about the UNIT, and what sits under its line is
-            // filed one element over. ✅ This read `unit.contains(" per ")`, which is the
-            // removed `LIKE` again and which cannot tell a PERIOD from a denominator that
-            // merely exists, `GPU-hour per GPU` files `each`, and a duty cycle is still
-            // malformed there.
+            // `notApplicable` is a claim about the unit, and what sits under its line is
+            // filed one element over. Reading the unit's text for " per " cannot tell a
+            // period from a denominator that merely exists: `GPU-hour per GPU` files `each`,
+            // and a window is still malformed there.
             if let Some(a) = absence {
                 if a.reason == ClaimAbsenceReasonType::NotApplicable {
                     if let Some(amount) = l.supply.nameplate.amount.filed() {
@@ -1968,11 +1950,11 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
                 reasons.push(format!("{:?}", a.reason));
             }
 
-            // ⭐⭐⭐ TWO LICENCES, AND NEITHER MAY BE READ OUT OF AN ABSENCE.
-            // `q / clearance` spreads the spare evenly across the denominator, so it needs
-            // either no denominator at all (`notApplicable`) or a supply that is live for
-            // the whole of one (a window of one whole period). Spelling the second as
-            // `absent/reason = none` files a number as a nothing.
+            // Two licences, and neither may be read out of an absence. Deriving the time
+            // slack from the clearance spreads the spare evenly across the denominator, so it
+            // needs either no denominator at all (`notApplicable`) or a supply that is live
+            // for the whole of one (a window of one whole period). Spelling the second as
+            // `absent/reason = none` would file a number as a nothing.
             let derivable = absence
                 .is_some_and(|a| a.reason == ClaimAbsenceReasonType::NotApplicable)
                 || runs_the_whole_period(l);
@@ -2003,18 +1985,13 @@ fn a_windows_absence_is_typed_and_it_decides_whether_a_time_slack_can_be_derived
     );
 }
 
-/// ⭐⭐⭐ WHO OWNS THE EDGE OF THIS RANGE. As an optional bare enumeration `Claim/boundOrigin`
-/// is filed ONCE IN THE WHOLE CORPUS, which `Nameplate/capacitySlack`'s own annotation
-/// complains about, three types away, while asking for exactly this field.
-/// `assets/sql/reports/bound_ownership.sql` prints what the required, wrapped field gets
-/// instead.
+/// Who owns the edge of this range. As an optional bare enumeration, `Claim/boundOrigin`
+/// would be filed almost nowhere, and an optional field nobody fills is not a weak signal, it
+/// is an absent one: its blank cannot separate "nobody has asked" from "nothing sets this
+/// bound, the range is where the measurements fell". It is a required
+/// `StatedConstraintOrigin`, and `assets/sql/reports/bound_ownership.sql` prints what it gets.
 ///
-/// ⛔ AN OPTIONAL FIELD NOBODY FILLS IS NOT A WEAK SIGNAL, IT IS AN ABSENT ONE, and its blank
-/// could not separate "nobody has asked" from "NOTHING sets this bound — the range is where
-/// the measurements fell". It is a required `StatedConstraintOrigin` now, and the interesting
-/// result came out of filing it rather than out of the change itself.
-///
-/// ⭐⭐ THE MODEL ALREADY ANSWERS THIS QUESTION IN A SIBLING ELEMENT FOR HALF THE CORPUS.
+/// The model already answers this question in a sibling element for half the corpus.
 /// `Nameplate/amountOrigin` says who could hold a different number; `LumpyQuantum/origin` says
 /// who sets the size of one. Where a sibling states it, the claim names that sibling as the
 /// identity computing its edge (`amountOrigin`, `quantumOrigin`) rather than restating it: a
@@ -2057,7 +2034,7 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
                 }
             };
 
-            // ⭐ `amount` sits beside `amountOrigin`, and a lumpy `size` beside its own
+            // `amount` sits beside `amountOrigin`, and a lumpy `size` beside its own
             // `origin`; `demand` and a `draw` sit beside nothing at all.
             check("demand", l.demand.amount.filed(), None);
             check("draw", l.supply.jagged.draw.filed(), None);
@@ -2074,8 +2051,8 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
     assert!(
         derived_beside_a_sibling >= 20,
         "only {derived_beside_a_sibling} claims point at a sibling for their origin; the whole \
-         finding here is that the model already answered this for the nameplate half of the \
-         corpus and had no way to say so"
+         finding here is that the model answers this for the nameplate half of the corpus in \
+         a sibling element, and a claim says so by naming it"
     );
     origins.sort();
     origins.dedup();
@@ -2084,6 +2061,6 @@ fn every_claim_says_who_owns_the_edge_of_its_range() {
     assert!(
         origins.len() >= 2 && reasons.len() >= 2,
         "{origins:?} stated and {reasons:?} declined; a field where every claim gives the same \
-         answer proves nothing about the distinction it was added for"
+         answer shows nothing about the distinction it is there for"
     );
 }

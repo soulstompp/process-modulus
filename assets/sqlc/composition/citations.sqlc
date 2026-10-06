@@ -1,14 +1,14 @@
 # The standards a composition works under. One row per `asrt:citation` on a composition: the
 # instrument as a taxonomy and a value, the clause where one is named, and the edition read.
 #
-# A consolidation is performed under a rule
+# A consolidation is done under a rule
 #   This is where the composer names it. The regime says which framework the members reported
-#   under; the citation says which instrument governs the act of combining them. Two different
-#   questions, and only one of them was storable at all without this table.
+#   under; the citation says which instrument governs the act of combining them. They are two
+#   different questions, and this table is where the second is kept.
 #
 # Read by no rule
-#   Homeless for the same reason `eliminations/between.sqlc` was: repeating, read by no rule,
-#   therefore under no pressure to exist. Two are filed in this corpus.
+#   It has its own table for the reason eliminations/between.sqlc has one: it repeats and no rule
+#   reads it, so nothing else would keep it.
 -- asrt:composition/asrt:citation, one row each.
 SELECT c.composition, c.seq, c.taxonomy, c.instrument, c.clause, c.version
 FROM pm.composition_citation c

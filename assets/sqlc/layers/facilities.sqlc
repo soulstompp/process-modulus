@@ -1,12 +1,12 @@
 # Every layer's supply as filed, both faces of it. One row per `pm:Facility`: its label, the
 # nameplate face (amount, who committed it, how it divides, its window) and the jagged face (the
-# draw and what it was measured against), each stated or typed absent.
+# draw and what it was measured against), each stated or typed blank.
 #
-# The whole table, where layers/nameplate.sqlc is the vector
-#   layers/nameplate.sqlc is `n`, the stated amounts, and a layer whose amount is typed absent has
-#   no row there. That is the right reading for arithmetic and the wrong one for asking what a
-#   supply says about itself: a nameplate stating no amount still says how it divides, who could
-#   commit it and what its draw was measured against. This relation keeps every facility.
+# The whole table, where layers/nameplate.sqlc keeps the stated amounts
+#   layers/nameplate.sqlc holds the stated amounts, and a layer whose amount is a typed blank has no
+#   row there. That is the right reading for arithmetic and the wrong one for asking what a supply
+#   says about itself: a nameplate stating no amount still says how it divides, who could commit it
+#   and what its draw was measured against. This relation keeps every facility.
 -- pm:Layer/pm:supply, pm:Facility with its pm:Nameplate and pm:Jagged, one row per layer.
 SELECT n.filing, n.layer, n.facility_label,
        n.amount_low, n.amount_mode, n.amount_high, n.amount_unit, n.amount_absent,

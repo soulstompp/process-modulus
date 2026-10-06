@@ -1,28 +1,26 @@
-# Whether anybody looked for a dependence, which is the other half of C. One row per filing.
+# Whether anybody looked for a dependence, the other half of the couplings. One row per filing.
 #
-# Matrix and search are one pair
-#   A matrix and its search are filed as a pair, and emitting one of them is the failure this model
-#   exists to refuse. `entries/couplings.sqlc` says it in its own header: a filing with no couplings
-#   has either a stack of independent layers or nobody who looked, and those are opposite claims.
-#   Most documents in this corpus state no coupling, so a diagram drawing only the matrix is silent
-#   about them in a way a reader will resolve as independence.
+# The couplings and the search are one pair
+#   The couplings and their search are filed as a pair, and emitting one of them is the failure this
+#   model exists to refuse. As entries/couplings.sqlc says, a filing with no couplings has either a
+#   stack of independent layers or nobody who looked, and those are opposite claims. Most documents
+#   on the corpus state no coupling, so a diagram drawing only the couplings is silent about them in
+#   a way a reader will take as independence.
 #
 # A diagram is the worst place for that
-#   An absence is invisible on a page in a way it is not in a table. A missing row can be counted;
-#   a missing line cannot be seen. That is `examples/diagramming/main.rs`'s own demand, *what could
-#   not be drawn must be enumerated*, applied to the corpus instead of to the notation.
+#   An absence is invisible on a page in a way it is not in a table. A missing row can be counted; a
+#   missing line cannot be seen. That is what `examples/diagramming` itself demands, that what
+#   could not be drawn must be listed, applied to the corpus instead of to the notation.
 #
 # The typed answer, not the note
-#   The four reasons are the fact: `unmeasured` is nobody looked, `none` is somebody looked and
+#   The four answers are the fact: `unmeasured` is nobody looked, `none` is somebody looked and
 #   found nothing, `notApplicable` is there is no pair to couple, and a NULL is somebody looked and
-#   the couplings are the ones drawn. The note is the argument for the answer, it is free prose,
-#   and diagrams/dependences.sqlc says why prose does not travel into an artifact with no unit on
-#   it.
+#   the couplings are the ones drawn. The note is the argument for the answer, it is free prose, and
+#   diagrams/dependences.sqlc says why prose does not travel into an artifact with no unit on it.
 #
-# Carried on the laneSet
-#   The answer rides the laneSet's own documentation, because the laneSet is the partition the
+# Carried on the lane set
+#   The answer goes in the lane set's own documentation, because the lane set is the division the
 #   search is about.
-#
 -- pm:Stack/pm:couplings/pm:absent; carried as the laneSet's own documentation.
 SELECT s.filing,
        coalesce(s.answer::text, 'stated') AS answer

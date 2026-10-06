@@ -1,24 +1,23 @@
 # Every filed elimination, read at the corners of the quantity it was counted in. One row per
-# (composition, composed layer, quantity) that files one: its three points, whether the sum it
-# comes off inverts when taken bound by bound, and so which end of it is in play where that
+# (composition, composed layer, quantity) that files one: its three values, whether the sum it
+# comes off would turn over when taken bound by bound, and so which end of it is in play where that
 # quantity is at its low and where it is at its high.
 #
-# The corner an elimination takes is decided by its sum
-#   An elimination removes a component of the figure it is taken from, so it is subtracted bound
-#   by bound: at the sum's low, the overlap is at its own low. Where the sum of the converted parts
-#   has less width than the elimination, that subtraction inverts, and the only ordered reading
-#   pairs the most overlap with the least total. `crossed` records which reading holds, from the
-#   parts' converted figures and the elimination alone. `at_low` is the elimination where its
-#   quantity is at its low, `at_high` where it is at its high. Proof: `src/proofs/README.md`,
-#   entry `elimination_componentwise`.
+# The sum decides which corner an elimination takes
+#   An elimination removes part of the figure it is taken from, so it is subtracted bound by bound:
+#   at the sum's low, the overlap is at its own low. Where the sum of the converted parts is
+#   narrower than the elimination, that subtraction leaves the low above the high, and the only
+#   reading in order pairs the most overlap with the least total. `crossed` records which reading
+#   holds, from the parts' converted figures and the elimination alone. `at_low` is the elimination
+#   where its quantity is at its low, `at_high` where it is at its high.
 #
-# One test, read by every consumer
-#   composition/fused.sqlc takes its sum this way, composition/fused_remainders.sqlc reads the
-#   same corners into the composed remainder, and composition/carried_eliminations.sqlc carries
-#   them up from the nodes a remainder walk passes. Each reads it here, so the three can never
-#   pair one elimination two ways.
+# One test, read by every relation that needs it
+#   composition/fused.sqlc takes its sum this way, composition/fused_remainders.sqlc reads the same
+#   corners into the composed remainder, and composition/carried_eliminations.sqlc carries them up
+#   from the layers a remainder walk passes. Each reads it here, so the three can never pair one
+#   elimination two ways.
 #
-# A typed absence stays a row
+# A typed blank stays a row
 #   An elimination filed as `unmeasured` keeps its row with no figure, `crossed` false and both
 #   corners NULL; the suspension grounds, not this relation, decide what it lifts.
 -- eliminations/filed.sqlc against folds/part_sums.sqlc.

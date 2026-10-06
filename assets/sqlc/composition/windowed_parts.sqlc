@@ -1,18 +1,16 @@
-# The parts that file a duty cycle, beside the window the composed layer files. One row per
-# resolved part whose own nameplate states a window, with both windows' three points and units,
-# and whether the part omits its conversion factor, which is the filing that says its units
-# already agree.
+# The parts that file a window, beside the window the composed layer files. One row per resolved
+# part whose own nameplate states a window, with both windows' three values and units, and whether
+# the part omits its conversion factor, which is the filing that says its units already agree.
 #
 # A window is carried through a fusion, never summed
-#   The schema says why in one sentence: "two members naming one machine file one calendar between
-#   them; summing gives ten days a week." Amounts add. Calendars do not: they are the same calendar
-#   seen twice.
+#   The schema says why in one sentence: two members naming one machine file one calendar between
+#   them, and summing gives ten days a week. Amounts add. Calendars do not: they are the same
+#   calendar seen twice.
 #
-# A dropped window is not a continuous supply
-#   Both halves of that are unenforceable while a dropped window and a supply that runs
-#   continuously are the same document. Once the absence is typed, a composed layer that silently
-#   loses its parts' calendar is distinguishable from one that states it runs without
-#   interruption, and the holding level in this corpus had dropped one.
+# A dropped window is not a supply that runs all the time
+#   Both halves of that rely on telling a dropped window from a supply that runs all the time. Once
+#   the blank is typed, a composed layer that quietly loses its parts' calendar can be told apart
+#   from one that states it runs without interruption.
 -- asrt:Part's own pm:Divisibility/window against the composed pm:Layer's.
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer,
        pw.window_low, pw.window_mode, pw.window_high, pw.window_unit,

@@ -1,25 +1,29 @@
 # What every holder holds, split into what a buffer absorbed and what went unserved. One row per
-# layer: whether the two sum back to the whole.
+# layer: whether the two add back up to the whole at the low, the most likely value and the high.
 #
-# Additive, not cardinal
-#   The anti-join is inside a `GROUP BY`, so the law is additive rather than cardinal.
-#   entries/borne.sqlc removes unserved holders and then sums per (filing, layer, buffer):
-#   removing some leaves the group standing with a smaller total, removing all drops the group.
-#   So counting rows says nothing here, and a row count can report a confident false finding. Σ
-#   is what must balance: Σall = Σkept + Σremoved.
+# The shares add up, the rows are not counted
+#   entries/borne.sqlc removes unserved holders and then adds up per (filing, layer, buffer):
+#   removing some leaves the group standing with a smaller total, and removing all of them drops
+#   the group. So counting rows says nothing here, and a row count can report a confident false
+#   finding. What must balance is the sum: all the shares equal the served ones plus the unserved
+#   ones.
 #
-# The law behind a vacuous verdict
-#   Every interference layer in this corpus that sizes its absorbing buffer has all of its
-#   holders unserved, so Σkept is zero and share_exceeds_slack examines nothing. The law still
-#   holds, because the sum balances at zero, and that is the point: the vacuum is a finding about
-#   the evidence, not a broken operator.
+# At every point the rule reads
+#   checks/share_exceeds_slack.sqlc sets the low of the absorbed shares against the high of the
+#   slack, and the high against the low, so the split has to hold at both ends and not only at the
+#   most likely value.
 #
-# Both sides composed, never re-derived
-#   The law composes both sides rather than re-deriving the split, which is what makes it a law
-#   about them. Compute `absorbed` as `FILTER (WHERE u.kind IS NULL)` over an anti-join written
-#   here and the law asserts that its own copy of the split is exhaustive, and goes on passing
-#   when entries/served_holders.sqlc changes underneath it. A law that re-derives its subject is
-#   the one failure a soundness contract cannot afford, because it is invisible.
+# The law behind a rule that examines nothing
+#   Every interference layer in the corpus that sizes its absorbing buffer has all of its holders
+#   unserved, so the served total is zero and share_exceeds_slack examines nothing. The law still
+#   holds, because the sum balances at zero, and that is the point: examining nothing is a finding
+#   about the evidence, not a broken query.
+#
+# Both sides composed, never worked out again
+#   The law composes both sides rather than working out the split itself, which is what makes it a
+#   law about them. Work out `absorbed` here from an anti-join of its own and the law only says its
+#   own copy of the split is complete, and it goes on passing when entries/served_holders.sqlc
+#   changes underneath it. A law that works out its own subject fails invisibly.
 -- entries/served_holders.sqlc and entries/unserved_holders.sqlc against pm:Remainder/pm:holder.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -27,22 +31,41 @@ FROM      (
 ) a
 LEFT JOIN (
     SELECT x.filing || ' / ' || x.layer AS subject,
-           abs(x.held - x.served - x.unserved) < 1e-9 AS holds,
-           format('%s held = %s absorbed + %s unserved', x.held, x.served, x.unserved) AS detail
+           abs(x.held_low  - v.low  - u.low)  < 1e-9
+           AND abs(x.held_mode - v.mode - u.mode) < 1e-9
+           AND abs(x.held_high - v.high - u.high) < 1e-9 AS holds,
+           format('[%s, %s, %s] held: [%s, %s, %s] absorbed, [%s, %s, %s] unserved',
+                  x.held_low, x.held_mode, x.held_high,
+                  v.low, v.mode, v.high,
+                  u.low, u.mode, u.high) AS detail
     FROM (
         SELECT h.filing, h.layer,
-               sum(h.share_mode)                                            AS held,
-               coalesce((SELECT sum(v.share_mode) FROM (
-                   :compose(entries/served_holders.sqlc)
-               ) v WHERE v.filing = h.filing AND v.layer = h.layer), 0)      AS served,
-               coalesce((SELECT sum(u.share_mode) FROM (
-                   :compose(entries/unserved_holders.sqlc)
-               ) u WHERE u.filing = h.filing AND u.layer = h.layer), 0)      AS unserved
+               sum(h.share_low)  AS held_low,
+               sum(h.share_mode) AS held_mode,
+               sum(h.share_high) AS held_high
         FROM (
             :compose(entries/holders.sqlc)
         ) h
         WHERE h.share_mode IS NOT NULL
         GROUP BY h.filing, h.layer
     ) x
+    CROSS JOIN LATERAL (
+        SELECT coalesce(sum(s.share_low),  0) AS low,
+               coalesce(sum(s.share_mode), 0) AS mode,
+               coalesce(sum(s.share_high), 0) AS high
+        FROM (
+            :compose(entries/served_holders.sqlc)
+        ) s
+        WHERE s.filing = x.filing AND s.layer = x.layer
+    ) v
+    CROSS JOIN LATERAL (
+        SELECT coalesce(sum(s.share_low),  0) AS low,
+               coalesce(sum(s.share_mode), 0) AS mode,
+               coalesce(sum(s.share_high), 0) AS high
+        FROM (
+            :compose(entries/unserved_holders.sqlc)
+        ) s
+        WHERE s.filing = x.filing AND s.layer = x.layer
+    ) u
 ) p ON true
 WHERE a.slug = 'borne'

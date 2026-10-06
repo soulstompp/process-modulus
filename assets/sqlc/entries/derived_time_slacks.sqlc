@@ -1,15 +1,15 @@
-# The time slacks somebody derived rather than measured. One row per layer filing its time
+# The time slacks somebody worked out rather than measured. One row per layer that files its time
 # buffer as a `clearance` derivation, beside the window that would have to license it.
 #
 # What the derivation assumes
-#   `clearance` says the time slack is the clearance, `n - d` read as a quantity in the layer's
-#   unit. Reading that quantity as a wait, `q / clearance`, assumes the spare is spread
-#   evenly across the denominator.
+#   `clearance` says the time slack is the clearance: the nameplate less the demand, read as an
+#   amount in the layer's unit. Reading that amount as a wait assumes the spare is spread evenly
+#   across the period.
 #
 # A stated window says it is not
 #   A machine running 02:00 to 05:00 has its spare concentrated, so dividing by the whole period
-#   computes over a base that does not exist. `unmeasured` is worse than a stated window, because
-#   it hides the same assumption behind a number.
+#   works over a base that does not exist. `unmeasured` is worse than a stated window, because it
+#   hides the same assumption behind a number.
 -- pm:Layer/pm:timeSlack filed as a clearance derivation, beside pm:Divisibility/pm:window.
 SELECT w.filing, w.layer, w.window_low, w.window_unit, w.window_absent
 FROM      (

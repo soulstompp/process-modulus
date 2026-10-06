@@ -3,15 +3,15 @@
 #
 # The side where somebody bears something
 #   Under a clearance the supply is above demand everywhere and there is nothing to absorb; here
-#   there is, so the holder shares have a magnitude to add up to and the absorbing buffer has a
-#   size to fit inside. checks/clearance_with_unserved.sqlc ranges over the complement.
+#   there is, so the holders' shares have a size to add up to and the absorbing buffer has a size
+#   to fit inside. checks/clearance_with_unserved.sqlc reads the layers this relation leaves out.
 #
 # Not the same question as what the buffer absorbed
-#   On or over the line is not the same question as "what did the buffer absorb", and both
-#   consumers of this relation, entries/borne.sqlc and arithmetic/shares_bounded.sqlc, narrow it
-#   again to `interference` for exactly that reason; borne is where the narrowing is argued. Under
-#   a `transition` both sides are live at once and no single magnitude here says which one a share
-#   is on.
+#   On or over the line is not the same question as "what did the buffer absorb", and the two
+#   relations here that weigh shares against a buffer, entries/borne.sqlc and
+#   arithmetic/shares_bounded.sqlc, narrow it again to `interference` for exactly that reason;
+#   entries/borne.sqlc says why. Under a `transition` both sides are live at once, and no single
+#   size here says which one a share is on.
 -- pm:Remainder/sign in {interference, transition}.
 SELECT r.*
 FROM (

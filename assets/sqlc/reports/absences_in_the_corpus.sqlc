@@ -1,9 +1,9 @@
 # What the evidence does not answer. The absence census over the documents that attest to a real
 # system.
 #
-# A map of the model's edges
+# A map of where the model stops
 #   Every row is a question somebody was asked and declined, with the reason they gave. So
-#   `unmeasured` rows are where an instrument would buy something, `none` rows are settled
+#   `unmeasured` rows are where a measurement would buy something, `none` rows are settled
 #   findings, and `notApplicable` rows are places the schema asks a question that does not arise.
 #   The three call for completely different work, and a NULL would have made them one column of
 #   silence.

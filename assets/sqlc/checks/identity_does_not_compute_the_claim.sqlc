@@ -3,21 +3,22 @@
 # the claim's own position.
 #
 # A claim's edge is the edge of the terms that compute it
-#   `boundOrigin` filed as a derivation says the bound was not set by anybody: the claim is an
-#   identity's output, and its edge is the edge of that identity's terms. `narrowsWhen` filed as one
-#   says the claim narrows as those terms do. Both are true only of the identity that computes the
-#   claim: a share's edge can be `sharesSum`'s, a patience's cannot, because no identity computes a
+#   `boundOrigin` filed as a derivation says nobody set the bound: the claim is an identity's
+#   output, and its edge is the edge of that identity's terms. `narrowsWhen` filed as one says the
+#   claim narrows as those terms do. Both are true only of the identity that computes the claim: a
+#   share's edge can be `sharesSum`'s, a patience's cannot, because no identity computes a
 #   patience. The two sibling origins are the one exception, and only for an edge: `amountOrigin`
 #   on a nameplate amount and `quantumOrigin` on a lump or window size, where the claim's holder
 #   states the author in an element of its own.
 #
 # The schema cannot say it
-#   A `Claim` is one type wherever it sits, so `BoundDerivation` and `NarrowingDerivation` admit the
-#   members of every position at once, and a validator passes a patience whose edge is a fusion
+#   A `Claim` is one type wherever it sits, so `BoundDerivation` and `NarrowingDerivation` admit
+#   the members of every position at once, and a validator passes a patience whose edge is a fusion
 #   sum. identities/roster.sqlc lists the cells, one per identity, position and element, and a
-#   derivation at a claim that is no cell is the claim naming the wrong equation. The roster lists
+#   derivation at a claim that is no cell is the claim naming the wrong identity. The roster lists
 #   no cell twice, so joining it keeps one row per derivation.
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking pm:derivation, against the identity that computes the claim.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking pm:derivation, against the identity
+-- that computes the claim.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

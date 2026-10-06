@@ -3,16 +3,15 @@
 # counting runs against, with the notation that document is imported by.
 #
 # The relationship and nothing wider
-#   examples/diagramming/main.rs draws one `relationship` per row, from the composed layer to the
-#   layer it names, and imports the notation it needs. Which quantity the elimination is against,
-#   and which `between` it was, stay in eliminations/resolved.sqlc: the quantity is
-#   `pm.summed_quantity`, which sqlx has no mapping for, and a program with no use for a quantity is
-#   better unable to read one, as diagrams/calls.sqlc argues for magnitudes.
+#   examples/diagramming draws one `relationship` per row, from the composed layer to the layer it
+#   names, and imports the notation it needs. Which quantity the elimination is against, and which
+#   `between` it was, stay in eliminations/resolved.sqlc: the quantity is `pm.summed_quantity`,
+#   which sqlx has no mapping for, and a program with no use for a quantity is better unable to read
+#   one, as diagrams/calls.sqlc says of figures.
 #
-# A bag, as its source is
+# Repeats, as its source does
 #   One row per eliminated quantity and `between`, so an elimination against two quantities that
 #   runs against one layer is drawn once per quantity.
-#
 -- eliminations/resolved.sqlc projected to the two ends of the relationship.
 SELECT b.composition, b.composed_layer, b.notation, b.resolved_filing, b.layer
 FROM (

@@ -2,16 +2,16 @@
 # ones, and the percentage.
 #
 # A number a receiver may state as fact
-#   The schema's annotation says a claim without a narrowing is weaker and a receiver is entitled
-#   to say so, which is an opinion until somebody counts. Judging whether a particular sentence
-#   would actually narrow a range is prose. Counting which ranges say nothing at all is
-#   arithmetic.
+#   The schema's annotation says a claim without a narrowing is weaker and a receiver is entitled to
+#   say so, which is an opinion until somebody counts. Judging whether a particular sentence would
+#   actually narrow a range is prose. Counting which ranges say nothing at all is arithmetic.
 #
 # Corpus only
 #   It is a claim about the evidence. Fixtures are written to exercise states the corpus does not
-#   reach, so pooling them changes a finding about how people file into a finding about how this
-#   repository writes test data.
--- epistemics/claims.sqlc's narrowsWhen on each ranged demand of layers/ranged_demands.sqlc, over the corpus.
+#   reach, so counting them in would turn a finding about how people file into a finding about how
+#   this repository writes test data.
+-- epistemics/claims.sqlc's narrowsWhen on each ranged demand of layers/ranged_demands.sqlc,
+-- over the corpus.
 SELECT count(*)                                                   AS ranged_demands,
        count(*) FILTER (WHERE c.narrows_condition IS NULL)        AS say_nothing,
        round(100.0 * count(*) FILTER (WHERE c.narrows_condition IS NULL)

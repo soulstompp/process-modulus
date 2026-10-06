@@ -1,4 +1,4 @@
--- §12  Every absence-bearing question as a four-bit word: n·u·a·d.
+-- §12  Every question that takes a typed blank, as a three-letter word: n·u·a.
 WITH layers_summed_quantities AS (
 -- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
 SELECT l.filing, l.layer, 'demand'::pm.summed_quantity AS quantity,
@@ -49,7 +49,8 @@ SELECT n.filing, n.layer,
 FROM pm.nameplate n
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -189,7 +190,8 @@ SELECT r.composition, r.seq, r.id, r.jurisdiction,
 FROM pm.composition_regime r
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
@@ -320,7 +322,7 @@ SELECT filing, subject, question, reason FROM (
 WHERE reason IS NOT NULL
 ),
 epistemics_state_masks AS (
--- epistemics/absences.sqlc folded to one three-bit word per question.
+-- epistemics/absences.sqlc folded to one three-letter word per question.
 SELECT a.question,
        (CASE WHEN bool_or(a.reason = 'none')          THEN 'n' ELSE '.' END) ||
        (CASE WHEN bool_or(a.reason = 'unmeasured')    THEN 'u' ELSE '.' END) ||

@@ -1,20 +1,20 @@
-# A(l), the absorber map: which of the three structural buffers each layer says took up its
-# remainder. One row per layer that names an absorber and whose named term a reader has mapped.
+# Which of the three buffers each layer says took up its remainder. One row per layer that names an
+# absorber whose term a reader has mapped.
 #
 # An unmapped taxonomy has no row
-#   A layer citing a taxonomy nobody has mapped has no row, and that is correct: the question is
-#   unanswerable, not answered zero.
+#   A layer citing a taxonomy nobody has mapped has no row, and that is right: the question cannot
+#   be answered, which is not the same as answered zero.
 #
 # The mapping is a reader's assertion
-#   The join through `buffer_term` is a reader's assertion and not a document's. The absorber
-#   travels as a taxonomy plus a value, so a Portuguese filing citing a translated edition of
-#   Factory Physics says `capacidade`. That `capacidade` is `capacity` is a judgement somebody
-#   made; no filing says it. Deleting the mapping row makes the slack rules stop answering for that
-#   filing rather than answer wrongly, which is the behaviour worth having.
+#   The join through `buffer_term` is a reader's assertion, not a document's. The absorber travels
+#   as a taxonomy plus a value, so a Portuguese filing citing a translated edition of Factory
+#   Physics says `capacidade`. That `capacidade` is `capacity` is a judgement somebody made; no
+#   filing says it. Deleting the mapping row makes the slack rules stop answering for that filing
+#   rather than answer wrongly, which is the behaviour worth having.
 #
 # Why the absorber is not an enum
-#   A restated value set is a fork, and a fork drifts with nothing able to notice. Declared as an
-#   enum, this schema does not load the corpus at all: `capacidade` is not one of its members.
+#   A value set stated twice is two copies, and they drift with nothing able to notice. Declared as
+#   an enum, this schema would not load the corpus at all: `capacidade` is not one of its members.
 -- pm:Remainder/absorber, resolved through pm.buffer_term.
 SELECT l.filing, l.layer,
        l.absorber_taxonomy AS taxonomy,

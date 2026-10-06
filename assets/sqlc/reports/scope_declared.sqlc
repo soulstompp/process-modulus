@@ -3,27 +3,27 @@
 #
 # The coupling search, one level up
 #   The same shape, and the same trap. `scoped` says somebody established what lies outside this
-#   stack and excluded it on purpose. `unbounded` says nobody looked. Rendered as one boolean, "is
+#   stack and excluded it on purpose. `unbounded` says nobody looked. Shown as one yes-or-no, "is
 #   this stack complete?", a bounded selection and an unexamined one are the same row, and the
 #   difference is gone for good. It is the coupling search's distinction applied to the stack
 #   itself.
 #
 # The answer nobody gives
-#   The answer nobody in this corpus gives is the one worth naming: no filing claims `complete`.
-#   A stack is a projection of one system, held by whoever filed it, and reading it as an
-#   enumeration of the system is what turns a second document's extra layer into an accusation
-#   that the first omitted something. The corpus declining to claim completeness is the model's
-#   own reading, filed rather than asserted.
+#   The answer nobody in this corpus gives is the one worth naming: no filing claims `complete`. A
+#   stack is one view of one system, held by whoever filed it, and reading it as a list of the whole
+#   system turns a second document's extra layer into an accusation that the first left something
+#   out. The corpus declining to claim completeness is the model's own reading, filed rather than
+#   asserted.
 #
 # A report, not a rule
-#   `complete` is falsifiable in principle and by nothing here, which is why this is a report and
-#   not a rule. What would refute it is another filing holding a layer of the same system that
-#   this one lacks, and no document names a system, only a filing.
+#   Nothing here could refute `complete`, which is why this is a report and not a rule. What would
+#   refute it is another filing holding a layer of the same system that this one lacks, and no
+#   document names a system, only a filing.
 -- pm:Stack/pm:scope over scope/corpus.sqlc; the extent axis is documented on that element.
 SELECT CASE
          WHEN sc.extent = 'complete'  THEN 'the whole system is in this stack'
          WHEN sc.extent = 'scoped'    THEN 'a bounded selection: somebody said what is outside'
-         WHEN sc.extent = 'unbounded' THEN 'NOBODY LOOKED at what lies outside'
+         WHEN sc.extent = 'unbounded' THEN 'nobody looked at what lies outside'
          ELSE 'not stated: ' || sc.absent
        END      AS how_much_of_the_system,
        count(*) AS stacks

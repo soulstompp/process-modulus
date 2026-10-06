@@ -1,32 +1,36 @@
 # Every layer that states its remainder quantity in the layer's own unit, beside the magnitude its
-# own figures give. One row per examined layer, `violates` where the two differ at any of the three
+# own figures give. One row per layer examined, `violates` where the two differ at any of the three
 # points.
 #
 # A stated quantity is the magnitude
-#   The rule: a remainder's `quantity` may be `derived`, and where it is stated it equals
-#   `|nameplate - demand|`, the magnitude of the remainder in force. The model already derives that
-#   figure from the layer's own demand and nameplate, so a stated quantity is a restatement, and a
-#   restatement that differs from what it restates is a contradiction inside one document.
+#   The rule: a remainder's `quantity` may be `derived`, and where it is stated it equals the
+#   magnitude of the remainder in force, the size of the nameplate less the demand. The model
+#   already works that figure out from the layer's own demand and nameplate, so a stated quantity
+#   restates it, and a restatement that differs from what it restates is a contradiction inside
+#   one document.
 #
 # Compared with the remainder in force
 #   The magnitude is read from layers/remainder.sqlc through layers/filed_against_derived.sqlc: on
-#   a composed layer that owes an exact remainder it is the pivoted `F Φ r - e_n + e_d`, elsewhere
-#   the crossed `n - d`. Comparing with the crossed difference of a composed layer's totals would
-#   accuse `merge-holding-composition/compute`, whose stated [1414, 2857, 4085.6] is right.
+#   a composed layer that owes an exact remainder it is the one worked out from the parts, and
+#   elsewhere the nameplate less the demand from the filed totals. Comparing with the difference of
+#   a composed layer's totals would accuse `merge-holding-composition/compute`, whose stated 1414,
+#   2857 and 4085.6 are right.
 #
 # All three points
-#   Equality is required at the low, the mode and the high, within 1e-9. A quantity is a range, and
-#   a stated range that agrees only at its middle still disagrees with the document's own figures.
+#   Equality is required at the lowest, the most likely and the highest value, within 1e-9. A
+#   quantity is a range, and a stated range that agrees only at its middle still disagrees with the
+#   document's own figures.
 #
 # What it does not examine
-#   A quantity filed as a typed absence states nothing to compare. A quantity in a unit other than
+#   A quantity filed as a typed blank states nothing to compare. A quantity in a unit other than
 #   the layer's is `not comparable` at arithmetic/filed_remainder.sqlc, which the readiness example
-#   pins at zero, so it is left to that site rather than compared across units here.
+#   holds at zero, so it is left to that site rather than compared across units here.
 #
 # Probe
-#   Change `refutation/compute`'s stated quantity from [0.0, 2.8, 5.0] to [0.0, 2.9, 5.0]. This rule
-#   must fire. `examples/witnesses/main.rs` carries that edit.
--- pm:Remainder/pm:quantity against |r| from layers/remainder.sqlc, via layers/filed_against_derived.sqlc.
+#   Change `refutation/compute`'s stated quantity from 0.0, 2.8 and 5.0 to 0.0, 2.9 and 5.0. This
+#   rule must fire. `examples/witnesses` carries that edit.
+-- pm:Remainder/pm:quantity against the magnitude from layers/remainder.sqlc, via
+-- layers/filed_against_derived.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

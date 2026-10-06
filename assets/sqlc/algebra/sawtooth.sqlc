@@ -1,22 +1,22 @@
-# Every lumpy demand that stays inside one tooth, beside whether its residues come back ordered.
-# One row per layer in layers/decomposed.sqlc that does not cross a tooth.
+# Every lumpy demand that stays within one whole quantum, beside whether its residues come back in
+# order. One row per layer in layers/decomposed.sqlc that does not cross a whole quantum.
 #
 # What it asserts
-#   Inside one tooth, `d mod q = d - q * floor(d / q)` with the floor fixed, so the residue rises
-#   with the demand and the three residues are ordered like the three demands. Across a tooth there
-#   is no such promise, which is the case layers/decomposed.sqlc names with `crosses_tooth`.
-#   Proof: `src/proofs/README.md`, entry `sawtooth`.
+#   Within one whole quantum the number of whole quanta does not change, so the residue rises with
+#   the demand, and the three residues are in the same order as the three demands. Across a whole
+#   quantum there is no such promise, which is the case layers/decomposed.sqlc names with
+#   `crosses_tooth`.
 #
-# Why the tooth and not the order
-#   An ordered triple of residues does not mean the demand stayed in one tooth: `(0.2, 1.5, 2.7)`
-#   with `q = 1` gives `(0.2, 0.5, 0.7)` and crosses two. So the census counts crossings, and this
-#   law holds the one direction that is true.
+# Why the crossing and not the order
+#   Residues in order do not mean the demand stayed within one whole quantum: a demand of 0.2, 1.5
+#   and 2.7 with a quantum of 1 gives residues of 0.2, 0.5 and 0.7, and crosses two. So the census
+#   counts crossings, and this law holds the one direction that is true.
 #
 # Probe
-#   examples/probes runs it as `sawtooth`.
-#   Compute `crosses_tooth` in layers/decomposed.sqlc from `d_low` and `d_mode` only. A demand
-#   that stays in one tooth to its mode and crosses after it joins this population, and fails.
--- layers/decomposed.sqlc, restricted to demands inside one tooth.
+#   examples/probes runs it as `sawtooth`. Work out `crosses_tooth` in layers/decomposed.sqlc from
+#   `d_low` and `d_mode` only. A demand that stays within one whole quantum up to its most likely
+#   value and crosses after it joins this population, and fails.
+-- layers/decomposed.sqlc, kept to demands within one whole quantum.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -24,7 +24,7 @@ FROM      (
 LEFT JOIN (
     SELECT x.filing || ' / ' || x.layer AS subject,
            x.d_low_residue <= x.d_mode_residue AND x.d_mode_residue <= x.d_high_residue AS holds,
-           format('demand [%s, %s, %s] inside tooth %s of %s, residues [%s, %s, %s]',
+           format('demand [%s, %s, %s] inside whole quantum %s of %s, residues [%s, %s, %s]',
                   x.d_low, x.d_mode, x.d_high, x.d_low_tooth, x.q,
                   x.d_low_residue, x.d_mode_residue, x.d_high_residue) AS detail
     FROM (

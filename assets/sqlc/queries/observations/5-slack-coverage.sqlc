@@ -1,16 +1,15 @@
 -- §5  Which buffers the corpus sizes, and which of them read zero.
 # One row per (buffer, evidence) from the slack census over every filing: sized, sized at zero,
-# absent, and the total.
+# blank, and the total.
 #
 # Sized zero against unmeasured
-#   A sized zero and an unmeasured buffer are opposite claims, and this splits them. Corpus layers
-#   that size their capacity slack size it at [0,0,0], a filer saying the supply cannot stretch.
-#   That is the tightest possible bound, not a missing one.
+#   A sized zero and an unmeasured buffer are opposite claims, and this splits them. Many corpus
+#   layers that size their capacity slack size it at zero, a filer saying the supply cannot
+#   stretch. That is the tightest possible bound, not a missing one.
 #
 # Prose about this number goes stale
-#   It is wrong as soon as the corpus moves, and it moves. Sentences elsewhere once said no corpus
-#   layer sizes a capacity slack while several did; neither was lying when written, and no program
-#   read them. That is what this whole example is for.
+#   It is wrong as soon as the corpus moves, and the corpus moves. A sentence that states it is
+#   read by no program, so the number is printed here instead.
 -- reports/slack_census.sqlc over every filing, projected for the example.
 SELECT c.buffer         AS "buffer!",
        c.evidence       AS "evidence",

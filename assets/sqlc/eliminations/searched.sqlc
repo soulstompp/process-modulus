@@ -2,11 +2,11 @@
 # that was asked, carrying what it answered.
 #
 # The answer decides which arithmetic is owed
-#   That is what raises this above bookkeeping. `none` or `notApplicable`: the composed figure must
-#   equal the sum of its converted parts exactly. `unmeasured`: no equality is owed at all, and a
-#   checker reporting one is reporting about nothing. eliminations/unsearched.sqlc is that third
-#   state made a relation. There is no fourth: `asrt:StatedEliminations` has no derivation arm,
-#   because whether anybody looked is nobody's output, and `pm.elimination_search` refuses one too.
+#   `none` or `notApplicable`: the composed figure must equal the sum of its converted parts
+#   exactly. `unmeasured`: no equality is owed at all, and a check reporting one is reporting about
+#   nothing. eliminations/unsearched.sqlc is that third state as a relation. There is no fourth:
+#   `asrt:StatedEliminations` has no derivation branch, because whether anybody looked is nobody's
+#   output, and `pm.elimination_search` refuses one too.
 #
 # Clean and unexamined look the same
 #   A list checked clean and a list nobody looked at are the same bytes, and they owe opposite

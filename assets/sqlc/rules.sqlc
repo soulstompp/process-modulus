@@ -43,28 +43,24 @@ SET search_path TO pm, public;
 :compose(reports/derived_eliminations.sqlc);
 
 \echo
-\echo 'And what a receiver is entitled to say about narrowsWhen, as a number rather than'
-\echo 'an opinion. The annotation: "a claim without it is weaker, and a receiver is'
-\echo 'entitled to say so". Judging whether the sentence would actually narrow the range'
-\echo 'is prose. Counting which ranges decline to say anything is not.'
+\echo 'And what narrowsWhen says across the corpus, as a number rather than an opinion.'
+\echo 'Judging whether a sentence would actually narrow its range is prose. Counting which'
+\echo 'ranges decline to say anything is not.'
 :compose(reports/narrowing_declared.sqlc);
 
 \echo
-\echo 'And the grain question, answerable for the first time. How much of the width in'
-\echo 'this corpus is ignorance (a better instrument reveals it) and how much is the'
-\echo 'world actually moving (only changing the process reduces it)? Before narrowsWhen'
-\echo 'carried a kind there was nothing to group by, and the schema simply asserted the'
-\echo 'first reading throughout.'
+\echo 'And the grain question. How much of the width in this corpus is ignorance (a better'
+\echo 'instrument reveals it) and how much is the world actually moving (only changing the'
+\echo 'process reduces it)? narrowsWhen carries a kind, and the kind is what this groups by.'
 :compose(reports/width_composition.sqlc);
 
 \echo
 \echo
-\echo 'Has anybody tested the model? The single most important number in this file, and'
-\echo 'it is unaskable while `Stack/couplings` is a bare empty list. `pm:Coupling`'
-\echo 'says a document with no couplings "is not evidence of independence; it is a document'
-\echo 'where nobody looked", and for two revisions the element it says that about could'
-\echo 'only write the ambiguous thing. This is a fact about the evidence rather than about'
-\echo 'any one filing, which is why it is a report and not a rule.'
+\echo 'Has anybody tested the model? The single most important number in this file. A'
+\echo 'document with no couplings is not evidence of independence, which is why'
+\echo '`Stack/couplings` says whether anybody looked rather than leaving an empty list. This'
+\echo 'is a fact about the evidence rather than about any one filing, which is why it is a'
+\echo 'report and not a rule.'
 :compose(reports/independence_tested.sqlc);
 
 \echo
@@ -78,27 +74,22 @@ SET search_path TO pm, public;
 \echo 'And the other claim a document can refute in this format. The model says every'
 \echo 'layer has a remainder, and `StatedRemainder` is a choice, a remainder or a typed'
 \echo 'reason there is none, so a sender who disagrees has to say so rather than leave a'
-\echo 'field empty. Two layers do. Until `ingest.sql` read that second branch they arrived'
-\echo 'as five NULLs and read as documents that had said nothing, which is precisely what'
-\echo 'one of the notes below says it must not be taken for.'
+\echo 'field empty. The layers below say so, and a denial is a filed answer, never a blank.'
 :compose(reports/model_contradicted.sqlc);
 
 \echo
 \echo 'Who owns the edge, beside what would narrow it. The pair is the point: narrowsWhen'
 \echo 'says what would make a range smaller, boundOrigin says who owns the edge it would'
-\echo 'move. As an optional bare enumeration it was filed once across the corpus; required'
-\echo 'and typed, the answer that leads is that nothing sets the edge, the range being'
-\echo 'simply where the measurements fell, with `derived` close behind it, where the'
-\echo 'model already states the author in a sibling element and no bare column points at it.'
+\echo 'move. Where nothing sets the edge, the range is simply where the measurements fell;'
+\echo 'where the edge is stated in a sibling element, the model already names its author.'
 :compose(reports/bound_ownership.sqlc);
 
 \echo
 \echo 'And the two halves crossed, which is the question both columns exist for. Read'
-\echo 'apart they are two censuses. Read together they are advice, or, in the largest'
-\echo 'cell, an indictment: a claim that answers "nobody has said what would narrow this"'
-\echo 'and "nothing sets this bound" has no course of action and no owner, a bare number'
-\echo 'pair wearing the clothes of a three-point estimate, and neither census alone can'
-\echo 'see it. The ingest aligns the two columns; this is the relation that joins them.'
+\echo 'apart they are two censuses. Read together they are advice: a claim that answers'
+\echo '"nobody has said what would narrow this" and "nothing sets this bound" has no course'
+\echo 'of action and no owner, and neither census alone can see it. The ingest aligns the two'
+\echo 'columns; this is the relation that joins them.'
 :compose(reports/what_would_move_it.sqlc);
 
 \echo
@@ -111,7 +102,7 @@ SET search_path TO pm, public;
 \echo
 \echo 'And what nobody has measured, gathered from every element that admits an absence.'
 \echo 'Scattered, a typed absence looks like a nullable field. In one relation it is a map'
-\echo 'of what this corpus does not know, and the four reasons are four different facts.'
+\echo 'of what this corpus does not know, and each reason is a different fact.'
 :compose(reports/absences_in_the_corpus.sqlc);
 
 \echo
@@ -125,10 +116,10 @@ SET search_path TO pm, public;
 \echo 'This repository names the trap: "a bound with nothing to bound passes loudest".'
 \echo 'An empty violations table above is worth exactly as much as this table says.'
 # One relation, no restated population
-#   This is folds/rule_subjects.sqlc, the fold of the relation the violations are filtered from.
-#   Nothing here restates a population, so nothing here can report on a different set of rows than
-#   the rule it describes. Writing each population twice once let a restatement disagree with the
-#   rule it reported on, loudly enough to call a rule that examines a single row `ok`.
+#   This is folds/rule_subjects.sqlc, the count over the relation the violations are filtered
+#   from. Nothing here restates a population, so nothing here can report on a different set of rows
+#   than the rule it describes. A population written twice could disagree with the rule it reports
+#   on, loudly enough to call a rule that examines a single row `ok`.
 :compose(reports/coverage.sqlc);
 
 \echo

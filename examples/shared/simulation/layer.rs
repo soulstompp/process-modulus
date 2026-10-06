@@ -1,14 +1,14 @@
 //! One layer, built on NeXosim: quantized supply meeting demand that arrives when it likes.
 //!
-//! ⭐⭐⭐ THE THREE BUFFERS ARE THREE FIELDS AND THEY ARE SUBSTITUTES. `stock_cap` is inventory,
-//! `over_rate` is capacity, `queue_cap` with `patience` is time. Factory Physics says a shortfall
-//! is absorbed by one of the three or it is not absorbed at all, and here that is not a claim, it
-//! is the control flow: an ask is met from stock, or met by the line running hot, or made to wait,
-//! or it is unserved. There is no fifth branch to write.
+//! The three buffers are three fields, and each can stand in for another. `stock_cap` is
+//! inventory, `overtime_lots` is capacity, `queue_cap` with `patience` is time. Factory Physics
+//! says a shortfall is absorbed by one of the three or not absorbed at all, and here that is the
+//! control flow: an ask is met from stock, or made to wait, or met by the line running hot, or it
+//! is unserved. There is no other branch.
 //!
-//! ⛔ NEXOSIM SUPPLIES THE CLOCK AND NOTHING ELSE. Every decision below about what a shortfall
-//! means is made in this file, which is the point: the framework must not be able to agree with
-//! this repository, because it was never asked the question.
+//! NeXosim supplies the clock and nothing else. Every decision about what a shortfall means is
+//! made in this file, so the framework has no part in agreeing with this repository: it is never
+//! asked the question.
 
 use std::time::Duration;
 
@@ -30,9 +30,7 @@ pub struct Ask {
 
 /// Everything that makes one run different from another.
 ///
-/// ⭐ EVERY FIELD IS A ROW, NOT A CONSTANT. `corpus-must-be-perturbable`: a parameter that no
-/// gate can observe is a comment, so these are carried into the report and printed beside the
-/// verdicts they produced.
+/// Every field is a value a run carries, not a constant, so two runs can differ in any of them.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Settings {
     /// The quantum. Supply only ever arrives in whole multiples of this.
@@ -45,9 +43,9 @@ pub struct Settings {
     pub queue_cap: usize,
     /// The capacity buffer: how many lots beyond the rating the line may make in a window.
     ///
-    /// ⛔ NOT SPARE CAPACITY. This is the room ABOVE the rating, which is what
-    /// `Nameplate/capacitySlack` measures and what the idiom points the wrong way about. A line
-    /// that idles has plenty of the first and, at zero here, none of the second.
+    /// Not spare capacity. This is the room above the rating, which is what
+    /// `Nameplate/capacitySlack` measures, though everyday speech points the word the other way.
+    /// A line that idles has plenty of spare capacity and, at zero here, no room above its rating.
     pub overtime_lots: usize,
     /// How long an ask will wait before leaving. Zero means no time buffer at all.
     pub patience: Duration,
@@ -60,21 +58,21 @@ pub struct Settings {
     pub floor_nameplate: bool,
     /// Whether an ask is for a whole number of units.
     ///
-    /// ⭐ IT MATTERS ONLY WHERE THE SUPPLY IS FILLED IN WHOLE LOTS. A continuous stock serves
-    /// 4.37 as readily as 4, and the lot size then constrains only the total. Ask for whole units
-    /// against whole lots and the arithmetic stops being about totals and starts being about
-    /// which numbers are reachable at all.
+    /// It matters only where the supply is filled in whole lots. A continuous stock serves 4.37
+    /// as readily as 4, and the lot size then limits only the total. Ask for whole units against
+    /// whole lots, and the question becomes which amounts can be met at all.
     pub integral_asks: bool,
 }
 
 impl Settings {
     /// The nameplate over a window: lots per unit time times the lot size.
     ///
-    /// ⛔⛔⛔ THE `floor` IS NOT ROUNDING, IT IS A RULE OF THE SCHEMA SHOWING UP IN THE PHYSICS.
+    /// The `floor` is a rule of the schema showing in the physics, not rounding.
     /// `nameplate_not_a_multiple` requires the nameplate to be a whole multiple of the quantum,
-    /// so a window that is not a whole number of cycles cannot be filed honestly. Flooring makes
-    /// the filing legal and understates the line by up to one lot per window; not flooring is
-    /// honest over a run of windows and is rejected. `floored` is which of the two this run files.
+    /// so a window that is not a whole number of cycles cannot be filed as it stands. Flooring
+    /// makes the filing pass and understates the line by up to one lot per window; not flooring
+    /// is true over a run of windows, and the rule rejects it. `floor_nameplate` says which of
+    /// the two this run files.
     pub fn nameplate_over(&self, window: Duration) -> f64 {
         let cycles = window.as_secs_f64() / self.cycle.as_secs_f64();
         let cycles = if self.floor_nameplate { cycles.floor() } else { cycles };
@@ -140,8 +138,8 @@ impl Arrivals {
         self.ask.send(ask).await;
 
         let gap = self.rng.after(self.settings.mean_gap);
-        // ⛔ A zero gap would schedule at the current time, which NeXosim refuses. Floor it at a
-        // tick so a pathological draw cannot silently stop the arrival stream.
+        // A zero gap would schedule at the current time, which NeXosim refuses. It is held to at
+        // least a millisecond, so an unlucky draw cannot silently stop the arrivals.
         let gap = gap.max(Duration::from_millis(1));
         let _ = cx.schedule_event(gap, schedulable!(Self::tick), ());
     }
@@ -167,8 +165,9 @@ pub struct Line {
     stock: f64,
     hot_lots: usize,
     queue: Vec<Waiting>,
-    /// Out to whoever is watching. ⭐ THE LINE DOES NOT KEEP ITS OWN TOTALS: everything a report
-    /// wants is derived from this stream, so no fold is privileged by living inside the physics.
+    /// Out to whoever is watching. The line keeps no totals of its own: everything a report wants
+    /// is derived from this stream, so no way of adding it up is favoured by living inside the
+    /// physics.
     pub log: Output<Record>,
 }
 
@@ -219,7 +218,7 @@ impl Line {
             return;
         }
 
-        // 2. The time buffer. ⛔ Zero patience is not a queue of length zero: it is a queue that
+        // 2. The time buffer. Zero patience is not a queue of length zero: it is a queue that
         //    empties in the same instant, and NeXosim will not schedule at the current time. Both
         //    read as "no time buffer", so they take the same branch.
         if self.queue.len() < self.settings.queue_cap && !self.settings.patience.is_zero() {
@@ -235,9 +234,9 @@ impl Line {
             return;
         }
 
-        // 3. The capacity buffer. ⭐⭐ THE ORDER OF THE THREE IS A POLICY AND NOT A LAW. Factory
-        //    Physics says they substitute; which one a shop reaches for first is a decision, and
-        //    this line goes to overtime only once the backlog will not take another order.
+        // 3. The capacity buffer. The order of the three is a policy. Factory Physics says each
+        //    can stand in for another; which one a shop reaches for first is a decision, and this
+        //    line goes to overtime only once the queue will not take another order.
         if self.hot_lots < self.settings.overtime_lots {
             self.hot_lots += 1;
             let lot = self.settings.lot;
@@ -276,10 +275,10 @@ impl Line {
     async fn produce(&mut self, _: (), cx: &Context<Self>) {
         let lot = self.settings.lot;
 
-        // ⛔ A LINE DOES NOT MAKE WHAT IT CANNOT HOLD, and modelling one that does puts a fifth
-        //   outcome in the history that the five holders have no home for. Idling instead leaves
-        //   the whole difference between the rating and the run as one thing: unused capacity,
-        //   which the schema files as a `clearance` remainder absorbed by `capacity`.
+        // A line does not make what it cannot hold. One that did would put an outcome in the
+        // history that none of the five holders has room for. Idling leaves the whole difference
+        // between the rating and the run as one thing, unused capacity, which the schema files as
+        // a `clearance` remainder absorbed by `capacity`.
         if self.queue.is_empty() && self.stock + lot > self.settings.stock_cap + 1e-9 {
             self.say(cx, Event::Idled { lot }).await;
             return;

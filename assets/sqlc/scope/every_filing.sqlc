@@ -1,21 +1,19 @@
 # One row per document the ingest loads, whatever it attests.
 #
 # The set of documents is a choice
-#   The set of documents is a choice somebody makes on purpose, and this file is one of the
-#   three answers. Every query downstream is "some relation, over some set of documents".
-#   Composing a scope/ relation is what makes that choice a line somebody wrote rather than a
-#   `WHERE` clause somebody could forget. This is the widest answer: take everything that
-#   loaded.
+#   The set of documents is a choice somebody makes on purpose, and this file is one of the answers.
+#   Every query downstream is "some relation, over some set of documents". Composing a scope/
+#   relation makes that choice a line somebody wrote rather than a `WHERE` clause somebody could
+#   forget. This is the widest answer: take everything that loaded.
 #
 # Both a slot value and a relation composed directly
-#   The two call sites are worth comparing. `matrices.sqlc` passes it into
-#   `entries/coupling_presence.sqlc`'s `@scope`; `queries/matrices/1-fit-from-ranges.sqlc`
-#   composes it as an ordinary join. Same file, same rows, and the slot form is the one where
-#   forgetting to choose fails to compose.
+#   `matrices.sqlc` passes it into `entries/coupling_presence.sqlc`'s `@scope`, and relations such
+#   as `epistemics/documents.sqlc` compose it as an ordinary join. The same file and the same rows,
+#   and the slot form is the one where forgetting to choose fails to compose.
 #
 # The scope a rule runs under, and a report must not
-#   A fixture is a stipulation: it exists to put the model in a state the corpus never reached,
-#   so a rule must be tested against it and a finding about the world must not count it. Choose
+#   A fixture is a stipulation: it exists to put the model in a state the corpus never reached, so a
+#   rule must be tested against it, and a finding about the world must not count it. Choose
 #   scope/corpus.sqlc for anything that says "in this corpus".
 #
 # The one scope that carries `evidence_absent`
@@ -26,7 +24,8 @@
 # And the author of an assertion
 #   A composition names the party that composed it and the standing it composes on. That is a fact
 #   about the document, so it is here, empty on a filing, which has no author of its own.
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note

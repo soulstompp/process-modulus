@@ -1,21 +1,21 @@
 //! Two instruments over one history, and what each of them is able to say.
 //!
-//! ⭐⭐⭐ AN INSTRUMENT IS A FUNCTION FROM HISTORIES TO READINGS, AND IT IS NOT INJECTIVE.
-//! [`Instrument::Whole`] sees every field of every event. [`Instrument::StockAndFlow`] sees what a
-//! stock-and-flow event log records, which is less: a refusal without its magnitude, and no way to
-//! tell a demand that was turned away from one that waited and left. Many histories give the same
-//! stock-and-flow reading, so that reading names a **set of histories** rather than one.
+//! An instrument turns a history into a reading, and two different histories can give the same
+//! reading. [`Instrument::Whole`] sees every field of every event. [`Instrument::StockAndFlow`]
+//! sees what a stock-and-flow event log records, which is less: a refusal without its magnitude,
+//! and no way to tell a demand that was turned away from one that waited and left. Many histories
+//! give the same stock-and-flow reading, so that reading names a set of histories rather than one.
 //!
-//! ⛔⛔ THE SET IS WHY THE ANSWER IS A RANGE. There is no inverse to recover the history from the
-//! log, and a right inverse would be a **choice** rather than a reconstruction, so the honest
-//! report of the pre-image is its extent. `pm:Narrowing/kind = instrument` is exactly this case and
-//! is distinguished from `intervention` for exactly this reason: re-running never narrows it,
-//! because the width was made by the projection and not by the world.
+//! That set is why the answer is a range. Nothing recovers the history from the log, and picking
+//! one history to stand for the set would be a choice rather than a reconstruction, so the true
+//! report is how far the set reaches. `pm:Narrowing/kind = instrument` is this case, and it is told
+//! apart from `intervention` for this reason: running again never narrows it, because the width
+//! comes from what the log records and not from the world.
 //!
-//! ⭐⭐ AND THE TWO LOSSES ARE DIFFERENT SPECIES. Dropping a magnitude WIDENS a bound and keeps the
-//! truth inside it. Collapsing two `pm:HolderKind`s into one row pins their SUM and leaves the
-//! split free, which is not a wider interval at all: it is a face of the holder simplex. Only the
-//! first is a number; the second has to be filed as an absence.
+//! The two losses are of different kinds. Dropping a magnitude widens a bound and keeps the truth
+//! inside it. Merging two `pm:HolderKind`s into one row fixes their sum and leaves the split
+//! between them free, which is not a wider range at all. The first is filed as a number; the
+//! second has to be filed as an absence.
 
 use std::time::Duration;
 
@@ -29,9 +29,9 @@ use super::window::Run;
 
 /// A magnitude as an instrument is able to report it.
 ///
-/// ⭐ THE THIRD VARIANT IS NOT A WIDE RANGE. `pm:absent/reason = unmeasured` says nobody looked
-/// or nobody could; a range says somebody looked and this is how well. Collapsing the two would
-/// let an unbounded guess pass for a measurement.
+/// `Unmeasured` is not a wide range. `pm:absent/reason = unmeasured` says nobody looked or nobody
+/// could; a range says somebody looked, and this is how well. Merging the two would let an
+/// unbounded guess pass for a measurement.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Bounded {
     Range { low: f64, high: f64 },
@@ -45,7 +45,8 @@ impl Bounded {
         Range { low: x, high: x }
     }
 
-    /// The width of the pre-image in this coordinate. `None` where nothing was measured.
+    /// How wide the range is: how far apart the histories behind this reading lie in this field.
+    /// `None` where nothing was measured.
     pub fn width(&self) -> Option<f64> {
         match self {
             Range { low, high } => Some(high - low),
@@ -53,15 +54,15 @@ impl Bounded {
         }
     }
 
-    /// ⛔ CONTAINMENT IS THE WHOLE CLAIM, AND IT IS ONE-DIRECTIONAL. The lossy reading must
-    /// admit the true one. Equality is not available and is not wanted: an instrument that
-    /// returned the truth exactly would not have lost anything, and this one did.
+    /// The lossy reading must contain the true one, and that is the whole claim, in one direction
+    /// only. Equality is neither available nor wanted: an instrument that returned the truth
+    /// exactly would have lost nothing, and this one does lose.
     pub fn admits(&self, truth: &Bounded) -> bool {
         match (self, truth) {
             // Nothing was claimed, so nothing is contradicted.
             (Unmeasured, _) => true,
-            // Something was claimed about a quantity the truth does not pin. Vacuous here,
-            // because the whole instrument never returns `Unmeasured`.
+            // Something was claimed about a quantity the truth does not fix. It never happens
+            // here, because the whole instrument never returns `Unmeasured`.
             (Range { .. }, Unmeasured) => true,
             (Range { low, high }, Range { low: l, high: h }) => *low - 1e-6 <= *l && *h <= *high + 1e-6,
         }
@@ -77,9 +78,9 @@ impl Bounded {
         }
     }
 
-    /// ⛔ THE BOUNDS SWAP. `[a,b] − [c,d] = [a−d, b−c]`, and writing `[a−c, b−d]` produces an
-    /// interval that looks right, is narrower than the truth, and fails containment only on the
-    /// runs where it matters.
+    /// The bounds swap: the low end of a difference takes the other side's high end, and the high
+    /// end takes its low end. Pairing low with low gives a range that looks right, is narrower
+    /// than the truth, and fails to contain it only on the runs where it matters.
     fn sub(self, other: Bounded) -> Bounded {
         match (self, other) {
             (Range { low: a, high: b }, Range { low: c, high: d }) => Range {
@@ -107,9 +108,10 @@ impl std::fmt::Display for Bounded {
 
 /// One layer, one window, as one instrument is able to report it.
 ///
-/// ⭐ THE FIELD NAMES ARE THE SCHEMA'S. `demand`, `nameplate` and `remainder` are `d`, `n` and
-/// `r = n − d`; the last four are four of the five `pm:HolderKind`s. Nothing is renamed on the way
-/// in, so a disagreement between two instruments is a disagreement about a filed field.
+/// The field names are the schema's: `demand`, `nameplate` and `remainder` are the filed demand,
+/// nameplate and remainder, and `unrealised` and `customer` are two of the five `pm:HolderKind`s.
+/// Nothing is renamed on the way in, so a disagreement between two instruments is a disagreement
+/// about a filed field.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Reading {
     pub demand: Bounded,
@@ -125,18 +127,18 @@ pub struct Reading {
     pub customer: Bounded,
     /// Supply made with nowhere to hold it: the magnitude on the interference side.
     pub spilled: Bounded,
-    /// ⭐⭐ THE TWO WINDOW-BOUNDARY TERMS, WHICH ONLY EXIST BECAUSE A FILING IS OVER A PERIOD.
-    /// `pending` is demand that had arrived and was still waiting when the window closed, so it
-    /// is neither served nor unserved and no holder bears it yet. `undelivered` is rating that
-    /// was never converted into anything a customer could take. Both fall out of `r = n - d`
-    /// arithmetic and neither has a `pm:HolderKind`, which is why they are reported here rather
-    /// than folded silently into one of the five.
+    /// The two terms at the edge of the window, which exist only because a filing covers a
+    /// period. `pending` is demand that had arrived and was still waiting when the window closed,
+    /// so it is neither served nor unserved and no holder bears it yet. `undelivered` is rating
+    /// that never became anything a customer could take. Both come out of the remainder's
+    /// arithmetic and neither has a `pm:HolderKind`, so they are reported here rather than
+    /// silently added to one of the five.
     pub pending: Bounded,
     pub undelivered: Bounded,
-    /// ⭐⭐ WHICH BUFFER DID THE ABSORBING, WHICH IS A SEPARATE AXIS FROM WHO BORE IT. Of what was
-    /// served, how much came straight out of stock and how much only after a wait. A
-    /// stock-and-flow log records no wait against a demand, so it knows neither, and
-    /// `Remainder/absorber` has to be filed absent rather than guessed at.
+    /// Which buffer did the absorbing, a separate question from who bore it. Of what was served,
+    /// how much came straight out of stock and how much only after a wait. A stock-and-flow log
+    /// records no wait against a demand, so it knows neither, and `Remainder/absorber` has to be
+    /// filed absent rather than guessed.
     pub from_stock: Bounded,
     pub after_waiting: Bounded,
     /// How much was made above the rating, which is the capacity buffer doing its work.
@@ -160,9 +162,9 @@ pub enum Instrument {
 
 /// What a filer is willing to declare about the size of an ask nobody recorded.
 ///
-/// ⭐⭐ THIS IS THE ONLY PLACE A BOUND CAN COME FROM AND IT IS NOT IN THE LOG. A `pm:Claim`
-/// carries a `pm:provenance` for exactly this reason: a range over unrecorded magnitudes is
-/// somebody's stipulation, and if nobody will make it the field is `unmeasured` rather than zero.
+/// This is the only place a bound can come from, and it is not in the log. A `pm:Claim` carries a
+/// `pm:provenance` for this reason: a range over unrecorded magnitudes is somebody's stipulation,
+/// and if nobody will make it, the field is `unmeasured` rather than zero.
 #[derive(Clone, Copy, Debug)]
 pub struct DeclaredAskSize {
     pub low: f64,
@@ -170,7 +172,7 @@ pub struct DeclaredAskSize {
 }
 
 impl Instrument {
-    /// Folds a run into a reading.
+    /// Adds a run up into a reading.
     pub fn read(&self, run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
         match self {
             Instrument::Whole => whole(run),
@@ -179,7 +181,7 @@ impl Instrument {
     }
 }
 
-/// The truth, which is a point in every coordinate.
+/// The truth, which is a single value in every field.
 fn whole(run: &Run) -> Reading {
     let mut asked = 0.0;
     let mut made = 0.0;
@@ -214,10 +216,10 @@ fn whole(run: &Run) -> Reading {
         }
     }
 
-    // ⭐⭐ THE RATING, NOT THE RUN. `nameplate` is what the line is able to make, which is fixed
-    //    by the lot and the cycle before anything happens. What it actually made is `made`, and
-    //    it is smaller whenever the line idled. Summing the lots here would make the nameplate a
-    //    function of the demand it met, which erases the clearance the model exists to name.
+    // The rating, not the run. `nameplate` is what the line is able to make, fixed by the lot and
+    // the cycle before anything happens. What it actually made is `made`, and it is smaller
+    // whenever the line idled. Summing the lots here would make the nameplate depend on the
+    // demand it met, which erases the clearance the model exists to name.
     let nameplate = run.settings.nameplate_over(run.window);
 
     Reading {
@@ -238,8 +240,8 @@ fn whole(run: &Run) -> Reading {
     }
 }
 
-/// ⛔⛔ THE PROJECTION. Three lines of it destroy information and each one is a finding somebody
-/// can go and check against a real stock-and-flow framework.
+/// What a stock-and-flow log keeps. Three things in it lose information, and each is a finding
+/// somebody can check against a real stock-and-flow framework.
 ///
 /// 1. A refusal is logged with a reason and no magnitude, because the quantity is never sampled
 ///    on the branch that fails.
@@ -262,9 +264,9 @@ fn stock_and_flow(run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
             Event::Served { size, .. } => served += size,
             // Both of these are one row: `ProcessFailure { reason }`, and `reason` is a string.
             Event::Refused { .. } | Event::Reneged { .. } => failures += 1,
-            // ⭐ A LOT MADE ABOVE THE RATING IS AN ORDINARY SUCCESS IN THE LOG, and that is the
-            //   finding: a stock-and-flow log records that the lot was made and carries nothing
-            //   to say it was made in overtime. The total is right and the buffer is invisible.
+            // A lot made above the rating is an ordinary success in the log, and that is the
+            // finding: the log records that the lot was made and carries nothing to say it was
+            // made in overtime. The total is right and the buffer is invisible.
             Event::RanHot { lot } => made += lot,
             // A cycle that did not fire leaves no event, which costs nothing: the rating is a
             // property of the line, not a count of what came off it.
@@ -283,9 +285,9 @@ fn stock_and_flow(run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
     };
 
     let served = Bounded::point(served);
-    // ⭐ THE RATING SURVIVES THE PROJECTION INTACT, which is why it is the one number both
-    //   instruments agree on exactly. A stock-and-flow log carries `max_capacity` and the cycle,
-    //   and neither depends on what the run happened to do.
+    // The rating comes through the log intact, so both instruments agree on it exactly. A
+    // stock-and-flow log carries `max_capacity` and the cycle, and neither depends on what the
+    // run happened to do.
     let nameplate = Bounded::point(run.settings.nameplate_over(run.window));
     let demand = served.add(unserved);
 
@@ -296,10 +298,10 @@ fn stock_and_flow(run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
         remainder: nameplate.sub(demand),
         served,
         unserved,
-        // ⭐⭐⭐ NOT A WIDE RANGE, AN ABSENCE. The sum above is bounded and the split is not
-        // observed at all, so filing either half as a number would be inventing evidence. This
-        // is `pm:Holder/share` with `absence_reason = unmeasured` on both halves, and it is the
-        // shape of the loss rather than its size.
+        // An absence, not a wide range. The sum above is bounded and the split is not observed
+        // at all, so filing either half as a number would be inventing evidence. This is
+        // `pm:Holder/share` with `absence_reason = unmeasured` on both halves: it says what kind
+        // of loss this is rather than how large.
         unrealised: Unmeasured,
         customer: Unmeasured,
         spilled: Bounded::point(spilled),
@@ -307,38 +309,34 @@ fn stock_and_flow(run: &Run, declared: Option<DeclaredAskSize>) -> Reading {
         // ask arrived.
         pending: Unmeasured,
         undelivered: nameplate.sub(served),
-        // ⛔ NO WAIT IS RECORDED AGAINST A DEMAND, so there is nothing here to tell an ask met
-        //   out of stock from one that queued first, and `absorber` is not answerable.
+        // No wait is recorded against a demand, so nothing here tells an ask met out of stock
+        // from one that queued first, and `absorber` cannot be answered.
         from_stock: Unmeasured,
         after_waiting: Unmeasured,
-        // ⭐⭐⭐ AND HERE THE PROJECTION LOSES NOTHING, WHICH IS WORTH AS MUCH AS THE PLACES IT
-        //    LOSES EVERYTHING. A stock-and-flow log has no concept of overtime: a lot made past
-        //    the rating is an ordinary success like any other. But it carries every success
-        //    total and the rating is a property of the line, so `made - nameplate` recovers the
-        //    overtime exactly. A fibre can be a single point, and saying which coordinates those
-        //    are is half of what the instrument comparison is for.
+        // Here the log loses nothing, which is worth knowing as much as where it loses
+        // everything. A stock-and-flow log has no notion of overtime: a lot made past the rating
+        // is an ordinary success. But it carries every success total, and the rating belongs to
+        // the line, so what was made less the nameplate recovers the overtime exactly. Saying
+        // which fields come through exact is half of what comparing instruments is for.
         ran_hot: Bounded::point((made - run.settings.nameplate_over(run.window)).max(0.0)),
     }
 }
 
 // ---------------------------------------------------------------------------------------------
-// Exhibiting the fibre.
+// Two histories behind one log.
 // ---------------------------------------------------------------------------------------------
 
 /// The same history with every turned-away ask rewritten as one that waited and left, and the
 /// other way round.
 ///
-/// ⭐⭐⭐ THIS IS THE PROOF, AND IT IS AN EXHIBITION RATHER THAN AN ARGUMENT. The result is a
-/// second history with the same magnitudes at the same times, a completely different holder
-/// split, and a byte-identical stock-and-flow log. Two things in one pre-image is the definition
-/// of a map that does not come back, so nothing further needs to be assumed about the framework:
-/// the projection is not injective and here are the two points.
+/// The result is a second history with the same magnitudes at the same times, a completely
+/// different holder split, and the same stock-and-flow log, byte for byte. Two histories behind
+/// one log show that the log cannot be traced back to the history, without assuming anything
+/// further about the framework.
 ///
-/// ⛔ AND BOTH ENDS ARE REACHABLE, WHICH IS THE OBJECTION THIS ANSWERS. A critic could say the
-/// rewritten history is a fiction that no line would produce. `window::short_settings` reaches
-/// the all-unrealised end and `window::queued_settings` reaches the all-customer end, at the same
-/// load and the same seed, so both splits are things a line does. The rewrite only puts them at
-/// the same log.
+/// Both ends occur in a real line. `window::short_settings` reaches the all-unrealised end and
+/// `window::queued_settings` the all-customer end, at the same load and the same seed, so both
+/// splits are things a line does. The rewrite only puts them behind the same log.
 pub fn relabelled(run: &Run) -> Run {
     let history = run
         .history
@@ -348,9 +346,9 @@ pub fn relabelled(run: &Run) -> Run {
                 Event::Refused { order, size } => Event::Reneged {
                     order: *order,
                     size: *size,
-                    // ⚠️ A waited time has to be invented here and it is NOT observable: the
+                    // A waited time has to be invented here, and it cannot be observed: the
                     // stock-and-flow log carries no wait on a failure, so nothing downstream can
-                    // read this and nothing downstream may.
+                    // read it, and nothing downstream may.
                     waited: Duration::ZERO,
                 },
                 Event::Reneged { order, size, .. } => Event::Refused {
@@ -411,11 +409,10 @@ pub fn census(run: &Run) -> Census {
 
 /// The three buffers as the schema files them, read off the history.
 ///
-/// ⭐⭐ `capacity` IS `notApplicable` RATHER THAN ZERO, AND THE DIFFERENCE IS THE WHOLE TYPED
-/// ABSENCE ARGUMENT. This line cannot run hot: there is no branch in `layer.rs` that makes a lot
-/// early. That is not a measurement of zero slack, it is the absence of the buffer, and
-/// `layers/absorption.sqlc` treats the two the same way only because both mean "no room here",
-/// while `unmeasured` means nobody knows.
+/// `capacity` is `notApplicable` rather than zero where the line has no overtime allowance,
+/// because then it cannot run hot: no branch in `layer.rs` makes a lot early. That is not a
+/// measurement of zero slack but the absence of the buffer. `layers/absorption.sqlc` treats the
+/// two the same way only because both mean "no room here", while `unmeasured` means nobody knows.
 pub struct Buffers {
     pub inventory_high: f64,
     pub capacity: Option<f64>,
@@ -423,10 +420,9 @@ pub struct Buffers {
 }
 
 impl Buffers {
-    /// ⭐ `None` IS `notApplicable` AND ZERO IS A MEASUREMENT. A line with no overtime allowance
+    /// `None` is `notApplicable`, and zero is a measurement. A line with no overtime allowance
     /// has no room above its rating at all, which is the absence of the buffer rather than an
-    /// empty one, and `layers/absorption.sqlc` counts the two the same way for one reason only:
-    /// both mean there is no room here. `unmeasured` would mean nobody knows.
+    /// empty one.
     pub fn from(settings: &Settings) -> Option<f64> {
         if settings.overtime_lots == 0 {
             None

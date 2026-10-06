@@ -1,44 +1,42 @@
 # Every rule beside the grain it declares and the grain its rows actually have. One row per rule.
 #
-# The contract's columns name a subject many rules do not examine
-#   `checks/all.sqlc` returns `(rule, filing, layer, ...)` and says *which layer of which filing
-#   it is*. Wherever the examined item is finer than a layer (a part, a slack or a claim),
-#   `(filing, layer)` is not a key and the item's identity survives only inside the prose
-#   `detail`. `examples/soundness/main.rs` §4 prints the tally; `claim` is the third subject and
-#   the largest of the three.
+# The columns name a subject many rules do not examine
+#   `checks/all.sqlc` returns `(rule, filing, layer, ...)` and says which layer of which filing an
+#   item is. Wherever the item examined is finer than a layer (a part, a slack or a claim),
+#   `(filing, layer)` is not a key, and the item's identity survives only inside the `detail`
+#   sentence. `examples/soundness` prints what one examined row is, per rule.
 #
-# Two things called one bag
-#   `invariance.sqlc` says `checks/all.sqlc` is a bag because *several items per layer produce
-#   the same sentence*, and that is true of only some rules. For the others every row says
-#   something different, and the bag is a grain artifact rather than a repetition one. Its
-#   count-don't-subtract repair is right for both, which is worth knowing: the repair was more
-#   general than its stated reason.
+# Two kinds of repeated rows
+#   `invariance.sqlc` treats `checks/all.sqlc` as having repeated rows because several items per
+#   layer produce the same sentence, and that is true of only some rules. For the others every row
+#   says something different, and the repetition comes from the grain rather than the sentence.
+#   Counting rather than subtracting is right for both.
 #
-# The law is one-directional
-#   That is not a weakness. A rule declaring `layer` must have exactly one row per
-#   `(filing, layer)`; a second row means it silently changed what it examines and no other law
-#   here would see it, because the count moves and nothing says what the count is of. The
-#   converse cannot be asserted: a part-grained rule may legitimately see one part per layer in a
-#   corpus that happens to file one, and accusing it would be reading luck as a declaration.
+# The law goes one way
+#   A rule declaring `layer` must have exactly one row per `(filing, layer)`. A second row means it
+#   quietly changed what it examines, and no other law here would see it, because the count moves
+#   and nothing says what the count is of. The other direction cannot be asserted: a rule about
+#   parts may rightly see one part per layer in a corpus that happens to file one, and accusing it
+#   would read luck as a declaration.
 #
 # A unique key is not a key that resolves
-#   That is why this file has a second arm. `unresolvable` counts the rows whose
+#   That is why this file has a second check. `unresolvable` counts the rows whose
 #   `(filing, layer)` names no filed layer. A NULL is not counted: a rule about a composition
-#   legitimately has no layer, and the contract's column is nullable for exactly that. What is
-#   counted is a value that looks like a layer and is not, which is the state a reader and every
-#   join downstream cannot detect.
+#   rightly has no layer, and the column allows NULL for that. What is counted is a value that
+#   looks like a layer and is not, which neither a reader nor any join that follows can detect.
 #
-# The arm the multiplicity one cannot be
+# What the count of rows per key cannot see
 #   `finer_than_declared` asks whether the key is unique per row; `unresolvable` asks whether the
 #   key resolves. A rule putting an address like `pm:nameplate/pm:amount claim 7` in the `layer`
-#   column satisfies the multiplicity arm by construction, because a value unique per row is one
-#   row per key. What makes the column wrong is exactly what makes that arm pass.
+#   column passes the first check automatically, because a value unique per row is one row per
+#   key. What makes the column wrong is exactly what makes that check pass.
 #
-# Zero is a repairable state
-#   It is not a property of the contract. A rule whose subject is finer than a layer reports the
-#   finer item's identity in `detail` and its own layer in the column, because anything joining
-#   a verdict to a layer keeps only the pairs that resolve and drops the rest in silence.
--- checks/roster.sqlc's declared subject against checks/all.sqlc's multiplicity and its key.
+# Zero is a state a rule can reach
+#   A rule whose subject is finer than a layer reports the finer item's identity in `detail` and
+#   its own layer in the column, because anything joining a verdict to a layer keeps only the
+#   pairs that resolve and drops the rest in silence.
+-- checks/roster.sqlc's declared subject against checks/all.sqlc's rows per key, and whether the
+-- key resolves.
 SELECT r.slug,
        r.subject                                     AS declares,
        count(c.rule)                                 AS rows,

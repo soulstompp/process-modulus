@@ -1,34 +1,35 @@
-# d, the demand vector. One row per (filing, layer) whose demand is a three-point claim, stated or
-# computed.
+# Each layer's demand. One row per (filing, layer) whose demand is a three-point claim, stated or
+# worked out.
 #
-# A derived demand is read computed
-#   A layer that files its demand `derived` files an output, and composition/derived_quantities.sqlc
-#   computes it through its fusion. So the vector holds that figure, and `d_derived` says it was
-#   computed rather than filed. Every rule reading the demand then examines a layer declared
-#   `derived` exactly as it examines one that states the figure.
+# A derived demand is read worked out
+#   A layer that files its demand `derived` files an output, and
+#   composition/derived_quantities.sqlc works it out through its fusion. So this relation holds
+#   that figure, and `d_derived` says it was worked out rather than filed. Every rule reading the
+#   demand then examines a layer declared `derived` exactly as it examines one that states the
+#   figure.
 #
 # One quantity of the resolved figures
 #   composition/resolved_quantities.sqlc is every layer's demand, nameplate and draw, stated or
-#   computed, as two disjoint arms. This vector is its demand, restricted to the rows with a figure,
+#   worked out, as two separate arms. This relation is its demand, kept to the rows with a figure,
 #   and the restriction reaches each arm by itself. Reading the two through one outer join with a
-#   filter on the joined side would re-plan every rule above this vector several levels deeper,
-#   past what a plan read back when those statements are checked at compile time can nest.
+#   filter on the joined side would plan every rule above this relation several levels deeper,
+#   past what a plan read back at compile time can nest.
 #
-# A typed absence has no row
-#   A layer whose demand is a typed absence has no row here, which is the sparse reading: the
-#   vector has no entry there rather than an entry of zero. A derived demand that cannot be
-#   computed is one of them.
+# A typed blank has no row
+#   A layer whose demand is a typed blank has no row here: it has no entry rather than an entry of
+#   zero. A derived demand that cannot be worked out is one of them.
 #
 # The three points are not an error bar
-#   `low` and `high` are the edges somebody owns and `mode` is the figure they would quote. Every
-#   arithmetic downstream that compares, sums or subtracts carries all three, because collapsing
-#   to the mode is exactly the flattening this model exists to refuse. A referral that only names
-#   a figure, as eliminations/derived.sqlc does, may read the mode, and says so.
+#   `low` and `high` are the edges somebody owns, and `mode` is the figure they would quote. Every
+#   piece of arithmetic downstream that compares, sums or subtracts carries all three, because
+#   reducing a range to its most likely value is the flattening this model exists to refuse. A
+#   referral that only names a figure, as eliminations/derived.sqlc does, may read the most likely
+#   value, and says so.
 #
-# What the width is made of is the claim's, not the vector's
+# What the width is made of is the claim's
 #   `narrowsWhen` says what the width is made of: `instrument` means ignorance a better measurement
-#   removes, `intervention` means variation only changing the process removes. It is required on
-#   every claim and lives with every claim, in epistemics/claims.sqlc, whose `owns` of
+#   removes, and `intervention` means variation only changing the process removes. It is required
+#   on every claim and lives with every claim, in epistemics/claims.sqlc, whose `owns` of
 #   `pm:demand/pm:amount` is this demand. epistemics/widths.sqlc is the census.
 -- composition/resolved_quantities.sqlc's pm:Layer/pm:Demand, where it has a figure.
 SELECT q.filing, q.layer,

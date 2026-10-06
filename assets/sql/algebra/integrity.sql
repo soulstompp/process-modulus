@@ -1,56 +1,171 @@
--- every fold in folds/ whose population does not reach algebra/all.sqlc, against its roster and its population by EXCEPT.
+-- every fold in folds/ whose population does not reach algebra/all.sqlc, against its roster and
+-- its population by EXCEPT.
 WITH algebra_roster AS (
--- the set-algebraic laws this tree's relations claim to obey.
+-- the laws these queries' relations claim to obey.
 SELECT * FROM (VALUES
-  ('decomposition',    '|E| = Σ_filing |E_filing|',  'rank/decomposition',               'partition',  'bag: one edge counted in both scopes'),
-  ('compose_decomposition','|N| = Σ_dir |N_dir|, |E| = Σ_dir |E_dir| + crossing', 'rank/compose_decomposition', 'partition', 'set: a template is in exactly one directory'),
-  ('cycle_space',      'dim ker B = 0 ⟺ |jagged| = 0','rank/cycle_space',                 'value',      'set: one row, the layer graph against its rule'),
-  ('composition_kernel','dim ker F Φ = m − |fusions|','rank/composition_kernel',        'value',      'set: one row, the fusion fold against the layer graph'),
-  ('composition_row_space','dim row ⊕ dim ker = parts, per fibre; Σ dim row = rank', 'rank/composition_row_space', 'value', 'set: one row per fusion, folded to two subjects'),
-  ('composition_image', '|declared| = rank + dim ker (F Φ)ᵀ, and the left null is empty', 'rank/composition_image', 'value', 'set: one row per composition'),
-  ('composition_closure','dim ker Ψ = Σ dim ker over the levels = |leaves| − 1, and Ψ''s own row is positive', 'rank/composition_closure', 'value', 'set: one row per fusion taken as a root'),
-  ('dimension_use',    'parents(dimension) ⊆ declared', 'algebra/dimension_use',         'roster',     'set: one row per undeclared parent'),
-  ('owed_equality',    '|A| = |A∖B| + |A⋉B|',        'composition/owed_equality',        'difference', 'set'),
-  ('leaves',           '|A| = |A∖B| + |A⋉B|',        'composition/leaves',               'difference', 'bag: dedup would be a defect'),
-  ('jagged_layers',    '|A| = |A∖B| + |A⋉B|',        'queries/observations/14-jagged-layers','difference','bag: one row per doubled layer'),
-  ('composed_quantities','|A| = |A∖B| + |A⋉B|',      'queries/matrices/3b-composed-quantities','difference','set'),
-  ('integrity',        '|A| = |A∖B| + |A⋉B|',        'reports/integrity',                'difference', 'bag: dedup intended'),
-  ('carried',          '|A| = |A∖B| + |A⋉B|',        'composition/carried',              'difference', 'bag: anti-join preserves it'),
-  ('owed_remainder',   '|A| = |A∖B| + |A⋉B|',        'composition/owed_remainder',       'difference', 'set'),
-  ('settled_remainders','|A| = |A∖B| + |A⋉B|',       'composition/settled_remainders',   'difference', 'bag: one row per path'),
-  ('unresolved_parts', '|A| = |A∖B| + |A⋉B|',        'composition/unresolved_parts',     'difference', 'set: pm.part''s key'),
-  ('remainder_in_force','|A| = |A∖B| + |A⋉B|',       'layers/remainder',                 'difference', 'set: one row per layer'),
-  ('borne',            'Σall = Σkept + Σremoved',    'entries/borne',                    'additive',   'bag: γ over holders'),
-  ('arithmetic_class', 'each candidate in exactly one class', 'arithmetic/all',          'partition',  'set'),
-  ('remainder_standing','each remainder in exactly one standing','layers/remainder_scope','partition',  'set'),
-  ('exposure_standing', 'each exposed layer in exactly one standing','layers/exposure_scope','partition','set'),
-  ('searches',         '|A ⊎ B| = |A| + |B|',        'epistemics/searches',              'union',      'bag: UNION ALL'),
-  ('part_regimes',     '|A| = |A∖B| + |A⋉B|',        'checks/part_regime_disagrees',     'difference', 'set: pm.part''s key'),
-  ('crossed_remainder','r = [n_low − d_high, n_mode − d_mode, n_high − d_low]', 'layers/remainder', 'value', 'set: one row per remainder'),
-  ('exposure',         'exposure = max(−r_low, 0)',  'layers/remainder',                 'value',      'set: one row per remainder'),
-  ('remainder_decomposes','r = m·q − (d mod q)',     'layers/decomposed',                'value',      'set: one row per lumpy remainder'),
-  ('sawtooth',         'one tooth ⇒ residues ordered', 'layers/decomposed',              'value',      'set: one row per demand inside one tooth'),
-  ('composed_quantum', 'g divides the composed nameplate', 'composition/composed_quantum', 'value',     'set: one row per composed layer with a quantum'),
-  ('fusion_sum',       'x_composed = F Φ x_parts − e, per quantity', 'composition/fused',   'value',      'set: one row per owed fusion quantity'),
-  ('composed_remainder','r = F Φ r_parts − e_n + e_d, inside n − d', 'composition/fused_remainders', 'value', 'set: one row per owed composed remainder'),
-  ('derived_quantities','x_derived = F Φ x_parts − e, one level at a time', 'composition/derived_quantities', 'value', 'set: one row per figure filed as its fusion''s sum'),
-  ('conforms',         'no loaded document violates a rule', 'checks/all',               'conformance', 'set: one row per rule'),
-  ('fit_domain',       'axis ⇔ closure reaches the fit; exercised ⇔ examined > 0', 'reports/fit_coverage', 'roster', 'set: one row per rule'),
-  ('absences_filed',   'census(columns) = census(elements), per filing, group and reason', 'epistemics/absences', 'roster', 'set: one row per group of positions'),
-  ('derivations_filed', 'census(columns) = census(elements), per filing, position and identity', 'epistemics/derivations', 'roster', 'set: one row per position'),
-  ('fusions_have_parts', 'parts → fusions is onto: no fusion names no part; Σ parts = |references|', 'folds/fusion_parts', 'partition', 'set: one row per composition'),
-  ('searches_answered', 'each search: entries filed ⇔ no reason typed', 'epistemics/searches', 'partition', 'set: one row per search'),
-  ('subject_boxes',    'rows = Σ boxes per subject; Σ rows = |population|', 'folds/contract_subjects', 'partition', 'bag: a population counted into its subjects'),
-  ('factor_state',     'each part in the factor state its columns file', 'composition/part_references', 'partition', 'set: pm.part''s key'),
-  ('fusion_quantities', '|A| = |A∖B| + |A⋉B|',       'composition/fusion_quantities',    'difference', 'set: one row per layer and quantity'),
-  ('part_sums',        'Σ over fusions of Σ parts = Σ parts', 'folds/part_sums',           'additive',   'bag: every part counted'),
-  ('suspended_quantities', '|A| = |A∖B| + |A⋉B|',   'composition/suspended_quantities', 'difference', 'set: one row per fusion and quantity'),
-  ('unsized_conversions_are_unsettled', 'π(A) ⊆ B: a conversion nobody could size cannot be differenced', 'composition/unsized_conversions', 'containment', 'set: one row per composed layer'),
-  ('part_quantities',  '|A| = |A∖B| + |A⋉B|',        'composition/part_quantities',      'difference', 'set: one row per part and quantity'),
-  ('figures',          '|D ∪ N| = |D| + |N| − |D ∩ N|', 'layers/figures',                  'union',      'set: one row per layer'),
-  ('served_totals',    'Σheld = Σserved + Σunserved, per layer', 'folds/served_totals',     'additive',   'bag: γ over holders'),
-  ('layer_units',      'a pin is the whole relation: the payload constant on the key, the pinned value reaching it', 'units/conversions', 'dependency', 'set: one row per condition'),
-  ('class_domain',     'every class of every declared codomain stands where its count puts it', 'epistemics/class_domain', 'roster',     'set: one row per condition')
+  ('decomposition',
+   'cutting the graph by filing loses no edge',
+   'rank/decomposition', 'partition', 'repeats: one edge counted in both scopes'),
+  ('compose_decomposition',
+   'cut by directory, every template is in one directory and every edge is kept or crossing',
+   'rank/compose_decomposition', 'partition',
+   'no repeats: a template is in exactly one directory'),
+  ('cycle_space',
+   'the layer graph has a loop exactly when some fusion''s parts overlap',
+   'rank/cycle_space', 'value', 'no repeats: one row, the layer graph against its rule'),
+  ('composition_kernel',
+   'the room to move parts without moving a composed figure is the parts less the fusions',
+   'rank/composition_kernel', 'value',
+   'no repeats: one row, the fusion fold against the layer graph'),
+  ('composition_row_space',
+   'per fusion, the one way its figure moves and the ways that leave it still make up every '
+   'part, and the parts and the fusions agree on how many figures the parts can move',
+   'rank/composition_row_space', 'value',
+   'no repeats: one row per fusion, folded to two subjects'),
+  ('composition_image',
+   'nothing on the fusion side is out of reach of the parts, and where something would be, a '
+   'rule accuses somebody',
+   'rank/composition_image', 'value', 'no repeats: one row per composition'),
+  ('composition_closure',
+   'under any fusion, the room to move the layers at the bottom is the room inside each fusion '
+   'below it, added up',
+   'rank/composition_closure', 'value', 'no repeats: one row per fusion taken as a root'),
+  ('dimension_use',
+   'only a declared template composes the list of every layer',
+   'algebra/dimension_use', 'roster', 'no repeats: one row per undeclared parent'),
+  ('owed_equality',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/owed_equality', 'difference', 'no repeats'),
+  ('leaves',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/leaves', 'difference', 'repeats: removing them would be a defect'),
+  ('jagged_layers',
+   'what the difference keeps and what it removes make up the whole left side',
+   'queries/observations/14-jagged-layers', 'difference', 'repeats: one row per doubled layer'),
+  ('composed_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/composed_quantities', 'difference', 'no repeats'),
+  ('integrity',
+   'what the difference keeps and what it removes make up the whole left side',
+   'reports/integrity', 'difference', 'repeats: removing them is intended'),
+  ('carried',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/carried', 'difference', 'repeats: the anti-join keeps them'),
+  ('owed_remainder',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/owed_remainder', 'difference', 'no repeats'),
+  ('settled_remainders',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/settled_remainders', 'difference', 'repeats: one row per path'),
+  ('unresolved_parts',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/unresolved_parts', 'difference', 'no repeats: pm.part''s key'),
+  ('remainder_in_force',
+   'what the difference keeps and what it removes make up the whole left side',
+   'layers/remainder', 'difference', 'no repeats: one row per layer'),
+  ('borne',
+   'what every holder holds is what a buffer absorbed plus what went unserved',
+   'entries/borne', 'additive', 'repeats: added up over holders'),
+  ('arithmetic_class',
+   'each candidate in exactly one class',
+   'arithmetic/all', 'partition', 'no repeats'),
+  ('remainder_standing',
+   'each remainder in exactly one standing',
+   'layers/remainder_scope', 'partition', 'no repeats'),
+  ('exposure_standing',
+   'each exposed layer in exactly one standing',
+   'layers/exposure_scope', 'partition', 'no repeats'),
+  ('searches',
+   'the union holding both searches has as many rows as the two added together',
+   'epistemics/searches', 'union', 'repeats: UNION ALL'),
+  ('part_regimes',
+   'what the difference keeps and what it removes make up the whole left side',
+   'checks/part_regime_disagrees', 'difference', 'no repeats: pm.part''s key'),
+  ('crossed_remainder',
+   'the remainder''s low is the nameplate''s low less the demand''s high, its most likely is '
+   'the two most likely values, and its high the nameplate''s high less the demand''s low',
+   'layers/remainder', 'value', 'no repeats: one row per remainder'),
+  ('exposure',
+   'exposure is the largest demand less the smallest supply, and never below zero',
+   'layers/remainder', 'value', 'no repeats: one row per remainder'),
+  ('remainder_decomposes',
+   'the whole quanta, times the quantum, less the residue, give back the remainder',
+   'layers/decomposed', 'value', 'no repeats: one row per lumpy remainder'),
+  ('sawtooth',
+   'a demand inside one whole quantum keeps its residues in order',
+   'layers/decomposed', 'value', 'no repeats: one row per demand inside one whole quantum'),
+  ('composed_quantum',
+   'the composed quantum divides the composed nameplate',
+   'composition/composed_quantum', 'value',
+   'no repeats: one row per composed layer with a quantum'),
+  ('fusion_sum',
+   'a composed figure is its parts, converted and added up, less its eliminations, per quantity',
+   'composition/fused', 'value', 'no repeats: one row per owed fusion quantity'),
+  ('composed_remainder',
+   'a composed remainder worked out through its parts lies inside the composed totals'' remainder',
+   'composition/fused_remainders', 'value', 'no repeats: one row per owed composed remainder'),
+  ('derived_quantities',
+   'a figure filed as derived is its parts, converted and added up, less its eliminations, one '
+   'level at a time',
+   'composition/derived_quantities', 'value',
+   'no repeats: one row per figure filed as its fusion''s sum'),
+  ('conforms',
+   'no loaded document violates a rule',
+   'checks/all', 'conformance', 'no repeats: one row per rule'),
+  ('fit_domain',
+   'a rule declares a fit axis exactly when it reaches the fit, and a cell exercised exactly when '
+   'it examined something there',
+   'reports/fit_coverage', 'roster', 'no repeats: one row per rule'),
+  ('absences_filed',
+   'the blanks counted from the columns are the blanks counted from the elements, per filing, '
+   'group and reason',
+   'epistemics/absences', 'roster', 'no repeats: one row per group of positions'),
+  ('derivations_filed',
+   'the derivations counted from the columns are those counted from the elements, per filing, '
+   'position and identity',
+   'epistemics/derivations', 'roster', 'no repeats: one row per position'),
+  ('fusions_have_parts',
+   'every fusion names at least one part, and its parts, counted fusion by fusion, add up to the '
+   'part references',
+   'folds/fusion_parts', 'partition', 'no repeats: one row per composition'),
+  ('searches_answered',
+   'each search either filed what it found or typed why it filed nothing, and never both',
+   'epistemics/searches', 'partition', 'no repeats: one row per search'),
+  ('subject_boxes',
+   'each subject''s boxes add up to its rows, and the rows add up to the population',
+   'folds/contract_subjects', 'partition', 'repeats: a population counted into its subjects'),
+  ('factor_state',
+   'each part in the factor state its columns file',
+   'composition/part_references', 'partition', 'no repeats: pm.part''s key'),
+  ('fusion_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/fusion_quantities', 'difference', 'no repeats: one row per layer and quantity'),
+  ('part_sums',
+   'the parts added up fusion by fusion come to the parts added up whole',
+   'folds/part_sums', 'additive', 'repeats: every part counted'),
+  ('suspended_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/suspended_quantities', 'difference', 'no repeats: one row per fusion and quantity'),
+  ('unsized_conversions_are_unsettled',
+   'a layer whose conversion nobody could size is a layer whose own totals cannot be subtracted',
+   'composition/unsized_conversions', 'containment', 'no repeats: one row per composed layer'),
+  ('part_quantities',
+   'what the difference keeps and what it removes make up the whole left side',
+   'composition/part_quantities', 'difference', 'no repeats: one row per part and quantity'),
+  ('figures',
+   'the layers with a figure are those with a demand, plus those with a nameplate, less those '
+   'with both',
+   'layers/figures', 'union', 'no repeats: one row per layer'),
+  ('served_totals',
+   'what a layer holds is what was served plus what went unserved',
+   'folds/served_totals', 'additive', 'repeats: added up over holders'),
+  ('layer_units',
+   'one value read stands for the whole relation: every value under the key is the same, and '
+   'the one read reaches every key',
+   'units/conversions', 'dependency', 'no repeats: one row per condition'),
+  ('class_domain',
+   'every class of every declared type stands where its count puts it',
+   'epistemics/class_domain', 'roster', 'no repeats: one row per condition')
 ) AS a(slug, law, governs, form, multiplicity)
 ),
 checks_roster AS (
@@ -68,7 +183,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -153,7 +268,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -230,7 +346,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -383,7 +500,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -481,7 +599,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -581,7 +699,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -594,7 +713,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -618,7 +738,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -657,8 +778,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -772,7 +894,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
@@ -945,7 +1068,8 @@ FROM (
 GROUP BY h.filing, h.layer
 ),
 checks_shares_do_not_sum AS (
--- pm:Remainder/pm:holder summed against |r| from layers/remainder.sqlc, via entries/holder_totals.sqlc.
+-- pm:Remainder/pm:holder summed against the size of the remainder in layers/remainder.sqlc,
+-- via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -980,7 +1104,7 @@ WHERE r.slug = 'shares_do_not_sum'
 layers_filed_against_derived AS (
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent, l.qty_derivation,
        r.r_low, r.r_mode, r.r_high, r.unit,
        r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,
@@ -994,7 +1118,8 @@ JOIN      (
 ) r USING (filing, layer)
 ),
 checks_stated_quantity_is_not_the_magnitude AS (
--- pm:Remainder/pm:quantity against |r| from layers/remainder.sqlc, via layers/filed_against_derived.sqlc.
+-- pm:Remainder/pm:quantity against the magnitude from layers/remainder.sqlc, via
+-- layers/filed_against_derived.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -1015,7 +1140,8 @@ LEFT JOIN (
 WHERE r.slug = 'stated_quantity_is_not_the_magnitude'
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -1023,7 +1149,8 @@ SELECT s.filing, s.layer, s.buffer,
 FROM pm.slack s
 ),
 layers_absorption AS (
--- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack, summed across the row in the demand's unit.
+-- pm:Nameplate/pm:capacitySlack and pm:inventorySlack with pm:Layer/pm:timeSlack,
+-- summed across the layer in the demand's unit.
 SELECT s.filing, s.layer,
        sum(coalesce(s.high, 0))
          FILTER (WHERE (s.sized AND s.unit IS NOT DISTINCT FROM d.d_unit)
@@ -1133,8 +1260,9 @@ SELECT h.filing, h.layer,
        count(*)                                        AS holders,
        count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
        count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
-       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_low)                                 AS unserved_low,
        sum(h.share_mode)                                AS unserved_mode,
+       sum(h.share_high)                                AS unserved_high,
        array_agg(DISTINCT h.share_unit)                 AS share_units
 FROM (
     SELECT * FROM entries_unserved_holders
@@ -1186,9 +1314,19 @@ JOIN pm.buffer_term bt ON bt.taxonomy = l.absorber_taxonomy AND bt.value = l.abs
 ),
 entries_borne AS (
 -- pm:Remainder/pm:holder summed against the slack it names, keyed by pm:Remainder/pm:absorber.
-SELECT b.filing, b.layer, b.buffer, b.borne, s.mode AS slack_mode, s.unit AS slack_unit, b.unstated
+SELECT b.filing, b.layer, b.buffer,
+       b.borne_low, b.borne, b.borne_high,
+       s.low  AS slack_low,
+       s.mode AS slack_mode,
+       s.high AS slack_high,
+       s.unit AS slack_unit,
+       b.unstated
 FROM (
-    SELECT p.filing, p.layer, a.buffer, h.served_mode AS borne, h.unstated
+    SELECT p.filing, p.layer, a.buffer,
+           h.served_low  AS borne_low,
+           h.served_mode AS borne,
+           h.served_high AS borne_high,
+           h.unstated
     FROM      (
         SELECT * FROM layers_pressed
     ) p
@@ -1206,16 +1344,29 @@ JOIN (
 WHERE s.mode IS NOT NULL
 ),
 checks_share_exceeds_slack AS (
--- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber through pm.buffer_term.
+-- pm:Remainder/pm:holder against the three slack elements, keyed by pm:Remainder/pm:absorber
+-- through pm.buffer_term.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
 ) r
 LEFT JOIN (
     SELECT b.filing, b.layer,
-           coalesce(b.borne > b.slack_mode + 1e-9, false) AS violates,
-           format('%s attributed to the %s buffer, whose slack is %s',
-                  b.borne, b.buffer, b.slack_mode) AS detail
+           -- the smallest load above the largest slack
+           coalesce(b.borne_low > b.slack_high + 1e-9, false)          AS violates,
+           CASE WHEN b.borne_low  > b.slack_high + 1e-9
+                THEN format('[%s, %s] attributed to the %s buffer, whose slack is at most %s: '
+                            'the whole range is over the line',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_high)
+                WHEN b.borne_high <= b.slack_low + 1e-9
+                THEN format('[%s, %s] attributed to the %s buffer, whose slack is at least %s: '
+                            'the whole range clears',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_low)
+                ELSE format('[%s, %s] attributed to the %s buffer, whose slack is [%s, %s]: the '
+                            'ranges overlap, so this document does not settle whether the buffer '
+                            'was overrun',
+                            b.borne_low, b.borne_high, b.buffer, b.slack_low, b.slack_high)
+           END                                                         AS detail
     FROM (
         SELECT * FROM entries_borne
     ) b
@@ -1292,12 +1443,12 @@ LEFT JOIN (
 WHERE r.slug = 'quantum_unit_mismatch'
 ),
 layers_divisible AS (
--- pm:LumpyQuantum/size, strictly positive.
+-- pm:LumpyQuantum/size, strictly positive at its low.
 SELECT l.*
 FROM (
     SELECT * FROM layers_lumpy
 ) l
-WHERE l.quantum_mode > 0
+WHERE l.quantum_low > 0
 ),
 checks_nameplate_not_a_multiple AS (
 -- pm:Nameplate/amount against pm:LumpyQuantum/size.
@@ -1307,11 +1458,14 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           abs(d.n_low  - d.quantum_mode * round(d.n_low  / d.quantum_mode)) > 1e-9
+           abs(d.n_low  - d.quantum_low  * round(d.n_low  / d.quantum_low))  > 1e-9
            OR abs(d.n_mode - d.quantum_mode * round(d.n_mode / d.quantum_mode)) > 1e-9
-           OR abs(d.n_high - d.quantum_mode * round(d.n_high / d.quantum_mode)) > 1e-9 AS violates,
+           OR abs(d.n_high - d.quantum_high * round(d.n_high / d.quantum_high)) > 1e-9 AS violates,
            format('a quantum of %s against a nameplate of [%s, %s, %s]',
-                  d.quantum_mode, d.n_low, d.n_mode, d.n_high) AS detail
+                  CASE WHEN d.quantum_low = d.quantum_high THEN d.quantum_mode::text
+                       ELSE format('[%s, %s, %s]', d.quantum_low, d.quantum_mode, d.quantum_high)
+                  END,
+                  d.n_low, d.n_mode, d.n_high) AS detail
     FROM (
         SELECT * FROM layers_divisible
     ) d
@@ -1319,7 +1473,8 @@ LEFT JOIN (
 WHERE r.slug = 'nameplate_not_a_multiple'
 ),
 layers_drawn AS (
--- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc
+-- and entries/slacks.sqlc's capacity slack.
 SELECT dr.filing, dr.layer,
        dr.low  AS draw_low,
        dr.mode AS draw_mode,
@@ -1426,7 +1581,7 @@ LEFT JOIN (
 WHERE r.slug = 'unresolved_part'
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -1454,7 +1609,7 @@ SELECT root_filing, root_layer, filing, layer, depth, path,
 FROM walk
 ),
 composition_reachable AS (
--- composition/descent.sqlc unioned with the identity on composition/parts.sqlc: F* = F+ ∪ I.
+-- composition/descent.sqlc unioned with each part reaching itself, from composition/parts.sqlc.
 SELECT DISTINCT root_filing, root_layer, filing, layer
 FROM (
     SELECT * FROM composition_descent
@@ -1466,8 +1621,8 @@ FROM (
 ) p
 ),
 composition_jagged_layers AS (
--- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
--- composition/descent.sqlc, for the layer two sibling parts both reach.
+-- composition/parts.sqlc joined to itself on the fusion, against composition/descent.sqlc with
+-- each layer reaching itself, for the layer two sibling parts both reach.
 SELECT DISTINCT
        a.composition    AS filing,
        a.composed_layer AS layer,
@@ -1494,7 +1649,8 @@ JOIN      (
      AND r2.filing = r1.filing AND r2.layer = r1.layer
 ),
 checks_jagged_layer AS (
--- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they compose".
+-- asrt:Fusion/asrt:Part against itself; conformance rule "a fusion's parts partition what they
+-- compose".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -1518,7 +1674,8 @@ LEFT JOIN (
 WHERE r.slug = 'jagged_layer'
 ),
 rank_co_moving_layers AS (
--- composition/descent.sqlc intersected with its own converse; the classes of F+ ∩ (F+)ᵀ.
+-- composition/descent.sqlc matched against itself the other way round;
+-- the groups of layers that reach each other.
 SELECT p.filing, p.layer, p.co_moves_with_filing, p.co_moves_with_layer,
        min(p.co_moves_with_filing || '/' || p.co_moves_with_layer) OVER w AS class,
        count(*) OVER w                                                    AS members
@@ -1536,7 +1693,8 @@ FROM (
 WINDOW w AS (PARTITION BY p.filing, p.layer)
 ),
 checks_layers_move_together AS (
--- composition/descent.sqlc intersected with its converse; conformance rule "layers that always move together are one layer".
+-- composition/descent.sqlc against itself reversed; conformance rule "layers that always move
+-- together are one layer".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -1547,8 +1705,10 @@ LEFT JOIN (
            CASE WHEN c.filing IS NULL
                 THEN format('`%s` holds its remainder independently', f.layer)
                 WHEN c.partner IS NULL
-                THEN format('`%s` is composed from ITSELF, so its figure depends on its own value and no rank exists for it', f.layer)
-                ELSE format('`%s` moves with `%s`, and %s layers here were one layer: the repair is to merge them, not to break a part',
+                THEN format('`%s` is composed from itself, so its figure depends on its own value '
+                            'and there is no order to work it out in', f.layer)
+                ELSE format('`%s` moves with `%s`, and %s layers here are one layer: the repair '
+                            'is to merge them, not to break a part',
                             f.layer, c.partner, c.members)
            END AS detail
     FROM      (
@@ -1576,7 +1736,8 @@ SELECT c.filing, c.from_layer, c.to_layer,
 FROM pm.coupling c
 ),
 composition_attenuated AS (
--- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's nameplate share.
+-- pm:Coupling at two levels, related through asrt:Fusion/asrt:Part, capped by the part's
+-- nameplate share.
 SELECT x.upper_filing, x.from_layer, x.to_layer, x.lower_filing, x.share,
        x.lo_low  * x.share AS ceil_low,
        x.lo_mode * x.share AS ceil_mode,
@@ -1725,7 +1886,8 @@ LEFT JOIN (
 WHERE r.slug = 'bound_fell_with_no_range'
 ),
 epistemics_claim_derivations AS (
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch, at the claim's own position.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch,
+-- at the claim's own position.
 SELECT c.filing, c.seq, c.layer, c.owns, 'pm:claim/pm:boundOrigin' AS element,
        c.origin_derivation AS identity
 FROM (
@@ -1779,7 +1941,8 @@ SELECT * FROM (VALUES
 ) AS r(identity, owns, element, table_name, column_name, binds, origin, handled_by)
 ),
 checks_identity_does_not_compute_the_claim AS (
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking pm:derivation, against the identity that computes the claim.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking pm:derivation, against the identity
+-- that computes the claim.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -1998,7 +2161,8 @@ LEFT JOIN (
 WHERE r.slug = 'elimination_not_applicable_with_parts'
 ),
 composition_underived_parts AS (
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
@@ -2013,20 +2177,21 @@ WHERE d.low IS NULL
 GROUP BY p.composition, p.composed_layer, d.quantity
 ),
 composition_suspension_grounds AS (
--- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
+-- be computed.
 SELECT * FROM composition_filed_grounds
 UNION ALL
 SELECT * FROM composition_underived_parts
 ),
 composition_suspended_fusions AS (
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     SELECT * FROM composition_suspension_grounds
 ) g
 ),
 composition_suspended_quantities AS (
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     SELECT * FROM composition_suspended_fusions
@@ -2064,7 +2229,8 @@ EXCEPT
 )
 ),
 composition_fused AS (
--- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at its corners.
+-- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at
+-- its corners.
 SELECT x.composition, x.composed_layer, x.quantity,
        x.sum_low, x.sum_mode, x.sum_high, x.crossed,
        x.sum_low  - x.e_at_low  AS computed_low,
@@ -2106,7 +2272,8 @@ FROM (
 ) x
 ),
 checks_fusion_sum_disagrees AS (
--- asrt:Fusion/asrt:Part summed against the composed layer's demand, nameplate and draw, via composition/fused.sqlc.
+-- asrt:Fusion/asrt:Part summed against the composed layer's demand, nameplate and draw, via
+-- composition/fused.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -2168,7 +2335,8 @@ FROM pm.layer l
 WHERE l.remainder_absent IS NOT NULL
 ),
 checks_denied_remainder_is_not_contradicted AS (
--- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate, from layers/figures.sqlc.
+-- pm:StatedRemainder's absent branch against the layer's own pm:Demand and pm:Nameplate, from
+-- layers/figures.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -2216,7 +2384,8 @@ FROM (
 WHERE s.low IS NOT NULL
 ),
 composition_part_quantities AS (
--- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed layer.
+-- composition/parts.sqlc with layers/quantities.sqlc at the part's layer and at the composed
+-- layer.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        p.factor_state, p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,
        part.quantity,
@@ -2235,7 +2404,8 @@ JOIN      (
       AND comp.quantity = part.quantity
 ),
 composition_carriable AS (
--- composition/part_quantities.sqlc for a fusion that files one part, where the factor has a figure.
+-- composition/part_quantities.sqlc for a fusion that files one part, where the factor has a
+-- figure.
 SELECT q.composition AS filing, q.composed_layer AS layer, q.quantity,
        least(   q.part_low  * coalesce(q.factor_low, 1),
                 q.part_low  * coalesce(q.factor_high, 1)) AS part_low,
@@ -2328,7 +2498,7 @@ LEFT JOIN (
            format('%s: the factors multiply to [%s, %s] round it, and one %s inside',
                   array_to_string(w.path, ' to '),
                   round(w.p_low, 6), round(w.p_high, 6),
-                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'DOES NOT lie' END)
+                  CASE WHEN w.p_low <= 1 AND w.p_high >= 1 THEN 'lies' ELSE 'does not lie' END)
            AS detail
     FROM walk w
     WHERE w.at = w.start
@@ -2353,7 +2523,8 @@ LEFT JOIN (
                            WHEN 'stated'     THEN 'filed'
                            WHEN 'absent'     THEN format('filed as `%s`', p.factor_absent)
                            WHEN 'derivation' THEN format('filed as the output of `%s`', p.factor_derivation)
-                           WHEN 'omitted'    THEN 'NOT FILED, so a reader supplies one' END) AS detail
+                           WHEN 'omitted'    THEN 'not filed, so a reader supplies one'
+                      END) AS detail
         FROM (
             SELECT * FROM composition_part_quantities
         ) p
@@ -2439,7 +2610,8 @@ LEFT JOIN (
 ) c ON c.composition = x.composition
 ),
 checks_regime_crossing_without_a_citation AS (
--- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files what reconciles it".
+-- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files
+-- what reconciles it".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -2464,7 +2636,8 @@ LEFT JOIN (
 WHERE r.slug = 'regime_crossing_without_a_citation'
 ),
 checks_part_regime_disagrees AS (
--- composition/part_regimes.sqlc; conformance rule "a composer's regime for a part is one that part's own filing declares".
+-- composition/part_regimes.sqlc; conformance rule "a composer's regime for a part is one that
+-- part's own filing declares".
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     SELECT * FROM checks_roster
@@ -2572,22 +2745,33 @@ FULL JOIN (
 GROUP BY r.rule, c.rule
 ),
 arithmetic_roster AS (
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)
 ),
 arithmetic_remainder AS (
--- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc drops either,
--- with composition/figureless_remainders.sqlc for a layer whose n - d is not its remainder.
+-- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc
+-- drops either, with composition/figureless_remainders.sqlc for a layer whose totals do not give
+-- its remainder.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -2651,7 +2835,8 @@ LEFT JOIN (
 WHERE a.slug = 'shares_sum'
 ),
 arithmetic_shares_bounded AS (
--- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under interference.
+-- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under
+-- interference.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -2736,7 +2921,8 @@ LEFT JOIN (
 WHERE a.slug = 'draw_bounded'
 ),
 arithmetic_exposure_bounded AS (
--- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer
+-- and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -2787,17 +2973,22 @@ LEFT JOIN (
 WHERE a.slug = 'time_slack_derived'
 ),
 arithmetic_filed_remainder AS (
--- pm:Remainder/pm:quantity against the layer's own r = n - d.
+-- pm:Remainder/pm:quantity against the size of the layer's remainder in force, via
+-- layers/filed_against_derived.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
 ) a
 LEFT JOIN (
     SELECT l.filing, l.layer,
-           CASE WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
+           CASE WHEN l.qty_derivation IS NOT NULL            THEN 'computable'::public.arithmetic_verdict
+                WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
                 WHEN l.qty_unit IS DISTINCT FROM l.unit      THEN 'not comparable'::public.arithmetic_verdict
                 ELSE 'computable'::public.arithmetic_verdict END AS verdict,
-           CASE WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
+           CASE WHEN l.qty_derivation IS NOT NULL
+                     THEN format('filed as the `%s` derivation, which works out to %s %s',
+                                 l.qty_derivation, round(l.m_mode, 3), l.unit)
+                WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
                 ELSE format('filed %s %s against a derived magnitude %s %s',
                             l.qty_mode, l.qty_unit, round(l.m_mode, 3), l.unit) END AS detail
     FROM      (
@@ -2807,7 +2998,8 @@ LEFT JOIN (
 WHERE a.slug = 'filed_remainder'
 ),
 arithmetic_fusion_sum AS (
--- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and composition/derived_quantities.sqlc.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and
+-- composition/derived_quantities.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     SELECT * FROM arithmetic_roster
@@ -2906,18 +3098,78 @@ SELECT * FROM (VALUES
   ('filing', 'participant', NULL, 'pools', NULL, NULL, 'the participant that renders the document as a pool'),
   ('filing_identity', 'targetNamespace', NULL, 'namespaces', NULL, NULL, 'a notation resolved to a document, which is what import does'),
   ('layer', 'lane', NULL, 'lanes', NULL, NULL, 'a lane, and the region it delimits'),
-  ('operation', 'task', NULL, 'tasks', 'demoted', 'The pointer is on the page and no tool can follow it, which is the state `pm:ForeignId` intends. A notation plus an id names a node in the process notation the filer was reading, which is a different document from this one, so it must not become this task''s own `id` (that would claim the two documents are one) and it cannot be a `relationship`, whose `source` and `target` are QNames needing an `import` that needs a location nobody filed. It rides the task''s `documentation`: a person reads the id, a tool resolves nothing. Unlike every other `demoted` row here, the tool could not do better even in principle, because no authority publishes the list it would resolve against', 'a flow node, reached by foreignId. And the column did not exist, so this row read `loses` nothing while losing the only thing it is about. `pm:Operation/foreignId` is the whole BPMN interface, the ingest read the label alone, and the crossing was filed by the corpus, discarded on every load and absent from every artifact. Third of the model''s three `pm:ForeignId` references and the last without a relation beside it: `entries/notation_references.sqlc`'),
-  ('draw', 'laneSet', NULL, 'in_a_lane', NULL, NULL, 'D. The lane set a modeller actually files: the performer''s lane'),
-  ('induction', 'group', NULL, 'induced_into', 'demoted', 'The pointer, and nothing else now. `tCategoryValue` adds one `xs:string` to a base element and no reference attribute, so the layer arrives as text beside a `lane` of the same name. That is the callActivity defect at one tenth the size: a call loses the layer, this keeps its name and loses the tie. `decider` is lost too, and for the ordinary reason: it is a performer and nothing here files a claimant edge', 'N, the cover. Emitted as categoryValueRef on each operation and drawn as a group, which adds no lane where a second laneSet would have added one per induced layer'),
-  ('part', 'callActivity', NULL, 'calls', 'absent', 'What is left is the factor. With `calledElement` as the only reference the target layer went too: it names a process, so 17 layer-grain edges collapsed to 5 document pairs. `tRelationship` takes QNames at both ends and a required `type`, so `diagrams/descents.sqlc` now carries the same fact at the grain F has, read back and compared edge for edge. What no element carries is the factor, a three-point magnitude on a page with no unit, and that is `absent` for the reason every magnitude here is. And this row is at the wrong grain to say so: one table maps to two elements now, `callActivity` for the substitution and `relationship` for the grain, and the roster has one `element` and one `governed_by`', 'foreign; an embedded subProcess when the part is local'),
-  ('composition_citation', 'documentation', NULL, 'citations', 'demoted', 'The structure, and not everything. The table settles it: `pm.composition_citation` is `(taxonomy, instrument, clause, version)`, four typed fields, not free prose. A `documentation` element carries all four as one string, so a reader can follow the citation and a tool cannot resolve it. Narrower than *everything* and worth being exact about, because the two states owe different repairs', 'the instrument a composition is filed under. The open question is the schema''s and not the diagram''s: `(composition, seq)` is a bare document ordinal where both sibling children carry a regime handle'),
+  ('operation', 'task', NULL, 'tasks', 'demoted',
+   'The pointer is on the page and no tool can follow it, which is the state `pm:ForeignId` '
+   'intends. A notation plus an id names a node in the process notation the filer was reading, '
+   'which is a different document from this one, so it must not become this task''s own `id` '
+   '(that would claim the two documents are one) and it cannot be a `relationship`, whose '
+   '`source` and `target` are QNames needing an `import` that needs a location nobody filed. It '
+   'rides the task''s `documentation`: a person reads the id, a tool resolves nothing. Unlike '
+   'every other `demoted` row here, the tool could not do better even in principle, because no '
+   'authority publishes the list it would resolve against',
+   'a flow node, reached by foreignId. `pm:Operation/foreignId` is the whole BPMN interface, '
+   'and `entries/notation_references.sqlc` is the relation that holds it, one of the model''s '
+   'three `pm:ForeignId` references'),
+  ('draw', 'laneSet', NULL, 'in_a_lane', NULL, NULL,
+   'the lane set a modeller actually files: the performer''s lane'),
+  ('induction', 'group', NULL, 'induced_into', 'demoted',
+   'The pointer. `tCategoryValue` adds one `xs:string` to a base element and no reference '
+   'attribute, so the layer arrives as text beside a `lane` of the same name. That is a smaller '
+   'form of the callActivity defect: a call loses the layer, this keeps its name and loses the '
+   'tie. `decider` is lost too, and for the ordinary reason: it is a performer and nothing here '
+   'files a claimant edge',
+   'the cover. Emitted as categoryValueRef on each operation and drawn as a group, which adds '
+   'no lane where a second laneSet would have added one per induced layer'),
+  ('part', 'callActivity', NULL, 'calls', 'absent',
+   'The factor. `calledElement` names a process, so it loses the target layer, and '
+   '`diagrams/descents.sqlc` carries that fact at layer grain as a `relationship`, which takes '
+   'QNames at both ends and a required `type`, read back and compared edge for edge. What no '
+   'element carries is the factor, a three-point magnitude on a page with no unit, and that is '
+   '`absent` for the reason every magnitude here is. One table maps to two elements, '
+   '`callActivity` for the substitution and `relationship` for the grain, and this roster has '
+   'one `element` and one `governed_by` per table',
+   'foreign; a nested lane, a `childLaneSet`, when the part is local'),
+  ('composition_citation', 'documentation', NULL, 'citations', 'demoted',
+   'The structure. `pm.composition_citation` is `(taxonomy, instrument, clause, version)`, four '
+   'typed fields, not free prose. A `documentation` element carries all four as one string, so a '
+   'reader can follow the citation and a tool cannot resolve it',
+   'the instrument a composition is filed under. The open question is the schema''s and not '
+   'the diagram''s: `(composition, seq)` is a bare document ordinal where both sibling children '
+   'carry a regime handle'),
 
-  ('coupling', 'association', NULL, 'dependences', 'absent', 'The observation and the strength, which is all the evidence there is. `pm:observed` is required prose and it is the whole argument; an `association` carries none, and two of the five observations here contain a numeral, so routing them through `documentation` would put a magnitude on a page with no unit, which is `dataObject`''s refusal arriving through prose. The artifact says two layers are coupled and cannot say what was seen', 'C, the model''s own falsifier. `sourceRef` and `targetRef` are unconstrained QNames, so two lanes are a legal pair; withheld for years on a reason that ruled out `messageFlow` and was never asked of this'),
-  ('coupling_search', 'documentation', NULL, 'documentation', NULL, NULL, 'the other half of the pair, on the laneSet, because the laneSet is the partition the search is about. 12 of 15 filings state no coupling, so a diagram drawing only the matrix is silent about them in a way a reader resolves as independence. An absent line is not independence'),
+  ('coupling', 'association', NULL, 'dependences', 'absent',
+   'The observation and the strength, which is all the evidence there is. `pm:observed` is '
+   'required prose and it is the whole argument; an `association` carries none, and an '
+   'observation may contain a numeral, so routing it through `documentation` would put a '
+   'magnitude on a page with no unit, which is `dataObject`''s refusal arriving through prose. '
+   'The artifact says two layers are coupled and cannot say what was seen',
+   'the observation that can show the model wrong. `sourceRef` and `targetRef` are '
+   'unconstrained QNames, so two lanes are a legal pair, and the reason that rules out '
+   '`messageFlow` does not apply here'),
+  ('coupling_search', 'documentation', NULL, 'documentation', NULL, NULL,
+   'the other half of the pair, on the laneSet, because the laneSet is the division the search '
+   'is about. A filing that states no coupling draws no line, and a reader takes a silent '
+   'diagram for independence. An absent line is not independence'),
   ('elimination_search',   NULL, 'notApplicable', NULL, NULL, NULL, 'the same, for double counting'),
-  ('stack_scope', 'documentation', NULL, 'scopes', 'demoted', 'The structure. `tLaneSet` has no extent attribute of any kind, so all three states render as one lane set and the answer survives only as untyped text. BPMN is the finer of the two on the basis and has nothing at all on the extent: `tLane` carries `partitionElement` and `partitionElementRef` for what a partition is by, per lane, where this model files one basis per stack. The grain axis, running backwards for once', 'This row said `notApplicable` while its own reason said *a lane set is implicitly complete*, and a tuple that contradicts itself is the sharpest finding shape there is. Both cannot hold: if the answer is implicitly complete then the question arose and the artifact answered it. It did, literally, in a hardcoded sentence in 15 of 15 documents where 1 filing claims complete. That is `invents` and not an absence, and the repair was to read the extent instead of asserting it'),
+  ('stack_scope', 'documentation', NULL, 'scopes', 'demoted',
+   'The structure. `tLaneSet` has no extent attribute of any kind, so all three states render '
+   'as one lane set and the answer survives only as untyped text. BPMN is the finer of the two '
+   'on the basis and has nothing at all on the extent: `tLane` carries `partitionElement` and '
+   '`partitionElementRef` for what the lanes are divided by, per lane, where this model files one '
+   'basis per stack. The grain axis, running the other way',
+   'how much of the system the stack holds. A lane set says nothing about it, so one sentence '
+   'saying the same of every document would invent a claim the filings do not all make; the '
+   'emitter reads the extent each filing states instead'),
   ('elimination',          NULL, 'notApplicable', NULL, NULL, NULL, 'a call references and never redeclares, so BPMN cannot double declare and owes no correction'),
-  ('elimination_between', 'relationship', NULL, 'attributions', 'absent', 'The size of the overlap, which is `pm.elimination`''s business and not this table''s, and the references that do not resolve: a QName needs a prefix and a prefix needs an import, so a `between` naming a document nobody filed cannot be pointed at. 8 of 8 resolve here, so that arm is unexercised by luck', 'Filed `notApplicable` on a reason that was never about it: *presupposes the overlap BPMN cannot express*. That is about the magnitude, and this table has none. It is `asrt:FiledLayer`, whose filing is a `pm:ForeignId`, the same reference type a part uses, and the schema says it exists *so the attribution is queryable rather than narrated*. The reason it stayed invisible is structural: this tree grows by rules, and `between` is the one cross-document reference no rule may check, because the schema licenses an unresolvable one outright'),
+  ('elimination_between', 'relationship', NULL, 'attributions', 'absent',
+   'The size of the overlap, which is `pm.elimination`''s business and not this table''s, and '
+   'the references that do not resolve: a QName needs a prefix and a prefix needs an import, so '
+   'a `between` naming a document nobody filed cannot be pointed at',
+   'a composed layer, and a layer of another document the double counting runs against. It is '
+   '`asrt:FiledLayer`, whose filing is a `pm:ForeignId`, the same reference type a part uses, and '
+   'the schema files it so that it can be queried rather than told as a story. `between` is the '
+   'one cross-document reference no rule may check, because the schema allows one that names a '
+   'filing nobody filed'),
 
   ('nameplate',            NULL, 'none', NULL, NULL, NULL,          'a committed, quantized magnitude. BPMN carries no quantity anywhere'),
   ('slack',                NULL, 'none', NULL, NULL, NULL,          'three buffers per layer, each a magnitude'),
@@ -2954,73 +3206,131 @@ FULL JOIN (
 GROUP BY d.object, k.object
 ),
 diagrams_roster AS (
--- the cardinality identities a BPMN emission owes, against the relation supplying each expected count.
+-- the counts a BPMN emission owes, against the relation supplying each expected count.
 SELECT * FROM (VALUES
-  ('pools',   '|participant| = |filing|',      'epistemics/documents',     'participant',
+  ('pools',   'one participant per filing',    'epistemics/documents',     'participant',
               'a document rendered as two pools, or two rendered as one'),
-  ('lanes',   '|lane| = |layer|',              'layers/every_layer',       'lane',
-              'a partition rendered as an overlap: the falsifier, drawn'),
-  ('tasks',   '|task| = |operation|',          'entries/operations',       'task',
+  ('lanes',   'one lane per layer',            'layers/every_layer',       'lane',
+              'layers drawn as overlapping, which draws what only a coupling may show'),
+  ('tasks',   'one task per operation',        'entries/operations',       'task',
               'an operation dropped, or a flow node invented to make the picture read'),
-  ('calls',   '|callActivity| = |part crossing a document|', 'diagrams/foreign_calls', 'callActivity',
-              'One law over two elements would let a local part be rendered as an activity. A local fusion is a partition of the composed layer, not a node inside it. Splitting the law is also what makes the flattening measurable: only these parts go through `calledElement`, so this is the population exposed to the invented-cycle defect'),
-  ('nestings', '|childLaneSet| = |layer with a local part|', 'diagrams/nestings', 'childLaneSet',
-              'The recursion equivalence, and BPMN already had the element. A fusion''s parts partition what they compose, and `Lane/childLaneSet` is a sub-partition. A nested lane is still keyed `(filing, layer)`, so unlike a call it collapses nothing and can invent nothing'),
-  ('categories', '|category| = |filing with an induction|', 'diagrams/categories', 'category',
+  ('calls',   'one callActivity per part crossing a document', 'diagrams/foreign_calls',
+              'callActivity',
+              'A law of its own keeps a local part from being drawn as an activity: a local fusion '
+              'divides the composed layer among its parts, and is not a node inside it. Only these '
+              'parts go through `calledElement`, so this is the population exposed to a loop the '
+              'flattening invents'),
+  ('nestings', 'one childLaneSet per layer with a local part', 'diagrams/nestings', 'childLaneSet',
+              'A fusion''s parts divide what they compose among them, and `Lane/childLaneSet` '
+              'draws that division inside the lane. A nested lane is still keyed '
+              '`(filing, layer)`, so unlike a call it collapses nothing and can invent nothing'),
+  ('categories', 'one category per filing with an induction', 'diagrams/categories', 'category',
               'a classification scheme emitted into a document that has nothing to classify, or a document with inductions and no scheme to hang them on'),
-  ('category_values', '|categoryValue| = |layer induced into|', 'diagrams/categories', 'categoryValue',
-              'N getting a notation. The route that does not work is a second `laneSet`, which gives every layer two `lane` elements. BPMN''s other mechanism adds no lane at all: `tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the member declares the cover and no container grows'),
-  ('groups',     '|group| = |categoryValue|',    'diagrams/categories', 'group',
-              'The glyph against the fact, and the pair is the answer to what a group is. `group` is to `categoryValueRef` what `lane` is to `flowNodeRef`: the drawn shape of an incidence held elsewhere. A categoryValue with no group is a classification nobody drew; a group with no categoryValue is a dashed box that means nothing'),
-  ('induced_into', '|categoryValueRef| = |induction|', 'diagrams/category_members', 'categoryValueRef',
-              'An induction dropped, which `|lane| = |layer|` cannot see. One operation here draws from `labour` and induces into `capability`; a lane set holds it in one place, so holding it in the draw alone leaves the second incidence out of every emitted document while the layer count still agrees'),
-  ('diagrams', '|BPMNDiagram| = |filing|', 'diagrams/pools', 'BPMNDiagram',
+  ('category_values', 'one categoryValue per layer induced into', 'diagrams/categories',
+              'categoryValue',
+              'The inductions given a notation. A second `laneSet` would give every layer two '
+              '`lane` elements; BPMN''s other mechanism adds no lane at all: '
+              '`tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the member declares '
+              'the cover and no container grows'),
+  ('groups',     'one group per categoryValue',  'diagrams/categories', 'group',
+              'The glyph against the fact. `group` is to `categoryValueRef` what `lane` is to '
+              '`flowNodeRef`: the drawn shape of a membership held elsewhere. A categoryValue with '
+              'no group is a classification nobody drew; a group with no categoryValue is a dashed '
+              'box that means nothing'),
+  ('induced_into', 'one categoryValueRef per induction', 'diagrams/category_members',
+              'categoryValueRef',
+              'An induction dropped, which the lane count cannot see. An operation that draws '
+              'from one layer and induces into another sits in one lane, so holding it in the '
+              'draw alone leaves the induction out of every emitted document while the layer '
+              'count still agrees'),
+  ('diagrams', 'one BPMNDiagram per filing', 'diagrams/pools', 'BPMNDiagram',
               'The SVG''s proper place in the document. `bpmndi:BPMNDiagram` is in `tDefinitions`''s own sequence, and a document without one leaves the SVG stage to invent its coordinates while any tool that opens the file lays it out differently: two pictures of one model with nothing tying them'),
-  ('planes', '|BPMNPlane| = |filing|', 'diagrams/pools', 'BPMNPlane',
+  ('planes', 'one BPMNPlane per filing', 'diagrams/pools', 'BPMNPlane',
               'one surface per document, naming the collaboration it is a picture of. A second plane would be a second picture of one model with no way to say which is meant'),
-  ('shapes', '|BPMNShape| = every element that owes a box', 'diagrams/shapes', 'BPMNShape',
-              'The primitives are not all of it, and the tempting answer is that a `group`, an `association` and a `textAnnotation` are derived from these boxes, so filing a derived coordinate files a value that can disagree with whatever computes it. That argument holds and it is about the wrong column: `diagrams/shapes.sqlc` carries no coordinate for anything, so a row there says which elements owe a box and never where it is, and the derivation belongs in the emitter. An element drawn from geometry the document does not declare is an element every other reader of the file loses, without an error'),
-  ('edges', '|BPMNEdge| = |association|', 'diagrams/shapes', 'BPMNEdge',
-              'The one route in the notation, and it needs a different carrier from every box here: `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. Counting it with the shapes would make `|BPMNShape|` a number that matches nothing in the document, which is why `diagrams/shapes.sqlc` declares `di` per row'),
-  ('legends', '|textAnnotation| = |note a document owes on its face|', 'diagrams/legends', 'textAnnotation',
-              'A fact present and invisible, which is what this law catches. `documentation` is admitted on any base element and drawn in no rendering, so a scope, a coupling search, a dependence''s meaning and a cover''s meaning can all be in the artifact and on no page. `textAnnotation` is the only element in BPMN that puts words on the canvas, and *documentation is spent instead* is true and about the wrong property'),
-  ('attributions', '|relationship type=elimination-between| = |between that resolves|', 'eliminations/resolved', 'relationship',
-              'The second `pm:ForeignId`, and the element''s type earning its keep. `association` was refused for F because it has no type and a second use makes two facts indistinguishable; `tRelationship/@type` is required, so a second relation costs a different string and the laws filter on it. The population is the resolved references and not all of them: a QName needs a prefix and a prefix needs an import, so a `between` naming a document nobody filed cannot be pointed at, and the schema calls that filing ordinary'),
-  ('descents', '|relationship| = |part crossing a document|', 'diagrams/descents', 'relationship',
-              'The mapping''s widest demotion, promoted. `calledElement` names a process, so 17 layer-grain edges collapsed to 5 document pairs and the layer survived only inside `@name`. The count is the weak half: 17 relationships joining the wrong 17 pairs passes it, which is why the isomorphism law in examples/diagramming/main.rs reads the endpoints back and compares the edge set to F'),
-  ('citations', '|citation rendered| = |citation filed|', 'diagrams/citations', 'documentation',
+  ('shapes', 'one BPMNShape per element that owes a box', 'diagrams/shapes', 'BPMNShape',
+              'The primitives are not all of it: a `group` and a `textAnnotation` owe a box too. '
+              '`diagrams/shapes.sqlc` carries no coordinate for anything, so a row there says '
+              'which elements owe a box and never where it is, and working the box out belongs '
+              'to the emitter. An element drawn from geometry the document does not declare is '
+              'an element every other reader of the file loses, without an error'),
+  ('edges', 'one BPMNEdge per association', 'diagrams/shapes', 'BPMNEdge',
+              'The one route in the notation, and it needs a different carrier from every box '
+              'here: `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. Counting it with '
+              'the shapes would make the shape count a number that matches nothing in the '
+              'document, which is why `diagrams/shapes.sqlc` declares `di` per row'),
+  ('legends', 'one textAnnotation per note a document owes on its face', 'diagrams/legends',
+              'textAnnotation',
+              'A fact present and invisible, which is what this law catches. `documentation` is '
+              'admitted on any base element and drawn in no rendering, so a scope, a coupling '
+              'search, a dependence''s meaning and a cover''s meaning can all be in the artifact '
+              'and on no page. `textAnnotation` is the only element in BPMN that puts words on '
+              'the canvas'),
+  ('attributions', 'one relationship of type elimination-between per between that resolves',
+              'eliminations/resolved', 'relationship',
+              'The second `pm:ForeignId`, and the element''s type earning its keep. `association` '
+              'cannot carry the composition: it has no type, and a second use would make two facts '
+              'indistinguishable; `tRelationship/@type` is required, so a second relation costs a '
+              'different string and the laws filter on it. The population is the resolved '
+              'references and not all of them: a QName needs a prefix and a prefix needs an '
+              'import, so a `between` naming a document nobody filed cannot be pointed at, and '
+              'the schema calls that filing ordinary'),
+  ('descents', 'one relationship per part crossing a document', 'diagrams/descents',
+              'relationship',
+              '`calledElement` names a process, so the edges between layers collapse to pairs of '
+              'documents and the layer survives only inside `@name`; this carries the same fact at '
+              'layer grain. The count is the weak half: as many relationships joining the wrong '
+              'pairs pass it, which is why examples/diagramming/main.rs reads the endpoints back '
+              'and compares them edge for edge with the parts'),
+  ('citations', 'one rendered citation per filed citation', 'diagrams/citations', 'documentation',
               'A table declared as mapping and rendered nowhere, which no count of elements can see. Element kinds are not one to one: the pools and the lanes spend `documentation` too, so a count of that element is exact while this table''s share of it is zero, and `diagrams/ungoverned.sqlc` is the law that checks attribution instead'),
-  ('scopes', '|scope stated| = |filing|', 'diagrams/scopes', 'documentation',
+  ('scopes', 'one stated scope per filing', 'diagrams/scopes', 'documentation',
               'The `invents` state, caught in the emitter''s own prose. A sentence about a filing, hardcoded in the emitter, says one thing about every document where the filings differ, and `diagrams/scopes.sqlc` is what each one claims. That is not something a reader infers: the artifact says it. A count is not the law that matters here, the attribution one below it is: this only checks that a scope reached every document, and a wrong scope in every document would pass it'),
-  ('dependences', '|association| = |coupling|', 'diagrams/dependences', 'association',
-              'The model''s own falsifier, which no emitted document could state. `pm:Coupling` exists so the model can be refuted in its own format, and the reason that rules out `messageFlow` says nothing about `association`, whose `sourceRef` and `targetRef` are unconstrained QNames. The law is worth as much for what it cannot check: an association carries no magnitude and no observation, so |association| = |coupling| passes while the evidence and the strength are both gone'),
-  ('namespaces', '|targetNamespace| = |notation|', 'composition/notations', 'targetNamespace',
+  ('dependences', 'one association per coupling', 'diagrams/dependences', 'association',
+              'The observation that can show the model wrong, drawn. `pm:Coupling` exists so the '
+              'model can be shown wrong in its own format, and the reason that rules out '
+              '`messageFlow` says nothing about `association`, whose `sourceRef` and `targetRef` '
+              'are unconstrained QNames. The law is worth as much for what it cannot check: an '
+              'association carries no magnitude and no observation, so the count agrees while '
+              'the evidence and the strength are both gone'),
+  ('namespaces', 'one targetNamespace per notation', 'composition/notations', 'targetNamespace',
               'a document that does not declare the uri it is, so nothing can reference it'),
-  ('imports', '|import| = |document a composition reaches by a part or an elimination|', 'diagrams/cross_document', 'import',
+  ('imports', 'one import per document a composition reaches by a part or an elimination',
+              'diagrams/cross_document', 'import',
               'a reference invented by the emitter, or a document reached without being imported'),
-  ('in_a_lane', '|flowNodeRef| = |draw| + |part crossing a document|', 'diagrams/lane_membership', 'flowNodeRef',
-              'an orphan flow node: emitted, counted, and in no lane, so the incidence that put it there is gone from the rendering while every cardinality law still passes'),
-  ('definitions',   '|definitions| = |filing|',   'diagrams/pools', 'definitions',
+  ('in_a_lane', 'one flowNodeRef per draw and per part crossing a document',
+              'diagrams/lane_membership', 'flowNodeRef',
+              'an orphan flow node: emitted, counted, and in no lane, so the membership that put '
+              'it there is gone from the rendering while every count still agrees'),
+  ('definitions',   'one definitions per filing',   'diagrams/pools', 'definitions',
               'a filing emitted twice, or one skipped, which no leaf count would show'),
-  ('collaboration', '|collaboration| = |filing|', 'diagrams/pools', 'collaboration',
+  ('collaboration', 'one collaboration per filing', 'diagrams/pools', 'collaboration',
               'one filing split across two collaborations, so its pool has no single home'),
-  ('process',       '|process| = |filing|',       'diagrams/pools', 'process',
-              'one filing split into two processes, which makes its layers two partitions'),
-  ('lane_set',      '|laneSet| = |filing|',       'diagrams/pools', 'laneSet',
-              'The one that governs the elimination: a second lane set is how D and N would both be rendered, and every layer then has two lane elements with nothing but a matching name to say they are one layer'),
-  ('documentation', '|documentation| = |sentence a relation states|', 'diagrams/annotated', 'documentation',
-              'Documentation is not a container, which is what separates this row from the other four. They frame a document and must appear once; this is an annotation and may sit on any base element, so one per document fires the moment a lane is annotated, which is a law right about a fact and wrong about a kind. And the identity beside it is prose where the model side is a relation, so `diagrams/annotated.sqlc` can grow an arm with this count staying exact and the sentence describing it going stale. A count is also the wrong instrument here and always was, which is what `states` is for: every document can carry the right number of sentences and each say something no relation states, with the count exact for any corpus size. examples/diagramming/main.rs reads every one back and asks what states it')
+  ('process',       'one process per filing',       'diagrams/pools', 'process',
+              'one filing split into two processes, which divides its layers into two stacks'),
+  ('lane_set',      'one laneSet per filing',       'diagrams/pools', 'laneSet',
+              'The one that governs the elimination: a second lane set is how the draws and the '
+              'inductions would both be drawn as lanes, and every layer then has two lane elements '
+              'with nothing but a matching name to say they are one layer'),
+  ('documentation', 'one documentation per sentence a relation states', 'diagrams/annotated',
+              'documentation',
+              'Documentation is not a container, which is what separates this row from the '
+              'container rows above: they frame a document and appear once, while this is an '
+              'annotation and may sit on any base element. A count alone is not enough here, '
+              'which is what `states` is for: a document can carry the right number of sentences '
+              'and each say something no relation states. examples/diagramming/main.rs reads '
+              'every one back and asks what states it')
 ) AS l(slug, law, model_side, element, catches)
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
 FROM pm.filing f
 ),
 epistemics_documents AS (
--- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
+-- The top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
 SELECT s.name AS filing,
        x.root, x.ns,
        fi.notation, fi.absent AS notation_absent,
@@ -3047,7 +3357,7 @@ SELECT o.filing, o.label, o.foreign_notation, o.foreign_id, o.foreign_absent::te
 FROM pm.operation o
 ),
 diagrams_calls AS (
--- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+-- composition/parts.sqlc reduced to which layer is composed from which; one call activity per part.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (
@@ -3084,7 +3394,8 @@ FROM (
 ) i
 ),
 diagrams_category_members AS (
--- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
+-- pm:Operation/pm:Induction as which layer, never how much; BPMN 2.0
+-- tFlowElement/categoryValueRef.
 SELECT i.filing, i.operation, i.layer
 FROM (
     SELECT * FROM entries_inductions
@@ -3136,7 +3447,7 @@ SELECT d.filing, d.operation, d.layer,
 FROM pm.draw d
 ),
 diagrams_lane_members AS (
--- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
+-- entries/draws.sqlc reduced to which operation draws from which layer; one flowNodeRef per entry.
 SELECT d.filing, d.operation, d.layer
 FROM (
     SELECT * FROM entries_draws
@@ -3486,7 +3797,7 @@ FULL JOIN (
 GROUP BY r.table_name, r.column_name, k.table_name, k.column_name
 ),
 epistemics_class_domain AS (
--- every member of every codomain on epistemics/class_sets.sqlc, with its standing and reason.
+-- every class of every type on epistemics/class_sets.sqlc, with its standing and reason.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc', 'suspended', 'exercised'::public.fit_standing, NULL::text, NULL::text),
   ('arithmetic/all.sqlc', 'not comparable', 'open',
@@ -3505,7 +3816,8 @@ SELECT * FROM (VALUES
 
   ('layers/exposure_scope.sqlc', 'a buffer nobody sized', 'exercised', NULL, NULL),
   ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',
-   'no layer sizes every buffer and has room in one: ignorance outranks room, so the three layers that do have room sit under a buffer nobody sized',
+   'no layer sizes every buffer and has room in one: ignorance outranks room, so every layer '
+   'that does have room sits under a buffer nobody sized',
    NULL),
   ('layers/exposure_scope.sqlc', 'every buffer sized and empty', 'exercised', NULL, NULL),
 
@@ -3559,7 +3871,8 @@ LEFT JOIN (
 ) sc ON sc.filing = b.filing
 ),
 layers_remainder_scope AS (
--- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent and entries/spillovers.sqlc.
+-- layers/remainder.sqlc against pm:Stack/pm:scope, pm:couplings/pm:absent
+-- and entries/spillovers.sqlc.
 SELECT r.filing, r.layer,
        sc.extent,
        cs.answer AS search,
@@ -3675,7 +3988,7 @@ SELECT * FROM (VALUES
 ) AS d(slug, fit, standing, reason)
 ),
 epistemics_class_cells AS (
--- every declared class of eight codomains, LEFT JOINed to the rows that landed in it.
+-- every declared class of every classification, LEFT JOINed to the rows that landed in it.
 SELECT 'arithmetic/all.sqlc' AS relation, (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)) AS codomain,
        c.class::text AS class, c.ord,
        z.site || ' / ' || z.filing || ' / ' || z.layer AS ball,
@@ -3736,7 +4049,7 @@ LEFT JOIN (
 ) z ON z.quantity = c.class
 ),
 epistemics_class_sets AS (
--- the eight classifications, their codomains, the unit each counts in, and whether it is filed.
+-- every classification, its type, what each counts, and whether it is filed.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc',              'arithmetic_verdict', 'computation', true),
   ('layers/remainder.sqlc',            'fit',                'layer',       true),
@@ -3763,7 +4076,8 @@ LEFT JOIN (
 GROUP BY k.relation, k.codomain, k.class, s.subject, k.ord
 ),
 folds_class_subjects AS (
--- epistemics/class_domain.sqlc's occupancy claims against epistemics/classes.sqlc, one row per class.
+-- epistemics/class_domain.sqlc's exercised classes against epistemics/classes.sqlc,
+-- one row per class.
 SELECT coalesce(d.relation, c.relation) || ' / ' || coalesce(d.class, c.class) AS subject,
        d.class IS NOT NULL                                                    AS declared,
        coalesce(c.balls, 0)                                                   AS rows
@@ -3788,7 +4102,8 @@ LEFT JOIN (
              AND x.declared = x.roster
              AND x.unproduced = x.missing
              AND x.undeclared = x.stray AS holds,
-           format('%s declared = %s unproduced + %s produced, %s undeclared; by EXCEPT, %s on the roster, %s unproduced, %s undeclared',
+           format('%s declared: %s unproduced, %s produced, %s undeclared; '
+                  'by EXCEPT, %s on the roster, %s unproduced, %s undeclared',
                   x.declared, x.unproduced, x.produced, x.undeclared, x.roster, x.missing, x.stray) AS detail
     FROM (
         SELECT 'rules' AS contract,

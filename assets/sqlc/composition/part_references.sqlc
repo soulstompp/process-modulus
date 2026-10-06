@@ -1,24 +1,24 @@
-# Every part as filed, resolved or not. One row per (composition, composed layer, part): the raw
-# incidence matrix F, before anybody has checked that the thing it points at exists.
+# Every part as filed, resolved or not. One row per (composition, composed layer, part): the parts
+# as filed, before anybody has checked that what they point at exists.
 #
-# An incidence entry and a conversion factor at once
-#   A part is both, which is why F and Φ live in one table. The entry says which layer of which
-#   document goes into which layer of the composer's own; the factor says what to multiply it by
-#   to reach that layer's unit.
+# A reference and a conversion factor at once
+#   A part is both, which is why the two live in one table. The reference says which layer of which
+#   document goes into which layer of the composer's own; the factor says what to multiply it by to
+#   reach that layer's unit.
 #
 # A part names its target by a notation
 #   Not by a filename. A row resolves only where a document declares its own notation, so the
-#   conformance rule "a dependence end's filing exists, and the layer named is in it" presupposes
-#   that lookup: a foreign key needs something to point at.
+#   conformance rule "a dependence end's filing exists, and the layer named is in it" assumes that
+#   lookup: a foreign key needs something to point at.
 #
 # The factor's state, assigned once
-#   `asrt:Part/factor` is optional and its choice has three arms, so a part files its conversion in
-#   one of four ways, which `public.factor_state` declares: omitted (the units already agree, and the
-#   factor is one), stated, absent, or a derivation. Three nullable columns carry them, and every
-#   reader asking which kind of factor a part has asks this column rather than testing the three
-#   again. `pm.part`'s CHECKs let at most one of the columns be set, so the arms cannot overlap and
-#   the omitted arm is exactly the part with none of them. algebra/factor_state.sqlc holds each
-#   part's state to the column it names.
+#   `asrt:Part/factor` is optional and its choice has three branches, so a part files its
+#   conversion in one of four ways, which `public.factor_state` declares: omitted (the units
+#   already agree, and the factor is one), stated, absent, or a derivation. Three nullable columns
+#   carry them, and every reader asking which kind of factor a part has asks this column rather than
+#   testing the three again. `pm.part`'s CHECKs let at most one of the columns be set, so the
+#   branches cannot overlap, and the omitted branch is exactly the part with none of them.
+#   algebra/factor_state.sqlc holds each part's state to the column it names.
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
        p.factor_low, p.factor_mode, p.factor_high, p.factor_absent, p.factor_derivation,

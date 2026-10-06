@@ -1,16 +1,26 @@
 -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against the clearance it stands for.
 WITH arithmetic_roster AS (
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)
 ),
 layers_windows AS (
@@ -22,7 +32,8 @@ SELECT n.filing, n.layer,
 FROM pm.nameplate n
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -103,7 +114,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -180,7 +192,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -333,7 +346,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -431,7 +445,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -531,7 +545,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -544,7 +559,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -568,7 +584,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -607,8 +624,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -722,7 +740,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,

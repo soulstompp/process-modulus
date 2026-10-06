@@ -1,36 +1,34 @@
-# What each graph loses when it is cut up by filing. One row per graph: its cycle space taken
-# corpus-wide, and the sum of its cycle spaces taken one filing at a time.
+# What each graph loses when it is cut up by filing. One row per graph: its independent loops
+# counted across the whole corpus, and the sum of its loops counted one filing at a time.
 #
 # It answers an accusation rather than raising one
-#   `examples/diagramming/main.rs` emits one document per filing and draws the layer graph, and
-#   that is not a silent pick among three equals. It is the only one of the three whose
-#   per-filing projection preserves the graph's cycle space, and this relation is the
-#   measurement that says so.
+#   `examples/diagramming` emits one document per filing and draws the layer graph, and that is not
+#   an arbitrary pick among the graphs. It is the only one whose per-filing cut keeps the graph's
+#   loops, and this relation is the measurement that says so.
 #
-# Cutting by filing destroys the unit graph's cycle
-#   The unit graph's only cycle spans two filings. Corpus-wide the unit graph carries one
-#   independent cycle; summed per filing it carries none, because `GPU-hour -> node-hour` and
-#   `node-hour -> GPU` are filed in `every-unit-cycle` and the edge that closes them,
+# Cutting by filing breaks the unit graph's loop
+#   The unit graph's one loop runs through two filings. Across the corpus the unit graph has one
+#   independent loop; summed per filing it has none, because `GPU-hour -> node-hour` and
+#   `node-hour -> GPU` are filed in `every-unit-cycle`, and the edge that closes them,
 #   `GPU -> GPU-hour`, is filed in `merge-holding-composition`. The fixture named
-#   `every-unit-cycle` contains no unit cycle on its own.
+#   `every-unit-cycle` holds no loop of units on its own.
 #
-# The cycle is the whole subject
-#   `checks/conversion_cycle_does_not_close` exists to ask whether the factors close round a
-#   loop, so a per-filing unit diagram would show two edges, no loop, and nothing to check: a
-#   picture that is well formed, validates, and has quietly removed the one property it was drawn
-#   to show. That is this repository's stated failure mode, and it would have been produced by
-#   making the graph a slot without measuring first.
+# The loop is the whole subject
+#   `checks/conversion_cycle_does_not_close` exists to ask whether the factors close round a loop,
+#   so a per-filing unit diagram would show two edges, no loop, and nothing to check: a picture that
+#   is well formed, validates, and has quietly removed the one property it was drawn to show. That
+#   is the failure this repository names, and making the graph a slot without measuring first would
+#   produce it.
 #
 # Surviving the cut is not a reason to draw
-#   A graph that survives is not thereby worth drawing. `claimants` survives trivially, with no
-#   edges at all. Survival is a precondition on an honest per-filing emission and never a
-#   reason.
+#   A graph that survives is not thereby worth drawing: a graph with no edges at all, as the
+#   claimants' would be, survives trivially. Survival is a precondition on an honest per-filing
+#   drawing, never a reason for one.
 #
 # The walk lives in `rank/graph_measures.sqlc`
 #   This file's `filing IS NULL` rows would be `rank/cycle_space.sqlc`'s whole output, so
-#   `rank/graph_measures.sqlc` computes both scopes once and this is the comparison between them,
-#   which is the only thing here that is about decomposition.
-#
+#   `rank/graph_measures.sqlc` counts both scopes once, and this is the comparison between them,
+#   which is the only thing here about cutting up.
 -- rank/graph_measures.sqlc at both scopes: the whole against the sum of the parts.
 SELECT w.graph,
        w.cycle_space_dim                                               AS corpus_wide,

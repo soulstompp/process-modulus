@@ -1,31 +1,35 @@
-# Every layer where a remainder was conceivable, and whether it could be taken. One row per
-# layer holding a nameplate row, verdict on whether `n - d` may be computed there at all.
+# Every layer where a remainder could be worked out, and whether it can be. One row per layer
+# holding a nameplate row, with a verdict on whether the nameplate less the demand can be worked
+# out there at all.
 #
-# The candidate population, not the gated one
-#   The difference is the point. layers/remainder.sqlc inner-joins demand to nameplate, so a
-#   layer missing either simply is not there: the sparse reading, and correct for the
-#   arithmetic. But a relation that drops a row cannot report why, so the layers this model
-#   declines to subtract on are invisible to everything downstream. Here they are rows.
+# Every candidate, not only the ones that pass
+#   layers/remainder.sqlc joins demand to nameplate, so a layer missing either is simply not there,
+#   which is right for the arithmetic. But a relation that drops a row cannot say why, so the layers
+#   this model declines to subtract on would be invisible to everything that reads it. Here they
+#   are rows.
 #
 # The unit comparison nothing else makes
-#   layers/differenced_remainder.sqlc carries the demand's unit and the nameplate's as two
-#   separate columns, `unit` and `amount_unit`, and subtracts across them with no predicate. A
-#   guard would bind every computable layer: a rule worth having, not a bound with nothing to
-#   bound. The population is this relation's own `computable` verdict; soundness prints its size.
+#   layers/differenced_remainder.sqlc carries the demand's unit and the nameplate's as two separate
+#   columns, `unit` and `amount_unit`, and subtracts across them with no unit condition. A unit
+#   rule here would apply to every computable layer, so it is a rule worth having, not a guard with
+#   nothing to guard. This relation's own `computable` verdict is that population, and
+#   examples/readiness prints its size.
 #
-# A layer whose own `n - d` is not its remainder
-#   Where a conversion with width scales both a composed layer's totals, its remainder is the
-#   pivot, and layers/remainder.sqlc drops the layer where the pivot is lifted rather than fall back
-#   to the crossed difference (composition/figureless_remainders.sqlc). Such a layer is `suspended`
-#   here, with that reason, so the row layers/remainder.sqlc drops still says why.
+# A layer whose totals do not give its remainder
+#   Where a conversion factor that is a range scales both a composed layer's totals, its remainder
+#   is the one worked out from its parts, and layers/remainder.sqlc drops the layer where that
+#   figure is suspended rather than fall back to the totals; composition/figureless_remainders.sqlc
+#   names those layers. Such a layer is `suspended` here, with that reason, so the row
+#   layers/remainder.sqlc drops still says why.
 #
 # Both operands from the relation that keeps an absent figure
-#   composition/resolved_quantities.sqlc keeps a row for every layer's demand and every nameplate's
-#   amount, stated, computed where filed as a derivation, or typed absent. The value wrappers keep
-#   only the figures, and would drop exactly the rows whose verdict is `suspended`. A derivation
-#   that cannot be computed says why.
--- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc drops either,
--- with composition/figureless_remainders.sqlc for a layer whose n - d is not its remainder.
+#   composition/resolved_quantities.sqlc keeps a row for every layer's demand and every
+#   nameplate's amount: stated, computed where filed as a derivation, or typed absent. The value
+#   relations keep only the figures, and would drop exactly the rows whose verdict is `suspended`.
+#   A derivation that cannot be computed says why.
+-- composition/resolved_quantities.sqlc's demand against its nameplate, before layers/remainder.sqlc
+-- drops either, with composition/figureless_remainders.sqlc for a layer whose totals do not give
+-- its remainder.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

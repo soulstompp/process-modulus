@@ -1,11 +1,11 @@
-# Every layer whose own two measurements imply demand that could have gone unserved, beside
-# whether anybody can say what happened to it. One row per exposed layer, in exactly one of three
+# Every layer whose own two measurements imply demand that could have gone unserved, beside whether
+# anybody can say what happened to it. One row per exposed layer, in exactly one of three
 # standings.
 #
-# The question is asked of the row
-#   The three buffers are substitutes, so the question is asked of the row and never of one
-#   column. An excess above the nameplate can be absorbed by running hot, by drawing on stock, or
-#   by making the demand wait. A layer whose capacity buffer is empty has one route closed, which
+# The question is asked of the whole layer
+#   The three buffers stand in for one another, so the question is asked of the layer and never of
+#   one buffer. An excess above the nameplate can be absorbed by running hot, by drawing on stock,
+#   or by making the demand wait. A layer whose capacity buffer is empty has one route closed, which
 #   is not the same fact as having nowhere to go.
 #
 #     a buffer nobody sized          Suspended. One route is unmeasured, so the ceiling is
@@ -18,13 +18,13 @@
 #                                    went without and somebody has to be named.
 #
 # Only the third licenses a rule
-#   Saying so is the whole point of classifying the other two rather than filtering them away. A
-#   suspended layer and a satisfied layer are the same row to a `WHERE`, and they are opposite
-#   facts: one says the filing is fine, the other says nobody looked.
-#   algebra/exposure_standing.sqlc holds the three to a partition so a layer cannot fall out of
-#   all of them and quietly shrink the population.
+#   Saying so is why the other two are classified rather than filtered away. A suspended layer and
+#   a satisfied layer are the same row to a `WHERE`, and they are opposite facts: one says the
+#   filing is fine, the other says nobody looked. algebra/exposure_standing.sqlc holds every exposed
+#   layer to exactly one of the three, so a layer cannot fall out of all of them and quietly shrink
+#   the population.
 #
-# The arm order is the precedence
+# The order of the arms is the precedence
 #   It is deliberate. Ignorance outranks room: a layer with stock to spare and an unmeasured queue
 #   is suspended, because the spare stock does not tell you whether the queue held anything.
 -- layers/remainder.sqlc where exposure > 0, classified by layers/absorption.sqlc.

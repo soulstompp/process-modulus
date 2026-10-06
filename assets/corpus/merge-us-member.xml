@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ONE MEMBER OF A GROUP, FILED IN THE UNITED STATES. Read with merge-pt-member.xml;
-  neither file is interesting alone. Illustrative figures.
+  One member of a group, filed in the United States, with illustrative figures. Read it
+  with merge-pt-member.xml; neither file says much alone.
 
-  The pair exists to answer a question no single document can raise: WHAT HAPPENS
-  WHEN A CONSOLIDATOR PUTS TWO FILINGS SIDE BY SIDE. Three cases are arranged
-  across the two files, and `tests/merge.rs` is where they are checked:
+  The pair answers a question no single document can raise: what happens when a
+  consolidator puts two filings side by side. Four cases are arranged across the two
+  files, and `tests/composition.rs` is where they are checked:
 
-    * `labour` here is `pessoal` there. THE SAME LAYER, NAMED IN TWO LANGUAGES by
-      two entities that each authored their own filing.
+    * `labour` here is `pessoal` there: the same layer, named in two languages by two
+      entities that each wrote their own filing.
 
-    * `compute` here is `compute` there, AND THEY ARE NOT THE SAME LAYER. Different
-      vendor, different contract, different unit. The token matches by accident.
+    * `compute` here is `compute` there, and they are not the same layer: a different
+      vendor, a different contract, a different unit. The names match by accident.
 
-    * `capacidade-instalada` is only there. A member may hold a layer its sibling
-      does not, and that is not an error in either filing.
+    * `capacidade-instalada` is only there. A member may hold a layer its sibling does
+      not, and that is not an error in either filing.
 
-    * `shift-line` here is `linha-partilhada` there, AND IT IS ONE MACHINE. ⭐⭐ Both
-      members file its full ten shifts as their own nameplate and both are right to.
-      BOTH FILE SLACK. The group is short, because it has one line and not two, and
-      no arithmetic over these two documents alone can discover that.
+    * `shift-line` here is `linha-partilhada` there, and it is one machine. Both members
+      file its full ten shifts as their own nameplate, and both are right to; both show
+      slack. The group is short, because it has one line and not two, and no arithmetic
+      over these two documents alone can find that out.
 
-  ⭐ WHAT IS DELIBERATELY ORDINARY HERE. Nothing in this file is written to make the
-  merge hard. Both entities filed honestly, in their own language, about their own
-  business. The difficulty is structural, and that is the point.
+  Nothing in this file is written to make the merge hard. Both entities filed honestly,
+  in their own language, about their own business. The difficulty is in the structure,
+  and that is the point.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:filing:us-member:2026-08-31</pm:uri>
   </pm:notation>
@@ -45,7 +45,8 @@
         <pm:value>us-gaap</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- no United States chart of accounts, so the entity is its own authority -->
+    <!-- the United States has no national chart of accounts, so the entity is its own
+         authority -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:group:us-member:chart-of-accounts</pm:taxonomy>
@@ -64,7 +65,7 @@
 
     <!-- ============================================================
          LABOUR. Its sibling files the same layer as `pessoal`, and the
-         two remainders are held by DIFFERENT PARTIES for a reason that
+         two remainders are held by different parties, for a reason that
          is jurisdictional rather than managerial. See there.
          ============================================================ -->
     <pm:layer>
@@ -183,7 +184,7 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+              <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
@@ -193,13 +194,13 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
                 <pm:party>us-member</pm:party>
                 <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
               </pm:provenance>
             </pm:claim>
           </pm:inventorySlack>
@@ -227,28 +228,28 @@
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-          <!-- the buffer vocabulary AS PUBLISHED, cited by URI -->
+          <!-- the buffer vocabulary as published, cited by its URI -->
           <pm:absorber>
             <pm:term>
               <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- ⭐ NO INSTRUMENT ON EITHER HOLDER. The excess is real and the magnitude
-               is derivable; who carries it is people and work that aged out, and no
-               account records either.
-               ⛔ COMPARE `pessoal` IN THE SIBLING FILING, where part of the same
-               excess lands in a BOOKED holder because that jurisdiction supplies an
-               instrument for it. Same layer, same fit, same absorber, different
-               holders — and the difference is a fact about the two countries. ⭐⭐ THE
-               CONTRAST IS SHARPER NOW THAN WHEN THIS SAID "ONE HOLDER": both of these
-               shares are unmeasured and the Portuguese filing has a MEASURED one, so
-               the jurisdictional difference is not who bears it but who can SEE it.
-               ⚠️ The `unrealised` holder is here because this layer's `timeSlack` note
-               asks for it — work that queues and ages out is `unrealised`, not
-               `people` — and filing only `people` asserted the team absorbed all of
-               it. Both shares stay `unmeasured`, so the sum rule suspends and no
-               figure is invented to satisfy it. -->
+          <!-- No instrument on either holder. The excess is real and the remainder can be
+               derived; who carries it is people and work that aged out, and no account
+               records either.
+               Compare `pessoal` in the sibling filing, where part of the same kind of
+               excess lands in a `booked` holder, because that jurisdiction supplies an
+               instrument for it, an hours bank. Same layer, same fit, same absorber,
+               different holders, and the difference is a fact about the two countries.
+               Both shares here are `unmeasured`, while the Portuguese filing states its
+               shares as figures, so the difference is not only who bears the excess but
+               who can see it.
+               The `unrealised` holder is here because this layer's `timeSlack` note asks
+               for it: work that queues and ages out is `unrealised`, not `people`, and
+               filing `people` alone would say the team absorbed all of it. Both shares
+               stay `unmeasured`, so the rule that the shares add up to the remainder is
+               suspended, and no figure is invented to satisfy it. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>unrealised</pm:kind>
@@ -279,7 +280,7 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |4 - [4.5, 5.2, 6.0]| = [0.5, 1.2, 2.0] people -->
+          <!-- Derived from this layer's demand and nameplate: 0.5, 1.2 and 2.0 people. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -291,10 +292,10 @@
     </pm:layer>
 
     <!-- ============================================================
-         COMPUTE. ⛔ THE NAME COLLIDES WITH THE SIBLING'S AND THE LAYERS
-         ARE UNRELATED: a different vendor on a different contract, sold
-         by the CARD and metered in GPU. There is nothing in either
-         filing that says so.
+         COMPUTE. The name collides with the sibling's, and the layers
+         are unrelated: a different vendor on a different contract, sold
+         by the card and metered in GPU. Nothing in either filing says
+         so.
          ============================================================ -->
     <pm:layer>
       <pm:name>compute</pm:name>
@@ -342,7 +343,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- One value has no range to tighten, so `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -427,7 +428,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -444,7 +445,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -533,7 +534,7 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |8 - [3.1, 4.4, 6.0]| = [2.0, 3.6, 4.9] GPU -->
+          <!-- Derived from this layer's demand and nameplate: 2.0, 3.6 and 4.9 GPU. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -545,14 +546,14 @@
     </pm:layer>
 
     <!-- ============================================================
-         SHIFT-LINE. ⭐⭐ THE SAME PHYSICAL LINE THE SIBLING FILES AS
+         SHIFT-LINE. The same physical line the sibling files as
          `linha-partilhada`, and this filing is honest about it: the line
          commits ten shifts a week and this member can schedule onto all
-         of them, so ten is what it files. ⛔ THE SIBLING FILES TEN TOO,
-         for the same correct reason, AND THE GROUP HAS TEN SHIFTS AND NOT
-         TWENTY. Neither document is wrong. Their sum is.
-         ⚠️ Read this layer's remainder next to the sibling's: BOTH
-         MEMBERS SHOW SLACK. See the composition for what the group shows.
+         of them, so ten is what it files. The sibling files ten too, for
+         the same correct reason, and the group has ten shifts, not
+         twenty. Neither document is wrong; their sum is.
+         Read this layer's remainder next to the sibling's: both members
+         show slack. See the composition for what the group shows.
          ============================================================ -->
     <pm:layer>
       <pm:name>shift-line</pm:name>
@@ -653,16 +654,17 @@
                 </pm:size>
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
-              <!-- ⭐⭐⭐ THE FIRST WINDOW IN THE CORPUS, AND IT IS A FACT THE NAMEPLATE
-                   CANNOT CARRY. "10 shifts per week" is true whether those ten shifts are
-                   spread across seven days or crammed into five, and the two queue nothing
-                   alike: under the second, work arriving on Friday evening waits until
-                   Monday whatever the slack says. The line is staffed weekdays.
-                   ⛔ SIZE IS THE ON-DURATION, NOT THE GAP: five days available, two not.
-                   ⭐ `policy` AND NOT `intrinsic`. Nothing about the machine requires the
-                   weekend off — somebody rostered it that way and somebody could roster a
-                   sixth day. That makes this figure a LEVER, which is the whole reason the
-                   origin is here and not inferred. -->
+              <!-- The window, a fact the nameplate cannot carry. "10 shifts per week" is
+                   true whether those ten shifts are spread across seven days or packed
+                   into five, and the two queue nothing alike: under the second, work
+                   arriving on Friday evening waits until Monday, whatever the slack says.
+                   The line is staffed on weekdays.
+                   The size is the time the line is on, not the gap: five days on, two
+                   off.
+                   `policy`, not `intrinsic`. Nothing about the machine needs the weekend
+                   off: somebody rostered it that way, and somebody could roster a sixth
+                   day. That makes this figure a lever, which is why its origin is filed
+                   here and not inferred. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -709,9 +711,9 @@
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
-          <!-- ⭐ WHAT THIS MEMBER ACTUALLY GOT, and it is a SLICE of the line's
-               throughput rather than the throughput. The operator files the whole ten.
-               Adding the two draws counts these 4.4 shifts twice. -->
+          <!-- What this member actually got, a slice of the line's throughput rather than
+               the throughput. The operator files the whole ten, so adding the two draws
+               counts these 4.4 shifts twice. -->
           <pm:draw>
             <pm:claim>
               <pm:low>4.4</pm:low>
@@ -757,11 +759,11 @@
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- ⚠️ AND HERE IS THE ONLY HINT IN EITHER FILING THAT THESE TWO ENTITIES
-               ARE RELATED AT ALL: a counterparty named in free text. ⛔ IT IS NOT
-               ENOUGH TO MERGE ON. `party` is a string, not a reference to a filing or
-               to a layer inside one, so a receiver holding both documents still cannot
-               tell which of the sibling's layers this names — or that it names one. -->
+          <!-- The only hint in either filing that these two entities are related at all:
+               a counterparty named in free text. It is not enough to merge on. `party` is
+               a string, not a reference to a filing or to a layer inside one, so a
+               receiver holding both documents still cannot tell which of the sibling's
+               layers it names, or whether it names one. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>counterparty</pm:kind>
@@ -789,13 +791,14 @@
                 </pm:claim>
               </pm:share>
               <pm:party>pt-member</pm:party>
-              <!-- ⭐ AND THE DATE IT WAS TRUE OF, because this is a claim about SOMEBODY
-                   ELSE'S BOOKS and nothing here refreshes it. A counterparty share with
-                   a party and no date is a cached value presented as a current one. -->
+              <!-- And the date it was true of, because this is a claim about somebody
+                   else's books, and nothing here refreshes it. A counterparty share with a
+                   party and no date is a cached value presented as a current one. -->
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |10 - [4.8, 5.6, 6.4]| = [3.6, 4.4, 5.2] shifts per week -->
+          <!-- Derived from this layer's demand and nameplate: 3.6, 4.4 and 5.2 shifts per
+               week. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>

@@ -1,50 +1,49 @@
-# Every row every classification in this tree produces, against the class it landed in, and every
-# class nothing landed in. One row per landed row: the relation, its codomain, the class, the ball
-# that landed there spelled as its own key, and the document that filed it.
+# Every row every classification here produces, against the class it landed in, and every class
+# nothing landed in. One row per landed row: the relation, its type (`codomain`), the class, the
+# row that landed there (`ball`) spelled as its own key, and the document that filed it.
 #
-# Driven from `enum_range`, which is what makes an empty class a row
-#   Grouping classified rows can only list the classes some row took, so it reads the function
-#   onto its image and a zero has nowhere to be. Driving from the declared set and `LEFT JOIN`ing
-#   the rows reads the function onto its codomain. A class nothing landed in is then a row whose
-#   `ball` is NULL, which is the only reason every reader below can count a zero.
+# Driven from `enum_range`, so an empty class is a row
+#   Grouping classified rows can list only the classes some row took, and a zero has nowhere to be.
+#   Driving from the declared classes and `LEFT JOIN`ing the rows lists every class. A class nothing
+#   landed in is then a row whose `ball` is NULL, which is the only reason every reader below can
+#   count a zero.
 #
-# ⛔ epistemics/class_domain.sqlc is NOT an arm here, and the reason is the contract
+# epistemics/class_domain.sqlc is not an arm here, and the contract is why
 #   Its standings are spelled in `public.fit_standing`, which checks/fit_domain.sqlc already
-#   classifies, so the type is read and nothing is missing. An arm counting its rows would make
-#   the eighth contract's POPULATION compose the ROSTER it is differenced against, which is the
-#   one property examples/soundness/main.rs §5 exists to refuse: the two witnesses would share a
-#   file and their agreement would stop being evidence.
+#   classifies, so the type is read and nothing is missing. An arm counting its rows would make the
+#   contract's population compose the roster it is held against, which is what `examples/soundness`
+#   refuses: the two sides would share a file, and their agreement would stop being evidence.
 #
-# ⛔ `codomain` is the type's BARE NAME, because `pg_typeof` is not one spelling
+# `codomain` is the type's bare name, because `pg_typeof` has more than one spelling
 #   `pg_typeof(x)::text` renders through the session's `search_path`: the same column prints
-#   `pm.fit` to a client with the default path and `fit` under `SET search_path TO pm, public`.
-#   A roster comparing against a literal is then right in one session and wrong in the other,
-#   which examples/probes caught by running the law under the second. `pg_type.typname` is what
-#   assets/ddl/schema.ddl wrote and does not move.
+#   `pm.fit` to a client with the default path and `fit` under `SET search_path TO pm, public`. A
+#   roster comparing with a literal would be right in one session and wrong in the other, and
+#   `examples/probes` runs the law under the second. `pg_type.typname` is what assets/ddl/schema.ddl
+#   wrote, and it does not move.
 #
-# `ball` is the key, spelled, not a witness column
-#   Each arm concatenates the whole key of the relation it reads, so `count(ball)` and
-#   `count(DISTINCT ball)` are both available and both mean something. Every part of every key was
-#   measured non-null before it was concatenated, so a NULL `ball` says the class is empty and
-#   never that a column was missing. epistemics/class_sets.sqlc declares what one ball IS.
+# `ball` is the key, spelled out
+#   Each arm joins the whole key of the relation it reads into one text, so `count(ball)` and
+#   `count(DISTINCT ball)` are both available and both mean something. No part of any key is NULL,
+#   so a NULL `ball` says the class is empty and never that a column was missing.
+#   epistemics/class_sets.sqlc declares what one counted row is.
 #
 # `filing` is NULL where the subject is not a document
-#   Six arms classify rows somebody filed, and their `filing` is the document that filed them.
-#   Two do not: checks/fit_axes.sqlc and checks/fit_domain.sqlc classify RULES, and this tree's
-#   own rules are not filed by anybody. Their classes are the same under every scope, so
-#   reports/class_census.sqlc cannot restrict them and does not pretend to.
+#   Most arms classify rows somebody filed, and their `filing` is the document that filed them.
+#   checks/fit_axes.sqlc and checks/fit_domain.sqlc classify rules, and the rules here are not filed
+#   by anybody. Their classes are the same under every scope, so reports/class_census.sqlc cannot
+#   restrict them and does not pretend to.
 #
-# `composition/part_references.sqlc` is scoped by the COMPOSER, not by `part_filing`
-#   `part_filing` is a foreign urn naming the filing a part was taken FROM, and this repository
-#   holds none of them under that spelling: joining it to a scope matches nothing and returns
-#   zero for every class, which reads exactly like a finding. The document that filed the
-#   reference is `composition`, and that is what the scope restricts.
+# `composition/part_references.sqlc` is scoped by the composer, not by `part_filing`
+#   `part_filing` is a foreign urn naming the filing a part was taken from, and this repository
+#   holds none of them under that spelling: joining it to a scope matches nothing and returns zero
+#   for every class, which reads exactly like a finding. The document that filed the reference is
+#   `composition`, and that is what the scope restricts.
 #
 # Written once, read at two grains
-#   epistemics/classes.sqlc counts it pooled and reports/class_census.sqlc counts it per scope.
-#   The eight arms are here and nowhere else: the same fold written twice is one map with two
+#   epistemics/classes.sqlc counts it over every document together, and reports/class_census.sqlc
+#   counts it per scope. The arms are here and nowhere else: the same count written twice is two
 #   unnamed copies, and they drift.
--- every declared class of eight codomains, LEFT JOINed to the rows that landed in it.
+-- every declared class of every classification, LEFT JOINed to the rows that landed in it.
 SELECT 'arithmetic/all.sqlc' AS relation, (SELECT t.typname::text FROM pg_type t WHERE t.oid = pg_typeof(c.class)) AS codomain,
        c.class::text AS class, c.ord,
        z.site || ' / ' || z.filing || ' / ' || z.layer AS ball,

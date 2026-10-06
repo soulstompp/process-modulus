@@ -1,20 +1,19 @@
 //! The two conformance documents say the same thing, or they are two documents.
 //!
-//! ⭐⭐⭐ A TRANSLATION IS NOT A SUMMARY, AND NOTHING WAS CHECKING THE DIFFERENCE.
-//!    `conformance/README.md` and `pt-PT/conformance/README.md` are parallel documents with the
-//!    same section headings, and an implementer picks one. When the English table enumerated
-//!    forty-seven rules and the Portuguese one grouped them into seven, the two readers were
-//!    not owed the same thing, and every test in this repository passed.
+//! A translation is not a summary. `conformance/README.md` and `pt-PT/conformance/README.md` are
+//! parallel documents with the same section headings, and an implementer picks one. A table
+//! that enumerates every rule in one language and groups them in the other leaves the two
+//! readers owed different things, and every other test still passes.
 //!
-//! ⛔ THE RULE TABLE IS THE ONE PLACE A COUNT LIVES. State in prose how many rules there are,
-//!    how many carry the `NOT REACHABLE BY A VALIDATOR` marker and how many do not, and all
-//!    three drift, because a number in prose is a number nobody recounts. The prose names this
-//!    file instead and this file counts the table.
+//! The rule table is the one place a count lives. State in prose how many rules there are, how
+//! many the schema marks as out of a validator's reach and how many it does not, and all three
+//! drift, because a number in prose is a number nobody recounts. So the prose states none, and
+//! this file counts the table.
 //!
-//! ⚠️ IT CHECKS SHAPE AND NEVER MEANING. That row forty in one language says what row forty
-//!    says in the other is a thing only a reader can know. What a test can hold is that there
-//!    IS a row forty in both, that the two agree about which rows are marked, and that they
-//!    name the same checks.
+//! It checks shape and never meaning. Whether row forty in one language says what row forty says
+//! in the other is a thing only a reader can know. What a test can hold is that there is a row
+//! forty in both, that the two agree about which rows are marked, and that they name the same
+//! checks.
 
 use std::fs;
 
@@ -46,7 +45,7 @@ fn both_conformance_documents_owe_the_same_number_of_rules() {
         en.len(),
         pt.len(),
         "the rule tables are {} rules in English and {} in Portuguese. An implementer reads \
-         ONE of these documents and is owed the same list either way, so a summary on one side \
+         one of these documents and is owed the same list either way, so a summary on one side \
          is not a translation of an enumeration on the other.",
         en.len(),
         pt.len()
@@ -72,9 +71,9 @@ fn both_conformance_documents_mark_the_same_rules_as_unenforced() {
     let pt = mark(rule_rows(PT));
     assert_eq!(
         en, pt,
-        "the asterisk says a rule is stated in prose WITHOUT the `NOT REACHABLE BY A VALIDATOR` \
-         marker, which is a fact about the schema rather than about a language. English marks \
-         rows {en:?} and Portuguese marks {pt:?}."
+        "the asterisk says a rule is stated in prose without the mark that no validator \
+         reaches it, which is a fact about the schema rather than about a language. English \
+         marks rows {en:?} and Portuguese marks {pt:?}."
     );
 }
 

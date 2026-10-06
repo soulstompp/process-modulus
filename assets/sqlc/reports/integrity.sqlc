@@ -3,40 +3,41 @@
 #
 # One relation, crossed with the three problems
 #   folds/contract_subjects.sqlc is every subject every contract declares or produces, with its
-#   population's rows counted by verdict. The problems are three, each stated once beside the
-#   counts that show it: a declared subject with no row, a subject no roster declares, a subject
-#   with a row that examined something and returned no verdict. Every subject is paired with every
-#   problem and kept where its counts show that problem, so the relation is read once, one subject
-#   can report two problems, and the contracts are named where the folds are united, not here.
+#   population's rows counted by verdict. The problems are three, each stated once beside the counts
+#   that show it: a declared subject with no row, a subject no roster declares, a subject with a row
+#   that examined something and returned no verdict. Every subject is paired with every problem and
+#   kept where its counts show that problem, so the relation is read once, one subject can report
+#   two problems, and the contracts are named where their counts are united, not here.
 #
 # No shared shape is needed
 #   The contracts spell their key differently, `rule` against `site`, and their verdicts differ in
-#   type: `violates` is a boolean, `verdict` is three-valued. Each contract's fold reduces its rows
-#   to counts in its own verdict's boxes, and only the counts every contract shares reach this file,
-#   so nothing is renamed into a wrapper relation and nothing is flattened.
+#   type: `violates` is a boolean, `verdict` has three values. Each contract's count in folds/
+#   reduces its rows to the counts its own verdict has, and only the counts every contract shares
+#   reach this file, so nothing is renamed into a wrapper relation and nothing is flattened.
 #
-# Another roster is one more fold
-#   A new contract is a fold in folds/ and an arm in folds/contract_subjects.sqlc. This file does
+# Another roster is one more count
+#   A new contract is a count in folds/ and an arm in folds/contract_subjects.sqlc. This file does
 #   not change.
 #
-# The second problem is reachable
-#   It looks unreachable and is not, and the difference is worth knowing before somebody deletes
-#   it. Every check takes its rule name from the roster it joins, so removing a roster row does
-#   not produce an undeclared rule: the check simply stops emitting, and the first problem reports
-#   it. The second fires on a different failure: a check that breaks the contract by naming
-#   itself, which is what copying a check file and editing it badly produces.
+# The second problem can happen
+#   It looks as though it cannot, and it can, and that is worth knowing before somebody deletes it.
+#   Every check takes its rule name from the roster it joins, so removing a roster row does not
+#   produce an undeclared rule: the check simply stops emitting, and the first problem reports it.
+#   The second fires on a different failure: a check that breaks the contract by naming itself,
+#   which is what copying a check file and editing it badly produces.
 #
 # Probe
 #   An empty result is the correct output and also what a broken predicate returns, so it is
 #   evidence only beside this. Add a row to checks/roster.sqlc naming a check that does not exist,
-#   recompose, and this must report it against `rules`. Do the same in arithmetic/roster.sqlc and it
-#   must report against `arithmetic`, and in algebra/roster.sqlc, against `algebra`. Add a row to
+#   recompose, and this must report it against `rules`. Do the same in arithmetic/roster.sqlc and
+#   it must report against `arithmetic`, and in algebra/roster.sqlc, against `algebra`. Add a row to
 #   diagrams/domain_objects.sqlc naming a table that does not exist and it must report against
 #   `diagrams`; drop one and it must report the table as undeclared. Drop a row from
 #   epistemics/absence_questions.sqlc and it must report that column against `absences`. Replace
 #   `r.rule` with a literal in one check and the first two problems must be reported together,
 #   which is the correct reading of that document. Revert each.
--- folds/contract_subjects.sqlc crossed with the problems a contract can have, kept where one is found.
+-- folds/contract_subjects.sqlc crossed with the problems a contract can have,
+-- kept where one is found.
 SELECT v.contract, p.problem, v.subject
 FROM (
     :compose(folds/contract_subjects.sqlc)

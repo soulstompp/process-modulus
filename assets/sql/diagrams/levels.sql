@@ -8,7 +8,7 @@ SELECT * FROM (VALUES
       'pm.claim provenance, pm.absence, pm.coupling_search, pm.stack_scope, pm.bound_origin, pm.narrowing', false),
   (2, 'checking', 'a rule on checks/roster.sqlc', 'the claims level 1 filed',
       'violates, or NULL for a rule that examined nothing',  'checks/all.sqlc', false),
-  (3, 'proving',  'a law on algebra/roster.sqlc, a site on arithmetic/roster.sqlc',
+  (3, 'auditing', 'a law on algebra/roster.sqlc, a site on arithmetic/roster.sqlc',
       'the relations level 2 rests on', 'holds, or a verdict',
       'algebra/all.sqlc, arithmetic/all.sqlc', false),
   (4, 'contract', 'a roster, against the population it declares', 'the laws level 3 states',

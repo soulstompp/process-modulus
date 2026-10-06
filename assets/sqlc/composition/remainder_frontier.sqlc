@@ -1,33 +1,32 @@
-# The walk a remainder descent makes, every row of it. One row per (composed layer, node reached),
-# with the product of the conversion factors along the path.
+# The walk a remainder makes down the composition, every row of it. One row per (composed layer,
+# layer reached), with the product of the conversion factors along the path.
 #
 # A named left operand for settled_remainders
 #   It exists so that composition/settled_remainders.sqlc has a named left operand. That relation
-#   keeps the rows whose node is settled and drops the rest, which is a difference, and
-#   |A| = |A∖B| + |A⋉B| is checkable only where somebody can count A. Spelled inside the recursive
-#   CTE there would be no A, so no law on algebra/roster.sqlc could govern it.
+#   keeps the rows whose layer is settled and drops the rest, which is a difference, and a
+#   difference can be checked only where somebody can count what it is taken from. Spelt inside the
+#   recursive CTE, there would be nothing to count, so no law on algebra/roster.sqlc could govern
+#   it.
 #
 # The walk prunes and the difference does not
-#   It descends only through an unsettled node, so a settled node is a stopping point rather than a
-#   filter: its own subtree is never entered. The difference then selects those stopping points.
-#   Two different uses of composition/unsettled.sqlc, and collapsing them into one would either
-#   walk the whole tree or stop at the first node.
+#   It goes down only through an unsettled layer, so a settled layer is a stopping point rather than
+#   a filter: what lies below it is never entered. The difference then selects those stopping
+#   points. Those are two different uses of composition/unsettled.sqlc, and collapsing them into one
+#   would either walk the whole composition or stop at the first layer.
 #
 # `usable` is a path with a product
-#   A path is usable where every factor on it has a figure and it closes no cycle: then the product
-#   it carries is a number and the node at its end is reached once. Every reader that multiplies
-#   along the path keeps these rows and no others, so the test is stated here once.
+#   A path is usable where every factor on it has a figure and it does not come round a loop: then
+#   the product it carries is a number, and the layer at its end is reached once. Every reader that
+#   multiplies along the path keeps these rows and no others, so the test is stated here once.
 #
-# A deliberate copy of the descent
-#   It is `composition/descent.sqlc` with a stop condition, and the duplication is deliberate. The
-#   two files share more source lines than any other pair in this tree, and the difference is one
-#   join: this walk halts where `composition/unsettled.sqlc` stops holding. It cannot be written as
-#   a restriction of that relation, because stopping inside a recursion is not a filter over its
-#   result: a row at depth 3 there may be reachable only through a node this walk never passes.
-#   The tool that would fit is a slot on the stop condition, and it would make
-#   `composition/descent.sqlc` a shape rather than a query, costing it the standalone runnability
-#   every template here is supposed to have. So the copy stays, and this section is the record of
-#   why.
+# A deliberate copy of the walk
+#   It is `composition/descent.sqlc` with a stop condition, and the copy is deliberate. The two
+#   files differ by one join: this walk halts where `composition/unsettled.sqlc` stops holding. It
+#   cannot be written as a restriction of that relation, because stopping inside a recursion is not
+#   a filter over its result: a row three levels down there may be reachable only through a layer
+#   this walk never passes. What would fit is a slot on the stop condition, and it would make
+#   `composition/descent.sqlc` a shape rather than a query, so that it no longer runs on its own as
+#   every template here does. So the copy stays, for that reason.
 #
 # The cycle clause's own path is not returned
 #   `CYCLE ... USING route` keeps the path it walked as a column of a pseudo-type, which a view

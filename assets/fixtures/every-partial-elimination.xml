@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔ A STIPULATION, NOT A FILING. Nothing here was measured. The figures exist to put one
-  state of the model in front of a checker, and that state is a PARTIAL NAMEPLATE
-  ELIMINATION: two parts that each hold their own capacity AND a block they both count.
+  A stipulation, not a filing. Nothing here was measured. The figures exist to put one state
+  of the model in front of a checker, and that state is a partial nameplate elimination: two
+  parts that each hold their own capacity and a block they both count.
 
-  ⭐⭐ WHY THE CELL WAS DARK. Every sized nameplate elimination in this repository removes a
-  WHOLE part's nameplate — one machine both members filed. That reads as "one supply, several
-  claimants" and invites the conclusion that a nameplate elimination discriminates a KIND of
-  fusion. It does not. `e` is a MAGNITUDE: how much supply the parts counted in common. Here it
-  is 3 of a 10, which is neither none nor a whole part, and the arithmetic is unchanged.
+  In the corpus, the one nameplate elimination with a size above zero removes a whole part's
+  nameplate, one machine both members filed. That reads as "one supply, several claimants",
+  and invites the conclusion that a nameplate elimination marks a kind of fusion. It does not.
+  An elimination is a size: how much supply the parts counted in common. Here it is 3 of a 10,
+  neither nothing nor a whole part, and the arithmetic is unchanged.
 
-    team-a nameplate   10 shifts per week   7 its own, plus the 3 it may call on
-    team-b nameplate   10 shifts per week   7 its own, plus the SAME 3
+    team-a nameplate   10 shifts per week   7 of its own, plus the 3 it may call on
+    team-b nameplate   10 shifts per week   7 of its own, plus the same 3
     shared block        3 shifts per week   counted by both, so eliminated once
-    fused              17 shifts per week   10 + 10 - 3
+    fused              17 shifts per week   20 less the 3
 
-  ⭐ AND THE PARTS ARE FUNGIBLE THROUGHOUT, at e = 0, at e = 3 and at e = 10. Fungibility is a
-  judgement carried in `observed`; the elimination is an adjustment to an arithmetic. They are
-  independent axes, which is the reading this document exists to make unavailable.
+  The parts are fungible throughout, whether the shared block is 0, 3 or 10. Fungibility is a
+  judgement carried in `observed`; the elimination is a correction to the arithmetic. They are
+  separate questions, and this document exists to rule out reading the one as a sign of the
+  other.
 -->
 <asrt:composition
     xmlns:asrt="https://example.invalid/assertion/1.0"
@@ -130,7 +131,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -146,7 +148,7 @@
                 <pm:denominator>
                   <pm:period>week</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -260,7 +262,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -276,7 +279,7 @@
                 <pm:denominator>
                   <pm:period>week</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -390,7 +393,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -406,7 +410,7 @@
                 <pm:denominator>
                   <pm:period>week</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -453,8 +457,8 @@
         <pm:absent>
           <pm:reason>notApplicable</pm:reason>
           <pm:note>stipulated: this stack holds a composed layer and the two layers it is
-                   made of, which is not a set of independent quantizations, so there is no
-                   pair to couple</pm:note>
+                   made of, and a layer does not move independently of its own parts, so
+                   there is no pair to couple</pm:note>
         </pm:absent>
       </pm:couplings>
     </pm:stack>
@@ -485,10 +489,9 @@
       </asrt:layer>
     </asrt:part>
     <asrt:observed>Either team can take the other's work and has done so, so a unit of supply in
-      one serves demand in the other and they are one layer. ⭐ That judgement is unaffected by
+      one serves demand in the other and they are one layer. That judgement is unaffected by
       the block they share: it would read the same if they shared nothing, and the same again if
-      they shared everything. What the shared block changes is the ARITHMETIC below, not this
-      sentence.</asrt:observed>
+      they shared everything. The shared block changes the figures below, not this sentence.</asrt:observed>
     <asrt:eliminations>
       <asrt:elimination>
         <asrt:quantity>
@@ -505,8 +508,7 @@
         <asrt:against>nameplate</asrt:against>
         <asrt:observed>Three of the ten shifts each team files are the same three shifts, on a
           block both may schedule onto. Both filings are honest and the group holds seventeen,
-          not twenty. ⛔ This is SMALLER than either part, which is the state nothing else in
-          this repository files.</asrt:observed>
+          not twenty. The elimination is smaller than either part.</asrt:observed>
       </asrt:elimination>
       <asrt:elimination>
         <asrt:quantity>
@@ -516,9 +518,10 @@
             <pm:denominator>
               <pm:period>week</pm:period>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>group-parent</pm:party>

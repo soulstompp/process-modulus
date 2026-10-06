@@ -1,4 +1,5 @@
--- asrt:Fusion/asrt:Part folded onto its fusion: the fibre's generator, and what it is known to.
+-- asrt:Fusion/asrt:Part counted per fusion: the direction its figure reads,
+-- and how well that direction is known.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,

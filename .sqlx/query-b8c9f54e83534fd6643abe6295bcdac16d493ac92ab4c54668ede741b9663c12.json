@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n-- the three graphs this model composes, as data an emitter chooses between.\nSELECT * FROM (VALUES\n  ('layers',    'a layer, keyed (filing, layer)', 'a part: a layer composed from a layer',\n                'undirected',\n                'a leaf reached down two branches of one fusion, which counts it twice',\n                                                                              'checks/jagged_layer'),\n  ('units',     'a unit',                          'a conversion: a factor from unit to unit',\n                'undirected',\n                'expected, and required to close: converting round it returns what it started with',\n                                                                              'checks/conversion_cycle_does_not_close'),\n  ('claimants', 'a claimant: software, an agent, a role, a person',\n                'delegation, and nothing files it',\n                'directed',\n                'unknown, and not a fault: mutual signing authority is a legitimate cycle',\n                                                                              NULL)\n) AS g(graph, node_is, edge_is, cycle_sense, a_cycle_is, governed_by)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "graph",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "node_is",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "edge_is",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "cycle_sense",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "a_cycle_is",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "governed_by",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "b8c9f54e83534fd6643abe6295bcdac16d493ac92ab4c54668ede741b9663c12"
+}

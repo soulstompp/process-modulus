@@ -1,4 +1,4 @@
--- the eight classifications, their codomains, the unit each counts in, and whether it is filed.
+-- every classification, its type, what each counts, and whether it is filed.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc',              'arithmetic_verdict', 'computation', true),
   ('layers/remainder.sqlc',            'fit',                'layer',       true),

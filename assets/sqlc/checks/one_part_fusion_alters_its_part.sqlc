@@ -3,26 +3,25 @@
 #
 # One part, nothing eliminated, carried unchanged
 #   The rule: a fusion of one part with nothing eliminated carries that part unchanged. There is
-#   nothing to sum, nothing to subtract and no judgement to make, so a difference here has no
-#   defence. `every-local-part` states the case it is testing: "A one-part fusion is not
-#   degenerate: it says this reviewer read that layer and carried it." Carrying is an assertion
-#   and therefore a thing that can be got wrong.
+#   nothing to add, nothing to subtract and no judgement to make, so a difference here has no
+#   defence. `every-local-part` states the case it tests: a one-part fusion says this reviewer
+#   read that layer and carried it. Carrying is an assertion, and so something that can be got
+#   wrong.
 #
-# The only rule on a composed nameplate or slack
-#   `fusion_sum_disagrees` reads `composition/fused.sqlc`, which answers `'demand' AS quantity`
-#   as a literal, and `window_lost_or_summed` covers the calendar. Without this rule, a one-part
-#   fusion's composed nameplate can move to a multiple of its only part and no composition rule
-#   notices.
+# The only rule on a composed slack
+#   `fusion_sum_disagrees` reads `composition/fused.sqlc`, which covers the demand, the nameplate
+#   and the draw, and `window_lost_or_summed` covers the calendar. The three slacks are compared
+#   here and nowhere else, so without this rule a one-part fusion's composed slack could move and
+#   no composition rule would notice.
 #
-# What it does not close
-#   It closes only the case where the arithmetic is trivial. A multi-part fusion can still move
-#   its nameplate freely, and the corpus files sized `nameplate` eliminations and `draw` ones
-#   that no relation reads.
+# What it does not cover
+#   It covers only the case where the arithmetic is trivial. A multi-part fusion's slacks are
+#   compared by no rule.
 #
 # Figures, not units
-#   It compares figures and not units, deliberately. A single part may be converted into the
-#   composed layer's unit, so a unit that differs is what `asrt:factor` is for. The figure is
-#   compared after conversion; `quantum_unit_mismatch` and `slack_unit_mismatch` own the units.
+#   A single part may be converted into the composed layer's unit, and a unit that differs is what
+#   `asrt:factor` is for. The figure is compared after conversion; `quantum_unit_mismatch` and
+#   `slack_unit_mismatch` own the units.
 #
 # Suspension is inherited, not restated
 #   composition/carried.sqlc excludes anything suspended and anything with an elimination filed,
@@ -30,8 +29,8 @@
 #   is forced.
 #
 # Probe
-#   Move the composed nameplate of `merge-group-composition/compute-us` to five times the one
-#   part it is composed from; this rule must fire.
+#   Move the composed nameplate of `merge-group-composition/compute-us` to five times the one part
+#   it is composed from; this rule must fire.
 -- composition/carried.sqlc: the part's figure against the composed layer's, per quantity.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

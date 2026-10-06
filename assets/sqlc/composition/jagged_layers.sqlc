@@ -1,27 +1,26 @@
-# The fusions whose parts are not disjoint, with the layer they both reach. One row per (fusion,
-# layer reached through two of its own parts), carrying which two parts got there.
+# The fusions whose parts overlap, with the layer they both reach. One row per (fusion, layer
+# reached through two of its own parts), carrying which two parts got there.
 #
-# Where the partition claim is false
-#   A fusion's parts claim to partition the composed layer, and this is where that claim is false.
-#   Not a duplicate: a layer somebody referred to at one level while a sibling part already
-#   carried it, so the partition has an overlap nobody wrapped. `asrt:Elimination` is the filer
-#   admitting an overlap and sizing it. This is an overlap that is structural, visible in the
-#   incidence, and unadmitted.
+# Where the parts' claim to divide the layer is false
+#   A fusion's parts claim to divide the composed layer between them without overlap, and this is
+#   where that claim is false. Not a duplicate: a layer somebody referred to at one level while a
+#   sibling part already carried it, so the parts overlap where nobody said so.
+#   `asrt:Elimination` is the filer admitting an overlap and sizing it. This is an overlap that is
+#   structural, visible in the parts, and unadmitted.
 #
-# The subject is the fusion, not the root above it
-#   Every layer above the fusion also reaches the doubled layer twice, so a rule keyed on the root
-#   reports one defect once per ancestor and names a composer who did nothing wrong. The composer
-#   at fault is the one holding both parts, which is exactly the key here.
+# The subject is the fusion, not the top of the composition
+#   Every layer above the fusion also reaches the doubled layer twice, so a rule keyed on the top
+#   would report one defect once per level above and name a composer who did nothing wrong. The
+#   composer at fault is the one holding both parts, which is exactly the key here.
 #
-# The reach is reflexive on purpose
-#   Which is why this composes `composition/reachable.sqlc`, F*, rather than
-#   `composition/descent.sqlc`, F+. Naming a layer directly while a sibling composes it is the
-#   canonical case, so a part must count
-#   as reaching itself or the commonest form of this escapes. `merge-holding-composition/compute`
-#   naming `merge-us-member/compute` beside `merge-group-composition/compute-us` is that case, and
-#   it is in this corpus: the holding reaches one member's layer directly and reaches it again
-#   through the group that composes it. A population written as the parts a fusion does not name
-#   cannot see it, because the reflexive reach is a part the fusion does name.
+# A part reaches itself, on purpose
+#   This composes `composition/reachable.sqlc`, where a layer counts as reaching itself, rather
+#   than `composition/descent.sqlc`, where it does not. Naming a layer directly while a sibling
+#   composes it is the common case, so a part must count as reaching itself or the commonest form
+#   of this escapes: a holding naming a member's layer directly beside the group that composes it,
+#   so that it reaches the member's layer once directly and again through the group. A population
+#   written as the parts a fusion does not name cannot see it, because the layer reached directly
+#   is a part the fusion does name.
 #
 # A key refuses it at one level, nothing at two
 #   At one level the primary key on `pm.part` already refuses this, and nothing can at two, because
@@ -29,18 +28,19 @@
 #   this is a query.
 #
 # Not conditioned on a filed elimination
-#   The key governs the redeclaration and `e` governs the number, and folding an answer about a
-#   magnitude into a structural population is how a rule stops being able to see the structure.
+#   The key governs the second naming and the elimination governs the number, and folding an answer
+#   about an amount into a structural population is how a rule stops being able to see the
+#   structure.
 #
 # The pair comparison
-#   It keeps the result a set of unordered pairs and drops the reflexive one, so a part is never
-#   reported against itself.
+#   It keeps each pair of parts once, in one order, and drops a part paired with itself, so a part
+#   is never reported against itself.
 #
 # Probe
-#   Nest a doubled layer three levels deep: keyed on the fusion this returns one row, where a key
-#   on the root would return one per ancestor, against filings that did nothing wrong.
--- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
--- composition/descent.sqlc, for the layer two sibling parts both reach.
+#   Nest a doubled layer three levels deep: keyed on the fusion this returns one row, where a key on
+#   the top would return one per level above, against filings that did nothing wrong.
+-- composition/parts.sqlc joined to itself on the fusion, against composition/descent.sqlc with
+-- each layer reaching itself, for the layer two sibling parts both reach.
 SELECT DISTINCT
        a.composition    AS filing,
        a.composed_layer AS layer,

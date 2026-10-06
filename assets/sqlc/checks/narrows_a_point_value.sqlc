@@ -1,30 +1,28 @@
-# Every claim filed as a point, beside what it says would narrow it. One row per point claim
+# Every claim filed as a single value, beside what it says would narrow it. One row per such claim
 # anywhere in a document, `violates` where the answer is anything but `notApplicable`.
 #
-# A point has nothing to narrow
+# A single value has nothing to narrow
 #   The rule: a point value files narrowsWhen as notApplicable, having no range. A figure with no
-#   width has nothing to tighten, so any other answer is a sentence that cannot be acted on: a
-#   paste from a neighbouring claim, or a claim filed at the wrong width.
+#   width has nothing to tighten, so any other answer is a sentence nobody can act on: a paste from
+#   a neighbouring claim, or a claim filed at the wrong width.
 #
 # `unmeasured` is a violation too
-#   A test for a stated narrowing cannot say so. Testing for a narrowing sentence only, a point
-#   value answering "nobody has said what would narrow this" passes. But that answer presupposes
-#   there is something to narrow: on a point the question is not unanswered, it is inapplicable,
-#   and those are different facts.
+#   A test for a stated narrowing cannot see it. A single value answering "nobody has said what
+#   would narrow this" passes such a test, but that answer assumes there is something to narrow:
+#   on a single value the question is not unanswered, it does not apply, and those are different
+#   facts.
 #
 # The stricter of the two readings
-#   The roster sentence is why: it says the claim files notApplicable, not merely that it files
-#   no condition. Every point claim in this corpus does. What would refute the strictness is a
-#   point value with an honest reason to answer otherwise; `derived` would be the candidate, and
-#   `tests/state_coverage.rs` has already ruled it incoherent for a narrowing, which leaves the
-#   strict form standing.
+#   The roster sentence says the claim files `notApplicable`, not merely that it files no
+#   condition, and every single-value claim in the corpus does. What would refute the strictness
+#   is a single value with an honest reason to answer otherwise. `derived` would be the candidate,
+#   and `tests/state_coverage.rs` rules it out for a narrowing, so the strict form stands.
 #
 # Written against `pm.claim`, not against demands
-#   Over `layer.demand_*` this rule would be vacuous. `narrowsWhen` is on `Claim` and claims are
-#   everywhere, but reach a claim's width only from the table of the thing it describes and the
-#   rule can only be written against demands, no one of which is a point value in this corpus.
-#   It then examines nothing and says so, loudly, which is what the coverage table is for.
-#   Against `pm.claim` it examines every point claim in every document.
+#   `narrowsWhen` is on `Claim`, and claims are everywhere. Written over the demand columns alone,
+#   the rule could reach a claim's width only through the table of the thing it describes, and no
+#   demand in the corpus is a single value, so it would examine nothing and the coverage table
+#   would say so. Against `pm.claim` it examines every single-value claim in every document.
 -- pm:Claim/pm:narrowsWhen on any pm:Claim where low = high.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

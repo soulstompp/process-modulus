@@ -1,15 +1,17 @@
-# Every supply with nowhere to put its excess, and whether its exposure can be set against who
-# went without. One row per layer whose every buffer is accounted for and empty.
+# Every supply with nowhere to put its excess, and whether its exposure can be set against who went
+# without. One row per layer whose every buffer is accounted for and empty.
 #
-# The one figure with no instrument behind it
-#   `exposure` is the only figure in this model with no instrument behind it: the ceiling the
-#   filer's own demand and nameplate imply. The shares it is compared against are measured, by
-#   somebody else, possibly in another unit. Nothing compares the two.
+# The one figure nobody measured
+#   `exposure` is the only figure in this model with no measurement behind it: it is the most the
+#   filer's own demand and nameplate allow. The shares it is compared with are measured, by
+#   somebody else, possibly in another unit. No unit rule compares the two, and this site reports
+#   `not comparable` where they differ.
 #
-# An unstated unserved share suspends the inequality
-#   checks/exposure_unaccounted drops those layers with a WHERE; this relation reports them as
-#   suspended instead of as absent, and names `sharesSum` where a share is filed as its output.
--- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer and unrealised.
+# An unstated unserved share suspends the comparison
+#   checks/exposure_unaccounted drops those layers with a WHERE. This relation reports them as
+#   suspended instead of leaving them out, and says when a share is filed as `sharesSum`'s output.
+-- every slack on the layer accounted for and empty, against pm:Remainder/pm:holder of kind customer
+-- and unrealised.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

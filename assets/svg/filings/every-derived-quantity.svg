@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- GENERATED from assets/bpmn/filings/every-derived-quantity.bpmn by examples/rendering/main.rs. DO NOT EDIT.
+<!-- Generated from assets/bpmn/filings/every-derived-quantity.bpmn by examples/rendering. Do not edit by hand.
      Every lane is its own group carrying the layer name; every activity is drawn
      with the BPMN glyph for its kind, thin for a task and thick for a call. That is
      what *properly layered* means, and it is what lets a reader check the partition
@@ -59,11 +59,11 @@
   </g>
   <g class="note" id="legend"><title>legend</title>
     <path id="legend-bracket" d="M20 376 h-8 v88 h8" class="noteBox"/>
-    <text id="legend-0-says" x="26" y="388" class="noteText">AN EMPTY LANE is a layer nothing DRAWS on, not an idle one: every layer here carries a magnitude and BPMN has no glyph for one.</text>
+    <text id="legend-0-says" x="26" y="388" class="noteText">An empty lane is a layer nothing draws on, not an idle one: every layer carries figures, and BPMN has no glyph to show them.</text>
     <text id="legend-0-source" x="26" y="400" class="noteCite">assets/sqlc/diagrams/lane_grain.sqlc</text>
-    <text id="legend-1-says" x="26" y="418" class="noteText">SCOPE: scoped. This pool is a PROJECTION of one system and not the system.</text>
+    <text id="legend-1-says" x="26" y="418" class="noteText">Scope: scoped. The pool is the whole system only when the filing says `complete`.</text>
     <text id="legend-1-source" x="26" y="430" class="noteCite">assets/sqlc/diagrams/scopes.sqlc</text>
-    <text id="legend-2-says" x="26" y="448" class="noteText">COUPLING SEARCH: notApplicable. An absent dependence line is NOT independence.</text>
+    <text id="legend-2-says" x="26" y="448" class="noteText">Coupling search: notApplicable. An absent dependence line is not independence.</text>
     <text id="legend-2-source" x="26" y="460" class="noteCite">assets/sqlc/diagrams/searches.sqlc</text>
   </g>
 </svg>

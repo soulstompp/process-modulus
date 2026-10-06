@@ -1,17 +1,18 @@
-# Every quantity a part files is set beside its composed layer's or has nothing to be set beside.
-# One row: whether |each part's quantities| = |those its composed layer does not file| +
-# |composition/part_quantities|.
+# Every quantity a part files is set beside its composed layer's, or has nothing to be set beside.
+# One row: whether each part's quantities number those its composed layer does not file plus those
+# of composition/part_quantities.sqlc.
 #
 # The join must neither drop nor double
 #   composition/part_quantities.sqlc joins each part's quantities to the composed layer's on the
 #   quantity. Keyed on less than the quantity, one part quantity would pair with every quantity of
 #   the composed layer and the count would pass the total; keyed on more, a pair would be lost. The
-#   complement is taken by `NOT EXISTS`, a different operator from the join.
+#   rest are taken by `NOT EXISTS`, a different operator from the join.
 #
 # Probe
 #   examples/probes runs it as `part_quantities`: in the composed text the join forgets the
 #   quantity, and the law must fail.
--- composition/parts.sqlc with layers/quantities.sqlc, against composition/part_quantities.sqlc and its complement.
+-- composition/parts.sqlc with layers/quantities.sqlc, against composition/part_quantities.sqlc
+-- and the rest.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -19,7 +20,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/part_quantities' AS subject,
            x.total = x.alone + x.paired AS holds,
-           format('%s part quantities = %s the composed layer does not file + %s set beside it',
+           format('%s part quantities: %s the composed layer does not file, %s set beside it',
                   x.total, x.alone, x.paired) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/parts.sqlc) ) p

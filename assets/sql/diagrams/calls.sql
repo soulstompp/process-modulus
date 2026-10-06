@@ -1,4 +1,4 @@
--- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+-- composition/parts.sqlc reduced to which layer is composed from which; one call activity per part.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,

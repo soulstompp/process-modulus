@@ -1,17 +1,24 @@
 # Everything a layer holds is what was served plus what went unserved. One row: whether, on every
-# layer with a holder, entries/holder_totals.sqlc's count and summed mode equal
-# folds/served_totals.sqlc's plus entries/unserved_totals.sqlc's.
+# layer with a holder, entries/holder_totals.sqlc's count and its shares added up at each of the
+# three points equal folds/served_totals.sqlc's plus entries/unserved_totals.sqlc's.
 #
-# Three folds of one relation, held to each other
-#   The three are `γ` over entries/holders.sqlc restricted three ways: all of it, the served kinds,
-#   the unserved kinds. The kinds partition `pm.holder_kind`, so a holder missing from both
-#   restrictions, or in both, leaves the sum and the parts apart on its layer. algebra/borne.sqlc
-#   holds the same split for the layers whose absorbing buffer is sized; this holds it everywhere.
+# At the low, the most likely value and the high
+#   A reader bounding a load reads a share's low and its high, not only its most likely value, so
+#   the split has to hold at every point it is read at. A total checked at the most likely value
+#   alone says nothing about the other two.
+#
+# Three gatherings of one relation, held to each other
+#   The three gather entries/holders.sqlc per layer, kept three ways: all of it, the served kinds,
+#   and the unserved kinds. Every holder kind in `pm.holder_kind` is in exactly one of the two, so a
+#   holder missing from both, or in both, leaves the whole and the two apart on its layer.
+#   algebra/borne.sqlc holds the same split for the layers whose absorbing buffer is sized; this
+#   holds it everywhere.
 #
 # Probe
-#   examples/probes runs it as `served_totals`: in the composed text the served kinds lose `people`,
-#   and the law must fail on the layers holding a `people` share.
--- entries/holder_totals.sqlc against folds/served_totals.sqlc and entries/unserved_totals.sqlc, per layer.
+#   examples/probes runs it as `served_totals`: in the composed text the served kinds lose
+#   `people`, and the law must fail on the layers holding a `people` share.
+-- entries/holder_totals.sqlc against folds/served_totals.sqlc and entries/unserved_totals.sqlc,
+-- per layer.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -19,14 +26,20 @@ FROM      (
 LEFT JOIN (
     SELECT 'folds/served_totals' AS subject,
            count(*) FILTER (WHERE NOT x.balances) = 0 AS holds,
-           format('%s layers with a holder, %s where held = served + unserved%s',
+           format('%s layers with a holder, %s holding what was served plus what went unserved '
+                  'at all three points%s',
                   count(*), count(*) FILTER (WHERE x.balances),
                   coalesce(': not on ' || string_agg(x.filing || '/' || x.layer, ', ' ORDER BY x.filing, x.layer)
                                            FILTER (WHERE NOT x.balances), '')) AS detail
     FROM (
         SELECT t.filing, t.layer,
                t.holders = coalesce(s.holders, 0) + coalesce(u.holders, 0)
-                 AND coalesce(t.shares_mode, 0) = coalesce(s.served_mode, 0) + coalesce(u.unserved_mode, 0)
+                 AND coalesce(t.shares_low, 0)
+                     = coalesce(s.served_low, 0)  + coalesce(u.unserved_low, 0)
+                 AND coalesce(t.shares_mode, 0)
+                     = coalesce(s.served_mode, 0) + coalesce(u.unserved_mode, 0)
+                 AND coalesce(t.shares_high, 0)
+                     = coalesce(s.served_high, 0) + coalesce(u.unserved_high, 0)
                    AS balances
         FROM      (
             :compose(entries/holder_totals.sqlc)

@@ -1,18 +1,18 @@
 # Every coupling that survives a fusion, beside the ceiling its part's share puts on it. One row
-# per examined coupling, `violates` where the upper filing claims more movement than the lower
-# one can support.
+# per coupling examined, `violates` where the upper filing claims more movement than the lower one
+# can support.
 #
-# A coupling attenuates through a fusion
+# A coupling weakens through a fusion
 #   The rule: a coupling attenuates through a fusion, bounded by the part's share. The dependence
 #   survives composition but weakens, because the composed layer is only partly the coupled part:
-#   at most that part's share of it can move. The ceiling is arithmetic over three documents,
-#   which is what makes it uncheckable anywhere but here. The share is the part's nameplate over
-#   the composed layer's, read at its largest; composition/attenuated.sqlc says why.
+#   at most that part's share of it can move. The ceiling is worked out across three documents, so
+#   no single document can check it. The share is the part's nameplate over the composed layer's,
+#   read at its largest; composition/attenuated.sqlc says why.
 #
 # Read the row count, not the verdict
-#   Run this alone and read the row count. It is tiny on this corpus, because few filings state
-#   any coupling at all, one of those has no parts, and no fixture states one. That is a fact
-#   about who wrote what, not about the world, and it is exactly what a coverage table is for.
+#   Run this on its own and read the row count. It is small on the corpus, because few filings
+#   state any coupling at all, one of those has no parts, and no fixture states one. That is a fact
+#   about who wrote what, not about the world, and it is what a coverage table is for.
 -- pm:Coupling at two levels related through asrt:Fusion/asrt:Part; see composition/attenuated.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

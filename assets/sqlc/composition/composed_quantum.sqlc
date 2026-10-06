@@ -1,64 +1,79 @@
-# The largest quantum a composed layer can carry, where the set admits one. One row per composed
-# layer every one of whose parts is lumpy: the greatest common divisor of the parts' quanta, each
-# converted into the composed layer's unit by its part's factor, and why there is none where there
-# is none.
+# The largest quantum a composed layer can carry, where the parts allow one. One row per composed
+# layer every one of whose parts is lumpy: the largest quantum that divides all the parts' quanta,
+# each converted into the composed layer's unit by its part's factor, at the low, the most likely
+# value and the high, and why there is none where there is none.
 #
-# Every attainable sum is a multiple of the gcd
-#   Each part's nameplate is a whole number of its own quanta, so a composed nameplate is a sum
-#   `a1 q1 + a2 q2 + ...` with every `a` a whole number of units held. Every such sum is a multiple
-#   of `g = gcd(q1, q2, ...)`, and no larger number divides them all, so `g` is the quantum the
-#   composed supply still arrives in. Bézout says every multiple of `g` is `a1 q1 + a2 q2` for some
-#   integers, but a count of units held is never negative: over the counts a supply can actually
-#   hold, the attainable sums are a numerical semigroup, all multiples of `g` without being all
-#   of them. `q = 4` and `q = 6` can never make 2. Proof: `src/proofs/README.md`, entry
-#   `composed_quantum`.
+# Every total the parts can make is a multiple of it
+#   Each part's nameplate is a whole number of its own quanta, so a composed nameplate is made of
+#   whole quanta of each part. Every such total is a multiple of the largest quantum that divides
+#   all the parts' quanta, and no larger number divides them all, so that quantum is the one the
+#   composed supply still arrives in. Not every multiple can be reached, because a count of units
+#   held is never below zero: quanta of 4 and 6 can never make 2.
 #
 # A single layer has no best quantum
-#   Asking for a "best" quantum of a single layer is the wrong question. There the divisor set of
-#   `n` is never empty (1 and `n` are always in it), so existence decides nothing, and the quantum
-#   is observed rather than chosen: it is the indivisible unit supply arrives in. The question only
-#   becomes well posed over a set of parts, where the intersection can be narrower than any one
-#   divisor set and is what the composition actually admits.
+#   Asking for a best quantum of a single layer is the wrong question. Every nameplate is divisible
+#   by 1 and by itself, so whether a divisor exists decides nothing, and the quantum is observed
+#   rather than chosen: it is the unit supply arrives in, which cannot be split. The question only
+#   makes sense over a set of parts, where what they share can be narrower than what any one of
+#   them allows, and is what the composition actually allows.
 #
 # Converted first, as every other quantity is
 #   A conversion factor multiplies a quantum like any other figure in the part's unit, so each
 #   quantum is converted into the composed layer's unit before the fold: `8 GPU` at
 #   `720 GPU-hour per GPU` is `5760 GPU-hour`, and folds with a `720 GPU-hour` quantum to 720. A
 #   part with no factor keeps its own unit, which is the composed layer's wherever
-#   checks/unit_crossing_without_a_factor passes.
+#   checks/unit_crossing_without_a_factor passes. Each end converts by the rule
+#   composition/converted.sqlc converts a part's nameplate by, so a quantum and the nameplate it
+#   divides are converted alike.
 #
-# The mode of a factor with width
-#   A factor with width converts a quantum into a range of quanta, and a gcd of ranges is not
-#   one number. The fold reads each factor at its mode, as the calendar's 720 hours is read, and
-#   `spread` says the answer rests on that reading.
+# A factor that is a range gives a quantum at each point
+#   A factor that is a range converts a quantum into a range of quanta, and a range has no single
+#   common divisor. So the fold runs at each point, every part's quantum at its own low with its
+#   factor's low, and likewise at the most likely value and at the high: `composed_quantum_low`,
+#   `composed_quantum` and `composed_quantum_high`. A composed nameplate at its low is made of the
+#   parts at their lows, so it is the low quantum that has to divide it, and so on at each point.
+#   The three are three readings, not a range: a larger figure need not share a larger unit with
+#   the others, so the most likely quantum can be above both ends.
+#   `spread` says the three differ: there the most likely quantum is one reading of three, and a
+#   reader quoting that one number says so.
 #
-# Why there is no quantum, as a typed absence
+# Why there is no quantum, as a typed blank
 #   `unmeasured` where some part's factor is: nobody sized the conversion, so nobody can say what
 #   the parts share. `notApplicable` where the converted quanta still sit in different units:
-#   divisibility is a relation on one ordered set, and two quanta in different units have no
-#   common divisor to find. A NULL alone would not say which.
+#   dividing needs one unit, and two quanta in different units have no common divisor to find. A
+#   NULL alone would not say which.
 #
 # Every part as filed, not every part that resolves
 #   "Every one of whose parts is lumpy" counts the parts the fusion names, from
 #   composition/part_references.sqlc. A part that is not here has a quantum nobody can read, and a
-#   gcd over the parts that remain is a multiple of the true one, so it would state a quantum the
-#   composed supply need not arrive in. Such a fusion has no row, as one with a continuous part has
-#   none; composition/unresolved_parts.sqlc names the part.
+#   common divisor of the parts that remain is a multiple of the true one, so it would state a
+#   quantum the composed supply need not arrive in. Such a fusion has no row, as one with a
+#   continuous part has none; composition/unresolved_parts.sqlc names the part.
 #
-# `q = 1` is a real answer
-#   Every integer is a multiple of 1, so the constraint is vacuous and the composed supply is
+# A quantum that can be zero divides nothing
+#   As in layers/divisible.sqlc, a part whose quantum is not above zero at its low is left out of
+#   the fold, and its fusion then has no row, as one with a continuous part has none.
+#
+# A quantum of one is a real answer
+#   Every whole number is a multiple of one, so it constrains nothing, and the composed supply is
 #   continuous for all the arithmetic can tell. Saying so is more useful than declining to answer.
 #
-# The fold is recursive because gcd has no aggregate
-#   gcd(a,b,c) = gcd(gcd(a,b),c) is associative, so the order of the fold is immaterial; the
-#   ordering below exists only to make the recursion terminate, not to choose an answer.
--- composition/parts.sqlc against layers/lumpy.sqlc, converted by asrt:factor and folded by gcd, over every part in composition/part_references.sqlc.
+# The fold is a recursion because Postgres has no aggregate for `gcd`
+#   Taking the common divisor two at a time gives the same answer in any order; the ordering below
+#   exists only to make the recursion end, not to choose an answer.
+-- composition/parts.sqlc against layers/lumpy.sqlc, converted by asrt:factor and folded by gcd at
+-- each point, over every part in composition/part_references.sqlc.
 WITH RECURSIVE base AS (
     SELECT p.composition, p.composed_layer,
            CASE WHEN p.factor_state = 'stated' THEN c.n_unit ELSE l.quantum_unit END AS quantum_unit,
            CASE WHEN p.factor_state IN ('omitted', 'stated')
+                THEN least(   l.quantum_low  * coalesce(p.factor_low, 1),
+                              l.quantum_low  * coalesce(p.factor_high, 1)) END   AS quantum_low,
+           CASE WHEN p.factor_state IN ('omitted', 'stated')
                 THEN l.quantum_mode * coalesce(p.factor_mode, 1) END             AS quantum_mode,
-           coalesce(p.factor_low <> p.factor_high, false)                         AS spread,
+           CASE WHEN p.factor_state IN ('omitted', 'stated')
+                THEN greatest(l.quantum_high * coalesce(p.factor_low, 1),
+                              l.quantum_high * coalesce(p.factor_high, 1)) END   AS quantum_high,
            p.factor_absent, p.factor_derivation
     FROM      (
         :compose(composition/parts.sqlc)
@@ -69,7 +84,7 @@ WITH RECURSIVE base AS (
     LEFT JOIN (
         :compose(layers/nameplate.sqlc)
     ) c ON c.filing = p.composition AND c.layer = p.composed_layer
-    WHERE l.quantum_mode > 0
+    WHERE l.quantum_low > 0
 ),
 every_part AS (
     SELECT p.composition, p.composed_layer, p.parts
@@ -83,7 +98,6 @@ shape AS (
            count(quantum_mode)                              AS sized,
            count(DISTINCT quantum_unit)                     AS units,
            min(quantum_unit)                                AS unit,
-           bool_or(spread)                                  AS spread,
            min(factor_absent)                               AS unsized,
            min(factor_derivation)                           AS unsized_by
     FROM base GROUP BY composition, composed_layer
@@ -95,19 +109,31 @@ ordered AS (
     WHERE b.quantum_mode IS NOT NULL
 ),
 fold AS (
-    SELECT composition, composed_layer, i, quantum_mode AS g FROM ordered WHERE i = 1
+    SELECT composition, composed_layer, i,
+           quantum_low AS g_low, quantum_mode AS g, quantum_high AS g_high
+    FROM ordered WHERE i = 1
   UNION ALL
-    SELECT o.composition, o.composed_layer, o.i, gcd(f.g, o.quantum_mode)
+    SELECT o.composition, o.composed_layer, o.i,
+           gcd(f.g_low, o.quantum_low),
+           gcd(f.g, o.quantum_mode),
+           gcd(f.g_high, o.quantum_high)
     FROM fold f
     JOIN ordered o ON o.composition    = f.composition
                   AND o.composed_layer = f.composed_layer
                   AND o.i              = f.i + 1
 )
-SELECT s.composition, s.composed_layer, e.parts, s.units, s.spread,
+SELECT s.composition, s.composed_layer, e.parts, s.units,
+       coalesce(s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1
+                AND (f.g_low <> f.g OR f.g_high <> f.g), false)
+           AS spread,
        CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN s.unit END
            AS unit,
+       CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g_low END
+           AS composed_quantum_low,
        CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g END
            AS composed_quantum,
+       CASE WHEN s.unsized IS NULL AND s.unsized_by IS NULL AND s.units = 1 THEN f.g_high END
+           AS composed_quantum_high,
        CASE WHEN s.unsized IS NOT NULL THEN s.unsized
             WHEN s.unsized_by IS NULL AND s.units > 1 THEN 'notApplicable'::pm.absence_reason END
            AS absent,

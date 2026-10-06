@@ -1,16 +1,26 @@
 -- pm:Jagged/pm:draw against pm:Nameplate/pm:amount and pm:Nameplate/pm:capacitySlack.
 WITH arithmetic_roster AS (
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)
 ),
 layers_summed_quantities AS (
@@ -76,7 +86,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -153,7 +164,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -306,7 +318,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -355,7 +368,8 @@ JOIN (
 WHERE q.low IS NOT NULL
 ),
 entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -363,7 +377,8 @@ SELECT s.filing, s.layer, s.buffer,
 FROM pm.slack s
 ),
 layers_drawn AS (
--- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc
+-- and entries/slacks.sqlc's capacity slack.
 SELECT dr.filing, dr.layer,
        dr.low  AS draw_low,
        dr.mode AS draw_mode,

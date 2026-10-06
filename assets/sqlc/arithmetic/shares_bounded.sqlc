@@ -1,30 +1,31 @@
 # Every layer whose served shares are bounded by a slack, and whether that bound is available. One
 # row per interference layer that names an absorber a reader has mapped and a holder that says the
-# excess was served: the population entries/borne.sqlc sums.
+# excess was served: the population entries/borne.sqlc adds up.
 #
-# The site that is guarded
-#   It is worth seeing why. checks/slack_unit_mismatch exists precisely because an inequality
-#   between two numbers in different units is not a failing comparison but a meaningless one, so
-#   it is the precondition that makes share_exceeds_slack mean anything. Every other inequality
-#   in this model wants the same precondition, and arithmetic/roster.sqlc carries a NULL in
-#   `guarded_by` wherever it is missing.
+# A guarded site
+#   checks/slack_unit_mismatch is its guard. Comparing two numbers in different units does not
+#   fail, it means nothing, so the unit rule is what makes share_exceeds_slack mean anything.
+#   Every other comparison in this model needs the same rule, and arithmetic/roster.sqlc carries a
+#   NULL in `guarded_by` wherever it is missing.
 #
 # `fusion_sum` is not an unguarded site
-#   It reads `(forbidden)` rather than NULL, because a fusion declares commensurability, and
-#   sweeping it in with the unguarded sites overstates them by one. examples/readiness/main.rs
-#   prints the tally from the roster on every run.
+#   It reads `(forbidden)` rather than NULL, because a fusion declares its parts to be in one unit,
+#   and counting it with the unguarded sites overstates them by one. examples/readiness prints the
+#   tally from the roster on every run.
 #
 # The served holders, under interference
-#   The inequality is `Σ served shares <= S`: a buffer bounds what it absorbed, and the two holders
-#   who went without were absorbed by nothing. So the site reads entries/served_holders.sqlc, and
-#   only where the filed fit is interference, which is where entries/borne.sqlc and
-#   checks/share_exceeds_slack.sqlc look. A site wider than its rule would report computable
-#   arithmetic the rule never does. Proof: `src/proofs/README.md`, entry `served_within_slack`.
+#   A buffer bounds what it absorbed: the served shares together stay within its slack. The two
+#   holders who went without were absorbed by nothing. So the site reads the served holders,
+#   gathered per layer by folds/served_totals.sqlc from entries/served_holders.sqlc, and only where
+#   the filed fit is interference, which is where entries/borne.sqlc and
+#   checks/share_exceeds_slack.sqlc look. A site wider than its rule would report arithmetic as
+#   computable that the rule never does.
 #
 # An unsized slack suspends the bound
-#   entries/borne.sqlc drops those rows; this one names them, and where every row is suspended that
-#   is what explains `share_exceeds_slack` reading as vacuous.
--- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under interference.
+#   entries/borne.sqlc drops those rows and this site names them. Where every row is suspended,
+#   that is why `share_exceeds_slack` examines nothing.
+-- the slack named by pm:Remainder/pm:absorber, against the served pm:Remainder/pm:holder under
+-- interference.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

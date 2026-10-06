@@ -1,6 +1,6 @@
 -- §12 The whole structure: every class, its standing, and the reason for a class nothing lands in.
 WITH epistemics_class_domain AS (
--- every member of every codomain on epistemics/class_sets.sqlc, with its standing and reason.
+-- every class of every type on epistemics/class_sets.sqlc, with its standing and reason.
 SELECT * FROM (VALUES
   ('arithmetic/all.sqlc', 'suspended', 'exercised'::public.fit_standing, NULL::text, NULL::text),
   ('arithmetic/all.sqlc', 'not comparable', 'open',
@@ -19,7 +19,8 @@ SELECT * FROM (VALUES
 
   ('layers/exposure_scope.sqlc', 'a buffer nobody sized', 'exercised', NULL, NULL),
   ('layers/exposure_scope.sqlc', 'a buffer with room in it', 'open',
-   'no layer sizes every buffer and has room in one: ignorance outranks room, so the three layers that do have room sit under a buffer nobody sized',
+   'no layer sizes every buffer and has room in one: ignorance outranks room, so every layer '
+   'that does have room sits under a buffer nobody sized',
    NULL),
   ('layers/exposure_scope.sqlc', 'every buffer sized and empty', 'exercised', NULL, NULL),
 

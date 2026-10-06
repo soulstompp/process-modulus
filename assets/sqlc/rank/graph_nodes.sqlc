@@ -1,49 +1,48 @@
-# Every node of every graph this model composes, with what that graph's nodes carry. One row per
+# Every node of every graph the filings make, with what that graph's nodes carry. One row per
 # (graph, node).
 #
 # A node must be joinable
-#   That means the edges must not lose the key first. A node set derived by dedup'ing the
-#   endpoints of a flattened edge list is a set of display strings: nothing can be joined to it,
-#   so a drawing of the layer graph can carry no fact about a layer except its name, and a
-#   renderer with no rank to read draws its own sentinel.
+#   That means the edges must not lose the key first. A node set taken from the ends of an edge list
+#   whose keys are already joined into text is a set of display strings: nothing can be joined to
+#   it, so a drawing of the layer graph could carry no fact about a layer except its name, and a
+#   renderer with no order to read draws its own placeholder.
 #
-# Join at real grain, flatten afterwards
-#   The order of operations is the whole point. The layer arm joins `rank/evaluation_order.sqlc`
-#   on `(filing, layer)`, which is the conformed key `diagrams/lane_grain.sqlc` asserts is whole,
-#   and only then concatenates for the drawing's node id. `rank/graph_edges.sqlc` flattens up
-#   front because everything downstream of it counts. Same idiom, opposite order, and the order
-#   is what decides whether a fact can still be reached.
+# Join at the real grain, join the key into text afterwards
+#   The order of operations is the whole point. The layer arm joins `rank/evaluation_order.sqlc` on
+#   `(filing, layer)`, the key `diagrams/lane_grain.sqlc` asserts is whole, and only then joins it
+#   into text for the drawing's node id. `rank/graph_edges.sqlc` does it first, because everything
+#   downstream of it counts. The same idiom in the opposite order, and the order decides whether a
+#   fact can still be reached.
 #
 # `rank` on the unit arm is `notApplicable`
-#   It is NULL there, and that is `notApplicable`, not `unmeasured`. Rank is `max(depth)` over
-#   `F`, a relation on layers. A unit is not a layer and has no position in that order, so there
-#   is no number missing here and none to go looking for. A renderer must draw no label rather
-#   than a number, because printing one states an ordinal for a subject the model has no ordinal
-#   for, which is worse than printing nothing.
+#   It is NULL there, and that is `notApplicable`, not `unmeasured`. The order is the deepest
+#   descent through the parts, an order on layers. A unit is not a layer and has no place in that
+#   order, so no number is missing here and none is worth looking for. A renderer must draw no label
+#   rather than a number, because printing one gives an order to something the model gives none,
+#   which is worse than printing nothing.
 #
 # What could refute each layer
 #   The second fact a layer node carries is how much of this repository can contradict it.
-#   `rank/layer_reach.sqlc` counts the rules that examine each layer, and `violated` is how many
-#   of them said no. Joined here, the drawing of `F` stops being a picture of what was filed and
-#   becomes a picture of what could be refuted, which is the only thing that separates a diagram
-#   somebody believes from one they can argue with.
+#   `rank/layer_reach.sqlc` counts the rules that examine each layer, and `violated` is how many of
+#   them said no. Joined here, the drawing of the layer graph stops being a picture of what was
+#   filed and becomes a picture of what could be refuted, which is the only thing that separates a
+#   diagram somebody believes from one they can argue with.
 #
 # Joinable only through a key that resolves
-#   A rule that declares `layer` and returns a claim address in that column names no layer, and
-#   this join then drops those pairs, can shade most of the graph as thinly checked, and is wrong
-#   about which. `checks/grain.sqlc`'s `unresolvable` arm is what keeps it true.
+#   A rule that declares `layer` and returns a claim address in that column names no layer, and this
+#   join then drops those pairs, can shade most of the graph as thinly checked, and is wrong about
+#   which. `checks/grain.sqlc`'s `unresolvable` arm is what keeps it true.
 #
-# Both are NULL on the unit arm, for rank's reason
-#   No rule declares a unit as its subject, so a unit is not thinly checked, it is outside the
-#   checker's dimension entirely. A zero would be a claim that somebody looked; the absence is
-#   that nobody could.
+# Both are NULL on the unit arm, for the order's reason
+#   No rule declares a unit as its subject, so a unit is not thinly checked; it is outside what the
+#   rules examine entirely. A zero would claim that somebody looked; the blank says nobody could.
 #
-# The nodes are the edges' endpoints, not the dimension
-#   That is correct, and worth saying. Not every filed layer is in the layer graph: a layer in no
-#   part, in either direction, is in no composition and is correctly not a node. Taking the nodes
-#   from `layers/every_layer.sqlc` instead would draw a graph that says every layer takes part in
-#   a composition, which is the drawing asserting what the model denies.
--- rank/graph_edges.sqlc's endpoints, with evaluation_order and layer_reach joined at (filing, layer).
+# The nodes are the edges' ends, not every layer
+#   That is right, and worth saying. Not every filed layer is in the layer graph: a layer in no
+#   part, in either direction, is in no composition and is rightly not a node. Taking the nodes from
+#   `layers/every_layer.sqlc` instead would draw a graph that says every layer takes part in a
+#   composition, which is the drawing asserting what the model denies.
+-- rank/graph_edges.sqlc's ends, with evaluation_order and layer_reach joined at (filing, layer).
 SELECT 'layers' AS graph,
        e.filing || '/' || e.layer AS node,
        r.rank                     AS rank,

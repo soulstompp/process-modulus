@@ -1,18 +1,17 @@
-# Every time slack filed as a `clearance` derivation, beside whether its window licenses it. One row
-# per examined slack, `violates` where nothing licenses it.
+# Every time slack filed as a `clearance` derivation, beside whether its window allows it. One row
+# per slack examined, `violates` where nothing allows it.
 #
-# A derived slack needs a licensing window
+# A derived slack needs a window that allows it
 #   The rule: a derived time slack needs a window that permits the derivation. The slack is the
-#   clearance, and reading it as a wait, `q / clearance`, spreads the spare evenly across the
-#   denominator; a stated window says it is concentrated instead, and `unmeasured` says nobody
-#   knows: an assumption wearing a computation's clothes. Proof: `src/proofs/README.md`, entry
-#   `duty_cycle`.
+#   clearance, and reading it as a wait spreads the spare evenly across the period. A stated window
+#   says it is concentrated instead, and `unmeasured` says nobody knows, which would make the wait
+#   an assumption dressed as a calculation.
 #
-# An anti-join against the positive statement
-#   The check is an anti-join against layers/derivation_licensed.sqlc, which is the positive
-#   statement of the same thing and the one worth reading: exactly two reasons license it, "it
-#   runs the whole period" and "the question has no denominator". Two answers, not two
-#   documents; most layers in this corpus file one of them.
+# Checked against the positive statement
+#   The check is an anti-join against layers/derivation_licensed.sqlc, which states the same thing
+#   positively and is the one worth reading: exactly two reasons allow it, "it runs the whole
+#   period" and "the question has no denominator". Two answers, not two documents; most layers on
+#   the corpus file one of them.
 -- pm:Layer/pm:timeSlack filed as a clearance derivation, against pm:Divisibility/pm:window.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

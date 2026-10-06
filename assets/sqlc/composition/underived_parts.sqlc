@@ -5,21 +5,21 @@
 # A derived part is read computed
 #   A part filing the quantity `derived` files an output, and composition/derived_quantities.sqlc
 #   computes it through that part's own fusion and every derived layer below it. Where that
-#   finishes, the sum reads the result and owes its equality exactly as it would over stated
-#   parts. Where it cannot, the part has no figure and the sum would come out short by it, so the
-#   sum is lifted here, carrying the reason the computation gives.
+#   finishes, the sum reads the result and owes its equality exactly as it would over stated parts.
+#   Where it cannot, the part has no figure and the sum would come out short by it, so the sum is
+#   suspended here, carrying the reason the computation gives.
 #
 # The one ground that needs a computation
-#   The other grounds are read off what the fusion and its parts file. This one needs the whole
-#   descent below the part, so it is kept apart from them: composition/suspension_grounds.sqlc
-#   takes it beside composition/filed_grounds.sqlc, and every sum that is owed or suspended sees
-#   it there. composition/suspended_remainders.sqlc reads the filed grounds alone, because a
-#   remainder walk already lifts wherever a node it reaches has no figure, computed or stated,
-#   which covers every part named here. It reads that figure through
-#   composition/resolved_quantities.sqlc, so the descent is composed there once already, and
-#   reading this ground as well would compose it a second time beneath every rule that reads a
-#   remainder, for no row it would change.
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+#   The other grounds are read off what the fusion and its parts file. This one needs the whole walk
+#   below the part, so it is kept apart from them: composition/suspension_grounds.sqlc takes it
+#   beside composition/filed_grounds.sqlc, and every sum that is owed or suspended sees it there.
+#   composition/suspended_remainders.sqlc reads the filed grounds alone, because a remainder walk
+#   already suspends wherever a layer it reaches has no figure, computed or stated, which covers
+#   every part named here. It reads that figure through composition/resolved_quantities.sqlc, so
+#   the walk is composed there once already, and reading this ground as well would compose it a
+#   second time beneath every rule that reads a remainder, for no row it would change.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '

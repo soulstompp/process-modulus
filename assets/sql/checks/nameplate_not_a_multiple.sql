@@ -14,7 +14,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),
@@ -99,7 +99,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -176,7 +177,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -329,7 +331,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -421,12 +424,12 @@ FROM (
 WHERE f.lumpy
 ),
 layers_divisible AS (
--- pm:LumpyQuantum/size, strictly positive.
+-- pm:LumpyQuantum/size, strictly positive at its low.
 SELECT l.*
 FROM (
     SELECT * FROM layers_lumpy
 ) l
-WHERE l.quantum_mode > 0
+WHERE l.quantum_low > 0
 )
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -434,11 +437,14 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           abs(d.n_low  - d.quantum_mode * round(d.n_low  / d.quantum_mode)) > 1e-9
+           abs(d.n_low  - d.quantum_low  * round(d.n_low  / d.quantum_low))  > 1e-9
            OR abs(d.n_mode - d.quantum_mode * round(d.n_mode / d.quantum_mode)) > 1e-9
-           OR abs(d.n_high - d.quantum_mode * round(d.n_high / d.quantum_mode)) > 1e-9 AS violates,
+           OR abs(d.n_high - d.quantum_high * round(d.n_high / d.quantum_high)) > 1e-9 AS violates,
            format('a quantum of %s against a nameplate of [%s, %s, %s]',
-                  d.quantum_mode, d.n_low, d.n_mode, d.n_high) AS detail
+                  CASE WHEN d.quantum_low = d.quantum_high THEN d.quantum_mode::text
+                       ELSE format('[%s, %s, %s]', d.quantum_low, d.quantum_mode, d.quantum_high)
+                  END,
+                  d.n_low, d.n_mode, d.n_high) AS detail
     FROM (
         SELECT * FROM layers_divisible
     ) d

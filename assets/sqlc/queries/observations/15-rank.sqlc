@@ -1,14 +1,14 @@
--- §15  What the layer dimension actually carries, and the order a fusion may be evaluated in.
+-- §15  What reaches the layers, and the order a fusion may be evaluated in.
 # One row per (relation, kind): how many layers the relation reaches, of how many.
 #
 # Why a diagram of this corpus looks empty
 #   The three relations a process notation would have drawn as arrows reach a handful of layers
-#   each; `nameplate` and `slack` reach nearly all of them. The incidence side is sparse and the
-#   magnitude side is total, and a notation can carry only the first. That is not a defect in
+#   each; `nameplate` and `slack` reach nearly all of them. The links between layers are sparse and
+#   the figures are everywhere, and a notation can carry only the links. That is not a defect in
 #   either.
 #
 # A `WHERE` on a relation that already exists
-#   That is what most observations here should be: rank/incidence_reach.sqlc is the object, and
+#   That is what most observations here should be: rank/incidence_reach.sqlc is the relation, and
 #   this restricts it to the two kinds and puts them beside each other, which is what an
 #   observation is for.
 -- rank/incidence_reach.sqlc, ordered so the two kinds sit beside each other.

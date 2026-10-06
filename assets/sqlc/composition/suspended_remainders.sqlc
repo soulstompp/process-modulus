@@ -1,66 +1,68 @@
 # The fusions that owe no exact composed remainder. One row per (composition, composed layer) whose
-# demand or nameplate sum is suspended, at the layer itself or at a node its remainder walk passes
-# through; or which, at the layer itself or at a node its walk reaches, has no demand or nameplate
+# demand or nameplate sum is suspended, at the layer itself or at a layer its remainder walk passes
+# through; or which, at the layer itself or at a layer its walk reaches, has no demand or nameplate
 # figure.
 #
-# The restriction to two quantities is the argument
-#   It is declared in the file name. `r = n - d` is a function of exactly two of the five
-#   quantities composition/filed_grounds.sqlc ranges over. A suspended draw or a suspended
-#   slack says nothing about the remainder and must not suspend it; a suspended demand or nameplate
-#   suspends it entirely, because the correction `- e_n + e_d` then has a term nobody sized.
+# Kept to two quantities, and that is the argument
+#   The remainder depends on exactly two of the three quantities a sum can be suspended in. A
+#   suspended draw says nothing about the remainder and must not suspend it; a suspended demand or
+#   nameplate suspends it entirely, because the correction for the eliminations then has a term
+#   nobody sized.
 #
-# A slice, not an aggregate
-#   So this collapses `quantity`, and that is a slice, not an aggregate. The source is keyed
-#   (composition, composed_layer, quantity) and this is keyed without it, which is exactly the
-#   shape to watch: a σπ and a γ have the same type and make opposite claims. The claim here is the
-#   σπ one and it is the right one ("either of these two is suspended") rather than "the row as a
-#   whole is suspended". Reading it as the second would let a suspended slack veto a remainder that
-#   is perfectly computable.
+# Either quantity, not the row as a whole
+#   So this drops `quantity`, and the claim is that either of the two is suspended, not that the
+#   row as a whole is. The source is keyed (composition, composed_layer, quantity) and this is keyed
+#   without it, which is exactly the shape to watch: keeping matching rows and dropping a column
+#   looks the same as grouping, and the two claim opposite things. Read the second way, a suspended
+#   draw would veto a remainder that can be worked out perfectly well.
 #
 # A NULL `quantity` suspends every quantity
-#   A NULL `quantity` is the list-level suspension. This is suspension's two levels arriving in the
-#   filter itself. `eliminations/unsized` names the item and carries a quantity;
+#   A NULL `quantity` is the suspension of the whole list, and here suspension's two levels arrive
+#   in the filter itself. `eliminations/unsized` names the item and carries a quantity;
 #   `eliminations/unsearched` names the list (nobody looked for double counting at all) and has no
-#   per-quantity grain, so its rows come through with `quantity` NULL. An `IN` list does not match
-#   NULL, so restricting to two values silently drops the suspension that is broader than either
-#   of them. The arithmetic catches that where no law would, as the probe below shows.
+#   quantity, so its rows come through with `quantity` NULL. An `IN` list does not match NULL, so
+#   keeping to two values alone would quietly drop the suspension that is broader than either of
+#   them. The arithmetic catches that where no law would, as the probe below shows.
 #
 # Below the layer as well as at it
-#   Where a part's conversion has width, composition/remainder_frontier.sqlc walks past that part
-#   into its own parts, and the corrections that node's composer applied come in through
-#   composition/carried_eliminations.sqlc. If that node's own demand or nameplate sum owes nothing,
+#   Where a part's conversion is a range, composition/remainder_frontier.sqlc walks past that part
+#   into its own parts, and the corrections that layer's composer applied come in through
+#   composition/carried_eliminations.sqlc. If that layer's own demand or nameplate sum owes nothing,
 #   because nobody searched or the overlap was found and not sized, the carried correction is not a
-#   number, so the remainder above it is suspended too. The walked-through nodes join the layer
+#   number, so the remainder above it is suspended too. The layers walked through join the layer
 #   itself as the places a suspension is looked for.
 #
-# And wherever a node it reaches has no figure to read
-#   The pivot sums each stopping node's own remainder, and a node with no demand or nameplate figure
-#   has none, so it would drop out of the sum and leave it short with nothing failing. That happens
-#   where a node files one of them `derived` and its computation cannot finish, and at any stopping
-#   node that files neither; composition/resolved_quantities.sqlc says which. Every such node lifts
-#   the remainder above it.
+# And wherever a layer it reaches has no figure to read
+#   The remainder worked out from the parts adds up each stopping layer's own remainder, and a layer
+#   with no demand or nameplate figure has none, so it would drop out of the sum and leave it short
+#   with nothing failing. That happens where a layer files one of them `derived` and its computation
+#   cannot finish, and at any stopping layer that files neither;
+#   composition/resolved_quantities.sqlc says which. Every such layer suspends the remainder above
+#   it.
 #
 # And at the layer itself
-#   A composed layer whose own demand or nameplate has no figure has no `n - d` for its pivot to be
-#   held against, so its remainder is lifted too, by the same test on the layer. One that files the
-#   figure `derived` and has it computed is read at that figure (layers/demand.sqlc,
-#   layers/nameplate.sqlc) and owes its remainder like any other.
+#   A composed layer whose own demand or nameplate has no figure has no remainder from its totals
+#   for the one from its parts to be held against, so its remainder is suspended too, by the same
+#   test on the layer. One that files the figure `derived` and has it computed is read at that
+#   figure (layers/demand.sqlc, layers/nameplate.sqlc) and owes its remainder like any other.
 #
 # The filed grounds, not the whole set
 #   The grounds read here are composition/filed_grounds.sqlc, which is every ground but
-#   composition/underived_parts.sqlc. That one lifts a sum over a part filed `derived` whose figure
-#   cannot be computed, and the walk reaches every part of a node it passes and finds no computed
-#   figure there, which the arm above lifts. That arm reads composition/resolved_quantities.sqlc, so
-#   the derived descent is composed here once already; reading the ground as well would add no row
-#   and compose the descent a second time beneath every rule that reads a remainder.
+#   composition/underived_parts.sqlc. That one suspends a sum over a part filed `derived` whose
+#   figure cannot be computed, and the walk reaches every part of a layer it passes and finds no
+#   computed figure there, which the branch above catches. That branch reads
+#   composition/resolved_quantities.sqlc, so the derived walk is composed here once already;
+#   reading the ground as well would add no row and compose the walk a second time beneath every
+#   rule that reads a remainder.
 #
 # Probe
-#   examples/probes runs it as `owed_remainder`. Drop the `s.quantity IS NULL` test: the complement
-#   of this relation must then owe more fusions than have their demand answered (owed as a sum, or
+#   examples/probes runs it as `owed_remainder`. Drop the `s.quantity IS NULL` test: the rest of
+#   this relation must then owe more fusions than have their demand answered (owed as a sum, or
 #   filed `derived`), which is impossible, because a condition needing both quantities answered
-#   cannot own more fusions than one needing demand alone.
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+#   cannot cover more fusions than one needing the demand alone.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer

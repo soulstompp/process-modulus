@@ -1,67 +1,63 @@
-# The incidence rank and cycle space of every graph this model composes that has an edge. One row
-# per graph: nodes, edges, components, and the two dimensions that follow. The claimant graph has
-# no edges, because delegation is filed nowhere, so it has no row.
+# The two figures of every graph the filings make that has an edge, across the whole corpus. One
+# row per graph: nodes, edges, components, `cycle_space_dim` and `rank_of_incidence`. The claimant
+# graph has no edges, because delegation is filed nowhere, so it has no row.
 #
-# The parameter the graphs differ on
-#   `rank = n - c` and `cycle space = m - n + c`, which is the parameter the graphs differ on. A
-#   graph with cycles has no ordinal rank and always has a matrix rank, and confusing the two
-#   produces a wrong claim: that a cyclic graph has no rank at all. It has one.
+# What the graphs differ on
+#   `cycle_space_dim` counts a graph's independent loops; `rank_of_incidence` is its nodes less its
+#   components. A graph with loops has no evaluation order (rank/evaluation_order.sqlc gives its
+#   layers NULL), and it still has a `rank_of_incidence`. The two are different figures, and taking
+#   one for the other gives a wrong claim: that a graph with loops has no `rank_of_incidence` at
+#   all. It has one.
 #
-# Which cycle, and the implication runs one way
-#   `m - n + c` counts UNDIRECTED cycles, so a zero here says the graph is a forest.
-#   Well-foundedness is the DIRECTED question, whether anything descends forever, and every
-#   acyclic digraph has it. A forest is well-founded; the converse fails. A diamond is four edges
-#   over four nodes in one component, so its cycle space is one, and nothing in it descends
-#   forever. So a zero cycle space hands you the ordinal rank and the ordinal rank hands back
-#   nothing. The layer graph is both at once, and that is `checks/jagged_layer` holding it there
-#   rather than an identity: a diamond in it is a layer composed twice.
+# Loops without direction, and the implication runs one way
+#   `cycle_space_dim` counts loops with the direction of the edges ignored, so a zero says the graph
+#   has no loops at all. Whether anything descends forever is the question with direction, and
+#   every graph with no directed loop answers it no. A graph with no loops descends forever nowhere;
+#   the reverse does not hold. A diamond is four edges over four nodes in one component, so it has
+#   one loop, and nothing in it descends forever. So a zero here gives you an evaluation order, and
+#   an evaluation order gives you back nothing. The layer graph has both at once, and that is
+#   `checks/jagged_layer` holding it there, not something that must be so: a diamond in it is a
+#   layer composed twice.
 #
-# Where a weighted graph's rule lives
-#   The cycle space is where a weighted graph's rule lives. An edge vector decomposes into the
-#   column space, a gradient, plus the left nullspace, the cycle part. `B` is `m x n`, one row per
-#   edge, and every one of those names depends on that: `src/proofs/README.md`, entry
-#   `incidence_subspaces`, is where the orientation is declared. The cycle component of
-#   `log phi` vanishing says `log phi` is a gradient, which says a potential exists: an absolute
-#   log-size per unit whose differences are the filed factors. A rule written as a walk round a
-#   loop is a subspace condition. `checks/conversion_cycle_does_not_close` asks its interval form:
-#   with each factor a range, that 1 lie inside the product round the loop, since exact closure at
-#   the mode is out of reach, as that rule's header shows. Gilbert Strang's graph chapter is the
-#   reference.
+# Where a rule round a loop lives
+#   A rule written as a walk round a loop is a condition on the loops. For the unit graph, the
+#   factors filed round a loop must come back to where they started: going round, the conversions
+#   multiply to one, which is what lets every unit have one size consistent with the factors filed
+#   between them. `checks/conversion_cycle_does_not_close` asks the form for ranges: with each
+#   factor a range, that 1 lie inside the product round the loop, since closing exactly at the most
+#   likely value is out of reach, as that rule's header shows.
 #
-# And the cut space is where this model's OTHER rule lives
-#   The two subspaces are orthogonal complements, and this model has one rule in each. A sum round a
-#   loop is the cycle condition, which is the paragraph above and what
-#   `checks/conversion_cycle_does_not_close` asks of the unit graph. A balance AT A NODE is the cut
-#   condition: what a composed layer files equals the sum over its converted parts less what was
-#   eliminated, with the elimination as the source term. That is the fusion rule, it lives in the
-#   column space, and `checks/jagged_layer` accuses on that side. So a filing can satisfy one and
-#   break the other, and the two graphs need two rules rather than one.
-#   Proof: `src/proofs/README.md`, entries `incidence_subspaces` and `fusion_adds_no_cycle`.
+# And a balance at a node is where this model's other rule lives
+#   This model has one rule of each kind. A product round a loop is the loop condition, the
+#   paragraph above, and what `checks/conversion_cycle_does_not_close` asks of the unit graph. A
+#   balance at a node is the other: what a composed layer files equals the sum over its converted
+#   parts less what was eliminated. That is the fusion rule, and `checks/jagged_layer` accuses on
+#   that side. So a filing can satisfy one and break the other, and the two graphs need two rules
+#   rather than one.
 #
-# A zero cycle space leaves no room for a circulation
-#   Where `m - n + c` is zero the cut space is the whole edge space, so every edge vector on that
-#   graph is a potential difference and nothing goes round. That is the conserved carrier written as
-#   a subspace, and it is why no spectral radius arises here: a composition has no direction to
-#   circulate in. Read the dimensions off this relation rather than from a sentence.
+# No loop, nothing goes round
+#   Where `cycle_space_dim` is zero, every amount on the graph's edges is a difference between its
+#   nodes, and nothing goes round. That is supply counted once, and it is why nothing here can grow
+#   by going round: a composition has no direction to circulate in. Read the figures off this
+#   relation rather than from a sentence.
 #
 # The numbers
 #   Run this relation for the counts. The corpus moves and a sentence does not.
 #
-# Components are undirected
-#   `n - c` and `m - n + c` are facts about the underlying undirected graph. Reading them off the
-#   directed edges gives a different and wrong `c`.
+# Components ignore direction
+#   Both figures are about the graph with the direction of its edges ignored. Reading them off the
+#   directed edges gives a different and wrong component count.
 #
 # One scope of `rank/graph_measures.sqlc`
-#   This relation is that one at the corpus-wide scope, not a second copy of the walk.
+#   This relation is that one across the whole corpus, not a second copy of the walk.
 #   `rank/decomposition.sqlc` reads the same relation, and its `filing IS NULL` rows are exactly
 #   these rows, so a fix to the walk is made once.
 #
-# The pin is `filing IS NULL`, and the column is projected away
-#   That is the shape that usually marks a slice passing as an aggregate. It is declared here and
-#   in the `--` line because it is the whole graph rather than a slice of one: the per-filing cut
-#   is a different question and `rank/decomposition.sqlc` is the file that asks it.
-#
--- rank/graph_measures.sqlc at the corpus-wide scope: the two graphs as incidence matrices.
+# The pin is `filing IS NULL`, and the column is dropped
+#   That is the shape that usually marks a slice passing for a whole. It is declared here and in the
+#   `--` line because it is the whole graph rather than a slice of one: the per-filing cut is a
+#   different question, and `rank/decomposition.sqlc` is the file that asks it.
+-- rank/graph_measures.sqlc across the whole corpus: the two graphs, counted whole.
 SELECT m.graph, m.n_nodes, m.m_edges, m.c_components, m.cycle_space_dim, m.rank_of_incidence
 FROM (
     :compose(rank/graph_measures.sqlc)

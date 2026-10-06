@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  THE SIBLING MEMBER, FILED IN PORTUGAL. Read with merge-us-member.xml, where the
-  three cases this pair arranges are listed. Illustrative figures.
+  The sibling member, filed in Portugal. Read it with merge-us-member.xml, which lists the
+  cases this pair arranges.
 
   What to read closely here:
 
-    * ⭐ `pessoal` IS THE SIBLING'S `labour`, and the contributed facts agree
-      exactly: the same `interference`, the same `capacity` absorber cited from the
-      same URI, the same `people` among its holders. Every one of those compares
-      with no negotiation at all. THE NAMES DO NOT, AND NEITHER DO THE UNITS.
+    * `pessoal` is the sibling's `labour`, and the contributed facts agree exactly: the
+      same `interference`, the same `capacity` absorber cited from the same URI, the same
+      `people` among its holders. Every one of those compares with no negotiation at
+      all. The names do not, and neither do the units.
 
-    * ⭐⭐ AND ITS REMAINDER IS PARTLY VISIBLE, where the sibling's is not. This
-      entity operates an hours bank, so part of the excess absorbed by its people
-      becomes an obligation it must carry — a `booked` holder with a number in it,
-      beside the `people` holder that has no instrument. Same layer, same fit, same
-      absorber, DIFFERENT HOLDERS, and the difference is jurisdictional rather than
-      managerial. Neither filing is more honest than the other.
+    * Its remainder is partly visible, where the sibling's is not. This entity operates
+      an hours bank, so part of the excess its people absorb becomes an obligation it
+      must carry: a `booked` holder with a figure in it, beside the `people` holder.
+      Same layer, same fit, same absorber, different holders, and the difference is
+      jurisdictional rather than managerial. Neither filing is more honest than the
+      other.
 
-    * ⛔ `compute` SHARES ONLY A WORD with the sibling's. A different vendor sells a
-      monthly reservation metered in GPU-hours. Nothing in either document says
-      these are two layers; nothing says they are one either.
+    * `compute` shares only a word with the sibling's. A different vendor sells a
+      monthly reservation metered in GPU-hours. Nothing in either document says these
+      are two layers, and nothing says they are one either.
 
-    * ⚠️ THE ABSORBER ON `capacidade-instalada` CITES A TRANSLATED EDITION of the
-      buffer vocabulary, which is what its internal reporting is written against.
-      `capacidade` and `capacity` are the same buffer. A bare code would have made
-      them look like a disagreement; the taxonomy makes them a FORK, visible and
-      resolvable by whoever owns the two editions.
+    * The absorber on `capacidade-instalada` cites a translated edition of the buffer
+      vocabulary, the one its internal reporting is written against. `capacidade` and
+      `capacity` are the same buffer. A bare code would make them look like a
+      disagreement; the taxonomy makes them a fork, visible, and resolvable by whoever
+      owns the two editions.
 
-  ⚠️ Illustrative. Taxonomy URIs and figures are placeholders, and the hours-bank
-  arrangement is sketched only as far as this model needs it.
+  Illustrative: the taxonomy URIs and figures are placeholders, and the hours bank is
+  sketched only as far as this model needs it.
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:filing:pt-member:2026-08-31</pm:uri>
   </pm:notation>
@@ -50,8 +50,8 @@
         <pm:value>NCRF-PE</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- ⭐ THERE IS A NATIONAL CHART HERE, so the entity borrows rather than
-         authors. Contrast the sibling, which had to name itself. -->
+    <!-- There is a national chart here, so the entity borrows its chart instead of being
+         its own authority, unlike the sibling, which names itself. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:pt:snc:chart</pm:taxonomy>
@@ -99,7 +99,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>pt-member</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-31</pm:asOf>
           </pm:claim>
@@ -113,7 +113,7 @@
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
-          <pm:note>o trabalho em fila sobrevive de facto à espera, e quanto tempo até se perder em silêncio nunca foi medido. O trabalho que se perde pertence a `unrealised` e não a `people` — o que diz ONDE tal trabalho seria declarado, e não que parte deste resto lá esteja: as parcelas abaixo já o esgotam</pm:note>
+          <pm:note>o trabalho em fila sobrevive de facto à espera, e quanto tempo até se perder em silêncio nunca foi medido. O trabalho que se perde pertence a `unrealised` e não a `people` — o que diz onde tal trabalho seria declarado, e não que parte deste resto lá esteja: as parcelas abaixo já o esgotam</pm:note>
         </pm:absent>
       </pm:timeSlack>
 
@@ -187,13 +187,13 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>uma pessoa pode trabalhar acima da sua capacidade nominal e na maioria das pilhas é a única oferta que o consegue. ATÉ QUE PONTO ACIMA, e durante quanto tempo, ninguém aqui mediu — que é todo o assunto deste modelo e a razão de isto não ser um valor booleano</pm:note>
+              <pm:note>uma pessoa pode trabalhar acima da sua capacidade nominal e, na maioria das pilhas, é a única oferta que o consegue; até que ponto acima, e durante quanto tempo, isso ninguém aqui mediu</pm:note>
             </pm:absent>
           </pm:capacitySlack>
-          <!-- ⛔ STILL FALSE, AND THE HOURS BANK DOES NOT CHANGE IT. Banking an
-               hour creates an OBLIGATION to give it back; it does not put a
-               person-hour on a shelf to serve next week's demand. The instrument
-               makes part of the excess countable, not storable. -->
+          <!-- Still zero, and the hours bank does not change it. Banking an hour creates
+               an obligation to give it back; it does not put a person-hour on a shelf to
+               serve next week's demand. The instrument makes part of the excess
+               countable, not storable. -->
           <pm:inventorySlack>
             <pm:claim>
               <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
@@ -201,13 +201,13 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
                 <pm:party>pt-member</pm:party>
                 <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                <pm:note>a capacidade não usada hoje está PERDIDA. As horas não usadas da semana passada não podem ser armazenadas para servir esta semana, e é por isso que `absorber = inventory` nesta camada é lisamente falso</pm:note>
+                <pm:note>a capacidade que hoje não se usa perde-se, já que as horas não usadas da semana passada não se podem armazenar para servir esta, pelo que o `inventory` nunca é o `absorber` desta camada</pm:note>
               </pm:provenance>
             </pm:claim>
           </pm:inventorySlack>
@@ -218,7 +218,7 @@
               <pm:reason>unmeasured</pm:reason>
               <pm:note>as horas absorvidas acima do quadro não são integralmente registadas</pm:note>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:absent>
@@ -235,21 +235,20 @@
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-          <!-- ⭐ THE SAME URI THE SIBLING CITES. This is the comparison working. -->
+          <!-- The same URI the sibling cites, so the two absorbers compare directly. -->
           <pm:absorber>
             <pm:term>
               <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- ⭐⭐⭐ TWO HOLDERS WHERE THE SIBLING HAS ONE, AND THE EXTRA ONE IS AN
-               INSTRUMENT RATHER THAN A CHOICE. Hours banked are owed back and
-               accrue, so that part of the absorption has a counterparty, a number
-               and a date. The rest is absorbed exactly as it is in the sibling
-               filing, and is exactly as invisible.
+          <!-- Two holders, and the `booked` one comes from an instrument, not a choice.
+               Banked hours are owed back and accrue, so that part of the absorption has
+               an obligation, a figure and a date. The rest is absorbed by the people, as
+               in the sibling filing.
 
-               The shares sum to the derived magnitude:
-                 [0.3, 0.7, 1.4] + [0.1, 0.4, 0.8] = [0.4, 1.1, 2.2] -->
+               The two shares add up to the derived remainder, 0.4, 1.1 and 2.2
+               `pessoas`. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>booked</pm:kind>
@@ -277,7 +276,7 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -311,14 +310,14 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |6 - [6.4, 7.1, 8.2]| = [0.4, 1.1, 2.2] pessoas -->
+          <!-- Derived from this layer's demand and nameplate: 0.4, 1.1 and 2.2 `pessoas`. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -330,7 +329,7 @@
     </pm:layer>
 
     <!-- ============================================================
-         COMPUTE. ⛔ SAME TOKEN AS THE SIBLING'S, DIFFERENT LAYER.
+         COMPUTE. The same name as the sibling's layer, and a different layer.
          ============================================================ -->
     <pm:layer>
       <pm:name>compute</pm:name>
@@ -345,7 +344,7 @@
             <pm:denominator>
               <pm:absent>
                 <pm:reason>notApplicable</pm:reason>
-                <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                <pm:note>a hora está no numerador: a `GPU-hour` é uma quantidade de tempo-recurso e não uma taxa, pelo que não tem período</pm:note>
               </pm:absent>
             </pm:denominator>
             <pm:narrowsWhen>
@@ -361,7 +360,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>pt-member</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-31</pm:asOf>
           </pm:claim>
@@ -379,7 +378,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- One value has no range to tighten, so `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -402,7 +401,7 @@
               <pm:denominator>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>a hora está no numerador: a `GPU-hour` é uma quantidade de tempo-recurso e não uma taxa, pelo que não tem período</pm:note>
                 </pm:absent>
               </pm:denominator>
               <pm:narrowsWhen>
@@ -432,7 +431,7 @@
                     <pm:denominator>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                        <pm:note>a hora está no numerador: a `GPU-hour` é uma quantidade de tempo-recurso e não uma taxa, pelo que não tem período</pm:note>
                       </pm:absent>
                     </pm:denominator>
                     <pm:narrowsWhen>
@@ -466,7 +465,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -483,7 +482,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -504,7 +503,7 @@
               <pm:denominator>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>a hora está no numerador: a `GPU-hour` é uma quantidade de tempo-recurso e não uma taxa, pelo que não tem período</pm:note>
                 </pm:absent>
               </pm:denominator>
               <pm:narrowsWhen>
@@ -520,7 +519,7 @@
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -555,7 +554,7 @@
                   <pm:denominator>
                     <pm:absent>
                       <pm:reason>notApplicable</pm:reason>
-                      <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                      <pm:note>a hora está no numerador: a `GPU-hour` é uma quantidade de tempo-recurso e não uma taxa, pelo que não tem período</pm:note>
                     </pm:absent>
                   </pm:denominator>
                   <pm:narrowsWhen>
@@ -574,7 +573,7 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |720 - [430, 545, 690]| = [30, 175, 290] GPU-hour -->
+          <!-- Derived from this layer's demand and nameplate: 30, 175 and 290 GPU-hours. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -615,7 +614,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>pt-member</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-31</pm:asOf>
           </pm:claim>
@@ -732,7 +731,7 @@
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -749,19 +748,18 @@
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-          <!-- ⚠️ A TRANSLATED EDITION OF THE SAME THREE BUFFERS. `capacidade` here
-               and `capacity` in the sibling denote one buffer, and the URIs are
-               what say so — or rather, what say NOBODY HAS SAID SO YET. This is
-               the fork the borrowed-term rule exists to expose, filed honestly
-               rather than papered over by writing the English word. -->
+          <!-- A translated edition of the same three buffers. `capacidade` here and
+               `capacity` in the sibling are one buffer, and the two URIs show that nobody
+               has said so yet. This is the fork the borrowed-term rule exists to expose,
+               filed as it is rather than papered over by writing the English word. -->
           <pm:absorber>
             <pm:term>
               <pm:taxonomy>urn:example:pt:fisica-da-fabrica:amortecedores</pm:taxonomy>
               <pm:value>capacidade</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- shares sum to the derived magnitude:
-                 [0.5, 1.5, 2.5] + [0.5, 1.0, 1.5] = [1.0, 2.5, 4.0] -->
+          <!-- The two shares add up to the derived remainder, 1.0, 2.5 and 4.0 `turnos por
+               semana`. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>customer</pm:kind>
@@ -787,7 +785,7 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
@@ -819,14 +817,15 @@
                     </pm:absent>
                   </pm:boundOrigin>
                   <pm:provenance><pm:party>pt-member</pm:party>
-                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                    <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
                   </pm:provenance>
                   <pm:asOf>2026-08-31</pm:asOf>
                 </pm:claim>
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |10 - [11, 12.5, 14]| = [1.0, 2.5, 4.0] turnos por semana -->
+          <!-- Derived from this layer's demand and nameplate: 1.0, 2.5 and 4.0 `turnos por
+               semana`. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -838,13 +837,14 @@
     </pm:layer>
 
     <!-- ============================================================
-         LINHA PARTILHADA. ⭐⭐ A MESMA LINHA que o membro dos Estados
-         Unidos regista como `shift-line`. Esta entidade OPERA a linha, e
-         por isso regista a produção inteira: dez turnos por semana. O
-         irmão regista a fatia que lhe coube. ⛔ SOMAR OS DOIS CONSUMOS
-         CONTA A MESMA PRODUÇÃO DUAS VEZES, e somar as duas capacidades
-         dá vinte turnos numa linha que tem dez.
-         ⚠️ Aqui também sobra capacidade. Ver a composição.
+         LINHA PARTILHADA: a mesma linha que o membro dos Estados Unidos
+         declara como `shift-line`. É esta entidade que a opera, e por
+         isso declara a produção inteira, dez turnos por semana, enquanto
+         o outro membro declara a fatia que lhe coube; somar os dois
+         consumos conta a mesma produção duas vezes, e somar as duas
+         capacidades nominais dá vinte turnos numa linha que só tem dez.
+         Também aqui sobra capacidade, e o que o grupo mostra está na
+         composição.
          ============================================================ -->
     <pm:layer>
       <pm:name>linha-partilhada</pm:name>
@@ -872,7 +872,7 @@
               </pm:absent>
             </pm:boundOrigin>
             <pm:provenance><pm:party>pt-member</pm:party>
-              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+              <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
             </pm:provenance>
             <pm:asOf>2026-08-31</pm:asOf>
           </pm:claim>
@@ -945,10 +945,11 @@
                 </pm:size>
                 <pm:origin>intrinsic</pm:origin>
               </pm:lumpy>
-              <!-- ⭐ A MESMA JANELA, VISTA PELO OUTRO MEMBRO. A linha é uma só e a janela é
-                   uma propriedade DA MÁQUINA, não do uso que cada membro lhe dá, pelo que os
-                   dois membros declaram necessariamente o mesmo valor. ⛔ E é por isso que
-                   uma janela NÃO SE SOMA na fusão: soma-se a procura, não o calendário. -->
+              <!-- A mesma janela, vista do outro membro: a linha é uma só, e a janela é uma
+                   propriedade da máquina e não do uso que cada membro lhe dá, pelo que os
+                   dois declaram forçosamente o mesmo valor; e é por isso que, na fusão, a
+                   janela passa tal como está, sem se somar, porque o que se soma é a
+                   procura, e não o calendário. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -995,8 +996,8 @@
           </pm:inventorySlack>
         </pm:nameplate>
         <pm:jagged>
-          <!-- ⭐ A PRODUÇÃO INTEIRA DA LINHA, porque é esta entidade que a opera. A
-               fatia do irmão está aqui dentro, e está também na declaração dele. -->
+          <!-- A produção inteira da linha, porque é esta entidade que a opera; a fatia do
+               outro membro está aqui dentro, e está também na declaração dele. -->
           <pm:draw>
             <pm:claim>
               <pm:low>10</pm:low>
@@ -1019,7 +1020,7 @@
                 </pm:absent>
               </pm:boundOrigin>
               <pm:provenance><pm:party>pt-member</pm:party>
-                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de legitimidade publicado para esta afirmação</pm:note></pm:absent></pm:standing>
+                <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>não há vocabulário de estatuto publicado para esta afirmação</pm:note></pm:absent></pm:standing>
               </pm:provenance>
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
@@ -1036,9 +1037,9 @@
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
-          <!-- A edição traduzida, como no resto desta declaração. ⭐ Quando o grupo
-               FUNDE esta camada com a do irmão, que cita a edição original, alguém tem
-               de decidir. Ver a composição. -->
+          <!-- A edição traduzida, como na `capacidade-instalada`. Quando o grupo funde
+               esta camada com a do outro membro, que cita a edição original, alguém tem de
+               decidir; ver a composição. -->
           <pm:absorber>
             <pm:term>
               <pm:taxonomy>urn:example:pt:fisica-da-fabrica:amortecedores</pm:taxonomy>
@@ -1073,7 +1074,8 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derivado: |10 - [6.2, 7.1, 8.0]| = [2.0, 2.9, 3.8] turnos por semana -->
+          <!-- Calculado a partir da procura e da capacidade nominal desta camada: 2,0, 2,9 e
+               3,8 turnos por semana. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>

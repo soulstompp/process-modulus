@@ -1,4 +1,4 @@
--- §4  How long each layer's demand survives being unanswered.
+-- §4  How long each layer's demand survives going unanswered.
 -- layers/patience.sqlc, beside the demand each patience qualifies.
 WITH layers_patience AS (
 -- pm:Demand/pm:patience, beside the demand it qualifies.

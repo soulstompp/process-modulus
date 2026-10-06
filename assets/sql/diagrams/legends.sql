@@ -62,7 +62,7 @@ SELECT d.filing, d.operation, d.layer,
 FROM pm.draw d
 ),
 diagrams_lane_members AS (
--- entries/draws.sqlc projected to D's incidence alone; one flowNodeRef per entry.
+-- entries/draws.sqlc reduced to which operation draws from which layer; one flowNodeRef per entry.
 SELECT d.filing, d.operation, d.layer
 FROM (
     SELECT * FROM entries_draws
@@ -102,7 +102,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 diagrams_calls AS (
--- composition/parts.sqlc projected to F alone, with Phi dropped; one call activity per part.
+-- composition/parts.sqlc reduced to which layer is composed from which; one call activity per part.
 SELECT p.composition, p.composed_layer, p.part_notation, p.part_filing, p.part_layer,
        (p.part_filing = p.composition) AS is_local
 FROM (

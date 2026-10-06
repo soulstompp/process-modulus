@@ -1,33 +1,35 @@
-# A lumpy remainder split into the whole quanta and the residue. One row per lumpy layer that
-# states its demand, with a point quantum and one unit across demand, nameplate and quantum.
+# A lumpy remainder split into whole quanta and the residue. One row per lumpy layer that states
+# its demand, with a single-valued quantum and one unit across demand, nameplate and quantum.
 #
 # The split
-#   `k = n / q` is the number of quanta held, `m = k - floor(d / q)` is the number the remainder
-#   spans, and `residue = d mod q` is the part of the demand no whole quantum meets. Then
-#   `r = m * q - residue`, and the floors cancel: the identity is `n - d` for any demand and any
-#   nameplate, interval or not. Proof: `src/proofs/README.md`, entries `floors_cancel` and
-#   `congruence`.
+#   `q` is the quantum. The demand fills some whole quanta (`d_*_tooth`) and leaves a residue
+#   (`d_*_residue`), the part of the demand no whole quantum meets. `m_*` is the number of whole
+#   quanta the remainder spans: the quanta the nameplate holds, less the whole quanta the demand
+#   fills. The `m` whole quanta less the residue come to the same figure as the nameplate less the
+#   demand, for any demand and any nameplate, range or not.
 #
-# Read at the crossed pairs
-#   `m` is carried at the remainder's three corners, and each corner pairs the nameplate with the
-#   demand at the opposite end, as layers/differenced_remainder.sqlc does: `m_low` pairs `n_low`
-#   with `d_high`. The residue and the tooth `floor(d / q)` are carried at the demand's own three
-#   points, because they are functions of the demand alone.
+# Read at opposite ends
+#   `m` is carried at the remainder's three points, and each pairs the nameplate with the demand at
+#   the opposite end, as layers/differenced_remainder.sqlc does: `m_low` pairs `n_low` with
+#   `d_high`. The whole quanta the demand fills and its residue are carried at the demand's own
+#   three points, because they depend on the demand alone.
 #
 # The two halves are not claims
-#   The residue is a sawtooth in `d`, so at a demand's three points it need not come back ordered,
-#   and `m * q` inherits the same jumps. `crosses_tooth` says where: a demand range that stays
-#   inside one tooth, `floor(d_low / q) = floor(d_high / q)`, has ordered residues, and one that
-#   crosses need not. That is why the schema carries the total and never the split, and why this
-#   relation is a derivation of `r` and not something a filer could state. Proof:
-#   `src/proofs/README.md`, entry `sawtooth`.
+#   The residue drops back each time the demand fills another whole quantum, so at a demand's three
+#   points it need not come back in order, and the whole quanta jump with it. `crosses_tooth` says
+#   where: a demand range that stays within one whole quantum has its residues in order, and one
+#   that crosses into the next need not. That is why the schema carries the total and never the
+#   split, and why this relation works the split out from the remainder rather than reading
+#   something a filer could state.
 #
-# One unit, a point quantum
-#   `floor(d / q)` divides the demand by the quantum, which means nothing across units and is three
-#   different divisions for a quantum with width. Both are left out rather than guessed at;
-#   checks/quantum_unit_mismatch reports the first, and examples/matrices/main.rs asserts no filed
-#   quantum has the second.
--- layers/lumpy.sqlc, split as r = m*q - (demand mod q) at the crossed pairs.
+# One unit, a single-valued quantum
+#   Counting the whole quanta the demand fills divides the demand by the quantum, which means
+#   nothing across units, and is three different divisions for a quantum that is a range. Both are
+#   left out rather than guessed at. checks/quantum_unit_mismatch reports the first, and no document
+#   here files a quantum that is a range. A single-valued quantum is its own low and high, so `q`
+#   is the quantum at every point of the nameplate, the pairing checks/nameplate_not_a_multiple
+#   makes point by point.
+-- layers/lumpy.sqlc, split into whole quanta and the demand's residue, at opposite ends.
 SELECT l.filing, l.layer, l.unit,
        l.quantum_mode AS q,
        l.n_low, l.n_mode, l.n_high,

@@ -1,47 +1,45 @@
-# The law rank/composition_closure.sqlc owes: the null space of a whole descent is the sum of the
-# null spaces of the levels in it. One row.
+# The law rank/composition_closure.sqlc owes: under any fusion, the room to shift supply among the
+# layers at the bottom without moving the figure at the top is the room inside each fusion below
+# it, added up. One row.
 #
 # The identity
-#   Composing onto maps composes their null spaces additively, so under any root the dimension of
-#   the composite map's null space is the sum of the blocks below it. The composite is onto a
-#   single figure, so its own dimension is the leaf count less one, and the two routes are
-#   `leaves - 1` and `Σ (parts - 1)` over the distinct fusions in the closure.
-#   Proof: `src/proofs/README.md`, entry `kernel_closes`.
+#   Inside one fusion, the room to shift supply among its parts without moving its figure is one
+#   fewer than its parts. Nest fusions and the rooms add up. The whole composition comes to a single
+#   figure, so its room is one fewer than the layers at the bottom, and the two routes are that and
+#   the per-fusion rooms added over every fusion beneath the top.
 #
 # What it can catch, which is not the arithmetic
-#   On a tree the identity is forced by counting edges, so the content of this law is that the
-#   descent under each root IS a tree. A leaf reached by a second path raises the block sum and
-#   leaves the leaf count alone; a cycle takes the leaf count away without taking the blocks. Both
-#   land here, and this law names the root, which is what neither of the instruments that already
-#   exist does: checks/jagged_layer.sqlc names the fusion whose own parts overlap and
-#   algebra/cycle_space.sqlc reports one number for the corpus.
+#   Where every layer is reached by one path, the identity is forced by counting, so what this law
+#   really checks is that under each fusion every layer is reached by one path. A layer at the
+#   bottom reached by a second path raises the per-fusion total and leaves the bottom count alone;
+#   a loop takes layers off the bottom count without taking the fusions. Both land here, and this
+#   law names the top fusion, which neither of the other checks does: checks/jagged_layer.sqlc
+#   names the fusion whose own parts overlap, and algebra/cycle_space.sqlc reports one number for
+#   the corpus.
 #
-# And the row space of the closure, in the same row
-#   The composite is onto one figure, so `row_dim` is 1 at any depth, and every leaf reaches the
-#   root through a path product that is strictly positive or that nobody stated. Those two
-#   possibilities must exhaust the leaves: a path product of zero would be a factor of zero, which
-#   `pm.part`'s own CHECK refuses, and a negative one is not a conversion. So this clause is the
-#   block-level positivity carried through the nesting, and it is what says no non-negative
-#   assignment to the leaves is invisible to the root.
-#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+# And the one way the top figure moves, in the same row
+#   The whole composition comes to one figure, so `row_dim` is 1 at any depth, and every layer at
+#   the bottom reaches the top through conversion factors whose product is positive, or that nobody
+#   stated. Those two must cover every layer: a product of zero would need a factor of zero, which
+#   `pm.part`'s own CHECK refuses, and a negative one is not a conversion. So nothing put into the
+#   bottom layers is lost on the way up.
 #
-# Non-vacuity needs the closure to be a closure
-#   At one level `leaves - 1` and `Σ (parts - 1)` are the same expression, so a corpus of
-#   single-level compositions passes this law having compared nothing with itself. The floor
-#   requires a root whose descent reaches two levels, which is where the sum over levels first has
-#   more than one term.
+# It needs two levels to test anything
+#   At one level the two routes are the same count, so a corpus of single-level compositions passes
+#   this law having compared nothing. The floor requires a fusion whose composition reaches two
+#   levels, which is where the sum over levels first has more than one term.
 #
 # Every fusion, not only the tops
-#   rank/composition_closure.sqlc takes each fusion as a root of its own closure, so a defect
-#   under an interior fusion is reported at that fusion and at every fusion above it. Both are
-#   true: the identity fails for the interior root on its own, and for each ancestor because its
-#   closure contains the interior one.
+#   rank/composition_closure.sqlc takes each fusion as the top of its own composition, so a defect
+#   under an inner fusion is reported at that fusion and at every fusion above it. Both are true:
+#   the identity fails for the inner fusion on its own, and for each one above because it contains
+#   the inner one.
 #
 # Probe
 #   examples/probes runs it as `composition_closure`. In a rolled-back transaction, give a fusion a
 #   part naming a layer already reachable beneath it through another composition, and this law must
 #   fail at that fusion and at nothing that does not contain it.
--- rank/composition_closure.sqlc: the composite's dimension against the sum of its levels'.
+-- rank/composition_closure.sqlc: the whole composition's room against the sum of its levels'.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -54,9 +52,9 @@ LEFT JOIN (
            AND count(*) FILTER (WHERE c.row_dim <> 1) = 0
            AND count(*) FILTER (WHERE c.leaves_positive + c.leaves_unknown <> c.leaves) = 0
                                                                                      AS holds,
-           format('%s root(s), %s reaching two levels or more; %s disagree between the '
-                  'composite dimension and the sum of its blocks, %s have a leaf whose path '
-                  'product is neither positive nor unstated, %s leaf arrival(s) unstated%s',
+           format('%s root(s), %s reaching two levels or more; %s whose own room is not that of '
+                  'its fusions added up, %s with a leaf whose factors along the path multiply to '
+                  'neither a positive number nor an unstated one, %s leaf arrival(s) unstated%s',
                   count(*), count(*) FILTER (WHERE c.deepest >= 2),
                   count(*) FILTER (WHERE c.closure_kernel <> c.sum_kernel),
                   count(*) FILTER (WHERE c.leaves_positive + c.leaves_unknown <> c.leaves),

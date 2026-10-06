@@ -1,19 +1,19 @@
-# The composed remainder, computed two ways. One row per composed layer, with the figure pivoted
-# through its parts beside the one derived from its totals, and whether they agree.
+# The composed remainder, worked out two ways. One row per composed layer, with the figure worked
+# out from its parts beside the one worked out from its totals, and whether they agree.
 #
-# The disagreements are the spread conversions
-#   The layers that disagree are exactly those whose remainder walk passes a conversion factor with
-#   width, and `spread` says which those are. Every other composed layer converts at one or at a
-#   point value, so there is no correlation to remove and the figures agree exactly; those are the
-#   controls, and without them a difference here would prove nothing. algebra/composed_remainder
-#   holds both halves on every run. Proof: `src/proofs/README.md`, entry `composed_remainder`.
+# The disagreements are the conversions with a range
+#   The layers that disagree are exactly those whose parts convert through a factor that is a
+#   range, and `spread` says which those are. Every other composed layer converts at one or at a
+#   single value, so there is nothing to take in twice and the figures agree exactly; those are
+#   the controls, and without them a difference here would show nothing.
+#   algebra/composed_remainder holds both halves on every run.
 #
 # Disagreement does not mean a document is wrong
-#   layers/differenced_remainder.sqlc differences the composed totals, and one conversion factor
-#   multiplied both of them, so its figure counts that factor's spread twice. The pivot converts
-#   each part's own remainder, so the factor appears once per term. Both are arithmetically
-#   correct; only the pivot is the remainder, and layers/remainder.sqlc carries it. This section
-#   is a referral, not a violation.
+#   layers/differenced_remainder.sqlc sets the composed totals against each other, and one
+#   conversion factor multiplied both of them, so its figure takes that factor's range in twice.
+#   The figure from the parts converts each part's own remainder, so the factor counts once. Both
+#   are correct arithmetic; only the one from the parts is the remainder, and layers/remainder.sqlc
+#   carries it. This section is a referral, not a violation.
 -- composition/fused_remainders.sqlc, with the two figures set against each other.
 SELECT f.composition                                             AS "composition!",
        f.composed_layer                                          AS "composed_layer!",

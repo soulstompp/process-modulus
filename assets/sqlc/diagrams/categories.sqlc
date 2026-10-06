@@ -1,31 +1,26 @@
 # Every layer some operation induces into, which is the `categoryValue` population. One row per
-# (filing, layer) that N reaches, and nothing else.
+# (filing, layer) an induction reaches, and nothing else.
 #
-# N gets a notation
-#   N was once filed as totally lost. `induction` mapped to `laneSet`, the same element as `draw`,
-#   and was deliberately not emitted: a second lane set gives every layer two `lane` elements with
-#   nothing but a matching name to say they are one layer, so the conformed key `(filing, layer)`
-#   does not survive. That reasoning was right about lane sets and wrong about BPMN, which has a
-#   second mechanism entirely.
+# The inductions get an element of their own
+#   A second lane set, beside the draws', would give every layer two `lane` elements with nothing
+#   but a matching name to say they are one layer, so the key `(filing, layer)` would not survive.
+#   BPMN has a second mechanism for this: the category.
 #
-# A category is not a partition
-#   That is exactly why it fits. `tFlowElement` carries `categoryValueRef` with
-#   `maxOccurs="unbounded"`, so a flow element may be in many categories, where `flowNodeRef` puts
-#   it in one lane. D is a containment and N is a cover, and BPMN has one element for each.
-#   Emitting N as a second lane set would have added lanes and broken `|lane| = |layer|`; this
-#   adds none.
+# A category does not divide anything
+#   That is why it fits. `tFlowElement` carries `categoryValueRef` with `maxOccurs="unbounded"`, so
+#   a flow element may be in many categories, where `flowNodeRef` puts it in one lane. The draws
+#   contain and the inductions cover, and BPMN has one element for each. A second lane set would
+#   add lanes and break one lane per layer; this adds none.
 #
 # What it loses
-#   This file is not the end of the argument. `tCategoryValue` carries a `value` of type
-#   `xs:string` and no reference attribute of any kind, so the layer arrives as text beside a
-#   `lane` of the same name and nothing in the document ties the two. It is the weaker cousin of
-#   the `callActivity` defect: a call loses the layer outright, a category keeps its name and loses
-#   the pointer.
+#   `tCategoryValue` carries a `value` of type `xs:string` and no reference attribute of any kind,
+#   so the layer arrives as text beside a `lane` of the same name, and nothing in the document ties
+#   the two. It is the weaker cousin of the `callActivity` defect: a call loses the layer outright,
+#   a category keeps its name and loses the pointer.
 #
 # One row per layer, not per induction
-#   A categoryValue is one element however many operations reference it.
-#   diagrams/category_members.sqlc is the per-edge population.
-#
+#   A categoryValue is one element however many operations refer to it.
+#   diagrams/category_members.sqlc is the per-induction population.
 -- pm:Operation/pm:Induction projected to the layers it reaches; BPMN 2.0 tCategoryValue.
 SELECT DISTINCT i.filing, i.layer
 FROM (

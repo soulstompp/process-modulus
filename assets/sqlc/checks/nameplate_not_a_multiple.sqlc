@@ -1,5 +1,5 @@
-# Every lumpy layer whose quantum can divide, beside whether it does. One row per examined
-# layer, `violates` where any point of the nameplate is not a whole number of quanta.
+# Every lumpy layer whose quantum can divide, beside whether it does. One row per layer examined,
+# `violates` where any point of the nameplate is not a whole number of quanta at the same point.
 #
 # Supply arrives in whole units
 #   The rule: supply arrives in whole units, so the nameplate is a whole multiple of the quantum.
@@ -7,11 +7,11 @@
 #   quantum filed at the wrong size or a nameplate that includes something the quantum does not
 #   describe.
 #
-# Every point, not the mode
-#   A lumpy supply can only take whole multiples, so a nameplate's low or high that is not one
-#   names a value the supply cannot have, whatever its mode says. The quantum is read at its mode:
-#   examples/matrices/main.rs asserts every filed quantum is a point.
-#   Proof: `src/proofs/README.md`, entry `congruence`.
+# Every point of the nameplate, against the same point of the quantum
+#   A lumpy supply can only take whole multiples, so a nameplate whose lowest or highest value is
+#   not one names a value the supply cannot have, whatever its most likely value says. Each point of
+#   the nameplate is read against the quantum at the same point: the low against the low, the most
+#   likely value against the most likely value, the high against the high.
 #
 # A zero quantum is not examined
 #   A quantum of zero divides nothing; see layers/divisible.sqlc.
@@ -22,11 +22,14 @@ FROM      (
 ) r
 LEFT JOIN (
     SELECT d.filing, d.layer,
-           abs(d.n_low  - d.quantum_mode * round(d.n_low  / d.quantum_mode)) > 1e-9
+           abs(d.n_low  - d.quantum_low  * round(d.n_low  / d.quantum_low))  > 1e-9
            OR abs(d.n_mode - d.quantum_mode * round(d.n_mode / d.quantum_mode)) > 1e-9
-           OR abs(d.n_high - d.quantum_mode * round(d.n_high / d.quantum_mode)) > 1e-9 AS violates,
+           OR abs(d.n_high - d.quantum_high * round(d.n_high / d.quantum_high)) > 1e-9 AS violates,
            format('a quantum of %s against a nameplate of [%s, %s, %s]',
-                  d.quantum_mode, d.n_low, d.n_mode, d.n_high) AS detail
+                  CASE WHEN d.quantum_low = d.quantum_high THEN d.quantum_mode::text
+                       ELSE format('[%s, %s, %s]', d.quantum_low, d.quantum_mode, d.quantum_high)
+                  END,
+                  d.n_low, d.n_mode, d.n_high) AS detail
     FROM (
         :compose(layers/divisible.sqlc)
     ) d

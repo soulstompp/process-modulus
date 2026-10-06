@@ -1,23 +1,22 @@
-# The `between` references that land on a layer this corpus holds. One row per resolved reference,
-# carrying the filing the notation resolves to.
+# The `between` references that land on a layer this corpus holds. One row per resolved
+# reference, carrying the filing the notation resolves to.
 #
-# The positive set, named
-#   Its complement is the interesting one. Name the union and take its complement, because in a
-#   model about typed absence the positive set is always the meaningful one.
-#   `eliminations/references.sqlc` minus this is *the references that point outside what is here*,
-#   which the schema calls ordinary rather than wrong.
+# The references that land, named
+#   The ones that do not land are the interesting ones, and they are found as everything in
+#   `eliminations/references.sqlc` that is not here: the references that point outside what is
+#   here, which the schema calls ordinary rather than wrong. In a model about typed blanks, the
+#   set that lands is the one worth naming.
 #
-# Resolution is a reader's assertion one step removed
-#   Exactly as it is for a part: `filing_identity` is what a document says about itself, and without
-#   it a cross-document reference cannot be resolved from the corpus even in principle.
+# Resolution rests on what a document says about itself
+#   As it does for a part: `filing_identity` is what a document says about itself, and without it
+#   a reference to another document cannot be resolved from the corpus at all.
 #
 # `pm.layer` directly, not `layers/every_layer.sqlc`
-#   The last join is a membership test: does the layer this reference names exist.
-#   `layers/every_layer.sqlc` is the layer dimension, reserved for denominators. Composed here it
-#   would drag the entire dimension into the transitive closure of most of the checker, and any
-#   reach-containment law over a rule is vacuous the moment the dimension is inside its closure,
-#   because the dimension reaches everything by construction. `algebra/dimension_use.sqlc` states
-#   the rule and enforces it over the compose DAG.
+#   The last join only asks whether the layer this reference names exists.
+#   `layers/every_layer.sqlc` lists every layer and is kept for denominators. Composed here, it
+#   would end up among the relations most of the checks compose, and any law asking what a rule
+#   reaches would then hold without testing anything, because that list reaches everything.
+#   `algebra/dimension_use.sqlc` states the rule and enforces it over what every relation composes.
 -- eliminations/references.sqlc joined through pm.filing_identity to pm.layer.
 SELECT b.composition, b.composed_layer, b.quantity, b.seq,
        b.party, b.notation, fi.filing AS resolved_filing, b.layer, b.regime

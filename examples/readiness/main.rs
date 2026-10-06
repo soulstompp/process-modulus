@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/readiness/README.md")]
 
@@ -36,10 +34,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "site", "ready", "suspended", "cross", "commensurability"
     );
     for s in &sites {
-        // ⛔ An unguarded site reads `not checked`. Never `ok`, never blank, a reader
-        //    scanning this column has to be able to see the hole without counting.
+        // An unguarded site reads `not checked`, never `ok` and never blank, so a reader
+        // scanning the column sees the gap without counting.
         let guard = match s.guarded_by.as_str() {
-            "" => "⛔ not checked".to_string(),
+            "" => "not checked".to_string(),
             "(forbidden)" => "must not be checked".to_string(),
             rule => format!("✅ {rule}"),
         };
@@ -60,16 +58,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|s| s.computable)
         .sum();
     println!(
-        "\n   ⛔ {} of {} sites compare no units. A guard on them would bind {} rows, not none.",
+        "\n   {} of {} sites compare no units. A guard on them would bind {} rows, not none.",
         unguarded.len(),
         sites.len(),
         bound_rows
     );
 
-    // ⛔⛔ THIS ASSERTION IS ABOUT THE ARITHMETIC AND NOT ABOUT THE CORPUS. A `not comparable`
-    //     row means the model put two numbers of different things together and produced a
-    //     figure that looks perfectly well formed. There is no tolerance for that, and the
-    //     count is pinned at zero the way matrices.rs pins its disagreements at zero.
+    // This assertion is about the arithmetic, not the corpus. A `not comparable` row means the
+    // model put two numbers of different things together and produced a figure that looks well
+    // formed. Nothing of that is tolerated, so the count is held at zero.
     let incomparable: i64 = sites.iter().map(|s| s.not_comparable).sum();
     assert_eq!(
         incomparable, 0,
@@ -93,11 +90,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("      {:<28} {:<22} {}", s.filing, s.layer, s.detail);
     }
 
-    // ⭐ A suspension is a claim the filer made, so the count is reported and never pinned.
-    //   The day somebody measures one of these it falls, and that is the model working.
+    // A suspension is a claim the filer made, so the count is printed and never asserted. When
+    // somebody measures one of these, it falls, and that is the model working.
     println!(
-        "\n   ⭐ Not one of these is a defect. Each is a filer saying they did not measure \n\
-           \x20     something, and the model taking them at their word."
+        "\n   Not one of these is a defect. Each is a filer saying they did not measure \n\
+           \x20  something, and the model taking them at their word."
     );
 
     // ------------------------------------------------------------------
@@ -109,22 +106,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("\n3. roster integrity, every declared contract: {} disagreement(s)", drift.len());
     for d in &drift {
-        println!("   ⛔ [{}] {}: {}", d.contract, d.problem, d.subject);
+        println!("   [{}] {}: {}", d.contract, d.problem, d.subject);
     }
 
-    // ⛔⛔⛔ THE ASSERTION THIS EXAMPLE EXISTS FOR. With nothing holding a list of the places
-    //     this model combines two magnitudes, a missing site is not a failure, it is a
-    //     silence. A tenth site added without a roster row, or a roster row added without a
-    //     relation, fails here.
+    // The assertion this example exists for. Without a list of the places this model combines
+    // two magnitudes, a missing site is not a failure but a silence. A new site added without a
+    // roster row, or a roster row added without a relation, fails here.
     //
-    // ⭐ It covers the conformance and algebra rosters too, because reports/integrity.sqlc
-    //   checks every contract in one pass. A readiness report that passed while the rule
-    //   roster was broken would be reporting on a checker it has no reason to trust.
+    // It covers the rule roster and the algebra roster too, because reports/integrity.sqlc checks
+    // every contract in one pass. A readiness report that passed while the rule roster was broken
+    // would be reporting on a checker it has no reason to trust.
     //
-    // ⭐ AND IT READS THE SOUNDNESS EXAMPLE'S QUERY FILE ON PURPOSE. Both examples want the same
-    //   projection of reports/integrity.sqlc, and two files holding one identical alias list is
-    //   the duplication this tree exists to avoid. The argument differs per example; the
-    //   relation does not, so the relation is written once.
+    // It reads the soundness example's query file on purpose. Both examples want the same
+    // projection of reports/integrity.sqlc, so the relation is written once and each example
+    // makes its own case with it.
     assert!(
         drift.is_empty(),
         "a roster and the population it declares disagree"

@@ -1,21 +1,20 @@
-# Every layer that derived its time slack rather than measuring it, and whether the clearance it
+# Every layer that worked out its time slack rather than measuring it, and whether the clearance it
 # stands for can be computed. One row per time slack filed `absent/reason = derived`.
 #
 # The slack is the clearance, a quantity
-#   `pm:Layer/timeSlack` holds a quantity in the layer's unit, because it is compared against
-#   holder shares. Filed as `derived`, it is the clearance the layer's own figures give,
-#   `max(n - d, 0)`: on a line making 2160 muffins a day against a demand of 2000, the slack is 160
-#   muffins a day. The twelve minutes a late muffin waits, `q / clearance`, is a duration, a
-#   different dimension describing the same line, and the bridge between the two,
-#   `quantity = duration x rate`, is the filer's to cross before filing. Proof:
-#   `src/proofs/README.md`, entries `clearance_is_not_a_duration` and `slack_from_duration`.
+#   `pm:Layer/timeSlack` holds a quantity in the layer's unit, because it is compared with holders'
+#   shares. Filed as `derived`, it is the clearance the layer's own figures give: the nameplate less
+#   the demand, never below zero. On a line making 2160 muffins a day against a demand of 2000, the
+#   slack is 160 muffins a day. The twelve minutes a late muffin waits is a duration, a different
+#   kind of figure about the same line, and turning one into the other is the filer's work, done
+#   before filing.
 #
 # One unit
 #   The clearance is a subtraction, so it is computable where demand and nameplate share a unit,
 #   and `not comparable` where they do not.
 #
 # A different question of the same rows
-#   checks/derived_slack_over_a_window asks whether the window licenses reading that quantity as
+#   checks/derived_slack_over_a_window asks whether the window allows reading that quantity as
 #   demand that survives being held, which needs the spare spread evenly across the period.
 #   Whether the subtraction itself can be done is this site's question.
 -- pm:Layer/pm:timeSlack with pm:absent/reason = derived, against the clearance it stands for.

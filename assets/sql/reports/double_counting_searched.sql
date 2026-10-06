@@ -13,7 +13,7 @@ WHERE f.evidence = 'observation'
 )
 SELECT coalesce(s.answer::text, 'eliminations filed') AS the_search,
        count(*) AS fusions,
-       CASE WHEN s.answer = 'unmeasured' THEN 'sum rule SUSPENDED'
+       CASE WHEN s.answer = 'unmeasured' THEN 'sum rule suspended'
             ELSE 'sum rule exact' END AS what_is_owed
 FROM (
     SELECT * FROM eliminations_searched

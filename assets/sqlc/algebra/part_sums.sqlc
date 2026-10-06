@@ -1,15 +1,14 @@
-# The fold loses no part. One row per quantity: whether the parts summed in folds/part_sums.sqlc
-# add up, at all three points and in number, to composition/converted.sqlc taken whole.
+# The fold loses no part. One row per quantity: whether the parts added up in folds/part_sums.sqlc
+# come, at all three values and in number, to composition/converted.sqlc taken whole.
 #
 # Totals survive any grouping
-#   Summing the per-fusion sums gives the same total however the parts were grouped, so this law
-#   cannot see a regrouping, only a part that fell out of the fold or entered it twice. The
-#   grouping is held per fusion by algebra/fusion_sum.sqlc, which recomputes each sum from its own
-#   route.
+#   Adding up the per-fusion sums gives the same total however the parts were grouped, so this law
+#   cannot see a regrouping, only a part that fell out of the fold or entered it twice. The grouping
+#   is held per fusion by algebra/fusion_sum.sqlc, which works each sum out by its own route.
 #
 # Probe
 #   examples/probes runs it as `part_sums`: in the composed text the fold drops the parts whose
-#   figure has width, and the law must fail for the quantities where such parts are.
+#   figure is a range, and the law must fail for the quantities where such parts are.
 -- folds/part_sums.sqlc summed over every fusion, against composition/converted.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (

@@ -1,35 +1,36 @@
-# What the document says its remainder is, beside the one the arithmetic derives. One row per
-# layer that both files a remainder and can have one computed from its own `n - d`, carrying both
-# figures so a caller can set them against each other.
+# What the document says its remainder is, beside the one worked out from its figures. One row per
+# layer that both files a remainder and can have one worked out from its own nameplate and demand,
+# carrying both figures so a caller can set them against each other.
 #
-# One pair, three questions
+# One pair, several questions
 #   This is a relation somebody in this domain would name. `arithmetic/filed_remainder.sqlc`,
-#   `matrices.sqlc` and `queries/matrices/4-converted-remainder.sqlc` each need
-#   `filed_remainders` joined to `remainder` on (filing, layer), for three different questions
-#   about the same pair of numbers. The pair is the object; the questions are the callers'.
+#   `matrices.sqlc`, `checks/stated_quantity_is_not_the_magnitude.sqlc` and
+#   `checks/fit_domain.sqlc` each need `filed_remainders` joined to `remainder` on (filing, layer),
+#   for different questions about the same pair of numbers. The pair is the thing; the questions
+#   are the callers'.
 #
 # What the inner join drops
-#   It is an inner join, and the rows it drops are two different kinds of absence. A layer that
-#   files no remainder at all is not here (layers/filed_remainders.sqlc keeps
-#   `remainder_absent IS NULL`), and neither is one whose demand or nameplate is unstated, so
-#   nothing could be derived. Both are honest and both are somebody else's question:
-#   epistemics/absences.sqlc holds the first, arithmetic/remainder.sqlc the second.
+#   It is an inner join, and the rows it drops are two different kinds of blank. A layer that files
+#   no remainder at all is not here (layers/filed_remainders.sqlc keeps `remainder_absent IS NULL`),
+#   and neither is one whose demand or nameplate is unstated, so nothing could be worked out. Both
+#   are honest, and both are somebody else's question: epistemics/absences.sqlc holds the first,
+#   arithmetic/remainder.sqlc the second.
 #
-# The derived figure is the remainder in force
-#   `r` and its magnitude come from layers/remainder.sqlc: the pivoted `F Φ r - e_n + e_d` on a
-#   composed layer that owes an exact remainder, the crossed `n - d` everywhere else. So a stated
-#   quantity is compared with the remainder the model actually holds, and
+# The worked-out figure is the remainder in force
+#   The remainder and its magnitude come from layers/remainder.sqlc: worked out from the parts on a
+#   composed layer that owes an exact remainder, and from the two totals everywhere else. So a
+#   stated quantity is compared with the remainder the model actually holds, and
 #   checks/stated_quantity_is_not_the_magnitude can require them equal.
 #
 # The composed totals are carried too
 #   `d_*` and `n_*` are the layer's own composed totals. Where a conversion factor multiplies both
-#   the nameplate and the demand of a part, the two converted totals are correlated, and
-#   differencing them as if independent counts the factor's spread twice.
-#   `queries/matrices/4-converted-remainder.sqlc` re-derives that crossed difference from these
-#   columns to show where it departs from the remainder: equal at the mode, wider at both bounds.
+#   the nameplate and the demand of a part, the two converted totals move together, and setting them
+#   against each other as if they did not takes the factor's range in twice. matrices.sqlc shows
+#   the remainder filed beside the one worked out from those totals, for
+#   `merge-holding-composition/compute`: equal at the most likely value, wider at both ends.
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent, l.qty_derivation,
        r.r_low, r.r_mode, r.r_high, r.unit,
        r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,

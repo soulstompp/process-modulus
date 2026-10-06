@@ -1,36 +1,37 @@
-# Every class epistemics/class_domain.sqlc claims is occupied or epistemics/classes.sqlc finds a
-# row in, with how many rows landed there. One row per class, spelled `relation / class`.
+# Every class epistemics/class_domain.sqlc declares exercised or epistemics/classes.sqlc finds a row
+# in, with how many rows landed there. One row per class, spelled `relation / class`.
 #
-# `declared` is the CLAIM OF OCCUPANCY, not membership of the roster
-#   The roster names all 32 cells, and three of the standings it gives them are different claims.
-#   Only `occupied` says a row lands in the class, so only `occupied` is a declaration this fold
-#   can be held to. A cell declared `open` or `outside` claims the opposite, and counting it as
-#   declared would make reports/integrity.sqlc report every accounted-for empty class as a
-#   contract failure, which is the one reading this whole relation exists to prevent.
+# `declared` means declared exercised, not named on the roster
+#   The roster names every class, and its three standings are different claims. Only `exercised`
+#   says a row lands in the class, so only `exercised` is a declaration this count can be held to.
+#   A class declared `open` or `outside` claims the opposite, and counting it as declared would make
+#   reports/integrity.sqlc report every accounted-for empty class as a contract failure, which is
+#   the one reading this relation exists to prevent.
 #
-# The two regions are the two directions the standing can be wrong
-#   Declared with no row is a class claimed occupied that nothing lands in: the relation stopped
+# The two sides are the two ways the standing can be wrong
+#   Declared with no row is a class claimed exercised that nothing lands in: the relation stopped
 #   producing it, or the claim was never true. A row with nothing declared is a class that filled
-#   while its standing says it should not have, which is an `open` class a new document reached or
-#   an `outside` class whose population moved. Both are reported by name, and both are the
-#   standing going stale rather than the count being wrong.
+#   while its standing says it should not have: an `open` class a new document reached, or an
+#   `outside` class whose population moved. Both are reported by name, and both are the standing
+#   going stale rather than the count being wrong.
 #
-# ⛔ A class declared open and empty has NO row here, and that is correct
-#   It is neither declared nor produced, so the full join gives it nothing. The completeness
-#   question it belongs to is a different one: that the roster covers its codomain exactly, once
-#   per member, which algebra/class_domain.sqlc holds against `pg_enum`. This fold holds
-#   occupancy; that law holds the domain.
+# A class declared open and empty has no row here, and that is right
+#   It is neither declared nor produced, so the full join gives it nothing. It belongs to a
+#   different question: that the roster lists every class of each type exactly once, which
+#   algebra/class_domain.sqlc holds against the types' declared members. This relation holds which
+#   classes are exercised; that law holds the list of classes.
 #
 # No verdict
-#   A class is counted, not judged, so `rows` is the only box and folds/contract_subjects.sqlc
+#   A class is counted, not judged, so `rows` is the only count, and folds/contract_subjects.sqlc
 #   gives it as `answered` with nothing silent or vacuous, the same shape as
 #   folds/absence_subjects.sqlc.
 #
-# Pooled, because occupancy is not a question about evidence
-#   The population is the pooled census. Whether anything in this repository computes a class does
-#   not depend on which documents are in view; what a chosen set of documents shows is
-#   reports/class_census.sqlc's question and carries no contract.
--- epistemics/class_domain.sqlc's occupancy claims against epistemics/classes.sqlc, one row per class.
+# Every document together, because this is not a question about evidence
+#   The population is the census over every loaded document. Whether anything in this repository
+#   produces a class does not depend on which documents are in view; what a chosen set of documents
+#   shows is reports/class_census.sqlc's question, and carries no contract.
+-- epistemics/class_domain.sqlc's exercised classes against epistemics/classes.sqlc,
+-- one row per class.
 SELECT coalesce(d.relation, c.relation) || ' / ' || coalesce(d.class, c.class) AS subject,
        d.class IS NOT NULL                                                    AS declared,
        coalesce(c.balls, 0)                                                   AS rows

@@ -1,11 +1,11 @@
 -- §1  Every site the model does arithmetic at, and what guards the join.
-# One row per site on arithmetic/roster.sqlc: how many instances may be computed, how many are
-# suspended by a typed absence, how many put two incommensurable numbers together, and the rule
-# that checks the operands are the same kind of thing.
+# One row per site on arithmetic/roster.sqlc: how many instances may be worked out, how many are
+# suspended by a typed blank, how many put two numbers of different kinds together, and the rule
+# that checks the figures are the same kind of thing.
 #
-# The interesting column is `guarded_by!`
-#   Run it alone and look there. Most of the sites are blank. `r = n - d` is one of them: the
-#   central computation in the model, subtracting across two unit columns that nothing compares.
+# The column to read is `guarded_by!`
+#   Run it alone and look there. Most of the sites are blank. The remainder is one of them: the
+#   central calculation in the model, a subtraction across two unit columns that nothing compares.
 #
 # A blank guard is not a pass
 #   A blank guard beside a zero in `not_comparable!` is a site whose luck has not run out: the

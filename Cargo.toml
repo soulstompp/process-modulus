@@ -1,5 +1,4 @@
 [package]
-# Name settled 2026-08-30; checked available on crates.io the same day.
 name         = "process-modulus"
 version      = "0.0.1"
 edition      = "2021"
@@ -23,33 +22,32 @@ quick-xml = "0.38"
 xsd-parser = "1.5"
 anyhow = "1"
 
-# ⛔ DEV ONLY, AND THE DISTINCTION IS LOAD-BEARING. These do not propagate: `cargo add
+# Dev only, and the distinction matters. These do not propagate: `cargo add
 # process-modulus` still pulls `xsd-parser-types` and `quick-xml` and nothing else, so
-# "a schema, not a library" survives. They exist for the examples, which run
+# the crate stays a schema and its types. They exist for the examples, which run
 # the SQL in `assets/sql/` against a database.
 #
-# ⚠️ Each name here is also a deliberate edit to PERMITTED in tests/independence.rs,
-# which allowlists every dependency table. That test's doc says adding a name is the
-# whole decision, and it means it.
+# Each name here is also an edit to PERMITTED in tests/independence.rs, which
+# allowlists every dependency table. Adding a name there is the decision to take it.
 [dev-dependencies]
-# ⭐ `query_as!` verifies at COMPILE TIME that a query returns what the struct claims.
-# That is the same species of guarantee as tests/namespace.rs and the version lock:
-# a drift between assets/ddl/schema.ddl and the code becomes a build failure rather
-# than a runtime surprise in an example nobody runs. The `.sqlx` cache is committed,
-# so building needs no database; `cargo sqlx prepare` regenerates it.
+# `query_file!` checks each query at compile time against the tables it reads, the same
+# kind of guarantee as tests/namespace.rs and its version check: a drift between
+# assets/ddl/schema.ddl and the code becomes a build failure rather than a surprise at
+# run time in an example nobody runs. The `.sqlx` cache is committed, so building needs
+# no database; `cargo sqlx prepare` regenerates it.
 sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "postgres", "macros"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
-# ⭐⭐⭐ THE GENERATOR, AND THE REASON IT IS SAFE TO TAKE IS THAT IT IS NOT A MODEL.
+# The generator. It is safe to take because it is not a model.
 # `examples/shared/simulation/` builds a bench on NeXosim, which is a bare discrete-event
 # scheduler: mailboxes, an event queue and a clock. It carries no stocks, no flows,
-# no processes and no opinion about what a shortfall is. Taking the stock-and-flow
-# layer above it would be taking somebody's model, and corroboration between two
-# models is only worth something while they are two, so that layer is written here
-# instead and NeXosim only says what happens next.
+# no processes and no opinion about what a shortfall is. Taking a stock-and-flow
+# layer above it would be taking somebody's model, and two models corroborate each
+# other only while they are two, so that layer is written here and NeXosim only says
+# what happens next.
 #
-# ⚠️ NeXosim is edition 2024 and needs rustc 1.88. The LIBRARY still builds at the
-# declared 1.75; it is `cargo test` and `cargo run --example` that now need 1.88.
+# NeXosim is edition 2024 and needs rustc 1.88. The library builds at the declared
+# 1.75; `cargo test` and `cargo run --example` need 1.88.
 nexosim = "1.0"
 serde   = { version = "1", features = ["derive"] }
 

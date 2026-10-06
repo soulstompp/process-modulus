@@ -1,27 +1,25 @@
--- §21 Which corner of the path's factor each bound of a carried remainder took, and whether it mattered.
-# One row per settled node a remainder walk carries up, with the sign of the operand at each bound
-# and whether taking corners gave a different figure from multiplying bound by bound.
+-- §21 Which end of the path's factor each end of a carried remainder took, and whether it mattered.
+# One row per settled node a remainder is carried up through, with the sign of the figure at each
+# end and whether taking corners gave a different figure from multiplying end by end.
 #
-# The conversion of a signed quantity is two slopes and a sign
+# Converting a figure that can be negative
 #   A demand, a nameplate and a draw cannot be negative, so the smaller factor always lands on the
-#   smaller figure and `composition/converted.sqlc` multiplies bound by bound. A remainder is a
-#   difference and may be negative, so `composition/settled_remainders.sqlc` takes the least and the
-#   greatest over both corners instead: more of a shortfall converted at a larger rate is the smaller
-#   number. Those are the two branches of one operator, and this section says which branch each
-#   filing actually reached.
+#   smaller figure, and `composition/converted.sqlc` multiplies end by end. A remainder is a
+#   difference and may be negative, so `composition/settled_remainders.sqlc` takes the least and
+#   the greatest over both corners instead: more of a shortfall converted at a larger rate is the
+#   smaller number. Those are the two branches of one conversion, and this section says which
+#   branch each filing actually reached.
 #
-# `corner_rule_bites` is a conjunction, and that is the point
-#   It needs a factor with width AND a negative operand at that bound. Either alone changes nothing.
-#   Read the counts here rather than assuming: if both populations are sizeable and the column is
-#   false throughout, the two do not overlap in this corpus, and the least and the greatest are
-#   standing ready for a document nobody has filed.
+# `corner_rule_bites` needs both, and that is the point
+#   It needs a factor that is a range and a negative figure at that end. Either alone changes
+#   nothing. Read the counts here rather than assuming: if both populations are sizeable and the
+#   column is false throughout, the two do not overlap in this corpus, and the least and the
+#   greatest stand ready for a document nobody has filed.
 #
-# An empty conjunction is a fact about the evidence
+# An empty overlap is a fact about the evidence
 #   It is not a reason to simplify the arithmetic. A negative remainder is a layer whose demand
-#   exceeds its supply, which is the interference case the model exists to measure, and a factor with
-#   width is ordinary. The identity is proved against a constructed operand in
-#   `src/proofs/README.md`, entries `positive_factor_componentwise` and `two_slopes`, precisely
-#   because no filing reaches it.
+#   exceeds its supply, which is the interference case the model exists to measure, and a factor
+#   that is a range is ordinary.
 -- composition/conversion_slopes.sqlc, ordered so any biting row reads first.
 SELECT c.composition                AS "composition!",
        c.composed_layer             AS "composed_layer!",

@@ -1,41 +1,41 @@
-# Every supply with nowhere to put its excess that states all its unserved shares, beside what
-# its own numbers say went unserved. One row per examined layer, `violates` where the exposure
-# exceeds what anybody admits.
+# Every supply with nowhere to put its excess that states all its unserved shares, beside what its
+# own figures say went unserved. One row per layer examined, `violates` where the exposure exceeds
+# what anybody admits.
 #
-# A measure with no instrument behind it
-#   This is the one place this model measures something with no instrument behind it. Nobody
-#   filed the exposure; it is the ceiling the filer's own demand and nameplate imply: the largest
-#   demand against the smallest supply. What could have gone unserved is at most what the buffer
-#   can absorb plus what they admit went unserved, and the buffer here absorbs nothing by their
-#   own measurement. So the whole exposure has to be accounted for in the holder rows.
+# A figure nobody measured
+#   Nobody files the exposure. It is the most the filer's own demand and nameplate allow: the
+#   largest demand against the smallest supply. What could have gone unserved is at most what the
+#   buffers can absorb plus what the filer admits went unserved, and here the buffers absorb
+#   nothing by the filer's own measurement. So the whole exposure has to be accounted for in the
+#   holder rows.
 #
 # `absorbable` is read, never assumed
-#   It is a sum across the whole buffer row and it is zero by construction of this population,
-#   where a literal `0` in the sentence below would be a claim about the capacity column alone.
+#   It is the sum across all the layer's buffers, and it is zero for every layer here. The detail
+#   prints it rather than a literal 0, which would speak for the capacity buffer alone.
 #
-# Evaluated at the high corner, on purpose
-#   The two sides of a transition fit are anti-correlated (the week demand ran highest is not the
-#   week supply ran lowest), so anything summed across the demand range reports a week that never
-#   happened.
+# Read at the worst case
+#   The exposure is the worst case, and it is compared with the largest unserved shares. Demand and
+#   supply do not peak together (the week demand ran highest is not the week supply ran lowest), so
+#   anything added up across the demand range would report a week that never happened.
 #
-# An unstated unserved share suspends the inequality
-#   Those layers are absent rather than passing. Inheriting a neighbouring rule's `exposure > 0`
-#   filter instead is a different population, so its count is not a count of what this rule
-#   checks.
+# An unstated unserved share suspends the comparison
+#   Those layers are left out rather than passed. Borrowing a neighbouring rule's filter on a
+#   positive exposure instead would be a different population, so its count would not be a count
+#   of what this rule checks.
 #
 # Unserved shares in another unit are not compared
 #   A share quoted in a unit other than the layer's is not a smaller share; it is not a share of
-#   this remainder at all, and summing it against the exposure is a comparison with no answer.
+#   this remainder at all, and setting it against the exposure is a comparison with no answer.
 #   arithmetic/exposure_bounded.sqlc calls those layers `not comparable`, and this rule leaves them
-#   out rather than judging them. Proof: `src/proofs/README.md`, entry `exposure_bound`.
+#   out rather than judging them.
 #
-# The unserved total is inner-joined
-#   An outer join here invents rows. `coalesce(u.unserved, 0)` gives a layer with no unserved
-#   holder a zero nobody filed, so such layers enter the examined set. They all read
-#   `exposure = 0`, so `0 > 0 + 1e-9` is false and the rule passes on every one of them without
-#   being able to fire. arithmetic/exposure_bounded.sqlc, the site this rule guards, inner-joins;
-#   a guard and its site disagreeing about their population is the guard's defect, and
-#   reports/coverage.sqlc would count the difference as coverage.
+# The unserved total is joined, never filled in
+#   An outer join would invent rows: filling a missing unserved total with zero gives a layer with
+#   no unserved holder a zero nobody filed, and brings it into the rows examined. Each such layer
+#   reads an exposure of zero, so the rule would pass on every one of them without being able to
+#   fire, and reports/coverage.sqlc would count them as coverage. arithmetic/exposure_bounded.sqlc,
+#   the site this rule guards, joins the same way, so the rule and its site agree on their
+#   population.
 -- every slack on the layer accounted for and empty, against entries/unserved_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

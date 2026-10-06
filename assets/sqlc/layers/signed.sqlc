@@ -1,20 +1,17 @@
-# The layers whose filed sign a range comparison could contradict. One row per layer that states
-# `clearance`, `transition` or `interference` outright.
+# The layers whose filed sign a comparison of the ranges could contradict. One row per layer that
+# states `clearance`, `transition` or `interference` outright.
 #
 # Only a stated sign can be wrong
-#   The three absences are not padding.
+#   The three blanks are not padding.
 #     `derived`         the sign is the comparison, so it cannot disagree with it.
 #     `unmeasured`      nobody classified it; there is nothing to contradict.
 #     `notApplicable`   the question does not arise here.
 #   A rule that counted those as examined would report itself as testing layers it never looked
-#   at, and a checker that flagged them would report a document for declining to make a claim.
-#   The first fixture to file `sign absent/reason = derived` was reported as a violation by
-#   exactly that mistake.
+#   at, and a check that flagged them would report a document for declining to make a claim.
 #
 # The layers nobody has classified
-#   Run this beside layers/remainder.sqlc and subtract: the difference is the set of layers nobody
-#   has classified, which is the honest denominator for "does the model agree with the
-#   documents?"
+#   Run this beside layers/remainder.sqlc and subtract: what is left is the set of layers nobody
+#   has classified, which is the honest base for "does the model agree with the documents?"
 -- pm:Remainder/sign, stated rather than absent.
 SELECT r.*
 FROM (

@@ -1,4 +1,5 @@
--- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files what reconciles it".
+-- composition/regime_crossings.sqlc; conformance rule "a part crossing a regime boundary files
+-- what reconciles it".
 WITH checks_roster AS (
 -- the conformance rules stated in the schemas' prose and gated by no grammar.
 SELECT * FROM (VALUES
@@ -14,7 +15,7 @@ SELECT * FROM (VALUES
   ('draw_exceeds_the_supply', 'layer', 'a draw does not exceed what the supply can make'),
   ('clearance_with_unserved', 'layer', 'a clearance fit rules out customer and unrealised'),
   ('unresolved_part', 'part', 'a part reference resolves to a filing that is here'),
-  ('jagged_layer', 'layer', 'a fusion''s parts partition what they compose'),
+  ('jagged_layer', 'layer', 'a fusion''s parts do not overlap'),
   ('layers_move_together', 'layer', 'layers that always move together are one layer'),
   ('coupling_does_not_attenuate', 'layer', 'a coupling attenuates through a fusion, bounded by the part''s share'),
   ('narrows_a_point_value', 'claim', 'a point value files narrowsWhen as notApplicable, having no range'),

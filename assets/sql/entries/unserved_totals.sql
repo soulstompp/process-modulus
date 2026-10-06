@@ -18,8 +18,9 @@ SELECT h.filing, h.layer,
        count(*)                                        AS holders,
        count(*) FILTER (WHERE h.share_high IS NULL)     AS unstated,
        count(*) FILTER (WHERE h.share_derivation IS NOT NULL) AS derived,
-       sum(h.share_high)                                AS unserved_high,
+       sum(h.share_low)                                 AS unserved_low,
        sum(h.share_mode)                                AS unserved_mode,
+       sum(h.share_high)                                AS unserved_high,
        array_agg(DISTINCT h.share_unit)                 AS share_units
 FROM (
     SELECT * FROM entries_unserved_holders

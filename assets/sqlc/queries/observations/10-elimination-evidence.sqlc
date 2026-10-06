@@ -1,14 +1,13 @@
--- §10  What each filed elimination says it is BETWEEN, which is the evidence for the number.
+-- §10  What each filed elimination says it is between, which is the evidence for the number.
 # One row per filed elimination, with the layers it names as double counted folded beside it. An
 # elimination without its `between` is a number with no subject: the composer removed 90
 # GPU-hours and nothing says from what.
 #
-# Found by asking the write question
-#   `asrt:Elimination/between` is repeating and no rule reads it, so nothing forces it to have a
-#   column, a table or an ingest, and without them every `between` in the corpus is parsed out and
-#   discarded on every load. The query side cannot find that: a rule reads what it needs, so a
-#   field nothing reads is under no pressure to exist. The question that finds it is "can this
-#   document be written back out from the database".
+# Kept by asking whether the document can be written back
+#   `asrt:Elimination/between` repeats and no rule reads it, so no rule forces it to have a column,
+#   a table or an ingest; a rule reads what it needs, so a field nothing reads is under no pressure
+#   to exist. The question that keeps it is "can this document be written back out from the
+#   database".
 #
 # An elimination with no `between` is not malformed
 #   The element is `minOccurs="0"`, and a composer who eliminates against a member that files
@@ -17,10 +16,9 @@
 SELECT e.composition                              AS "composition!",
        e.composed_layer                           AS "composed_layer!",
        e.quantity::text                           AS "quantity!",
-       -- ⛔ THREE ARMS, NOT TWO. `pm:StatedEliminatedQuantity` admits a figure, a typed absence AND
-       -- a derivation, and reading only the first two returned NULL for the third against a column
-       -- declared NOT NULL. No document could reach it until `every-derived-elimination` filed one,
-       -- so the omission was invisible rather than harmless.
+       -- Three arms: `pm:StatedEliminatedQuantity` admits a figure, a typed absence or a
+       -- derivation, and the column is declared NOT NULL, so all three are read.
+       -- `every-derived-elimination` files the third.
        coalesce(e.mode::text,
                 '(' || e.absent || ')',
                 '(computed: ' || e.derivation || ')')  AS "size!",

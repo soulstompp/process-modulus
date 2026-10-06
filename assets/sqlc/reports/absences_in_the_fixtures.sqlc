@@ -1,4 +1,4 @@
-# What this repository had to invent. The absence census over the documents that stipulate a
+# What this repository had to make up. The absence census over the documents that stipulate a
 # state rather than attest to one.
 #
 # States no real filing produced
@@ -8,7 +8,6 @@
 #   same census.
 #
 # Nothing here may be counted as evidence
-#   These are stipulations. They prove the code path works and say nothing whatever about the
-#   world.
+#   These are stipulations. They show the code path works and say nothing whatever about the world.
 -- reports/absence_census.sqlc at fixture scope.
 :compose(reports/absence_census.sqlc, @scope = scope/fixtures.sqlc)

@@ -1,27 +1,27 @@
-# The catalogue's expansion: every position an identity may compute, in each arm it may be filed,
-# and what handles a filing there. One row per (identity, position, element), with the column that
-# keeps the identity, whether the identity binds a stated value or only defines a derived one,
-# whose equation it is, and the relation that handles it.
+# Every position an identity may work out, in each arm it may be filed in, and what handles a
+# filing there. One row per (identity, position, element), with the column that keeps the
+# identity, whether the identity binds a stated value or only defines a derived one, whose equation
+# it is, and the relation that handles it.
 #
-# The same expansion three times, and this is the one that can be read
-#   `pm:Identity` lists the members and each `*Derivation` type restricts it per position; the DDL
-#   repeats each restriction as a CHECK on the position's derivation column. This relation is the
-#   expansion as rows, so a program can hold the other two to it: tests/state_coverage.rs compares
-#   it with the XSD's restrictions in both directions, reports/integrity.sqlc compares its columns
-#   with the ones Postgres records, algebra/derivations_filed.sqlc refuses a filed derivation at a
-#   cell it does not list, and checks/identity_does_not_compute_the_claim.sqlc does the same for a
-#   document.
+# The same list three times, and this is the one that can be read
+#   `pm:Identity` lists the identities, and each `*Derivation` type restricts them per position;
+#   the DDL repeats each restriction as a CHECK on the position's derivation column. This relation
+#   is the same list as rows, so a program can hold the other two to it: tests/state_coverage.rs
+#   compares it with the XSD's restrictions in both directions, reports/integrity.sqlc compares its
+#   columns with the ones Postgres records, algebra/derivations_filed.sqlc refuses a filed
+#   derivation at a cell it does not list, and checks/identity_does_not_compute_the_claim.sqlc does
+#   the same for a document.
 #
 # Three arms, and the element names which
 #   A figure filed as a derivation sits at its own position, so `element` is `owns`. A stated claim
-#   may also say that its edge (`pm:claim/pm:boundOrigin`) or what would narrow it
-#   (`pm:claim/pm:narrowsWhen`) is the terms' of the identity that computes it. Those two elements
-#   are the same wherever a claim sits, so `owns` is the claim's own position, and the identity
-#   must compute that position: a share's edge can be `sharesSum`'s, a patience's cannot. The two
-#   sibling origins are edges only, at the claim whose holder states them.
+#   may also say that its edge (`pm:claim/pm:boundOrigin`), or what would narrow it
+#   (`pm:claim/pm:narrowsWhen`), comes from the terms of the identity that works it out. Those two
+#   elements are the same wherever a claim sits, so `owns` is the claim's own position, and the
+#   identity must work out that position: a share's edge can be `sharesSum`'s, a patience's cannot.
+#   The two sibling origins are edges only, at the claim whose holder states them.
 #
 # `handled_by` is what a filing there meets
-#   Every cell names one relation. It computes the figure (`composition/derived_quantities`,
+#   Every cell names one relation. It works out the figure (`composition/derived_quantities`,
 #   `layers/remainder`, `arithmetic/time_slack_derived`), or suspends the arithmetic that reads the
 #   figure under the identity's name (`eliminations/unsized`, `composition/unsized_conversions`,
 #   `arithmetic/shares_sum`), or, for an edge or a narrowing, reads the attribution

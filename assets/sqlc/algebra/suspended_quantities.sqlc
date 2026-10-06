@@ -1,17 +1,19 @@
 # Every fusion owes each quantity's sum or is suspended from it, and never both. One row: whether
-# |fusions × quantities| = |pairs no ground reaches| + |composition/suspended_quantities|.
+# every pair of a fusion and a quantity is either reached by no ground or in
+# composition/suspended_quantities.sqlc, counted row for row.
 #
-# The expansion written the long way, on purpose
-#   composition/suspended_quantities.sqlc expands each ground that names no quantity onto every
+# Spelt out the long way, on purpose
+#   composition/suspended_quantities.sqlc spreads each ground that names no quantity over every
 #   quantity by a join. This law finds the pairs no ground reaches by `NOT EXISTS` against
-#   composition/suspended_fusions.sqlc with the match spelled out, `quantity IS NULL OR quantity =`,
-#   so the two routes to the suspended pairs share no code and a fault in either leaves the sum
+#   composition/suspended_fusions.sqlc with the match spelt out, `quantity IS NULL OR quantity =`,
+#   so the two routes to the suspended pairs share no code, and a fault in either leaves the count
 #   short or over.
 #
 # Probe
-#   examples/probes runs it as `suspended_quantities`: in the composed text the expansion forgets
+#   examples/probes runs it as `suspended_quantities`: in the composed text the spreading forgets
 #   that a NULL quantity means every quantity, and the law must fail.
--- composition/fusions.sqlc × pm.summed_quantity, against composition/suspended_quantities.sqlc and its complement.
+-- composition/fusions.sqlc crossed with pm.summed_quantity, against
+-- composition/suspended_quantities.sqlc and the rest.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -19,7 +21,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/suspended_quantities' AS subject,
            x.total = x.owing + x.suspended AS holds,
-           format('%s fusion quantities = %s no ground reaches + %s suspended',
+           format('%s fusion quantities: %s no ground reaches, %s suspended',
                   x.total, x.owing, x.suspended) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/fusions.sqlc) ) f

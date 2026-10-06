@@ -4,14 +4,14 @@
 # The composed layer's side of its sum
 #   A fusion's sum has two sides: the converted parts, and the figure the composer files on the
 #   composed layer itself. This is the second, for every quantity the layer files at all, as a
-#   figure, a typed absence or a derivation. composition/derived_fusions.sqlc reads the quantities
+#   figure, a typed blank or a derivation. composition/derived_fusions.sqlc reads the quantities
 #   filed as the fusion's sum, and composition/unstated_quantities.sqlc the ones filed with neither
 #   a figure nor a derivation.
 #
 # One row per pair
 #   composition/fusions.sqlc carries `pm.fusion`'s key, one row per composed layer, so the join
-#   cannot fan out a quantity. algebra/fusion_quantities.sqlc holds it: every row of
-#   layers/summed_quantities.sqlc is a composed layer's or a layer that composes nothing.
+#   cannot repeat a quantity. algebra/fusion_quantities.sqlc holds it: every row of
+#   layers/summed_quantities.sqlc is a composed layer's or a layer's that composes nothing.
 -- composition/fusions.sqlc joined to layers/summed_quantities.sqlc on the composed layer.
 SELECT f.filing, f.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent, s.derivation
 FROM      (

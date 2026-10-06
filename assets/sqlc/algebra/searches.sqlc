@@ -1,16 +1,15 @@
-# The two kinds of diligence search against the union that holds both. One row: whether
-# |A ⊎ B| = |A| + |B|.
+# The two kinds of diligence search against the union that holds both. One row: whether the union
+# has as many rows as the two added together.
 #
-# A drift check, not an algebra check
-#   A `UNION ALL` of two composed relations is trivially additive, which is why this law is a
-#   drift check rather than an algebra check, and saying so is the honest thing. It cannot fail
-#   on the operator; it fails when somebody adds a predicate to the union file, drops an arm, or
-#   writes bare `UNION` and silently deduplicates. Those are the ways a hand-written union goes
-#   wrong, and none of them raises an error.
+# A check against drift
+#   A `UNION ALL` of two composed relations always adds up, so this law cannot fail on the
+#   operator; it fails when somebody adds a condition to the union file, drops a branch, or writes
+#   a bare `UNION` and quietly removes repeats. Those are the ways a hand-written union goes wrong,
+#   and none of them raises an error.
 #
-# Only hand-written unions earn a row
-#   A union the composer generates from its `ALL` directive does not earn a row here: the arms
-#   are spliced verbatim and there is no call site to drift.
+# Only hand-written unions get a row
+#   A union the composer generates from its `ALL` directive gets no row here: the branches are
+#   spliced in as written, and there is no call site to drift.
 -- epistemics/searches.sqlc against the two relations it unions.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -19,7 +18,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'epistemics/searches' AS subject,
            x.whole = x.couplings + x.eliminations AS holds,
-           format('%s searches = %s coupling + %s double-counting',
+           format('%s searches: %s for couplings, %s for double counting',
                   x.whole, x.couplings, x.eliminations) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(epistemics/searches.sqlc) ) s)              AS whole,

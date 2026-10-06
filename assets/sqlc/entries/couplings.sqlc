@@ -1,17 +1,17 @@
-# C, the coupling matrix: an observed dependence between two layers' remainders. One row per
-# (filing, from_layer, to_layer), which is the sparse form of an L x L matrix.
+# Every dependence somebody observed between two layers' remainders. One row per
+# (filing, from_layer, to_layer).
 #
 # Every row contradicts the assumption
-#   C = 0 is this model's assumption, so every row here is somebody contradicting it with an
-#   observation. That is why the observation is required rather than optional: a coupling is never
-#   derived, never inferred from correlation, and never filed as a number alone. Somebody watched
-#   two layers move together and wrote down what they saw.
+#   This model assumes layers hold their remainders independently, so every row here is somebody
+#   contradicting that with an observation. That is why the observation is required: a coupling is
+#   never worked out, never inferred from correlation, and never filed as a number alone. Somebody
+#   watched two layers move together and wrote down what they saw.
 #
 # No rows says nothing by itself
 #   A filing with no couplings has either a stack of independent layers or nobody who looked, and
 #   those are opposite claims. Which one it is lives in `coupling_search` (see
-#   epistemics/searches.sqlc) and not in this relation. Densify this into a grid of 0.0 and the
-#   difference is gone for good.
+#   epistemics/searches.sqlc), not in this relation. Filled out into a grid of 0.0, the difference
+#   is gone for good.
 -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
        c.low, c.mode, c.high, c.unit, c.strength_absent, c.observation

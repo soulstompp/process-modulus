@@ -1,43 +1,49 @@
-# Every compositional element of BPMN this emission withholds, and the ground the axis claim
-# survives it on. One row per withholding, and exactly one of the two grounds is filled.
+# Every compositional element of BPMN this emission withholds, and the ground the claim about the
+# composition axis stands on despite it. One row per withholding, and exactly one of the two
+# grounds is filled.
 #
 # Why this relation exists
-#   A law could not tell two withholdings apart, and when the mapping improved, the law accused
-#   the improvement. `diagrams/notation.sqlc`'s ceded law reads a withheld element on the
-#   composition axis as a gap in the one axis this model claims whole, which is right when nothing
-#   covers the fact and wrong when a better element does. Withdrawing `subProcess` in favour of
-#   `childLaneSet` fired it, and the finding was in the law rather than in the emission.
+#   A law could not tell two withholdings apart. `diagrams/notation.sqlc`'s ceded law reads a
+#   withheld element on the composition axis as a gap in the one axis this model claims whole,
+#   which is right when nothing covers the fact and wrong when a better element does: `subProcess`
+#   is withheld because `childLaneSet` carries what it would have carried.
 #
 # The axis is whole for a stated reason
-#   The claim was never *every compositional element is spent*; it is *every compositional fact is
-#   covered*. An element may sit in the withheld column only when a spent one carries what it
-#   carried, and naming which one is what turns that from an excuse into a checkable sentence.
+#   The claim is not that every compositional element is spent; it is that every compositional fact
+#   is covered. An element may sit in the withheld column only when a spent one carries what it
+#   would have carried, and naming which one turns that from an excuse into a sentence that can be
+#   checked.
 #
 # The replacement must itself be spent
-#   Otherwise this relation launders a gap into a citation. That is the arm of the law worth
+#   Otherwise this relation would turn a gap into a citation. That is the part of the law worth
 #   probing, not the existence of the row.
 #
 # The second ground is the boundary claim shrinking
 #   It is not an excuse; it is the boundary claim getting weaker and saying so. `no_such_fact`
 #   means BPMN offers a compositional element this model has nothing to put in, which is not a gap
 #   in this coverage: it is the place where BPMN is the wider of the two. The law admits it and the
-#   report counts it, because *on composition this model is the finer* is a claim that has to be
-#   allowed to shrink. Reclassifying such a row onto another axis to make the law pass would be
-#   re-taxonomising BPMN to protect a sentence, which is the failure `group` was rescued from and
-#   not one to repeat.
+#   report counts it, because "on composition this model is the finer" is a claim that has to be
+#   allowed to shrink. Moving such a row onto another axis to make the law pass would be
+#   reclassifying BPMN to protect a sentence.
 #
 # Exactly one ground is filled
 #   Exactly one of `superseded_by` and `no_such_fact` is filled, the schema's own `<>` idiom. A row
 #   with both would be saying the fact is carried and does not exist.
 #
 # A `VALUES` literal
-#   For the same reason `diagrams/graphs.sqlc` is one: derived from the emission it could only ever
-#   report replacements that already happened correctly, and never a row somebody wrote down and
-#   did not carry out.
+#   For the reason `diagrams/graphs.sqlc` is one: worked out from the emission, it could only ever
+#   report replacements that were carried out correctly, and never a row somebody wrote down and did
+#   not carry out.
 -- the mapping's own history: what was tried, what replaced it, and where BPMN is simply wider.
 SELECT * FROM (VALUES
   ('subProcess'::text, 'childLaneSet'::text, NULL::boolean,
-   'A local fusion is a partition, not an activity. `subProcess` is a flow node, so it collapses layer to document exactly as `calledElement` does; a nested lane keeps the key `(filing, layer)`. Measured: 10 of 27 parts are local, and every one of them left the flattening when this changed'::text),
+   'A local fusion divides its composed layer among its parts; it is not an activity. '
+   '`subProcess` is a flow node, so it collapses layer to document exactly as `calledElement` '
+   'does; a nested lane keeps the key `(filing, layer)`'::text),
   ('partitionElementRef', NULL, true,
-   'The only place BPMN is the finer of the two, and it was tested before it was filed. `tLane` carries this for what the partition is by, per lane. The nearest filler is the absorber buffer and it fails: 14 filings here have two or more layers sharing one buffer, up to four lanes on `capacity` in one process, so pointing at it would assert a partition the model does not make. A layer''s identity is its name and nothing else, so there is no element to point at')
+   'The only place BPMN is the finer of the two. `tLane` carries this for what the lanes are '
+   'divided by, per lane. The nearest filler is the absorber buffer, and it does not fit: '
+   'several layers of one filing can share one buffer, so pointing at it would assert a '
+   'division the model does not make. A layer''s identity is its name and nothing else, so '
+   'there is no element to point at')
 ) AS s(element, superseded_by, no_such_fact, why)

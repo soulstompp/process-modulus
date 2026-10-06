@@ -2,12 +2,12 @@
 # One row per graph: how often a parent reaches the same child twice, and what this repository
 # rules about it there.
 #
-# The repository's central claim about itself
-#   As a query. A parent composing a child twice is ordinary; a fusion reaching a layer twice is a
-#   violation. Both are a name arriving twice under one fold, and the difference is that **a query
-#   is idempotent and a supply is not**: the first is measured, the repeated relation is read once
-#   without being re-read, and `checks/jagged_layer` rules on the second because supply is a
-#   conserved carrier and one total closes over both occurrences.
+# What the repository says about itself, as a query
+#   A parent composing a child twice is ordinary; a fusion reaching a layer twice is a violation.
+#   Both are a name arriving twice under one total, and the difference is that a query reads the
+#   same relation the same way however often it is named, while a supply is counted once: the
+#   first is measured, the repeated relation read once, and `checks/jagged_layer` rules on the
+#   second because one total closes over both occurrences of the same supply.
 #
 # Both sides have to be relations
 #   Otherwise this is not a comparison at all. A claim whose two halves live in a Rust map and a
@@ -15,22 +15,22 @@
 #   the shape of every defect this repository's laws refuse.
 #
 # Compare the verdicts, not the counts
-#   The counts are not comparable and must not be compared. The compose DAG has hundreds of
-#   templates and the corpus has tens of fusions, so a ratio here would be a fact about how much
-#   SQL somebody wrote. What is comparable is the verdict column: same structure, opposite ruling,
-#   and neither number is evidence about the other.
+#   The counts do not compare and must not be compared. The compose graph has far more templates
+#   than the corpus has fusions, so a ratio here would be a fact about how much SQL somebody wrote.
+#   What compares is the verdict column: the same structure, the opposite ruling, and neither
+#   number is evidence about the other.
 -- rank/compose_edges.sqlc beside composition/parts.sqlc, the same duplication in two graphs.
-SELECT 'compose DAG'                                   AS "graph!",
+SELECT 'the compose graph'                             AS "graph!",
        'a parent splicing one child twice'             AS "duplication!",
        count(*) FILTER (WHERE e.splices > 1)           AS "duplicated!",
        count(*)                                        AS "edges!",
-       'ordinary: a query is idempotent, so the repeated relation is read once'
+       'ordinary: a relation read twice gives the same rows, so it is read once'
                                                        AS "verdict!"
 FROM (
     :compose(rank/compose_edges.sqlc)
 ) e
 UNION ALL
-SELECT 'F, the part graph',
+SELECT 'the part graph',
        'one fusion reaching one layer twice',
        (SELECT count(*) FROM ( :compose(composition/jagged_layers.sqlc) ) j),
        (SELECT count(*) FROM ( :compose(composition/parts.sqlc) ) p),

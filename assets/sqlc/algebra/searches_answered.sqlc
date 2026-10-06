@@ -1,18 +1,19 @@
 # Every search either filed what it found or typed why it filed nothing, and never both. One row
 # per search: for couplings and for double counting, how many filings answered each way.
 #
-# A stated-or-absent wrapper whose stated arm is a table
-#   `pm:StatedCouplings` and `asrt:StatedEliminations` are a choice like every `Stated*` wrapper,
-#   but the stated arm repeats, so it lives in `coupling` and `elimination` and the search row keeps
-#   only the absent arm. The `<>` CHECK every other wrapper carries cannot reach across two tables,
-#   so this law is that CHECK: a search row typed absent has no entries, and one that is not has at
-#   least one.
+# A stated-or-absent element whose stated branch is a table
+#   `pm:StatedCouplings` and `asrt:StatedEliminations` are a choice like every `Stated*` element,
+#   but the stated branch repeats, so it lives in `coupling` and `elimination`, and the search row
+#   keeps only the absent branch. The `<>` CHECK every other such element carries cannot reach
+#   across two tables, so this law is that CHECK: a search row typed absent has no entries, and one
+#   that is not has at least one.
 #
 # Probe
-#   examples/probes runs it as `searches_answered`.
-#   In a rolled-back transaction, delete one fusion's eliminations while its search row says it
-#   filed some: this law must fail for `double counting` alone.
--- epistemics/coupling_searches.sqlc against entries/couplings.sqlc, eliminations/searched.sqlc against eliminations/filed.sqlc.
+#   examples/probes runs it as `searches_answered`. In a rolled-back transaction, delete one
+#   fusion's eliminations while its search row says it filed some: this law must fail for
+#   `double counting` alone.
+-- epistemics/coupling_searches.sqlc against entries/couplings.sqlc, eliminations/searched.sqlc
+-- against eliminations/filed.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)

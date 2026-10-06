@@ -1,4 +1,5 @@
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch, at the claim's own position.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch,
+-- at the claim's own position.
 WITH epistemics_claims AS (
 -- pm:Claim, with its required pm:narrowsWhen and pm:boundOrigin, joined on the claim.
 SELECT c.filing, c.seq, c.owns, c.layer,

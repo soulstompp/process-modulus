@@ -1,12 +1,12 @@
--- The matrices of examples/matrices/main.rs, pulled out with SQL.
+-- A tour of the relations the filings make, printed as tables one after another in psql.
 
 SET search_path TO pm, public;
 \pset border 2
 \pset null '·'
 
 \echo
-\echo === D, the draw matrix. Operations down, layers across. =========================
-\echo 'Sparse: one row per draw. No row means that operation draws nothing from that layer.'
+\echo === The draws. Operations down, layers across. ================================
+\echo 'One row per draw. No row means that operation draws nothing from that layer.'
 WITH entries_draws AS (
 -- pm:Operation/pm:Draw.
 SELECT d.filing, d.operation, d.layer,
@@ -21,7 +21,7 @@ FROM (
 ORDER BY filing, operation, layer;
 
 \echo
-\echo === N, the induction matrix. Same shape, different fact. ========================
+\echo === The inductions. Same shape, different fact. ===============================
 \echo 'A draw is consumption that happened. An induction is a commitment that creates a'
 \echo 'future draw on a different supply, and only it names a decider.'
 WITH entries_inductions AS (
@@ -38,9 +38,9 @@ FROM (
 ORDER BY filing, operation, layer;
 
 \echo
-\echo === D-transpose times N, and why it is not what it looks like ===================
-\echo 'The product is a join on the shared index (the operation) and a sum over it.'
-\echo 'The join is fine and returns rows. Look at the last two columns.'
+\echo === Draws set against inductions, and why it is not what it looks like ==========
+\echo 'The two meet on the operation they share, and the join is fine and returns rows.'
+\echo 'Look at the last two columns.'
 WITH entries_draws AS (
 -- pm:Operation/pm:Draw.
 SELECT d.filing, d.operation, d.layer,
@@ -75,19 +75,18 @@ FROM (
     SELECT * FROM entries_cross_layer_edges
 ) x
 ORDER BY 1, 2, 3;
-\echo 'Two separate reasons the product is not a quantity, and both are visible above.'
-\echo 'Each layer carries its own unit, so an entry would come out in people*launches,'
-\echo 'which is not a rate of anything. And the one operation in this corpus that both'
-\echo 'draws and induces has an unmeasured draw, so there is no number to multiply:'
-\echo 'the matrix that would show cross-layer structure is empty precisely because the'
-\echo 'interesting quantity has no instrument behind it.'
-\echo 'The incidence composes and gives you reachability. The quantities do not. There'
-\echo 'is also no firing count per operation, deliberately, because sequence and timing'
+\echo 'Two separate reasons the last column is not a quantity, and both are visible above.'
+\echo 'Each layer carries its own unit, so a figure would come out in people*launches,'
+\echo 'which is not a rate of anything. And where the draw is unmeasured there is no number'
+\echo 'to multiply: the figure that would show how one layer feeds another has no instrument'
+\echo 'behind it.'
+\echo 'Which layer feeds which can be followed from one to the next; the quantities cannot.'
+\echo 'There is also no firing count per operation, deliberately, because sequence and timing'
 \echo 'are BPMN''s job.'
 
 \echo
-\echo === C, the coupling matrix, and the absence that matters ========================
-\echo 'C = 0 is the model assumption. Every non-zero entry is an observation somebody made.'
+\echo === The couplings, and the absence that matters ================================
+\echo 'No coupling is the model''s assumption. Every coupling is an observation somebody made.'
 WITH entries_couplings AS (
 -- pm:Stack/pm:couplings/pm:coupling, each carrying its pm:observed.
 SELECT c.filing, c.from_layer, c.to_layer,
@@ -102,12 +101,13 @@ FROM (
 ORDER BY filing, from_layer, to_layer;
 
 \echo
-\echo 'And here is what the matrix cannot say. A filing with no rows above has either'
-\echo 'a stack of independent layers, or nobody who looked. Densify it and both become'
-\echo 'a grid of 0.0 and the difference is gone for good. The answer is not in C at all;'
-\echo 'it is in the search beside it, which is why that element had to exist.'
+\echo 'And here is what the couplings cannot say. A filing with no rows above has either a'
+\echo 'stack of independent layers, or nobody who looked. Fill the gaps with zeros and both'
+\echo 'look the same, and the difference is gone for good. The answer is not in the'
+\echo 'couplings at all; it is in the search beside them, which is why that element exists.'
 WITH scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
@@ -146,8 +146,8 @@ GROUP BY f.filing, s.answer
 ORDER BY 1;
 
 \echo
-\echo === H, who bears the remainder, and S, what each buffer holds ===================
-\echo 'H is L x 5 and S is L x 3. Both are tall, and both are mostly absent.'
+\echo === Who carries the remainder, and what each buffer holds ======================
+\echo 'Every layer has five kinds of holder and three buffers, and most of them are absent.'
 WITH entries_holders AS (
 -- pm:Remainder/pm:holder; kind is pm:HolderKind.
 SELECT h.filing, h.layer, h.kind,
@@ -163,14 +163,16 @@ FROM (
 ORDER BY 1, 2, 3;
 
 \echo
-\echo 'S, and the count that matters is the `sized` column: a buffer nobody measured is not a'
-\echo 'buffer that is empty, and only a sized row can bound anything at all. A `sized_at_zero` is'
-\echo 'the tightest bound there is, not a missing one, and the split is the whole point.'
+\echo 'The buffers, and the count that matters is the `sized` column: a buffer nobody measured'
+\echo 'is not a buffer that is empty, and only a sized row can bound anything at all. A'
+\echo '`sized_at_zero` is the tightest bound there is, not a missing one, and the split is the'
+\echo 'whole point.'
 \echo 'Stipulations are kept apart from observations: the fixtures file absences on purpose,'
 \echo 'so pooling them would answer "how much does this corpus measure" with a made-up number.'
 -- entries/slacks.sqlc by buffer, split by evidence, restricted by the caller's @scope.
 WITH entries_slacks AS (
--- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack; the element names are the kinds.
+-- pm:Layer/pm:timeSlack with pm:Nameplate/pm:capacitySlack and pm:inventorySlack;
+-- the element names are the kinds.
 SELECT s.filing, s.layer, s.buffer,
        s.low, s.mode, s.high, s.unit, s.absent,
        (s.low IS NOT NULL) AS sized,
@@ -178,7 +180,8 @@ SELECT s.filing, s.layer, s.buffer,
 FROM pm.slack s
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note
@@ -204,11 +207,13 @@ ORDER BY s.buffer, f.evidence
 ;
 
 \echo
-\echo === r = n - d, and the bound reversal that is easy to get wrong =================
-\echo 'Subtracting intervals reverses the bounds: the low of n-d pairs n.low with d.high.'
+\echo === The remainder, and the bound reversal that is easy to get wrong ============
+\echo 'The remainder is the nameplate less the demand, and taking one range from another'
+\echo 'reverses the bounds: the remainder''s low is the nameplate''s low less the demand''s high.'
 \echo 'Get that backwards and every remainder in the corpus comes out inside out. On a'
-\echo 'composed layer r is the pivot through its parts, which the Phi section below explains:'
-\echo 'inside n - d, and equal to it wherever no conversion factor has width.'
+\echo 'composed layer the remainder is worked out through its parts, as the last section'
+\echo 'shows: inside the totals'' remainder, and equal to it wherever no conversion factor has'
+\echo 'width.'
 WITH layers_summed_quantities AS (
 -- pm:Layer/pm:Demand, pm:Nameplate/pm:amount and pm:Jagged/pm:draw, one row per quantity.
 SELECT l.filing, l.layer, 'demand'::pm.summed_quantity AS quantity,
@@ -272,7 +277,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -349,7 +355,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -502,7 +509,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -600,7 +608,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -700,7 +708,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -713,7 +722,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -737,7 +747,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -776,8 +787,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -891,7 +903,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
@@ -1029,7 +1042,7 @@ ORDER BY filing, layer;
 \echo 'not disagreeing: see assets/sqlc/layers/signed.sqlc.'
 
 \echo
-\echo === F and Phi, and the recursion the schema cannot see ==========================
+\echo === How compositions nest, which the schema cannot see ========================
 \echo 'Compositions nest. Holding composes the group, which composes the members.'
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
@@ -1065,7 +1078,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -1101,7 +1114,7 @@ WHERE root_filing = 'merge-holding-composition'
 ORDER BY root_layer, depth, part_filing, part_layer;
 
 \echo
-\echo === The fusion rule, verified: x_composed = F Phi x_parts - e_x ================
+\echo === The fusion rule, checked: the parts converted and added, less the eliminations
 \echo 'Convert each part into the composed unit, add them up, subtract what was counted'
 \echo 'twice. The elimination is the term that is easy to forget, and dropping it gives a'
 \echo 'total that is plausible and wrong with nothing to warn you.'
@@ -1168,7 +1181,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -1245,7 +1259,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -1398,7 +1413,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -1457,7 +1473,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -1470,7 +1487,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -1494,7 +1512,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -1533,7 +1552,8 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_underived_parts AS (
--- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per fusion.
+-- composition/parts.sqlc whose figure composition/derived_quantities.sqlc cannot compute, per
+-- fusion.
 SELECT p.composition, p.composed_layer, d.quantity,
        'a part files the quantity derived and it cannot be computed' AS suspended_because,
        string_agg(p.part_filing || '/' || p.part_layer || ': ' || d.blocked_because, ', '
@@ -1548,20 +1568,21 @@ WHERE d.low IS NULL
 GROUP BY p.composition, p.composed_layer, d.quantity
 ),
 composition_suspension_grounds AS (
--- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot be computed.
+-- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
+-- be computed.
 SELECT * FROM composition_filed_grounds
 UNION ALL
 SELECT * FROM composition_underived_parts
 ),
 composition_suspended_fusions AS (
--- composition/suspension_grounds.sqlc projected onto the fusion it suspends.
+-- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
 SELECT DISTINCT g.composition, g.composed_layer, g.quantity
 FROM (
     SELECT * FROM composition_suspension_grounds
 ) g
 ),
 composition_suspended_quantities AS (
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     SELECT * FROM composition_suspended_fusions
@@ -1619,7 +1640,8 @@ FROM (
 ) x
 ),
 composition_fused AS (
--- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at its corners.
+-- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at
+-- its corners.
 SELECT x.composition, x.composed_layer, x.quantity,
        x.sum_low, x.sum_mode, x.sum_high, x.crossed,
        x.sum_low  - x.e_at_low  AS computed_low,
@@ -1672,18 +1694,18 @@ ORDER BY 1, 2, 3;
 \echo 'suspended rather than counted as a pass, and so is one that found the overlap and could'
 \echo 'not size it, one whose conversion nobody sized, and, for one quantity, one where a layer'
 \echo 'the sum reads leaves that quantity unstated. The grounds are in'
-\echo 'composition/suspension_grounds.sqlc; this anti-joins'
-\echo 'composition/suspended_fusions.sqlc, which is that bag projected onto the fusion. One'
-\echo 'fusion suspended on two grounds is suspended once, so a caller that counts reads the'
-\echo 'projection and a caller that needs the reason reads the bag.'
+\echo 'composition/suspension_grounds.sqlc; this leaves out the fusions in'
+\echo 'composition/suspended_fusions.sqlc, one row per fusion and quantity from those grounds.'
+\echo 'One fusion suspended on two grounds is suspended once, so a caller that counts reads'
+\echo 'the fusions and a caller that needs the reason reads the grounds.'
 \echo 'That is the composition rule checked against real filings, and XSD 1.0 cannot state'
 \echo 'it, let alone check it: it spans two documents.'
 
 \echo
-\echo === Phi: the correlation trap, and why r must be converted and never re-derived =
-\echo 'A conversion factor multiplies both the nameplate and the demand of one part, so'
-\echo 'the two converted intervals are correlated. Difference them as though they were'
-\echo 'independent and phi''s spread gets counted twice.'
+\echo === Conversions: why the remainder is converted and never worked out again ====
+\echo 'A conversion factor multiplies both the nameplate and the demand of one part, so the'
+\echo 'two converted ranges move together. Take one from the other as though they were'
+\echo 'independent and the factor''s spread gets counted twice.'
 WITH layers_filed_remainders AS (
 -- pm:Layer/pm:remainder taking the pm:claim branch of pm:StatedRemainder.
 SELECT l.filing, l.layer,
@@ -1757,7 +1779,8 @@ SELECT f.composition AS filing, f.composed_layer AS layer, f.observed
 FROM pm.fusion f
 ),
 composition_derived_frontier AS (
--- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while the node's figure is derived too.
+-- layers/summed_quantities.sqlc filed as a derivation, walked through composition/parts.sqlc while
+-- the node's figure is derived too.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -1834,7 +1857,8 @@ LEFT JOIN (
 WHERE p.composition IS NULL
 ),
 composition_derived_quantities AS (
--- composition/derived_frontier.sqlc summed at the nodes stating the figure, less eliminations/filed.sqlc at the root and each derived node passed.
+-- composition/derived_frontier.sqlc summed at the nodes stating the figure, less
+-- eliminations/filed.sqlc at the root and each derived node passed.
 WITH
 root AS (
     SELECT s.filing, s.layer, s.quantity, s.derivation, coalesce(b.parts, 0) AS parts
@@ -1987,7 +2011,8 @@ LEFT JOIN (
 ) b ON b.root_filing = l.filing AND b.root_layer = l.layer AND b.quantity = l.quantity
 ),
 composition_resolved_quantities AS (
--- layers/summed_quantities.sqlc where no derivation is filed, beside composition/derived_quantities.sqlc where one is.
+-- layers/summed_quantities.sqlc where no derivation is filed, beside
+-- composition/derived_quantities.sqlc where one is.
 SELECT s.filing, s.layer, s.quantity, s.low, s.mode, s.high, s.unit, s.absent,
        false                  AS derived,
        s.derivation,
@@ -2075,7 +2100,7 @@ SELECT x.filing, x.layer,
        f.absorber_taxonomy, f.absorber_value, f.absorber_absent,
        x.d_low, x.d_mode, x.d_high, x.d_unit AS unit,
        x.n_low, x.n_mode, x.n_high, x.n_unit AS amount_unit,
-       x.n_low  - x.d_high AS r_low,   -- crossed: the low of n − d pairs n.low with d.high
+       x.n_low  - x.d_high AS r_low,   -- crossed: the least nameplate against the most demand
        x.n_mode - x.d_mode AS r_mode,
        x.n_high - x.d_low  AS r_high,
        CASE WHEN x.n_low  - x.d_high >= 0 THEN 'clearance'::pm.fit
@@ -2175,7 +2200,8 @@ FROM (
 WHERE es.answer = 'unmeasured'
 ),
 eliminations_unsized AS (
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 SELECT e.composition, e.composed_layer, e.quantity,
        CASE WHEN e.derivation IS NOT NULL
             THEN format('the elimination is filed as `%s`, and no computation of it is wired into '
@@ -2188,7 +2214,8 @@ FROM (
 WHERE e.absent IS NOT NULL OR e.derivation IS NOT NULL
 ),
 composition_unsized_conversions AS (
--- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the composed sum.
+-- asrt:Part/asrt:factor taking its pm:absent or pm:derivation branch, as a suspension of the
+-- composed sum.
 SELECT p.composition, p.composed_layer,
        NULL::pm.summed_quantity AS quantity,
        CASE WHEN p.factor_state = 'derivation'
@@ -2212,7 +2239,8 @@ JOIN      (
 ) s ON s.filing = f.filing AND s.layer = f.layer
 ),
 composition_unstated_quantities AS (
--- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a derivation, per fusion.
+-- layers/summed_quantities.sqlc without a figure on a part or on the composed layer, and not a
+-- derivation, per fusion.
 SELECT u.composition, u.composed_layer, u.quantity,
        'the quantity is not stated on every layer the sum reads' AS suspended_because,
        string_agg(u.layer || ' ' || coalesce(u.absent::text, 'unstated'), ', ' ORDER BY u.layer)
@@ -2251,8 +2279,9 @@ UNION ALL
 SELECT * FROM composition_unresolved_parts
 ),
 composition_suspended_remainders AS (
--- composition/filed_grounds.sqlc restricted to the two quantities r is built from, at the layer or a node its walk passes;
--- composition/resolved_quantities.sqlc without a demand or nameplate figure at the layer or a node the walk reaches.
+-- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
+-- layer or a node its walk passes; composition/resolved_quantities.sqlc without a demand or
+-- nameplate figure at the layer or a node the walk reaches.
 SELECT DISTINCT t.root_filing AS composition, t.root_layer AS composed_layer
 FROM      (
     SELECT f.filing AS root_filing, f.layer AS root_layer, f.filing, f.layer
@@ -2366,7 +2395,8 @@ WHERE w.usable
 GROUP BY w.root_filing, w.root_layer, e.quantity
 ),
 composition_fused_remainders AS (
--- composition/settled_remainders.sqlc summed over the settled frontier, less eliminations/paired.sqlc at their own corners.
+-- composition/settled_remainders.sqlc summed over the settled frontier, less
+-- eliminations/paired.sqlc at their own corners.
 SELECT y.composition, y.composed_layer,
        CASE WHEN y.paired_low <= y.pivoted_mode AND y.pivoted_mode <= y.paired_high
             THEN y.paired_low  ELSE y.r_low  - y.n_high + y.d_low  END AS pivoted_low,
@@ -2495,7 +2525,7 @@ FROM (
 layers_filed_against_derived AS (
 -- layers/filed_remainders.sqlc against layers/remainder.sqlc, on the layer they share.
 SELECT l.filing, l.layer,
-       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent,
+       l.qty_low, l.qty_mode, l.qty_high, l.qty_unit, l.qty_absent, l.qty_derivation,
        r.r_low, r.r_mode, r.r_high, r.unit,
        r.m_low, r.m_mode, r.m_high,
        r.d_low, r.d_mode, r.d_high,
@@ -2519,6 +2549,6 @@ FROM (
     SELECT * FROM layers_differenced_remainder
 ) x
 WHERE x.filing = 'merge-holding-composition' AND x.layer = 'compute';
-\echo 'They agree at the mode and nowhere else, because the mode is the one point where'
-\echo 'phi is a single number and has no spread to count twice. Both figures are'
-\echo 'arithmetically correct. Only the first is the remainder.'
+\echo 'They agree at the most likely value and nowhere else, because that is the one point'
+\echo 'where the factor is a single number and has no spread to count twice. Both figures are'
+\echo 'correct arithmetic. Only the first is the remainder.'

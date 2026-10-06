@@ -2,19 +2,18 @@
 #
 # A filing is never the system
 #   There is one system; a filing holds the layers of it that mattered to whoever filed. Reading a
-#   stack as an enumeration of the system is what turns a second document's extra layer into an
-#   accusation that the first omitted something, when it is two projections of one thing.
+#   stack as a list of the whole system turns a second document's extra layer into an accusation
+#   that the first left something out, when the two are two views of one thing.
 #
-# The third extent is the one two values would crush
+# The third extent is the one two values would lose
 #   `scoped` says somebody established what lies outside and excluded it on purpose. `unbounded`
-#   says nobody looked. Rendered identically, a bounded selection is indistinguishable from an
-#   unexamined one: the same distinction the coupling search draws one level down.
+#   says nobody looked. Shown the same way, a bounded selection cannot be told from an unexamined
+#   one: the same distinction the coupling search draws one level down.
 #
-# `complete` is falsifiable in principle only
-#   It is falsifiable in principle and by nothing in this corpus. What would refute it is another
-#   filing holding a layer of the same system that this one lacks, and no document names a
-#   system, only a filing. So it belongs in the owed list rather than in a query that looks as
-#   though it checks something.
+# `complete` can only be refuted in principle
+#   Nothing in this corpus could refute it. What would is another filing holding a layer of the same
+#   system that this one lacks, and no document names a system, only a filing. So no query here
+#   checks it, rather than one that only looks as though it does.
 -- pm:Stack/pm:scope, with its pm:basis.
 SELECT ss.filing, ss.extent, ss.basis, ss.absent
 FROM pm.stack_scope ss

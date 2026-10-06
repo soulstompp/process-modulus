@@ -1,18 +1,18 @@
--- §2  The compositions as balls into boxes: every splice site, and the template it lands in.
-# One row per (parent, child) edge of the compose DAG, with how many times the parent splices the
-# child. This is the labelled reading of the function *splice site -> child*, handed over whole.
+-- §2  The compositions: every splice site, and the template it lands in.
+# One row per (parent, child) edge of the compose graph, with how many times the parent splices
+# the child. Every splice site and the child it lands in, handed over whole.
 #
 # The other three readings are taken in Rust
-#   The fibre sizes (how many sites land in each template), the kernel (which parents compose the
-#   same set of children) and the shape (the profile of fibre sizes) are each one `GROUP BY` away
-#   from here. Writing them as three more templates would be the tree describing itself in its own
-#   vocabulary, so `examples/combinatorics/main.rs` derives them from the edge list by a route that
-#   shares no SQL with rank/.
+#   How many sites land in each template, which parents compose the same set of children, and how
+#   those counts are spread are each one `GROUP BY` away from here. Writing them as three more
+#   templates would be the queries describing themselves in their own terms, so
+#   `examples/combinatorics` works them out from the edge list by a route that shares no SQL with
+#   rank/.
 #
 # The zeros come from the directory
-#   A template nothing composes has no edge, so it cannot appear in any fibre this relation
-#   carries: `GROUP BY` enumerates the image. The program drives from `assets/sqlc/` on disk to see
-#   them, the same move the `unreached` law in `examples/observations/main.rs` makes.
+#   A template nothing composes has no edge, so no count grouped from this relation can show it:
+#   `GROUP BY` lists only what some row reached. The program drives from `assets/sqlc/` on disk to
+#   see them, as the `unreached` check in `examples/observations` does.
 -- rank/compose_edges.sqlc, the edge list as it stands.
 SELECT e.parent AS "parent!", e.child AS "child!", e.splices::bigint AS "splices!"
 FROM (

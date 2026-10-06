@@ -1,38 +1,37 @@
-# Every elimination a remainder walk passed through, carried into the root's unit. One row per
-# (composed layer, quantity), summed over every intermediate the walk ran through, read at the
-# corner of the quantity it was counted in.
+# Every elimination a remainder walk passed through, carried into the top layer's unit. One row per
+# (composed layer, quantity), added up over every layer in between that the walk ran through, read
+# at the corner of the quantity it was counted in.
 #
-# Empty when every walk stops at depth one
-#   It is empty whenever every walk stops at depth one, which is almost always. A settled node's
-#   filed totals already carry every correction its own composer applied, so stopping there needs
-#   nothing from this relation. Rows appear only where a walk ran past a node, which happens
-#   exactly where that node's own conversions have width, and the corrections it applied were
-#   bypassed with its filed figures.
+# Empty whenever every walk stops one level down
+#   On the corpus every walk does. A settled layer's filed totals already carry every correction
+#   its own composer applied, so stopping there needs nothing from this relation. Rows appear only
+#   where a walk ran past a layer, which happens exactly where that layer's own conversions are
+#   ranges, and the corrections it applied were bypassed with its filed figures.
 #
-# The pruned walk, not the whole descent
+# The walk the remainder takes, not the whole composition
 #   composition/remainder_frontier.sqlc is the walk the remainder takes: it stops at the first
-#   settled node on each path. composition/descent.sqlc runs on to the leaves, so an unsettled node
-#   below a settled one would contribute an elimination the remainder never passed. The frontier
-#   is the population algebra/settled_remainders.sqlc assigns to this relation, and it is what the
-#   join reads.
+#   settled layer on each path. composition/descent.sqlc runs on to the bottom, so an unsettled
+#   layer below a settled one would contribute an elimination the remainder never passed. The
+#   frontier is the population algebra/settled_remainders.sqlc assigns to this relation, and it is
+#   what the join reads.
 #
 # At the corner of its own quantity
 #   `e_low` is the elimination where the quantity it was counted in is at its low, and `e_high`
 #   where it is at its high. For a sum taken bound by bound those are the elimination's own low and
-#   high; where that node's sum inverted and took the crossed pairing, they swap.
+#   high; where that layer's sum turned over and took the crossed pairing, they swap.
 #   eliminations/paired.sqlc decides it, so the carried figure pairs exactly as the sum it was
 #   subtracted from did.
 #
 # An unsized elimination is not a zero
-#   An elimination filed as a typed absence has no figure, and `sum()` would skip it and report
-#   the rest as the total. `unsized` says one was passed; composition/suspended_remainders.sqlc
-#   suspends every remainder whose walk passes a node whose demand or nameplate sum owes nothing,
+#   An elimination filed as a typed blank has no figure, and `sum()` would skip it and report the
+#   rest as the total. `unsized` says one was passed; composition/suspended_remainders.sqlc
+#   suspends every remainder whose walk passes a layer whose demand or nameplate sum owes nothing,
 #   which covers this case and the unsearched one beside it.
 #
 # The emptiness is a fact about the corpus
-#   So its emptiness is a fact about the corpus and not about the model. A document nesting one
-#   spread conversion under another puts rows here, and a sum that omitted them would be short by
-#   exactly the corrections the intermediate composer made.
+#   It is not a fact about the model. A document nesting one conversion that is a range under
+#   another puts rows here, and a sum that left them out would be short by exactly the corrections
+#   the composer in between made.
 -- eliminations/paired.sqlc at the nodes composition/passed_nodes.sqlc names, along a usable path.
 SELECT w.root_filing AS composition, w.root_layer AS composed_layer, e.quantity,
        count(*)                                                        AS through_layers,

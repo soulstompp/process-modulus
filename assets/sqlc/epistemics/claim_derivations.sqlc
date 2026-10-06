@@ -4,14 +4,15 @@
 #
 # The claim's position is the key
 #   `pm:claim/pm:boundOrigin` and `pm:claim/pm:narrowsWhen` are the same two elements wherever a
-#   claim sits, so the element alone says nothing about what the identity computes. The claim's
+#   claim sits, so the element alone says nothing about what the identity works out. The claim's
 #   own `owns` does: a share's edge can be `sharesSum`'s and a patience's cannot, and
-#   identities/roster.sqlc lists which (identity, position, element) are cells.
+#   identities/roster.sqlc lists which (identity, position, element) combinations are allowed.
 #
 # Two restrictions of one relation
 #   Each arm is epistemics/claims.sqlc where one of its two derivation columns is set, tagged with
 #   its element where the two are united.
--- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch, at the claim's own position.
+-- pm:Claim/pm:boundOrigin and pm:Claim/pm:narrowsWhen taking their pm:derivation branch,
+-- at the claim's own position.
 SELECT c.filing, c.seq, c.layer, c.owns, 'pm:claim/pm:boundOrigin' AS element,
        c.origin_derivation AS identity
 FROM (

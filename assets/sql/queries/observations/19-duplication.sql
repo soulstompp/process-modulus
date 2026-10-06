@@ -39,7 +39,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts
@@ -67,7 +67,7 @@ SELECT root_filing, root_layer, filing, layer, depth, path,
 FROM walk
 ),
 composition_reachable AS (
--- composition/descent.sqlc unioned with the identity on composition/parts.sqlc: F* = F+ ∪ I.
+-- composition/descent.sqlc unioned with each part reaching itself, from composition/parts.sqlc.
 SELECT DISTINCT root_filing, root_layer, filing, layer
 FROM (
     SELECT * FROM composition_descent
@@ -79,8 +79,8 @@ FROM (
 ) p
 ),
 composition_jagged_layers AS (
--- composition/parts.sqlc self-joined on the fusion, against the reflexive closure of
--- composition/descent.sqlc, for the layer two sibling parts both reach.
+-- composition/parts.sqlc joined to itself on the fusion, against composition/descent.sqlc with
+-- each layer reaching itself, for the layer two sibling parts both reach.
 SELECT DISTINCT
        a.composition    AS filing,
        a.composed_layer AS layer,
@@ -106,17 +106,17 @@ JOIN      (
 ) r2 ON  r2.root_filing = b.part_filing AND r2.root_layer = b.part_layer
      AND r2.filing = r1.filing AND r2.layer = r1.layer
 )
-SELECT 'compose DAG'                                   AS "graph!",
+SELECT 'the compose graph'                             AS "graph!",
        'a parent splicing one child twice'             AS "duplication!",
        count(*) FILTER (WHERE e.splices > 1)           AS "duplicated!",
        count(*)                                        AS "edges!",
-       'ordinary: a query is idempotent, so the repeated relation is read once'
+       'ordinary: a relation read twice gives the same rows, so it is read once'
                                                        AS "verdict!"
 FROM (
     SELECT * FROM rank_compose_edges
 ) e
 UNION ALL
-SELECT 'F, the part graph',
+SELECT 'the part graph',
        'one fusion reaching one layer twice',
        (SELECT count(*) FROM ( SELECT * FROM composition_jagged_layers ) j),
        (SELECT count(*) FROM ( SELECT * FROM composition_parts ) p),

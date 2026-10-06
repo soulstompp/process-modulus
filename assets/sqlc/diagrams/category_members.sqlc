@@ -1,24 +1,24 @@
-# N, the induction incidence, projected to what a `categoryValueRef` carries. One row per
-# (filing, operation, layer): this operation induces into this layer, and the flow node says so
+# Which operation induces into which layer, reduced to what a `categoryValueRef` carries. One row
+# per (filing, operation, layer): this operation induces into this layer, and the flow node says so
 # itself rather than being collected by a container.
 #
 # The direction is the whole difference
-#   A `lane` collects its members and a flow node can be collected once. A `categoryValue` collects
-#   nobody: the member declares which categories it is in, unbounded, so the cover may overlap and
-#   no container has to be enlarged to say so. That is why this relation can be many-to-many where
-#   diagrams/lane_membership.sqlc cannot.
+#   A `lane` collects its members, and a flow node can be collected once. A `categoryValue` collects
+#   nobody: the member declares which categories it is in, without limit, so the categories may
+#   overlap and no container has to be enlarged to say so. That is why this relation can be many to
+#   many where diagrams/lane_membership.sqlc cannot.
 #
 # Exercised, not hypothetical
-#   In this corpus an operation both draws from `labour` and induces into `capability`, so it
-#   belongs to two layers, and a lane set can hold it in one. With no relation for the cover, an
-#   emitter puts the operation in the draw lane and the induction is absent from the artifact
+#   On the corpus an operation both draws from `labour` and induces into `capability`, so it belongs
+#   to two layers, and a lane set can hold it in one. With no relation for the inductions, an
+#   emitter puts the operation in the draw lane and the induction is missing from the artifact
 #   entirely.
 #
-# Incidence only
-#   The wider relation carries three points, a unit, a typed absence and `decider`; none of it
-#   composes here, for the reason diagrams/lane_members.sqlc gives.
-#
--- pm:Operation/pm:Induction as incidence; BPMN 2.0 tFlowElement/categoryValueRef.
+# Which layer, never how much
+#   The wider relation carries three values, a unit, a typed blank and `decider`; none of it is
+#   composed here, for the reason diagrams/lane_members.sqlc gives.
+-- pm:Operation/pm:Induction as which layer, never how much; BPMN 2.0
+-- tFlowElement/categoryValueRef.
 SELECT i.filing, i.operation, i.layer
 FROM (
     :compose(entries/inductions.sqlc)

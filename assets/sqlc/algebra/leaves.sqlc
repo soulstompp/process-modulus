@@ -1,21 +1,20 @@
-# The leaf layers against the ones that name parts, checked as a partition of the descent. One
-# row: whether |descent| = |leaves| + |descent ⋉ fusions|.
+# The layers at the bottom of the compositions against the ones that name parts. One row: whether
+# every row of composition/descent.sqlc is either at the bottom or a fusion, counted row for row.
 #
-# The left operand is a bag
-#   That is the whole reason this law matters. composition/descent.sqlc carries more rows than
-#   distinct (filing, layer): a layer reachable through two paths appears twice, and those
-#   duplicates are what checks/jagged_layer exists to find. The anti-join preserves them;
-#   `EXCEPT` would deduplicate and silently drop every one, erasing the subject of a rule while
-#   still returning a plausible table.
+# The left operand repeats rows
+#   That is why this law matters. composition/descent.sqlc carries more rows than distinct
+#   (filing, layer): a layer reachable through two paths appears twice, and those repeats are what
+#   checks/jagged_layer exists to find. The anti-join keeps them; `EXCEPT` would remove repeats and
+#   quietly drop every one, erasing the subject of a rule while still returning a believable table.
 #
 # Where the counts are
 #   This law's own `detail` prints the row count and the distinct-key count side by side on every
 #   run, which is why it carries the distinct-key count at all.
 #
 # Probe
-#   examples/probes runs it as `leaves`.
-#   Rewrite composition/leaves.sqlc as `EXCEPT`; this law must fail.
--- composition/descent.sqlc partitioned by composition/fusions.sqlc, multiplicity preserved.
+#   examples/probes runs it as `leaves`. Rewrite composition/leaves.sqlc as `EXCEPT`; this law
+#   must fail.
+-- composition/descent.sqlc split by composition/fusions.sqlc, repeats kept.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -23,7 +22,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/leaves' AS subject,
            x.total = x.kept + x.removed AS holds,
-           format('%s descent rows = %s leaves + %s that name parts (over %s distinct keys)',
+           format('%s descent rows: %s leaves, %s that name parts (over %s distinct keys)',
                   x.total, x.kept, x.removed, x.keys) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/descent.sqlc) ) d)  AS total,

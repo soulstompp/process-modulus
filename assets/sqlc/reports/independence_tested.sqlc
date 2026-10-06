@@ -1,27 +1,27 @@
-# Has anybody tested the model's central assumption? One row per answer, with how many stacks
-# gave it.
+# Has anybody tested the model's central assumption? One row per answer, with how many stacks gave
+# it.
 #
 # The most important number here
-#   It is the single most important number in this repository, and a bare coupling list cannot
-#   carry it. This model assumes layers hold their remainders independently, `C = 0`. The schema's
-#   own annotation says a document with no couplings "is not evidence of independence; it is a
-#   document where nobody looked", and an empty list has no column that says which.
+#   It is the most important number in this repository, and a bare coupling list cannot carry it.
+#   This model assumes layers hold their remainders independently. The schema's own annotation says
+#   a document with no couplings is not evidence of independence, and an empty list has no column
+#   that says whether anybody looked.
 #
 # What the corpus answers
-#   Some stacks file couplings, some say nobody looked, a single-layer stack has no pair to
-#   couple, and none says somebody looked and found independence. The central assumption has
-#   never been confirmed and has been contradicted.
+#   Some stacks file couplings, some say nobody looked, a single-layer stack has no pair to couple,
+#   and none says somebody looked and found independence. The central assumption has never been
+#   confirmed, and has been contradicted.
 #
 # Corpus only, and the fixture is why
-#   `every-absence.xml` asserts independence on purpose, to prove the branch works. Counting a
-#   stipulation here would answer "has anybody tested this?" with a yes that nobody earned, which
-#   would turn the finding into a lie.
+#   `every-absence.xml` asserts independence on purpose, to show the branch works. Counting a
+#   stipulation here would answer "has anybody tested this?" with a yes that nobody earned, and the
+#   finding would be false.
 -- pm:Stack/pm:couplings/pm:absent, over the corpus.
 SELECT CASE
-         WHEN s.answer IS NULL              THEN 'somebody looked and the layers MOVE TOGETHER'
+         WHEN s.answer IS NULL              THEN 'somebody looked and the layers move together'
          WHEN s.answer = 'none'             THEN 'somebody looked and found independence'
          WHEN s.answer = 'notApplicable'    THEN 'one layer; no pair to couple'
-         ELSE 'NOBODY LOOKED'
+         ELSE 'nobody looked'
        END AS the_independence_assumption,
        count(*) AS stacks
 FROM (

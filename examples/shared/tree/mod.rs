@@ -1,28 +1,23 @@
 //! The source tree as a graph, read once so that the examples asking about it cannot disagree.
 //!
-//! ⭐⭐⭐ THE COMPOSE DAG IS A FACT ABOUT `assets/sqlc/`, AND EVERY EXAMPLE THAT ASKS ABOUT IT
-//! HAS TO GET THE SAME ANSWER. `compositions.rs` asserts that every name resolves and nothing
-//! expands to itself, `observations.rs` finds the templates nothing composes, and
-//! `soundness.rs` asks whether a population reaches the roster it is differenced against.
-//! Different questions, one graph. They were a parser each until 2026-09-08, and
-//! that is restating a closed set in a foreign namespace, which
-//! forks it, and a fork drifts with nothing here able to notice.
+//! Which template composes which is a fact about `assets/sqlc/`, and every example that asks
+//! about it gets the same answer. `compositions` asserts that every name resolves and nothing
+//! expands to itself, `observations` finds the templates nothing composes, and `soundness` asks
+//! whether a population reaches the roster it is differenced against. Different questions, one
+//! graph, one parser: a parser in each example would be a copy in each, and copies drift with
+//! nothing here able to notice.
 //!
-//! ⛔⛔ THE FORK HAD ALREADY DRIFTED ON THE INPUT RATHER THAN ON THE PARSER. Three copies of
-//! one function were fed three different bodies: `emitted`, `sql_only`, and the raw file.
-//! Only the first is right for a graph question, and `assets/sqlc/algebra/searches.sqlc` has
-//! a `#` line containing `:union(ALL …)` that yields no edge only because the argument is an
-//! ellipsis rather than a path. The parser was never the risk.
+//! What the parser is fed matters as much as the parser. A `#` line is prose and can spell a
+//! directive while it discusses one; counted, it would add an edge the composed SQL does not have.
+//! So there is one parser and two named inputs, and which one is used depends on what is being
+//! asked, not on who is asking:
 //!
-//! ⭐⭐ SO THE RULE IS ONE PARSER AND TWO NAMED INPUTS, and which one is a question about what
-//! is being asked, not about who is asking:
+//! - [`emitted`] strips `#` only, for the questions about the graph. It is what `sql-composer`
+//!   sees, so a call graph built from anything else can disagree with the composed SQL.
+//! - [`sql_only`] strips `#` and `--`, for the questions about SQL text, where a provenance line
+//!   is prose that discusses operators at length and would be counted as SQL.
 //!
-//!   [`emitted`]  strips `#` only. THE GRAPH QUESTIONS. It is what `sql-composer` sees, so a
-//!               call graph built from anything else can disagree with the composed SQL.
-//!   [`sql_only`] strips `#` and `--`. THE SQL-TEXT QUESTIONS, where a provenance line is
-//!               prose that discusses operators at length and would be counted as SQL.
-//!
-//! ⛔ EACH EXAMPLE COMPILES THIS WHOLE MODULE AND USES PART OF IT.
+//! Each example compiles this whole module and uses part of it.
 
 #![allow(dead_code)]
 
@@ -30,8 +25,8 @@ use std::fs;
 use std::path::Path;
 
 /// Every `.sqlc` under a directory, with its body, named the way a `:compose()` directive
-/// names it. ⛔ Callers that need a stable print order sort the result themselves; this walks
-/// the filesystem and does not promise one.
+/// names it. Callers that need a stable print order sort the result themselves; this walks the
+/// filesystem and does not promise one.
 pub fn templates(dir: &Path, root: &Path, out: &mut Vec<(String, String)>) {
     for e in fs::read_dir(dir).expect("assets/sqlc is readable").flatten() {
         let p = e.path();
@@ -44,9 +39,9 @@ pub fn templates(dir: &Path, root: &Path, out: &mut Vec<(String, String)>) {
     }
 }
 
-/// A template's body with the `#` argument stripped, which is what compose emits. ⛔ The `#`
-/// lines are prose and they NAME other templates constantly; counting a reference out of one
-/// would make the call graph disagree with the composed SQL.
+/// A template's body with its `#` lines stripped, which is what compose emits. The `#` lines are
+/// prose and name other templates constantly; counting a reference out of one would make the
+/// call graph disagree with the composed SQL.
 pub fn emitted(body: &str) -> String {
     body.lines().filter(|l| !l.trim_start().starts_with('#')).collect::<Vec<_>>().join("\n")
 }
@@ -61,15 +56,15 @@ pub fn sql_only(body: &str) -> String {
         .join("\n")
 }
 
-/// The `.sqlc` paths a template READS. Three forms occur: `:compose(path)`, `:union(ALL a, b)`,
+/// The `.sqlc` paths a template reads. Three forms occur: `:compose(path)`, `:union(ALL a, b)`,
 /// and a slot fill, `:compose(shape, @scope = path)`.
 ///
-/// ⛔ THE THIRD IS THE ONE WORTH BEING CAREFUL ABOUT: the filler is the only reference a
-/// `scope/` relation ever gets, so a parser that stopped at the `@` would report every scope
-/// as an orphan. A bare `@scope` inside a shape names no file and drops out on its own.
+/// The third needs care: the filler is the only reference a `scope/` relation ever gets, so a
+/// parser that stopped at the `@` would report every scope as composed by nothing. A bare
+/// `@scope` inside a shape names no file and drops out on its own.
 ///
-/// ⛔ A DIRECTIVE SPELLING THIS FUNCTION DOES NOT KNOW IS AN EDGE NOBODY SEES. Every spelling
-/// the composer has is here. Add one here before adding it to the tree.
+/// A directive spelling this function does not know is an edge nobody sees. Every spelling the
+/// composer has is here; add a new one here before using it in the tree.
 pub fn references(sql: &str) -> Vec<String> {
     paths(sql, &[":compose(", ":union("])
 }
@@ -94,9 +89,9 @@ fn paths(sql: &str, opens: &[&str]) -> Vec<String> {
     out
 }
 
-/// Does `from` reach `to` through the compose DAG? ⛔ Transitively, because no arm of
-/// `checks/all.sqlc` is named by `checks/all.sqlc` directly: the union names the arms and each
-/// arm names the roster.
+/// Does `from` reach `to` through the templates it composes, directly or through others? It
+/// follows every step, because `checks/all.sqlc` reaches the roster only through its arms: the
+/// union names the arms and each arm names the roster.
 pub fn reaches(
     edges: &std::collections::BTreeMap<&str, Vec<String>>,
     from: &str,

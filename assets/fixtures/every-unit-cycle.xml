@@ -1,44 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md. Nothing here was observed
-  and nothing here may be cited as evidence about any business.
+  A stipulation, not a filing. See assets/fixtures/README.md. Nothing here was observed, and
+  nothing here may be cited as evidence about any business.
 
-  ⭐⭐⭐ THE STATE THIS EXISTS FOR IS A CYCLE IN THE UNIT GRAPH, WHICH NO DOCUMENT COULD CLOSE
-  BEFORE. A conversion runs from a part layer's unit to the composed layer's unit and carries
-  `asrt:Part/factor`. Read that way every fusion is an EDGE between two units, and the whole
-  corpus is a graph. `merge-holding-composition` files the only edge there was, GPU to
-  GPU-hour at [672, 720, 744]. Two more close a cycle:
+  The state this exists for is a loop in the graph of units. A conversion runs from a part
+  layer's unit to the composed layer's unit and carries `asrt:Part/factor`, so every fusion
+  that converts links two units, and the documents together make a graph of them.
+  `merge-holding-composition` files one link, GPU to GPU-hour at 672, 720 or 744. This file
+  files two more, and they close a loop:
 
-      GPU  =[672, 720, 744]=>  GPU-hour  =0.125=>  node-hour  =[.0108,.0112,.0116]=>  GPU
+      GPU        to  GPU-hour    at 672, 720 or 744
+      GPU-hour   to  node-hour   at 0.125
+      node-hour  to  GPU         at 0.0108, 0.0112 or 0.0116
 
-  ⛔⛔ AND THE CYCLE IS IN THE UNIT GRAPH, NEVER IN THE PART GRAPH. Parts are a DAG and two
-  rules exist to keep them one, `layers_move_together` and `jagged_layer`. The three layers below
-  form a chain, reserved-hours then node-capacity then cards, and nothing is composed
-  from itself. It is the UNITS that come back round.
+  The loop is in the units, never in the parts. Parts never loop back, and two rules,
+  `layers_move_together` and `jagged_layer`, keep them that way. The three layers below form a
+  chain, reserved-hours then node-capacity then cards, and nothing is composed from itself; it
+  is the units that come back round.
 
-  ⭐⭐ WHAT THE CYCLE IS WORTH, AND IT IS NOT AN EQUALITY. Multiply the three:
+  What the loop is worth, and it is not an equality. The three factors multiplied give 0.9072
+  at the low end, 1.008 at the most likely value and 1.0788 at the high end. One lies inside,
+  and the product is not one, nor can it be: through a month of 720 hours, factors written as
+  decimals never bring the loop back to exactly one. The rule a receiver can hold it to is
+  containment: one lies inside the product's range.
 
-      low     672 x 0.125 x 0.0108  =  0.9072
-      mode    720 x 0.125 x 0.0112  =  1.008
-      high    744 x 0.125 x 0.0116  =  1.0788
+  The width is not measurement error. The month that turns cards into card-hours is the same
+  month that turns node-hours back into cards; multiplying the ranges treats them as two
+  independent months, where a receiver who knew they were one month would get one. It is the
+  third place in this repository where treating quantities that move together as independent
+  widens a range past what the filer knows: see the shares of `merge-holding-composition`'s
+  `compute`, and the composed remainder beside them.
 
-  One lies inside, and the product is not one. ⛔ IT CANNOT BE. A cycle through this graph
-  passes through 720, and 720 = 2^4 x 3^2 x 5. A terminating decimal has only twos and fives
-  under the line, so no pair of filable decimals multiplies to 1/720 and no document can make
-  these modes close exactly. The law a receiver can hold this to is CONTAINMENT: one lies
-  inside the product interval.
-
-  ⚠️⚠️ AND THE WIDTH IS NOT MEASUREMENT ERROR, IT IS THE DEPENDENCY PROBLEM AGAIN. The month
-  that turns cards into card-hours is the SAME month that turns node-hours back into cards.
-  Interval arithmetic multiplies them as two independent months and spans nine per cent either
-  way; a receiver who knew they were one month would get exactly one. That is the third site
-  in this repository where treating correlated quantities as independent widens a bound past
-  what the filer knows. See `merge-holding-composition/compute`'s shares, and the composed
-  remainder beside them.
-
-  ⭐ The two exactness classes are filed side by side ON PURPOSE. Eight cards to a chassis is
-  countable, so that factor is a point. A month is not one number, so the other has width, for
-  the reason merge-holding-composition gives about its own.
+  The two kinds of exactness are filed side by side on purpose. Eight cards to a chassis can be
+  counted, so that factor is a single value. A month is not one number, so the other has a
+  range, for the reason merge-holding-composition gives about its own.
 -->
 <asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
                   xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -82,7 +77,7 @@
       <pm:scope>
         <pm:scope>
           <pm:extent>scoped</pm:extent>
-          <pm:basis>stipulated: one reserved pool counted three ways, so that the conversions between the three units form a closed cycle</pm:basis>
+          <pm:basis>stipulated: one reserved pool counted three ways, so that converting from one unit through the other two comes back to the first</pm:basis>
         </pm:scope>
       </pm:scope>
       <pm:layer>
@@ -379,9 +374,9 @@
         <asrt:version>2026-09-06</asrt:version>
         <asrt:regime>stipulated</asrt:regime>
       </asrt:layer>
-      <!-- ⭐ AN EXACT CONVERSION, AND THE POINT VALUE IS THE ARGUMENT. Eight cards to a
-           chassis is a countable fact, so this factor has no width. Contrast the one
-           below, which converts through a calendar and cannot be a point. -->
+      <!-- An exact conversion, and the single value is the point. Eight cards to a chassis
+           is a fact that can be counted, so this factor has no range. The one below converts
+           through a calendar and cannot be a single value. -->
       <asrt:factor>
         <pm:claim>
           <pm:low>0.125</pm:low><pm:mostLikely>0.125</pm:mostLikely><pm:high>0.125</pm:high>
@@ -414,8 +409,8 @@
         <asrt:version>2026-09-06</asrt:version>
         <asrt:regime>stipulated</asrt:regime>
       </asrt:layer>
-      <!-- ⭐⭐ AND THIS ONE HAS WIDTH, FOR THE REASON merge-holding-composition GIVES ABOUT
-           ITS OWN: a month is not one number. Filing a point here would assert a
+      <!-- This one has a range, for the reason merge-holding-composition gives about its
+           own: a month is not one number. Filing a single value here would assert a
            precision the calendar does not have. -->
       <asrt:factor>
         <pm:claim>

@@ -1,41 +1,39 @@
-# The bottom of a sum's descent. One row per reached layer that is not itself built from parts,
-# with the route that reached it, so a leaf on two branches appears twice.
+# The bottom of a sum's walk. One row per reached layer that is not itself built from parts, with
+# the route that reached it, so a layer at the bottom of two branches appears twice.
 #
-# Not the bottom of every descent
+# Not the bottom of every walk
 #   Which bottom applies depends on the quantity rather than on the graph. A sum over parts bottoms
-#   out here, because below an F-terminal layer there is nothing left to add. A remainder bottoms
-#   out earlier, at the first node whose own `n` and `d` were not both scaled by one factor with
-#   width, because differencing them is legitimate there and the filed figure is a claim its
-#   composer stands behind. composition/unsettled.sqlc is that predicate and
-#   composition/settled_remainders.sqlc is that walk. A leaf satisfies it trivially, which is why
-#   this relation looks like the general case and is not.
+#   out here, because below a layer built from nothing there is nothing left to add. A remainder
+#   bottoms out earlier, at the first layer whose own nameplate and demand were not both scaled by
+#   one factor that is a range, because subtracting them is legitimate there and the filed figure is
+#   a claim its composer stands behind. composition/unsettled.sqlc is that condition, and
+#   composition/settled_remainders.sqlc is that walk. A layer at the bottom meets it trivially,
+#   which is why this relation looks like the general case and is not.
 #
-# A leaf is defined by what it is not
+# A layer at the bottom is defined by what it is not
 #   That is why this is an anti-join against a named relation rather than a `NOT EXISTS` inside a
-#   predicate. composition/fusions.sqlc is "the layers that are assembled"; a reached layer missing
+#   condition. composition/fusions.sqlc is "the layers that are assembled"; a reached layer missing
 #   from it is a layer somebody measured directly. Naming the positive relation makes the negation
 #   readable and gives the same set a second use elsewhere.
 #
-# More than one row per (root, leaf) is double supply
-#   Count the rows per (root, leaf) and anything above one is the same supply entering one total
-#   twice. Both routes are in the `path` column, which is what makes the finding actionable instead
-#   of merely true.
+# More than one row per (top, bottom) is double supply
+#   Count the rows per (top layer, bottom layer), and anything above one is the same supply entering
+#   one total twice. Both routes are in the `path` column, which is what makes the finding
+#   something to act on instead of merely true.
 #
 # An anti-join that matches nothing looks like a working relation
 #   It returns the whole left side, and nothing about the row count says the exclusion happened.
-#   The law is recomputed rather than recorded, algebra/leaves.sqlc, every run. It is also the one
-#   law with a live counter-example, below.
+#   The law is worked out on every run rather than recorded: algebra/leaves.sqlc. The probe below
+#   breaks it.
 #
 # `f.filing` is the right column to test
-#   The choice is not free. It is the join key and `pm.part.composition` is NOT NULL, so a matched
-#   row can never carry a NULL there. Testing a nullable column of the right-hand relation instead
-#   would keep matched rows whose payload happens to be null: an anti-join that quietly
-#   under-removes, with no symptom.
+#   It is the join key, and `pm.part.composition` is NOT NULL, so a matched row can never carry a
+#   NULL there. Testing a nullable column of the right-hand relation instead would keep matched rows
+#   whose value happens to be NULL: an anti-join that quietly removes too little, with no symptom.
 #
 # Probe
-#   examples/probes runs it as `leaves`.
-#   Rewrite this file as `EXCEPT` and algebra/leaves.sqlc must fail, because descent is a bag on the
-#   key and `EXCEPT` deduplicates rows away.
+#   examples/probes runs it as `leaves`. Rewrite this file as `EXCEPT` and algebra/leaves.sqlc must
+#   fail, because the walk repeats rows on the key and `EXCEPT` removes the repeats.
 -- asrt:Part followed to a layer that names no parts of its own.
 SELECT d.*
 FROM      (

@@ -1,34 +1,31 @@
-# Every checkable row in the corpus, with its verdict. One row per (rule, examined item): which
-# rule looked at it, which layer of which filing it is, whether it breaches the rule, and a
-# sentence saying what it says.
+# Every row a rule can examine, with its verdict. One row per (rule, item examined): which rule
+# looked at it, which layer of which filing it is, whether it breaks the rule, and a sentence
+# saying what it says.
 #
 # One relation, two views
-#   This is the relation the violations table and the coverage table are both views of, and that
-#   is the entire point of assembling it. A violations table is `WHERE violates`; a coverage
-#   table is `GROUP BY rule`. Because they read one relation, a coverage number cannot be about a
-#   different population than the rule it reports on. That is what happens when each population
-#   is written twice, in two dialects of itself: the restatements disagree, and one counting four
-#   rows where its rule examines one crosses a threshold and reports a thin rule as well covered.
+#   The violations table and the coverage table both read this relation. The violations table is
+#   `WHERE violates`; the coverage table is `GROUP BY rule`. Because they read one relation, a
+#   coverage figure cannot be about a different population from the rule it reports on. Written
+#   twice, two populations drift apart, and a coverage count of four rows where the rule examines
+#   one would report a thin rule as well covered.
 #
 # The most useful thing here to run on its own
-#   An empty violations table is the good outcome and tells a reader nothing at all. This shows
-#   every rule working on real rows: what it looked at, what each row said, and why it passed.
-#   That is the only way to see that a rule is doing something rather than merely finding
-#   nothing.
+#   An empty violations table is the good outcome, and it tells a reader nothing. This shows every
+#   rule at work on real rows: what it looked at, what each row said, and why it passed. That is
+#   the only way to see that a rule is doing something rather than merely finding nothing.
 #
 # A rule that examines nothing still appears
-#   It appears with a NULL verdict. That is not a quirk; it is the reason every check starts by
-#   joining checks/roster.sqlc. A check that merely filtered its population would vanish from a
-#   `GROUP BY` when the population was empty, so the one verdict that matters most, vacuous, is
-#   precisely the one a grouping cannot produce. The roster row exists before the population
-#   does, so the rule reports that it ran even when it had nothing to look at.
+#   It appears with a NULL verdict, which is why every check starts by joining checks/roster.sqlc.
+#   A check that only filtered its population would vanish from a `GROUP BY` when the population
+#   was empty, so the verdict that matters most, that a rule examined nothing, is the one a
+#   grouping cannot produce. The roster row exists before the population does, so the rule reports
+#   that it ran even when it had nothing to look at.
 #
-# The contract every check keeps
-#   One plain SELECT, no leading WITH, returning exactly `(rule, filing, layer, violates,
-#   detail)`, with `violates` NULL only on the row that says a rule examined nothing. A leading
-#   WITH cannot appear after UNION ALL, so a check needing recursion puts the walk in its own
-#   relation under composition/ and joins it, which is better anyway, because the walk is then
-#   runnable by itself.
+# What every check returns
+#   One plain SELECT, with no leading WITH, returning exactly `(rule, filing, layer, violates,
+#   detail)`, and `violates` NULL only on the row that says a rule examined nothing. The checks are
+#   joined with UNION ALL, so a check that needs recursion puts the walk in its own relation under
+#   composition/ and joins it, where the walk also runs on its own.
 -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
 :union(ALL checks/fit_disagrees.sqlc,
            checks/shares_do_not_sum.sqlc,

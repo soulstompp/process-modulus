@@ -2,48 +2,47 @@
 # for it counted by verdict. One row per (contract, subject).
 #
 # What a contract is, counted
-#   A contract is a roster, a bare `VALUES` literal naming its subjects, and a population, a bag of
-#   rows each naming a subject and, for three contracts, carrying a verdict. The population is a
-#   function from rows to subjects, and the roster declares its boxes. Everything this repository
-#   asks of a contract is a question about the sizes of that function's fibres: whether a declared
-#   box is empty, whether a ball fell outside the declared boxes, how many balls carry a verdict,
-#   whether any came back silent. Those sizes, with empty boxes printed because the roster drives,
-#   are the twelvefold way's balls into labelled boxes read up to the order of the balls, and this
-#   relation is that reading, once, for every contract.
+#   A contract is a roster, a bare `VALUES` literal naming its subjects, and a population, rows that
+#   each name a subject and, for some contracts, carry a verdict. The roster says which subjects
+#   there should be. Everything this repository asks of a contract is a count per subject: whether
+#   a declared subject has no rows, whether a row names a subject nobody declared, how many rows
+#   carry a verdict, whether any came back silent. This relation gives those counts once, for every
+#   contract, with the subjects that have no rows printed, because the roster drives.
 #
 # Each contract's outer join on its own, then their union
-#   Each arm composes one fold, `roster ⟗ population` grouped per subject, and each fold keeps the
-#   boxes its own verdict has. The union keeps the columns every contract shares, and the caller,
-#   holding all eight, names each arm; no fold knows it has siblings.
+#   Each arm composes one count from folds/, the roster fully outer-joined to the population and
+#   grouped per subject, and each keeps the counts its own verdict has. The union keeps the columns
+#   every contract shares, and this file, holding every arm, names each one; no count knows it has
+#   siblings.
 #
-# The regions of the outer join
+# The two sides of the outer join
 #   `declared` and `rows > 0` are the two sides: declared with no row is a roster naming something
 #   no population produces, and a row that is not declared is a population growing past its roster.
 #   Both false cannot occur, because every row here comes from one side or the other.
 #
 # `answered` for a population with no verdict
-#   The three contracts with a verdict count `answered`, `silent` and `vacuous` in their own folds.
-#   The five others carry no verdict: a catalogue row naming a table is the whole answer to whether
-#   the table exists, so the union gives them `rows` as `answered`, and zero for `silent` and
-#   `vacuous`, because nothing in them can be withheld. Every reader treats a row of those
-#   populations as its own answer, so nothing a reader distinguishes is merged by saying so.
+#   The rules, the arithmetic sites and the laws carry a verdict, and count `answered`, `silent` and
+#   `vacuous` in their own files. The others carry none: a catalogue row naming a table is the whole
+#   answer to whether the table exists, so the union gives them `rows` as `answered`, and zero for
+#   `silent` and `vacuous`, because nothing in them can be withheld. Every reader treats a row of
+#   those populations as its own answer, so saying so merges nothing a reader tells apart.
 #
 # Who reads it
-#   reports/integrity.sqlc crosses it with the problems a contract can have and keeps the ones found;
-#   rank/guard_reach.sqlc counts, per contract, the declared subjects some answered row reaches.
-#   algebra/integrity.sqlc and algebra/subject_boxes.sqlc hold seven of the eight folds from
-#   outside; the laws' own fold cannot be held from algebra/, whose relation it counts.
+#   reports/integrity.sqlc crosses it with the problems a contract can have and keeps the ones
+#   found; rank/guard_reach.sqlc counts, per contract, the declared subjects some answered row
+#   reaches. algebra/integrity.sqlc and algebra/subject_boxes.sqlc hold every count but the laws'
+#   own from outside; the laws' count cannot be held from algebra/, whose relation it counts.
 #
-# What the eighth declares, and why its roster is not the enum
-#   Seven contracts govern artifacts somebody authored here: a rule, a site, a law, a table, a
-#   diagram law, an absence column, a derivation column. `classes` governs the members of the
-#   enums in assets/ddl/schema.ddl, and it is the first whose population is written by Postgres
-#   rather than by this tree since `diagrams` took its from `information_schema`. ⛔ Its roster
-#   could NOT be `enum_range`: nothing can land outside an enum, so the region *produced, but
-#   nothing declares it* would be uninhabitable and the fold would have one side instead of two.
-#   epistemics/class_domain.sqlc is authored for that reason, and the disagreement it can then
-#   report is between two files that share no code, assets/ddl/schema.ddl and itself.
--- the eight contracts' folds, each labelled with the contract it counts.
+# What `classes` declares, and why its roster is not the type
+#   The other contracts govern things somebody wrote here: a rule, a site, a law, a table, a
+#   diagram law, a typed-blank column, a derivation column. `classes` governs the members of the
+#   types in assets/ddl/schema.ddl, so its population, like the diagrams', is written by Postgres
+#   rather than by these files. Its roster cannot be `enum_range`: nothing can land outside a type,
+#   so the side *produced, but nothing declares it* could never have a row, and the count would
+#   have one side instead of two. epistemics/class_domain.sqlc is written by hand for that reason,
+#   and the disagreement it can then report is between two files that share no code,
+#   assets/ddl/schema.ddl and itself.
+-- every contract's count, each labelled with the contract it counts.
 SELECT 'rules' AS contract, f.subject, f.declared, f.rows, f.answered, f.silent, f.vacuous
 FROM ( :compose(folds/rule_subjects.sqlc) ) f
 UNION ALL

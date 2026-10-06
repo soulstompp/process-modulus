@@ -17,12 +17,10 @@
 //! Several wrappers explain themselves in a sentence instead, and a sentence is not a content
 //! model claiming to be complete. This holds only the types that make the claim.
 //!
-//! ## Two layouts
+//! ## The layout
 //!
-//! A list is either a markdown heading (`# What it contains`, `# O que contém`) followed by items
-//! written `` - `name`: description ``, or the older caps heading (`WHAT IT CONTAINS`,
-//! `O QUE CONTÉM`) followed by entries indented exactly eight columns with the name and the
-//! description separated by two spaces.
+//! A list is a markdown heading (`# What it contains`, `# O que contém`) followed by items
+//! written `` - `name`: description ``.
 
 use std::collections::BTreeSet;
 
@@ -100,21 +98,13 @@ fn names_in(head: &str) -> Vec<&str> {
 }
 
 /// The children a "what it contains" list claims, or nothing where the type explains itself in
-/// prose instead. Either layout is read; see the module header.
+/// prose instead: a `# heading` followed by `` - `name`: description `` items. Continuation lines
+/// are indented deeper than the item; the first line that is neither ends the list.
 ///
 /// The list ends at the first paragraph. `CoverageEntry` follows its list with a second one, of
 /// the two ways one child may be filled, and reading on would report those two as children the
 /// type does not have.
-fn listed(doc: &str, markdown: &str, caps: &str) -> Option<Vec<String>> {
-    if let Some(names) = listed_markdown(doc, markdown) {
-        return Some(names);
-    }
-    listed_caps(doc, caps)
-}
-
-/// A `# heading` followed by `` - `name`: description `` items. Continuation lines are indented
-/// deeper than the item; the first line that is neither ends the list.
-fn listed_markdown(doc: &str, heading: &str) -> Option<Vec<String>> {
+fn listed(doc: &str, heading: &str) -> Option<Vec<String>> {
     let mut lines = doc.lines().skip_while(|l| l.trim() != heading);
     lines.next()?;
     let mut names: Vec<String> = Vec::new();
@@ -141,36 +131,6 @@ fn listed_markdown(doc: &str, heading: &str) -> Option<Vec<String>> {
     if names.is_empty() { None } else { Some(names) }
 }
 
-/// The older layout: a caps heading, then entries indented exactly eight columns.
-fn listed_caps(doc: &str, heading: &str) -> Option<Vec<String>> {
-    let start = doc.find(heading)?;
-    let mut names: Vec<String> = Vec::new();
-    for line in doc[start..].lines().skip(1) {
-        if line.trim().is_empty() {
-            continue;
-        }
-        let indent = line.len() - line.trim_start().len();
-        if indent != 8 {
-            if indent > 8 {
-                continue; // a description running onto the next line
-            }
-            if !names.is_empty() {
-                break; // a paragraph, so the list is over
-            }
-            continue;
-        }
-        let entry = line.trim_end();
-        let head = match entry.trim().find("  ") {
-            Some(i) => &entry.trim()[..i],
-            None => continue,
-        };
-        for n in names_in(head) {
-            names.push(n.trim_end_matches('+').to_string());
-        }
-    }
-    if names.is_empty() { None } else { Some(names) }
-}
-
 #[test]
 fn every_documented_content_list_names_exactly_the_children_the_type_declares() {
     let mut held = 0usize;
@@ -178,12 +138,9 @@ fn every_documented_content_list_names_exactly_the_children_the_type_declares() 
     for (file, schema) in [("process-modulus.xsd", BASE), ("assertion.xsd", ASSERTION)] {
         for (name, body) in named_types(schema) {
             let declared: Vec<&str> = children(body);
-            for (lang, markdown, caps) in [
-                ("en", "# What it contains", "WHAT IT CONTAINS"),
-                ("pt", "# O que contém", "O QUE CONTÉM"),
-            ] {
+            for (lang, heading) in [("en", "# What it contains"), ("pt", "# O que contém")] {
                 let Some(doc) = documentation(body, lang) else { continue };
-                let Some(claimed) = listed(doc, markdown, caps) else { continue };
+                let Some(claimed) = listed(doc, heading) else { continue };
                 held += 1;
                 let claimed_set: BTreeSet<&str> = claimed.iter().map(String::as_str).collect();
                 let declared_set: BTreeSet<&str> = declared.iter().copied().collect();

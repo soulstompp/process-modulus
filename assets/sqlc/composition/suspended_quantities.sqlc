@@ -1,21 +1,21 @@
 # Every (fusion, quantity) that owes no sum. One row per pair: composition/suspended_fusions.sqlc
-# with each ground that lifts every quantity expanded onto the quantities it lifts.
+# with each ground that lifts every quantity spread over the quantities it lifts.
 #
 # A NULL quantity is every quantity
 #   A suspension ground names the one quantity it lifts, or none, meaning all of them: nobody
 #   searched the fusion for double counting, a conversion was never sized, a part resolves to
-#   nothing here. Every reader asking whether one quantity of a fusion is suspended had to spell
-#   that out as `quantity IS NULL OR quantity = <that one>`; expanded once onto
+#   nothing here. Every reader asking whether one quantity of a fusion is suspended would have to
+#   spell that out as `quantity IS NULL OR quantity = <that one>`; spread once over
 #   `pm.summed_quantity`, the answer is a row or no row.
 #
-# A set of pairs
+# Each pair once
 #   A fusion can be suspended on a ground naming no quantity and on one naming demand, and the
-#   expansion then reaches (fusion, demand) twice. The pair is suspended once, so the relation is a
-#   set on its key; composition/suspension_grounds.sqlc keeps every ground and its reason.
+#   spreading then reaches (fusion, demand) twice. The pair is suspended once, so the relation has
+#   no repeats on its key; composition/suspension_grounds.sqlc keeps every ground and its reason.
 #
-# Proof
-#   algebra/suspended_quantities.sqlc holds it against the expansion written the long way.
--- composition/suspended_fusions.sqlc expanded onto pm.summed_quantity.
+# Checked by
+#   algebra/suspended_quantities.sqlc holds it against the spreading written the long way.
+-- composition/suspended_fusions.sqlc spread over pm.summed_quantity.
 SELECT DISTINCT s.composition, s.composed_layer, q.quantity
 FROM      (
     :compose(composition/suspended_fusions.sqlc)

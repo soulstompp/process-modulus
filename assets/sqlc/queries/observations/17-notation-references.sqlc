@@ -1,27 +1,28 @@
 -- §17 Every operation beside the notation position it names, or the fact that it names none.
-# One row per operation, the whole dimension beside the restriction that crosses out of it.
+# One row per operation: every operation, beside the ones that name a position outside the
+# document.
 #
 # Reported, never asserted
-#   For §10b's reason at a different address. A part reference that dangles is a violation and
-#   `checks/unresolved_part.sqlc` says so. An operation's `foreignId` cannot dangle or resolve,
-#   because there is nothing in this corpus for it to land on: it names a node in a BPMN document
-#   that travels beside the filing and is not held here. `pm:ForeignId`'s annotation refuses the
-#   lookup by name, so the only honest instrument is a report of who filed one.
+#   For §10b's reason at a different address. A part reference that dangles is a violation, and
+#   `checks/unresolved_part.sqlc` says so. An operation's `foreignId` can neither dangle nor
+#   resolve, because there is nothing in this corpus for it to land on: it names a node in a BPMN
+#   document that travels beside the filing and is not held here. `pm:ForeignId`'s annotation
+#   refuses the lookup by name, so the only honest instrument is a report of who filed one.
 #
 # The population is the finding
 #   Not the crossing. Most operations name no position, and the corpus is thinner still: most
-#   filings declare no operation at all. A reader who sees only the rows that cross would take
-#   this model for something that needs a process notation, and the shape of this table is the
-#   argument that it does not. The BPMN is optional, and so is the logger that would fill it.
+#   filings declare no operation at all. A reader who sees only the rows that cross would take this
+#   model for something that needs a process notation, and the shape of this table shows that it
+#   does not. The BPMN is optional, and so is the logger that would fill it.
 #
-# The absent arm is read, not printed over
-#   Printing `(none named)` for every operation naming no position would be the flattening this
+# The blank arm is read, not printed over
+#   Printing `(none named)` for every operation that names no position would be the flattening this
 #   whole schema exists to refuse, arriving in the report about the crossing.
 #   `pm:Operation/notationPosition` is required and takes `pm:StatedForeignId`, so the reason is
-#   filed and this reads it: `none` is somebody looked and it is in no notation, `unmeasured` is a
-#   notation exists and nobody located this operation in it, `notApplicable` is this filing has no
-#   notation to point into. The first is a finished answer and the second is work outstanding,
-#   and an untyped absence cannot tell them apart.
+#   filed and this reads it: `none`, somebody looked and it is in no notation; `unmeasured`, a
+#   notation exists and nobody located this operation in it; `notApplicable`, this filing has no
+#   notation to point into. The first is a finished answer and the second is work outstanding, and
+#   an untyped blank cannot tell them apart.
 #
 # Why `why_not!` is not `coalesce(reason, 'stated')`
 #   The two arms are exclusive by CHECK, so a row with neither is a load that should not have

@@ -1,26 +1,27 @@
--- §14  Supply that enters one total twice through two of a fusion's own parts, and no elimination for it.
+-- §14  Supply that enters one total twice through two of a fusion's own parts,
+-- and no elimination for it.
 # One row per supply that enters one total twice through two of a fusion's own parts, where the
 # composer filed no elimination, beside the doubled layer's own demand and nameplate.
 #
 # The warning is the work
-#   Not the structure. checks/jagged_layer.sqlc already reports that a fusion's parts overlap.
-#   This asks the question a checker cannot: how much supply is in there twice, and did the
-#   composer admit any of it. Where they did not, somebody downstream has to zero out an overlap
-#   the filing left in, and the size of that job is filed nowhere. It is the pivot to the part
-#   incidence, used as a measurement rather than as a correction: the doubled thing is a layer, so
-#   it carries its own demand and nameplate, and the magnitude that would enter twice is readable
-#   without anybody filing it.
+#   Not the structure. checks/jagged_layer.sqlc already reports that a fusion's parts overlap. This
+#   asks the question a check cannot: how much supply is in there twice, and did the composer admit
+#   any of it. Where they did not, somebody downstream has to take out an overlap the filing left
+#   in, and the size of that job is filed nowhere. It reads the parts as a measurement rather than
+#   as a correction: the doubled thing is a layer, so it carries its own demand and nameplate, and
+#   the size that would enter twice can be read without anybody filing it.
 #
 # An admitted overlap is not this
-#   `asrt:Elimination` is a composer finding the double counting and sizing it, which is the work
-#   being done by the party who can actually see it. The `WHERE` here keeps only the fusions where
-#   no elimination was filed at all, so a filing that did its own cleanup never appears, however
-#   large its overlap was.
+#   `asrt:Elimination` is a composer finding the double counting and sizing it, the work done by
+#   the party who can actually see it. The `WHERE` here keeps only the fusions where no elimination
+#   was filed at all, so a filing that did its own cleanup never appears, however large its overlap
+#   was.
 #
 # Reading an empty result
 #   Empty is the good outcome, and it is also what an unreached relation returns. This prints
-#   nothing on a clean corpus. checks/jagged_layer.sqlc is what proves the question was asked.
--- composition/jagged_layers.sqlc for fusions with no filed elimination, against the doubled layer's own figures.
+#   nothing on a clean corpus. checks/jagged_layer.sqlc is what shows the question was asked.
+-- composition/jagged_layers.sqlc for fusions with no filed elimination,
+-- against the doubled layer's own figures.
 SELECT j.filing                                   AS "filing!",
        j.layer                                    AS "layer!",
        j.doubled_filing || '/' || j.doubled_layer AS "doubled!",

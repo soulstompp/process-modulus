@@ -1,31 +1,31 @@
 # Every holder share on a layer, totalled, with what would suspend the total. One row per layer
 # naming at least one holder: how many, how many left the share unstated, the sum of the stated
-# ones at the mode, and the distinct units they were quoted in.
+# ones at each of the three points, and the distinct units they were quoted in.
 #
-# One γ for three callers
+# One total for every caller
 #   arithmetic/shares_sum.sqlc, arithmetic/shares_bounded.sqlc and checks/shares_do_not_sum.sqlc
 #   each need entries/holders.sqlc grouped by (filing, layer) for the same two numbers. The two
 #   arithmetic sites report an unstated share as `suspended` and a foreign unit as
-#   `not comparable`. A check computing its own copy with only a `HAVING` for the first and no
-#   branch at all for the second sums across units and compares the total to |r|, and so disagrees
-#   with them about the same document.
+#   `not comparable`. A check working out its own copy, with only a `HAVING` for the first and
+#   nothing for the second, would add across units, compare the total with the magnitude, and so
+#   disagree with them about the same document.
 #
 # A share in another unit is not a share of this
-#   H is a distribution over the magnitude of `r`, so a share in another unit is not a smaller
-#   share, it is not a share of this. That is why `share_units` is carried rather than assumed
-#   away: a caller compares it against its own layer's unit and decides. arithmetic/roster.sqlc
-#   records `guarded_by = NULL` for shares_sum, meaning no unit rule stands there at all, which
-#   makes the check the only thing between that site and a wrong number.
+#   The shares divide the size of the remainder between the holders, so a share in another unit is
+#   not a smaller share; it is not a share of this remainder at all. That is why `share_units` is
+#   carried rather than assumed away: a caller compares it with its own layer's unit and decides.
+#   arithmetic/roster.sqlc records no unit rule at the `shares_sum` site, which leaves the check
+#   the only thing between that site and a wrong number.
 #
 # Read `unstated` before the sum
 #   `sum()` skips NULLs silently, so a layer where half the holders stated a share sums to half the
 #   truth and looks like an ordinary number. `unstated` is the column that makes that visible, and
-#   every caller has to read it before it reads the sum.
+#   every caller reads it before it reads the sum.
 #
-# A derived share is unstated, and says which equation it waits on
-#   `derived` counts the shares filed as `sharesSum`'s output, which are among the unstated ones:
-#   nothing here computes a share, so a caller suspends on them as on any unstated share, and names
-#   the identity rather than reading an output as an absence.
+# A derived share is unstated, and says which identity it waits on
+#   `derived` counts the shares filed as `sharesSum`'s output, which are among the unstated ones.
+#   Nothing here works out a share, so a caller suspends on them as on any unstated share, and
+#   names the identity rather than reading an output as a blank.
 -- entries/holders.sqlc folded to one row per layer.
 SELECT h.filing, h.layer,
        count(*)                                     AS holders,

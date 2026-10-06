@@ -3,13 +3,13 @@
 # looked, with that filing's own search and extent.
 #
 # A referral, never a violation
-#   A filing is not the system. Nobody named here filed anything wrong, and `enterprise-contract`
-#   says so itself: its coupling search is `unmeasured` and the note explains that refutation.xml
-#   observed the same two layers in a later quarter, so the absence is the honest prior state
-#   rather than a claim of independence.
+#   A filing is not the whole system. Nobody named here filed anything wrong, and
+#   `enterprise-contract` says so itself: its coupling search is `unmeasured`, and the note
+#   explains that refutation.xml observed the same two layers in a later quarter, so the blank is
+#   the honest prior state rather than a claim of independence.
 #
-# The author knew and wrote it in prose
-#   No query found it until this one.
+# The author knew, and wrote it in prose
+#   This query puts it in rows.
 -- entries/spillovers.sqlc, as referrals rather than findings.
 SELECT s.borne_by                       AS "borne_by!",
        s.from_layer                     AS "from_layer!",

@@ -5,39 +5,38 @@
 #   This is the relation that reads one. `EliminationAgainst` names all three (demand, nameplate,
 #   draw) and says why the third is there: "an implementation that eliminates demand and forgets
 #   the draw has silently claimed a utilisation it did not observe". The only other question
-#   anything asks of a draw is whether it is absent (epistemics/absences.sqlc reads
-#   `draw_absent`), so without this relation the value is read nowhere, which is the warning
-#   carried out.
+#   anything asks of a draw is whether it is blank (epistemics/absences.sqlc reads `draw_absent`),
+#   so without this relation the value would be read nowhere.
 #
 # The draw is not the demand
-#   The corpus settles that rather than assuming it. The two differ at the mode more often than
-#   they agree, so a reader taking one for the other is wrong more often than right; set
-#   `draw_mode` beside `d_mode` from layers/demand.sqlc for the numbers. `capability` was asked
-#   for 6 and served 3.
+#   The corpus shows it rather than assuming it: on many layers the two differ at the most likely
+#   value, so a reader taking one for the other is often wrong. Set `draw_mode` beside `d_mode` from
+#   layers/demand.sqlc for the numbers. `capability` was asked for 6 and served 3.
 #
 # A draw above the demand is not a defect
 #   That is why this file reports and does not judge. `merge-pt-member/linha-partilhada` draws 10
-#   where its demand reaches 8.0 at most, and the filing says why: "A produção inteira da linha...
-#   a fatia do irmão está aqui dentro, e está também na declaração dele", the whole line's output,
-#   of which a sibling's slice is that sibling's demand in its own filing. A rule reading "a
-#   supply cannot serve more than was asked" would fire on a correct document. The bound that
-#   holds is the supply's own, and it is in checks/draw_exceeds_the_supply.sqlc.
+#   where its demand reaches 8.0 at most, and the filing says why: the draw is the whole line's
+#   output, and a sibling's slice of it is that sibling's demand, in the sibling's own filing. A
+#   rule reading "a supply cannot serve more than was asked" would fire on a correct document. The
+#   bound that holds is the supply's own, and it is in checks/draw_exceeds_the_supply.sqlc.
 #
 # A draw against no rating has no row
-#   `refutation/object-storage` draws 47 with its amount filed `notApplicable`; utilisation of a
-#   rating nobody stated is unanswerable, not zero. layers/absorber.sqlc states the principle.
+#   `refutation/object-storage` draws 47 with its amount filed `notApplicable`; the use of a rating
+#   nobody stated cannot be answered, which is not the same as zero. layers/absorber.sqlc states the
+#   principle.
 #
-# A derived draw or amount is read computed
-#   The draw is composition/resolved_quantities.sqlc's, stated or computed, as layers/demand.sqlc
+# A derived draw or amount is read worked out
+#   The draw is composition/resolved_quantities.sqlc's, stated or worked out, as layers/demand.sqlc
 #   explains, and the nameplate is layers/nameplate.sqlc's, so a figure filed `derived` enters at
-#   the value its fusion computes and one that cannot be computed has no row, as a typed absence has
-#   none.
+#   the value its fusion works out, and one that cannot be worked out has no row, as a typed blank
+#   has none.
 #
 # An unmeasured capacity slack stays NULL
-#   `capacity_slack` is left NULL where it is unmeasured rather than coalesced to zero. Some of
+#   `capacity_slack` is left NULL where it is unmeasured, rather than coalesced to zero. Some of
 #   these layers do not know how far they can stretch, and a nameplate is not a ceiling until
 #   somebody says the buffer is empty.
--- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc and entries/slacks.sqlc's capacity slack.
+-- pm:Jagged/pm:draw from composition/resolved_quantities.sqlc, against layers/nameplate.sqlc
+-- and entries/slacks.sqlc's capacity slack.
 SELECT dr.filing, dr.layer,
        dr.low  AS draw_low,
        dr.mode AS draw_mode,

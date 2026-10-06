@@ -1,44 +1,43 @@
-# The law rank/composition_row_space.sqlc owes: the part space splits into the row space and the
-# null space, block by block, and the two sides of the map agree about the rank. Two rows, one per
-# half of that sentence.
+# The law rank/composition_row_space.sqlc owes: within each fusion, the one way its figure moves
+# and the ways that leave it still account for every part, and the part side and the fusion side
+# agree on how many figures the parts can move. Two rows, one per half of that sentence.
 #
-# The direct sum, per fibre
-#   A fusion's block of the row space and its block of the null space are orthogonal complements
-#   inside that fusion's own coordinates, so their dimensions sum to the number of parts in it and
-#   neither is free to move alone. The first subject holds that on every fusion, against the parts
-#   rank/composition_kernel.sqlc counted, so a fold that changed its population on one side and not
-#   the other fails here rather than going quiet.
-#   Proof: `src/proofs/README.md`, entry `fold_subspaces`.
+# Per fusion, one plus the room
+#   Within a fusion, the one way that moves the composed figure and the ways that leave it where it
+#   is together account for every part: one, plus one fewer than the parts. The first subject holds
+#   that on every fusion, against the parts rank/composition_kernel.sqlc counted, so a grouping
+#   that changed its population on one side and not the other fails here rather than going quiet.
 #
-# The rank, from the part side and from the fusion side
-#   The second subject is the one that crosses. `Σ row_dim` is the rank counted one block at a time
-#   along the parts; `Σ rank` in rank/composition_image.sqlc is the same number counted as rows of
-#   the matrix along the fusions. They are arrived at through different folds of different
-#   relations, so an agreement is evidence, and a disagreement says one side is folding a
-#   population the other is not.
+# How many figures move, from the part side and from the fusion side
+#   The second subject is the one that crosses. `row_dim` added up counts the figures the parts can
+#   move, one fusion at a time along the parts; the matching count in rank/composition_image.sqlc
+#   counts the same thing along the fusions. They are reached through different groupings of
+#   different relations, so their agreement is evidence, and a disagreement says one side is
+#   gathering a population the other is not.
 #
-# ⛔ The join to the fold is OUTER, and an inner one would have been the green that means nothing
-#   Putting the part counts into an inner join's ON makes a disagreement DROP the row, so the two
+# The join to the grouping is outer, and an inner one would pass meaning nothing
+#   Putting the part counts into an inner join's ON makes a disagreement drop the row, so the two
 #   relations would part company and this law would see a smaller population rather than a fault.
-#   `IS DISTINCT FROM` on an outer join is what turns a missing row and a wrong number into the
-#   same finding.
+#   `IS DISTINCT FROM` on an outer join turns a missing row and a wrong number into the same
+#   finding.
 #
-# `row_dim = 1` is a claim and it is held here
-#   The column is a literal in the relation, because a non-empty fibre's generator is a non-zero
-#   vector and nothing in a fold can see that. This is where it is refused any other value, which
-#   is what makes the literal a claim rather than a decoration.
+# `row_dim = 1` is a claim, and it is held here
+#   The column is a literal in the relation, because a fusion with parts always has one way to move
+#   its figure, and nothing in a grouping can see that. This is where it is refused any other value,
+#   which is what makes the literal a claim rather than a decoration.
 #
-# Non-vacuity needs a fusion with a sibling
-#   `1 + 0 = 1` holds on every one-part fusion whatever either dimension means, so a corpus of
+# It needs a fusion with a sibling to test anything
+#   One plus nought is one on every one-part fusion, whatever either count means, so a corpus of
 #   one-part fusions would pass this law while saying nothing. The floor requires that some fusion
-#   has a null space at all.
+#   has room at all.
 #
 # Probe
-#   examples/probes runs it as `composition_row_space` and `composition_row_space / the rank`.
-#   The first reads `row_dim` as two in the relation, so no fibre sums to its own part count and
-#   the rank doubles, and both subjects fail together. The second leaves the part side alone and
-#   adds one to the fusion side's count per composition, which only the crossing can see.
--- rank/composition_row_space.sqlc against rank/composition_kernel.sqlc, then against rank/composition_image.sqlc.
+#   examples/probes runs it as `composition_row_space` and `composition_row_space / the rank`. The
+#   first reads `row_dim` as two in the relation, so no fusion adds up to its own part count and the
+#   count of figures doubles, and both subjects fail together. The second leaves the part side
+#   alone and adds one to the fusion side's count per composition, which only the crossing can see.
+-- rank/composition_row_space.sqlc against rank/composition_kernel.sqlc, then against
+-- rank/composition_image.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -51,8 +50,8 @@ LEFT JOIN (
            AND count(*) FILTER (WHERE x.row_dim + x.kernel_dim <> x.parts) = 0
            AND count(*) FILTER (WHERE x.kernel_dim IS DISTINCT FROM x.kernel_by_fold) = 0
            AND count(*) FILTER (WHERE x.parts IS DISTINCT FROM x.parts_by_fold) = 0     AS holds,
-           format('%s fusion(s), %s with a null space; %s report a row space other than one '
-                  'dimension, %s do not sum to their own part count, %s disagree with the fold%s',
+           format('%s fusion(s), %s with room to move parts alone; %s whose figure moves '
+                  'other than one way, %s not adding up to their parts, %s at odds with the fold%s',
                   count(*), count(*) FILTER (WHERE x.kernel_dim > 0),
                   count(*) FILTER (WHERE x.row_dim <> 1),
                   count(*) FILTER (WHERE x.row_dim + x.kernel_dim <> x.parts),
@@ -77,11 +76,11 @@ LEFT JOIN (
         ) k ON k.composition = r.composition AND k.composed_layer = r.composed_layer
     ) x
     UNION ALL
-    SELECT 'rank/composition_row_space / the rank',
+    SELECT 'rank/composition_row_space / the count along the fusions',
            y.blocks > 0 AND z.matrix_rows > 0 AND y.blocks = z.matrix_rows
            AND y.parts = y.blocks + y.kernel                                         AS holds,
-           format('rank %s summed over the part-side blocks and %s counted as fusion rows; '
-                  '%s part(s) over %s block(s) leaves %s dimension(s) of null space',
+           format('%s figure(s) the parts can move, fusion by fusion, and %s fusion rows; '
+                  '%s part(s) over %s fusion(s) leave room for %s move(s) of parts alone',
                   y.blocks, z.matrix_rows, y.parts, y.blocks, y.kernel)
     FROM       (
         SELECT coalesce(sum(s.row_dim),    0) AS blocks,

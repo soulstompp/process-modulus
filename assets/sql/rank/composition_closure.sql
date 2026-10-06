@@ -1,4 +1,5 @@
--- composition/descent.sqlc reduced to one row per reached layer, against rank/composition_kernel.sqlc.
+-- composition/descent.sqlc reduced to one row per reached layer,
+-- against rank/composition_kernel.sqlc.
 WITH composition_part_references AS (
 -- asrt:Composition/asrt:Fusion/asrt:Part, keyed by pm:ForeignId (notation + id).
 SELECT p.composition, p.composed_layer, p.part_filing, p.part_layer, p.part_regime,
@@ -33,7 +34,7 @@ JOIN      (
 JOIN pm.layer l  ON l.filing = fi.filing AND l.layer = p.part_layer
 ),
 rank_composition_kernel AS (
--- asrt:Fusion/asrt:Part folded onto its fusion: the fibre size, and the block dimension it fixes.
+-- asrt:Fusion/asrt:Part counted per fusion: its parts, and the offsets that count fixes.
 SELECT p.composition,
        p.composed_layer,
        count(*)     AS parts,
@@ -44,7 +45,7 @@ FROM (
 GROUP BY p.composition, p.composed_layer
 ),
 composition_descent AS (
--- asrt:Fusion/asrt:Part followed transitively through pm.filing_identity.
+-- asrt:Fusion/asrt:Part followed through every level by way of pm.filing_identity.
 WITH RECURSIVE
 resolved AS (
     SELECT * FROM composition_parts

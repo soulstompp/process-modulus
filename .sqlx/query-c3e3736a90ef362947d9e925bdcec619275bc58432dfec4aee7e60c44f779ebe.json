@@ -1,0 +1,63 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the pm.* tables against BPMN 2.0's element vocabulary, as data an emitter reads.\nSELECT * FROM (VALUES\n  ('source', 'definitions', NULL, 'definitions', NULL, NULL, 'the document itself. A BPMN file is a definitions document'),\n  ('filing', 'participant', NULL, 'pools', NULL, NULL, 'the participant that renders the document as a pool'),\n  ('filing_identity', 'targetNamespace', NULL, 'namespaces', NULL, NULL, 'a notation resolved to a document, which is what import does'),\n  ('layer', 'lane', NULL, 'lanes', NULL, NULL, 'a lane, and the region it delimits'),\n  ('operation', 'task', NULL, 'tasks', 'demoted',\n   'The pointer is on the page and no tool can follow it, which is the state `pm:ForeignId` '\n   'intends. A notation plus an id names a node in the process notation the filer was reading, '\n   'which is a different document from this one, so it must not become this task''s own `id` '\n   '(that would claim the two documents are one) and it cannot be a `relationship`, whose '\n   '`source` and `target` are QNames needing an `import` that needs a location nobody filed. It '\n   'rides the task''s `documentation`: a person reads the id, a tool resolves nothing. Unlike '\n   'every other `demoted` row here, the tool could not do better even in principle, because no '\n   'authority publishes the list it would resolve against',\n   'a flow node, reached by foreignId. `pm:Operation/foreignId` is the whole BPMN interface, '\n   'and `entries/notation_references.sqlc` is the relation that holds it, one of the model''s '\n   'three `pm:ForeignId` references'),\n  ('draw', 'laneSet', NULL, 'in_a_lane', NULL, NULL,\n   'the lane set a modeller actually files: the performer''s lane'),\n  ('induction', 'group', NULL, 'induced_into', 'demoted',\n   'The pointer. `tCategoryValue` adds one `xs:string` to a base element and no reference '\n   'attribute, so the layer arrives as text beside a `lane` of the same name. That is a smaller '\n   'form of the callActivity defect: a call loses the layer, this keeps its name and loses the '\n   'tie. `decider` is lost too, and for the ordinary reason: it is a performer and nothing here '\n   'files a claimant edge',\n   'the cover. Emitted as categoryValueRef on each operation and drawn as a group, which adds '\n   'no lane where a second laneSet would have added one per induced layer'),\n  ('part', 'callActivity', NULL, 'calls', 'absent',\n   'The factor. `calledElement` names a process, so it loses the target layer, and '\n   '`diagrams/descents.sqlc` carries that fact at layer grain as a `relationship`, which takes '\n   'QNames at both ends and a required `type`, read back and compared edge for edge. What no '\n   'element carries is the factor, a three-point magnitude on a page with no unit, and that is '\n   '`absent` for the reason every magnitude here is. One table maps to two elements, '\n   '`callActivity` for the substitution and `relationship` for the grain, and this roster has '\n   'one `element` and one `governed_by` per table',\n   'foreign; a nested lane, a `childLaneSet`, when the part is local'),\n  ('composition_citation', 'documentation', NULL, 'citations', 'demoted',\n   'The structure. `pm.composition_citation` is `(taxonomy, instrument, clause, version)`, four '\n   'typed fields, not free prose. A `documentation` element carries all four as one string, so a '\n   'reader can follow the citation and a tool cannot resolve it',\n   'the instrument a composition is filed under. The open question is the schema''s and not '\n   'the diagram''s: `(composition, seq)` is a bare document ordinal where both sibling children '\n   'carry a regime handle'),\n\n  ('coupling', 'association', NULL, 'dependences', 'absent',\n   'The observation and the strength, which is all the evidence there is. `pm:observed` is '\n   'required prose and it is the whole argument; an `association` carries none, and an '\n   'observation may contain a numeral, so routing it through `documentation` would put a '\n   'magnitude on a page with no unit, which is `dataObject`''s refusal arriving through prose. '\n   'The artifact says two layers are coupled and cannot say what was seen',\n   'the observation that can show the model wrong. `sourceRef` and `targetRef` are '\n   'unconstrained QNames, so two lanes are a legal pair, and the reason that rules out '\n   '`messageFlow` does not apply here'),\n  ('coupling_search', 'documentation', NULL, 'documentation', NULL, NULL,\n   'the other half of the pair, on the laneSet, because the laneSet is the division the search '\n   'is about. A filing that states no coupling draws no line, and a reader takes a silent '\n   'diagram for independence. An absent line is not independence'),\n  ('elimination_search',   NULL, 'notApplicable', NULL, NULL, NULL, 'the same, for double counting'),\n  ('stack_scope', 'documentation', NULL, 'scopes', 'demoted',\n   'The structure. `tLaneSet` has no extent attribute of any kind, so all three states render '\n   'as one lane set and the answer survives only as untyped text. BPMN is the finer of the two '\n   'on the basis and has nothing at all on the extent: `tLane` carries `partitionElement` and '\n   '`partitionElementRef` for what the lanes are divided by, per lane, where this model files one '\n   'basis per stack. The grain axis, running the other way',\n   'how much of the system the stack holds. A lane set says nothing about it, so one sentence '\n   'saying the same of every document would invent a claim the filings do not all make; the '\n   'emitter reads the extent each filing states instead'),\n  ('elimination',          NULL, 'notApplicable', NULL, NULL, NULL, 'a call references and never redeclares, so BPMN cannot double declare and owes no correction'),\n  ('elimination_between', 'relationship', NULL, 'attributions', 'absent',\n   'The size of the overlap, which is `pm.elimination`''s business and not this table''s, and '\n   'the references that do not resolve: a QName needs a prefix and a prefix needs an import, so '\n   'a `between` naming a document nobody filed cannot be pointed at',\n   'a composed layer, and a layer of another document the double counting runs against. It is '\n   '`asrt:FiledLayer`, whose filing is a `pm:ForeignId`, the same reference type a part uses, and '\n   'the schema files it so that it can be queried rather than told as a story. `between` is the '\n   'one cross-document reference no rule may check, because the schema allows one that names a '\n   'filing nobody filed'),\n\n  ('nameplate',            NULL, 'none', NULL, NULL, NULL,          'a committed, quantized magnitude. BPMN carries no quantity anywhere'),\n  ('slack',                NULL, 'none', NULL, NULL, NULL,          'three buffers per layer, each a magnitude'),\n  ('claim',                NULL, 'none', NULL, NULL, NULL,          'a value at a position, with its own width'),\n  ('narrowing',            NULL, 'none', NULL, NULL, NULL,          'what would narrow a claim. BPMN has no epistemics'),\n  ('bound_origin',         NULL, 'none', NULL, NULL, NULL,          'where a bound came from. The same'),\n  ('absence',              NULL, 'none', NULL, NULL, NULL,          'a typed reason there is no value, with the note that argues for it. The same'),\n  ('derivation',           NULL, 'none', NULL, NULL, NULL,          'the identity a value is computed by, with the note beside it. BPMN computes nothing it carries'),\n  ('fusion',               NULL, 'none', NULL, NULL, NULL,          'what the composer observed that makes its parts one layer. The parts are drawn, as `part` says; the observation is prose no element here carries, for the reason `coupling` gives'),\n  ('regime',               NULL, 'none', NULL, NULL, NULL,          'the jurisdiction and framework a document reports under'),\n  ('composition_regime',   NULL, 'none', NULL, NULL, NULL,          'what a composer says another document''s regime is: a second claim with a second author, and no more drawable than the first'),\n  ('buffer_term',          NULL, 'none', NULL, NULL, NULL,          'a taxonomy lookup a reader can delete'),\n\n  ('holder',               NULL, 'misreads', NULL, NULL, NULL,      'resourceRole and performer have the right shape and the wrong claim: they say who acts, and a holder is who bears. Four of the five kinds name no party at all')\n) AS d(object, element, absent, governed_by, loses_kind, loses, why)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "object",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "element",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "absent",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "governed_by",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "loses_kind",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "loses",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "c3e3736a90ef362947d9e925bdcec619275bc58432dfec4aee7e60c44f779ebe"
+}

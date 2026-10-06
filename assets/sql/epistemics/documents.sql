@@ -1,11 +1,12 @@
--- The five top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
+-- The top-level declarations: pm:processModulus and asrt:composition/dependence/coverage/run.
 WITH composition_notations AS (
 -- pm:processModulus/pm:notation: uri -> filing, with the party that asserted the identity.
 SELECT fi.notation, fi.filing, fi.asserted_by, fi.absent
 FROM pm.filing_identity fi
 ),
 scope_every_filing AS (
--- from pm.filing: both evidence values, the typed reason a document gives neither, and an assertion's provenance.
+-- from pm.filing: both evidence values, the typed reason a document gives neither,
+-- and an assertion's provenance.
 SELECT f.name AS filing, f.kind, f.evidence, f.evidence_absent,
        f.prov_party, f.prov_entered_by, f.prov_approved_by,
        f.prov_standing_taxonomy, f.prov_standing_value, f.prov_standing_absent, f.prov_note

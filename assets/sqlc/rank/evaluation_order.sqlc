@@ -1,42 +1,36 @@
-# The ordinal rank of every layer in `F`: the order in which a fusion may be evaluated. One row
-# per layer, `rank` 0 where nothing lies beneath it and NULL where its descent reaches a cycle.
+# The order in which each layer's fusion may be worked out. One row per layer: `rank` is 0 where
+# nothing lies beneath the layer, and NULL where its descent reaches a loop.
 #
-# What well-foundedness gives you
-#   A well-founded relation has a rank function, `rank(x) = sup{rank(y)+1 : y R x}`, and the
-#   precondition that *no name expands to itself* is the guarantee that one exists. A cycle is
-#   exactly the case where it does not, which is what "no order exists in which to evaluate the
-#   stack" means.
+# An order exists only where nothing expands to itself
+#   The precondition that *no name expands to itself* is what guarantees an order exists: each
+#   layer comes one step after the deepest thing beneath it. A loop is exactly the case where none
+#   exists, which is what "no order exists in which to evaluate the stack" means.
 #
-# Rank is the evaluation order, and `depth` is not
-#   composition/descent.sqlc's `depth` is per path; the rank is the maximum over all paths. A
-#   layer reachable at depth 1 and at depth 2 must not be evaluated until both arrivals are
-#   ready, so a walk that evaluates in depth order can compute a fusion before one of its parts
-#   exists. The minimum and the maximum differ exactly where a layer is reached by paths of two
-#   lengths, a jagged partition, and checks/jagged_layer is the same phenomenon in the other
-#   algebra.
+# `rank` is the evaluation order, and `depth` is not
+#   composition/descent.sqlc's `depth` is per path; `rank` is the deepest over all paths. A layer
+#   reachable at depth 1 and at depth 2 must not be worked out until both arrivals are ready, so a
+#   walk in depth order can work out a fusion before one of its parts exists. The shallowest and the
+#   deepest differ exactly where a layer is reached by paths of two lengths, and checks/jagged_layer
+#   is the same thing seen from the sums.
 #
-# A cycle has no rank
-#   Where a descent reaches a cycle the supremum does not exist, for the layers on it and every
-#   layer above them, so those get NULL, never the depth the cycle guard happened to stop at.
-#   checks/layers_move_together reports the cycle.
+# A loop has no order
+#   Where a descent reaches a loop there is no deepest arrival, for the layers on it and for every
+#   layer above them, so those get NULL, never the depth at which the loop guard happened to stop.
+#   checks/layers_move_together reports the loop.
 #
 # A window, not a second walk
-#   composition/descent.sqlc has already done the recursion, so the rank is one aggregate over
-#   its closure.
-#   Proposing another recursive CTE for this is proposing to recompute something the data already
-#   carries.
+#   composition/descent.sqlc has already done the recursion, so the order is one aggregate over what
+#   it reached. Another recursive CTE would work out again what the data already carries.
 #
-# Carried into two artifacts
-#   `examples/diagramming/main.rs` writes it into each filing's lane, and
-#   `examples/graphs/main.rs` writes it into the corpus-wide layer graph's, through
-#   `rank/graph_nodes.sqlc`.
+# Carried into two drawings
+#   `examples/diagramming` writes it into each filing's lane, and `examples/graphs` writes it into
+#   the corpus-wide layer graph's, through `rank/graph_nodes.sqlc`.
 #
-# An emitter must write the rank
-#   An emitter that writes no rank leaves the renderer its own sentinel to draw, and this relation
-#   gives either a rank of at least 0 or NULL, so a negative rank on a page is a value the model
+# An emitter must write the order
+#   An emitter that writes none leaves the renderer to draw its own placeholder, and this relation
+#   gives either a `rank` of at least 0 or NULL, so a negative one on a page is a value the model
 #   cannot produce. Every lane count stays exact through that, which is why it is the emitter's
 #   obligation and not a count's.
-#
 -- composition/descent.sqlc aggregated to the deepest arrival under each layer.
 SELECT l.filing, l.layer,
        CASE WHEN coalesce(bool_or(d.is_cycle), false) THEN NULL

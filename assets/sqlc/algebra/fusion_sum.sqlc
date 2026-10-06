@@ -1,40 +1,39 @@
-# Every owed fusion sum, recomputed. One row per (composed layer, quantity) in
-# composition/owed_equality.sqlc: whether composition/fused.sqlc summed, subtracted and judged
-# what the definitions say it should.
+# Every owed fusion sum, worked out again. One row per (composed layer, quantity) in
+# composition/owed_equality.sqlc: whether composition/fused.sqlc added, subtracted and judged what
+# the definitions say it should.
 #
 # What it asserts
-#   - `sum_*` equals `Σ x_part * factor` recomputed from composition/resolved_quantities.sqlc and
-#     the parts' factors, at each of the three points, a part filed `derived` entering at the
-#     figure its own fusions compute (algebra/derived_quantities.sqlc holds that figure);
-#   - the result is an ordered claim;
-#   - it is the component-wise subtraction of the elimination wherever that is ordered, and the
-#     crossed pairing `[Σ low - e_high, Σ mode - e_mode, Σ high - e_low]` wherever it is not;
+#   - each `sum_*` column equals each part's figure times its factor, added up, worked out again
+#     from composition/resolved_quantities.sqlc and the parts' factors at each of the three values,
+#     a part filed `derived` entering at the figure its own fusions compute
+#     (algebra/derived_quantities.sqlc holds that figure);
+#   - the result is in order;
+#   - it is the elimination subtracted bound by bound wherever that leaves it in order, and each
+#     end of the sum less the opposite end of the elimination wherever it does not;
 #   - `agrees` is true exactly where the result equals the figure the composed layer files.
-#   Proof: `src/proofs/README.md`, entries `fusion_sum` and `elimination_componentwise`.
 #
 # Why not read `agrees` and stop
-#   `agrees` is what the rule reads, so a law that took it on trust would pass whatever fused
-#   computed. This one recomputes the sum from the filed figures and holds every column fused
-#   derives to it; a fusion missing from fused while owed fails here too.
+#   `agrees` is what the rule reads, so a law that took it on trust would pass whatever
+#   composition/fused.sqlc computed. This one works the sum out from the filed figures and holds
+#   every column fused works out to it; a fusion missing from fused while owed fails here too.
 #
 # The conversion is one rule, and independence is in the route
-#   `Σ x_part * factor` is read at the corner the operand's sign picks, which is the operator
-#   composition/converted.sqlc applies on the route this law corroborates. Recomputing it bound by
-#   bound would be a second ARITHMETIC rather than a second ROUTE: the two agree on every
-#   non-negative operand and part company on the first negative one, so this law would fail on a
-#   correct filing exactly where the relation it checks is right. What keeps it independent is that
-#   it reads composition/parts.sqlc and composition/resolved_quantities.sqlc directly instead of
+#   Each part's figure times its factor is read at the corner the figure's sign picks, as
+#   composition/converted.sqlc converts on the route this law checks. Working it out bound by bound
+#   would be a second way of calculating, not a second route: the two agree on every figure that is
+#   not below zero and part company on the first that is, so this law would fail on a correct
+#   filing exactly where the relation it checks is right. What keeps it independent is that it
+#   reads composition/parts.sqlc and composition/resolved_quantities.sqlc directly instead of
 #   through folds/part_sums.sqlc, not that it multiplies differently.
-#   Proof: `src/proofs/README.md`, entries `two_slopes` and `positive_factor_componentwise`.
 #
 # Probe
-#   examples/probes runs it as `fusion_sum` and `fusion_sum / corner`.
-#   For the corner, swap the least for the greatest on the low bound of the sum: every sum
-#   under a factor with width must fail, and no other.
-#   In composition/fused.sqlc subtract component-wise unconditionally. Every sum whose
-#   component-wise reading inverts must fail, which assets/fixtures/every-inverting-elimination.xml
-#   exists to supply.
--- composition/fused.sqlc against composition/resolved_quantities.sqlc, composition/parts.sqlc and eliminations/filed.sqlc.
+#   examples/probes runs it as `fusion_sum` and `fusion_sum / corner`. For the corner, swap the
+#   least for the greatest on the low end of the sum: every sum under a factor that is a range must
+#   fail, and no other. In composition/fused.sqlc subtract bound by bound every time. Every sum
+#   whose bound-by-bound reading turns over must fail, which
+#   assets/fixtures/every-inverting-elimination.xml exists to supply.
+-- composition/fused.sqlc against composition/resolved_quantities.sqlc, composition/parts.sqlc and
+-- eliminations/filed.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -56,7 +55,7 @@ LEFT JOIN (
            AND f.agrees = (abs(f.computed_low  - d.low)  < 1e-9
                        AND abs(f.computed_mode - d.mode) < 1e-9
                        AND abs(f.computed_high - d.high) < 1e-9) AS holds,
-           format('Σ [%s, %s, %s] less [%s, %s, %s] gives [%s, %s, %s] against a filed [%s, %s, %s]',
+           format('parts [%s, %s, %s] less [%s, %s, %s] give [%s, %s, %s]; filed [%s, %s, %s]',
                   r.sum_low, r.sum_mode, r.sum_high,
                   coalesce(e.low, 0), coalesce(e.mode, 0), coalesce(e.high, 0),
                   f.computed_low, f.computed_mode, f.computed_high,

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⭐⭐⭐ AN OBSERVED DEPENDENCE BETWEEN TWO FILINGS, FILED BY SOMEBODY WHO IS THE FILER
-  OF NEITHER: the document type S-4 asked for, and the reason it is a document.
+  An observed dependence between two filings, filed by somebody who filed neither.
 
-  `pm:Coupling` already carries a dependence between two layers INSIDE one stack, and
-  refutation.xml files one. ⛔ BUT A FILING IS ATTESTABLE BY THE PARTY THAT FILES IT. A
+  `pm:Coupling` carries a dependence between two layers inside one stack, and
+  refutation.xml files one. But a filing is attested by the party that files it. A
   coupling inside the subsidiary's document naming the parent's layer would be a claim the
-  subsidiary CANNOT ATTEST TO, because it cannot see the parent's stack, and the
-  keyrefs could not follow it, so it would validate by not being checked.
+  subsidiary cannot attest to, because it cannot see the parent's stack; and the keyrefs
+  could not follow it, so it would validate without being checked.
 
-  ⭐ So the group consolidator files it. They have read both filings; neither filer has.
+  So the group consolidator files it. They have read both filings; neither filer has.
 
   Read three things closely:
 
-    * ⭐⭐ THE TWO ENDS ARE UNDER DIFFERENT REGIMES, AND THAT IS THE ORDINARY CASE, NOT
-      AN EDGE ONE. A Portuguese subsidiary under NCRF-PE and a US parent under US-GAAP
-      measure a remainder differently. Both regimes are declared once at the top and each
-      end names which one it reported under, so the reason two numbers disagree is
-      queryable rather than buried in the prose.
+    * The two ends are under different regimes, which is the ordinary case. A Portuguese
+      subsidiary under NC-ME and a US parent under US-GAAP measure a remainder
+      differently. Both regimes are declared once at the top, and each end names the one
+      it reported under, so the reason two numbers disagree can be queried instead of
+      being buried in prose.
 
-    * ⭐ THE CHARTS DIFFER TOO, AND THE US END AUTHORS ITS OWN. There is no United States
-      chart of accounts; the parent is the authority for its own account list. The
-      subsidiary posts to Portugal's SNC.
+    * The charts differ too. The United States has no national chart of accounts, so the
+      parent is the authority for its own account list; the subsidiary posts to
+      Portugal's SNC.
 
-    * ⛔ `observed` CARRIES THE WHOLE EVIDENCE, and it must, because BOTH ENDS ARE
-      ELSEWHERE. A reader who doubts refutation.xml's own coupling can read the rest of
-      that filing. A reader who doubts this one has only this sentence.
+    * `observed` carries all the evidence, and it has to, because both ends are
+      elsewhere. A reader who doubts refutation.xml's own coupling can read the rest of
+      that filing; a reader who doubts this one has only this sentence.
 
-  ⚠️ Illustrative. The two `notation` URIs stand for the two filings in this directory a
-  reader can open (refutation.xml and enterprise-contract.xml), so the ends can be
-  checked by hand, which is exactly where no validator can help.
+  Illustrative. The two `notation` URIs name no document in this directory, though the
+  layers they point at, `compute` and `labour`, are filed in refutation.xml and
+  enterprise-contract.xml. Checking the ends is left to the reader, which is where no
+  validator can help.
 -->
 <asrt:dependence xmlns:asrt="https://example.invalid/assertion/1.0"
                  xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -40,10 +40,9 @@
   </asrt:evidence>
   <asrt:observedAt>2026-08-30</asrt:observedAt>
 
-  <!-- ⚠️ The observer, and the standing of the observation. `reviewed-not-audited` is
-       what separates this from a statutory auditor's version of the same sentence, and
-       standing is a BorrowedTerm because neither this schema nor any witness owns that
-       set. -->
+  <!-- The observer, and the standing of the observation. `reviewed-not-audited` is what
+       separates this from a statutory auditor's version of the same sentence, and standing
+       is a `BorrowedTerm` because neither this schema nor any witness owns that list. -->
   <asrt:provenance>
     <pm:party>Acme Group</pm:party>
     <pm:enteredBy>group-controller</pm:enteredBy>
@@ -83,7 +82,8 @@
         <pm:value>us-gaap</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- ⭐ No US chart of accounts exists, so the parent is its own authority. -->
+    <!-- The United States has no national chart of accounts, so the parent is its own
+         authority. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
@@ -92,8 +92,8 @@
     </pm:chart>
   </asrt:regime>
 
-  <!-- ⚠️ Why this observer could see both filings at all. Optional, and a dependence
-       without it is weaker, and a receiver is entitled to say so. -->
+  <!-- Why this observer could see both filings at all. Optional: a dependence without it
+       is weaker, and a receiver may say so. -->
   <asrt:citation>
     <asrt:instrument>
       <pm:taxonomy>urn:example:assurance:group-engagement</pm:taxonomy>
@@ -139,14 +139,14 @@
                    no change to its own headcount, rota or release cadence. Neither
                    filing can see the other, and neither records the transfer: the
                    subsidiary's capacity decision relieved a remainder that lands in the
-                   parent's books. ⚠️ One quarter, two filings, and not controlled:
-                   the parent also closed an enterprise contract in the same window,
-                   which would move labour on its own. It is filed as the observation
-                   rather than as a conclusion, which is what this document is for.</asrt:observed>
+                   parent's books. One quarter, two filings, and not controlled: the
+                   parent also closed an enterprise contract in the same quarter, which
+                   would move labour on its own. It is filed as an observation, not as a
+                   conclusion.</asrt:observed>
 
-    <!-- ⭐ The direction is known and the magnitude is not, which is `Remainder/sign`'s
-         case one level up. The range is wide on purpose: the two ends measure under
-         different frameworks, and a unit is not a conversion licence. -->
+    <!-- The direction is known and the size is not, as with `Remainder/sign`, one level
+         up. The range is wide on purpose: the two ends measure under different
+         frameworks, and sharing a unit does not license a conversion. -->
     <asrt:strength>
       <pm:claim>
         <pm:low>0.1</pm:low>

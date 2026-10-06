@@ -3,9 +3,9 @@
 #
 # The roster is the authority
 #   The example reads it rather than restating it. A list of governed relations written in Rust
-#   would be a second copy free to drift from the one the SQL uses, which is the exact failure this
+#   would be a second copy free to drift from the one the SQL uses, which is the failure this
 #   contract exists to prevent one level down.
--- algebra/roster.sqlc, projected to what the tree-walk needs.
+-- algebra/roster.sqlc, projected to what the walk over the files needs.
 SELECT r.governs      AS "governs!",
        r.form         AS "form!",
        r.multiplicity AS "multiplicity!"

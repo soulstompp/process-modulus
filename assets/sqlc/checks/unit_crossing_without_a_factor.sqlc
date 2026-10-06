@@ -1,28 +1,28 @@
-# Every fusion part whose unit differs from the layer it is composed into, beside whether it
-# files a conversion. One row per crossing, `violates` where no factor is filed at all.
+# Every fusion part whose unit differs from the layer it is composed into, beside whether it files
+# a conversion. One row per crossing, `violates` where no factor is filed at all.
 #
 # Crossing a unit boundary needs a conversion
 #   The rule: cross a unit boundary and you must say what converts. `asrt:factor` is
-#   `minOccurs="0"` and stays that way, because a part already quoted in the composed layer's
-#   unit has nothing to convert and a factor of one there would be boilerplate with no author.
-#   The moment the units differ that stops being true: somebody is asserting the two are
-#   interchangeable, and an assertion needs a filer.
+#   `minOccurs="0"` and stays that way, because a part already quoted in the composed layer's unit
+#   has nothing to convert, and a factor of one there would be boilerplate with no author. Once
+#   the units differ that stops being true: somebody is asserting the two are interchangeable, and
+#   an assertion needs a filer.
 #
 # Without this rule the query makes the assertion
 #   `composition/converted.sqlc` reads a missing factor as one. A part crossing from `pessoas` to
-#   `people`, or from `turnos por semana` to `shifts per week`, with no factor at all, makes the
-#   SQL assert that a Portuguese person and an English person are one unit, on nobody's
-#   authority. That is a judgement this repository has twice refused to make in a query,
-#   arriving through the back door as a `coalesce`.
+#   `people`, or from `turnos por semana` to `shifts per week`, with no factor at all, would make
+#   the SQL assert that a Portuguese person and an English person are one unit, on nobody's
+#   authority. That is a judgement this repository refuses to make in a query, and a `coalesce`
+#   would make it quietly.
 #
 # Not an idle judgement
-#   If one member counts heads and the other counts full-time equivalents, the factor is not one
-#   and every composed figure above it is wrong by the difference. Filing [1, 1, 1] with a
-#   `boundOrigin` and a provenance says a person checked.
+#   If one member counts heads and the other counts full-time equivalents, the factor is not one,
+#   and every composed figure above it is wrong by the difference. Filing a factor of one at all
+#   three points, with a `boundOrigin` and a provenance, says a person checked.
 #
 # A typed-absent factor satisfies this rule
-#   It suspends the sum instead, via `composition/unsized_conversions.sqlc`. "Somebody looked at
-#   the crossing and cannot size it" is an answer; saying nothing is not.
+#   It suspends the sum instead, through `composition/unsized_conversions.sqlc`. "Somebody looked
+#   at the crossing and cannot size it" is an answer; saying nothing is not.
 -- asrt:Part against its composed pm:Layer's unit, per quantity they both file.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
@@ -39,7 +39,8 @@ LEFT JOIN (
                            WHEN 'stated'     THEN 'filed'
                            WHEN 'absent'     THEN format('filed as `%s`', p.factor_absent)
                            WHEN 'derivation' THEN format('filed as the output of `%s`', p.factor_derivation)
-                           WHEN 'omitted'    THEN 'NOT FILED, so a reader supplies one' END) AS detail
+                           WHEN 'omitted'    THEN 'not filed, so a reader supplies one'
+                      END) AS detail
         FROM (
             :compose(composition/part_quantities.sqlc)
         ) p

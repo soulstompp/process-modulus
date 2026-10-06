@@ -2,66 +2,66 @@
 # one per category, one per lane set, and one per dependence.
 #
 # `documentation` is not a container
-#   `definitions`, `collaboration`, `process` and `laneSet` frame a document and must appear
-#   exactly once in it. `documentation` is an annotation: BPMN admits it on any base element, so
-#   counting it as one per document is a law that happens to be true and is wrong about the kind
-#   of thing it governs. It fires the instant a lane is annotated.
+#   `definitions`, `collaboration`, `process` and `laneSet` frame a document and must appear exactly
+#   once in it. `documentation` is an annotation: BPMN admits it on any base element, so counting it
+#   as one per document would be a law that happens to hold and is wrong about the kind of thing it
+#   governs. It would fail the moment a lane is annotated.
 #
 # Provenance is owed by both
-#   For the same reason the `--` line is owed by generated SQL. A document says which filing it
-#   came from; a lane says its rank, which is not recoverable from anything else in the artifact
-#   because `calledElement` names a process and `F` links layers. A lane with no documentation is
-#   a lane whose evaluation order nobody can read.
+#   For the reason the `--` line is owed by generated SQL. A document says which filing it came
+#   from; a lane says its place in the evaluation order, which cannot be recovered from anything
+#   else in the artifact, because `calledElement` names a process and the parts link layers. A lane
+#   with no documentation is a lane whose evaluation order nobody can read.
 #
 # A category owes one
-#   For the reason this whole file tree exists. The only visual difference between a `group` and
-#   a `lane` is a dashed border, and the reader of a diagram is the brilliant analyst who reads a
-#   box as a container. BPMN's semantics do say a group implies no containment, and semantics are
-#   not what somebody reads off a picture in a deck. A category with no documentation is a cover
-#   that will be read as a partition, which is the falsifier of pm:Layer drawn by accident.
+#   The only visual difference between a `group` and a `lane` is a dashed border, and the reader of
+#   a diagram is an analyst who reads a box as a container. BPMN's semantics do say a group implies
+#   no containment, and semantics are not what somebody reads off a picture in a deck. A category
+#   with no documentation is a cover that will be read as a division into parts, which is the
+#   falsifier of pm:Layer drawn by accident.
 #
 # The `laneSet` row carries the search
-#   It carries a fact nothing else could. A matrix and the search beside it are filed as a pair,
-#   and most filings here state no coupling, so a diagram drawing only the matrix is silent about
-#   them in a way a reader resolves as independence. The laneSet is the partition the search is
-#   about, `tLaneSet` extends `tBaseElement`, and so the answer fits an element already spent. An
-#   absent line is not independence, and this is the only place the artifact can say so.
+#   It carries a fact nothing else can. The couplings and the search beside them are filed as a
+#   pair, and most filings here state no coupling, so a diagram drawing only the couplings is
+#   silent about the rest in a way a reader takes as independence. The lane set is the division the
+#   search is about, `tLaneSet` extends `tBaseElement`, and so the answer fits an element already
+#   spent. An absent line is not independence, and this is the only place the artifact can say so.
 #
 # `states` is the `--` line
-#   Carried into the artifact. A generated `.sql` file names the template it came from on one
-#   line, because a reader of thousands of generated lines otherwise cannot get back to the
-#   argument. A `documentation` element is in exactly that position: without `states` the sentence
-#   is on the page, the relation that states it is not, and no reader of a `.bpmn` has a route
-#   back. A sentence about a filing with nothing naming its source is a claim the emitter made,
-#   which is the `invents` state this roster already caught once in a hardcoded scope.
+#   Carried into the artifact. A generated `.sql` file names the template it came from on one line,
+#   because a reader of thousands of generated lines otherwise cannot get back to the argument. A
+#   `documentation` element is in the same position: without `states` the sentence is on the page,
+#   the relation that states it is not, and no reader of a `.bpmn` has a way back. A sentence about
+#   a filing with nothing naming its source is a claim the emitter made, which is the `invents`
+#   state.
 #
 # The `lane` row cites another relation
-#   It points somewhere else than its own arm, which makes it the interesting one.
-#   `layers/every_layer.sqlc` says a lane is owed one; the sentence it carries states a rank, and
-#   that comes from `rank/evaluation_order.sqlc`. Owed by and stated by are two different
-#   questions, and only one of them is what a reader chasing a number needs. Every other row here
-#   answers both with the same relation, which is why writing it down was easy to skip.
+#   It points somewhere other than its own branch, which makes it the interesting one.
+#   `layers/every_layer.sqlc` says a lane is owed one; the sentence it carries states a place in the
+#   evaluation order, and that comes from `rank/evaluation_order.sqlc`. Owed by and stated by are
+#   two different questions, and only one of them is what a reader chasing a number needs. Every
+#   other row here answers both with the same relation, which is why writing it down is easy to
+#   skip.
 #
 # A task naming a position owes one
-#   That is the one sentence in these documents that points out of the notation rather than into
-#   the model. `pm:Operation/foreignId` names a node in a BPMN document that travels beside the
-#   filing and is not this one: this document is a rendering of the model, and that id belongs to
-#   the process notation the filer was actually reading. So it must not become the task's own
-#   `id`, which would claim the two documents are one, and it cannot be a `relationship`, whose
-#   `source` and `target` are QNames and need an `import` that needs a location nobody filed. A
+#   It is the one sentence in these documents that points out of the notation rather than into the
+#   model. `pm:Operation/foreignId` names a node in a BPMN document that travels beside the filing
+#   and is not this one: this document is a rendering of the model, and that id belongs to the
+#   process notation the filer was actually reading. So it must not become the task's own `id`,
+#   which would claim the two documents are one, and it cannot be a `relationship`, whose `source`
+#   and `target` are QNames and need an `import` that needs a location nobody filed. A
 #   `documentation` is what is left, and `demoted` is the honest word for it: a person can read the
-#   id and a tool cannot resolve it, which is the state `pm:ForeignId` intends, because no
-#   authority publishes the list a tool would resolve against.
+#   id and a tool cannot resolve it, which is the state `pm:ForeignId` intends, because no authority
+#   publishes the list a tool would resolve against.
 #
 # A task naming no position owes one too
 #   This is the `coupling_search` argument at a second address. A lane set carries whether anybody
 #   looked for a dependence, because an absent line reads as independence. A task with no position
-#   reads as *this model does not reach the notation*, and `notationPosition` is required precisely
-#   so the filing can say which of three things it means: in no notation and somebody looked, in a
-#   notation nobody has located it in, or no notation to point into at all. Emitting the stated arm
-#   alone would put the answer on the page for the operations that cross and leave the far more
-#   common case looking like a gap in the model rather than an answer in the document.
-#
+#   reads as "this model does not reach the notation", and `notationPosition` is required so the
+#   filing can say which of three things it means: in no notation and somebody looked, in a notation
+#   nobody has located it in, or no notation to point into at all. Emitting the stated branch alone
+#   would put the answer on the page for the operations that cross, and leave the far more common
+#   case looking like a gap in the model rather than an answer in the document.
 -- the pools, the lanes and the categories, which are the three places provenance is owed.
 SELECT 'document' AS annotated, d.filing AS subject,
        'diagrams/pools.sqlc' AS states

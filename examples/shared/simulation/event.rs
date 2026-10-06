@@ -1,9 +1,9 @@
 //! The history: what actually happened, at full resolution.
 //!
-//! ⭐⭐ EVERY VARIANT HERE IS SOMETHING NO FILING CAN CONTAIN. A filing carries totals over a
-//! window; this carries the events those totals are a fold of. The point of writing it out is
-//! that the fold is then a function you can read, and the things it drops are visible as the
-//! fields no longer mentioned on the other side.
+//! Every variant here is something no filing can contain. A filing carries totals over a window;
+//! this carries the events those totals are added up from. Written out, the adding up is a
+//! function you can read, and what it drops shows as the fields no longer mentioned on the other
+//! side.
 
 use std::time::Duration;
 
@@ -16,9 +16,9 @@ pub struct Record {
     pub what: Event,
 }
 
-/// ⛔ THE FIVE UNSERVED-OR-NOT OUTCOMES ARE DELIBERATELY SEPARATE VARIANTS. `Refused` and
-/// `Reneged` are the same magnitude of shortfall and different `pm:HolderKind`s, and keeping
-/// them apart here is what lets `instrument.rs` demonstrate an instrument collapsing them.
+/// The outcomes are separate variants on purpose. `Refused` and `Reneged` are the same size of
+/// shortfall and different `pm:HolderKind`s, and keeping them apart here is what lets
+/// `instrument.rs` show an instrument merging them.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Event {
     /// Somebody asked for `size` and is prepared to wait `patience`.
@@ -43,35 +43,35 @@ pub enum Event {
         size: f64,
         waited: Duration,
     },
-    /// A whole lot came off the line. ⭐ THE QUANTUM IS HERE: supply arrives in lots and demand
-    /// arrives in arbitrary sizes, and `r = n − d` is the difference that fact creates.
+    /// A whole lot came off the line. This is the quantum: supply arrives in lots and demand
+    /// arrives in any size, and the remainder between them comes from that.
     Produced { lot: f64 },
     /// A lot was pulled forward and made inside a cycle rather than at its end.
     ///
-    /// ⭐⭐⭐ THE THIRD BUFFER, AND WITHOUT IT THE BENCH CANNOT SHOW THE ONE THING THE MODEL IS
-    /// ABOUT. Factory Physics says a shortfall is absorbed by inventory, by capacity or by time,
-    /// AS SUBSTITUTES. A line with only two of the three can never demonstrate a substitution,
-    /// and two rules in `assets/sql/checks/` had no population anywhere in the corpus for exactly
-    /// this reason: nothing had ever filed a sized `capacitySlack`.
+    /// The third buffer, without which the bench cannot show what the model is about. Factory
+    /// Physics says a shortfall is absorbed by inventory, by capacity or by time, each able to
+    /// stand in for another. A line with only two of the three can never show one standing in,
+    /// and only a line that runs above its rating files a sized `capacitySlack` for the rules in
+    /// `assets/sql/checks/` to read.
     RanHot { lot: f64 },
     /// A lot was not started, because the stock was full and nobody was waiting.
     ///
-    /// ⭐⭐⭐ THIS IS THE CLEARANCE, AND THE SCHEMA IS EXPLICIT THAT IT IS NOT A SLACK. Idle
-    /// capacity IS the capacity buffer, and `Nameplate/capacitySlack` measures the opposite end,
-    /// the room ABOVE the rating. A line that runs below its rating is filing a positive
-    /// remainder absorbed by `capacity`, not a capacity slack, and the two are half an axis apart.
+    /// This is the clearance, and the schema says it is not a slack. Idle capacity is the
+    /// capacity buffer, and `Nameplate/capacitySlack` measures the other end, the room above the
+    /// rating. A line that runs below its rating files a positive remainder absorbed by
+    /// `capacity`, not a capacity slack.
     Idled { lot: f64 },
-    /// A lot was made with nowhere to hold it. ⛔ UNREACHABLE WHILE THE LINE IDLES, and kept
-    /// because a continuous process that cannot stop is a real thing and would produce it.
+    /// A lot was made with nowhere to hold it. It cannot happen while the line idles, and it is
+    /// kept because a continuous process that cannot stop is real and would produce it.
     Spilled { amount: f64 },
 }
 
 
 /// A deterministic source of variation, so that a run is a function of its seed.
 ///
-/// ⛔ NOT A LIBRARY, ON PURPOSE. `tests/independence.rs` allowlists every dependency and each
-/// name is a route by which somebody else's types arrive. Twelve lines of arithmetic is a
-/// smaller thing to own than an entry on that list.
+/// Not a library, on purpose. `tests/independence.rs` allowlists every dependency, and each name
+/// on it is a route by which somebody else's types arrive. A few lines of arithmetic are a smaller
+/// thing to own than an entry on that list.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Seeded(u64);
 

@@ -1,31 +1,20 @@
-//! ⛔⛔⛔ WHICH OF THE SCHEMA'S ANNOTATIONS SPEAK PORTUGUESE, DECLARED RATHER THAN COUNTED.
+//! Which schema annotations carry their Portuguese, and that every published page has its own.
 //!
-//! The schemas are mostly prose, and that prose is the artifact: `cargo doc` renders it, an
-//! adopter reads it, and it carries rules no validator can reach. A schema whose prose exists
-//! only in English is readable by one audience, and this model's origin and its hardest
-//! jurisdiction are both Portuguese.
+//! The schemas are mostly prose, and that prose is what an adopter reads: `cargo doc` renders it,
+//! and it carries rules no validator reaches. This model's origin and its hardest jurisdiction are
+//! both Portuguese, so the prose is written in both languages.
 //!
-//! ⭐⭐ XSD SOLVES THIS NATIVELY AND NOTHING WAS INVENTED. A single `xs:annotation` may hold
-//! several `xs:documentation` children, each tagged with `xml:lang`. One schema stays one
-//! schema — the artifact does not fork — and a validator ignores annotations entirely.
+//! An `xs:annotation` may hold several `xs:documentation` children, each tagged with `xml:lang`, so
+//! one schema carries both languages, and a validator ignores every one of them.
 //!
-//! ⚠️ COVERAGE IS PARTIAL, AND THAT IS THE WHOLE REASON THIS FILE EXISTS. Declaring the
-//! translated set here means a Portuguese annotation cannot be dropped silently, and the
-//! untranslated remainder is a number a reader can see rather than a claim nobody checked.
-//! ⛔ This test does NOT judge the translations. It cannot. It checks that they are present,
-//! that they are not stubs, and that the English is still there beside them.
+//! Not every annotation has its Portuguese yet. The ones that do are declared in `TRANSLATED`, so
+//! none can lose its Portuguese without this test failing, and the rest are printed as a count. The
+//! test does not judge a translation. It checks that each one is there, that it is not a stub, and
+//! that the English is still beside it.
 //!
-//! ⭐⭐⭐ AND THE SAME ARGUMENT REACHES THE MARKDOWN, WHERE COVERAGE IS NOT PARTIAL. A published
-//! page carries rules no validator reaches exactly as an annotation does, and it is what a reader
-//! browsing the repository lands on, so the roster idiom above is the wrong shape for it: every
-//! one of them owes a Portuguese sibling, so the law is a closure rather than a declared list.
-//! A directory whose argument exists in English alone is a directory one audience cannot use.
-//!
-//! ⛔⛔ AND THE CLOSURE IS OVER EVERY PUBLISHED PAGE, NOT OVER THE NAME `README.md`. A law keyed
-//! on one file name holds exactly until somebody writes a page called something else, and then it
-//! reports success about a file it never looked at. `conformance/adoption.md` is that page and it
-//! was already translated, which is the only reason the widening accuses nothing: the rule was
-//! being kept by hand where the law could not see it.
+//! Every published page has its Portuguese page, at the same path under `pt-PT/`, so for the pages
+//! the rule covers all of them rather than a declared few. It reaches every page git publishes,
+//! whatever the page is called.
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -36,8 +25,8 @@ use published::{portuguese_of, published_documents, root};
 
 /// Every declaration that carries a Portuguese annotation today.
 ///
-/// ⛔ ADDING A NAME HERE IS THE WHOLE DECISION, exactly as it is in `tests/independence.rs`.
-/// The list is the claim; the assertions below only hold the schema to it.
+/// Adding a name here is the decision to translate that annotation, as adding one to `PERMITTED`
+/// in `tests/independence.rs` is the decision there. The tests below hold the schemas to this list.
 const TRANSLATED: [(&str, &str); 90] = [
     ("process-modulus.xsd", "Remainder"),
     ("process-modulus.xsd", "Fit"),
@@ -152,10 +141,10 @@ fn translated_in(src: &str) -> BTreeSet<String> {
     found
 }
 
-/// ⭐ The declared set is exactly what the schemas carry — no more, and no fewer.
+/// The declared set is exactly what the schemas carry, no more and no fewer.
 ///
-/// ⛔ The failure this catches is a Portuguese block deleted by a careless edit to a long
-/// annotation, which is invisible in review because the English above it still reads fine.
+/// It fails when an edit to a long annotation deletes its Portuguese block, which review misses,
+/// because the English above it still reads fine.
 #[test]
 fn every_declared_translation_is_present_and_no_others_are() {
     for file in ["process-modulus.xsd", "assertion.xsd"] {
@@ -174,11 +163,10 @@ fn every_declared_translation_is_present_and_no_others_are() {
     }
 }
 
-/// ⛔⛔ A TRANSLATION SITS BESIDE THE ENGLISH AND NEVER REPLACES IT.
+/// A translation sits beside the English and never replaces it.
 ///
-/// The English annotation is what the rest of the repository, the findings and the
-/// conformance rules all quote. A Portuguese block that displaced it would silently break
-/// every one of those references.
+/// The rest of the repository, the conformance rules among it, quotes the English annotations, and
+/// a Portuguese block that took an English one's place would break every one of those quotes.
 #[test]
 fn the_english_is_still_there_beside_every_translation() {
     for file in ["process-modulus.xsd", "assertion.xsd"] {
@@ -193,13 +181,11 @@ fn the_english_is_still_there_beside_every_translation() {
     }
 }
 
-/// ⚠️ A stub is worse than an honest gap, because it reports as covered.
+/// A stub reports as covered, which makes it worse than an honest gap.
 ///
-/// ⛔ MEASURED AGAINST ITS OWN ENGLISH SIBLING AND NEVER AGAINST A FIXED FLOOR. An absolute
-/// minimum called `asrt:run` a stub — its English is two lines, so a faithful translation is
-/// two lines — while it would have waved through a one-paragraph rendering of `Nameplate`,
-/// whose English runs to eight thousand characters. The question is never "is this long
-/// enough", it is "did this annotation lose most of itself in translation".
+/// Each Portuguese block is held against its own English block, never against a fixed length:
+/// `asrt:run`'s English is two lines, so its Portuguese is two lines as well, while `Nameplate`'s
+/// runs to pages. What the test asks is whether an annotation lost most of itself on the way.
 #[test]
 fn no_translation_is_a_stub() {
     for file in ["process-modulus.xsd", "assertion.xsd"] {
@@ -225,7 +211,7 @@ fn no_translation_is_a_stub() {
             assert!(
                 pt.contains("**Português.**"),
                 "{file}: a Portuguese block is missing its label. The generator concatenates \
-                 every xs:documentation into ONE Rust doc comment, so without the label the \
+                 every xs:documentation into one Rust doc comment, so without the label the \
                  two languages run together into one paragraph in `cargo doc`"
             );
             // Portuguese runs a little longer than English as a rule, so half is generous.
@@ -242,11 +228,10 @@ fn no_translation_is_a_stub() {
     }
 }
 
-/// ⭐ What is NOT translated, reported rather than hidden.
+/// What is not translated yet, printed rather than hidden.
 ///
-/// ⛔ This asserts a floor and never a percentage. A coverage number that only ever goes up
-/// is the metric this repository already refuses elsewhere: it would make adding a short
-/// annotation look like a regression and tempt somebody to translate the cheap ones.
+/// It asserts that each schema carries some Portuguese, and never a percentage: a percentage that
+/// may only rise would make a short new annotation look like a step back.
 #[test]
 fn the_untranslated_remainder_is_visible() {
     let mut total = 0usize;
@@ -270,14 +255,13 @@ fn the_untranslated_remainder_is_visible() {
 }
 
 // ---------------------------------------------------------------------------
-// The markdown, where the rule is a closure and not a roster
+// The pages, where every one owes its Portuguese rather than a declared few
 // ---------------------------------------------------------------------------
 
-/// ⭐ Every published page has a Portuguese sibling, and it is a translation rather than a note.
+/// Every published page has its Portuguese page, and it is a translation rather than a note.
 ///
-/// ⛔ THE FAILURE THIS CATCHES IS A NEW PAGE, not a deleted file. Somebody writes a page to
-/// explain something they just built, in the language they were thinking in, and nothing asks
-/// about the other one. Measured when this law was written, three directories were in that state.
+/// It fails on a new page, the one somebody writes in a single language to explain what they have
+/// just built, which nothing else would ask about.
 #[test]
 fn every_published_document_has_a_portuguese_sibling_and_it_is_not_a_stub() {
     for shown in published_documents() {
@@ -299,7 +283,7 @@ fn every_published_document_has_a_portuguese_sibling_and_it_is_not_a_stub() {
              Every other one opens with it, and a reader is owed the same sentence about which \
              spelling and which version is authoritative."
         );
-        // Measured against its own sibling, never against a fixed floor: see `no_translation_is_a_stub`.
+        // Held against its own English page, never a fixed length: see `no_translation_is_a_stub`.
         assert!(
             body_pt.len() * 2 >= body_en.len(),
             "{shown}: {} chars of Portuguese against {} of English is a summary rather than a \

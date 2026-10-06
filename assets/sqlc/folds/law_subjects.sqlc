@@ -1,20 +1,20 @@
 # Every law algebra/roster.sqlc declares or algebra/all.sqlc emits, with that law's rows counted by
 # verdict. One row per law.
 #
-# The same fold as the rules'
-#   folds/rule_subjects.sqlc argues it: the roster drives, so a declared law no row names is a row
+# Counted as the rules are
+#   folds/rule_subjects.sqlc says why: the roster drives, so a declared law no row names is a row
 #   with every count at zero, and the outer join is full, so a law the population names and the
 #   roster does not is a row with `declared` false.
 #
-# The boxes
+# The counts
 #   `answered` is a row with a verdict, and splits into `holding` and `failing`. `silent` is a
 #   subject the law examined and returned no verdict on; `vacuous` is the roster's own row, emitted
-#   when the law has no subject at all. Each box is counted by its own predicate.
+#   when the law has no subject at all. Each is counted by its own predicate.
 #
 # No law in algebra/ can hold this one
-#   Its population is algebra/all.sqlc, so a law composing it would compose itself. The soundness
-#   example holds it instead: it already reads every law's rows through
-#   queries/soundness/1-laws.sqlc, counts them per law into the same boxes, and compares.
+#   Its population is algebra/all.sqlc, so a law composing it would compose itself.
+#   `examples/soundness` holds it instead: it already reads every law's rows through
+#   queries/soundness/1-laws.sqlc, counts them per law into the same columns, and compares.
 -- algebra/roster.sqlc against algebra/all.sqlc, one row per law.
 SELECT coalesce(g.slug, w.law)                                                AS subject,
        g.slug IS NOT NULL                                                     AS declared,

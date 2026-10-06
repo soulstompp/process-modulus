@@ -4,8 +4,8 @@
 #
 # A size filed absent is outside the question
 #   A supply may come in lumps of a size nobody measured, and `LumpyQuantum/size` files that as a
-#   typed absence. There is then no unit to compare, so the layer is not in the population; read
-#   as `IS DISTINCT FROM` against a NULL unit, it would be accused of a mismatch it cannot have.
+#   typed blank. There is then no unit to compare, so the layer is not in the population; compared
+#   with `IS DISTINCT FROM` against a NULL unit, it would be accused of a mismatch it cannot have.
 #
 # A quantum is in the nameplate's unit
 #   The rule: a quantum is expressed in the unit of the nameplate it divides. "Is the nameplate a

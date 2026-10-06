@@ -4,33 +4,32 @@
 #
 # The row the roster join exists to produce
 #   That is the row this counts. A check that merely filtered its population would vanish from a
-#   `GROUP BY` when the population was empty, so `VACUOUS` would be delivered by silence. Every
-#   arm joins its roster with `LEFT JOIN … ON true` so the row exists before the population does,
-#   and this counts it.
+#   `GROUP BY` when the population was empty, so `VACUOUS` would be delivered by silence. Every arm
+#   joins its roster with `LEFT JOIN … ON true`, so the row exists before the population does, and
+#   this counts it.
 #
 # A law only on an empty corpus
-#   Which is why examples/soundness/main.rs empties one. With rows on hand an arm emits
-#   `1 + examined` either way and a broken join is invisible; with none it emits exactly one row,
-#   or zero if the join stopped carrying the roster. That is the whole finding this closes: the
-#   guard's reach was a property of the corpus, and the corpus is something this repository can
-#   construct.
+#   Which is why `examples/soundness` empties one. With rows on hand, an arm emits `1 + examined`
+#   either way and a broken join cannot be seen; with none, it emits exactly one row, or zero if the
+#   join stopped carrying the roster. Otherwise the guard's reach would be a property of the corpus,
+#   and the corpus is something this repository can build.
 #
 # The verdict count is not decoration
-#   `violates` is NULL only on the row that says a rule examined nothing, so over an empty corpus
-#   a non-NULL verdict is a check answering a question about rows it does not have. One row
-#   carrying an answer and no row at all are different defects, and the row count alone cannot
-#   tell them apart.
+#   `violates` is NULL only on the row that says a rule examined nothing, so over an empty corpus a
+#   non-NULL verdict is a check answering a question about rows it does not have. One row carrying
+#   an answer and no row at all are different defects, and the row count alone cannot tell them
+#   apart.
 #
-# Algebra is not here and could not be
-#   Its subjects are the governed relations named on algebra/roster.sqlc, not rows of the corpus,
-#   so emptying the corpus does not empty them. Its subject rows survive an empty database
-#   untouched and this law would say nothing about them.
+# The laws are not here, and could not be
+#   Their subjects are the governed relations named on algebra/roster.sqlc, not rows of the corpus,
+#   so emptying the corpus does not empty them. Their subject rows survive an empty database
+#   untouched, and this law would say nothing about them.
 #
 # Rows, not verdicts
 #   It counts rows rather than verdicts, which is what separates it from rank/guard_reach.sqlc.
-#   That relation counts `violates IS NOT NULL` on purpose, so the roster row is invisible to it
-#   and a join that stopped carrying the roster leaves its output byte for byte identical. The two
-#   read the same relation and cannot substitute for each other.
+#   That relation counts `violates IS NOT NULL` on purpose, so the roster row is invisible to it,
+#   and a join that stopped carrying the roster leaves its output identical byte for byte. The two
+#   read the same relation and cannot stand in for each other.
 -- folds/rule_subjects.sqlc and folds/site_subjects.sqlc, restricted to what each roster declares.
 SELECT 'rules' AS "contract!", f.subject AS "subject!", f.rows AS "rows!",
        f.answered AS "verdicts!"

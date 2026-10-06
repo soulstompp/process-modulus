@@ -2,14 +2,15 @@
 # taken. One row per layer with a computable remainder and at least one holder.
 #
 # One unstated share suspends the sum
-#   It does not break it, and checks/shares_do_not_sum already knows that: it examines only the
-#   layers with no unstated share. This relation says which layers it leaves out and why, which
-#   the check cannot. A share filed as `sharesSum`'s output is unstated too, and the detail names
-#   the identity, because nothing here computes a share from the others.
+#   It does not break it, and checks/shares_do_not_sum examines only the layers with no unstated
+#   share. This relation says which layers it leaves out and why, which the check cannot. A share
+#   filed as `sharesSum`'s output is unstated too, and the detail names `sharesSum`, because
+#   nothing here computes a share from the others.
 #
-# The unit pair is `share_unit` against the layer's own
-#   H is a distribution over the magnitude of `r`, so a share quoted in another unit is not a
-#   smaller share, it is not a share of this. No unit rule compares them.
+# The share's unit against the layer's own
+#   The holders divide the size of the remainder between them, so a share quoted in another unit
+#   is not a smaller share; it is not a share of this remainder at all. No unit rule compares them,
+#   and this site reports `not comparable` where they differ.
 -- pm:Remainder/pm:holder against the layer the magnitude belongs to.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (

@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "-- the mapping's own history: what was tried, what replaced it, and where BPMN is simply wider.\nSELECT * FROM (VALUES\n  ('subProcess'::text, 'childLaneSet'::text, NULL::boolean,\n   'A local fusion divides its composed layer among its parts; it is not an activity. '\n   '`subProcess` is a flow node, so it collapses layer to document exactly as `calledElement` '\n   'does; a nested lane keeps the key `(filing, layer)`'::text),\n  ('partitionElementRef', NULL, true,\n   'The only place BPMN is the finer of the two. `tLane` carries this for what the lanes are '\n   'divided by, per lane. The nearest filler is the absorber buffer, and it does not fit: '\n   'several layers of one filing can share one buffer, so pointing at it would assert a '\n   'division the model does not make. A layer''s identity is its name and nothing else, so '\n   'there is no element to point at')\n) AS s(element, superseded_by, no_such_fact, why)\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "element",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "superseded_by",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "no_such_fact",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "why",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "69a2b229662417712c08643cfa2ea9b2a584d49c6f402e8354fb23aa41d40aff"
+}

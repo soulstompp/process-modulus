@@ -1,31 +1,32 @@
-# Every rule's declared fit domain, held against the compose DAG and against what it examined.
-# One row per rule named on checks/roster.sqlc, checks/fit_axes.sqlc or checks/fit_domain.sqlc:
-# whether its declaration is whole and true.
+# Every rule's declared fit cells, held against what it composes and against what it examined. One
+# row per rule named on checks/roster.sqlc, checks/fit_axes.sqlc or checks/fit_domain.sqlc:
+# whether its declaration is complete and true.
 #
 # What it asserts, per rule
-#   - it is on checks/roster.sqlc and declares exactly one axis;
-#   - it declares `not read` exactly when its closure in rank/rule_closure.sqlc reaches neither
-#     layers/remainder.sqlc nor layers/filed_remainders.sqlc, the two relations every fit a rule
-#     can read comes from;
-#   - a rule with an axis declares all four cells once each, and a rule reading no fit declares
+#   - it is on checks/roster.sqlc and declares exactly one side;
+#   - it declares `not read` exactly when the relations it composes in rank/rule_closure.sqlc
+#     include neither layers/remainder.sqlc nor layers/filed_remainders.sqlc, the two relations
+#     every fit a rule can read comes from;
+#   - a rule with a side declares all four cells once each, and a rule reading no fit declares
 #     none;
-#   - every declared cell is `exercised` exactly when reports/fit_coverage.sqlc counts an
-#     examined row in it.
+#   - every declared cell is `exercised` exactly when reports/fit_coverage.sqlc counts an examined
+#     row in it.
 #
 # Two routes that share no code
-#   The axis is a literal and the reach is the compose DAG, which examples/compositions/main.rs
-#   builds from the source tree. A rule that starts reading the fit through a new composition
-#   fails here until it declares an axis and its cells; one that stops reading it fails until it
-#   says `not read`. The standings are held against rows, both ways, so an open cell a new
-#   document fills fails as surely as an exercised cell that empties.
+#   The side is a literal, and what a rule reaches comes from the graph of which template composes
+#   which, which examples/compositions builds from the source files. A rule that starts reading the
+#   fit through a new composition fails here until it declares a side and its cells; one that stops
+#   reading it fails until it says `not read`. The standings are held against rows both ways, so an
+#   open cell a new document fills fails as surely as an exercised cell that empties.
 #
 # Probe
-#   examples/probes runs it as `fit_domain / cell` and `fit_domain / axis`.
-#   Two, one per route, both in memory. In the composed checks/fit_domain.sql mark
-#   `shares_do_not_sum`'s transition cell `exercised`: this law must fail for that rule alone. In
-#   the composed checks/fit_axes.sql give `draw_exceeds_the_supply` the axis `derived fit`: it must
-#   fail for that rule, whose closure reaches no fit.
--- checks/fit_axes.sqlc and checks/fit_domain.sqlc against rank/rule_closure.sqlc and reports/fit_coverage.sqlc.
+#   examples/probes runs it as `fit_domain / cell` and `fit_domain / axis`. Two, one per route,
+#   both in memory. In the composed checks/fit_domain.sql mark `shares_do_not_sum`'s transition
+#   cell `exercised`: this law must fail for that rule alone. In the composed checks/fit_axes.sql
+#   give `draw_exceeds_the_supply` the side `derived fit`: it must fail for that rule, which reaches
+#   no fit.
+-- checks/fit_axes.sqlc and checks/fit_domain.sqlc against rank/rule_closure.sqlc and
+-- reports/fit_coverage.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)

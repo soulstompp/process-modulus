@@ -1,49 +1,47 @@
-# One row per part that two composed layers are both built from, with the magnitude that would
-# enter twice. The pairwise intersection of the fusions' part sets, carrying the shared part's
-# own demand and nameplate: if anybody sums the two composed layers, this is the supply counted
-# twice and this is how much of it there is.
+# One row per part that two composed layers are both built from, with the amount that would enter
+# twice. The parts the two fusions share, each carrying its own demand and nameplate: if anybody
+# adds the two composed layers together, this is the supply counted twice, and this is how much of
+# it there is.
 #
-# In the part's own unit, at its mode
+# In the part's own unit, at its most likely value
 #   The figures are the part's, in the part's unit. Each composer may convert the part by its own
 #   factor, so in either composed layer's unit the doubled amount is this figure times that
-#   composer's factor, and the two need not be equal. The mode is enough for what this relation
-#   is: a referral that names the overlap, not a sum that owes a range.
+#   composer's factor, and the two need not be equal. The most likely value is enough for what this
+#   relation is: a referral that names the overlap, not a sum that owes a range.
 #
-# The exclusion is fully derivable here
-#   This is the point of pivoting to `F`. A layer's quantity is a magnitude, and from |A| and |B|
-#   nothing recovers |A intersect B|. But pivot from layer-indexed magnitudes to the part
-#   incidence and the elements are named: the overlap of two composed layers is a part, a part is
-#   a layer, and a layer carries its own figures. So `sum - e` closes with nothing filed. Set
-#   theory reaches all the way.
+# The overlap can be worked out here
+#   A layer's quantity is a size, and two sizes alone never say how much of them overlaps. Read
+#   through the parts, though, the overlap of two composed layers is named: it is a part, a part is
+#   a layer, and a layer carries its own figures. So the double count is worked out with nothing
+#   filed.
 #
 # Why `asrt:Elimination` still has to exist
 #   Inside one fusion the overlap need not be a whole part: `every-partial-elimination` shares 3 of
 #   each part's 10, and `merge-holding-composition/compute` eliminates 90 against parts of 545 and
-#   4.4. Nothing in the model names a slice of a part, so those magnitudes cannot be pivoted to and
-#   must be observed. The sub-part overlap is the only unreachable case, and `e` is the element
-#   that carries it.
+#   4.4. Nothing in the model names a slice of a part, so those amounts cannot be worked out and
+#   must be observed. An overlap inside a part is the only case out of reach, and the elimination
+#   is the element that carries it.
 #
-# The two-root case beside the one-root rule
-#   checks/jagged_layer.sqlc is the one-root case and this is the two-root case. That rule walks
-#   (root, leaf) pairs inside a single descent, and scopes itself on purpose: "only a nested
-#   composition can do this, so a single-level fusion is not examined however many parts it
-#   names". A holding composing a group and naming a member directly is two paths from one root.
-#   Two documents composing the same layer is two paths from two roots, no descent holds both, and
-#   widening the leaf rule would change its quantifier rather than its reach.
+# Two compositions beside one
+#   checks/jagged_layer.sqlc covers one composition and this covers two. That rule follows the
+#   paths down from the top of a single composition: a holding composing a group and also naming a
+#   member directly is two paths from one top. Two documents composing the same layer is two paths
+#   from two tops, no single composition holds both, and widening that rule would change what it
+#   asks rather than how far it reaches.
 #
 # A referral, never a violation
 #   Two filings composing the same layer is not a defect in either. It becomes one only if somebody
 #   adds the two composed figures together, and whether anybody will is not a question a query can
-#   answer. Third of a set that all sit on the boundary between filings: entries/spillovers.sqlc
-#   finds two layers that move together with nobody saying so; the unjudged fungibility pairs find
-#   two layers sharing a unit with nobody saying whether they are one layer; this finds two built
-#   from the same supply.
+#   answer. It is the third of a set that all sit on the boundary between filings:
+#   entries/spillovers.sqlc finds two layers that move together with nobody saying so, the pairs of
+#   layers sharing a unit find two layers with nobody saying whether they are one, and this finds
+#   two built from the same supply.
 #
-# Pairs, not ordered pairs
-#   The row comparison keeps it a set of pairs rather than a bag of ordered ones, admitting each
-#   unordered pair once and dropping the reflexive case, so a composed layer is never reported
-#   against itself.
--- composition/parts.sqlc crossed with itself on the part each side names, with that part's own figures.
+# Each pair once
+#   The row comparison admits each pair once, in one order, and drops a layer paired with itself,
+#   so a composed layer is never reported against itself.
+-- composition/parts.sqlc crossed with itself on the part each side names, with that part's own
+-- figures.
 SELECT a.part_filing, a.part_layer,
        a.composition    AS composition_a, a.composed_layer AS composed_a,
        b.composition    AS composition_b, b.composed_layer AS composed_b,

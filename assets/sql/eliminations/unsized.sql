@@ -1,4 +1,5 @@
--- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per quantity.
+-- eliminations/filed.sqlc wherever asrt:quantity takes its pm:absent or pm:derivation branch, per
+-- quantity.
 WITH eliminations_filed AS (
 -- asrt:Fusion/asrt:eliminations/asrt:elimination, per composed layer and quantity.
 SELECT e.composition, e.composed_layer, e.quantity,

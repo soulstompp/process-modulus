@@ -1,41 +1,38 @@
-# The composition rule, computed and set beside what was filed. One row per (composed layer,
+# The composition rule, worked out and set beside what was filed. One row per (composed layer,
 # quantity) that owes the equality, carrying the sum of the converted parts, the elimination filed
 # against that quantity, the result, the figure the document states, and whether the two agree.
 #
-#     x_composed = F Φ x_parts − e_x
-#
 # Per quantity
-#   Demand, nameplate and draw each owe the sum separately, and an elimination names exactly one
-#   of them, so the sum is folds/part_sums.sqlc's, one row per (composition, composed layer,
+#   Demand, nameplate and draw each owe the sum separately, and an elimination names exactly one of
+#   them, so the sum is folds/part_sums.sqlc's, one row per (composition, composed layer,
 #   quantity), and the owed pair, the filed figure and the elimination each meet it one row per
-#   key. `sum_low`, `sum_mode` and `sum_high` are `F Φ x` before the elimination, which is the
-#   product examples/matrices/main.rs recomputes as a matrix product.
+#   key. `sum_low`, `sum_mode` and `sum_high` are the converted parts added up, before the
+#   elimination.
 #
-# Component-wise, unless that inverts
-#   The elimination is subtracted bound by bound: the overlap is part of what the sum counts, so
-#   at the sum's low corner it is at its own low. That pairing can invert. Point parts that sum to
-#   20 with an elimination of `[2, 3, 5]` give `[18, 17, 15]`, which is not a claim. There the
-#   sum has no width for the overlap to move with, so the only ordered reading is the crossed one,
-#   `[Σ low - e_high, Σ mode - e_mode, Σ high - e_low]`, `[15, 17, 18]`, and that is the figure a
-#   correct filing states. eliminations/paired.sqlc decides which reading holds and reads each
-#   elimination at its corners, and `crossed` says which a row took. Proof:
-#   `src/proofs/README.md`, entry `elimination_componentwise`.
+# Bound by bound, unless that turns the sum over
+#   The elimination is subtracted bound by bound: the overlap is part of what the sum counts, so at
+#   the sum's low corner it is at its own low. That pairing can turn the sum over. Single-value
+#   parts that add up to 20, with an elimination of 2, 3 and 5, give 18, 17 and 15, which is not a
+#   claim. There the sum has no width for the overlap to move with, so the only reading in order is
+#   the crossed one, each end of the sum less the opposite end of the elimination: 15, 17 and 18,
+#   the figure a correct filing states. eliminations/paired.sqlc decides which reading holds and
+#   reads each elimination at its corners, and `crossed` says which a row took.
 #
 # The elimination is the term that is easy to forget
 #   Forgetting it is the ordinary way to get this arithmetic wrong. Two parts that both count the
-#   same shared machine sum to more machine than exists; `e` is what the composer says was counted
-#   twice. Dropping it does not produce an obviously silly number: it produces a slightly large
-#   one, which is worse.
+#   same shared machine add up to more machine than exists; the elimination is what the composer
+#   says was counted twice. Dropping it does not give an obviously silly number: it gives a slightly
+#   large one, which is worse.
 #
 # Missing rows are not failures
-#   The rows that are not here are not failures. A quantity suspended on any ground is absent
-#   rather than counted as a pass, so `agrees` is a verdict over documents that claimed something.
-#   See composition/owed_equality.sqlc.
+#   A quantity suspended on any ground is left out rather than counted as a pass, so `agrees` is a
+#   verdict over documents that claimed something. See composition/owed_equality.sqlc.
 #
 # It spans two documents
 #   That is why no grammar can state it. The parts are in one filing and the composed figure is in
-#   another; XSD 1.0 cannot follow the reference, let alone add up what is on the other end.
--- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at its corners.
+#   another; XSD 1.0 cannot follow the reference, let alone add up what is at the other end.
+-- folds/part_sums.sqlc against the composed layer's own figure, less eliminations/paired.sqlc at
+-- its corners.
 SELECT x.composition, x.composed_layer, x.quantity,
        x.sum_low, x.sum_mode, x.sum_high, x.crossed,
        x.sum_low  - x.e_at_low  AS computed_low,

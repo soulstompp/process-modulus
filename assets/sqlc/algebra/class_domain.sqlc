@@ -1,44 +1,42 @@
-# Every class set's declaration, held against the codomain it names and against what landed in it.
-# One row per condition, over epistemics/class_sets.sqlc, epistemics/class_domain.sqlc and
+# Every class set's declaration, held against the type it names and against what landed in it. One
+# row per condition, over epistemics/class_sets.sqlc, epistemics/class_domain.sqlc and
 # epistemics/classes.sqlc.
 #
 # What it asserts
 #   - every classification the census produces is declared on epistemics/class_sets.sqlc, and
 #     every declared one produces something, so neither roster nor census may grow alone;
-#   - every member of every declared codomain has exactly one row in
-#     epistemics/class_domain.sqlc, and no row there names a class its codomain does not have;
-#   - a class stands `occupied` exactly when the pooled census counts a row in it, so an `open`
-#     class a document fills and an `occupied` class that empties both fail;
-#   - `filed` is true exactly when some ball of that relation carries a filing.
+#   - every member of every declared type has exactly one row in epistemics/class_domain.sqlc, and
+#     no row there names a class its type does not have;
+#   - a class stands `occupied` exactly when the census of every document counts a row in it, so
+#     an `open` class a document fills and an `occupied` class that empties both fail;
+#   - `filed` is true exactly when some row of that relation carries a filing.
 #
-# A partition law cannot see an empty class
-#   The partition laws in algebra/ assert the premise, that every row landed in exactly one class,
-#   and the premise survives a class nothing lands in. Surjectivity onto the declared set is the
-#   separate question, and it is only as strong as where the set came from: here every set is an
-#   enum, which Postgres enforces, so a zero is a fact about what was filed rather than about a
-#   label somebody forgot to spell. That is the strongest codomain in the tree, and it is why this
-#   law is worth stating over these eight relations and not over a set written in `CASE` arms.
+# The laws on classes cannot see an empty class
+#   The laws in algebra/ assert that every row landed in exactly one class, and that holds even
+#   when a class has nothing in it. Whether every declared class is reached is a separate
+#   question, and it is only as strong as where the set of classes came from: here every set is an
+#   enum, which Postgres enforces, so a zero is a fact about what was filed rather than a label
+#   somebody forgot to spell. That is the firmest set of classes in these queries, and it is why
+#   this law is stated over these relations and not over a set written in `CASE` branches.
 #
-# The bare form would accuse the good outcome
-#   Measured before it was written: 29 classes, three of them empty, and every one of the three is the
-#   outcome the model wants. A law reporting every empty class would be false on all three, which
-#   is the shape a repair takes when it is pointed at the wrong object. So the subject is
-#   never the empty class, it is the class whose STANDING and whose COUNT disagree, in either
-#   direction.
+# A law about every empty class would accuse the good outcome
+#   The classes that are empty are outcomes the model wants, and a law reporting every empty class
+#   would be false on each of them. So the subject is never the empty class: it is the class whose
+#   standing and whose count disagree, in either direction.
 #
 # Two routes that share no code
-#   The codomain and its members come from `enum_range` over assets/ddl/schema.ddl, which Postgres
-#   parses; the standings are a `VALUES` literal somebody wrote. A member added to a type fails
-#   here until a cell declares it, and a cell naming a member the type lost fails until it is
-#   removed. Neither file can be derived from the other, which is what makes their agreement
-#   evidence rather than a tautology.
+#   The types and their members come from `enum_range` over assets/ddl/schema.ddl, which Postgres
+#   parses; the standings are a `VALUES` literal somebody wrote. A member added to a type fails here
+#   until a cell declares it, and a cell naming a member the type lost fails until it is removed.
+#   Neither file can be worked out from the other, which is what makes their agreement evidence.
 #
-# One join, read six ways, because a scan of the census is not free
-#   The census is eight `enum_range` arms over eight relations, and composing it once per condition
-#   would put six copies of all eight into every caller that inlines rather than reading the view.
-#   `examples/probes` inlines, so the copies land in a script that is already large enough to be
-#   the thing that fails. The regions of a full outer join are what the conditions are, exactly as
-#   folds/contract_subjects.sqlc reads `roster ⟗ population`, so one join answers all six.
+# One join, read six ways, because reading the census is not free
+#   The census is one `enum_range` branch per relation, and composing it once per condition would
+#   put a copy of all of it into every caller that inlines rather than reading the view, once per
+#   condition. `examples/probes` inlines, so the copies would land in a script already large enough
+#   to be the thing that fails. The regions of a full outer join are the conditions, as
+#   folds/contract_subjects.sqlc reads a roster joined in full to its population, so one join
+#   answers all six.
 #
 # Probe
 #   Delete the `layers/exposure_scope.sqlc` row from epistemics/class_domain.sqlc, recompose, and
@@ -47,8 +45,8 @@
 #   standing to `occupied` and `a standing that disagrees with the count` must report it. Delete
 #   the `checks/fit_axes.sqlc` row from epistemics/class_sets.sqlc and
 #   `a classification nobody declared` must report it. Set that row's `filed` to `true` and
-#   `a filed flag that disagrees with the balls` must report it. Revert each.
--- algebra/roster.sqlc against class_sets ⟗ class_domain ⟗ classes, read six ways.
+#   `a filed flag that disagrees with what it classifies` must report it. Revert each.
+-- algebra/roster.sqlc against class_sets, class_domain and classes joined in full, read six ways.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -89,7 +87,7 @@ LEFT JOIN (
     )
     SELECT 'a class the roster does not name' AS subject,
            count(*) FILTER (WHERE cell_relation IS NULL) = 0                      AS holds,
-           format('%s class(es) of a declared codomain with no cell: %s',
+           format('%s class(es) of a declared type with no cell: %s',
                   count(*) FILTER (WHERE cell_relation IS NULL),
                   coalesce(string_agg(census_relation || ' ' || census_class, ', '
                                       ORDER BY census_relation, census_class)
@@ -98,7 +96,7 @@ LEFT JOIN (
     UNION ALL
     SELECT 'a roster row naming no class',
            count(*) FILTER (WHERE census_relation IS NULL) = 0,
-           format('%s cell(s) naming a class their codomain does not have: %s',
+           format('%s cell(s) naming a class their type does not have: %s',
                   count(*) FILTER (WHERE census_relation IS NULL),
                   coalesce(string_agg(cell_relation || ' ' || cell_class, ', '
                                       ORDER BY cell_relation, cell_class)
@@ -144,7 +142,7 @@ LEFT JOIN (
                            '(none)'))
     FROM per_set
     UNION ALL
-    SELECT 'a filed flag that disagrees with the balls',
+    SELECT 'a filed flag that disagrees with what it classifies',
            count(*) FILTER (WHERE declared AND produced AND filed <> any_filed) = 0,
            format('%s classification(s) whose filed flag is wrong: %s',
                   count(*) FILTER (WHERE declared AND produced AND filed <> any_filed),

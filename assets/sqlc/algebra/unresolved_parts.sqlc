@@ -1,17 +1,20 @@
-# The part references that resolve, against the ones that do not, checked as a partition of all of
-# them. One row: whether |part_references| = |unresolved_parts| + |part_references ⋉ parts|.
+# The part references that resolve, against the ones that do not. One row: whether every row of
+# composition/part_references.sqlc either resolves in composition/parts.sqlc or is in
+# composition/unresolved_parts.sqlc, counted row for row.
 #
 # Exact because a reference resolves at most once
 #   composition/parts.sqlc turns a reference into a row by its notation, and a notation is `UNIQUE`
-#   on `pm.filing_identity`, so one reference can meet at most one resolved row. The references are a
-#   set on `pm.part`'s key. Let two filings claim one notation and a reference resolves twice, the
-#   semijoin still counts it once, and the partition holds while the sum it feeds counts the part
-#   twice; the key is what stops that, and this law is what stops the difference drifting from it.
+#   on `pm.filing_identity`, so one reference can meet at most one resolved row. The references have
+#   no repeats on `pm.part`'s key. Let two filings claim one notation and a reference resolves
+#   twice: the `EXISTS` still counts it once, and the count balances while the sum it feeds counts
+#   the part twice. The key is what stops that, and this law is what stops the difference drifting
+#   from it.
 #
 # Probe
-#   examples/probes runs it as `unresolved_parts`: count parts that resolve among the ones that
-#   do not, and the law must fail.
--- composition/part_references.sqlc partitioned by composition/parts.sqlc into composition/unresolved_parts.sqlc.
+#   examples/probes runs it as `unresolved_parts`: count parts that resolve among the ones that do
+#   not, and the law must fail.
+-- composition/part_references.sqlc split by composition/parts.sqlc into
+-- composition/unresolved_parts.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -19,7 +22,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/unresolved_parts' AS subject,
            x.total = x.kept + x.resolved AS holds,
-           format('%s part references = %s unresolved + %s resolved', x.total, x.kept, x.resolved)
+           format('%s part references: %s unresolved, %s resolved', x.total, x.kept, x.resolved)
                AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/part_references.sqlc) ) r) AS total,

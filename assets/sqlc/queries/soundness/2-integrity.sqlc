@@ -1,12 +1,11 @@
 -- §2  Every contract's roster against the population it declares.
 # One row per disagreement between a roster and its population. Empty is the correct output,
-# across every contract folds/contract_subjects.sqlc counts, the algebraic laws themselves among
-# them.
+# across every contract folds/contract_subjects.sqlc counts, the laws themselves among them.
 #
-# The algebra contract checking itself is not circular
-#   It is the same second-witness move the whole repository is built on: reports/integrity.sqlc
-#   reads the roster difference off each contract's outer join, and algebra/integrity.sqlc computes
-#   the same sets with EXCEPT and EXISTS. Two routes to one answer.
+# The laws checking their own contract is not circular
+#   It is the second witness the whole repository is built on: reports/integrity.sqlc reads the
+#   roster difference off each contract's outer join, and algebra/integrity.sqlc works out the same
+#   sets with EXCEPT and EXISTS. Two routes to one answer.
 -- reports/integrity.sqlc, read by the example.
 SELECT z.contract AS "contract!", z.problem AS "problem!", z.subject AS "subject!"
 FROM (

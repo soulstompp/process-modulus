@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  THE SECOND LEVEL. Read after merge-group-composition.xml, which is the filing THIS one
-  is composed from — and which is itself composed from two member filings. Illustrative
-  figures.
+  The second level, with illustrative figures. Read it after merge-group-composition.xml,
+  the filing this one is composed from, which is itself composed from two member filings.
 
-  ⭐⭐⭐ COMPOSITIONS NEST, WITH NOTHING ADDED TO THE SCHEMA. A composition contains a
-  filing, and `FiledLayer` points at filings, so a group composes members and a holding
-  composes the group. Every part below names a layer inside another COMPOSITION's embedded
-  stack rather than inside a member's, and no element here is different for it.
+  Compositions nest, with nothing added to the schema. A composition contains a filing,
+  and `FiledLayer` points at filings, so a group composes members and a holding composes
+  the group. Every part below names a layer inside another composition's embedded stack
+  rather than inside a member's, and no element here is different for it.
 
-  ⭐ WHAT ONLY THE SECOND LEVEL CAN SHOW:
+  What only the second level can show:
 
-    staff              A FUSION THAT OVERRULES ITS OWN PART. The group filed a COUPLING
+    staff              a fusion that overrules its own part. The group filed a coupling
                        between `labour` and `on-call` and kept them as two layers, and it
-                       was right to under its own rostering. This holding runs ONE ROSTER
-                       across both, so at this level they are one layer. ⛔ The fusion
-                       therefore DESTROYS a filed observation, and says so rather than
-                       quietly dropping it.
+                       was right to, under its own rostering. This holding runs one roster
+                       across both, so at this level they are one layer. The fusion
+                       therefore drops a filed observation, and says so rather than
+                       dropping it quietly.
 
-    staff/timeSlack    ⭐⭐ UNMEASURED, AND THE PARTS DISAGREE. `labour` survives a queue
-                       for an unmeasured while; `on-call` does not survive at all. A fused
-                       slack is bounded by the SUM of its parts', and one unsized part makes
-                       that sum unsized — it is not the minimum, and "strictest wins" was a
-                       rule the old boolean made look principled. ⚠️ The disagreement is
-                       still the strongest argument against this fusion, left visible.
+    staff/timeSlack    unmeasured, and the parts disagree. `labour` survives a queue for an
+                       unmeasured while; `on-call` does not survive at all. A fused slack is
+                       bounded by the sum of its parts' slacks, and one unsized part leaves
+                       that sum unsized; it is not the smaller of the two. The disagreement
+                       is still the strongest argument against this fusion, and it is left
+                       in view.
 
-    staff              TWO ELIMINATIONS, BOTH `none`. Nothing double counts between a
-                       delivery team and a rota staffed separately, and saying so is not
-                       the same as filing nothing.
+    staff              two eliminations, both filed as zero. Nothing is counted twice
+                       between a delivery team and a rota staffed separately, and saying so
+                       is not the same as filing nothing.
 
-    the coupling       ⭐⭐⭐ INHERITED AND ATTENUATED. The group observed `labour` moving
-                       with `shift-line` at [0.10, 0.22, 0.35]. Here `labour` is 10 of
+    the coupling       inherited, and weaker. The group observed `labour` moving with
+                       `shift-line` at 0.10, 0.22 and 0.35. Here `labour` is 10 of
                        `staff`'s 12, so relief applied to `staff` may land on the rota
-                       instead, and the same dependence CANNOT be as strong. Re-filing it
-                       at the group's own number would have been unexamined.
+                       instead, and the same dependence cannot be as strong. Filing it again
+                       at the group's own figure would be unexamined.
 
-  ⛔⛔ AND ONE THING THIS DOCUMENT COULD DO WRONG THAT NOTHING WOULD CATCH. `partIdentity`
-  stops one filed layer being consolidated into two composed layers OF ONE DOCUMENT. If a
-  part below named `us-member#labour` directly, that layer would be consolidated twice —
-  once here, once inside the group — and the two notation/id pairs differ, so the key sees
-  nothing. The transitive rule is that NO LEAF IS REACHABLE THROUGH TWO PATHS, and it is
-  owed by whoever can fetch the chain. `tests/merge.rs` fetches it.
+  One thing this document could do wrong that nothing would catch. `partIdentity` stops
+  one filed layer being consolidated into two composed layers of one document. If a part
+  below named `us-member#labour` directly, that layer would be consolidated twice, once
+  here and once inside the group, and since the two pairs of notation and id differ, the
+  key would see nothing. The rule across levels is that no layer is counted through two
+  paths, and it is owed by whoever can fetch the chain. `tests/composition.rs` fetches it.
 -->
 <asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
                   xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -58,10 +57,10 @@
     <pm:note>controls the group; the second-level consolidation is this party's to file</pm:note>
   </asrt:provenance>
 
-  <!-- ⭐ AT THE SECOND LEVEL A PART CITES THE CONSOLIDATION'S REGIME, NOT THE MEMBERS'.
-       The filing this document reads reported under `ifrs-consolidated`, which is neither
-       member's framework, and restating the members' regimes here would be restating facts
-       about filings this document does not read. -->
+  <!-- At the second level a part cites the consolidation's regime, not the members'. The
+       filing this document reads reported under `ifrs-consolidated`, which is neither
+       member's framework, and restating the members' regimes here would restate facts about
+       filings this document does not read. -->
   <asrt:regime>
     <pm:id>group</pm:id>
     <pm:framework>
@@ -92,8 +91,8 @@
        ================================================================================== -->
   <pm:processModulus>
 
-    <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-         before S-28 was repaired no document could say it. -->
+    <!-- Which filing this is: the URN a part or a dependence cites to point at this
+         document. -->
     <pm:notation>
       <pm:uri>urn:example:filing:holding-company:2026-08-31</pm:uri>
     </pm:notation>
@@ -127,13 +126,13 @@
       </pm:scope>
 
       <!-- ============================================================
-           STAFF. The group's `labour` fused with the group's `on-call`.
-           ⛔ AND THE GROUP FILED A COUPLING BETWEEN THEM. See the fusion.
+           STAFF. The group's `labour` fused with the group's `on-call`,
+           and the group filed a coupling between them. See the fusion.
            ============================================================ -->
       <pm:layer>
         <pm:name>staff</pm:name>
 
-        <!-- [10.4, 11.5, 13.0] + [2.3, 2.8, 3.4], nothing eliminated. -->
+        <!-- The group's `labour` and `on-call` demands added, with nothing eliminated. -->
         <pm:demand>
           <pm:amount>
             <pm:claim>
@@ -171,27 +170,25 @@
           </pm:patience>
         </pm:demand>
 
-        <!-- ⛔⛔⛔ THE PARTS DISAGREE, AND A SLACK MAKES THAT HARDER RATHER THAN EASIER.
-             `labour` survives a queue for an unmeasured while; `on-call` does not survive
-             being held at all. Under the old boolean the answer looked principled — take
-             the STRICTEST, so false wins — and that rule was an artefact of the type. A
-             slack is a quantity, so the fused figure is bounded ABOVE by the sum of its
-             parts' (you cannot get more give than the parts have) and bounded below by
-             nothing useful. One part unsized makes the sum unsized, exactly as an unsized
-             elimination makes a reconciliation uncomputable rather than satisfied.
+        <!-- The parts disagree, and a slack makes that harder rather than easier. `labour`
+             survives a queue for an unmeasured while; `on-call` does not survive being held
+             at all. A slack is a quantity, so the fused figure is bounded above by the sum
+             of its parts' slacks (there is no more give than the parts have) and below by
+             nothing useful. One unsized part leaves the sum unsized, just as an unsized
+             elimination leaves a reconciliation unworkable rather than satisfied.
 
-             ⭐ TAKING THE MINIMUM WOULD HAVE UNDERSTATED IT AND WOULD HAVE BEEN WRONG.
-             Most of this demand is delivery work that does sit in a queue; only the
-             escalations perish on contact. Filing `none` here would say the whole fused
-             layer perishes, which is false about the larger part of it.
+             Taking the smaller of the two would understate it, and be wrong. Most of this
+             demand is delivery work that does sit in a queue; only the escalations perish
+             on contact. Filing a zero here would say the whole fused layer perishes, which
+             is false about the larger part of it.
 
-             ⚠️ THIS REMAINS THE BEST ARGUMENT AGAINST THIS FUSION and it is left where a
-             reader will find it. Two parts that differ on a slack are two parts that
+             This remains the best argument against this fusion, and it is left where a
+             reader will find it: two parts that differ on a slack are two parts that
              behave differently under the same relief. -->
         <pm:timeSlack>
           <pm:absent>
             <pm:reason>unmeasured</pm:reason>
-            <pm:note>the parts disagree — delivery work survives a queue, escalations do not — and nobody has measured the fused figure. It is bounded above by the sum of the parts' slacks, which is itself unsized</pm:note>
+            <pm:note>the parts disagree — delivery work survives a queue, escalations do not — and nobody has measured the fused figure. It is at most the sum of the parts' slacks, which is itself unsized</pm:note>
             <pm:provenance><pm:party>holding-company</pm:party>
               <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>
             </pm:provenance>
@@ -269,7 +266,7 @@
             <pm:capacitySlack>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
-                <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+                <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
               </pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
@@ -279,20 +276,20 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
                   <pm:party>holding-company</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                  <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                  <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
                 </pm:provenance>
               </pm:claim>
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
-            <!-- ⭐ THE WEAKEST INSTRUMENT PROPAGATES TWO LEVELS. Both members file this
-                 draw unmeasured, so the group could not state one, so neither can this. -->
+            <!-- The weakest instrument carries up two levels. Both members file this draw
+                 `unmeasured`, so the group could not state one, and neither can this. -->
             <pm:draw>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
@@ -353,7 +350,8 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- [0.1, 0.8, 1.6] from `labour` plus [0.3, 0.8, 1.4] from `on-call`. -->
+            <!-- The `people` share of the group's `labour`, 0.1, 0.8 and 1.6, plus that of
+                 its `on-call`, 0.3, 0.8 and 1.4. -->
             <pm:holder>
               <pm:holder>
                 <pm:kind>people</pm:kind>
@@ -384,9 +382,10 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- derived: |12 - [12.7, 14.3, 16.4]| = [0.7, 2.3, 4.4] people, and the two
-                 shares sum to exactly that. ⭐ At the mode the holding accounts for 0.7 of
-                 2.3 people across two countries, two consolidations and one instrument. -->
+            <!-- Derived from this layer's demand and nameplate: 0.7, 2.3 and 4.4 people, and
+                 the two shares add up to exactly that. At the most likely value the holding
+                 accounts for 0.7 of 2.3 people, across two countries, two consolidations and
+                 one instrument. -->
             <pm:quantity>
               <pm:derivation>
                 <pm:identity>magnitude</pm:identity>
@@ -432,13 +431,11 @@
               <pm:asOf>2026-08-31</pm:asOf>
             </pm:claim>
           </pm:amount>
-          <!-- ⭐⭐⭐ THE PATIENCE, FILED. The comment on `timeSlack` below argues that a wait
-               measured in units of SERVICE TIME is the queue ahead of you, so 2.5 shifts of
-               waiting and 2.5 shifts of queue are one number and the multiplication is by one.
-               That argument had to be written by hand because there was nowhere to put the
-               patience; both facts are filed now and the coincidence is visible rather than
-               asserted. ⛔ THE UNIT IS `shifts` AND NOT `shifts per week`: a slack is quoted in
-               the unit of the shares it bounds, a patience is a span of time and bounds none. -->
+          <!-- The patience, filed. With the patience and the time slack both filed, a reader
+               can see for themselves that 2.5 shifts of waiting and 2.5 shifts of queue are
+               one number (see the comment on `timeSlack` below).
+               The unit is `shifts`, not `shifts per week`: a slack is quoted in the unit of
+               the shares it bounds, and a patience is a span of time and bounds none. -->
           <pm:patience>
             <pm:claim>
               <pm:low>1.0</pm:low>
@@ -457,71 +454,54 @@
                   <pm:kind>instrument</pm:kind>
                 </pm:narrowing>
               </pm:narrowsWhen>
-              <!-- ⭐⭐ `contractual`, and it is the SLA rather than the patience. Callers leave when
-                   the booking terms let them; the three numbers are the distribution those terms
-                   bound, which is why the edge and the range are two elements. -->
+              <!-- `contractual`: the edge is the service level, not the patience. Callers leave
+                   when the booking terms let them; the three figures are the spread those
+                   terms bound, which is why the edge and the range are two elements. -->
               <pm:boundOrigin>
                 <pm:origin>contractual</pm:origin>
               </pm:boundOrigin>
             </pm:claim>
           </pm:patience>
         </pm:demand>
-        <!-- ⭐⭐⭐ ABSORBER `time`, AND IT WAS MISFILED AS `capacity` UNTIL THE SLACK MADE
-             THE DIFFERENCE VISIBLE. The line is oversubscribed: work queues for a slot and
+        <!-- The absorber is `time`. The line is oversubscribed: work queues for a slot, and
              some of the callers leave. That is the time buffer doing the absorbing, not
-             spare capacity — there is no spare, nameplate and draw are both 10.
+             spare capacity: there is none, since nameplate and draw are both 10.
 
-             ⛔⛔ AN EARLIER DRAFT SAID "most of it eventually runs", AND THAT SENTENCE PUT
-             THE WORK ON THE WRONG SIDE OF THE LINE. The remainder is `nameplate - demand`.
-             Work that runs late still RUNS — it is inside the nameplate's throughput and is
-             not part of the remainder at all. `HolderKind` settles it: `customer` is "no
-             transaction occurred", so what this share holds is demand that queued, bore the
-             wait, and left without ever being served.
-             ⚠️ WHICH MEANS THIS DOCUMENT CANNOT DISTINGUISH THAT SHARE FROM `unrealised`,
-             and neither can any reader of it. Both are demand that went unserved; the
-             difference is whether a customer experienced the wait first, and that is a fact
-             about a period this filing does not cover. Said here rather than left for
-             somebody to discover in the arithmetic. -->
+             The remainder is the nameplate less the demand. Work that runs late still runs:
+             it is inside the nameplate's throughput and not part of the remainder at all.
+             `HolderKind` settles it: `customer` means no transaction occurred, so what this
+             share holds is demand that queued, sat through the wait, and left without being
+             served.
+             So this document cannot tell that share from `unrealised`, and neither can any
+             reader of it. Both are demand that went unserved; the difference is whether a
+             customer sat through the wait first, and that is a fact about a period this
+             filing does not cover. -->
 
-        <!-- ⭐ AND IT IS NO LONGER THE CORPUS'S ONLY `time` ABSORBER. The group filing this
-             one carries through said `capacity` for a pass while this one said `time` — one
-             layer, two documents, two buffers, and no test compared them. Both now say
-             `time`.
-             ⭐ A JOB WAITS ABOUT TWO AND A HALF SHIFTS BEFORE THE CALLER GOES ELSEWHERE,
-             measured off the scheduling queue across the same six quarters as the
-             coupling below. That figure bounds what the queue can be said to have taken:
-             the `customer` share of 1.7 fits inside it, and the 1.0 that did not fit is
-             filed as `unrealised`.
-             ⚠️ WHICH IS AN IMPLICATION WORTH NOTICING RATHER THAN A RULE. `unrealised`
-             is what overflowed every buffer, so a sized slack starts to EXPLAIN the
-             unrealised share instead of merely recording it.
+        <!-- The group filing this one carries through files the same `time` buffer for
+             this layer.
+             A job waits about two and a half shifts before the caller goes elsewhere,
+             measured off the scheduling queue across the same six quarters as the coupling
+             below. That figure bounds the share the queue can be said to have held: the
+             `customer` share, 1.7 at the most likely value, fits inside it, and what
+             overflowed every buffer, 1.0, is filed as `unrealised`. That is worth noticing,
+             though it is not a rule: with a sized slack, the `unrealised` share begins to be
+             explained and not only recorded.
 
-             ⭐⭐⭐ AND HERE IS THE ONE PLACE IN THIS CORPUS THE DURATION-TO-QUANTITY
-             BRIDGE IS SHOWN RATHER THAN DONE SILENTLY, which `Nameplate/inventorySlack`
-             complains about next door: "the multiplication is owed and it is invisible
-             once done". What was MEASURED above is a WAIT. What this field takes is a
-             quantity in the layer's unit. The conversion here is the identity, and the
-             reason is worth having:
+             What was measured above is a wait; what this field takes is a quantity in the
+             layer's unit. Here the conversion leaves the figure as it is, and the reason is
+             worth having. A wait measured in shifts, the line's own unit of service, already
+             is the work sitting ahead of you, because the wait is the time it takes to clear
+             that work. At 10 shifts a week, 2.5 shifts of waiting is a quarter of a week, and
+             a quarter of a week of the line is 2.5 shifts of queue: one number. The excess
+             arriving, 2.7 shifts a week at the most likely value, is exactly what leaves,
+             1.7 as `customer` and 1.0 as `unrealised`.
 
-               patience          2.5 shifts of wait = 0.25 week   (line runs 10/week)
-               queue depth       10 x 0.25          = 2.5 shifts
-               excess arriving   12.7 - 10          = 2.7 shifts per week
-               departures        customer 1.7 + unrealised 1.0 = 2.7   ** exactly **
-
-             A wait measured in units of SERVICE TIME already is the work sitting ahead
-             of you, because the wait is the time to clear it. So 2.5 shifts of waiting
-             and 2.5 shifts of queue are one number, and the multiplication is by one.
-
-             ⛔ THIS LAYER ALSO REFUTES A CLAIM MADE AGAINST IT AND THE REFUTATION IS
-             WORTH KEEPING. A findings pass argued that demand of [11.0, 12.7, 14.4]
-             against a 10-shift line is incoherent because at rho > 1 a queue grows
-             without bound. That holds for a queue with INFINITE PATIENCE. This one has
-             a patience, filed and `contractual`, so callers leave — and a reneging
-             queue is STABLE at any rho. The backlog grows until the wait reaches 2.5
-             shifts and then demand departs at the rate the excess arrives, which is
-             the 2.7 above. Nothing here is failing. The line is short, the queue sits
-             at its patience, and the shortfall leaves as departures, which is what the
-             two holders below record. -->
+             Demand above the line's nameplate does not make this queue grow without end,
+             because the patience is filed, and `contractual`: callers leave. The backlog
+             grows until the wait reaches 2.5 shifts, and then demand leaves as fast as the
+             excess arrives. Nothing here is failing. The line is short, the queue sits at
+             its patience, and the shortfall leaves as departures, which is what the two
+             holders below record. -->
         <pm:timeSlack>
           <pm:claim>
             <pm:low>1.0</pm:low>
@@ -537,15 +517,13 @@
                 <pm:kind>instrument</pm:kind>
               </pm:narrowing>
             </pm:narrowsWhen>
-            <!-- ⭐⭐ `contractual`, AND IT IS THE MORE INTERESTING OF THE TWO ORIGINS IN
-                 THIS CORPUS. Callers do not leave when the work stops being useful to
-                 them; they leave when the booking terms let them, and those terms are a
-                 negotiation. So this figure is a LEVER, unlike `capability`'s shelf life
-                 next door, which is `intrinsic` and is not one.
-                 ⚠️ WHICH MEANS THE SAME NUMBER FILED TWICE WOULD MEAN OPPOSITE THINGS,
-                 and nothing but this element distinguishes them: a physical patience is a
-                 fact about the world, a contracted one is a term somebody agreed to and
-                 could agree differently. -->
+            <!-- `contractual`, which makes this figure a lever. Callers do not leave when the
+                 work stops being useful to them; they leave when the booking terms let them,
+                 and those terms are negotiated. The shelf life on `capability` in
+                 enterprise-contract.xml is `intrinsic`, and not a lever.
+                 So the same figure filed twice could mean opposite things, and only this
+                 element tells them apart: a physical patience is a fact about the world, a
+                 contracted one is a term somebody agreed to and could agree differently. -->
             <pm:boundOrigin>
               <pm:origin>contractual</pm:origin>
             </pm:boundOrigin>
@@ -611,12 +589,11 @@
                   </pm:size>
                   <pm:origin>intrinsic</pm:origin>
                 </pm:lumpy>
-                <!-- ⭐⭐⭐ CARRIED THROUGH, AND IT WAS DROPPED UNTIL `window` BECAME REQUIRED.
-                   `pm:Divisibility/window` says a window "IS CARRIED THROUGH A FUSION AND NEVER
-                   SUMMED", because two members naming one machine file one calendar between
-                   them. The group files five days; this level fuses that one layer, one part,
-                   unchanged — and filed nothing, which under the old optional element was
-                   byte-identical to a line that runs seven days. -->
+                <!-- Carried through. A window is carried through a fusion and never summed
+                   (`pm:Divisibility/window`), because two members naming one machine file
+                   one calendar between them. The group files five days, and this level
+                   fuses that one layer, as one part, unchanged. The element is required,
+                   so leaving it out cannot pass for a line that runs seven days. -->
                 <pm:window>
                   <pm:quantum>
                     <pm:size>
@@ -775,19 +752,20 @@
       </pm:layer>
 
       <!-- ==========================================================================
-           ⭐⭐⭐ THE FUSION THAT CONVERTS, AND IT IS THE CASE THE GROUP COULD NOT DO.
-           `compute-us` is metered per reserved card and `compute-pt` by the month.
-           `4.4 GPU + 545 GPU-hour` IS NOT A SUM, so the group filed two one-part
-           fusions under two names — correct, and as far as it could go without a
-           factor. The holding meters everything in GPU-hour and carries the factor
-           that says so, where a reader can disagree with it.
+           COMPUTE: the fusion that converts, the case the group could not do.
+           `compute-us` is metered per reserved card and `compute-pt` by the
+           month, and 4.4 GPU and 545 GPU-hours do not add up to anything,
+           so the group filed two one-part fusions under two names: correct,
+           and as far as it could go without a factor. The holding meters
+           everything in GPU-hours and carries the factor that says so,
+           where a reader can disagree with it.
            ========================================================================== -->
       <pm:layer>
         <pm:name>compute</pm:name>
 
-        <!-- [3.1, 4.4, 6.0] GPU x [672, 720, 744] = [2083.2, 3168.0, 4464.0], plus
-             pt's [430, 545, 690] = [2513.2, 3713.0, 5154.0], less the cross-charge
-             [40, 90, 150] taken component-wise = [2473.2, 3623.0, 5004.0]. -->
+        <!-- The US part's demand converted at the month's 672, 720 or 744 hours, plus the
+             Portuguese part's, less the cross-charge taken bound by bound, gives the 2473.2,
+             3623.0 and 5004.0 GPU-hours filed here. -->
         <pm:demand>
           <pm:amount>
             <pm:claim>
@@ -798,7 +776,7 @@
               <pm:denominator>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                 </pm:absent>
               </pm:denominator>
               <pm:narrowsWhen>
@@ -825,7 +803,7 @@
             </pm:absent>
           </pm:patience>
         </pm:demand>
-        <!-- both parts say false and an inference request that waits was not served -->
+        <!-- both parts file zero, and an inference request that waits was not served -->
         <pm:timeSlack>
           <pm:claim>
             <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
@@ -833,7 +811,7 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
             <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
             <pm:provenance>
@@ -847,11 +825,11 @@
         <pm:supply>
           <pm:label>reserved inference capacity, metered in card-hours across both members</pm:label>
           <pm:nameplate>
-            <!-- ⭐⭐ CONVERTING A POINT NAMEPLATE PRODUCES A RANGE ONE, AND THIS IS THE
-                 FIRST IN THE CORPUS. 8 GPU is exact; 8 GPU FOR A MONTH is not, because
-                 a month is [672, 720, 744] hours. 8 x that = [5376, 5760, 5952], plus
-                 pt's flat 720. The uncertainty is real and it belongs to the metering,
-                 not to the cards. -->
+            <!-- Converting a nameplate with one value produces one with a range. 8 GPU is
+                 exact; 8 GPU for a month is not, because a month has 672, 720 or 744 hours.
+                 With the Portuguese part's flat 720 added, that gives the 6096.0, 6480.0 and
+                 6672.0 below. The uncertainty is real, and it belongs to the metering, not
+                 to the cards. -->
             <pm:amount>
               <pm:claim>
                 <pm:low>6096.0</pm:low>
@@ -861,7 +839,7 @@
                 <pm:denominator>
                   <pm:absent>
                     <pm:reason>notApplicable</pm:reason>
-                    <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                    <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                   </pm:absent>
                 </pm:denominator>
                 <pm:narrowsWhen>
@@ -883,17 +861,17 @@
               </pm:claim>
             </pm:amount>
             <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
-            <!-- ⛔⛔ TWO LUMPY SUPPLIES WHOSE QUANTA DO NOT ALIGN HAVE NO COMPOSED
-                 QUANTUM, AND THE SCHEMA HAS NO WAY TO SAY THAT. The US block is 8 GPU
-                 = [5376, 5760, 5952] GPU-hour and the Portuguese one is a flat 720
-                 GPU-hour. Neither divides the other, and the composed supply does not
-                 come in whole units of anything. `unmeasured` is the honest filing and
-                 it is not quite the truth: nobody failed to measure this, it has no
-                 answer. Filing a lump here would invent one.
-                 ⭐ AND THE RULES INTERLOCK WITH NO HELP: with the quantum absent, the
-                 remainder can no longer be a derivation and must be STATED, which is what
-                 forces the composer to publish the figure below rather than leave a
-                 receiver to compute the wrong one. -->
+            <!-- Two lumpy supplies whose quanta do not line up have no composed quantum, and
+                 the schema has no way to say that. The US block is 8 GPU, a number of
+                 GPU-hours that changes with the month, and the Portuguese one is a flat 720
+                 GPU-hours. Neither divides the other, and the composed supply does not come
+                 in whole units of anything. `unmeasured` is the honest filing, and not quite
+                 the truth: nobody failed to measure this; it has no answer. Filing a lump
+                 here would invent one.
+                 The rules fit together without help: with the quantum absent, the remainder
+                 cannot be a derivation and has to be stated, which forces the composer to
+                 publish the figure below rather than leave a receiver to work out the wrong
+                 one. -->
             <pm:divisibility>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
@@ -911,7 +889,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -928,7 +906,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -940,9 +918,11 @@
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
-            <!-- [4.4, 4.4, 4.4] x [672, 720, 744] = [2956.8, 3168.0, 3273.6], plus 545.
-                 ⭐ A POINT DRAW CONVERTS INTO A RANGE FOR THE SAME REASON THE NAMEPLATE
-                 DOES: the cards drawn are exact, the hours they were drawn for are not. -->
+            <!-- The US part's 4.4 GPU converted at 672, 720 or 744 hours, plus the
+                 Portuguese part's 545 GPU-hours, gives the 3501.8, 3713.0 and 3818.6 below.
+                 A draw with one value converts into a range for the same reason the
+                 nameplate does: the cards drawn are exact, the hours they were drawn for are
+                 not. -->
             <pm:draw>
               <pm:claim>
                 <pm:low>3501.8</pm:low>
@@ -952,7 +932,7 @@
                 <pm:denominator>
                   <pm:absent>
                     <pm:reason>notApplicable</pm:reason>
-                    <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                    <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                   </pm:absent>
                 </pm:denominator>
                 <pm:narrowsWhen>
@@ -1003,7 +983,7 @@
                     <pm:denominator>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                        <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                       </pm:absent>
                     </pm:denominator>
                     <pm:narrowsWhen>
@@ -1026,27 +1006,22 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- ⛔⛔⛔ STATED, AND IT DOES NOT EQUAL WHAT A RECEIVER WOULD DERIVE FROM
-                 THE NAMEPLATE AND DEMAND ABOVE. THAT IS NOT AN ERROR IN EITHER FIGURE.
+            <!-- Stated, and it does not equal what a receiver would work out from the
+                 nameplate and demand above. That is not an error in either figure.
 
-                 One factor multiplies BOTH the US nameplate and the US demand, so the
-                 two converted intervals are CORRELATED. Subtracting them with the bound
-                 reversal that independent quantities require pairs a 28-day nameplate
-                 against a 31-day demand — a month that did not happen — and counts the
-                 factor's spread twice:
+                 One factor multiplies both the US nameplate and the US demand, so the two
+                 converted ranges move together. Setting the low of one against the high of
+                 the other, as independent quantities require, pairs a 28-day nameplate with
+                 a 31-day demand, a month that did not happen, and counts the factor's spread
+                 twice. Worked out that way, the remainder comes out wider on both sides than
+                 the one filed here, and agrees with it only at `mostLikely`, the one point
+                 where both readings use the same month.
 
-                   re-derived from the converted inputs   [1092.0, 2857.0, 4198.8]
-                   each part's remainder converted        [1414.0, 2857.0, 4085.6]
+                 The filed figure is the claim: each part's own remainder, converted, plus
+                 the demand the cross-charge removed, which is spare capacity that was
+                 counted as consumed twice.
 
-                 They agree at `mostLikely` and nowhere else, because that is the one
-                 point where both readings use the same month. The second is the claim.
-
-                 Part-wise: (8 - [3.1, 4.4, 6.0]) = [2.0, 3.6, 4.9] GPU x [672,720,744]
-                 = [1344.0, 2592.0, 3645.6], plus pt's [30, 175, 290] = [1374.0, 2767.0,
-                 3935.6], plus the [40, 90, 150] of demand the cross-charge removed,
-                 which is spare capacity that was counted as consumed twice.
-
-                 ⭐ It is the same correlated-components question `Elimination` answered,
+                 It is the question `Elimination` answers about ranges that move together,
                  arriving in a second place with the same answer. -->
             <pm:quantity>
               <pm:claim>
@@ -1057,7 +1032,7 @@
                 <pm:denominator>
                   <pm:absent>
                     <pm:reason>notApplicable</pm:reason>
-                    <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                    <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                   </pm:absent>
                 </pm:denominator>
                 <pm:narrowsWhen>
@@ -1083,20 +1058,20 @@
       </pm:layer>
 
       <!-- ==========================================================================
-           ⭐⭐⭐ THE INHERITED COUPLING, WEAKER THAN THE ONE IT CAME FROM.
+           THE INHERITED COUPLING, weaker than the one it came from.
            ========================================================================== -->
       <pm:couplings>
         <pm:coupling>
           <pm:from>staff</pm:from>
           <pm:to>shift-line</pm:to>
           <pm:observed>
-            the group filed this dependence between `labour` and `shift-line` at
-            [0.10, 0.22, 0.35]. It survives the fusion of `labour` into `staff` and it CANNOT
+            the group filed this coupling between `labour` and `shift-line` at
+            [0.10, 0.22, 0.35]. It survives the fusion of `labour` into `staff`, and it cannot
             survive at full strength: `labour` is 10 of `staff`'s 12, so relief applied to
             `staff` lands on the rota roughly one time in six and moves the line not at all
             when it does. The bound is five sixths of the group's figure; re-observed here
             over the same six quarters against the fused roster, it comes in below that.
-            ⚠️ A coupling copied up unchanged would have been a number nobody re-took.
+            A coupling copied up unchanged would be a number nobody took again.
           </pm:observed>
           <pm:strength>
             <pm:claim>
@@ -1134,10 +1109,10 @@
   </pm:processModulus>
 
   <!-- ==================================================================================
-       THE MAPPING. Every part names a layer inside ANOTHER COMPOSITION's embedded stack.
-       ⚠️ A resolver reads the root element to know whether a `notation` resolves to a
-       plain filing or to a composition, because the layer sits one level deeper in the
-       second. `notation` is opaque and says so nowhere.
+       THE MAPPING. Every part names a layer inside another composition's embedded stack.
+       A resolver reads the root element to know whether a `notation` resolves to a plain
+       filing or to a composition, because the layer sits one level deeper in the second.
+       `notation` is opaque and never says which.
        ================================================================================== -->
 
   <asrt:fusion>
@@ -1167,19 +1142,19 @@
       </asrt:layer>
     </asrt:part>
 
-    <!-- ⛔⛔ THIS FUSION DESTROYS A FILED OBSERVATION AND OWES A REASON. It is the one
-         case where a composer contradicts a filing it is built from, in the open. -->
+    <!-- This fusion overrules a filed observation, and owes a reason: here a composer
+         contradicts, in the open, a filing it is built from. -->
     <asrt:observed>
-      the group filed a COUPLING between these two layers and kept them apart, and under its
+      the group filed a coupling between these two layers and kept them apart, and under its
       own rostering it was right: an extra engineer on the rota delivered no features,
       because the two rosters were separate and a name on one could not appear on the other.
-      This holding runs ONE ROSTER. A name moves between delivery and the rota inside a
+      This holding runs one roster. A name moves between delivery and the rota inside a
       fortnight, and has forty-one times this year. At this level they are fungible and
-      therefore one layer, and the group's coupling has no upper counterpart — it is
-      absorbed, not refuted. ⚠️ The honest argument against this fusion is in the layer
-      above: the parts disagree on `timeSlack`, so the fused figure is unsized, which means
-      some of this demand survives a queue and some of it perishes on contact. A reader who thinks that
-      makes them two layers is disagreeing with the roster, not with the arithmetic.
+      therefore one layer, and the group's coupling has no upper counterpart: it is
+      absorbed, not refuted. The case against this fusion is in the layer above: the parts
+      disagree on `timeSlack`, so the fused figure is unsized, and some of this demand
+      survives a queue while some of it is lost at once. That does not make them two
+      layers; the roster decides what is one layer.
     </asrt:observed>
 
     <asrt:eliminations>
@@ -1191,9 +1166,10 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>holding-company</pm:party>
@@ -1216,9 +1192,10 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>holding-company</pm:party>
@@ -1229,7 +1206,7 @@
         <asrt:against>nameplate</asrt:against>
         <asrt:observed>
           payroll checked across all three establishments; the two rota posts are the parent's
-          own and appear on no member's headcount. ⚠️ Had the rota been seconded from delivery
+          own and appear on no member's headcount. Had the rota been seconded from delivery,
           this would be 2, and the fused nameplate 10 rather than 12.
         </asrt:observed>
       </asrt:elimination>
@@ -1250,7 +1227,7 @@
       </asrt:layer>
     </asrt:part>
     <asrt:observed>
-      carried through unfused. ⭐ It is already a fusion one level down — the US member's
+      carried through unfused. It is already a fusion one level down — the US member's
       `shift-line` and the Portuguese member's `linha-partilhada`, one machine — and this
       document neither repeats that work nor needs to. A part is a filed layer whatever
       produced it.
@@ -1264,7 +1241,7 @@
   </asrt:fusion>
 
   <!-- ==================================================================================
-       ⭐⭐⭐ THE FUSION THAT CONVERTS. Everything above it in this file joins layers that
+       THE FUSION THAT CONVERTS. Everything above it in this file joins layers that
        already agreed on a unit; this one does not, and `Part/factor` is why it can.
        ================================================================================== -->
 
@@ -1281,13 +1258,13 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>group</asrt:regime>
       </asrt:layer>
-      <!-- ⭐⭐ A CONVERSION IS ITSELF A CLAIM AND IS FILED AS ONE. A month is not 720
-           hours; it is [672, 720, 744] and which one you got depends on which month.
-           Filing a bare 720 here would assert a precision the calendar does not have,
-           and the composed nameplate would inherit a false exactness.
-           ⚠️ THE SAME MONTH CONVERTS THE US PART'S NAMEPLATE, DEMAND AND DRAW, so those
-           three converted intervals are correlated with each other. That is why the
-           remainder above is stated rather than left to be re-derived. -->
+      <!-- A conversion is itself a claim, and is filed as one. A month is not 720 hours: it
+           is 672, 720 or 744, depending on which month. Filing a bare 720 here would assert
+           a precision the calendar does not have, and the composed nameplate would inherit
+           a false exactness.
+           The same month converts the US part's nameplate, demand and draw, so those three
+           converted ranges move together, which is why the remainder above is stated rather
+           than left to be worked out again. -->
       <asrt:factor>
         <pm:claim>
           <pm:low>672</pm:low>
@@ -1299,7 +1276,7 @@
           </pm:denominator>
           <pm:narrowsWhen>
             <pm:narrowing>
-              <pm:condition>the members bill on a fixed 30-day cycle instead of a calendar month</pm:condition>
+              <pm:condition>the members bill on a fixed 30-day period instead of a calendar month</pm:condition>
               <pm:kind>intervention</pm:kind>
             </pm:narrowing>
           </pm:narrowsWhen>
@@ -1324,47 +1301,45 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>group</asrt:regime>
       </asrt:layer>
-      <!-- ⛔ NO `factor`, AND THAT IS NOT THE SAME DOCUMENT AS A factor OF 1. This part is
+      <!-- No `factor`, and that is not the same document as a factor of 1. This part is
            already metered in the composed unit, so there is nothing to convert. A
-           ceremonial 1 here would say a conversion was performed and came to unity, which
-           is a different and weaker claim than saying none was needed. -->
+           ceremonial 1 here would say a conversion was made and came to one, which is a
+           different and weaker claim than saying none was needed. -->
     </asrt:part>
 
     <asrt:observed>
       the group could not join these two and was right not to: `compute-us` is billed per
-      reserved card and `compute-pt` by the month, and `4.4 GPU + 545 GPU-hour` is not a
-      sum. It filed two one-part fusions under two names, which is exactly what that shape
-      is for, and stopped there because it had no way to say how one becomes the other.
+      reserved card and `compute-pt` by the month, and 4.4 GPU and 545 GPU-hour cannot be
+      added. It filed two one-part fusions under two names, which is what that shape is
+      for, and stopped there because it had no way to say how one becomes the other.
 
       This holding meters both in card-hours for its own capacity planning, and a card
       reserved in Texas and an hour bought in Lisbon serve the same inference queue: work
       moves between them within a day, so they hold no remainder independently and they are
       one layer.
 
-      ⛔⛔ AND THIS FUSION ABSORBS A FILED COUPLING, WHICH IT OWES A REASON FOR. The group
+      This fusion also absorbs a filed coupling, and owes a reason for it. The group
       observed that US inference above the reserved eight cards is routed to the Lisbon
       reservation, so the Portuguese layer's clearance falls when the US layer's demand
       peaks, and filed it as a `pm:Coupling` between two layers it could not join. That
-      observation is not evidence for this fusion — coupling and fungibility are independent
-      axes, and the group filed the same coupling shape between `labour` and `shift-line`,
-      which are emphatically not one layer. What makes these two one layer is the metering.
-      ⭐ The coupling does not survive as a coupling and it does not vanish either: THE
-      ROUTED HOURS ARE THE ELIMINATION BELOW. A peer-to-peer observation between two layers
-      became a double-count inside one, which is what absorbing a coupling means when the
-      thing it described was traffic rather than sympathy.
+      observation is not evidence for this fusion: coupling and fungibility are separate
+      questions, and the group filed the same coupling shape between `labour` and
+      `shift-line`, which are not one layer. What makes these two one layer is the metering.
+      The coupling does not survive as a coupling, and it does not vanish either: once the
+      two are one layer, work moving between them can only show up as hours counted twice
+      inside it, which is what an elimination removes.
 
-      ⚠️ WHAT A READER SHOULD DISAGREE WITH IS THE FACTOR, NOT THE FUSION. A
-      reserved card is available every hour of the month and a purchased hour is not, so
-      whether eight cards really deliver [5376, 5760, 5952] usable card-hours is a claim
-      about utilisation that this filing does not separate out. It is stated where it can
-      be argued with rather than performed silently in a spreadsheet, which is the whole
-      reason this element exists.
+      What a reader can disagree with is the factor, not the fusion. A reserved card is
+      available every hour of the month and a purchased hour is not, so whether eight cards
+      really deliver [5376, 5760, 5952] usable card-hours is a claim about utilisation that
+      this filing does not separate out. It is stated here, where it can be argued with,
+      rather than worked silently in a spreadsheet.
     </asrt:observed>
 
     <asrt:eliminations>
-      <!-- ⭐⭐ STATED IN THE COMPOSED UNIT, AFTER CONVERSION. An elimination in GPU would be
-           unaddable to a sum in GPU-hour, and there is no second factor here to rescue it:
-           a factor converts a PART, and an elimination is not a part. -->
+      <!-- Stated in the composed unit, after conversion. An elimination in GPU could not
+           come off a sum in GPU-hours, and there is no second factor here to rescue it: a
+           factor converts a part, and an elimination is not a part. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -1375,7 +1350,7 @@
             <pm:denominator>
               <pm:absent>
                 <pm:reason>notApplicable</pm:reason>
-                <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
               </pm:absent>
             </pm:denominator>
             <pm:narrowsWhen>
@@ -1431,9 +1406,10 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>holding-company</pm:party>
@@ -1456,9 +1432,10 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>holding-company</pm:party>
@@ -1468,10 +1445,10 @@
         </asrt:quantity>
         <asrt:against>draw</asrt:against>
         <asrt:observed>
-          ⭐ THE DEMAND WAS DOUBLE-COUNTED AND THE DRAW WAS NOT, WHICH IS THE WHOLE REASON
-          `against` EXISTS. The Portuguese member asked for the burst hours and the US cards
-          served them; two asks, one service. Removing the same figure from the draw would
-          have deleted work that actually happened.
+          The demand was counted twice and the draw was not, which is why `against` exists.
+          The Portuguese member asked for the burst hours and the US cards served them: two
+          asks, one service. Removing the same figure from the draw would delete work that
+          actually happened.
         </asrt:observed>
       </asrt:elimination>
     </asrt:eliminations>

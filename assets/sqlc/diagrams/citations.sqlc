@@ -1,25 +1,23 @@
 # The instrument each composition is filed under, rendered as one string. One row per citation.
 #
 # A declared mapping must render something
-#   `composition_citation` names `documentation` on diagrams/domain_objects.sqlc. No cardinality
-#   law can see whether it renders, because element kinds are not one to one: `documentation` is
-#   already spent by the pools and the lanes, so its count can be exact while this table's share
-#   of it is zero. A mapping declared and never rendered once hid exactly there, and that is the
-#   defect diagrams/ungoverned.sqlc exists for.
+#   `composition_citation` names `documentation` on diagrams/domain_objects.sqlc. No count can see
+#   whether it renders, because element kinds are not one to one: `documentation` is also spent by
+#   the pools and the lanes, so its count can be exact while this table's share of it is zero. A
+#   mapping declared and never rendered can hide exactly there, and diagrams/ungoverned.sqlc exists
+#   for that.
 #
 # It loses the structure, not the words
 #   The columns settle it: `pm.composition_citation` is `(taxonomy, instrument, clause, version)`,
-#   four typed fields, not free prose. A `documentation` element carries all four and carries them
-#   as one string, so a reader can read the citation and a tool cannot resolve it. That is
-#   narrower than *everything* and worth being exact about, because the two states owe different
-#   repairs.
+#   four typed fields, not free prose. A `documentation` element carries all four, as one string, so
+#   a reader can read the citation and a tool cannot resolve it. That is narrower than losing
+#   everything, and worth being exact about, because the two states need different repairs.
 #
 # The open question is the schema's
-#   Not the diagram's. `(composition, seq)` is a bare document ordinal where both sibling children
-#   of a composition carry a regime handle, and `merge-group-composition` cites one instrument
-#   while crossing several regime boundaries. The emission cannot fix that and must not paper over
-#   it.
-#
+#   Not the diagram's. `(composition, seq)` is a bare position in the document, where both sibling
+#   children of a composition carry a regime handle, and `merge-group-composition` cites one
+#   instrument while crossing several regime boundaries. The emission cannot fix that and must not
+#   cover it up.
 -- asrt:Composition/asrt:citation, flattened to the one string a documentation element can hold.
 SELECT c.composition,
        c.instrument

@@ -1,24 +1,23 @@
-# Every part that files a duty cycle, beside the window its composed layer files. One row per
-# examined part, `violates` where the composed layer dropped the calendar or changed it.
+# Every part that files a window, beside the window its composed layer files. One row per part
+# examined, `violates` where the composed layer dropped the calendar or changed it.
 #
 # A window is carried, never summed
-#   The rule: a window is carried through a fusion and never summed. The schema states the
-#   failure in one sentence: "two members naming one machine file one calendar between them;
-#   summing gives ten days a week." Amounts add because two supplies are two supplies. Calendars
-#   do not, because they are the same week seen twice.
+#   The rule: a window is carried through a fusion and never summed. The schema states the failure
+#   in one sentence: two members naming one machine file one calendar between them, and summing
+#   gives ten days a week. Amounts add because two supplies are two supplies. Calendars do not,
+#   because they are the same week seen twice.
 #
-# A dropped window is not a continuous supply
-#   Both halves are unenforceable while a dropped window and a supply that runs continuously are
-#   the same document, and a holding level in this corpus dropped one.
+# A dropped window is not a supply that runs all the time
+#   Both halves of the rule rely on telling them apart: a composed layer that files no window
+#   where its part files one has dropped the calendar.
 #
 # All three points, and the unit where it must agree
-#   A calendar carried through a fusion is the same calendar, so its low, mode and high all come
-#   through unchanged; comparing the low alone passes a window whose high was summed. The unit is
-#   compared only where the part omits its conversion factor, which is the filing that says its
-#   units already agree. A factor stated, or filed as a typed absence, says they differ:
-#   `merge-pt-member`'s part files its window in `dias` under a factor, and the group carries it as
-#   `days`, the same five days spelled in the composed layer's language.
-#   Proof: `src/proofs/README.md`, entry `window_carried`.
+#   A calendar carried through a fusion is the same calendar, so its lowest, most likely and
+#   highest values all come through unchanged; comparing the lowest alone would pass a window whose
+#   highest was summed. The unit is compared only where the part omits its conversion factor,
+#   which is the filing saying its units already agree. A factor stated, or filed as a typed blank,
+#   says they differ: `merge-pt-member`'s part files its window in `dias` under a factor, and the
+#   group carries it as `days`, the same five days in the composed layer's language.
 -- asrt:Part's pm:Divisibility/window against the composed pm:Layer's.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

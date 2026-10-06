@@ -1,25 +1,26 @@
-# The one-part fusions that could carry, against the ones that do. One row: whether
-# |carriable| = |carried| + |carriable ⋉ (eliminated ∪ suspended)|.
+# The one-part fusions that could carry, against the ones that do. One row: whether every row that
+# could carry is carried, or is eliminated or suspended, counted row for row.
 #
 # What a difference needs before a law can govern it
-#   Two things, and this one needed both. Its operator must be one examples/soundness/main.rs
-#   recognises, which for an anti-semijoin means `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`;
-#   and its left operand must be a file, so there is an A to count. Miss either and the
-#   `unclaimed` guard reports nothing, because it walks for syntax and cannot see an operand that
-#   was never named. composition/carriable.sqlc is the A here.
+#   Two things. Its operator must be one examples/soundness recognises, which for an anti-join
+#   means `NOT EXISTS` as well as `LEFT JOIN ... IS NULL`; and its left operand must be a file, so
+#   there is something to count. Miss either and the `unclaimed` guard reports nothing, because it
+#   reads the SQL's shape and cannot see an operand that was never named.
+#   composition/carriable.sqlc is the left operand here.
 #
-# The `OR` is De Morgan
-#   It is not a disjunction somebody should have unioned. `carried` keeps
-#   ¬eliminated ∧ ¬suspended; the complement it is being checked against is therefore
-#   eliminated ∨ suspended, the same two named relations read from the other side.
+# The `OR` is the other side of `carried`
+#   It is not a disjunction somebody should have written as a union. `carried` keeps what is
+#   neither eliminated nor suspended, so what it is checked against is what is eliminated or
+#   suspended: the same two named relations read from the other side.
 #
-# A bag on the compared attributes
-#   The left operand is a bag on the compared attributes and the identity still holds, because
-#   both terms are anti-joins rather than `EXCEPT`. `carriable` is keyed (filing, layer,
-#   quantity) and the exclusions compare (filing, layer), so a fusion contributes one row per
-#   quantity to whichever side it lands on. Rewriting either term as `EXCEPT` would deduplicate
-#   one side and not the other, and the two would stop adding up.
--- composition/carriable.sqlc partitioned by eliminations/filed.sqlc and composition/suspended_quantities.sqlc.
+# Repeated rows on the compared columns
+#   The left operand repeats rows on the compared columns and the count still holds, because both
+#   terms are anti-joins rather than `EXCEPT`. `carriable` is keyed (filing, layer, quantity) and
+#   the exclusions compare (filing, layer), so a fusion gives one row per quantity to whichever side
+#   it lands on. Writing either term as `EXCEPT` would remove repeats on one side and not the other,
+#   and the two would stop adding up.
+-- composition/carriable.sqlc split by eliminations/filed.sqlc and
+-- composition/suspended_quantities.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -27,7 +28,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'composition/carried' AS subject,
            x.total = x.kept + x.removed AS holds,
-           format('%s carriable = %s carried + %s eliminated or suspended',
+           format('%s carriable: %s carried, %s eliminated or suspended',
                   x.total, x.kept, x.removed) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM ( :compose(composition/carriable.sqlc) ) c) AS total,

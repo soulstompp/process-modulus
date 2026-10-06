@@ -1,32 +1,32 @@
 # Every supply with nowhere to put its excess and demand nobody could serve, beside who is named as
-# having gone without. One row per examined layer, `violates` where no unserved holder appears, or,
+# having gone without. One row per layer examined, `violates` where no unserved holder appears, or,
 # under interference, where any holder claims the excess was served.
 #
 # The argument is in the word "every"
 #   If every buffer was accounted for and none of them had room, the excess above the nameplate
 #   cannot have been absorbed by running hot, by drawing on stock or by making the demand wait.
-#   There was nowhere to go, so it went unserved and somebody has to be named as having gone
-#   without. One unmeasured buffer licenses none of this, whatever the other two say, because
-#   nobody knows what that route could have taken. layers/exposure_scope.sqlc classifies all
-#   three standings; this rule reads the one that concludes anything.
+#   There was nowhere to go, so it went unserved, and somebody has to be named as having gone
+#   without. One unmeasured buffer allows none of this, whatever the other two say, because nobody
+#   knows what that route could have taken. layers/exposure_scope.sqlc classifies all three
+#   standings; this rule reads the one that allows a conclusion.
 #
 # Under interference, every holder; under transition, one
 #   Where the whole demand range sits above the nameplate, all of the remainder is excess, so every
 #   holder is `customer` or `unrealised`: a `booked`, `counterparty` or `people` holder says part of
-#   an excess was absorbed by a supply that had nowhere to absorb it. Where the ranges overlap,
-#   part of the range is genuinely clearance and a `booked` share is legitimate there, so the rule
-#   weakens to presence: at least one holder bears the unserved part. The fit is the one derived
-#   from the ranges, which checks/fit_disagrees holds the filed sign to.
+#   an excess was absorbed by a supply that had nowhere to absorb it. Where the ranges overlap, part
+#   of the range really is clearance and a `booked` share is legitimate there, so the rule asks
+#   only that at least one holder bears the unserved part. The fit is the one worked out from the
+#   ranges, which checks/fit_disagrees holds the filed sign to.
 #
 # Every buffer, not the capacity alone
-#   A measured-zero capacity slack does not make an excess unabsorbable while stock or waiting
+#   A capacity slack measured at zero does not leave an excess nowhere to go while stock or waiting
 #   could still take it. Read on the capacity buffer alone, this rule would accuse a filing whose
 #   inventory slack took part of the excess and says so with a `booked` holder.
 #
 # One relation, three readings
-#   The violation is an anti-join against entries/unserved_holders.sqlc, which the clearance
-#   check semi-joins and the exposure check sums, and a semi-join against
-#   entries/served_holders.sqlc under interference.
+#   The violation is an anti-join against entries/unserved_holders.sqlc, which the clearance check
+#   semi-joins and the exposure check sums, and a semi-join against entries/served_holders.sqlc
+#   under interference.
 -- every slack on the layer accounted for and empty, against pm:HolderKind of every holder.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (

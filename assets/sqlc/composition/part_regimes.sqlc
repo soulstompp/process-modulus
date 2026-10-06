@@ -2,28 +2,27 @@
 # row per resolved part carrying a regime handle, with both claims and whether they agree.
 #
 # Two claims the grammar cannot compare
-#   Two parties, two claims about one thing, and the grammar cannot ask whether they agree.
+#   Two parties make two claims about one thing, and the grammar cannot ask whether they agree.
 #   `asrt:part/asrt:layer/asrt:regime` is a handle into the composition's own declarations, and
 #   XSD 1.0 checks that it resolves: `compositionRegimeId` is the key, `partRegime` the keyref.
-#   That is the strongest thing a grammar can do here and it stops at the document edge, because an
-#   identity constraint is scoped to one document and the schema's own annotation says so. Whether
-#   the composer's claim matches what the other filing declares about itself is exactly what falls
-#   to a rule.
+#   That is the most a grammar can do here, and it stops at the document's edge, because an
+#   identity constraint is scoped to one document, as the schema's own annotation says. Whether the
+#   composer's claim matches what the other filing declares about itself falls to a rule.
 #
 # The framework is compared as a pair, never as a code
-#   `pm:Regime`'s annotation is emphatic: SAF-T PT publishes `S · M · N · O`, IES AnexoASNC
+#   `pm:Regime`'s annotation sets it out: SAF-T PT publishes `S · M · N · O`, IES AnexoASNC
 #   publishes `NIC · NCRF · NCRF-PE · NC-ME`, the lists do not line up, and "a code without its
 #   authority is genuinely ambiguous rather than merely unattributed". So the join is on taxonomy
 #   and value. Comparing values alone would call `NCRF-PE` and `S` different frameworks and `M`
 #   and `M` the same one, both wrongly.
 #
 # Agreement is membership, not equality
-#   A part filing may declare more than one regime, and `refutation` does, so the composer's
+#   A part's filing may declare more than one regime, and `refutation` does, so the composer's
 #   framework must appear among the frameworks that filing declares. Equality would accuse a
-#   document for declaring a second authority's coding, which is the very thing the tall `regime`
-#   table exists to permit.
+#   document for declaring a second authority's coding, the very thing the `regime` table, one row
+#   per regime, exists to allow.
 #
-# `agrees` is NULL where either side is typed absent
+# `agrees` is NULL where either side is a typed blank
 #   Not false. A fixture reporting under no framework and a composer who said `notApplicable` have
 #   not disagreed; the question does not arise. `checks/part_regime_disagrees.sqlc` keeps that out
 #   of its population rather than reading it as a pass.

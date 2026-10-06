@@ -1,29 +1,29 @@
 # Every computable remainder, and whether it was classified exactly once. One row.
 #
-# The closure question, as algebra
-#   examples/observations/main.rs asserts that the closure question was put to every remainder,
-#   and this is that assertion as algebra. layers/remainder_scope.sqlc must be a partition of
-#   layers/remainder.sqlc: exhaustive, so no remainder reaches the arithmetic unasked, and
-#   disjoint, so no remainder is counted under two standings.
+# The closure question, as a law
+#   examples/observations asserts that the closure question was put to every remainder, and this is
+#   that assertion as a law. layers/remainder_scope.sqlc must put every remainder of
+#   layers/remainder.sqlc in exactly one standing: in at least one, so no remainder reaches the
+#   arithmetic unasked, and in no more than one, so no remainder is counted under two standings.
 #
-# Fan-out from the left joins
+# Repeats from the left joins
 #   The left joins inside remainder_scope are one risk. A layer whose filing declared two stack
-#   scopes, or two coupling searches, would fan out and be classified twice, and the standing
-#   counts would still look reasonable. Cardinality on both sides is what catches that one.
+#   scopes, or two coupling searches, would repeat and be classified twice, and the standing counts
+#   would still look reasonable. Counting both sides is what catches that one.
 #
-# A remainder matching no arm
-#   The arms are the other risk, and cardinality cannot see it. The `CASE` is in the SELECT list,
-#   so a remainder matching no arm keeps its row and takes `standing = NULL` rather than
+# A remainder matching no branch
+#   The branches are the other risk, and counting cannot see it. The `CASE` is in the SELECT list,
+#   so a remainder matching no branch keeps its row and takes `standing = NULL` rather than
 #   vanishing. `unclassified` is the term that sees it.
 #
 # Which standings exist is the type's job
 #   The type is `public.remainder_standing`, because a count of rows per standing cannot see a
-#   standing renamed. Every arm casts to it.
+#   standing renamed. Every branch casts to it.
 #
 # Probe
-#   examples/probes runs it as `remainder_standing`.
-#   Remove the `ELSE` from layers/remainder_scope.sqlc. Computable, classified and doubled still
-#   agree; `unclassified` must count the remainders that fall through, and the law must fail.
+#   examples/probes runs it as `remainder_standing`. Remove the `ELSE` from
+#   layers/remainder_scope.sqlc. Computable, classified and doubled still agree; `unclassified` must
+#   count the remainders that fall through, and the law must fail.
 -- layers/remainder.sqlc against layers/remainder_scope.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (

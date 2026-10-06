@@ -1,4 +1,4 @@
--- pm:HolderKind, the "unserved" annotation; pm:Layer/pm:timeSlack, "the holder does not get to refuse".
+-- pm:HolderKind, the "unserved" annotation, and pm:Layer/pm:timeSlack.
 SELECT * FROM (VALUES
   ('refusal_as_decay',
    'capacity slack <-> time slack, on a layer whose shortfall nobody could serve',

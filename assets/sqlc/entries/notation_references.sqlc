@@ -1,35 +1,33 @@
 # Every operation that names a position in a process notation. One row per filed
 # `pm:Operation/foreignId`: the notation, the id inside it, and the operation here that claims it.
 #
-# The third `pm:ForeignId`
-#   The model carries exactly three references out of a document: an `asrt:Part`, an
-#   `asrt:Elimination/between`, and this. The part has `composition/part_references.sqlc` and a
-#   rule that verifies it resolves; the elimination has `eliminations/references.sqlc` and an
-#   observation, because the schema licenses a `between` that lands nowhere. Two things of one
-#   type owe the same apparatus, and an asymmetry between them is visible from `ls` without reading
-#   a line of SQL.
+# A reference out of the document
+#   Like an `asrt:Part` and an `asrt:Elimination/between`, this points outside the document. The
+#   part has composition/part_references.sqlc and a rule that checks it resolves; the elimination
+#   has eliminations/references.sqlc and an observation, because the schema allows a `between` that
+#   lands nowhere. References of one type owe the same treatment, and a gap between them shows in a
+#   directory listing without reading any SQL.
 #
 # No rule may judge it
-#   This tree grows by rules, and a field no rule reads is under no pressure to exist.
-#   `pm:ForeignId`'s own annotation refuses the check outright: a notation plus an id names a
-#   position in one file that no authority publishes, so a receiver sent looking for `Task_17` in a
-#   normative list finds nothing there and reads it as a defect in the list. There is nothing to
-#   resolve against, so `checks/unresolved_part.sqlc`'s shape copied across would accuse every
-#   filing. The answer is the same one `between` got: report, never assert.
+#   A field no rule reads has nothing holding it in place, and this one can have no rule.
+#   `pm:ForeignId`'s own annotation rules the check out: a notation plus an id names a position in
+#   one file that no authority publishes, so a receiver sent looking for `Task_17` in a normative
+#   list finds nothing there and reads it as a defect in the list. There is nothing to resolve
+#   against, so checks/unresolved_part.sqlc's shape copied here would accuse every filing. It gets
+#   the answer `between` got: report, never assert.
 #
 # The other arm is a fact, not a silence
 #   `notationPosition` is required and takes `pm:StatedForeignId`, so an operation that names no
-#   position says why: `none` is in no notation and somebody looked, `unmeasured` is a notation
-#   exists and nobody located this operation in it, `notApplicable` is this filing has no notation
-#   at all. This relation is the stated arm; `queries/observations/17-notation-references.sqlc`
-#   reports both, because the population is the finding and the restriction alone would hide it.
+#   position says why: `none`, it is in no notation and somebody looked; `unmeasured`, a notation
+#   exists and nobody located this operation in it; `notApplicable`, this filing has no notation at
+#   all. This relation is the stated arm. queries/observations/17-notation-references.sqlc reports
+#   both, because the whole population is the finding and the stated arm alone would hide it.
 #
 # The notation is a language, not a document
-#   That is the difference from a part. A part names another filing and `filing_identity` resolves
+#   That is the difference from a part. A part names another filing, and `filing_identity` resolves
 #   it. This names the OMG BPMN model URI, and the id names a node in whichever BPMN document
-#   travels beside the filing. So the pair identifies a position relative to a document nobody here
-#   holds, which is exactly the property that makes the crossing cost the receiver nothing.
-#
+#   travels beside the filing. So the pair names a position in a document nobody here holds, which
+#   is exactly why crossing to it costs the receiver nothing.
 -- pm:Operation/pm:notationPosition, the stated arm: a notation plus an id.
 SELECT o.filing, o.label, o.foreign_notation, o.foreign_id
 FROM ( :compose(entries/operations.sqlc) ) o

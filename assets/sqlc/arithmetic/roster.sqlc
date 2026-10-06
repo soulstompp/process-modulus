@@ -1,39 +1,49 @@
-# Every place this model puts two magnitudes together, and what guards the join. One row per
-# site: a slug, the equation as somebody would say it, the two things it combines, and the rule
-# that checks they are the same kind of thing, or NULL, meaning nothing does.
+# Every place this model puts two magnitudes together, and what guards it. One row per site: a
+# slug, the calculation as somebody would say it, the things it combines, and the rule that checks
+# they are the same kind of thing, or NULL where nothing does.
 #
 # The NULL column is why this file exists
-#   `r = n - d` is the central computation in the model, and layers/differenced_remainder.sqlc
+#   The remainder is the central calculation in the model, and layers/differenced_remainder.sqlc
 #   carries the demand's unit and the nameplate's as two separate columns, `unit` and
-#   `amount_unit`, and subtracts across them with no predicate anywhere. That is not a bug in that
+#   `amount_unit`, and subtracts across them with no unit condition. That is not a fault in that
 #   file: it is a rule nobody wrote, and a rule with no row beside the others has nowhere for its
-#   absence to be visible.
+#   absence to show.
 #
 # Unguarded is never ok
-#   `not checked` must never render as `ok`. A site whose operands happen to agree in this corpus
-#   is not a site that is guarded; it is a site whose luck has not run out. Most of the sites
-#   below are clean in the data and unguarded in the code, which is exactly the state that reads
-#   as safe and is not. `examples/readiness/main.rs` prints the tally on every run.
+#   `not checked` never shows as `ok`. A site whose operands happen to agree on this corpus is not
+#   a guarded site. Most of the sites below are clean in the data and unguarded in the code, which
+#   reads as safe and is not. examples/readiness prints the tally on every run.
 #
 # One site is guarded by being forbidden
-#   conformance/README.md: "the units of a fusion's parts are not checked and must not be ...
-#   asserting that they name one unit is what a fusion says." A fusion declares commensurability
-#   rather than owing it, so a checker that tested it would be overruling the filer.
-#   `(forbidden)` is a third value, not a NULL.
+#   conformance/README.md: "The units of a fusion's parts are not compared, because parts
+#   legitimately spell one unit two ways, `people` and `pessoas`, and saying they name one unit is
+#   exactly what a fusion says." A fusion declares its parts to be in one unit rather than owing
+#   it, so a check that tested it would overrule the filer. `(forbidden)` is a third value, not a
+#   NULL.
 #
 # A row with no relation behind it
 #   A row here with no relation behind it is a site the repository claims to watch and does not.
-#   Both directions are a set difference in reports/integrity.sqlc, which is empty when the two
-#   agree: one file, checking this roster and checks/roster.sqlc in the same pass.
--- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean anything.
+#   reports/integrity.sqlc checks both directions, for this roster and checks/roster.sqlc in the
+#   same pass, and is empty when they agree.
+-- the arithmetic the schemas' prose owes, against the unit rules that exist to make it mean
+-- anything.
 SELECT * FROM (VALUES
-  ('remainder',          'r = n - d',                    'demand x nameplate',              NULL),
-  ('shares_sum',         'sum of shares = |r|',          'holder shares x remainder',       NULL),
-  ('shares_bounded',     'sum of shares <= S',           'holder shares x absorbing slack', 'slack_unit_mismatch'),
-  ('whole_multiple',     'n mod q = 0',                  'nameplate x quantum',             'quantum_unit_mismatch'),
-  ('draw_bounded',       'draw <= n + capacity slack',   'draw x nameplate x slack',        NULL),
-  ('exposure_bounded',   'exposure <= unserved shares',  'remainder x unserved shares',     NULL),
-  ('time_slack_derived', 'time slack = max(n - d, 0)',   'demand x nameplate',              NULL),
-  ('filed_remainder',    'filed r = n - d',              'remainder quantity x remainder',  NULL),
-  ('fusion_sum',         'x_composed = F.Phi.x - e',     'parts x factors x elimination',   '(forbidden)')
+  ('remainder',          'the remainder is the nameplate less the demand',
+                         'demand and nameplate',              NULL),
+  ('shares_sum',         'the shares add up to the size of the remainder',
+                         'holder shares and remainder',       NULL),
+  ('shares_bounded',     'the shares add up to no more than the absorbing slack',
+                         'holder shares and absorbing slack', 'slack_unit_mismatch'),
+  ('whole_multiple',     'the nameplate is a whole number of quanta',
+                         'nameplate and quantum',             'quantum_unit_mismatch'),
+  ('draw_bounded',       'the draw is no more than the nameplate plus its capacity slack',
+                         'draw, nameplate and slack',         NULL),
+  ('exposure_bounded',   'the exposure is no more than the unserved shares',
+                         'remainder and unserved shares',     NULL),
+  ('time_slack_derived', 'the time slack is the nameplate less the demand, never below zero',
+                         'demand and nameplate',              NULL),
+  ('filed_remainder',    'a filed remainder is the nameplate less the demand',
+                         'remainder quantity and remainder',  NULL),
+  ('fusion_sum',         'a composed figure is its converted parts added up, less its eliminations',
+                         'parts, factors and elimination',    '(forbidden)')
 ) AS a(slug, site, operands, guarded_by)

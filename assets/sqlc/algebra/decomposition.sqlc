@@ -1,24 +1,24 @@
 # The law `rank/decomposition.sqlc` owes: cutting a graph by filing loses no edge.
 #
-# Without it the measurement is unreadable
-#   That relation reports the unit graph's cycle space as 1 corpus-wide and 0 summed per filing,
-#   and concludes that the cut destroys a cycle. It would report exactly the same numbers if the
-#   cut had simply dropped the edges, and the conclusion would then be about a bug rather than
+# Without it the measurement cannot be read
+#   That relation reports the unit graph's one loop across the whole corpus and none when the graph
+#   is cut by filing, and concludes that the cut breaks a loop. It would report the same numbers if
+#   the cut had simply dropped the edges, and the conclusion would then be about a fault rather than
 #   about the graph. This law is what makes the difference structural: every edge appears once
-#   corpus-wide and once under its own filing, so whatever the cut loses is connectivity and
-#   never population.
+#   across the corpus and once under its own filing, so whatever the cut loses is connections and
+#   never edges.
 #
 # Why the union is `ALL`
-#   It is the multiplicity that matters. The corpus-wide arm and the per-filing arms are one edge
-#   counted twice on purpose, so a `UNION` that deduplicated would make the identity read `n = n`
-#   and prove nothing. `algebra/roster.sqlc` carries that distinction in its own `multiplicity`
-#   column and this row is `bag`.
+#   The repeats are what matter. The corpus-wide branch and the per-filing branches count one edge
+#   twice on purpose, so a `UNION` that removed repeats would compare a number with itself and show
+#   nothing. `algebra/roster.sqlc` carries that distinction in its own `multiplicity` column, and
+#   this row is `bag`.
 #
 # The number of graphs is counted
 #   `graphs` is counted rather than written as a literal, because a literal would not move when a
-#   third graph arrives. The claimant graph has no edges on this corpus, so a literal could be
-#   right and still unreadable: nothing would say whether it meant *this model composes two
-#   graphs* or *two of them have edges*.
+#   third graph arrives. The claimant graph has no edges on the corpus, so a literal could be right
+#   and still be unreadable: nothing would say whether it meant "this model composes two graphs"
+#   or "two of them have edges".
 -- rank/decomposition.sqlc's two scopes, counted: the whole against the sum of the parts.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
@@ -27,7 +27,7 @@ FROM      (
 LEFT JOIN (
     SELECT 'rank/decomposition' AS subject,
            x.whole = x.per_filing AS holds,
-           format('%s edges corpus-wide = %s summed over %s filings, across %s graphs',
+           format('%s edges across the corpus, %s added over %s filings, across %s graphs',
                   x.whole, x.per_filing, x.filings, x.graphs) AS detail
     FROM ( SELECT
              (SELECT count(*) FROM (

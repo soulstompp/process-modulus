@@ -1,4 +1,5 @@
--- The XSD's Stated* wrapper positions in the documents ingest loads, against epistemics/absences.sqlc's questions.
+-- The XSD's Stated* wrapper positions in the documents ingest loads,
+-- against epistemics/absences.sqlc's questions.
 SELECT * FROM (VALUES
   ('pm:processModulus/pm:notation',     'its own notation',                       NULL::text),
   ('pm:processModulus/pm:evidence',     'what it is evidence for',                NULL),

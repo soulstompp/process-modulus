@@ -1,5 +1,5 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT, in both
-// languages, for the reason `examples/witnesses/main.rs` gives.
+// This program's header is `README.md` beside it, and there is one copy of it, in both languages,
+// for the reason `examples/witnesses/main.rs` gives.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/probes/README.md")]
 
@@ -95,8 +95,8 @@ const PROBES: &[Probe] = &[
                 ELSE 'computable'::public.arithmetic_verdict END AS verdict,",
                     "WHEN g.filing IS NOT NULL             THEN 'suspended'::public.arithmetic_verdict
                 END AS verdict,", 1)),
-        expect: Only(&["r = n - d"]),
-        says: "`r = n - d` loses the arm that says computable, so its candidates fall out of every class",
+        expect: Only(&["the remainder is the nameplate less the demand"]),
+        says: "the remainder loses the arm that says computable, so its candidates fall out of every class",
     },
     Probe {
         id: "composed_quantum",
@@ -105,7 +105,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/composed_quantum",
         swap: Some(("gcd(f.g, o.quantum_mode)", "greatest(f.g, o.quantum_mode)", 1)),
         expect: Only(&["merge-holding-composition / compute"]),
-        says: "the fold takes the largest quantum instead of the common divisor",
+        says: "the fold takes the largest quantum instead of the largest unit every quantum is whole in",
     },
     Probe {
         id: "composed_remainder",
@@ -125,7 +125,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/conforms",
         swap: None,
         expect: Includes(&["nameplate_not_a_multiple"]),
-        says: "a nameplate moves off its quantum's lattice, with every rule the move reaches",
+        says: "a nameplate stops being a whole number of quanta, with every rule the move reaches",
     },
     Probe {
         id: "integrity",
@@ -143,7 +143,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/crossed_remainder",
         swap: Some(("x.n_low  - x.d_high AS r_low,", "x.n_low  - x.d_low AS r_low,", 3)),
         expect: AtLeastOne,
-        says: "the low of n - d pairs n.low with d.low, so no bound is crossed",
+        says: "the remainder's low pairs the nameplate's low with the demand's low, so no bound is crossed",
     },
     Probe {
         id: "derived_quantities",
@@ -215,7 +215,7 @@ const PROBES: &[Probe] = &[
         says: "a class declared exercised that nothing lands in, which is an accounted-for zero claiming to be a real one",
     },
     Probe {
-        id: "class_domain / codomain",
+        id: "class_domain / class set",
         doc: None,
         rows: NO_ROWS,
         statement: "algebra/class_domain",
@@ -231,7 +231,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/class_domain",
         swap: Some(("  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        false)",
                     "  ('checks/fit_axes.sqlc',             'fit_axis',           'rule',        true)", 2)),
-        expect: Only(&["a filed flag that disagrees with the balls"]),
+        expect: Only(&["a filed flag that disagrees with what it classifies"]),
         says: "a classification of this tree's own rules declared to be filed by documents, which would put a scope over rows no scope can restrict",
     },
     Probe {
@@ -243,12 +243,12 @@ const PROBES: &[Probe] = &[
         expect: Only(&["every-inverting-elimination / shift-capacity / nameplate"]),
         says: "an elimination wider than its sum is subtracted bound by bound, which inverts it",
     },
-    // ⭐⭐ THE CORNER, AND IT IS WHY THIS LAW WAS WRONG FOR A WHOLE PASS. The law recomputed the
-    //    sum bound by bound while `composition/converted.sqlc` read the corner the operand's sign
-    //    picks: two functions agreeing on every non-negative operand, and no filed operand is
-    //    negative. Nothing here could fail, so nothing did. `examples/soundness/main.rs` section 8
-    //    now holds every conversion site to the one spelling; this holds THIS law's own route to
-    //    the one arithmetic, which a spelling check cannot do.
+    // The corner. `composition/converted.sqlc` converts at the corner the operand's sign picks,
+    // and this law recomputes the same sums. Computed bound by bound instead, the two agree on
+    // every operand that is not negative, and no filed operand is negative, so nothing else here
+    // could tell them apart. `examples/soundness/main.rs` section 8 holds every conversion site to
+    // the one spelling; this probe holds the law's own route to the one arithmetic, which a
+    // spelling check cannot do.
     Probe {
         id: "fusion_sum / corner",
         doc: None,
@@ -271,10 +271,10 @@ const PROBES: &[Probe] = &[
         ]),
         says: "a part is converted at the wrong corner, which moves every sum under a factor with width",
     },
-    // ⭐⭐ TWO PROBES, BECAUSE THE LAW HAS TWO ARMS AND A COUNT WOULD PASS EITHER WAY. The first
-    //    makes the two instruments disagree; the second makes the graph look empty, so the law must
-    //    refuse a zero it got for the wrong reason rather than call it a pass. `0 = 0` is true of an
-    //    empty graph and of a rule that examined nothing, which is why non-vacuity is a column here.
+    // Two probes, because the law has two arms and a count would pass either way. The first makes
+    // the two counts disagree; the second makes the graph look empty, so the law must refuse a zero
+    // it got for the wrong reason rather than call it a pass. `0 = 0` is true of an empty graph and
+    // of a rule that examined nothing, which is why whether anything was examined is a column here.
     Probe {
         id: "cycle_space / equivalence",
         doc: None,
@@ -282,7 +282,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/cycle_space",
         swap: Some(("count(*) FILTER (WHERE k.violates)", "count(*)", 1)),
         expect: Only(&["rank/cycle_space"]),
-        says: "the jagged-partition rule is read as accusing every fusion while F carries no cycle",
+        says: "the jagged-partition rule is read as accusing every fusion while the composition has no loop",
     },
     Probe {
         id: "cycle_space / vacuity",
@@ -291,12 +291,13 @@ const PROBES: &[Probe] = &[
         statement: "algebra/cycle_space",
         swap: Some(("m.n_nodes AS nodes", "0 AS nodes", 1)),
         expect: Only(&["rank/cycle_space"]),
-        says: "the layer graph is read as empty, where a cycle space of zero means nothing at all",
+        says: "the layer graph is read as empty, where a count of no loops means nothing at all",
     },
-    // ⭐⭐ THE FOUR SUBSPACES OF THE FOLD, ONE PROBE EACH, AND THE TWO THAT SHARE A LAW SHARE IT
-    //    BECAUSE THEY ARE ONE COUNT READ FROM EACH END. The kernel is held against the layer
-    //    graph, the row space against the rank counted along the fusions, the image against the
-    //    rule that keeps it whole, and the closure against the sum of the levels inside it.
+    // The four laws on the composition, `composition_kernel`, `composition_row_space`,
+    // `composition_image` and `composition_closure`; where two probes share a law, they read one
+    // count from each end. The first is held against the layer graph, the second against the
+    // count taken along the fusions, the third against the rule that keeps it whole, and the last
+    // against the sum of the levels inside it.
     Probe {
         id: "composition_kernel",
         doc: None,
@@ -314,8 +315,9 @@ const PROBES: &[Probe] = &[
         statement: "algebra/composition_row_space",
         swap: Some(("       1::bigint                                                            AS row_dim,",
                     "       2::bigint                                                            AS row_dim,", 2)),
-        expect: Only(&["rank/composition_row_space", "rank/composition_row_space / the rank"]),
-        says: "a fusion's row space is read as two dimensions, so no fibre sums to its own parts and the rank doubles",
+        expect: Only(&["rank/composition_row_space",
+                       "rank/composition_row_space / the count along the fusions"]),
+        says: "a fusion is counted twice, so no fusion's parts add up to it and the count along the fusions doubles",
     },
     Probe {
         id: "composition_row_space / the rank",
@@ -324,7 +326,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/composition_row_space",
         swap: Some(("       count(k.composition)                             AS rank,",
                     "       count(k.composition) + 1                         AS rank,", 1)),
-        expect: Only(&["rank/composition_row_space / the rank"]),
+        expect: Only(&["rank/composition_row_space / the count along the fusions"]),
         says: "the fusion side counts one row too many per composition, and only the crossing can see it",
     },
     Probe {
@@ -335,7 +337,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/composition_image",
         swap: None,
         expect: Only(&["rank/composition_image"]),
-        says: "a fusion's only part names a layer nobody filed, so a declared fusion is no row of the matrix",
+        says: "a fusion's only part names a layer nobody filed, so a declared fusion has no row in the composition",
     },
     Probe {
         id: "composition_image / the rule",
@@ -345,7 +347,7 @@ const PROBES: &[Probe] = &[
         statement: "algebra/composition_image",
         swap: Some(("           r.composition IS NULL AS violates,", "           false AS violates,", 1)),
         expect: Only(&["rank/composition_image", "rank/composition_image / the rule"]),
-        says: "the rule stops accusing the part that resolves to nothing while the dimension it leaves is still there",
+        says: "the rule stops accusing the part that resolves to nothing while the gap it leaves is still there",
     },
     Probe {
         id: "composition_closure",
@@ -493,7 +495,7 @@ const PROBES: &[Probe] = &[
         swap: Some(("floor(l.d_low / l.quantum_mode) <> floor(l.d_high / l.quantum_mode) AS crosses_tooth",
                     "floor(l.d_low / l.quantum_mode) <> floor(l.d_mode / l.quantum_mode) AS crosses_tooth", 1)),
         expect: AtLeastOne,
-        says: "a demand that crosses a tooth after its mode is taken for one that stays inside",
+        says: "a demand that crosses into another whole quantum after its mode is taken for one that stays inside",
     },
     Probe {
         id: "searches_answered",
@@ -576,12 +578,12 @@ const PROBES: &[Probe] = &[
         doc: None,
         rows: NO_ROWS,
         statement: "algebra/layer_units",
-        // ⛔ The nameplate arm, in all three copies. A layer that files its nameplate in a unit of
-        //    its own is exactly the document `units/conversions.sqlc` pins `quantity = 'nameplate'`
-        //    against, and the pin cannot see it: the graph it builds stays perfectly well formed.
-        //    The law composes `layers/quantities` once for the unit and once more through
-        //    `composition/part_quantities`, which takes it at the part AND at the composed layer,
-        //    so an edit to the model has to land on every copy the statement carries.
+        // The nameplate arm, in all three copies. A layer that files its nameplate in a unit of
+        // its own is exactly the document `units/conversions.sqlc` fixes `quantity = 'nameplate'`
+        // against, and that filter cannot see it: the graph it builds stays well formed. The law
+        // composes `layers/quantities` once for the unit and once more through
+        // `composition/part_quantities`, which takes it at the part and at the composed layer, so
+        // an edit to the model has to land on every copy the statement carries.
         swap: Some((
             "n.n_low, n.n_mode, n.n_high, n.n_unit",
             "n.n_low, n.n_mode, n.n_high, n.n_unit || ' each'",
@@ -596,9 +598,9 @@ const PROBES: &[Probe] = &[
         doc: None,
         rows: NO_ROWS,
         statement: "algebra/unsized_conversions_are_unsettled",
-        // ⛔ The predicate is `composition/unsettled.sqlc`'s too, word for word, and inlined this
-        //    statement carries both. What follows it is the only thing that tells them apart: the
-        //    narrow one ends there, the other one goes on to `OR ... stated ... <> ...`.
+        // The predicate is `composition/unsettled.sqlc`'s too, word for word, and inlined, this
+        // statement carries both. What follows it is the only thing that tells them apart: the
+        // narrow one ends there, and the other goes on to `OR ... stated ... <> ...`.
         swap: Some((
             "WHERE p.factor_state IN ('absent', 'derivation')\n ) x",
             "WHERE p.factor_state IN ('absent', 'derivation', 'omitted')\n ) x",
@@ -618,9 +620,9 @@ const PROBES: &[Probe] = &[
         rows: NO_ROWS,
         statement: NO_ROWS,
         swap: None,
-        // ⭐ `fit_domain` moves because `compute` is the only clearance layer that states its
-        //   remainder quantity; lifting its remainder empties a cell the coverage table declares
-        //   exercised, which is the table noticing, not a rule accusing.
+        // `fit_domain` moves because `compute` is the only clearance layer that states its
+        // remainder quantity; lifting its remainder empties a cell the coverage table declares
+        // exercised, which is the table noticing, not a rule accusing.
         expect: Verdicts {
             rules: &["unresolved_part"],
             laws: &[("conforms", "unresolved_part"),
@@ -650,27 +652,28 @@ const PROBES: &[Probe] = &[
         statement: NO_ROWS,
         swap: None,
         expect: Verdicts { rules: &[], laws: &[] },
-        says: "a composer never searched a fusion whose conversion has width: its remainder has no figure, and no rule reads the doubled `n - d`",
+        says: "a composer never searched a fusion whose conversion has width: its remainder has no figure, and no rule reads the doubled remainder",
     },
     Probe {
         id: "acquit: a conversion filed as a derivation",
         doc: Some(("assets/corpus/merge-holding-composition.xml",
-                   "      <asrt:factor>\n        <pm:claim>\n          <pm:low>672</pm:low>\n          <pm:mostLikely>720</pm:mostLikely>\n          <pm:high>744</pm:high>\n          <pm:unit>GPU-hour per GPU</pm:unit>\n          <pm:denominator>\n            <pm:each>GPU</pm:each>\n          </pm:denominator>\n          <pm:narrowsWhen>\n            <pm:narrowing>\n              <pm:condition>the members bill on a fixed 30-day cycle instead of a calendar month</pm:condition>\n              <pm:kind>intervention</pm:kind>\n            </pm:narrowing>\n          </pm:narrowsWhen>\n          <pm:boundOrigin>\n            <pm:origin>intrinsic</pm:origin>\n          </pm:boundOrigin>\n          <pm:provenance><pm:party>holding-company</pm:party>\n            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>\n          </pm:provenance>\n          <pm:asOf>2026-08-31</pm:asOf>\n        </pm:claim>\n      </asrt:factor>",
+                   "      <asrt:factor>\n        <pm:claim>\n          <pm:low>672</pm:low>\n          <pm:mostLikely>720</pm:mostLikely>\n          <pm:high>744</pm:high>\n          <pm:unit>GPU-hour per GPU</pm:unit>\n          <pm:denominator>\n            <pm:each>GPU</pm:each>\n          </pm:denominator>\n          <pm:narrowsWhen>\n            <pm:narrowing>\n              <pm:condition>the members bill on a fixed 30-day period instead of a calendar month</pm:condition>\n              <pm:kind>intervention</pm:kind>\n            </pm:narrowing>\n          </pm:narrowsWhen>\n          <pm:boundOrigin>\n            <pm:origin>intrinsic</pm:origin>\n          </pm:boundOrigin>\n          <pm:provenance><pm:party>holding-company</pm:party>\n            <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason><pm:note>no standing vocabulary is published for this assertion</pm:note></pm:absent></pm:standing>\n          </pm:provenance>\n          <pm:asOf>2026-08-31</pm:asOf>\n        </pm:claim>\n      </asrt:factor>",
                    "      <asrt:factor>\n        <pm:derivation><pm:identity>conversionPath</pm:identity><pm:note>mutated: a factor nothing here computes</pm:note></pm:derivation>\n      </asrt:factor>",
                    1)),
         rows: NO_ROWS,
         statement: NO_ROWS,
         swap: None,
-        // ⭐ `fit_domain` moves for the reason the first acquittal gives: `compute` is the one
-        //   clearance layer that states its remainder quantity, and a factor with no figure
-        //   leaves its remainder with none either.
-        // ⭐⭐ AND `class_domain` MOVES BECAUSE THIS EDIT IS THE DOCUMENT THAT CLASS WAS WAITING
-        //   FOR. `epistemics/class_domain.sqlc` declares `composition/part_references.sqlc`'s
-        //   `derivation` class OPEN, with the reason that nothing computes a factor from the unit
-        //   graph, so a part filing one would name an output no receiver produces. This probe
-        //   files exactly that, the class fills, and the law reports the standing as stale. ⛔ It
-        //   is not an acquittal failing: the mutant IS the state the reason says does not exist,
-        //   and a law that stayed quiet here would be a roster nobody could expire.
+        // `fit_domain` moves for the reason the first acquittal gives: `compute` is the one
+        // clearance layer that states its remainder quantity, and a factor with no figure leaves
+        // its remainder with none either.
+        //
+        // `class_domain` moves because this edit is the very document that class is declared
+        // empty for. `epistemics/class_domain.sqlc` declares `composition/part_references.sqlc`'s
+        // `derivation` class open, with the reason that nothing computes a factor from the unit
+        // graph, so a part filing one would name an output no receiver produces. This probe files
+        // exactly that, the class fills, and the law reports the standing as stale. That is not an
+        // acquittal failing: the mutant is the state the reason says does not exist, and a law
+        // that stayed quiet here would be a roster nobody could expire.
         expect: Verdicts {
             rules: &[],
             laws: &[("class_domain", "a standing that disagrees with the count"),
@@ -682,7 +685,7 @@ const PROBES: &[Probe] = &[
     Probe {
         id: "refuse: a search answered by a derivation",
         doc: Some(("assets/fixtures/every-elimination.xml",
-                   "      <asrt:absent>\n        <pm:reason>unmeasured</pm:reason>\n        <pm:note>nobody checked whether these two parts double count. The fused figure may be\n                 out by an amount nobody knows, and saying so is strictly more than filing\n                 nothing</pm:note>\n      </asrt:absent>",
+                   "      <asrt:absent>\n        <pm:reason>unmeasured</pm:reason>\n        <pm:note>nobody checked whether these two parts double count. The fused figure may be\n                 out by an amount nobody knows, and saying so tells a receiver more than filing\n                 nothing</pm:note>\n      </asrt:absent>",
                    "      <pm:derivation>\n        <pm:identity>sharedParts</pm:identity>\n      </pm:derivation>",
                    1)),
         rows: NO_ROWS,
@@ -694,7 +697,7 @@ const PROBES: &[Probe] = &[
     Probe {
         id: "refuse: couplings answered by a derivation",
         doc: Some(("assets/fixtures/every-absence.xml",
-                   "    <pm:couplings>\n      <pm:absent>\n        <pm:reason>none</pm:reason>\n        <pm:note>stipulated: the oven was taken from one tray size to two over four weeks\n                 while the counter rota was held fixed, and the counter's service share did\n                 not move outside its filed range. Relief applied to one layer did not reach\n                 the other, which is what independence means and what the corpus has never\n                 actually tested</pm:note>\n      </pm:absent>\n    </pm:couplings>",
+                   "    <pm:couplings>\n      <pm:absent>\n        <pm:reason>none</pm:reason>\n        <pm:note>stipulated: the oven was taken from one tray size to two over four weeks\n                 while the counter rota was held fixed, and the counter's service share did\n                 not move outside its filed range. Relief applied to one layer did not reach\n                 the other, which is what independence means</pm:note>\n      </pm:absent>\n    </pm:couplings>",
                    "    <pm:couplings>\n      <pm:derivation>\n        <pm:identity>fusionSum</pm:identity>\n      </pm:derivation>\n    </pm:couplings>",
                    1)),
         rows: NO_ROWS,
@@ -799,7 +802,7 @@ fn newest_under(dir: &Path) -> Option<std::time::SystemTime> {
     walk_times(dir).into_iter().max()
 }
 
-/// The oldest modification time anywhere under `dir`, or None if it holds no file. The OLDEST is
+/// The oldest modification time anywhere under `dir`, or None if it holds no file. The oldest is
 /// what matters: one file recomposed by hand must not vouch for the rest of the tree.
 fn oldest_under(dir: &Path) -> Option<std::time::SystemTime> {
     walk_times(dir).into_iter().min()
@@ -860,15 +863,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = std::env::var("DATABASE_URL")
         .map_err(|_| "DATABASE_URL is unset. This example edits the loaded rows and rolls every edit back.")?;
 
-    // ⛔⛔ PRESENCE IS NOT FRESHNESS, AND THIS CHECKED ONLY PRESENCE FOR AS LONG AS IT EXISTED.
-    //   `target/` is not rebuilt by anything here: no build.rs, no test, no other example writes
-    //   this tree, so a composition made once by hand passes an is_file() guard forever. A law
-    //   added since is simply missing, and reads as a bare NotFound with no file named; a law
-    //   whose text moved fails loudly on its anchor count, which is the designed behaviour, but a
-    //   law edited somewhere its anchor does not touch would be probed in its old form and pass.
-    //   ⭐ The tree is 444MB and takes under five seconds to compose, in a program that then
-    //   spends minutes building and running a script two orders of magnitude larger. So it is
-    //   worth nothing to keep and everything to check, and the cheap check is the mtimes.
+    // Presence is not freshness. Nothing here rebuilds `target/`: no build.rs, no test and no
+    // other example writes this tree, so a composition made once by hand would pass an is_file()
+    // guard for ever. A law added since would be missing; a law whose text moved fails loudly on
+    // its anchor count, as designed; but a law edited somewhere its anchor does not touch would be
+    // probed in its old form and pass. Composing the tree takes seconds, in a program that then
+    // spends minutes on a far larger script, so it is worth nothing to keep and everything to
+    // check, and the cheap check is the modification times.
     let newest_source = newest_under(Path::new("assets/sqlc"));
     let oldest_inline = oldest_under(Path::new(INLINE));
     let recompose = format!(
@@ -1034,7 +1035,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let (ok, note) = match &p.expect {
             Refused => {
                 let r = refused.get(&i).copied().unwrap_or(false);
-                (r, if r { "refused".to_string() } else { "ADMITTED".to_string() })
+                (r, if r { "refused".to_string() } else { "admitted".to_string() })
             }
             Only(want) => {
                 let want: BTreeSet<String> = want.iter().map(|s| s.to_string()).collect();
@@ -1057,20 +1058,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (ok, if ok { "acquitted".into() } else { format!("rules {got_rules:?}, laws {got_laws:?}") })
             }
         };
-        // A law probe whose statement returned nothing examined nothing, and proves nothing.
+        // A law probe whose statement returned nothing examined nothing, and shows nothing.
         let vacuous = !matches!(p.expect, Refused | Verdicts { .. }) && fails.is_empty() && !held;
         let ok = ok && !vacuous;
         if !ok {
             failed.push(p.id);
         }
-        println!("{:<48} {:<9} {}", p.id, if ok { "ok" } else { "WRONG" }, p.says);
+        println!("{:<48} {:<9} {}", p.id, if ok { "ok" } else { "wrong" }, p.says);
         if !ok {
             println!("{:<48} {:<9} {}", "", "", note);
         }
     }
 
-    // ⭐⭐ THE LAWS NO PROBE HAS SEEN FAIL, read from the roster rather than listed here, so a law
-    //    added tomorrow arrives unprobed instead of unnoticed.
+    // The laws no probe has seen fail, read from the roster rather than listed here, so a new law
+    // arrives unprobed instead of unnoticed.
     let unprobed: Vec<&str> = law_roster
         .lines()
         .filter_map(|l| l.trim().strip_prefix("('"))
@@ -1101,7 +1102,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let over: Vec<&String> = depths.iter().filter(|(d, _)| *d > PLAN_CEILING).map(|(_, s)| *s).collect();
 
     for m in &problems {
-        println!("⛔ {m}");
+        println!("{m}");
     }
     if !problems.is_empty() || !failed.is_empty() || !over.is_empty() {
         return Err(format!(

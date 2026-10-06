@@ -1,63 +1,62 @@
-# Every place a document declined to answer, and why. One row per typed absence anywhere in the
-# corpus: the filing, what the absence is about, which question went unanswered, and which of the
+# Every place a document declined to answer, and why. One row per typed blank in every loaded
+# document: the filing, what the blank is about, which question went unanswered, and which of the
 # three reasons was given.
 #
-# The relation the whole model is for
-#   It is unaskable in any other form. Scattered across the schema's elements, a typed absence
-#   looks like a nullable field with a note attached. Gathered into one relation it becomes a map
-#   of what this corpus does not know, readable in one pass, and the three reasons are three
-#   different facts that a NULL would have flattened into one:
+# What the model is for
+#   This relation can be asked in no other form. Scattered across the schema's elements, a typed
+#   blank looks like a nullable field with a note attached. Gathered into one relation, it becomes a
+#   map of what the filings do not know, readable in one pass, and the three reasons are three
+#   different facts that a NULL would flatten into one:
 #     `none`           somebody looked and the answer is nothing.
 #     `unmeasured`     nobody looked. Not the same as nothing.
-#     `notApplicable`  the question is malformed here; there is nothing to look for.
-#   A position computed from other elements is not here: it names its identity, and
+#     `notApplicable`  the question has no meaning here; there is nothing to look for.
+#   A position worked out from other elements is not here: it names its identity, and
 #   epistemics/derivations.sqlc counts it.
 #
 # Reading it
 #   Run this alone and group by `reason` for the honest shape of the evidence. Group by `question`
-#   instead and you get the questions this corpus systematically does not answer, which is where
-#   the next instrument is worth building.
+#   instead and you get the questions the filings consistently leave unanswered, which is where the
+#   next measurement is worth making.
 #
-# An absence is a claim and carries its own weight
-#   `unmeasured` on a capacity slack suspends an inequality; `unmeasured` on an elimination search
+# A blank is a claim and carries its own weight
+#   `unmeasured` on a capacity slack suspends a bound; `unmeasured` on an elimination search
 #   suspends a sum rule. Rows here are not missing data; they are the data, and several rules read
 #   nothing else.
 #
-# The label is added at the union site
-#   That is what lets the members stay ignorant of each other. Each arm composes a relation that
-#   knows nothing about absences and augments it here: `SELECT filing, <how to address it>, '<the
-#   question>', <the reason column>`. The member does not carry the question, does not carry its
-#   own name, and does not need to spell its key the way its neighbours do:
-#   `eliminations/filed.sqlc` says `composition` where `entries/slacks.sqlc` says `filing`, and the
-#   union reconciles them. Most arms compose; reading their base tables directly would answer a
-#   different question.
+# The label is added where the arms are united
+#   That lets the arms know nothing of each other. Each arm composes a relation that knows nothing
+#   about blanks and adds to it here: `SELECT filing, <how to address it>, '<the question>', <the
+#   reason column>`. The arm does not carry the question, does not carry its own name, and does not
+#   need to spell its key the way its neighbours do: `eliminations/filed.sqlc` says `composition`
+#   where `entries/slacks.sqlc` says `filing`, and the union reconciles them. Most arms compose;
+#   reading their base tables directly would answer a different question.
 #
-# The arms that read an absent figure
-#   A value wrapper keeps the stated figures: layers/demand.sqlc keeps `demand_low IS NOT NULL`,
-#   and a demand absence is exactly the complement, mutually exclusive by CHECK constraint.
-#   Composing it here would return nothing. So `demand`, `nameplate amount` and `draw` read
+# The arms that read a blank figure
+#   A value wrapper keeps the stated figures: layers/demand.sqlc keeps `demand_low IS NOT NULL`, and
+#   a typed demand blank is exactly the rest, the two kept apart by a CHECK constraint. Composing it
+#   here would return nothing. So `demand`, `nameplate amount` and `draw` read
 #   layers/summed_quantities.sqlc, which keeps a row for every layer and quantity whether the figure
-#   is stated or typed absent, and `remainder` reads layers/denied_remainders.sqlc, the named
-#   complement of layers/filed_remainders.sqlc.
+#   is stated or typed blank, and `remainder` reads layers/denied_remainders.sqlc, the named
+#   relation for the layers layers/filed_remainders.sqlc leaves out.
 #
 # The supply's own answers come from the whole table
 #   `divisibility`, `who committed the amount`, `lump size` and `measurement basis` want every
 #   facility, and layers/nameplate.sqlc keeps those with a stated amount, while a supply stating
 #   none still says how it divides and who could commit it. layers/facilities.sqlc keeps them all.
 #
-# One arm per question, and one question per absence
+# One arm per question, and one question per blank
 #   `narrowsWhen` and `boundOrigin` are asked once, of every claim, through epistemics/claims.sqlc.
-#   The demand's narrowing and a slack's edge owner were once asked a second time from copies on
-#   `layer` and `slack`, and every absence there was counted twice.
+#   Asking the demand's narrowing or a slack's edge owner again, from copies on `layer` and `slack`,
+#   would count every blank there twice.
 #
 # Every `absence_reason` column has an arm
-#   That is a contract, not a hope. A column with no arm leaves its absences out of every fold of
-#   this relation (state_masks, the absence census) with nothing to say so.
+#   That is a contract, not a hope. A column with no arm leaves its blanks out of everything built
+#   on this relation (the state masks, the absence census) with nothing to say so.
 #   `epistemics/absence_questions.sqlc` declares which column each question reads;
 #   reports/integrity.sqlc holds that roster against `information_schema` in both directions, so a
-#   column added to the schema without an arm fails the build; and `examples/combinatorics/main.rs`
-#   counts every question against the column it claims, so an arm reading the wrong column, or
-#   misnaming its question, fails too.
+#   column added to the schema without an arm fails; and `examples/combinatorics` counts every
+#   question against the column it claims, so an arm reading the wrong column, or misnaming its
+#   question, fails too.
 -- every pm:absent/reason in the schema, from every element that admits one.
 SELECT filing, subject, question, reason FROM (
     SELECT filing, layer AS subject, 'demand'              AS question, absent                AS reason FROM (

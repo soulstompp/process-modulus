@@ -1,21 +1,21 @@
--- §5  The two self-joins of F, and the fibre profile each one's size is fixed by.
-# One row per (relation, fibre size): which self-join, how it pairs the rows of one fibre, a fibre
-# size `k`, how many fibres have that size, and how many rows the self-join returned.
+-- §5  The two self-joins of the parts, and the group sizes that fix how many rows each returns.
+# One row per (relation, group size): which self-join, how it pairs the rows of one group, a group
+# size `k`, how many groups have that size, and how many rows the self-join returned.
 #
 # A self-join's size is not free
-#   A self-join on a key reads the kernel of the map to that key. Grouping composition/parts.sqlc by
-#   the join key partitions its rows into fibres of size `k`, and the self-join then returns `Σ k²`
-#   rows if it keeps the reflexive pair, `Σ k(k−1)` if it drops it, and `Σ C(k,2)` if it keeps each
-#   unordered pair once. composition/sibling_parts.sqlc keeps the reflexive pair on purpose and
-#   eliminations/derived.sqlc keeps each unordered pair once, and both headers say so; this is what
-#   makes those statements fail when the join changes.
+#   A self-join on a key pairs the rows that share the key. Grouping composition/parts.sqlc by the
+#   join key gives groups of `k` rows, and the number of rows the self-join returns is then fixed by
+#   those sizes and by how it pairs: whether it keeps a row paired with itself, and whether it keeps
+#   both orders of a pair. composition/sibling_parts.sqlc keeps a row paired with itself on purpose,
+#   and eliminations/derived.sqlc keeps each unordered pair once, and both headers say so; this is
+#   what makes those statements fail when the join changes.
 #
-# NULL keys are excluded
-#   `GROUP BY` puts NULLs in one fibre and `=` never matches one, so the two counts would disagree
+# NULL keys are left out
+#   `GROUP BY` puts NULLs in one group and `=` never matches one, so the two counts would disagree
 #   for a reason that is not a defect.
 #
-# A drift check, not an algebra check
-#   As algebra/searches.sqlc says of its own union, the identity holds for any self-join on an exact
+# A check for drift
+#   As algebra/searches.sqlc says of its own union, the count holds for any self-join on an exact
 #   key. What it catches is somebody changing the key or the pairing with nothing saying so.
 -- composition/parts.sqlc grouped by each self-join's key, beside the self-join itself.
 SELECT 'composition/sibling_parts.sqlc' AS "relation!", 'ordered, reflexive kept' AS "pairing!",

@@ -1,10 +1,10 @@
 # Every lumpy supply whose rating has to divide by its quantum, and whether the division is
-# available. One row per lumpy layer with a stated remainder.
+# available. One row per lumpy layer whose nameplate has an amount.
 #
 # The second guarded site
-#   checks/quantum_unit_mismatch says it plainly: a division across units is not a wrong answer,
-#   it is not an answer. That sentence is true of every row in this roster and is written at
-#   exactly two of them.
+#   checks/quantum_unit_mismatch says it plainly: a division across units is not a wrong answer, it
+#   is not an answer. That is true of every row in this roster, and the roster records a unit rule
+#   at only two of them.
 -- pm:Divisibility/pm:quantum against pm:Nameplate/pm:amount.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (

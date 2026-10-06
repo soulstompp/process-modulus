@@ -1,37 +1,38 @@
 //! Two members of one group, filed under two regimes, and the third document that
 //! consolidates them.
 //!
-//! ⭐ This is not a parser check. `coverage_parse.rs` asks whether two witnesses
-//! ANSWERING one corpus stay comparable; this file asks the harder question one step
-//! further in: whether two independently authored STACKS can be merged at all. A
+//! This is not a parser check. `coverage_parse.rs` asks whether two witnesses
+//! answering one corpus stay comparable; this file asks the harder question one step
+//! further in: whether two independently authored stacks can be merged at all. A
 //! consolidator holding a parent and a subsidiary has to answer it before adding up
 //! a single number.
 //!
-//! ⛔⛔ AND THE ANSWER FROM THE TWO MEMBERS ALONE IS NO, IN BOTH DIRECTIONS AT ONCE.
-//! Joining on the layer NAME merges two unrelated vendor contracts and reports success.
-//! Joining on the FACTS FILED misses the pair that is genuinely one layer, and misses it
-//! BECAUSE one side is better instrumented. Two strategies, wrong in opposite directions,
+//! And the answer from the two members alone is no, in both directions at once.
+//! Joining on the layer name merges two unrelated vendor contracts and reports success.
+//! Joining on the facts filed misses the pair that is genuinely one layer, and misses it
+//! because one side is better instrumented. Two strategies, wrong in opposite directions,
 //! on one pair of honest documents. Both are asserted below, in the direction that is
 //! true, so that they stay demonstrations rather than aspirations.
 //!
-//! ⭐⭐⭐ THE REPAIR IS NOT IN EITHER MEMBER. Neither entity has seen the other's stack,
-//! neither has standing to name the other's layers, and a filing cannot cite a list
-//! published after it. The composer supplies the mapping IN ITS OWN FILING and signs it,
-//! and every test after `the_composition_parses…` is the merge succeeding through that
-//! document rather than through a heuristic.
+//! The repair is in neither member. Neither entity has seen the other's stack, neither
+//! has standing to name the other's layers, and a filing cannot cite a list published
+//! after it. The composer supplies the mapping in its own filing and signs it, and every
+//! test after `the_composition_parses…` is the merge succeeding through that document
+//! rather than through a heuristic.
 //!
-//! ⭐ That document is `asrt:composition`, and its three types are the whole vocabulary:
-//! a `Fusion` says which filed layers are ONE layer and why, a `Part` carries one filed
+//! That document is `asrt:composition`, and its three types are the whole vocabulary:
+//! a `Fusion` says which filed layers are one layer and why, a `Part` carries one filed
 //! layer in with the `factor` that puts it in the composed unit, and an `Elimination`
 //! says what was removed so the fused figure is not the sum. A composed layer with no
-//! fusion is the third state — one the composer ORIGINATED.
+//! fusion is the third state: one the composer originated.
 //!
-//! ⚠️ **The composition tests are not all here, and the split is by what they answer to.**
+//! **The composition tests are not all here, and the split is by what they answer to.**
 //! This file reads the corpus, so every assertion is about documents that claim something
 //! about a business. `tests/fixtures.rs` holds the sum rule's stipulations and the negative
-//! controls, which mutate a parsed fusion in memory to prove the checker bites;
-//! `tests/corpus_parse.rs` holds `a_window_is_carried_through_a_fusion_and_never_summed`,
-//! because a window is a property of the stock half that a fusion must not touch; and
+//! controls, which mutate a parsed fusion in memory to show the checker bites;
+//! `tests/corpus_parse.rs` holds a second `a_window_is_carried_through_a_fusion_and_never_summed`,
+//! across every document, because a window is a property of the stock half that a fusion
+//! must not touch; and
 //! `tests/state_coverage.rs` walks compositions for the table of every admitted state.
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -77,16 +78,16 @@ fn composition() -> CompositionType {
     composed(GROUP)
 }
 
-/// ⭐⭐ THE CATALOGUE, AND IT BELONGS TO THIS TEST RATHER THAN TO ANY DOCUMENT.
+/// The catalogue, which belongs to this test rather than to any document.
 ///
-/// `FiledLayer/filing/notation` is the URI of another filing, and its annotation is
-/// explicit that nothing validates it: "an implementer that can fetch the other filing
-/// still owes the check; one that cannot owes the reader the knowledge that it did not
-/// happen." This function is this crate paying that debt, for the four documents it
-/// happens to hold. ⛔ A receiver holding filings it cannot fetch owes the second half
-/// instead, and must not silently skip the reconciliation below.
+/// `FiledLayer/filing/notation` is the URI of another filing, and its annotation says that
+/// nothing validates it: an implementer that can fetch the other filing still owes the
+/// check, and one that cannot owes the reader the knowledge that it did not happen. This
+/// function is this crate paying that debt, for the documents it holds. A receiver holding
+/// filings it cannot fetch owes the second half instead, and must not silently skip the
+/// reconciliation below.
 ///
-/// ⚠️ A NOTATION DOES NOT SAY WHICH KIND OF DOCUMENT IT NAMES, and once compositions nest
+/// A notation does not say which kind of document it names, and once compositions nest
 /// that matters: a layer sits at `/pm:processModulus/…` in a plain filing and one level
 /// deeper, at `/asrt:composition/pm:processModulus/…`, in a composition. A real resolver
 /// reads the root element. Here the pairing is a `match`, which is the same knowledge held
@@ -220,19 +221,19 @@ fn both_members_parse_and_declare_what_they_report_under() {
     }
 }
 
-/// ⭐⭐ WHAT COMPARES FOR FREE, AND IT IS MORE THAN IT LOOKS.
+/// What compares for free, and it is more than it looks.
 ///
-/// `Fit` and `HolderKind` are closed sets contributed by THIS namespace, so a value read
+/// `Fit` and `HolderKind` are closed sets contributed by this namespace, so a value read
 /// out of a United States filing and a value read out of a Portuguese one are the same
-/// value. No mapping, no authority, no negotiation. That is the entire return on refusing
+/// value. No mapping, no authority, no negotiation. That is the whole return on refusing
 /// to borrow these.
 ///
-/// ⚠️ THE THREE BUFFER SLACKS DO NOT BELONG ON THIS LIST. As booleans they would compare for
-/// free, because there are only two of them; as quantities in each layer's own unit, two
-/// filings agree about a slack only when they agree about a unit. That is a real loss and it
-/// buys the ability to say `barely`.
+/// The three buffer slacks do not belong on this list. As booleans they would compare for
+/// free, because a boolean has only two values; as quantities in each layer's own unit, two
+/// filings agree about a slack only when they agree about a unit. That is a real loss, and
+/// it buys the ability to say `barely`.
 ///
-/// ⚠️ NOTE WHAT THIS TEST DOES TO RUN AT ALL: it pairs `labour` with `pessoal` BY HAND,
+/// Note what this test does to run at all: it pairs `labour` with `pessoal` by hand,
 /// because nothing in either file says they are one layer. Only a reader of both knows it.
 /// That is what the composition supplies.
 #[test]
@@ -256,7 +257,7 @@ fn the_contributed_vocabulary_compares_with_no_authority_at_all() {
         );
     }
 
-    // ⭐ AND THE DIFFERENCE IS AS LEGIBLE AS THE AGREEMENT. Portugal's hours bank
+    // And the difference is as legible as the agreement. Portugal's hours bank
     // gives part of the same absorption a counterparty, so a `booked` holder stands
     // beside the `people` one. The US member has no such instrument and files one
     // holder. Neither filing is wrong; the countries differ.
@@ -268,19 +269,19 @@ fn the_contributed_vocabulary_compares_with_no_authority_at_all() {
     );
 }
 
-/// ⭐⭐ WHAT COMPARES ONLY ON PRESENTATION OF AN AUTHORITY, WHICH IS THE POINT OF
+/// What compares only on presentation of an authority, which is the point of
 /// `BorrowedTerm`.
 ///
 /// Both members absorb into Hopp & Spearman's buffers and most of the time cite the
-/// same URI, so those rows compare directly. One Portuguese layer cites a TRANSLATED
-/// EDITION of the same three buffers, and the schema's answer is neither to merge
+/// same URI, so those rows compare directly. One Portuguese layer cites a translated
+/// edition of the same three buffers, and the schema's answer is neither to merge
 /// them nor to reject the document: it is to make the fork visible to whoever can
 /// resolve it.
 ///
-/// ⛔ A BARE CODE WOULD HAVE MADE THIS A DISAGREEMENT. `capacity` and `capacidade`
-/// as plain strings are two unequal values and nothing more. With the taxonomy
-/// carried, a receiver can see that two editions of one vocabulary are in play,
-/// which is a completely different problem with a completely different fix.
+/// A bare code would make this a disagreement. `capacity` and `capacidade` as plain
+/// strings are two unequal values and nothing more. With the taxonomy carried, a
+/// receiver can see that two editions of one vocabulary are in play, which is a
+/// different problem with a different fix.
 #[test]
 fn a_borrowed_term_compares_only_where_the_two_cite_one_authority() {
     let (us, pt) = (load(US), load(PT));
@@ -321,7 +322,7 @@ fn a_borrowed_term_compares_only_where_the_two_cite_one_authority() {
     );
 }
 
-/// ⭐ THE NATIONAL HALF, WHICH IS `coverage_parse.rs`'s PROPERTY ARRIVING IN A STACK.
+/// The national half, which is `coverage_parse.rs`'s property arriving in a stack.
 ///
 /// The charts share nothing and are supposed to. Portugal publishes a national chart
 /// and the entity borrows it; the United States publishes none and the entity has to
@@ -350,13 +351,13 @@ fn the_two_members_report_into_charts_that_share_no_authority() {
 }
 
 // ======================================================================================
-// THE TWO JOINS A CONSOLIDATOR CAN ATTEMPT WITH THE MEMBER FILINGS ALONE, AND WHY
-// NEITHER IS SOUND. ⚠️ Both are asserted in the direction that is TRUE, so they are
-// demonstrations rather than aspirations: if either ever flips, the examples stopped
+// The two joins a consolidator can attempt with the member filings alone, and why
+// neither is sound. Both are asserted in the direction that is true, so they are
+// demonstrations rather than aspirations: if either flips, the examples have stopped
 // exercising the case and the composition below has nothing left to repair.
 // ======================================================================================
 
-/// ⛔⛔ JOIN ON THE NAME: A FALSE POSITIVE, AND A SILENT ONE.
+/// Join on the name: a false positive, and a silent one.
 ///
 /// `xs:key layerName` is document-scoped: it guarantees `name` is unique inside one
 /// file and says nothing whatever about a second. So the join key across two filings
@@ -389,11 +390,11 @@ fn joining_two_filings_on_the_layer_name_produces_a_false_positive() {
 /// the fallback a consolidator reaches for once names have failed: match on the facts.
 /// A stated slack reduced to the fact, and never to the prose beside it.
 ///
-/// ⛔⛔ `Absence/note` IS PROSE, AND PROSE IS WRITTEN IN THE FILER'S OWN LANGUAGE. Debugging
-/// the whole `StatedClaim` swept the note into the fingerprint, so two layers agreed only
-/// while both filings happened to be written in English. Translating the Portuguese member
-/// broke it, which is the right failure: it was reporting a property of the WRITING as a
-/// property of the supply. The reason is the fact this namespace owns; the note is not.
+/// `Absence/note` is prose, and prose is written in the filer's own language. A fingerprint
+/// that took the whole `StatedClaim` would sweep the note in, so two layers would agree only
+/// while both filings happened to be written in one language: a property of the writing
+/// reported as a property of the supply. The reason is the fact this namespace owns; the
+/// note is not.
 fn slack_fact(s: &StatedClaimType) -> String {
     match s {
         StatedClaimType::Claim(c) => claim_fact(c),
@@ -416,7 +417,7 @@ fn claim_fact(c: &ClaimType) -> String {
 
 /// The same fingerprint with the unit dropped from each of the three slack facts.
 ///
-/// ⚠️ Segments 1..3 only. The holder-kinds segment is comma-joined too, and a layer bearing
+/// Segments 1..3 only. The holder-kinds segment is comma-joined too, and a layer bearing
 /// four kinds would be mangled by a blind split.
 fn without_units(fp: &str) -> String {
     let mut seg: Vec<String> = fp.split('|').map(str::to_string).collect();
@@ -441,17 +442,17 @@ fn fingerprint(l: &LayerType) -> String {
     )
 }
 
-/// ⛔⛔ JOIN ON THE FACTS: A FALSE NEGATIVE, AND IT PENALISES THE BETTER FILING.
+/// Join on the facts: a false negative, and it penalises the better filing.
 ///
-/// `labour` and `pessoal` ARE one layer and their fingerprints differ. They differ
+/// `labour` and `pessoal` are one layer and their fingerprints differ. They differ
 /// because the Portuguese filing carries an extra holder, and it carries an extra
-/// holder precisely BECAUSE its jurisdiction supplies an instrument that makes part of
-/// the same remainder visible. ⭐ Being better instrumented is what broke the match.
+/// holder because its jurisdiction supplies an instrument that makes part of the same
+/// remainder visible. Being better instrumented is what breaks the match.
 ///
-/// ⭐⭐ AND THE SAME KEY MATCHES THE PAIR THAT IS NOT ONE LAYER, which is the half that
-/// makes this a missing field rather than a missing heuristic. Both strategies wrong, in
-/// opposite directions, on one pair of honest documents. No cleverness recovers an
-/// identity that was never filed.
+/// And with the units set aside, the same key matches the pair that is not one layer,
+/// which is the half that makes this a missing field rather than a missing heuristic.
+/// Both strategies wrong, in opposite directions, on one pair of honest documents. No
+/// cleverness recovers an identity that was never filed.
 #[test]
 fn joining_two_filings_on_the_facts_produces_a_false_negative() {
     let (us, pt) = (load(US), load(PT));
@@ -459,23 +460,21 @@ fn joining_two_filings_on_the_facts_produces_a_false_negative() {
     assert_ne!(
         fingerprint(layer(&us, "labour")),
         fingerprint(layer(&pt, "pessoal")),
-        "these two ARE one layer, and if the facts ever recognise them as one the \
-         example stopped carrying the asymmetric instrument that is the whole point"
+        "these two are one layer, and if the facts ever recognise them as one the \
+         example has stopped carrying the asymmetric instrument that is the whole point"
     );
 
-    // ⭐⭐⭐ AND THE PAIR THAT IS NOT ONE LAYER DIFFERS BY EXACTLY ONE FACT: THE UNIT.
+    // And the pair that is not one layer differs by exactly one fact: the unit.
     //
-    // This asserted the two fingerprints were IDENTICAL, and they were, because all three
-    // slacks were `absent/reason = none` and an absence carries no unit. Stating those zeros
-    // as claims put `GPU` and `GPU-hour` into the key, and that is not noise: it is the exact
-    // obstacle `merge-holding-composition` had to bridge with a `GPU-hour per GPU` factor
-    // when it did eventually fuse them.
+    // The slacks are stated as claims, so `GPU` and `GPU-hour` are in the key, and that is
+    // not noise: it is the obstacle `merge-holding-composition` bridges with a
+    // `GPU-hour per GPU` factor when it fuses them.
     //
-    // ⭐⭐ SO THEY WERE NEVER PERMANENTLY TWO LAYERS. `merge-group-composition` kept them
-    // apart as two ONE-PART fusions, `compute-us` and `compute-pt`; the holding company, one
-    // level up and with the standing to say so, made them one. A filing is never the system,
-    // and what the fact-based join was missing was not a better heuristic, it was a fusion
-    // nobody had filed yet.
+    // So they are not two layers for good. `merge-group-composition` keeps them apart as two
+    // one-part fusions, `compute-us` and `compute-pt`; the holding company, one level up and
+    // with the standing to say so, makes them one. A filing is never the system, and what
+    // the fact-based join is missing is not a better heuristic but a fusion that only a
+    // party above both can file.
     let (us_fp, pt_fp) = (
         fingerprint(layer(&us, "compute")),
         fingerprint(layer(&pt, "compute")),
@@ -489,12 +488,12 @@ fn joining_two_filings_on_the_facts_produces_a_false_negative() {
         without_units(&us_fp),
         without_units(&pt_fp),
         "strip the units and every other fact this namespace owns still agrees across two \
-         layers that are NOT one, which is why the collision was never a heuristic problem"
+         layers that are not one, which is why the collision is not a heuristic problem"
     );
 }
 
 // ======================================================================================
-// THE MERGE, THROUGH THE COMPOSITION. ⭐ Everything below is the repair: a third filing,
+// The merge, through the composition. Everything below is the repair: a third filing,
 // by the one party with standing to make it, saying what it treated as one and what it
 // removed to do so.
 // ======================================================================================
@@ -503,7 +502,7 @@ fn joining_two_filings_on_the_facts_produces_a_false_negative() {
 type Triple = (f64, f64, f64);
 
 /// One of the three quantities `Elimination/against` names, with the accessor that reads
-/// it off a layer. ⭐ The model insists these are THREE and not two, so a check that walks
+/// it off a layer. The model holds these to be three and not two, so a check that walks
 /// them walks all three or it is not checking the model.
 type Quantity = (
     EliminationAgainstType,
@@ -511,11 +510,10 @@ type Quantity = (
     &'static str,
 );
 
-/// ⚠️ NOT EXACT EQUALITY, AND THE REASON IS ARITHMETIC RATHER THAN TASTE. `Claim` holds
-/// f64, and `10.0 - 10.4` is `-0.40000000000000036` in doubles: 7,168 of the 39,601
-/// one-decimal pairs below 20 fail an exact `==` on their own sum. A tolerance is a
-/// policy number, which is why the model states this rule in prose and leaves the number
-/// to whoever runs the check.
+/// Not exact equality, and the reason is arithmetic rather than taste. `Claim` holds f64,
+/// and `10.0 - 10.4` is `-0.40000000000000036` in doubles, so an exact `==` fails on sums
+/// that agree on paper. A tolerance is a policy number, which is why the model states this
+/// rule in prose and leaves the number to whoever runs the check.
 const TOLERANCE: f64 = 1e-9;
 
 fn close(a: Triple, b: Triple) -> bool {
@@ -531,7 +529,7 @@ fn add(a: Triple, b: Triple) -> Triple {
 /// low case of the component. A remainder subtracts an independent quantity, so there the
 /// bounds reverse. The exception is a total with no width for the component to move with: point
 /// parts and an elimination of width invert bound by bound, and the crossed pairing is then the
-/// only ordered reading. `src/proofs/README.md`, entry `elimination_componentwise`.
+/// only ordered reading.
 fn eliminate(total: Triple, removed: Triple) -> Triple {
     let bound_by_bound = (
         total.0 - removed.0,
@@ -562,7 +560,7 @@ fn draw(l: &LayerType) -> Triple {
     triple(&l.supply.jagged.draw).unwrap_or_else(|| panic!("`{}`: draw is not stated", l.name))
 }
 
-/// `nameplate - demand`, KEEPING THE SIGN, with the bound reversal the subtraction of two
+/// `nameplate - demand`, keeping the sign, with the bound reversal the subtraction of two
 /// independent quantities requires. `magnitude` below is this with the sign thrown away,
 /// and the sign is what one test here exists to watch.
 fn signed(l: &LayerType) -> Triple {
@@ -594,12 +592,11 @@ fn fusion<'a>(c: &'a CompositionType, name: &str) -> &'a FusionType {
 
 /// The eliminations a fusion filed, or an empty slice where it filed a typed reason instead.
 ///
-/// ⛔⛔ AN EMPTY SLICE IS NOT `absent/reason = none`, AND `expected` BELOW IS WHERE THAT COSTS
-/// SOMETHING. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Fusion/eliminations` makes a
-/// composer who checked for double counting and found none produce the same bytes as one who
-/// never looked, and the sum rule the `Elimination` type exists to make EXACT falls back to a
-/// warning for every fusion that files nothing. Three of this corpus's eight
-/// fusions are in that state.
+/// An empty slice is not `absent/reason = none`, and `expected` below is where that costs
+/// something. As a bare `minOccurs="0" maxOccurs="unbounded"`, `Fusion/eliminations` would make
+/// a composer who checked for double counting and found none produce the same bytes as one who
+/// never looked, and the sum rule the `Elimination` type exists to make exact would fall back
+/// to a warning for every fusion that files nothing.
 fn eliminations(f: &FusionType) -> Vec<&EliminationType> {
     f.eliminations
         .content
@@ -658,7 +655,7 @@ fn the_composition_parses_and_is_signed_by_a_party_that_filed_neither_member() {
 
     assert!(
         !c.witness.is_empty() && !c.observed_at.is_empty(),
-        "a composed stack is an assertion that two entities are ONE SYSTEM. \
+        "a composed stack is an assertion that two entities are one system. \
          `Dependence` rejects that assertion when it comes from a filer; it stands only \
          because a parent signs it, so an unsigned or undated one is a fabrication"
     );
@@ -681,9 +678,9 @@ fn the_composition_parses_and_is_signed_by_a_party_that_filed_neither_member() {
     );
 }
 
-/// ⭐⭐⭐ THE FALSE NEGATIVE, AND WHAT ANSWERS IT. A fingerprint join cannot see that `labour`
+/// The false negative, and what answers it. A fingerprint join cannot see that `labour`
 /// and `pessoal` are one layer. The composer says so, by name, in a document the
-/// composer attests to — and the reason is prose, because a fungibility judgement is a
+/// composer attests to, and the reason is prose, because a fungibility judgement is a
 /// claim a reader is entitled to disagree with rather than a fact a validator can settle.
 #[test]
 fn the_composition_says_which_filed_layers_are_one_layer() {
@@ -698,7 +695,7 @@ fn the_composition_says_which_filed_layers_are_one_layer() {
 
     assert!(
         f.observed.contains("fungib") || f.observed.contains("queue"),
-        "`FUSE ONLY WHAT IS FUNGIBLE` is the whole claim a fusion makes, and a fusion \
+        "that its parts are fungible is the whole claim a fusion makes, and a fusion \
          whose `observed` does not say why these are one layer has asserted it silently"
     );
 
@@ -710,9 +707,9 @@ fn the_composition_says_which_filed_layers_are_one_layer() {
     );
 }
 
-/// ⭐⭐⭐ THE FALSE POSITIVE, AND NOT ANSWERED BY A HEURISTIC EITHER. Two one-part fusions
-/// under two names. A fusion of one part is not degenerate: it is the composer stating that
-/// they read the layer, that it fuses with nothing, and that they carried it through — and
+/// The false positive, and not answered by a heuristic either. Two one-part fusions under
+/// two names. A fusion of one part is not degenerate: it is the composer stating that they
+/// read the layer, that it fuses with nothing, and that they carried it through, and
 /// `observed` is required, so they say why.
 #[test]
 fn the_composition_tells_the_two_compute_layers_apart() {
@@ -742,9 +739,9 @@ fn the_composition_tells_the_two_compute_layers_apart() {
     }
 }
 
-/// ⭐⭐ A CONSOLIDATION RULE A VALIDATOR CAN ACTUALLY ENFORCE, re-implemented here for
-/// `dependence_parse.rs`'s stated reason: a document reaching this crate through some
-/// other path — an API, a database, a hand-built value — was never validated at all.
+/// A consolidation rule a validator can enforce, re-implemented here for the reason
+/// `dependence_parse.rs` states: a document reaching this crate through some other path
+/// (an API, a database, a hand-built value) was never validated at all.
 #[test]
 fn no_filed_layer_is_consolidated_twice() {
     let c = composition();
@@ -781,8 +778,8 @@ fn every_fusion_names_a_layer_the_composer_actually_filed() {
     }
 }
 
-/// ⭐ THE THIRD STATE, AND IT NEEDS NO MACHINERY. A composed layer that no fusion names
-/// is one the composer ORIGINATED: the parent staffs the out-of-hours rota itself and
+/// The third state, and it needs no machinery. A composed layer that no fusion names
+/// is one the composer originated: the parent staffs the out-of-hours rota itself and
 /// neither member files it. A parent is an entity too.
 #[test]
 fn a_composed_layer_with_no_fusion_is_one_the_composer_originated() {
@@ -801,7 +798,7 @@ fn a_composed_layer_with_no_fusion_is_one_the_composer_originated() {
          to come from a member could not file it at all"
     );
 
-    // ⭐⭐ AND IT IS COUPLED TO A FUSED LAYER WITHOUT BEING PART OF ONE, which is the
+    // And it is coupled to a fused layer without being part of one, which is the
     // distinction this whole document turns on. `pm:Coupling` is reachable only because
     // the composition carries a real stack; a mapping-only document could not say it.
     assert!(
@@ -813,16 +810,16 @@ fn a_composed_layer_with_no_fusion_is_one_the_composer_originated() {
     );
 }
 
-/// One part's quantity put in the composed layer's unit — or `None` when the composer
+/// One part's quantity put in the composed layer's unit, or `None` when the composer
 /// filed a conversion they could not size.
 ///
-/// ⛔⛔ NO `factor` ELEMENT AND A `factor` OF 1 ARE DIFFERENT DOCUMENTS AND THIS KEEPS THEM
-/// APART. Absent means the part is already in the composed unit and nothing was converted.
-/// An `unmeasured` factor means a conversion IS needed and nobody has sized it, which makes
-/// the sum uncomputable in exactly the way an unsized elimination does — not zero, and not
+/// No `factor` element and a `factor` of 1 are different documents, and this keeps them
+/// apart. Absent means the part is already in the composed unit and nothing was converted.
+/// An `unmeasured` factor means a conversion is needed and nobody has sized it, which makes
+/// the sum uncomputable in exactly the way an unsized elimination does: not zero, and not
 /// one either.
 ///
-/// ⭐ THE PRODUCT IS COMPONENT-WISE, AND THAT IS SAFE ONLY HERE. Interval multiplication in
+/// The product is component-wise, and that is safe only here. Multiplying two ranges in
 /// general takes the extremes of four corner products, because a factor spanning zero
 /// reorders the bounds. A unit conversion is strictly positive, so `low·low` really is the
 /// low bound. Nothing outside this function may assume that.
@@ -843,17 +840,17 @@ fn convert(t: Triple, p: &PartType) -> Option<Triple> {
     }
 }
 
-/// What a fusion's parts sum to for one quantity, once its eliminations are taken out —
+/// What a fusion's parts sum to for one quantity, once its eliminations are taken out,
 /// or `None` when the composer could not size an elimination.
 ///
-/// ⛔⛔ `None` IS NOT ZERO AND MUST NOT BE COLLAPSED INTO ONE. `sum()` over a missing
-/// value silently returns the sum of the rest, which is a clean pass on a false equation
-/// — the exact defect `Absence` exists to prevent, reintroduced by the checker.
-/// ⚠️ `none` as an absence REASON is different again, and does mean zero: it is the
-/// composer saying they looked and there was nothing to remove.
+/// `None` is not zero and must never be collapsed into one. `sum()` over a missing value
+/// silently returns the sum of the rest, which is a clean pass on a false equation: the
+/// defect `Absence` exists to prevent, brought back by the checker. `none` as an absence
+/// reason is different again, and does mean zero: it is the composer saying they looked
+/// and there was nothing to remove.
 ///
-/// ⭐ A PART IS CONVERTED BEFORE IT IS ADDED, and an elimination is not converted at all:
-/// it is already stated in the composed unit. See `convert`.
+/// A part is converted before it is added, and an elimination is not converted at all: it
+/// is already stated in the composed unit. See `convert`.
 fn expected(
     f: &FusionType,
     against: EliminationAgainstType,
@@ -861,18 +858,17 @@ fn expected(
 ) -> Option<Triple> {
     let mut total = (0.0, 0.0, 0.0);
     for p in &f.part {
-        // ⭐ `filing` and not `load`: at the second level a part names a layer inside
-        // another COMPOSITION's embedded stack, and the arithmetic does not care which.
+        // `filing` and not `load`: at the second level a part names a layer inside
+        // another composition's embedded stack, and the arithmetic does not care which.
         let doc = filing(resolve(&p.layer.filing.notation));
         total = add(total, convert(of(layer(&doc, &p.layer.filing.id)), p)?);
     }
 
-    // ⛔⛔ AND THE SUSPENSION APPLIES AT THE LIST LEVEL TOO, WHICH IS THE WHOLE REASON
-    // `Fusion/eliminations` IS A WRAPPER. A composer who never looked for double counting
-    // owes no equation; reading their empty list as "nothing to remove" is the same clean
-    // pass on a false sum that an unsized elimination produces one level down, and without
-    // the wrapper it is unavoidable, because an unchecked fusion and a checked-clean one are
-    // one shape.
+    // And the suspension applies at the list level too, which is why `Fusion/eliminations`
+    // is a wrapper. A composer who never looked for double counting owes no equation; reading
+    // their empty list as "nothing to remove" is the same clean pass on a false sum that an
+    // unsized elimination gives one level down, and without the wrapper it is unavoidable,
+    // because an unchecked fusion and a checked-clean one would be one shape.
     if let Some(a) = elimination_absence(f) {
         if a.reason == pm::AbsenceReasonType::Unmeasured {
             return None;
@@ -885,8 +881,9 @@ fn expected(
             StatedEliminatedQuantityType::Claim(c) => {
                 removed = add(removed, (c.low, c.most_likely, c.high))
             }
-            // A zero elimination is `[0, 0, 0]` and eliminates nothing; `none` is gone. A computed
-            // one is lifted as `eliminations/unsized.sqlc` lifts it: nothing here computes it.
+            // A zero elimination is `[0, 0, 0]` and eliminates nothing; there is no `none` for
+            // it. A computed one is lifted as `eliminations/unsized.sqlc` lifts it: nothing here
+            // computes it.
             StatedEliminatedQuantityType::Derivation(_) | StatedEliminatedQuantityType::Absent(_) => {
                 return None
             }
@@ -895,15 +892,15 @@ fn expected(
     Some(eliminate(total, removed))
 }
 
-/// ⭐⭐⭐ THE RULE `Elimination` IS WHAT MAKES WRITABLE.
+/// The rule `Elimination` makes writable.
 ///
 /// Without it, a checker comparing a fused figure against the sum of its parts has no way to
 /// tell an elimination from an error, so the strongest thing it can report is a warning. With
-/// eliminations filed the rule is exact: `Σ parts - Σ eliminations` equals the composed claim,
-/// per quantity, and any leftover difference is a finding.
+/// eliminations filed the rule is exact: per quantity, the parts less the eliminations equal
+/// the composed claim, and any difference left over is a finding.
 ///
-/// ⛔ NOT REACHABLE BY A VALIDATOR. Both members are other documents; this test can only
-/// run at all because `resolve` above happens to hold them.
+/// Not reachable by a validator. Both members are other documents; this test can run at all
+/// only because `resolve` above holds them.
 #[test]
 fn the_fused_demand_reconciles_with_its_parts_less_the_eliminations() {
     let c = composition();
@@ -920,11 +917,11 @@ fn the_fused_demand_reconciles_with_its_parts_less_the_eliminations() {
          arithmetic error, and the document cannot tell a reader which"
     );
 
-    // ⭐ THE ASYMMETRY, ASSERTED. Demand was double counted because both members booked
-    // the same work; the PEOPLE were not, because two establishments are two sets of
-    // people. An implementation that eliminated symmetrically would have invented a
-    // headcount reduction, so the composer filed the nameplate elimination as a stated
-    // `[0, 0, 0]` rather than leaving a reader to guess that nobody looked.
+    // The asymmetry, asserted. Demand is double counted because both members book the
+    // same work; the people are not, because two establishments are two sets of people.
+    // An implementation that eliminated symmetrically would invent a headcount reduction,
+    // so the composer files the nameplate elimination as a stated `[0, 0, 0]` rather than
+    // leaving a reader to guess that nobody looked.
     let np = expected(labour, EliminationAgainstType::Nameplate, nameplate)
         .expect("a stated zero: the composer looked and there was nothing to remove");
     assert!(close(nameplate(layer(&c.process_modulus, "labour")), np));
@@ -941,13 +938,13 @@ fn the_fused_demand_reconciles_with_its_parts_less_the_eliminations() {
     );
 }
 
-/// ⭐⭐⭐ THE MOST USEFUL THING THIS DOCUMENT SAYS ABOUT `compute-pt`, AND IT IS A BLANK.
+/// The most useful thing this document says about `compute-pt`, and it is a blank.
 ///
-/// The group KNOWS those hours are double counted and cannot size it: the spill is
+/// The group knows those hours are double counted and cannot size it: the spill is
 /// metered in GPU-hour and the US demand it belongs to is filed in GPU, and nobody has
-/// filed a conversion. A required number would have been answered with a zero, and a zero
-/// is a lie a receiver cannot detect. `unmeasured` tells a receiver the figure is
-/// overstated by an amount nobody knows, which is strictly more than silence.
+/// filed a conversion. A required number would be answered with a zero, and a zero is a
+/// lie a receiver cannot detect. `unmeasured` tells a receiver the figure is overstated
+/// by an amount nobody knows, which is strictly more than silence.
 #[test]
 fn an_elimination_nobody_could_size_is_not_a_zero() {
     let c = composition();
@@ -966,7 +963,7 @@ fn an_elimination_nobody_could_size_is_not_a_zero() {
          able to say both"
     );
 
-    // ⛔ AND THE RECONCILIATION MUST REPORT UNAVAILABLE RATHER THAN PASS. A checker that
+    // And the reconciliation must report unavailable rather than pass. A checker that
     // read the blank as zero would find this layer reconciling exactly, and would report
     // success about a figure it knows to be overstated.
     assert_eq!(
@@ -976,17 +973,17 @@ fn an_elimination_nobody_could_size_is_not_a_zero() {
          state that must not be folded into `checked and passed`"
     );
 
-    // The layers whose eliminations ARE all sized still reconcile, so the third state is
+    // The layers whose eliminations are all sized still reconcile, so the third state is
     // reported per fusion rather than sinking the whole document.
     assert!(expected(fusion(&c, "labour"), EliminationAgainstType::Demand, demand).is_some());
 }
 
-/// ⭐⭐⭐ ALL THREE QUANTITIES, ON ONE LAYER, ANSWERING DIFFERENTLY.
+/// All three quantities, on one layer, answering differently.
 ///
 /// `pm:Layer` says an ERP keeps one of demand, nameplate and draw, most dashboards keep
 /// two, and the third is never the spare one. An elimination vocabulary that kept two
 /// would be the same mistake one level up, and this layer is where that shows: the group
-/// eliminates nameplate and draw and eliminates NOTHING from demand.
+/// eliminates nameplate and draw and eliminates nothing from demand.
 #[test]
 fn all_three_quantities_eliminate_on_one_layer_and_answer_differently() {
     let c = composition();
@@ -1009,8 +1006,8 @@ fn all_three_quantities_eliminate_on_one_layer_and_answer_differently() {
         );
     }
 
-    // ⭐ AND THE LINE IS SATURATED, WHICH ONLY THE DRAW ELIMINATION MAKES VISIBLE.
-    // Summing the two filed draws puts a ten-shift line at 14.4 shifts a week.
+    // And the line is saturated, which only the draw elimination makes visible. Summing
+    // the two filed draws asks more of the ten-shift line than it can run in a week.
     let (us, pt) = (load(US), load(PT));
     let both = add(
         draw(layer(&us, "shift-line")),
@@ -1026,27 +1023,27 @@ fn all_three_quantities_eliminate_on_one_layer_and_answer_differently() {
     assert!(close(draw(composed), nameplate(composed)));
 }
 
-/// ⭐⭐⭐ THE ARGUMENT FOR `against` BEING A REQUIRED FIELD, IN TWO LAYERS OF ONE DOCUMENT.
+/// Why `against` is a required field, shown in two layers of one document.
 ///
-/// `labour` doubles its DEMAND and not its nameplate: both members book the same work, and
-/// two establishments are still two sets of people. `shift-line` doubles its NAMEPLATE and
+/// `labour` doubles its demand and not its nameplate: both members book the same work, and
+/// two establishments are still two sets of people. `shift-line` doubles its nameplate and
 /// not its demand: two schedulers are still one machine, and each is asked for its own
-/// work. ⛔ AN IMPLEMENTATION WITH ONE ELIMINATION CONCEPT GETS ONE OF THESE WRONG
-/// WHICHEVER WAY IT GUESSES — inventing a headcount reduction, or a second production line.
+/// work. An implementation with one elimination concept gets one of these wrong whichever
+/// way it guesses, inventing a headcount reduction or a second production line.
 #[test]
 fn which_quantity_an_elimination_names_decides_the_answer() {
     let c = composition();
     let (labour, line) = (fusion(&c, "labour"), fusion(&c, "shift-line"));
 
-    // ⭐⭐ THE ASYMMETRY IS A VALUE NOW AND NOT A PRESENCE, AND THAT IS THE STRONGER FORM.
-    // These four are values and not slots. As `sized` / `!sized`, the two zero axes file
-    // `absent/reason = none` and the test reads which SLOT is empty. But an unsized
-    // elimination in this corpus means the reconciliation is UNCOMPUTABLE -- this file says
-    // so itself -- and both zeros here are reconciliations that were RUN: "payroll registers
+    // The asymmetry is a value and not a presence, and that is the stronger form. These four
+    // are values and not slots. Read as sized or not, the two zero axes would file
+    // `absent/reason = none` and the test would read which slot is empty. But an unsized
+    // elimination in this corpus means the reconciliation is uncomputable, as this file says
+    // itself, and both zeros here are reconciliations that were run: "payroll registers
     // checked against each other for shared national identifiers; no person appears on both",
     // "the two order books were reconciled against each other by customer and by week". A
-    // completed cross-check and one nobody ran read identically to anything keying on
-    // sized-ness, which is the `none`/`unmeasured` collapse happening one level up.
+    // completed cross-check and one nobody ran would read the same to anything keyed on
+    // whether a figure is sized, which is the `none`/`unmeasured` collapse one level up.
     let eliminated = |f: &FusionType, a: EliminationAgainstType| -> f64 {
         triple(&elimination_against(f, a).quantity)
             .unwrap_or_else(|| panic!("every elimination in this fusion states its quantity"))
@@ -1059,9 +1056,9 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
     assert!(eliminated(line, EliminationAgainstType::Nameplate) > 0.0);
     assert_eq!(eliminated(line, EliminationAgainstType::Demand), 0.0);
 
-    // ⚠️ AND THE TWO ZEROS SAY WHO LOOKED. Asserting they are `none` and not `unmeasured`
-    // makes the same distinction -- the composer looked and there was nothing to remove --
-    // but a stated zero carries it BETTER: `none` says somebody looked, and provenance says
+    // And the two zeros say who looked. Asserting they are `none` and not `unmeasured` would
+    // make the same distinction, that the composer looked and there was nothing to remove,
+    // but a stated zero carries it better: `none` says somebody looked, and provenance says
     // who. Filing no elimination at all says neither.
     for (f, a) in [
         (labour, EliminationAgainstType::Nameplate),
@@ -1077,13 +1074,13 @@ fn which_quantity_an_elimination_names_decides_the_answer() {
     }
 }
 
-/// ⭐⭐⭐ THE FINDING NO MEMBER CAN REACH AND NO CONSOLIDATED P&L PRODUCES: BOTH MEMBERS
-/// FILE SLACK AND THE GROUP IS SHORT.
+/// The finding no member can reach and no consolidated P&L produces: both members file
+/// slack and the group is short.
 ///
 /// Each member files the shared line's ten shifts as its own nameplate, and each is right
-/// to — either can schedule onto all ten. The group has one line. A reader netting the two
-/// filings sees 7.3 shifts spare; the group is 2.7 shifts short, and the error is exactly
-/// the ten shifts that were filed twice.
+/// to: either can schedule onto all ten. The group has one line. A reader netting the two
+/// filings sees shifts to spare; the group is short, and the error is exactly the ten
+/// shifts that were filed twice.
 #[test]
 fn a_shared_facility_flips_the_sign_when_it_is_consolidated() {
     let c = composition();
@@ -1126,16 +1123,16 @@ fn a_shared_facility_flips_the_sign_when_it_is_consolidated() {
     );
 }
 
-/// ⭐⭐⭐ WHAT THE WHOLE PAIR OF DOCUMENTS WAS FOR.
+/// What the whole pair of documents is for.
 ///
 /// A reader who simply added the two members' labour remainders gets [0.9, 2.3, 4.2]
-/// people. The group's actual labour remainder is [0.4, 1.5, 3.0], and the entire
+/// people. The group's actual labour remainder is [0.4, 1.5, 3.0], and the whole
 /// difference is the work each member books as its own demand because the other member
 /// asked for it. Both filings are honest. Their sum is not.
 ///
-/// ⭐ AND OF THE 1.5 PEOPLE AT THE MODE, ONLY 0.7 SITS IN AN ACCOUNT ANYWHERE — because
-/// one of the group's two jurisdictions supplies an instrument for it and the other does
-/// not. No consolidated statement of profit or loss produces either number.
+/// And of the 1.5 people at the mode, only 0.7 sits in an account anywhere, because one of
+/// the group's two jurisdictions supplies an instrument for it and the other does not. No
+/// consolidated statement of profit or loss produces either number.
 #[test]
 fn the_group_labour_remainder_is_smaller_than_the_sum_of_its_members() {
     let c = composition();
@@ -1153,7 +1150,7 @@ fn the_group_labour_remainder_is_smaller_than_the_sum_of_its_members() {
     );
     assert!(close(naive, (0.9, 2.3, 4.2)), "naive sum: {naive:?}");
 
-    // ⭐ The overstatement IS the elimination, exactly, because both members are short of
+    // The overstatement is the elimination, exactly, because both members are short of
     // people and the signs therefore agree. Where the signs differ it would not be, and
     // the difference between those two cases is the fungibility judgement.
     let removed = eliminations(fusion(&c, "labour"))
@@ -1186,15 +1183,15 @@ fn the_group_labour_remainder_is_smaller_than_the_sum_of_its_members() {
 }
 
 // ======================================================================================
-// THE SECOND LEVEL. A holding company composing the group composition, which is itself
-// composed from two member filings. ⭐ Nothing in the schema changed to allow this.
+// The second level. A holding company composing the group composition, which is itself
+// composed from two member filings. The schema needs nothing extra for it.
 // ======================================================================================
 
-/// ⭐⭐⭐ FUSIONS HAVE FUSIONS, AND NO ELEMENT IS DIFFERENT FOR IT.
+/// Fusions have fusions, and no element is different for it.
 ///
-/// Every part of the holding's `staff` names a layer inside another COMPOSITION's embedded
-/// stack rather than inside a member's filing, and the reconciliation that discharges at
-/// level one discharges here unchanged.
+/// Every part of the holding's `staff` names a layer inside another composition's embedded
+/// stack rather than inside a member's filing, and the reconciliation that holds at level
+/// one holds here unchanged.
 #[test]
 fn a_composition_composes_another_composition() {
     let h = composed(HOLDING);
@@ -1209,7 +1206,7 @@ fn a_composition_composes_another_composition() {
         assert!(
             is_composition(resolve(&p.layer.filing.notation)),
             "`staff` is the case this test exists for; a part resolving to a plain filing \
-             would prove only what level one already proved"
+             would show only what level one already shows"
         );
     }
 
@@ -1246,22 +1243,22 @@ fn a_composition_composes_another_composition() {
     );
 }
 
-/// ⛔⛔⛔ THE GUARANTEE NESTING WEAKENS, AND THE CHECK THAT REPLACES IT.
+/// The guarantee nesting weakens, and the check that replaces it.
 ///
-/// `partIdentity` is an `xs:key` over `(notation, id)` and it is complete only while every
+/// `partIdentity` is an `xs:key` over `(notation, id)`, and it is complete only while every
 /// part is a leaf. At two levels it is not: a holding naming both `group#labour` and
-/// `us-member#labour` has two distinct keys, the member's layer is consolidated twice — once
-/// directly, once through the group — and no validator sees it, because the second path runs
+/// `us-member#labour` has two distinct keys, the member's layer is consolidated twice (once
+/// directly, once through the group), and no validator sees it, because the second path runs
 /// through a document the first one does not contain.
 ///
-/// The transitive rule is that NO LEAF IS REACHABLE THROUGH TWO PATHS, and it is owed by
+/// The rule across levels is that no leaf is reachable through two paths, and it is owed by
 /// whoever can fetch the chain. This crate can, so this crate owes it.
 #[test]
 fn no_leaf_layer_is_reachable_through_two_paths() {
-    /// Resolve ONE composed layer of one composition down to the leaf filings under it.
+    /// Resolve one composed layer of one composition down to the leaf filings under it.
     ///
-    /// ⚠️ One layer, not the whole document: a part names a specific layer, and the fusion
-    /// that produced THAT layer is the only one below it. Walking every fusion of the
+    /// One layer, not the whole document: a part names a specific layer, and the fusion
+    /// that produced that layer is the only one below it. Walking every fusion of the
     /// target instead reports a leaf once per sibling layer and calls it a double count.
     fn walk(
         name: &str,
@@ -1272,7 +1269,7 @@ fn no_leaf_layer_is_reachable_through_two_paths() {
         let here = format!("{path} -> {name}#{layer_name}");
         let c = composed(name);
         let Some(f) = c.fusion.iter().find(|f| f.name == layer_name) else {
-            // ⭐ A layer the composer ORIGINATED. Nothing was folded into it, so the path
+            // A layer the composer originated. Nothing was folded into it, so the path
             // ends here rather than reaching a leaf, and that is not an error.
             return;
         };
@@ -1308,14 +1305,14 @@ fn no_leaf_layer_is_reachable_through_two_paths() {
     }
 }
 
-/// ⭐⭐⭐ A COUPLING SURVIVES A FUSION AND ATTENUATES.
+/// A coupling survives a fusion, and weakens.
 ///
-/// The group observed `labour` moving with `shift-line`. The holding fuses `labour` into
-/// `staff` and keeps `shift-line`, so the dependence still holds — but relief applied to
-/// `staff` may land on the rota instead of on delivery, so it CANNOT hold as strongly. The
+/// The group observes `labour` moving with `shift-line`. The holding fuses `labour` into
+/// `staff` and keeps `shift-line`, so the dependence still holds, but relief applied to
+/// `staff` may land on the rota instead of on delivery, so it cannot hold as strongly. The
 /// bound is `labour`'s share of `staff`'s nameplate.
 ///
-/// ⛔ An inherited coupling re-filed at the lower level's own number is either lucky or
+/// An inherited coupling re-filed at the lower level's own number is either lucky or
 /// unexamined, and that is what this test refuses.
 #[test]
 fn an_inherited_coupling_is_weaker_than_the_one_it_came_from() {
@@ -1378,31 +1375,31 @@ fn an_inherited_coupling_is_weaker_than_the_one_it_came_from() {
     }
 }
 
-/// ⛔⛔⛔ A FUSED SLACK IS BOUNDED BY THE SUM OF ITS PARTS', AND "STRICTEST WINS" WAS AN
-/// ARTEFACT OF THE BOOLEAN.
+/// A fused slack is bounded by the sum of its parts' slacks, and "strictest wins" belongs to
+/// a boolean.
 ///
-/// While these were booleans the rule looked principled: `labour` admits delay, `on-call`
-/// does not, a layer that admits delay for only part of its demand does not admit delay,
-/// so the fused `staff` files `false`. ⛔ That rule cannot survive the retype, and it was
-/// never really about strictness — taking the minimum UNDERSTATES a fused slack. Most of
-/// `staff`'s demand is delivery work that does sit in a queue; only the escalations perish
-/// on contact. Filing zero would assert the whole fused layer perishes.
+/// Read as booleans the rule looks principled: `labour` admits delay, `on-call` does not,
+/// a layer that admits delay for only part of its demand does not admit delay, so the fused
+/// `staff` would file `false`. That rule does not survive slacks as quantities, and it is not
+/// really about strictness: taking the minimum understates a fused slack. Most of `staff`'s
+/// demand is delivery work that does sit in a queue; only the escalations perish on contact.
+/// Filing zero would assert the whole fused layer perishes.
 ///
-/// ⭐ A slack is a quantity, so the fused figure is bounded ABOVE by the sum of its parts'
-/// — you cannot get more give than the parts have — and below by nothing useful. One
-/// unsized part makes that sum unsized, exactly as an unsized elimination makes a
-/// reconciliation uncomputable rather than satisfied.
+/// A slack is a quantity, so the fused figure is bounded above by the sum of its parts'
+/// (there is no more give than the parts have) and below by nothing useful. One unsized
+/// part makes that sum unsized, exactly as an unsized elimination makes a reconciliation
+/// uncomputable rather than satisfied.
 ///
-/// ⛔ AND THE FUSION STILL SAYS SO RATHER THAN LETTING THE ABSENCE LOOK LIKE AGREEMENT:
-/// two parts disagreeing on a slack is the strongest argument against fusing them, and it
-/// is left in `observed` where a reader will find it.
+/// And the fusion still says so rather than letting the absence look like agreement: two
+/// parts disagreeing on a slack is the strongest argument against fusing them, and it is
+/// left in `observed` where a reader will find it.
 #[test]
 fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
     let (g, h) = (composition(), composed(HOLDING));
 
     let slack = |l: &LayerType| match &l.time_slack {
         StatedTimeSlackType::Claim(c) => Some((c.low, c.most_likely, c.high)),
-        // ⛔ AN ABSENT SLACK IS NOT A ZERO ONE. Collapsing them is the defect `Absence`
+        // An absent slack is not a zero one. Collapsing them is the defect `Absence`
         // exists to prevent, and it is reachable wherever a zero can be spelled `none`.
         // `pm:ClaimAbsence` has no `none`, so a zero arrives here as a claim. A computed slack
         // is the clearance, which this bound does not compute.
@@ -1428,8 +1425,8 @@ fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
          perishes on contact, which is false about the larger part of this layer"
     );
 
-    // Where BOTH parts are a measured zero the sum really is zero, and the fused layer
-    // says so — the bound is a bound, not an excuse to leave everything unmeasured.
+    // Where both parts are a measured zero the sum really is zero, and the fused layer
+    // says so: the bound is a bound, not an excuse to leave everything unmeasured.
     let compute = fusion(&h, "compute");
     let both_zero = compute
         .part
@@ -1454,18 +1451,18 @@ fn a_fused_slack_is_bounded_by_the_sum_of_its_parts() {
     );
 }
 
-/// ⛔⛔ A FUSION THAT ABSORBS A COUPLING DESTROYS A FILED OBSERVATION.
+/// A fusion that absorbs a coupling destroys a filed observation.
 ///
-/// The group filed `labour` <-> `on-call` and kept them as two layers. The holding fuses
+/// The group files `labour` <-> `on-call` and keeps them as two layers. The holding fuses
 /// them, so above this document there is one layer and no coupling to file. That is not an
-/// omission and it is not evidence for the fusion either — coupling and fungibility are
+/// omission and it is not evidence for the fusion either: coupling and fungibility are
 /// independent axes. It is an observation the upper level chose to absorb, and `observed`
 /// is where it says so.
 ///
-/// ⭐ THIS CHECKS EVERY ABSORBING FUSION RATHER THAN A NAMED ONE, AND THE DIFFERENCE IS NOT
-/// COSMETIC. Written against `staff` alone it passed while `compute` — added later, fusing
-/// two layers the group had also filed as coupled — said nothing about the observation it
-/// swallowed. A rule that only holds where somebody remembered to look is not a rule.
+/// This checks every absorbing fusion rather than a named one, and the difference is not
+/// cosmetic. Written against `staff` alone, it would pass while another fusion of two layers
+/// the group filed as coupled said nothing about the observation it swallowed. A rule that
+/// holds only where somebody remembered to look is not a rule.
 #[test]
 fn a_fusion_that_absorbs_a_coupling_says_it_did() {
     let (g, h) = (composition(), composed(HOLDING));
@@ -1497,7 +1494,7 @@ fn a_fusion_that_absorbs_a_coupling_says_it_did() {
     for (from, to, name) in &absorbed {
         let f = fusion(&h, name);
         assert!(
-            f.observed.contains("COUPLING"),
+            f.observed.contains("coupling"),
             "`{name}` swallows the coupling the group filed between `{from}` and `{to}`, and \
              must name it. A composition that silently fuses two layers a filing below it \
              reported as coupled has overruled that filing without arguing with it"
@@ -1513,25 +1510,24 @@ fn a_fusion_that_absorbs_a_coupling_says_it_did() {
     );
 }
 
-/// ⭐⭐⭐ THE FUSION THE GROUP COULD NOT PERFORM, AND WHAT MADE IT POSSIBLE.
+/// The fusion the group cannot perform, and what makes it possible.
 ///
 /// `compute-us` is metered per reserved card and `compute-pt` by the month. The group
-/// filed them as two one-part fusions under two names — correct, and as far as it could
-/// go, because `4.4 GPU + 545 GPU-hour` is not a sum and no amount of prose makes it one.
-/// The holding carries a `Part/factor` and the arithmetic closes.
+/// files them as two one-part fusions under two names, which is correct and as far as it
+/// can go, because 4.4 GPU and 545 GPU-hour of demand do not add, and no amount of prose
+/// makes them. The holding carries a `Part/factor`, and the arithmetic closes.
 ///
-/// ⛔ THE THREE QUANTITIES CONVERT AND THE ELIMINATION DOES NOT. A part arrives in
-/// whatever unit its filer used; the sum it is removed from is already in the composed
-/// unit. Stating the cross-charge in GPU would be unaddable to a total in GPU-hour, and
-/// there is no second factor to rescue it — a factor converts a PART, and an elimination
-/// is not one.
+/// The three quantities convert and the elimination does not. A part arrives in whatever
+/// unit its filer used; the sum it is removed from is already in the composed unit.
+/// Stating the cross-charge in GPU would be unaddable to a total in GPU-hour, and there is
+/// no second factor to rescue it: a factor converts a part, and an elimination is not one.
 #[test]
 fn a_fusion_converts_its_parts_before_adding_them() {
     let h = composed(HOLDING);
     let compute = fusion(&h, "compute");
     let composed_layer = layer(&h.process_modulus, "compute");
 
-    // The parts genuinely disagree about the unit — that is the whole premise.
+    // The parts genuinely disagree about the unit: that is the whole premise.
     let g = composition();
     let units: BTreeSet<&str> = compute
         .part
@@ -1577,17 +1573,16 @@ fn a_fusion_converts_its_parts_before_adding_them() {
     }
 }
 
-/// ⛔⛔⛔ CONVERTING WIDENS A POINT NAMEPLATE, AND S-14 SAID THE CORPUS HAD NEVER FORCED IT.
+/// Converting widens a point nameplate.
 ///
-/// Every nameplate in every other document is a point. Eight cards is exact; eight cards
-/// FOR A MONTH is not, because a month is `[672, 720, 744]` hours. The composed nameplate
-/// is the first genuinely uncertain one here, and it arrived as a consequence of the
-/// conversion rather than by being invented for the test.
+/// Every nameplate in every other corpus document is a point. Eight cards is exact; eight
+/// cards for a month is not, because a month is `[672, 720, 744]` hours. The composed
+/// nameplate is the one genuinely uncertain nameplate in the corpus, and it arrives as a
+/// consequence of the conversion rather than by being invented for the test.
 ///
-/// ⭐ AND `r ≡ nameplate − demand` SURVIVES IT, which is the point S-14 got wrong. The
-/// decomposition's floors cancel algebraically, so an interval nameplate costs the identity
-/// nothing. What an interval nameplate does cost is the SPLIT into a decision and a
-/// residue, and this layer cannot even attempt that: its quantum is absent.
+/// And the remainder holds up: a nameplate with width costs the remainder itself nothing.
+/// What it does cost is the split into whole units and residue, and this layer cannot even
+/// attempt that: its quantum is absent.
 #[test]
 fn converting_a_point_nameplate_produces_an_uncertain_one() {
     let h = composed(HOLDING);
@@ -1597,7 +1592,7 @@ fn converting_a_point_nameplate_produces_an_uncertain_one() {
     assert!(
         hi - lo > 0.0,
         "the composed nameplate is the corpus's only uncertain one; if it collapses to a \
-         point, S-14's case is unexercised again"
+         point, no nameplate with width is exercised"
     );
 
     let g = composition();
@@ -1605,23 +1600,23 @@ fn converting_a_point_nameplate_produces_an_uncertain_one() {
         let (plo, _, phi) = nameplate(layer(&g.process_modulus, name));
         assert_eq!(
             plo, phi,
-            "`{name}` files a POINT nameplate; the width above is manufactured entirely by \
+            "`{name}` files a point nameplate; the width above is manufactured entirely by \
              the conversion, and that is what makes it worth asserting"
         );
     }
 }
 
-/// ⛔⛔⛔ CONVERT-THEN-DIFFERENCE IS NOT DIFFERENCE-THEN-CONVERT, AND THE GAP IS FILED.
+/// Convert-then-difference is not difference-then-convert, and the gap is filed.
 ///
-/// One factor multiplies BOTH the US part's nameplate and its demand, so the two converted
-/// intervals are correlated. Subtracting them with the bound reversal that INDEPENDENT
-/// quantities require pairs a 28-day nameplate against a 31-day demand — a month that did
-/// not happen — and counts the factor's own spread twice.
+/// One factor multiplies both the US part's nameplate and its demand, so the two converted
+/// ranges move together. Subtracting them with the bound reversal that independent
+/// quantities require pairs a 28-day nameplate against a 31-day demand, a month that did
+/// not happen, and counts the factor's own spread twice.
 ///
-/// ⭐ It is the same correlated-components question `Elimination` had to answer for
-/// subtraction, arriving in a second place with the same answer: convert the remainder
-/// itself, never re-derive it. This test asserts BOTH figures, because a reader who only
-/// sees the right one has no way to tell how much the wrong one costs.
+/// It is the question `Elimination` answers for subtraction, of parts that move together,
+/// arriving in a second place with the same answer: convert the remainder itself, never
+/// re-derive it. This test asserts both figures, because a reader who only sees the right
+/// one has no way to tell how much the wrong one costs.
 #[test]
 fn a_converted_remainder_is_converted_and_never_re_derived() {
     let (g, h) = (composition(), composed(HOLDING));
@@ -1632,8 +1627,8 @@ fn a_converted_remainder_is_converted_and_never_re_derived() {
     let stated = triple(&remainder(composed_layer).quantity)
         .expect("with the quantum absent this remainder cannot be a derivation and must be stated");
 
-    // Right: each part's own remainder, converted, plus the demand the elimination removed
-    // — capacity that was counted as consumed twice and is therefore spare.
+    // Right: each part's own remainder, converted, plus the demand the elimination removed:
+    // capacity that was counted as consumed twice and is therefore spare.
     let mut correct = (0.0, 0.0, 0.0);
     for p in &compute.part {
         let part_layer = layer(&g.process_modulus, &p.layer.filing.id);
@@ -1668,18 +1663,17 @@ fn a_converted_remainder_is_converted_and_never_re_derived() {
     );
     assert!(
         naive.0 < correct.0 && naive.2 > correct.2,
-        "the re-derived interval must be strictly WIDER on both sides — that is the \
+        "the re-derived range must be strictly wider on both sides: that is the \
          factor's spread being counted twice, not a rounding difference"
     );
 }
 
-/// ⭐⭐⭐ DID THE COMPOSER LOOK FOR DOUBLE COUNTING? Three of this corpus's eight fusions
-/// file no elimination at all, and until `Fusion/eliminations` became a `StatedEliminations`
-/// there is no way to ask — an empty list says "the parts were checked and are disjoint" and
-/// "nobody checked" in the same bytes.
+/// Did the composer look for double counting? A fusion that files no elimination says why,
+/// because `Fusion/eliminations` is a `StatedEliminations`: an empty list would say "the
+/// parts were checked and are disjoint" and "nobody checked" in the same bytes.
 ///
-/// ⛔⛔ AND THE TWO ANSWERS OWE DIFFERENT ARITHMETIC, WHICH IS WHAT MAKES THIS A RULE RATHER
-/// THAN A VOCABULARY. Under `none` or `notApplicable` the composed figure MUST equal the sum
+/// And the two answers owe different arithmetic, which is what makes this a rule rather
+/// than a vocabulary. Under `none` or `notApplicable` the composed figure must equal the sum
 /// of its converted parts exactly, and this test performs that sum. Under `unmeasured` no
 /// equality is owed at all and `expected` returns `None`. An empty list in place of the
 /// wrapper quietly buys the first reading for documents that have earned the second.
@@ -1698,7 +1692,7 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
                 continue;
             };
 
-            // ⭐ Every empty one in this corpus is a ONE-PART fusion, and `notApplicable` is
+            // Every empty one in this corpus is a one-part fusion, and `notApplicable` is
             // the exact reason: double counting needs two parts to run between, so between a
             // set of one the question has no population rather than a zero answer.
             assert_eq!(
@@ -1717,7 +1711,7 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
                 f.part.len()
             );
 
-            // ⛔ AND THE ARITHMETIC IS NOW OWED. Nothing was removed, so the composed figure
+            // And the arithmetic is owed. Nothing was removed, so the composed figure
             // is the converted part exactly, and a difference is a finding rather than a
             // shrug about eliminations somebody might not have filed.
             for (what, of) in [
@@ -1745,7 +1739,7 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
         }
     }
 
-    // ⚠️ A rule that ran on nothing would pass loudest. Three fusions, two quantities each.
+    // A rule that ran on nothing would pass loudest. Three fusions, two quantities each.
     assert!(
         exact >= 6,
         "only {exact} exact sums were reachable; the one-part branch is the only place this \
@@ -1753,7 +1747,7 @@ fn a_fusion_says_whether_anybody_looked_for_double_counting() {
     );
 }
 
-/// The window a layer files, and the typed reason it declines to — one or the other, never
+/// The window a layer files, and the typed reason it declines to: one or the other, never
 /// both, because `Divisibility/window` is a `StatedLumpyQuantum`. Its absence arm is a
 /// `ClaimAbsence`, so "the duty fraction is one" is not among the reasons: that is a value,
 /// and it is filed as one whole period.
@@ -1775,22 +1769,21 @@ fn duty(l: &LayerType) -> Result<Triple, ClaimAbsenceReasonType> {
     Err(ClaimAbsenceReasonType::NotApplicable)
 }
 
-/// ⭐⭐⭐ A WINDOW IS CARRIED THROUGH A FUSION AND NEVER SUMMED, AND UNTIL THE ELEMENT BECAME
-/// REQUIRED NEITHER HALF OF THAT RULE COULD BE CHECKED.
+/// A window is carried through a fusion and never summed, and the element being required is
+/// what lets both halves of that rule be checked.
 ///
-/// `Divisibility/window` states it plainly: "Two members naming one machine file one calendar
-/// between them; summing gives ten days a week. It is a property rather than a quantity, which
-/// is why `EliminationAgainst` has three members and no fourth — there is nothing to
-/// eliminate." A real rule, unenforceable for two reasons at once.
+/// `Divisibility/window` says it plainly: two members naming one machine file one calendar
+/// between them, and summing gives ten days a week. It is a property rather than a quantity,
+/// which is why `EliminationAgainst` has three members and no fourth: there is nothing to
+/// eliminate.
 ///
-/// ⛔⛔ THE FIRST IS WHY THIS CLEANUP FOUND A LIVE DEFECT RATHER THAN A TIDINESS. Dropping a
-/// carried window produced a document byte-identical to a line that runs seven days a week, so
-/// the holding level had in fact dropped one and nothing said so. The composed layer had a
-/// nameplate quoted per week and no calendar behind it, which overstates what the line
-/// delivers by two sevenths and reads as a filing choice.
+/// The first half is the carrying. Were the window optional, dropping a carried window would
+/// give a document byte-identical to a line that runs seven days a week, and the composed
+/// layer would have a nameplate quoted per week and no calendar behind it, which overstates
+/// what the line delivers by two sevenths and reads as a filing choice.
 ///
-/// ⭐ THE SECOND IS THE SUM. Two five-day parts must compose to FIVE. The arithmetic every
-/// other quantity in this model owes — add the parts, subtract the eliminations — is exactly
+/// The second half is the sum. Two five-day parts compose to five. The arithmetic every other
+/// quantity in this model owes, adding the parts and subtracting the eliminations, is exactly
 /// wrong here, and this is the one place that says so in a number.
 #[test]
 fn a_window_is_carried_through_a_fusion_and_never_summed() {
@@ -1812,7 +1805,7 @@ fn a_window_is_carried_through_a_fusion_and_never_summed() {
 
             let composed = duty(layer(&c.process_modulus, &f.name)).unwrap_or_else(|r| {
                 panic!(
-                    "{name} `{}`: {} of its parts file a duty cycle and the composed layer \
+                    "{name} `{}`: {} of its parts file a window and the composed layer \
                      files `{r:?}`. A window is a property of the machine, so fusing layers \
                      that name one machine cannot lose its calendar — and the loss is \
                      invisible in the figures, because the nameplate still reads per week",

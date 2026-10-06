@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Four layers and two operations. Illustrative figures, not anybody's numbers.
+  Four layers and two operations, with illustrative figures that are nobody's numbers.
 
-  What it is here to show:
-    * the labour layer's remainder split across `people` and `unrealised` with both
-      shares `unmeasured` — the fourth-buffer argument, written down rather than argued,
-      and an admission that the remainder divides without inventing the split
-    * a contractual quantum (an 8-GPU reserved block) beside an intrinsic one
-      (one launch slot per quarter, one person)
-    * an INDUCTION: a commitment made by one party that becomes a draw on a
-      different layer, with the decider named
-    * a measurement basis filed `notApplicable` because the quantity is physical
-    * all three BUFFER SLACKS filed and differing per layer: only `capability`
-      can be built ahead, and labour is the only supply that runs above its rating
-    * ⭐ A CONTINUOUSLY AVAILABLE SUPPLY, which is the only kind whose window is its
-      whole period. `support-cover` files a duty fraction of ONE as the value it is,
-      `1 week` against a period of `week` with `origin` `contractual`, because a
-      round-the-clock obligation is a term somebody signed and could renegotiate.
-      Spelled as an absence it would say nothing about which of the three origins
-      put it there
-    * a CLEARANCE whose remainder is still paid for: cover committed, invoiced and
-      not called on, held by `booked`, with `absorber` `none` because no buffer
-      stretched, queued or held anything
+  What it shows:
+    * the labour layer's remainder split between `people` and `unrealised`, both shares
+      `unmeasured`: the remainder is known to divide, and nobody invents the split
+    * a contractual quantum, a reserved block of 8 GPUs, beside intrinsic ones: one
+      person, and one launch slot a quarter
+    * an induction: a commitment one party makes that becomes a draw on a different
+      layer, with the person who decides it named
+    * a measurement basis filed `notApplicable`, because the quantity is physical
+    * all three buffer slacks filed, differing by layer: only `capability` can be built
+      ahead, and labour is the only supply that runs above its rating
+    * a supply available round the clock, the only kind whose window is its whole
+      period: `support-cover` files `1 week` against a period of `week`, with origin
+      `contractual`, because the obligation is a term somebody signed and could
+      renegotiate. Filed as an absence, it would not say which origin put it there
+    * a clearance whose remainder is still paid for: cover committed, invoiced and not
+      called on, held by `booked`, with `absorber` `none` because no buffer stretched,
+      queued or held anything
 -->
 <pm:processModulus xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-       before S-28 was repaired no document could say it. -->
+  <!-- Which filing this is: the URN a part or a dependence cites to point at this
+       document. -->
   <pm:notation>
     <pm:uri>urn:example:filing:acme-platform:2026-08-30</pm:uri>
   </pm:notation>
@@ -34,11 +31,10 @@
     <pm:attests>observation</pm:attests>
   </pm:evidence>
 
-  <!-- What this document reports under.
-       ⭐ Note what the authority IS here: FASB publishes an XBRL taxonomy of CONCEPTS
-       and no enumeration of framework codes, so the taxonomy URI identifies the
-       STANDARD and the value is the framework's name. Contrast refutation.xml, where
-       Portugal publishes two actual code lists and they disagree. -->
+  <!-- What this document reports under. FASB publishes an XBRL taxonomy of concepts
+       and no list of framework codes, so the taxonomy URI names the standard and the
+       value is the framework's name. refutation.xml shows the other case: Portugal
+       publishes two code lists, and they disagree. -->
   <pm:regime>
     <pm:id>us-gaap</pm:id>
     <pm:jurisdiction>US</pm:jurisdiction>
@@ -48,7 +44,8 @@
         <pm:value>us-gaap</pm:value>
       </pm:term>
     </pm:framework>
-    <!-- ⭐ THERE IS NO US CHART OF ACCOUNTS, so the entity is its own authority. -->
+    <!-- The United States has no national chart of accounts, so the entity is the
+         authority for its own. -->
     <pm:chart>
       <pm:term>
         <pm:taxonomy>urn:example:acme-inc:chart-of-accounts</pm:taxonomy>
@@ -61,7 +58,7 @@
     <pm:scope>
       <pm:scope>
         <pm:extent>unbounded</pm:extent>
-        <pm:basis>the three layers this filing was written to argue about. Nobody has asked what else the platform runs that would be a layer</pm:basis>
+        <pm:basis>the four layers this filing is about. Nobody has asked what else the platform runs that would be a layer</pm:basis>
       </pm:scope>
     </pm:scope>
 
@@ -108,15 +105,11 @@
         </pm:patience>
       </pm:demand>
 
-      <!-- ⛔⛔ `unmeasured` AND NOT `none`, AND AN EARLIER DRAFT OF THIS FILE HAD IT WRONG
-           IN A WAY WORTH RECORDING. It said the demand here does not survive being held at
-           all, which made the time buffer unavailable and left the remainder nowhere to go
-           but `people`. That is the document rigging its own conclusion: platform work DOES
-           sit in a queue and some of it is served late. ⭐ What nobody has measured is how
-           long it survives there — and the portion that ages out is `unrealised`, not
-           `people`. Filing this honestly puts the comfortable exit back on the table and
-           makes `absorber = capacity` below a claim a reader can argue with, which is
-           stronger than winning by construction. -->
+      <!-- `unmeasured`, not `none`: platform work does sit in a queue, and some of it is
+           served late. What nobody has measured is how long it lasts there before it ages
+           out, and the part that ages out is `unrealised`, not `people`. So the time buffer
+           stays open, and the `capacity` absorber below is a claim a reader can weigh
+           against it. -->
       <pm:timeSlack>
         <pm:absent>
           <pm:reason>unmeasured</pm:reason>
@@ -156,8 +149,8 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- the establishment is ours to set, so the one-person shortfall below
-               is a decision rather than a constraint -->
+          <!-- the headcount is ours to set, so the one-person shortfall below is a
+               decision rather than a constraint -->
           <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
@@ -192,7 +185,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the nameplate is quoted in `people`, a stock with no period, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>the nameplate is quoted in `people`, a stock with no period, so there is no period for a window to be part of</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -200,7 +193,7 @@
           <pm:capacitySlack>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
-              <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+              <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
             </pm:absent>
           </pm:capacitySlack>
           <pm:inventorySlack>
@@ -210,13 +203,13 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
                 <pm:party>platform</pm:party>
                 <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
               </pm:provenance>
             </pm:claim>
           </pm:inventorySlack>
@@ -250,21 +243,18 @@
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- ⭐ THE THING WITH NO INSTRUMENT IS THE SHARE, NOT THE REMAINDER. The
-               magnitude is |4 - [4.5, 5.2, 6.0]| = [0.5, 1.2, 2.0] people and the
-               document already determines it. What nobody records is how much of that
-               the team absorbed, and that is a smaller and much sharper claim than
-               "we do not know the remainder".
-               ⭐⭐ TWO HOLDERS, AND THE SECOND ONE IS WHAT THIS LAYER'S OWN `timeSlack`
-               NOTE ASKS FOR: work that queues, waits and quietly ages out is
-               `unrealised` and not `people`. Filing only `people` said the team
-               absorbed all of it, which the note contradicts in the same layer.
-               ⚠️ BOTH SHARES ARE `unmeasured` AND THE SPLIT BETWEEN THEM IS THE POINT.
-               Per Holder, one unstated share suspends the sum rule rather than breaking
-               it, so nothing here is invented to make an arithmetic check pass. What
-               the second holder adds is the ADMISSION that the remainder divides — and
-               which of the two halves grew is the question somebody would have to
-               instrument to answer. -->
+          <!-- What has no instrument is the share, not the remainder. The remainder
+               follows from this layer's own demand and nameplate, 0.5, 1.2 and 2.0
+               people, so the document already fixes it. What nobody records is how much
+               of it the team absorbed.
+               Two holders, because this layer's `timeSlack` note asks for the second:
+               work that queues, waits and quietly ages out is `unrealised`, not `people`.
+               Filing `people` alone would say the team absorbed all of it, and the note
+               says otherwise.
+               Both shares are `unmeasured`, and the split between them is the open
+               question. An unstated share suspends the rule that the shares add up to the
+               remainder rather than breaking it, so nothing here is made up to pass a
+               check. Which of the two grew is what somebody would have to measure. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>unrealised</pm:kind>
@@ -295,9 +285,9 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |nameplate - demand| = |4 - [4.5, 5.2, 6.0]| = [0.5, 1.2, 2.0] people.
-               Of that, m·q = 1 person is the establishment decision (amountOrigin =
-               policy) and 0.2 is the residue no headcount removes. -->
+          <!-- Derived from this layer's demand and nameplate: 0.5, 1.2 and 2.0 people.
+               Of the most likely 1.2, one whole person is the headcount decision
+               (`amountOrigin` `policy`), and 0.2 is the residue no headcount removes. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -359,7 +349,7 @@
           <pm:denominator>
             <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
           </pm:denominator>
-          <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+          <!-- One value has no range to tighten, so `notApplicable`. -->
           <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
           <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
           <pm:provenance>
@@ -398,9 +388,10 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- ⭐ THE TWO AXES COMING APART, WHICH IS WHY THERE ARE TWO ELEMENTS.
-               The seller sets the block at eight GPU (a CONTRACTUAL size, below).
-               How many blocks we hold is our budget, and nobody else's. -->
+          <!-- Who sets the size of a block and who sets how many we hold are two
+               different parties, which is why there are two elements. The seller sets
+               the block at 8 GPU, a contractual size (below); how many blocks we hold is
+               our budget, and nobody else's. -->
           <pm:amountOrigin><pm:origin>policy</pm:origin></pm:amountOrigin>
           <pm:divisibility>
             <pm:divisibility>
@@ -436,7 +427,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the nameplate is quoted in `GPU`, a stock with no period, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>the nameplate is quoted in `GPU`, a stock with no period, so there is no period for a window to be part of</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -448,7 +439,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -466,7 +457,7 @@
               <pm:denominator>
                 <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -525,9 +516,9 @@
               <pm:value>capacity</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- one holder bearing all of it, so the share IS the magnitude and the
-               sum check is trivial here. It is stated anyway: a share that happens to
-               be the whole is still a different fact from the total. -->
+          <!-- One holder bears all of it, so the share is the whole remainder and the
+               shares add up without effort. It is stated all the same: a share that
+               happens to be the whole is a different fact from the total. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>booked</pm:kind>
@@ -558,10 +549,10 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |nameplate - demand| = |8 - [3.1, 4.4, 6.0]| = [2.0, 3.6, 4.9] GPU.
-               ⭐ ENTIRELY RESIDUE. The block is indivisible at 8 and demand never
-               reaches it, so m·q contributes nothing a smaller purchase could remove:
-               this layer's remainder is the irreducible kind. -->
+          <!-- Derived from this layer's demand and nameplate: 2.0, 3.6 and 4.9 GPU.
+               All of it is residue. The block is indivisible at 8 GPU and demand never
+               reaches it, so buying fewer blocks could not remove any of it: this
+               layer's remainder is the kind no decision removes. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -648,12 +639,11 @@
               </pm:boundOrigin>
             </pm:claim>
           </pm:amount>
-          <!-- ⛔ NOT `intrinsic`, AND THE RESTRAINT IS THE POINT. What caps this at
-               three is the platform team's throughput, which is another layer. Filing
-               `intrinsic` would assert nobody can move it and hide a dependence in a
-               field nobody would look in. If the dependence is real it belongs in
-               pm:coupling with the observation that produced it, and nobody here has
-               made that observation yet. -->
+          <!-- Not `intrinsic`. What caps this at three is the platform team's
+               throughput, which is another layer. Filed `intrinsic`, it would say
+               nobody can move it, and hide a dependence in a field nobody looks in. If
+               the dependence is real, it belongs in a `pm:coupling` with the observation
+               behind it, and nobody here has made that observation. -->
           <pm:amountOrigin>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -667,16 +657,12 @@
           <pm:divisibility>
             <pm:divisibility>
               <pm:lumpy>
-                <!-- ⚠️ `launches per quarter` AND NOT `launches`, WHICH IS WHERE THIS
-                     FILE WAS WRONG FOR TWO PASSES. A quantum is the size of one unit of
-                     the NAMEPLATE it divides — it lives under `nameplate/divisibility` —
-                     and this nameplate is a rate. The tell is arithmetical rather than
-                     stylistic: the whole point of a quantum is that `demand / q` and
-                     `nameplate / q` are COUNTS, and `(launches per quarter) / launches`
-                     is not a count, it is a frequency. It happened to compute here only
-                     because the size is 1.
-                     ⭐ The lump is not "one launch". It is ONE LAUNCH SLOT PER QUARTER,
-                     and that is the thing you cannot hold two thirds of. -->
+                <!-- `launches per quarter`, not `launches`. A quantum is the size of one
+                     unit of the nameplate it divides, and it sits under
+                     `nameplate/divisibility` in the nameplate's own unit, so that the
+                     nameplate and the demand each come to a count of whole units. This
+                     nameplate is a rate, so the unit is not one launch: it is one launch
+                     slot a quarter, the thing you cannot hold two thirds of. -->
                 <pm:size>
                   <pm:claim>
                     <pm:low>1</pm:low>
@@ -706,7 +692,7 @@
               <pm:window>
                 <pm:absent>
                   <pm:reason>unmeasured</pm:reason>
-                  <pm:note>`launches per quarter` HAS a period, so the question is well formed here — and nobody has measured what part of a quarter the team is actually able to ship in</pm:note>
+                  <pm:note>`launches per quarter` has a period, so the question is well formed here, and nobody has measured what part of a quarter the team is actually able to ship in</pm:note>
                 </pm:absent>
               </pm:window>
             </pm:divisibility>
@@ -718,7 +704,7 @@
               <pm:denominator>
                 <pm:period>quarter</pm:period>
               </pm:denominator>
-              <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+              <!-- One value has no range to tighten, so `notApplicable`. -->
               <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
               <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
               <pm:provenance>
@@ -728,30 +714,23 @@
               </pm:provenance>
             </pm:claim>
           </pm:capacitySlack>
-          <!-- ⭐ TRUE HERE AND FALSE ON THE OTHER TWO. A launch can be built ahead and held,
-               which is what makes `absorber = inventory` on this layer a claim rather
-               than an excuse -->
-          <!-- ⭐⭐⭐ THE FIRST SIZED SLACK IN THE CORPUS, AND IT IS WHAT MAKES THE
-               ATTRIBUTION BELOW CHECKABLE INSTEAD OF MERELY CONSISTENT. This layer says
-               `absorber = inventory`, and while that was gated by a boolean the claim
-               could not be wrong: `true` costs nothing and any size of remainder could
-               be parked behind it. A figure bounds it. Integration work can sit finished
-               and unshipped for up to about two quarters' worth of launches before it
-               rots against a moving platform, so the buffer holds two to six and the
-               customer share of three has somewhere real to sit.
-               ⚠️ It is tight at the low bound on purpose. If the quarter is the bad one
-               the buffer holds two and the excess is already at two.
-               ⭐⭐ AND NOTE WHAT WAS MEASURED VERSUS WHAT IS FILED, BECAUSE THIS IS THE
-               ONE PLACE IN THE CORPUS THE CONVERSION WAS DONE AND IT IS INVISIBLE ONCE
-               DONE. "Two quarters' worth" is a DURATION — how long the work keeps. The
-               field takes a QUANTITY, because it is compared against a holder share and
-               shares are in the layer's unit. The bridge is `quantity = duration x rate`:
-               two quarters at roughly three launches a quarter is the six at the high
-               bound. Nobody can see that multiplication in the numbers, so it is said
-               here. -->
+          <!-- Of this document's four layers, only this one can build ahead and hold:
+               a launch can be finished before it ships. That is what makes the
+               `inventory` absorber on this layer a claim rather than an excuse. -->
+          <!-- The figure bounds that claim, so a remainder of any size cannot be parked
+               behind it. Integration work can sit finished and unshipped for up to
+               about two quarters' worth of launches before it rots against a moving
+               platform, so the buffer holds 2 to 6, and the customer share, up to 3, has
+               somewhere real to sit. It is tight at the low bound on purpose: in a bad
+               quarter the buffer holds 2 and the excess is already 2.
+               What was measured is a duration, how long the work keeps. What is filed is
+               a quantity, because it is compared with holder shares, and shares are in
+               the layer's unit. Two quarters at about three launches a quarter gives the
+               6 at the high bound. That multiplication cannot be seen in the figures, so
+               it is said here. -->
 
-               <!-- ⛔ THE UNIT IS `launches per quarter` AND NOT `quarters`, FOR THE SAME
-                    REASON THE QUANTUM ABOVE IS. A slack in the wrong unit is caught by
+               <!-- The unit is `launches per quarter`, not `quarters`, for the same reason
+                    as the quantum above. A slack in the wrong unit is caught by
                     `a_slack_is_expressed_in_the_unit_of_the_shares_it_bounds`; a slack
                     that skips the multiplication and keeps the right unit is caught by
                     nothing. -->
@@ -770,12 +749,11 @@
                   <pm:kind>instrument</pm:kind>
                 </pm:narrowing>
               </pm:narrowsWhen>
-              <!-- ⭐ WHO SET THIS, WHICH THE SLACKS DID NOT SAY UNTIL NOW. Nobody chose
-                   it and nobody can negotiate it: integration work rots against a platform
-                   that keeps moving, and the rate it moves at is not ours. `intrinsic`
-                   therefore, and that is a claim someone can dispute — a reader who thinks
-                   the shelf life is really a release-cadence POLICY has been handed the
-                   place to say so. -->
+              <!-- Who set this bound: nobody chose it and nobody can negotiate it.
+                   Integration work rots against a platform that keeps moving, and the pace
+                   it moves at is not ours. So `intrinsic`, and that is a claim someone can
+                   dispute: a reader who thinks the shelf life is really a release-cadence
+                   policy has the place to say so. -->
               <pm:boundOrigin>
                 <pm:origin>intrinsic</pm:origin>
               </pm:boundOrigin>
@@ -830,13 +808,13 @@
               <pm:value>inventory</pm:value>
             </pm:term>
           </pm:absorber>
-          <!-- ⭐⭐⭐ TWO HOLDERS, AND THIS IS THE CASE THAT FORCED THE SHAPE. Fit's
-               own annotation names BOTH `customer` and `unrealised` for an unserved
+          <!-- Two holders. `Fit` names both `customer` and `unrealised` for an unserved
                excess, because a customer who waited and a customer who never arrived
-               are different people and only one of them is still yours. A single
-               holder made the sender pick one and throw the other away.
+               are different people, and only one of them is still yours. A single
+               holder would make the sender pick one and throw the other away.
 
-               The shares sum to the derived magnitude: [1,2,3] + [1,1,2] = [2,3,5]. -->
+               The two shares add up to the derived remainder, 2, 3 and 5 launches a
+               quarter. -->
           <pm:holder>
             <pm:holder>
               <pm:kind>customer</pm:kind>
@@ -901,11 +879,10 @@
               </pm:share>
             </pm:holder>
           </pm:holder>
-          <!-- derived: |nameplate - demand| = |3 - [5, 6, 8]| = [2, 3, 5] launches per quarter.
-               ⭐ ENTIRELY DECISION. The quantum is one launch and demand is a whole
-               number of them, so the residue is zero and every unit of this remainder
-               is a commitment somebody could have made differently. The layer with the
-               largest remainder in this document has nothing irreducible in it. -->
+          <!-- Derived from this layer's demand and nameplate: 2, 3 and 5 launches a
+               quarter. All of it is decision. The quantum is one launch slot and demand
+               comes in whole launches, so there is no residue, and every unit of this
+               remainder is a commitment somebody could have made differently. -->
           <pm:quantity>
             <pm:derivation>
               <pm:identity>magnitude</pm:identity>
@@ -917,21 +894,20 @@
     </pm:layer>
 
     <!-- ============================================================
-         SUPPORT COVER: THE FIRST CONTINUOUSLY AVAILABLE SUPPLY IN THIS CORPUS,
-         and the reason it is here is the duty cycle rather than the numbers.
+         SUPPORT COVER: a supply available round the clock, here for its window
+         rather than its numbers.
 
-         ⭐⭐⭐ THE WINDOW IS THE WHOLE PERIOD AND IT IS STILL A FILED WINDOW. Cover
-         runs every hour of every day, so the duty fraction is one — and one is a
-         value, not an absence. `pm:Divisibility/window` carries [1, 1, 1] week
-         against a nameplate quoted per week, and `LumpyQuantum/origin` carries the
-         only thing that matters about it: SOMEBODY PROMISED THIS. Drop to twelve
-         hours on weekdays and the nameplate falls by more than half. That is a
-         lever, and it is legible here because the window was filed rather than
-         declined.
+         Cover runs every hour of every day, so the window is the whole period, and
+         it is still filed: a whole period is a value, not an absence.
+         `pm:Divisibility/window` carries 1 week against a
+         nameplate quoted per week, and `LumpyQuantum/origin` carries what matters
+         about it: somebody promised this. Drop to twelve hours on weekdays and the
+         nameplate falls by more than half. That is a lever, and it is legible here
+         because the window is filed rather than declined.
 
-         ⛔ A `notApplicable` WOULD BE FALSE HERE and `window_not_applicable_on_a_rate`
+         A `notApplicable` would be false here, and `window_not_applicable_on_a_rate`
          says why: `engineer-hours per week` has a period under the line, so the
-         duty-cycle question is perfectly answerable and declining it is a refusal
+         question of the window can be answered, and declining it would be a refusal
          dressed as a category error.
          ============================================================ -->
     <pm:layer>
@@ -966,13 +942,13 @@
           </pm:claim>
         </pm:amount>
 
-        <!-- ⭐⭐ THE SECOND FILED PATIENCE IN THIS CORPUS, AND ITS EDGE IS THE SLA.
-             How long an unanswered incident stays an incident before the customer
-             escalates past us. `contractual` because the response target is written
-             into the agreement: the three numbers are the distribution those terms
-             bound, which is why the edge and the range are two elements.
-             ⛔ THE UNIT IS `hours` AND NOT `engineer-hours per week`: a patience is a
-             span of time and bounds no shares. -->
+        <!-- A filed patience, whose edge is the service level: how long an unanswered
+             incident stays an incident before the customer escalates past us.
+             `contractual`, because the response target is written into the agreement.
+             The three figures are the spread those terms bound, which is why the edge
+             and the range are two elements.
+             The unit is `hours`, not `engineer-hours per week`: a patience is a span
+             of time, and it bounds no shares. -->
         <pm:patience>
           <pm:claim>
             <pm:low>0.25</pm:low>
@@ -1050,8 +1026,8 @@
             </pm:claim>
           </pm:amount>
 
-          <!-- ⭐ ONE ENGINEER, ALWAYS. 168 engineer-hours a week is one person of cover
-               with no gap in it, which is what the agreement commits and nothing more. -->
+          <!-- One engineer, always: 168 engineer-hours a week is one person of cover with
+               no gap in it, which is what the agreement commits, and nothing more. -->
           <pm:amountOrigin><pm:origin>contractual</pm:origin></pm:amountOrigin>
 
           <pm:divisibility>
@@ -1079,12 +1055,11 @@
                 <pm:origin>contractual</pm:origin>
               </pm:lumpy>
 
-              <!-- ⭐⭐⭐ THE DUTY FRACTION IS ONE, FILED AS THE VALUE IT IS.
-                   One whole week of a week-long period, which is what a duty fraction
-                   of one looks like when it is quoted in the period's own unit.
-                   `contractual` and not `policy`: the round-the-clock obligation is a
-                   term of the agreement, and the party who could change it is the one
-                   who could renegotiate it. -->
+              <!-- The window is the whole period, filed as the value it is: one whole
+                   week of a week-long period, quoted in the period's own unit.
+                   `contractual`, not `policy`: round-the-clock cover is a term of the
+                   agreement, and only the party who could renegotiate it could change
+                   it. -->
               <pm:window>
                 <pm:quantum>
                   <pm:size>
@@ -1130,12 +1105,12 @@
             </pm:claim>
           </pm:capacitySlack>
 
-          <!-- ⛔⛔ ZERO, AND intrinsic, AND IT IS THE DEFINING FACT OF THE LAYER.
-               Cover cannot be built ahead. An idle hour at 03:00 on Sunday does not
-               keep until Monday's incident, which is why the whole duty cycle has to
-               be bought instead of the busy part of it. ⭐ A slack of zero is the
-               SMALLEST SLACK and not the absence of one: [0, 0, 0] in the unit it is
-               zero in, per `ClaimAbsenceReason`. -->
+          <!-- Zero, and `intrinsic`, and it is what defines this layer: cover cannot be
+               built ahead. An idle hour at 03:00 on Sunday does not keep until Monday's
+               incident, which is why the whole window has to be bought and not only
+               its busy part. A slack of zero is the smallest slack, not the absence of
+               one: zero at all three points, in the unit it is zero in, as
+               `ClaimAbsenceReason` says. -->
           <pm:inventorySlack>
             <pm:claim>
               <pm:low>0</pm:low>
@@ -1187,22 +1162,22 @@
         </pm:jagged>
       </pm:supply>
 
-      <!-- ⭐⭐ A CLEARANCE, AND THE COVER THAT WENT UNUSED IS STILL PAID FOR.
-           nameplate.low 168 ≥ demand.high 147, so the WHOLE range clears and nothing
-           went unserved: `customer` and `unrealised` are ruled out here exactly as
-           `clearance_with_unserved` requires. What is left is 168 − [92, 118, 147] =
-           [21, 50, 76] engineer-hours a week of committed, invoiced, unconsumed cover,
-           and it sits on `booked` because a contract is precisely the instrument that
-           records it. -->
+      <!-- A clearance, and the cover nobody used is still paid for. The lowest
+           nameplate, 168, is above the highest demand, 147, so the whole range clears
+           and nothing goes unserved: `customer` and `unrealised` are ruled out, as
+           `clearance_with_unserved` requires. What is left, 21, 50 and 76
+           engineer-hours a week, is cover committed, invoiced and not used, and it
+           sits on `booked`, because a contract is exactly the instrument that records
+           it. -->
       <pm:remainder>
         <pm:remainder>
           <pm:sign><pm:fit>clearance</pm:fit></pm:sign>
 
-          <!-- ⭐ AND NOTHING ABSORBED IT, WHICH IS A LEGITIMATE `none`. No buffer
-               stretched, queued or held anything: the cover was simply there and not
-               all of it was wanted. Contrast the WRAPPER above, where `none` is no
-               longer spellable, because "there is no remainder" would be a claim that
-               the remainder is zero and a zero remainder is a filed clearance. -->
+          <!-- Nothing absorbed it, so `none` is right here. No buffer stretched, queued
+               or held anything: the cover was there, and not all of it was wanted. The
+               outer `remainder` wrapper cannot say `none`, because "there is no
+               remainder" would claim the remainder is zero, and a zero remainder is
+               filed as a clearance. -->
           <pm:absorber>
             <pm:absent>
               <pm:reason>none</pm:reason>
@@ -1248,13 +1223,13 @@
       </pm:remainder>
     </pm:layer>
 
-    <!-- no couplings filed: that is the model's ASSUMPTION, not a finding.
-         Nobody has looked. See the Coupling type. -->
+    <!-- No couplings filed: that is an assumption, not a finding. Nobody has looked.
+         See the `Coupling` type. -->
 
     <pm:couplings>
       <pm:absent>
         <pm:reason>unmeasured</pm:reason>
-        <pm:note>nobody has tested whether these three layers move together. ⭐ The same two layers are the subject of refutation.xml, which files an observed coupling between them from a later quarter — so this is the honest prior state rather than a claim of independence</pm:note>
+        <pm:note>nobody has tested whether these four layers move together, so this is not a claim of independence. refutation.xml files an observed coupling between two of them, `compute` and `labour`</pm:note>
       </pm:absent>
     </pm:couplings>
   </pm:stack>

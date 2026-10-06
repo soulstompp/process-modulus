@@ -1,25 +1,24 @@
 # Every fusion, and in which quantities its parts owe it an equality. One row per composed layer
-# reached by at least one part: `computable` where at least one quantity's sum is owed, and the
-# detail says which are owed and why the rest are suspended.
+# that at least one part reaches: `computable` where at least one quantity's sum is owed, with a
+# detail saying which are owed and why the rest are suspended.
 #
 # The units are not checked here, and must not be
-#   conformance/README.md: "the units of a fusion's parts are not checked and must not be ...
-#   asserting that they name one unit is what a fusion says." A filer who fuses two layers has
-#   declared them commensurable, and a checker that tested it would be overruling a judgement no
-#   document owes it. This is the one site on the roster whose empty guard is correct, which is
-#   why `(forbidden)` is a value and not a NULL.
+#   conformance/README.md: "The units of a fusion's parts are not compared, because parts
+#   legitimately spell one unit two ways, `people` and `pessoas`, and saying they name one unit is
+#   exactly what a fusion says." A filer who fuses two layers has declared them to be in one unit,
+#   and a check that tested it would overrule a judgement no document owes it. This is the one site
+#   on the roster whose missing guard is correct, which is why `(forbidden)` is a value and not a
+#   NULL.
 #
 # Suspended is a third outcome
-#   It stands beside passed and failed. A composer who never searched for double counting, or
-#   who found it and could not size it, owes no equality, so the rows
-#   composition/suspended_fusions.sqlc names are absent from the arithmetic rather than passing
-#   it. assertion.xsd:1934 states the verdict table this follows.
+#   It stands beside passed and failed. A composer who never searched for double counting, or who
+#   found it and could not size it, owes no equality, so the fusions
+#   composition/suspended_fusions.sqlc names are suspended here rather than passed. The
+#   `StatedEliminations` annotation in assertion.xsd sets out the verdicts this follows.
 #
 # Verdict and reason come from named relations
 #   The verdict comes from composition/owed_equality.sqlc and composition/derived_quantities.sqlc,
-#   and the reason from the suspensions. Re-deriving the anti-join here while the `--` line cites
-#   the relation that already holds it is a header documenting a dependency the SQL declines to
-#   compose. Taking the verdict from the named relations is what makes a change to either reach
+#   and the reason from composition/suspension_grounds.sqlc, so a change to any of them reaches
 #   here.
 #
 # A derived composed figure is computed, not suspended
@@ -30,17 +29,18 @@
 #   suspended for having nothing to compare.
 #
 # One row per layer, every quantity in it
-#   The arithmetic contract is one verdict per (site, filing, layer), and algebra/arithmetic_class
-#   holds it to exactly one. So the quantities fold here: the owed ones from
-#   composition/owed_equality.sqlc, the suspended ones with their grounds from
-#   composition/suspension_grounds.sqlc, whose bag is folded to one line per quantity and ground
-#   before the join so a fusion suspended on two grounds still yields one row.
+#   Each site gives one verdict per (site, filing, layer), and algebra/arithmetic_class holds it to
+#   exactly one. So the quantities are gathered here: the owed ones from
+#   composition/owed_equality.sqlc, and the suspended ones with their grounds from
+#   composition/suspension_grounds.sqlc, gathered to one line per quantity and ground before the
+#   join, so a fusion suspended on two grounds still gives one row.
 #
 # At most one ground per quantity from the eliminations
-#   assertion.xsd makes StatedEliminations an xs:choice: a fusion files an `absent` or
-#   `elimination+`, never both. That is a grammar guarantee the DDL does not carry, which is why
-#   the fold is written rather than assumed.
--- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and composition/derived_quantities.sqlc.
+#   assertion.xsd makes `StatedEliminations` a choice: a fusion files `absent` or one or more
+#   `elimination`, never both. The tables do not carry that guarantee, so the query gathers the
+#   grounds rather than assume there is one.
+-- asrt:Fusion/asrt:Part against asrt:eliminations, via composition/owed_equality.sqlc and
+-- composition/derived_quantities.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)

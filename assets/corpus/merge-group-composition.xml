@@ -1,79 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  THE THIRD DOCUMENT. Read with merge-us-member.xml and merge-pt-member.xml, which are
-  the two filings this one is assembled from. Illustrative figures.
+  The third document, with illustrative figures. Read it with merge-us-member.xml and
+  merge-pt-member.xml, the two filings it is assembled from.
 
-  ⭐⭐ THE QUESTION THE PAIR RAISED AND NEITHER MEMBER COULD ANSWER. Put two honest
-  filings side by side and there are two ways to join them, and BOTH ARE WRONG:
+  The question the pair raises and neither member can answer. Put two honest filings side
+  by side and there are two ways to join them, and both are wrong:
 
-    join on the layer NAME     `compute` here is `compute` there, and they are a
-                              different vendor on a different contract in a different
-                              unit. A join on the token MERGES THEM AND REPORTS SUCCESS.
+    join on the layer name     `compute` here is `compute` there, and they are a
+                               different vendor on a different contract in a different
+                               unit. A join on the name merges them and reports success.
 
-    join on the FACTS FILED    `labour` and `pessoal` are one layer, and they do not
-                              match, because the Portuguese filing carries an extra
-                              holder. ⛔ A fact-based join MISSES THE PAIR THAT IS ONE
-                              LAYER PRECISELY BECAUSE ONE SIDE IS BETTER INSTRUMENTED,
-                              which penalises the filing the model exists to reward.
+    join on the filed facts    `labour` and `pessoal` are one layer, and their facts do
+                               not match, because their holders differ: the Portuguese
+                               filing carries a `booked` holder. A join on the facts
+                               misses the pair that is one layer exactly because one side
+                               is better instrumented, which penalises the filing the
+                               model exists to reward.
 
-  ⭐⭐⭐ SO THE MISSING FACT IS NOT IN EITHER MEMBER. Neither entity has ever seen the
-  other's stack, neither has standing to name the other's layers, and a January filing
-  cannot cite a list published in March. THE COMPOSER SUPPLIES IT, IN ITS OWN FILING,
-  AND SIGNS IT. That is what this document is.
+  So the missing fact is in neither member. Neither entity has seen the other's stack,
+  neither has standing to name the other's layers, and a January filing cannot cite a list
+  published in March. The composer supplies it, in its own filing, and signs it. That is
+  what this document is.
 
-  ⭐ WHAT TO LOOK AT, IN ORDER:
+  What to look at, in order:
 
-    labour                 A REAL FUSION, two parts, with an ELIMINATION. Summing the
-                           two members' remainders gives [0.9, 2.3, 4.2] people. The
-                           group's actual labour remainder is [0.4, 1.5, 3.0], because
-                           part of each member's demand is the other member's work,
-                           counted twice. ⛔ A READER WHO ADDED THE TWO FILINGS WOULD
-                           OVERSTATE THE GROUP'S LABOUR SHORTFALL BY MORE THAN HALF.
+    labour                 a real fusion of two parts, with an elimination. Adding the
+                           two members' remainders gives 0.9, 2.3 and 4.2 people; the
+                           group's labour remainder is 0.4, 1.5 and 3.0, because part of
+                           each member's demand is the other member's work, counted twice.
+                           A reader who added the two filings would overstate the group's
+                           labour shortfall by more than half.
 
-    shift-line             ⭐⭐⭐ THREE ELIMINATIONS, ONE PER QUANTITY, AND THEY ANSWER
-                           DIFFERENTLY. Nameplate doubles (two members, one machine),
-                           draw doubles (the operator files the throughput, the consumer
-                           files its slice of it), demand does not (each is asked for its
-                           own work). ⛔ BOTH MEMBERS FILE SLACK — 7.3 shifts a week
-                           between them — AND THE GROUP IS 2.7 SHIFTS SHORT. The sign
-                           flips, and the whole error is the ten shifts filed twice.
-                           ⚠️ Read it against `labour`, which doubles the OPPOSITE
-                           quantities. One elimination concept gets one of the two wrong.
+    shift-line             three eliminations, one per quantity, and they answer
+                           differently. The nameplate doubles (two members, one machine),
+                           the draw doubles (the operator files the throughput, the
+                           consumer files its slice of it), and demand does not (each is
+                           asked for its own work). Both members file slack, 7.3 shifts a
+                           week between them, and the group is 2.7 shifts short. The sign
+                           flips, and the whole error is the ten shifts filed twice. Read
+                           it against `labour`, which doubles the opposite quantities: an
+                           implementation with one idea of elimination gets one of the two
+                           wrong.
 
     compute-us
-    compute-pt             TWO ONE-PART FUSIONS, and that is how the name collision is
-                           answered: somebody looked, decided they are not one layer,
-                           and said why. The stated reason is the whole repair.
+    compute-pt             two one-part fusions, which is how the name collision is
+                           answered: somebody looked, decided they are not one layer, and
+                           said why. The stated reason is the whole repair.
 
-    compute-pt's           ⭐ AN UNMEASURED ELIMINATION. The group KNOWS these hours are
-    elimination            double counted and CANNOT SIZE IT, because the two layers are
-                           metered in units nobody has filed a conversion between.
-                           Saying so beats writing zero, which is what a required number
-                           would have produced.
+    compute-pt's           an unmeasured elimination. The group knows these hours are
+    elimination            counted twice and cannot size them, because the two layers are
+                           metered in units nobody has filed a conversion between. Saying
+                           so beats writing zero, which is what a required number would
+                           get.
 
-    capacidade-instalada   CARRIED THROUGH UNCHANGED, absorber taxonomy and all — and
-                           that taxonomy is a translated edition of the buffer vocabulary
-                           the other layers cite. ⛔ THE COMPOSER DOES NOT HARMONISE IT.
-                           Rewriting a member's borrowed term into the group's preferred
-                           one destroys the evidence that a fork happened.
+    capacidade-instalada   carried through unchanged, absorber taxonomy and all, and that
+                           taxonomy is a translated edition of the buffer vocabulary the
+                           other layers cite. The composer does not harmonise it:
+                           rewriting a member's borrowed term into the group's preferred
+                           one would destroy the evidence that a fork happened.
 
-    on-call                ⭐ A LAYER WITH NO FUSION AT ALL. The parent staffs the
-                           out-of-hours rota itself; neither member files it. A parent is
-                           an entity too, and nothing requires every composed layer to
-                           have come from somewhere else.
+    on-call                a layer with no fusion at all. The parent staffs the
+                           out-of-hours rota itself, and neither member files it. A parent
+                           is an entity too, and nothing requires every composed layer to
+                           come from somewhere else.
 
-    the two couplings      ⭐⭐ COUPLED AND NOT FUSED, which is the distinction this whole
-                           document turns on. `labour` and `on-call` move together and are
-                           still two layers: an extra engineer on the rota does not deliver
-                           features. `pm:Coupling` is reachable ONLY because this document
+    the couplings          coupled and not fused, which is the distinction this document
+                           turns on. `labour` and `on-call` move together and are still two
+                           layers: an extra engineer on the rota does not deliver
+                           features. `pm:Coupling` is reachable only because this document
                            carries a real stack.
 -->
 <asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
                   xmlns:pm="https://example.invalid/process-flow/1.0">
 
-  <!-- ⭐ THE FIELD THAT MAKES THIS LEGAL RATHER THAN A FABRICATION. `Dependence` rejects
-       "fabricating one Stack spanning both entities" because NEITHER FILER could attest to
-       it. Neither filer still cannot. The parent can, and says so here, on the record. -->
+  <!-- The field that makes this a filing rather than a fabrication. `Dependence` does not
+       admit one stack spanning both entities, because neither filer could attest to it.
+       Neither filer still can; the parent can, and says so here, on the record. -->
   <asrt:witness>group-parent</asrt:witness>
   <asrt:observedAt>2026-08-31</asrt:observedAt>
   <asrt:provenance>
@@ -87,8 +89,9 @@
     <pm:note>controls both members; the consolidation is this party's to file</pm:note>
   </asrt:provenance>
 
-  <!-- ⚠️ WHAT THE MEMBERS REPORTED UNDER, RESTATED BY THIS OBSERVER AND DATED BY
-       `observedAt`. Not presented as either entity's own fact. Each `part` names which. -->
+  <!-- What the members reported under, restated by this observer and dated by
+       `observedAt`, and not presented as either entity's own fact. Each `part` names
+       which. -->
   <asrt:regime>
     <pm:id>us</pm:id>
     <pm:jurisdiction>US</pm:jurisdiction>
@@ -134,15 +137,15 @@
   </asrt:citation>
 
   <!-- ==================================================================================
-       THE COMPOSED FILING. ⭐ AN ORDINARY `pm:processModulus`, EXTRACTABLE BYTE FOR BYTE
-       and readable by anything that reads the base schema. Its own keyrefs — layerName,
-       couplingFrom, couplingTo — validate inside this subtree, so the group's stack is
-       checked exactly as a standalone filing is.
+       THE COMPOSED FILING: an ordinary `pm:processModulus`, extractable byte for byte
+       and readable by anything that reads the base schema. Its own keys, `layerName`,
+       `couplingFrom` and `couplingTo`, validate inside this subtree, so the group's stack
+       is checked exactly as a standalone filing is.
        ================================================================================== -->
   <pm:processModulus>
 
-    <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-         before S-28 was repaired no document could say it. -->
+    <!-- Which filing this is: the URN a part or a dependence cites to point at this
+         document. -->
     <pm:notation>
       <pm:uri>urn:example:filing:group-parent:2026-08-31</pm:uri>
     </pm:notation>
@@ -150,8 +153,8 @@
       <pm:attests>observation</pm:attests>
     </pm:evidence>
 
-    <!-- ⚠️ NO `jurisdiction`. The group is not in one, and inventing one would be the
-         first lie in the document. The element is optional precisely for this. -->
+    <!-- No `jurisdiction`: the group is not in one, and inventing one would be the first
+         untrue thing in the document. The element is optional for exactly this. -->
     <pm:regime>
       <pm:id>ifrs-consolidated</pm:id>
       <pm:framework>
@@ -179,17 +182,17 @@
 
       <!-- ============================================================
            LABOUR. us-member/`labour` fused with pt-member/`pessoal`.
-           ⭐ THE FUSION IS A CLAIM ABOUT FUNGIBILITY and it is stated in
+           The fusion is a claim about fungibility, and it is stated in
            the fusion's `observed` below, where it can be disagreed with.
            ============================================================ -->
       <pm:layer>
         <pm:name>labour</pm:name>
 
-        <!-- [4.5, 5.2, 6.0] + [6.4, 7.1, 8.2] = [10.9, 12.3, 14.2], LESS the
-             elimination [0.5, 0.8, 1.2] = [10.4, 11.5, 13.0].
-             ⚠️ COMPONENT-WISE, NOT REVERSING BOUNDS. See Elimination: what is removed
-             is a part of the very figure it is removed from, so the low case of the
-             total carries the low case of the commission. -->
+        <!-- The two members' demands added, 10.9, 12.3 and 14.2 people, less the
+             elimination of 0.5, 0.8 and 1.2, give 10.4, 11.5 and 13.0.
+             The elimination comes off bound by bound, without crossing the bounds (see
+             `Elimination`): what is removed is part of the very figure it comes off, so
+             the low case of the total carries the low case of the commission. -->
         <pm:demand>
           <pm:amount>
             <pm:claim>
@@ -229,17 +232,18 @@
         <pm:timeSlack>
           <pm:absent>
             <pm:reason>unmeasured</pm:reason>
-            <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says WHERE such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
+            <pm:note>queued work does survive sitting, and how long before it quietly ages out has never been measured. Work that ages out belongs to `unrealised` and not `people` — which says where such work would be filed, not that any of this remainder is there: the shares below already account for all of it</pm:note>
           </pm:absent>
         </pm:timeSlack>
 
         <pm:supply>
           <pm:label>the delivery teams of both members, treated as one</pm:label>
           <pm:nameplate>
-            <!-- ⭐⭐ 4 + 6, WITH NO ELIMINATION, AND THE ASYMMETRY IS THE POINT. Demand
-                 was double counted because both members booked the same work. THE PEOPLE
-                 WERE NOT: two members' staff are two sets of staff. An implementation
-                 that eliminates symmetrically has invented a headcount reduction. -->
+            <!-- The two nameplates, 4 and 6 people, added with no elimination, and the
+                 asymmetry is the point. Demand was counted twice because both members
+                 booked the same work. The people were not: two members' staff are two
+                 sets of staff, and an implementation that eliminates both alike has
+                 invented a headcount reduction. -->
             <pm:amount>
               <pm:claim>
                 <pm:low>10</pm:low>
@@ -307,7 +311,7 @@
             <pm:capacitySlack>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
-                <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+                <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
               </pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
@@ -317,22 +321,22 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
                   <pm:party>group-parent</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                  <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                  <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
                 </pm:provenance>
               </pm:claim>
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
-            <!-- ⭐ THE COMPOSITION INHERITS THE WEAKEST INSTRUMENT. Both members file
-                 this draw as `unmeasured`, so the group cannot state one. A composer
-                 that summed two blanks into a number would be inventing the figure the
-                 whole model exists to stop being invented. -->
+            <!-- The composition inherits the weakest instrument. Both members file this
+                 draw as `unmeasured`, so the group cannot state one: a composer that added
+                 two blanks into a number would be inventing the figure the model exists to
+                 stop anybody inventing. -->
             <pm:draw>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
@@ -361,26 +365,26 @@
                 <pm:value>capacity</pm:value>
               </pm:term>
             </pm:absorber>
-            <!-- ⭐⭐ THE INSTRUMENT SURVIVES CONSOLIDATION AND THE DEMAND DOES NOT. The
-                 banco de horas balance is an obligation to real employees, owed whoever
-                 commissioned the work, so the eliminated demand does NOT reduce it. This
-                 figure is the Portuguese member's, carried through.
-                 ⛔ AND IT CARRIES NO `party`, WHICH IS NOT AN OMISSION. `party` belongs
-                 only to a `counterparty` holder, where it names WHOSE OTHER BOOKS the
-                 burden sits in. On a `booked` holder inside a consolidation it would
-                 mean something else entirely — which of OUR OWN units books it — and one
-                 field wearing two relations is the conflation this schema keeps refusing.
-                 ⭐ The fact is not lost: the fusion below names `pt-member`/`pessoal` as
-                 the part this share came from, precisely and by filing.
-                 ⚠️ AND NOTE WHAT THE PARTS CARRY THAT THIS LIST DOES NOT. `us-member`'s
-                 `labour` files an `unrealised` holder beside its `people` one, and this
-                 composed list has no `unrealised` entry: both of its shares are stated and
-                 they account for the whole magnitude, so there is nowhere for one to go.
-                 ⛔ THAT IS NOT A DEFECT IN EITHER FILING AND NO RULE HERE IS BROKEN. The
-                 fusion rules compose CLAIMS — demand, nameplate, draw — and say nothing
-                 about holders, so a part's unmeasured share has no defined image up here.
-                 It is worth seeing anyway: an unmeasured bearer in a part is exactly the
-                 thing a consolidation loses, and it loses it silently. -->
+            <!-- The instrument survives consolidation, and the eliminated demand does not
+                 touch it. The hours-bank (banco de horas) balance is an obligation to real
+                 employees, owed whoever commissioned the work, so the eliminated demand
+                 does not reduce it. This figure is the Portuguese member's, carried
+                 through.
+                 It carries no `party`, and that is not an omission. `party` belongs only
+                 to a `counterparty` holder, where it names whose other books the burden
+                 sits in. On a `booked` holder inside a consolidation it would mean
+                 something else, which of our own units books it, and one field holding two
+                 relations is the confusion this schema keeps out. The fact is not lost: the
+                 fusion below names `pt-member`/`pessoal` as the part this share came from.
+                 The parts carry something this list does not. `us-member`'s `labour` files
+                 an `unrealised` holder beside its `people` one, and this composed list has
+                 no `unrealised` entry: both of its shares are stated and they account for
+                 the whole remainder, so there is nowhere for one to go. That is not a
+                 defect in either filing, and no rule here is broken: the fusion rules
+                 compose demand, nameplate and draw and say nothing about holders, so a
+                 part's unmeasured share has no defined place up here. It is worth seeing
+                 anyway: an unmeasured holder in a part is exactly what a consolidation
+                 loses, and it loses it without a word. -->
             <pm:holder>
               <pm:holder>
                 <pm:kind>booked</pm:kind>
@@ -411,10 +415,10 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- ⛔ THE REST IS CARRIED BY PEOPLE AND NO ACCOUNT ANYWHERE RECORDS IT.
-                 At the mode the group can account for 0.7 of 1.5 people, and only
-                 because ONE of its two jurisdictions supplies an instrument for it.
-                 No consolidated statement of profit or loss produces that number. -->
+            <!-- The rest is carried by people, and no account anywhere records it. At the
+                 most likely value the group can account for 0.7 of 1.5 people, and only
+                 because one of its two jurisdictions supplies an instrument for it. No
+                 consolidated statement of profit or loss produces that figure. -->
             <pm:holder>
               <pm:holder>
                 <pm:kind>people</pm:kind>
@@ -445,8 +449,8 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- derived: |10 - [10.4, 11.5, 13.0]| = [0.4, 1.5, 3.0] people,
-                 and the two shares above sum to exactly that. -->
+            <!-- Derived from this layer's demand and nameplate: 0.4, 1.5 and 3.0 people,
+                 and the two shares above add up to exactly that. -->
             <pm:quantity>
               <pm:derivation>
                 <pm:identity>magnitude</pm:identity>
@@ -458,11 +462,11 @@
       </pm:layer>
 
       <!-- ============================================================
-           ON-CALL. ⭐ NO FUSION NAMES THIS LAYER. The parent staffs the
-           out-of-hours rota out of its own establishment and neither
-           member files it. THAT IS THE THIRD STATE and it needs no
-           machinery: a composed layer nothing was folded into is one the
-           composer originated.
+           ON-CALL. No fusion names this layer. The parent staffs the
+           out-of-hours rota out of its own headcount, and neither member
+           files it. That is the third state, and it needs no machinery: a
+           composed layer nothing was folded into is one the composer
+           originated.
            ============================================================ -->
       <pm:layer>
         <pm:name>on-call</pm:name>
@@ -503,8 +507,8 @@
             </pm:absent>
           </pm:patience>
         </pm:demand>
-        <!-- ⛔ FALSE, AND IT IS THE DEFINING FACT OF THE LAYER. An escalation that
-             waits until Monday was not served. -->
+        <!-- Zero, and it is what defines this layer: an escalation that waits until
+             Monday was not served. -->
         <pm:timeSlack>
           <pm:claim>
             <pm:low>0</pm:low><pm:mostLikely>0</pm:mostLikely><pm:high>0</pm:high>
@@ -512,7 +516,7 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
             <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
             <pm:provenance>
@@ -593,7 +597,7 @@
             <pm:capacitySlack>
               <pm:absent>
                 <pm:reason>unmeasured</pm:reason>
-                <pm:note>a person can work above their rating and in most stacks is the only supply that can. HOW FAR ABOVE, and for how long, nobody here has measured — which is the whole of this model’s subject and the reason this is not a boolean</pm:note>
+                <pm:note>a person can work above their rating and in most stacks is the only supply that can. How far above, and for how long, nobody here has measured</pm:note>
               </pm:absent>
             </pm:capacitySlack>
             <pm:inventorySlack>
@@ -603,13 +607,13 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
                   <pm:party>group-parent</pm:party>
                   <pm:standing><pm:absent><pm:reason>unmeasured</pm:reason></pm:absent></pm:standing>
-                  <pm:note>capacity not used today is GONE. Last week’s unused hours cannot be stockpiled to serve this week, which is why `absorber = inventory` on this layer is flatly false</pm:note>
+                  <pm:note>capacity not used today is lost. Last week's unused hours cannot be stockpiled to serve this week, so `inventory` is never this layer's `absorber`</pm:note>
                 </pm:provenance>
               </pm:claim>
             </pm:inventorySlack>
@@ -643,7 +647,8 @@
                 <pm:value>capacity</pm:value>
               </pm:term>
             </pm:absorber>
-            <!-- One holder, so the share IS the magnitude: |2 - [2.3, 2.8, 3.4]|. -->
+            <!-- One holder, so the share is the whole remainder, which follows from this
+                 layer's demand and nameplate: 0.3, 0.8 and 1.4 people. -->
             <pm:holder>
               <pm:holder>
                 <pm:kind>people</pm:kind>
@@ -685,11 +690,11 @@
       </pm:layer>
 
       <!-- ============================================================
-           COMPUTE-US. ⭐ RENAMED BY THE COMPOSER. Both members file a
-           layer called `compute` and they are not the same layer; the
-           group cannot carry both under one token, and the fact that it
-           had to choose is recorded in two one-part fusions below.
-           Otherwise carried through unchanged from us-member/`compute`.
+           COMPUTE-US, renamed by the composer. Both members file a layer
+           called `compute`, and they are not the same layer; the group
+           cannot carry both under one name, and the fact that it had to
+           choose is recorded in two one-part fusions below. Otherwise
+           carried through unchanged from us-member/`compute`.
            ============================================================ -->
       <pm:layer>
         <pm:name>compute-us</pm:name>
@@ -737,7 +742,7 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
             <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
             <pm:provenance>
@@ -822,7 +827,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -839,7 +844,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -940,15 +945,15 @@
 
       <!-- ============================================================
            COMPUTE-PT. Carried through from pt-member/`compute`, and the
-           fusion below carries AN ELIMINATION THE COMPOSER CANNOT SIZE.
+           fusion below carries an elimination the composer cannot size.
            ============================================================ -->
       <pm:layer>
         <pm:name>compute-pt</pm:name>
 
-        <!-- ⚠️ THIS FIGURE IS OVERSTATED BY AN UNKNOWN AMOUNT, and the document says so
-             where a query can reach it: see the `unmeasured` elimination on this layer's
-             fusion. It is the member's figure, carried through, because the composer has
-             no better one — not because the composer believes it is the group's. -->
+        <!-- This figure is overstated by an unknown amount, and the document says so where
+             a query can reach it: see the `unmeasured` elimination on this layer's fusion.
+             It is the member's figure, carried through because the composer has no better
+             one, not because the composer believes it is the group's. -->
         <pm:demand>
           <pm:amount>
             <pm:claim>
@@ -959,7 +964,7 @@
               <pm:denominator>
                 <pm:absent>
                   <pm:reason>notApplicable</pm:reason>
-                  <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                  <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                 </pm:absent>
               </pm:denominator>
               <pm:narrowsWhen>
@@ -993,7 +998,7 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
             <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
             <pm:provenance>
@@ -1016,7 +1021,7 @@
                 <pm:denominator>
                   <pm:absent>
                     <pm:reason>notApplicable</pm:reason>
-                    <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                    <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                   </pm:absent>
                 </pm:denominator>
                 <pm:narrowsWhen>
@@ -1046,7 +1051,7 @@
                       <pm:denominator>
                         <pm:absent>
                           <pm:reason>notApplicable</pm:reason>
-                          <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                          <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                         </pm:absent>
                       </pm:denominator>
                       <pm:narrowsWhen>
@@ -1080,7 +1085,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>contractual</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -1097,7 +1102,7 @@
                 <pm:denominator>
                   <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -1118,7 +1123,7 @@
                 <pm:denominator>
                   <pm:absent>
                     <pm:reason>notApplicable</pm:reason>
-                    <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                    <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                   </pm:absent>
                 </pm:denominator>
                 <pm:narrowsWhen>
@@ -1169,7 +1174,7 @@
                     <pm:denominator>
                       <pm:absent>
                         <pm:reason>notApplicable</pm:reason>
-                        <pm:note>the hour is in the NUMERATOR. A GPU-hour is a quantity of resource-time, not a rate, so there is no cycle to be live in part of</pm:note>
+                        <pm:note>the hour is in the numerator: a GPU-hour is a quantity of resource-time, not a rate, so it has no period</pm:note>
                       </pm:absent>
                     </pm:denominator>
                     <pm:narrowsWhen>
@@ -1202,10 +1207,10 @@
            CAPACIDADE-INSTALADA. Only one member holds it, and the group
            keeps the member's name because it has no reason to rename a
            layer nothing collides with.
-           ⛔⛔ THE ABSORBER TAXONOMY IS CARRIED THROUGH VERBATIM and it
-           is NOT the URI the other four layers cite. It is a translated
-           edition of the same vocabulary, which is a FORK. Harmonising it
-           here would delete the only evidence that it happened.
+           The absorber taxonomy is carried through as it is, and it is
+           not the URI the other layers cite. It is a translated edition
+           of the same vocabulary, which is a fork, and harmonising it here
+           would delete the only evidence that it happened.
            ============================================================ -->
       <pm:layer>
         <pm:name>capacidade-instalada</pm:name>
@@ -1441,27 +1446,27 @@
 
       <!-- ============================================================
            SHIFT-LINE. us-member/`shift-line` fused with
-           pt-member/`linha-partilhada`. ⭐⭐⭐ THE MOST CONSEQUENTIAL
-           NUMBER IN THIS DOCUMENT, AND THE ONE NO MEMBER CAN REACH.
+           pt-member/`linha-partilhada`. The figure in this document with
+           the most riding on it, and the one no member can reach.
 
-           BOTH MEMBERS FILE SLACK. The US member is 4.4 shifts clear at
-           the mode, the Portuguese member 2.9. A reader netting the two
-           filings gets 7.3 SHIFTS OF SPARE CAPACITY.
+           Both members file slack. The US member is 4.4 shifts clear at
+           the most likely value, the Portuguese member 2.9. A reader
+           netting the two filings gets 7.3 shifts of spare capacity.
 
-           ⛔⛔ THE GROUP IS 2.7 SHIFTS SHORT. THE SIGN FLIPS. It flips
-           because both members correctly file the line's ten shifts as
-           their own nameplate and THE GROUP HAS ONE LINE, so a naive sum
-           credits it with twenty. The error is exactly 10.0 — the
-           eliminated nameplate — and it is the difference between a
-           facility with room to spare and one that is turning work away.
+           The group is 2.7 shifts short: the sign flips. It flips because
+           both members correctly file the line's ten shifts as their own
+           nameplate and the group has one line, so a plain sum credits it
+           with twenty. The error is exactly 10.0, the eliminated
+           nameplate, and it is the difference between a facility with
+           room to spare and one that is turning work away.
            ============================================================ -->
       <pm:layer>
         <pm:name>shift-line</pm:name>
 
-        <!-- 4.8 + 6.2, 5.6 + 7.1, 6.4 + 8.0. ⭐ NOTHING IS ELIMINATED HERE and the
-             fusion says so with a typed `none` rather than by omission: each member is
-             asked for its own work by its own customers. Demand is where the LABOUR
-             layer double counts and this one does not, which is why `against` exists. -->
+        <!-- The two members' demands added, with nothing eliminated, and the fusion says
+             so with a filed zero rather than by leaving it out: each member is asked for
+             its own work by its own customers. Demand is where the `labour` layer counts
+             twice and this one does not, which is why `against` exists. -->
         <pm:demand>
           <pm:amount>
             <pm:claim>
@@ -1506,12 +1511,12 @@
         <pm:supply>
           <pm:label>the shared shift line, which there is one of</pm:label>
           <pm:nameplate>
-            <!-- ⭐⭐⭐ 10 + 10 - 10. THE OPPOSITE OF `labour`, AND THAT CONTRAST IS THE
-                 argument for `against` being a required field. There, demand doubled and
-                 headcount did not, because two establishments are two sets of people.
-                 Here, nameplate doubles and demand does not, because two schedulers are
-                 one line. An implementation with one elimination concept gets one of
-                 these two layers wrong whichever way it guesses. -->
+            <!-- The two nameplates, 10 and 10, less the 10 filed twice: the opposite of
+                 `labour`, and that contrast is why `against` is a required field. There,
+                 demand doubled and headcount did not, because two staffs are two sets of
+                 people. Here, the nameplate doubles and demand does not, because two
+                 schedulers share one line. An implementation with one idea of elimination
+                 gets one of these two layers wrong, whichever way it guesses. -->
             <pm:amount>
               <pm:claim>
                 <pm:low>10</pm:low>
@@ -1564,17 +1569,17 @@
                   </pm:size>
                   <pm:origin>intrinsic</pm:origin>
                 </pm:lumpy>
-                <!-- ⛔⛔⛔ A WINDOW IS CARRIED THROUGH A FUSION, NEVER SUMMED, AND THIS IS
-                     THE ONE PLACE THAT DIFFERENCE IS VISIBLE. Demand sums: two members
-                     asking for the line want more line. A window does not: both members
-                     name the SAME MACHINE, and a machine staffed weekdays by two customers
-                     is still staffed weekdays. Summing would say ten days a week.
-                     ⭐ IT IS THE NAMEPLATE'S CASE, ARRIVING BY A DIFFERENT ROUTE. The
-                     nameplate is eliminated here for exactly this reason — two members, one
-                     machine — and the elimination is filed. A window needs no elimination
-                     because it never summed in the first place; it is a property rather
-                     than a quantity. ⚠️ `EliminationAgainst` has three members, demand,
-                     nameplate and draw, and there is deliberately no fourth. -->
+                <!-- A window is carried through a fusion, never summed. Demand sums: two
+                     members asking for the line want more line. A window does not: both
+                     members name the same machine, and a machine staffed on weekdays by two
+                     customers is still staffed on weekdays. Summing would say ten days a
+                     week.
+                     It is the nameplate's case, arriving by a different route. The
+                     nameplate is eliminated here for exactly this reason, two members and
+                     one machine, and the elimination is filed. A window needs no
+                     elimination because it never summed in the first place: it is a
+                     property, not a quantity. `EliminationAgainst` has three members,
+                     demand, nameplate and draw, and no fourth for a window. -->
                 <pm:window>
                   <pm:quantum>
                     <pm:size>
@@ -1621,11 +1626,11 @@
             </pm:inventorySlack>
           </pm:nameplate>
           <pm:jagged>
-            <!-- 10 + 4.4 - 4.4. ⭐ THE THIRD QUANTITY, AND IT DOUBLES FOR ITS OWN
-                 REASON: the operator records the line's throughput and the consumer
-                 records its slice OF THAT THROUGHPUT, so the slice is filed twice. A
-                 consolidation that eliminated demand and nameplate and left the draw
-                 alone would report the line running 14.4 shifts out of 10. -->
+            <!-- The two draws, 10 and 4.4, less the 4.4 filed twice. The third quantity
+                 doubles for its own reason: the operator records the line's throughput,
+                 and the consumer records its slice of that throughput, so the slice is
+                 filed twice. A consolidation that eliminated demand and nameplate and left
+                 the draw alone would report the line running 14.4 shifts out of 10. -->
             <pm:draw>
               <pm:claim>
                 <pm:low>10</pm:low>
@@ -1663,27 +1668,25 @@
         </pm:supply>
 
         <pm:remainder>
-          <!-- ⛔⛔ INTERFERENCE, where both members filed CLEARANCE. Nameplate 10 and
-               draw 10 against demand of 12.7: the line is saturated and turning work
+          <!-- `interference`, where both members filed `clearance`. A nameplate of 10 and
+               a draw of 10 against a demand of 12.7: the line is saturated and turning work
                away, and neither filing could show that. -->
           <pm:remainder>
             <pm:sign><pm:fit>interference</pm:fit></pm:sign>
-            <!-- ⭐⭐ FUSION FORCES A VOCABULARY FORK TO BE ADJUDICATED, WHERE A
-                 CARRY-THROUGH LET IT STAND. `capacidade-instalada` above keeps the
-                 Portuguese member's translated edition verbatim, because the composer
-                 restates nothing there. This layer is NEW — the composer states it —
-                 and it cannot cite two editions, so it cites the one it can resolve and
-                 the fusion below records that a part cited another. The fork is not
-                 hidden; it has moved to where somebody had to decide.
-                 ⛔⛔⛔ AND THE VALUE WAS `capacity` FOR ONE PASS WHILE THE HOLDING FILING
-                 THAT SAYS IT CARRIES THIS LAYER THROUGH *UNCHANGED* SAID `time`. Two
-                 documents, one layer, two buffers, and nothing caught it — the sized slack
-                 is what made the difference legible, exactly as the holding filing argues.
-                 `time` is right and `capacity` was the misfiling: nameplate 10 and draw 10
-                 means there is NO room above the rating being used, so the capacity buffer
-                 is not the one absorbing. Work queues for a slot and some callers leave.
-                 ⚠️ A CARRY-THROUGH IS THE EASIEST PLACE IN THIS CORPUS TO CONTRADICT
-                 YOURSELF, because the second document restates rather than references. -->
+            <!-- A fusion forces a vocabulary fork to be decided, where a carry-through lets
+                 it stand. `capacidade-instalada` above keeps the Portuguese member's
+                 translated edition as it is, because the composer restates nothing there.
+                 This layer is new, stated by the composer, and it cannot cite two
+                 editions, so it cites the one it can resolve, and the fusion below records
+                 that a part cited another. The fork is not hidden; it has moved to where
+                 somebody had to decide.
+                 The buffer is `time`, not `capacity`: a nameplate of 10 and a draw of 10
+                 mean no room above the rating is being used, so the capacity buffer is not
+                 the one absorbing. Work queues for a slot, and some callers leave.
+                 merge-holding-composition.xml carries this layer through unchanged and
+                 files the same buffer. A carry-through is the easiest place in this corpus
+                 to contradict yourself, because the second document restates rather than
+                 references. -->
             <pm:absorber>
               <pm:term>
                 <pm:taxonomy>urn:example:factory-physics:buffers</pm:taxonomy>
@@ -1746,7 +1749,8 @@
                 </pm:share>
               </pm:holder>
             </pm:holder>
-            <!-- derived: |10 - [11.0, 12.7, 14.4]| = [1.0, 2.7, 4.4] shifts per week -->
+            <!-- Derived from this layer's demand and nameplate: 1.0, 2.7 and 4.4 shifts per
+                 week. -->
             <pm:quantity>
               <pm:derivation>
                 <pm:identity>magnitude</pm:identity>
@@ -1758,16 +1762,16 @@
       </pm:layer>
 
       <!-- ==========================================================================
-           ⭐⭐ TWO COUPLINGS, AND NEITHER PAIR IS FUSED. This is the distinction the
-           whole document turns on: a coupling says two layers MOVE TOGETHER and stay
-           two; a fusion says they were ONE LAYER and adds them. Neither implies the
-           other, and only a document carrying a real stack can express the first.
+           THE COUPLINGS, and no pair among them is fused. This is the distinction
+           the whole document turns on: a coupling says two layers move together and
+           stay two; a fusion says they were one layer and adds them. Neither implies
+           the other, and only a document carrying a real stack can express the first.
            ========================================================================== -->
 
-      <!-- ⭐ COUPLED, EMPHATICALLY NOT FUSED. Both are labour in people, both are the
-           group's, and they are still two layers by the model's own test: an extra
-           engineer on the rota does not deliver features, so the two remainders are
-           held independently even though relieving one moves the other. -->
+      <!-- Coupled, and not fused. Both are labour in people, both are the group's, and
+           they are still two layers by the model's own test: an extra engineer on the rota
+           does not deliver features, so the two remainders are held independently even
+           though relieving one moves the other. -->
       <pm:couplings>
         <pm:coupling>
           <pm:from>labour</pm:from>
@@ -1776,12 +1780,10 @@
             across four quarters, each additional delivery engineer reduced out-of-hours
             escalations by roughly a fifth of a person on the rota; the two months the
             delivery teams ran two under establishment are the two months the rota
-            overran. NEITHER MEMBER COULD OBSERVE THIS: neither files the rota.
+            overran. Neither member could observe this: neither files the rota.
           </pm:observed>
-          <!-- ⛔ REQUIRED NOW, AND THE OMISSION USED TO SAY THIS IN A SECOND WAY. The
-               direction is on the routing logs and the magnitude is not, which is what
-               `unmeasured` means; leaving the element out said the same thing without a
-               word for it, and two of this corpus's five couplings did. -->
+          <!-- `strength` is required. The direction is observed and the size is not, which
+               is what `unmeasured` says. -->
           <pm:strength>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -1790,10 +1792,10 @@
           </pm:strength>
         </pm:coupling>
 
-        <!-- ⭐ THE ONE THAT GETS INHERITED. Read it beside merge-holding-composition.xml,
-             which fuses `labour` into a bigger layer and re-files this coupling AT A LOWER
-             STRENGTH, because relief applied to the fused layer may land on the rota instead
-             of on delivery. A coupling survives a fusion and attenuates. -->
+        <!-- The coupling that gets inherited. Read it beside merge-holding-composition.xml,
+             which fuses `labour` into a bigger layer and files this coupling again at a lower
+             strength, because relief applied to the fused layer may land on the rota instead
+             of on delivery. A coupling survives a fusion, and weakens. -->
         <pm:coupling>
           <pm:from>labour</pm:from>
           <pm:to>shift-line</pm:to>
@@ -1801,8 +1803,8 @@
             the same planners schedule delivery work and the shift line. Across six quarters,
             the two quarters the delivery teams ran under establishment are the two quarters
             the line's schedule slipped, with no change to the line itself. Relieving delivery
-            headcount visibly reduced the line's remainder, which is what a stack of
-            independent quantizations is assumed not to do.
+            headcount visibly reduced the line's remainder, which is what the layers of a
+            stack are assumed not to do.
           </pm:observed>
           <pm:strength>
             <pm:claim>
@@ -1835,9 +1837,9 @@
           </pm:strength>
         </pm:coupling>
 
-        <!-- ⭐ THE PAIR THAT LOOKED LIKE ONE LAYER. They are coupled and they are two:
-             the units do not convert without a figure nobody has filed, and the spill is
-             one-way. See the elimination on `compute-pt`. -->
+        <!-- The pair that looked like one layer. They are coupled, and they are two: the
+             units do not convert without a figure nobody has filed, and the spill runs one
+             way. See the elimination on `compute-pt`. -->
         <pm:coupling>
           <pm:from>compute-us</pm:from>
           <pm:to>compute-pt</pm:to>
@@ -1846,10 +1848,8 @@
             reservation, so the Portuguese layer's clearance falls when the US layer's
             demand peaks. Observed on the routing logs, not on either filing.
           </pm:observed>
-          <!-- ⛔ REQUIRED NOW, AND THE OMISSION USED TO SAY THIS IN A SECOND WAY. The
-               direction is on the routing logs and the magnitude is not, which is what
-               `unmeasured` means; leaving the element out said the same thing without a
-               word for it, and two of this corpus's five couplings did. -->
+          <!-- `strength` is required. The direction is on the routing logs and the size is
+               not, which is what `unmeasured` says. -->
           <pm:strength>
             <pm:absent>
               <pm:reason>unmeasured</pm:reason>
@@ -1863,9 +1863,9 @@
   </pm:processModulus>
 
   <!-- ==================================================================================
-       THE MAPPING. ⭐ `name` IS A KEYREF INTO THE STACK ABOVE — the one reference in a
-       cross-filing document that is genuinely local, and therefore genuinely checked. The
-       `filing` on each part is not, cannot be, and says so.
+       THE MAPPING. `name` is a keyref into the stack above: the one reference in a
+       document spanning filings that is local, and so checked. The `filing` on each part
+       is not checked, cannot be, and says so.
        ================================================================================== -->
 
   <asrt:fusion>
@@ -1893,12 +1893,11 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>pt</asrt:regime>
       </asrt:layer>
-      <!-- ⛔⛔ A UNIT CROSSING, SO THE CONVERSION IS FILED EVEN THOUGH IT IS ONE. Leaving the
-           element out would convert this part by an unwritten 1, which is exactly what
-           `composition/converted.sqlc` used to do on its own authority. The two editions of
-           this unit are the same unit BECAUSE THIS COMPOSER SAYS SO, and `policy` is who to
-           argue with: they could have found they were not. ⚠️ Read the unit out loud. If it
-           sounds absurd, that is the assertion becoming visible rather than staying implicit. -->
+      <!-- A unit crossing, so the conversion is filed even though it is one: left out, the
+           part would convert by an unwritten 1. The two spellings of this unit are one unit
+           because this composer says so, and the `policy` origin says who to argue with: the
+           composer could have found they were not. Read the unit aloud; if it sounds absurd,
+           that is the assertion made visible rather than left implicit. -->
       <asrt:factor>
         <pm:claim>
           <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
@@ -1916,25 +1915,25 @@
       </asrt:factor>
     </asrt:part>
 
-    <!-- ⭐⭐ THE FUNGIBILITY CLAIM, WHICH IS WHAT A FUSION ACTUALLY ASSERTS, WRITTEN
-         WHERE A READER CAN DISAGREE WITH IT. It is not obvious and it is not free: a
-         reader who thinks the timezone and the two employment regimes make these teams
-         non-fungible is saying the group has TWO labour layers and this document is
-         wrong. That is a conversation the two member filings could not even start. -->
+    <!-- The fungibility claim, which is what a fusion asserts, written where a reader can
+         disagree with it. It is not obvious and it is not free: a reader who thinks the
+         time zone and the two employment regimes make these teams not fungible is saying
+         the group has two labour layers and this document is wrong. The two member filings
+         could not even start that conversation. -->
     <asrt:observed>
       one delivery team under two employers. The queue is shared, work is assigned by
       skill rather than by entity, and either side has picked up the other's backlog
-      within a week on eleven occasions this year. ⚠️ Fungibility is not total: language
+      within a week on eleven occasions this year. Fungibility is not total: language
       and the eight-hour offset make the Lisbon side unusable for US on-call, which is why
       `on-call` is a separate layer rather than part of this one.
     </asrt:observed>
 
     <asrt:eliminations>
-      <!-- ⭐⭐⭐ THE ELIMINATION. Without it this layer's demand would be 12.3 at the mode
-           and the group's labour remainder would read [0.9, 2.3, 4.2] — MORE THAN HALF
-           AGAIN THE TRUE FIGURE — because the same work is filed as demand by the member
-           that commissioned it and by the member that served it. Both filings are honest.
-           Their sum is not. -->
+      <!-- The elimination. Without it, this layer's demand would be 12.3 at the most likely
+           value, and the group's labour remainder would read 0.9, 2.3 and 4.2 people, more
+           than half as much again as the true figure, because the same work is filed as
+           demand by the member that commissioned it and by the member that did it. Both
+           filings are honest; their sum is not. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -1992,11 +1991,10 @@
         </asrt:between>
       </asrt:elimination>
 
-      <!-- ⭐ AND NOTHING IS ELIMINATED FROM THE NAMEPLATE, which is filed as a stated
-           [0, 0, 0] rather than left out, so that a reader can tell "we looked and there
-           is nothing" from "nobody looked". A quantity is a pm:StatedClaim, so the zero
-           arrives as a claim with a unit and a provenance. Two members' staff are two
-           sets of staff. -->
+      <!-- Nothing is eliminated from the nameplate, and that is filed as a stated zero
+           rather than left out, so a reader can tell "we looked and there is nothing" from
+           "nobody looked". The zero arrives as a claim, with a unit and a provenance. Two
+           members' staff are two sets of staff. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -2005,9 +2003,10 @@
             <pm:denominator>
               <pm:absent><pm:reason>notApplicable</pm:reason></pm:absent>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>group-parent</pm:party>
@@ -2025,10 +2024,11 @@
   </asrt:fusion>
 
   <!-- ==================================================================================
-       ⭐⭐ THE NAME COLLISION, ANSWERED. Two one-part fusions, two names, and a stated
-       reason. A join on the layer name would have merged these and reported success;
-       a join on the filed facts would have merged them too, since both are clearance,
-       both admit nothing, and both are held `booked`. ONLY A PARTY WHO LOOKED CAN TELL.
+       THE NAME COLLISION, answered: two one-part fusions, two names, and a stated
+       reason. A join on the layer name would merge these and report success; a join on
+       the filed facts would merge them too, since both are `clearance`, both have a
+       capacity slack of zero, and both are held by `booked`. Only a party who looked
+       can tell.
        ================================================================================== -->
 
   <asrt:fusion>
@@ -2074,15 +2074,15 @@
     </asrt:part>
     <asrt:observed>
       carried through unfused and renamed, for the reason given on `compute-us`. The two
-      are COUPLED — see the coupling in the stack — and coupling is not fusion.
+      are coupled, as the coupling in the stack says, and coupling is not fusion.
     </asrt:observed>
 
     <asrt:eliminations>
-      <!-- ⭐⭐⭐ THE ELIMINATION THAT CANNOT BE SIZED, AND WHY THAT IS THE MOST USEFUL
-           THING THIS DOCUMENT SAYS ABOUT THIS LAYER. A required number here would have
-           been answered with a zero, and a zero would have been a lie a receiver could not
-           detect. `unmeasured` tells a receiver the figure above is overstated by an
-           amount nobody knows, which is the actual state of the group's compute figures. -->
+      <!-- The elimination that cannot be sized, and why that is the most useful thing this
+           document says about this layer. A required number here would be answered with a
+           zero, and a zero would be an untruth a receiver could not detect. `unmeasured`
+           tells a receiver the figure above is overstated by an amount nobody knows, which
+           is the real state of the group's compute figures. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:absent>
@@ -2119,10 +2119,10 @@
   </asrt:fusion>
 
   <!-- ==================================================================================
-       ⭐⭐⭐ THREE ELIMINATIONS, ONE PER QUANTITY, AND ALL THREE ANSWER DIFFERENTLY. This
-       is the fusion that makes `against` a required field rather than a convenience: get
-       the axis wrong here and the group either invents a second production line or reports
-       a line running at 144% of its own throughput.
+       THREE ELIMINATIONS, one per quantity, and all three answer differently. This is
+       the fusion that makes `against` a required field rather than a convenience: get the
+       quantity wrong here and the group either invents a second production line or
+       reports a line running at 144% of its own throughput.
        ================================================================================== -->
   <asrt:fusion>
     <asrt:name>shift-line</asrt:name>
@@ -2149,12 +2149,11 @@
         <asrt:version>2026-08-31</asrt:version>
         <asrt:regime>pt</asrt:regime>
       </asrt:layer>
-      <!-- ⛔⛔ A UNIT CROSSING, SO THE CONVERSION IS FILED EVEN THOUGH IT IS ONE. Leaving the
-           element out would convert this part by an unwritten 1, which is exactly what
-           `composition/converted.sqlc` used to do on its own authority. The two editions of
-           this unit are the same unit BECAUSE THIS COMPOSER SAYS SO, and `policy` is who to
-           argue with: they could have found they were not. ⚠️ Read the unit out loud. If it
-           sounds absurd, that is the assertion becoming visible rather than staying implicit. -->
+      <!-- A unit crossing, so the conversion is filed even though it is one: left out, the
+           part would convert by an unwritten 1. The two spellings of this unit are one unit
+           because this composer says so, and the `policy` origin says who to argue with: the
+           composer could have found they were not. Read the unit aloud; if it sounds absurd,
+           that is the assertion made visible rather than left implicit. -->
       <asrt:factor>
         <pm:claim>
           <pm:low>1</pm:low><pm:mostLikely>1</pm:mostLikely><pm:high>1</pm:high>
@@ -2172,22 +2171,22 @@
       </asrt:factor>
     </asrt:part>
 
-    <!-- ⭐ FUNGIBILITY IS NOT A JUDGEMENT CALL HERE, WHICH IS RARE. Elsewhere a fusion
-         asserts that two things can substitute for each other and a reader may disagree.
-         Here the two parts are ONE OBJECT: a shift the Portuguese member does not run is
-         a shift the US member can, because it is the same line on the same floor. -->
+    <!-- Fungibility is not a judgement call here, which is rare. Elsewhere a fusion asserts
+         that two things can stand in for each other, and a reader may disagree. Here the
+         two parts are one object: a shift the Portuguese member does not run is a shift
+         the US member can, because it is the same line on the same floor. -->
     <asrt:observed>
       one physical shift line, in Portugal, operated by the Portuguese member and scheduled
       onto by both. Fungibility is total and needs no argument: the parts are the same
-      machine. ⚠️ The two parts cite DIFFERENT EDITIONS of the buffer vocabulary — the
-      Portuguese part uses a translated edition — and the composed layer above cites the
-      original. That adjudication is the composer's and is recorded here rather than left
-      to look like agreement.
+      machine. The two parts cite different editions of the buffer vocabulary: the
+      Portuguese part uses a translated edition, and the composed layer above cites the
+      original. That choice is the composer's, and it is recorded here rather than left to
+      look like agreement.
     </asrt:observed>
 
     <asrt:eliminations>
-      <!-- ⭐ NOTHING DOUBLES, AND SAYING SO IS THE POINT. `none` is a filed claim that
-           somebody looked; leaving the element out would say nothing at all. -->
+      <!-- Nothing doubles, and saying so is the point: the filed zero is a claim that
+           somebody looked, and leaving the entry out would say nothing at all. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -2196,9 +2195,10 @@
             <pm:denominator>
               <pm:period>week</pm:period>
             </pm:denominator>
-            <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+            <!-- One value has no range to tighten, so `notApplicable`. -->
             <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
-            <!-- ⭐⭐ THE AUTHOR OF THE EXACTNESS: "no author to ask about: AN OBSERVED COUNT". -->
+            <!-- Nobody sets the edge of this zero: it is an observed count, with no author to
+                 ask about. -->
             <pm:boundOrigin><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:boundOrigin>
             <pm:provenance>
               <pm:party>group-parent</pm:party>
@@ -2209,12 +2209,13 @@
         <asrt:against>demand</asrt:against>
         <asrt:observed>
           the two order books were reconciled against each other by customer and by week; no
-          scheduled job appears in both. ⛔ This is the exact opposite of `labour`, where the
-          demand DID double, and the difference is not a detail: it decides the sign.
+          scheduled job appears in both. This is the opposite of `labour`, where the demand
+          did double, and the difference decides whether the line has room to spare or falls
+          short.
         </asrt:observed>
       </asrt:elimination>
 
-      <!-- ⭐⭐⭐ THE ONE THAT FLIPS THE SIGN. Ten shifts, filed twice, honestly. -->
+      <!-- The one that flips the sign: ten shifts, filed twice, honestly. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -2246,7 +2247,7 @@
         <asrt:against>nameplate</asrt:against>
         <asrt:observed>
           both members file the line's full ten shifts as their own nameplate, and both are
-          right to: each can schedule onto all ten. The group has ONE line. Without this
+          right to: each can schedule onto all ten. The group has one line. Without this
           entry the consolidation credits it with twenty shifts of capacity and reports 7.3
           shifts of slack where there are 2.7 shifts of shortfall.
         </asrt:observed>
@@ -2270,9 +2271,9 @@
         </asrt:between>
       </asrt:elimination>
 
-      <!-- ⭐⭐ THE THIRD QUANTITY, WHICH IS NEVER THE SPARE ONE. `pm:Layer` says an ERP
-           keeps one of demand, nameplate and draw and most dashboards keep two; an
-           elimination vocabulary that kept two would be the same mistake one level up. -->
+      <!-- The third quantity, which is never the spare one. `pm:Layer` says an ERP keeps
+           one of demand, nameplate and draw and most dashboards keep two; a list of
+           eliminations that kept two would be the same mistake one level up. -->
       <asrt:elimination>
         <asrt:quantity>
           <pm:claim>
@@ -2304,7 +2305,7 @@
         <asrt:against>draw</asrt:against>
         <asrt:observed>
           the operator files the line's whole throughput of ten shifts; the consumer files
-          the 4.4 shifts it took OUT OF THAT TEN. The same shifts, recorded from both ends.
+          the 4.4 shifts it took out of that ten. The same shifts, recorded from both ends.
           Summing the two draws puts the line at 14.4 shifts a week against a nameplate of
           10, which is a utilisation nobody observed and the machine cannot produce.
         </asrt:observed>

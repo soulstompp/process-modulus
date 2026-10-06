@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/witnesses/README.md")]
 
@@ -57,11 +55,10 @@ const WITNESSES: &[Witness] = &[
         from_: "<pm:high>76</pm:high>",
         to: "<pm:high>300</pm:high>",
         nth: 1,
-        // ⭐ THE ENDPOINT AND NOT THE MODE, DELIBERATELY. This exact edit was accepted by all
-        //   24 rules until `shares_do_not_sum` learned to read the whole interval: 300
-        //   engineer-hours a week of holder share on a layer rated 168, hidden behind a mode
-        //   that did not move. A mode-only comparison cannot witness this, so the witness
-        //   fails if the rule ever narrows back.
+        // The high end and not the most likely value, on purpose: 300 engineer-hours a week of
+        // holder share on a layer rated 168 hides behind a most likely value that does not move.
+        // A rule comparing only the most likely values cannot see it, so this witness fails if
+        // `shares_do_not_sum` ever goes back to reading them alone.
         says: "the share reaches 300 on a layer whose largest possible remainder is 76",
     },
     Witness {
@@ -250,17 +247,12 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         says: "a local part names a layer this document's own stack does not contain",
     },
-    // ⭐⭐ ONE MUTATION, AND ONLY ONE RULE MAY CLAIM IT. This document falsifies
-    //   `layers_move_together`, which states the repair the schema asks for: merge the layers,
-    //   or withdraw a part. ⛔ A witness cannot be aimed at a rule while a second rule fires on
-    //   the same edit, because a mutation tripping two shows that SOMETHING is checked and not
-    //   that THIS is.
-    // ⭐⭐⭐ THE ONE THE GRAMMAR CANNOT REACH, AND THE MUTANT STILL VALIDATES BECAUSE OF IT.
-    //   `partRegime` keyrefs the handle against `compositionRegimeId`, so flipping a part from
-    //   the composer's `us` regime to its `pt` one resolves perfectly and XSD 1.0 is content.
-    //   What it now claims is that `merge-us-member` reports under NCRF-PE, which that filing
-    //   does not declare, and no identity constraint can look: an XSD key is scoped to one
-    //   document. This is the boundary handed from the grammar to a rule, with a witness.
+    // The one the grammar cannot reach, and the mutant still validates because of it.
+    // `partRegime` keyrefs the handle against `compositionRegimeId`, so flipping a part from the
+    // composer's `us` regime to its `pt` one resolves, and XSD 1.0 accepts it. What it now claims
+    // is that `merge-us-member` reports under NCRF-PE, which that filing does not declare, and no
+    // identity constraint can look: an XSD key is scoped to one document. Here the grammar hands
+    // the boundary to a rule, with a witness.
     Witness {
         rule: "part_regime_disagrees",
         doc: "assets/corpus/merge-group-composition.xml",
@@ -269,11 +261,10 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         says: "the composer puts a us-gaap member's layer under the Portuguese regime, and that member declares no such framework",
     },
-    // ⭐⭐ THE ONLY WITNESS HERE THAT REMOVES RATHER THAN ALTERS, and it is legitimate because
-    //   `asrt:citation` is `minOccurs="0"`: a composition with no instrument is a document the
-    //   grammar accepts, which is exactly why a RULE has to refuse it. The group consolidates
-    //   `us-gaap` and `NCRF-PE` into IFRS-2026 and this is it withdrawing the standard it did
-    //   that under.
+    // A witness that removes rather than alters, which is legitimate because `asrt:citation` is
+    // `minOccurs="0"`: a composition with no instrument is a document the grammar accepts, which
+    // is why a rule has to refuse it. The group consolidates `us-gaap` and `NCRF-PE` under IFRS
+    // 10, and this withdraws the standard it consolidates under.
     Witness {
         rule: "regime_crossing_without_a_citation",
         doc: "assets/corpus/merge-group-composition.xml",
@@ -282,6 +273,10 @@ const WITNESSES: &[Witness] = &[
         nth: 1,
         says: "a consolidation crosses two frameworks into a third and cites no instrument for it",
     },
+    // One mutation, and only one rule may claim it. This edit falsifies `layers_move_together`,
+    // which states the repair the schema asks for: merge the layers, or withdraw a part.
+    // `jagged_layer` fires on it as well and does not get it as a witness of its own: an edit
+    // that trips two rules shows that something is checked, not which rule does the checking.
     Witness {
         rule: "layers_move_together",
         doc: "assets/fixtures/every-local-part.xml",
@@ -310,10 +305,9 @@ const WITNESSES: &[Witness] = &[
       </asrt:factor>",
         to: "",
         nth: 1,
-        // ⭐ THE WITNESS IS A DELETION, which is the only mutation that reaches this rule: it
-        //   fires on an element that is NOT there. Removing it puts the corpus back in the
-        //   state where `pessoas` becomes `people` on the authority of a `coalesce` in a
-        //   query rather than a filed factor.
+        // The witness is a deletion, the only mutation that reaches this rule: it fires on an
+        // element that is not there. Without the factor, `pessoas` becomes `people` on the
+        // authority of a `coalesce` in a query rather than a filed factor.
         says: "a part quoted in `pessoas` is composed into a layer quoted in `people` and says nothing about the conversion",
     },
     Witness {
@@ -322,9 +316,9 @@ const WITNESSES: &[Witness] = &[
         from_: "<pm:low>0.0108</pm:low><pm:mostLikely>0.0112</pm:mostLikely><pm:high>0.0116</pm:high>",
         to: "<pm:low>0.0018</pm:low><pm:mostLikely>0.0022</pm:mostLikely><pm:high>0.0026</pm:high>",
         nth: 1,
-        // ⭐ THE CYCLE IS THE ONLY THING THAT MOVES. Each fusion still carries its own part
-        //   exactly, because the composed figures are derived from this factor; what breaks is
-        //   the walk all the way round, which is the one thing no single layer can see.
+        // Only the round trip moves. Each fusion still carries its own part exactly, because the
+        // composed figures are derived from this factor; what breaks is the walk all the way
+        // round, which no single layer can see.
         says: "converting GPU to GPU-hour to node-hour and back lands at a fifth of where it started",
     },
     Witness {
@@ -337,9 +331,8 @@ const WITNESSES: &[Witness] = &[
                 <pm:mostLikely>40</pm:mostLikely>
                 <pm:high>40</pm:high>",
         nth: 1,
-        // ⭐ THIS EXACT EDIT WENT UNNOTICED BY EVERY COMPOSITION RULE until the identity check
-        //   existed. `compute-us` is a one-part fusion with nothing eliminated, so its
-        //   composed nameplate IS its part's, and five times the part is not a judgement call.
+        // `compute-us` is a one-part fusion with nothing eliminated, so its composed nameplate is
+        // its part's, and five times the part is not a judgement call.
         says: "a one-part fusion carries 8 GPU as 40, five times the part it is composed from",
     },
     Witness {
@@ -366,13 +359,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("A rule that has never been seen to say no has not been tested.\n");
 
-    // ⭐ ONE SCRIPT, ONE TRANSACTION PER WITNESS, EACH ROLLED BACK. A loaded corpus survives
-    //   the run untouched, and the whole battery is a single psql invocation.
+    // One script, one transaction per witness, each rolled back. A loaded corpus survives the
+    // run untouched, and the whole battery is a single psql invocation.
     let mut script = String::new();
-    // ⭐⭐ THE BASELINE POPULATION OF EVERY RULE, ON THE UNTOUCHED CORPUS. It is what separates
-    //   "no witness because nothing could ever falsify it" from "no witness because nobody wrote
-    //   one", and the closing paragraph of this file asserted the first about both for as long
-    //   as it took somebody to add a rule with rows.
+    // The baseline population of every rule, on the untouched corpus. It separates "no witness
+    // because nothing could ever falsify it" from "no witness because nobody wrote one".
     writeln!(
         script,
         "WITH v AS (\n{checks}\n) SELECT '__examined', rr.slug, count(*) FILTER (WHERE          v.violates IS NOT NULL)::text FROM v JOIN ({roster}) rr ON rr.rule = v.rule          GROUP BY rr.slug;"
@@ -399,8 +390,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let path = dir.join(format!("{}-{i}.xml", w.rule));
         fs::write(&path, &mutant)?;
 
-        // ⛔ THE MUTANT MUST STILL VALIDATE. A document the grammar rejects says nothing about
-        //   a rule that sits downstream of the grammar.
+        // The mutant must still validate. A document the grammar rejects says nothing about a
+        // rule that sits downstream of the grammar.
         let xsd = if mutant.contains("<asrt:") {
             "schema/assertion.xsd"
         } else {
@@ -490,15 +481,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("fires +{extra}")
         } else {
             failed.push(w.rule);
-            "SILENT".to_string()
+            "silent".to_string()
         };
         println!("{:<38} {:<9} {}", w.rule, mark, w.says);
     }
     let (proven, collateral) = (proven_rules.len(), collateral_rules.len());
 
-    // ⭐⭐⭐ THE RULES NO WITNESS REACHES, WHICH IS WHAT THIS FILE IS FOR. Read from the roster
-    //    rather than from a constant, so a rule added tomorrow arrives here unwitnessed
-    //    instead of arriving unnoticed.
+    // The rules no witness reaches, which is what this file is for. Read from the roster rather
+    // than from a constant, so a new rule arrives here unwitnessed instead of unnoticed.
     let all: Vec<&str> = roster
         .lines()
         .filter_map(|l| l.trim().strip_prefix("('"))
@@ -510,13 +500,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|r| !fired.values().any(|v| v.iter().any(|s| s == **r)))
         .collect();
 
-    // ⚠️ THREE COLUMNS AND NOT TWO, BECAUSE A RULE CAN BE SEEN TO FIRE WITHOUT BEING AIMED AT.
-    //    `jagged_layer` has no witness of its own and fires under the `layers_move_together` one:
-    //    a layer composed from itself is also reachable by two paths, so the two rules cannot be
-    //    separated by a single edit. That is evidence about the rule set rather than about
-    //    this file, and folding it into either column would hide it. ⚠️ The entanglement is
-    //    between the QUESTIONS and not between the files, so it survives any renaming of either
-    //    rule.
+    // Three columns and not two, because a rule can be seen to fire without being aimed at.
+    // `jagged_layer` has no witness of its own and fires under the `layers_move_together` one: a
+    // layer composed from itself is also reachable by two paths, so a single edit cannot separate
+    // the two rules. That is evidence about the rule set rather than about this file, and folding
+    // it into either column would hide it. The two are tied by their questions, not their files,
+    // so renaming either rule changes nothing.
     let collateral_only: Vec<&&str> = all
         .iter()
         .filter(|r| !WITNESSES.iter().any(|w| w.rule == **r))
@@ -541,36 +530,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     println!(
-        "{} of {} rules have now been observed to say no, against {} before this file existed.",
+        "{} of {} rules have been observed to say no.",
         proven + collateral_only.len(),
-        all.len(),
-        0
+        all.len()
     );
     if !unwitnessed.is_empty() {
         println!("\nNo witness, and each one is a rule nothing has ever seen say no:");
         for r in &unwitnessed {
             println!("  {r}");
         }
-        // ⛔⛔⛔ THIS PARAGRAPH IS DERIVED AND NEVER WRITTEN OUT. A sentence like "both of these
-        //    examine NOTHING" is printed on every run whatever the list beside it holds, so it
-        //    goes on asserting two while the list grows to four, and a claim in prose beside
-        //    data that contradicts it is worse than no claim at all. ⭐ And the split is the
-        //    point: a rule with no witness because nothing can falsify it and a rule with no
-        //    witness because nobody wrote one are DIFFERENT FACTS, and collapsing them is the
-        //    flattening this repository exists to refuse.
+        // This paragraph is derived from the list, never written out. A fixed sentence would be
+        // printed on every run whatever the list beside it held, stating one count while the list
+        // grew, and a claim in prose beside data that contradicts it is worse than none. The
+        // split is the point: a rule with no witness because nothing can falsify it and a rule
+        // with no witness because nobody wrote one are different facts.
         let empty: Vec<&&&str> =
             unwitnessed.iter().filter(|r| examined.get(***r).copied().unwrap_or(0) == 0).collect();
         let unwritten: Vec<&&&str> =
             unwitnessed.iter().filter(|r| examined.get(***r).copied().unwrap_or(0) > 0).collect();
         println!(
-            "\n⛔ {} of them examine NOTHING, and for those the two facts are one: a rule can only \n\
+            "\n{} of them examine nothing, and for those the two facts are one: a rule can only \n\
              be falsified where it has rows, so no edit to a document they do not look at will \n\
              ever witness them.",
             empty.len()
         );
         if !unwritten.is_empty() {
             println!(
-                "⛔⛔ {} examine rows and simply have no witness, which is a debt in \n\
+                "{} examine rows and simply have no witness, which is a debt in \n\
                  this file rather than a fact about the rule: {}",
                 unwritten.len(),
                 unwritten.iter().map(|r| ***r).collect::<Vec<_>>().join(", ")

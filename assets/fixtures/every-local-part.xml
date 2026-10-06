@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md.
+  A stipulation, not a filing. See assets/fixtures/README.md.
 
-  ⭐⭐⭐ THE CONSTRUCTION A THIRD PARTY ACTUALLY PERFORMS, END TO END. Bring their layer in.
-  Make my layer beside it. Make a THIRD layer out of BOTH. And separate all three afterwards.
+  The construction a third party actually performs, end to end: bring their layer in, make one
+  of your own beside it, make a third layer out of both, and keep all three apart afterwards.
 
-    as-filed        one part, FOREIGN   the bakery's oven line, carried through unchanged
-    as-contracted   no part, ORIGINATED the same line, read a second way
-    both-views      two parts, LOCAL    made out of the two above
+    as-filed        one part, foreign     the bakery's oven line, carried through unchanged
+    as-contracted   no part, originated   the same line, read a second way
+    both-views      two parts, local      made out of the two above
 
-  ⛔⛔ THE THIRD FUSION IS THE ONE THAT COULD NOT BE WRITTEN BEFORE, and only one thing had to
-  change to allow it: a filing can now say WHICH FILING IT IS. A part whose notation matches
-  this document's own is a local part. There is no second kind of part and no new element on
-  `asrt:Part` — the distinction is a string comparison against the filing's own name.
+  The third fusion is possible because a filing can say which filing it is. A part whose
+  notation matches this document's own is a local part. There is no second kind of part and no
+  new element on `asrt:Part`: the difference is a comparison of two strings.
 
-  ⭐⭐⭐ AND THE ALTERNATION IS AN ORDINARY FUSION WITH AN ELIMINATION, NOT A NEW RELATION.
-  Two views of ONE quantity summed is that quantity COUNTED TWICE, which is exactly what
-  `Elimination` removes. `EliminationAgainst/demand` is literally "what was ASKED, counted
-  twice".
+  A layer made out of two views of one quantity is an ordinary fusion with an elimination, not
+  a new relation. Added together, two views of one quantity count it twice, which is what
+  `Elimination` removes; an elimination against `demand` is what was asked, counted twice.
 
-    Σ parts demand      [3600, 4000, 4800]       Σ parts nameplate  [4320, 4320, 4320]
-    eliminate           [1800, 2000, 2400]       eliminate          [2160, 2160, 2160]
-    composed            [1800, 2000, 2400] ✓     composed           [2160, 2160, 2160] ✓
+    demand      the parts add up to 3600, 4000 and 4800; less the 1800, 2000 and 2400
+                eliminated, the composed demand is 1800, 2000 and 2400
+    nameplate   the parts add up to 4320; less the 2160 eliminated, the composed nameplate
+                is 2160
 
-  ⛔ THE ELIMINATED COPY IS THE WHOLE INTERVAL, NOT A POINT, and getting that wrong is the
-  first mistake this fixture caught — in the hand that wrote it. `Elimination` subtracts
-  COMPONENT-WISE and does not reverse bounds, because it removes "a COMPONENT OF THE VERY
-  FIGURE IT IS REMOVED FROM". For two views of one quantity that argument is not merely
-  applicable, it is exact: the removed copy IS the figure, so it moves with it at every bound.
+  The eliminated copy is the whole range, not a single value. An elimination comes off bound by
+  bound, because what it removes is part of the very figure it comes off, and for two views of
+  one quantity that holds exactly: the removed copy is the figure, so it moves with it at every
+  bound.
 
-  ⚠️ AND THE SUM RULE STAYS EXACT THROUGH IT. A checker owes the same arithmetic here as for
-  any other fusion; nothing is suspended and nothing is special-cased. That is the test of
-  whether the composition answer was the right one — if it needed the rule relaxed, it was not.
+  The sum rule stays exact through it. A checker owes the same arithmetic here as for any other
+  fusion; nothing is suspended and nothing is treated specially. That is the test of whether
+  composition was the right answer: had it needed the rule relaxed, it would not have been.
 
-  ⭐ WHY THE TWO VIEWS ARE NOT THE SAME DOCUMENT. Identical magnitudes throughout, and the
-  HOLDERS differ: `as-filed` puts the shortfall on `people`, which no instrument reaches;
-  `as-contracted` puts it on `counterparty`, which invoices. Same number, one invisible and one
-  recoverable. Nobody is wrong and nothing was corrected — the second reading is what makes the
-  quantity legible, which is this model's own thesis pointed at a filing instead of a business.
+  The two views are two layers, though their figures are identical and each files one
+  `customer` holder with an unmeasured share: they read the same line two ways, as the bakery
+  filed it and as contracted capacity. Nobody is wrong, and nothing was corrected.
 -->
 <asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
                   xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -46,9 +42,9 @@
   <asrt:observedAt>2026-09-01</asrt:observedAt>
   <asrt:provenance>
     <pm:party>audit-firm</pm:party>
-    <!-- ⭐ REQUIRED NOW, AND THIS DOCUMENT IS WHY. What `both-views` MEANS depends entirely on
-         who filed it: a parent asserting a group's system, or a third party holding two
-         readings of somebody else's. The layers are identical; the standing is the only field
+    <!-- Standing is required, and this document shows why. What `both-views` means depends
+         on who filed it: a parent asserting a group's system, or a third party holding two
+         readings of somebody else's. The layers are identical; standing is the only field
          that says which you are reading. -->
     <pm:standing>
       <pm:term>
@@ -72,8 +68,8 @@
   </asrt:regime>
 
   <pm:processModulus>
-    <!-- ⭐⭐ THE SELF-IDENTIFIER, AND THE WHOLE REASON THIS FIXTURE VALIDATES. The two parts of
-         `both-views` cite exactly this URN, which is how they are known to be local. -->
+    <!-- The filing's own name. The two parts of `both-views` cite exactly this URN, which is
+         how they are known to be local. -->
     <pm:notation>
       <pm:uri>urn:example:fixture:audit-firm:every-local-part</pm:uri>
     </pm:notation>
@@ -178,7 +174,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -194,7 +191,7 @@
                 <pm:denominator>
                   <pm:period>day</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -328,7 +325,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -344,7 +342,7 @@
                 <pm:denominator>
                   <pm:period>day</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -478,7 +476,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -494,7 +493,7 @@
                 <pm:denominator>
                   <pm:period>day</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -542,9 +541,9 @@
       <pm:couplings>
         <pm:absent>
           <pm:reason>notApplicable</pm:reason>
-          <pm:note>stipulated: these three layers are readings of ONE line rather than a set
-                   of independent quantizations, so there is no pair to couple. ⛔ It is also
-                   why they must never be summed</pm:note>
+          <pm:note>stipulated: these three layers are readings of one line, not layers that
+                   move independently, so there is no pair to couple. It is also why they are
+                   never simply added</pm:note>
         </pm:absent>
       </pm:couplings>
     </pm:stack>
@@ -565,9 +564,8 @@
       </asrt:layer>
     </asrt:part>
     <asrt:observed>The bakery's own oven line, carried through with nothing altered, so that
-                    the reading below has an unmodified thing to be a reading OF. A one-part
-                    fusion is not degenerate: it says this reviewer read that layer and
-                    carried it.</asrt:observed>
+                    the reading below reads an unmodified layer. A one-part fusion says this
+                    reviewer read that layer and carried it.</asrt:observed>
     <asrt:eliminations>
       <asrt:absent>
         <pm:reason>notApplicable</pm:reason>
@@ -576,12 +574,12 @@
     </asrt:eliminations>
   </asrt:fusion>
 
-  <!-- 2. MINE. No fusion at all: an ORIGINATED layer, which the schema has always allowed.
-       ⚠️ It is NOT a correction and NOT a proposal. It is real in this document's context,
+  <!-- 2. MINE. No fusion at all: a layer the composer originated, which the schema allows.
+       It is neither a correction nor a proposal. It is real in this document's context,
        asserted by this witness, and a marker saying otherwise would be a document arguing
        with its own signature. -->
 
-  <!-- 3. BOTH. Two LOCAL parts, and the elimination that says they are one quantity. -->
+  <!-- 3. BOTH. Two local parts, and the elimination that says they are one quantity. -->
   <asrt:fusion>
     <asrt:name>both-views</asrt:name>
     <asrt:part>
@@ -606,10 +604,10 @@
         <asrt:regime>stipulated</asrt:regime>
       </asrt:layer>
     </asrt:part>
-    <asrt:observed>FUNGIBLE IN THE STRONGEST POSSIBLE SENSE: they are the same line. A unit
-                    of supply in one IS a unit of supply in the other, so the fungibility test
-                    is satisfied trivially — and that is precisely why the arithmetic must
-                    remove one whole copy rather than adding them.</asrt:observed>
+    <asrt:observed>Fungible in the strongest sense: they are the same line. A unit of supply
+                    in one is a unit of supply in the other, so the fungibility test passes
+                    without argument, and that is why one whole copy is removed rather than the
+                    two added.</asrt:observed>
     <asrt:eliminations>
       <asrt:elimination>
         <asrt:quantity>

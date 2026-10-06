@@ -1,48 +1,47 @@
-# Every layer whose holder shares are all stated, beside the magnitude they must add up to. One
-# row per examined layer, `violates` where the sum misses.
+# Every layer whose holders' shares are all stated, beside the magnitude they must add up to. One
+# row per layer examined, `violates` where the sum misses.
 #
-# The shares sum to the magnitude
-#   The rule: the stated shares sum to the magnitude of the remainder. H is a distribution, so
-#   its row must account for the whole of what there was to bear: no more, no less.
+# The shares add up to the magnitude
+#   The rule: the stated shares add up to the size of the remainder. Between them, the holders
+#   account for the whole of what there was to bear, no more and no less.
 #
 # One unstated share suspends the check
-#   It does not break it, and the difference is the whole discipline. If a filer says one party's
-#   share is `unmeasured`, the sum is unknown, not wrong. Treating the absence as a zero would
-#   manufacture a shortfall and report the document for a defect the checker introduced.
+#   It does not break it, and the difference matters. If a filer says one party's share is
+#   `unmeasured`, the sum is unknown, not wrong. Treating the blank as a zero would make up a
+#   shortfall and report the document for a defect the check itself put there.
 #
 # The unit guard is half of this rule
-#   Its own site carries the other half. arithmetic/shares_sum.sqlc reports `not comparable`
-#   where a holder's share is quoted in a unit other than its layer's; without that branch here
-#   the rule sums across units and compares the total to |r|. H is a distribution over the
-#   magnitude of `r`, so a share in a foreign unit is not a smaller share, it is not a share of
-#   this at all. arithmetic/roster.sqlc records `guarded_by = NULL` for that site: no unit rule
-#   stands there, which leaves this check as the only thing between it and a wrong number. It
-#   agrees with the site on this corpus only because no such document exists yet.
+#   arithmetic/shares_sum.sqlc reports `not comparable` where a holder's share is quoted in a unit
+#   other than its layer's, and this rule examines only layers whose shares are all in the layer's
+#   unit, rather than adding across units. A share in a foreign unit is not a smaller share; it is
+#   not a share of this remainder at all. arithmetic/roster.sqlc records no unit rule at that site,
+#   so this check is the only thing between it and a wrong number. The two agree on this corpus
+#   because no document quotes a share in a foreign unit yet.
 #
-# The whole interval, not the middle number
-#   Comparing `abs(r_mode)` against `shares_mode` and nothing else ignores that a quantity is a
-#   range, which is this model's entire thesis. Three other rules still do arithmetic on the mode
-#   alone.
+# The whole range, not the middle value
+#   A quantity here is a range, so the shares are compared with the magnitude at all three points,
+#   not only at the most likely one.
 #
-# Containment at the ends, equality at the mode
-#   The asymmetry is not a compromise: requiring equality at the ends would accuse a more careful
-#   filing. The magnitude is read from layers/remainder.sqlc, which is the remainder in force, so on
-#   a composed layer it is the pivoted `F Φ r - e_n + e_d` and not `(Σn) − (Σd)`.
-#   `merge-holding-composition/compute`'s shares [1414, 2857, 4085.6] therefore equal its magnitude
-#   at all three points. The crossed difference of its composed totals, [1092, 2857, 4198.8], treats
-#   the two sums as independent and is looser at both ends; a rule reading it would accept shares
-#   the remainder does not allow. Proof: `src/proofs/README.md`, entries `share_sum` and
-#   `magnitude`.
+# Inside at the ends, equal at the most likely value
+#   The shares' lowest and highest values must lie within the magnitude's, and their most likely
+#   value must equal it. Requiring equality at the ends would accuse a more careful filing. The
+#   magnitude is read from layers/remainder.sqlc, the remainder in force, so on a composed layer it
+#   is the one worked out from the parts, not from the composed totals. That is why
+#   `merge-holding-composition/compute`'s shares, 1414, 2857 and 4085.6, equal its magnitude at all
+#   three points. Its composed totals would give 1092, 2857 and 4198.8, looser at both ends, and a
+#   rule reading them would accept shares the remainder does not allow.
 #
-# |r| over an interval needs the straddle case
-#   Where `r` crosses zero the magnitude reaches 0, which is the transition fit stated as
-#   arithmetic: short at the top of the demand range and spare at the bottom, both at once.
-#   Taking `least(|r_low|, |r_high|)` there would invent a floor the layer does not have.
+# A remainder that runs from short to spare
+#   Where the remainder runs from short to spare, its smallest size is zero: short at the top of the
+#   demand range and spare at the bottom, both at once, which is the transition fit. Taking the
+#   smaller of the two ends there would invent a floor the layer does not have.
 #
 # Probe
-#   Widen `enterprise-contract/support-cover`'s only share from [21, 50, 76] to [21, 50, 300],
-#   on a layer whose whole nameplate is 168, leaving the mode where it is. This rule must fire.
--- pm:Remainder/pm:holder summed against |r| from layers/remainder.sqlc, via entries/holder_totals.sqlc.
+#   Widen `enterprise-contract/support-cover`'s only share from 21, 50 and 76 to 21, 50 and 300, on
+#   a layer whose whole nameplate is 168, leaving the most likely value where it is. This rule must
+#   fire.
+-- pm:Remainder/pm:holder summed against the size of the remainder in layers/remainder.sqlc,
+-- via entries/holder_totals.sqlc.
 SELECT r.rule, p.filing, p.layer, p.violates, p.detail
 FROM      (
     :compose(checks/roster.sqlc)

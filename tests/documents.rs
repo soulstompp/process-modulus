@@ -3,25 +3,23 @@
 //! ## Why a law and not a convention
 //!
 //! `assets/sqlc/` is a composition: one file names one object, `:compose` is substitution, and
-//! the tree's own shape is a relation anybody can query. The prose had none of that. Measured
-//! before this law existed, the published pages linked to each other about thirty times in total,
-//! with a quarter of those pointing at the root, so almost every page re-established its own
-//! context from nothing and the root had to carry the whole argument in one pass.
+//! the tree's own shape is a relation anybody can query. The pages are held to the same shape,
+//! each one linked from the page above it and naming the pages below.
 //!
-//! ⛔ **What that costs is not tidiness.** A parent with no child to name says the thing itself,
-//! every time it needs it. The root README reached the state of carrying one claim twice inside a
-//! single section, thirty lines apart, and neither copy knew about the other.
+//! What that saves is more than tidiness. A parent with no child to name says the thing itself,
+//! every time it needs it, so one claim ends up written twice, and neither copy knows about the
+//! other.
 //!
 //! ## The two halves
 //!
 //! **Reached by nothing.** Every published page is linked from another published page, or is a
-//! declared root. This is `examples/observations`' `unreached` law for `.sqlc` applied to prose,
-//! and it fails in the direction that matters: a page somebody writes and nobody links is a page
-//! a reader can only find by knowing it is there.
+//! declared root. `examples/observations` holds the same rule over the `.sqlc` templates and the
+//! filed documents. A page somebody writes and nobody links is a page a reader can only find by
+//! knowing it is there.
 //!
-//! **The entry is the first line.** Where a page indexes its children, each entry IS that child's
-//! own first line rather than a summary of it. ⭐ A summary is a second copy, and a second copy
-//! disagrees with the first the moment either one moves, with nothing able to notice. Both
+//! **The entry is the first line.** Where a page indexes its children, each entry is that child's
+//! own first line rather than a summary of it. A summary is a second copy, and it disagrees with
+//! the first the moment either one moves, with nothing to notice. The rule holds in both
 //! languages, because a Portuguese index that has drifted from its children is not a translation.
 
 #[path = "shared/published.rs"]
@@ -32,16 +30,16 @@ use std::fs;
 
 /// The pages that are reached by nothing on purpose, because nothing is above them.
 ///
-/// ⚠️ Declared rather than inferred. "This page has no parent" and "somebody forgot to link this
-/// page" are the same observation from outside, and only a declaration tells them apart.
+/// Declared rather than inferred. From outside, a page with no parent and a page somebody forgot
+/// to link look the same, and only a declaration tells them apart.
 const ROOTS: [&str; 1] = ["README.md"];
 
 /// Every index edge: the page that indexes, and the directory whose page it indexes.
 ///
-/// ⛔ `examples/README.md` indexes the sixteen programs beneath it and is NOT listed here,
-/// because `tests/examples.rs` already holds that table against each program's own first line, in
-/// both directions and both languages, and `build.rs` generates the crate's copy from the same
-/// source. A second law over the same edges would be a fork of a working one.
+/// `examples/README.md` indexes the programs beneath it and is not listed here: `tests/examples.rs`
+/// already holds that table against each program's own first line, in both directions and both
+/// languages, and `build.rs` generates the crate's copy from the same source. A second law over
+/// the same edges would be a second copy of a working one.
 const INDEX: [(&str, &str); 7] = [
     ("README.md", "schema"),
     ("README.md", "assets"),
@@ -73,12 +71,11 @@ fn relative(from_dir: &str, to: &str) -> String {
     parts.join("/")
 }
 
-/// ⭐ Every published page is reachable by following links from somewhere else.
+/// Every published page is reachable by following links from another page.
 ///
-/// ⛔ THE FAILURE THIS CATCHES IS A PAGE WRITTEN AND NEVER WIRED IN. When this law was written
-/// two pages were in that state, `assets/sqlc/queries/README.md` and `examples/shared/README.md`,
-/// and in both cases the parent named the directory in prose and never linked it, so a reader
-/// clicking through could not arrive at either one.
+/// It fails on a page that is written and never linked. A parent that names a directory in prose
+/// and does not link it leaves the page there unreached, because a reader clicking through cannot
+/// arrive at it.
 #[test]
 fn no_published_page_is_reached_by_nothing() {
     let docs = published_documents();
@@ -99,11 +96,9 @@ fn no_published_page_is_reached_by_nothing() {
             if body.contains(&format!("]({to_file})")) {
                 return true;
             }
-            // ⛔⛔ A LINK TO A DIRECTORY REACHES THAT DIRECTORY'S README AND NOTHING ELSE IN IT,
-            //    because that is the only file the link actually opens. Accepting it for every
-            //    page under the directory was this law's first shape, and it made the law
-            //    vacuous over four fifths of the tree: the root links `assets/`, so any page
-            //    anywhere beneath it read as reached. A probe caught it; nothing else would have.
+            // A link to a directory reaches that directory's README and nothing else in it,
+            // because that is the only file the link opens. Counting it for every page under the
+            // directory would let the root's link to `assets/` reach every page beneath it.
             if !doc.ends_with("/README.md") {
                 return false;
             }
@@ -123,11 +118,11 @@ fn no_published_page_is_reached_by_nothing() {
     );
 }
 
-/// ⭐⭐ An index entry IS its child's first line, in both languages and in both directions.
+/// An index entry is its child's first line, in both languages and in both directions.
 ///
-/// ⛔ The reverse direction is the one worth having. A child whose first line somebody improves
-/// leaves its parent quoting a sentence that no longer exists anywhere, and nothing about the
-/// parent looks wrong from inside it.
+/// The reverse direction matters most. When somebody improves a child's first line, the parent is
+/// left quoting a sentence that exists nowhere else, and nothing about the parent looks wrong from
+/// inside it.
 #[test]
 fn every_index_entry_is_its_child_own_first_line() {
     for (parent, child) in INDEX {
@@ -153,8 +148,8 @@ fn every_index_entry_is_its_child_own_first_line() {
     }
 }
 
-/// ⚠️ A declared edge whose child is not published is a stale roster, and it fails silently in
-/// the other law: an index naming a page nobody ships still reads as a complete index.
+/// A declared edge whose child is not published is a stale roster, and the law above passes over
+/// it in silence: an index naming a page nobody ships still reads as a complete index.
 #[test]
 fn every_declared_index_edge_names_a_published_page() {
     let docs = published_documents();

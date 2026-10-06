@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⛔⛔⛔ A STIPULATION, NOT A FILING. See assets/fixtures/README.md. Nothing here was observed
-  and nothing here may be cited as evidence about any business.
+  A stipulation, not a filing. See assets/fixtures/README.md. Nothing here was observed, and
+  nothing here may be cited as evidence about any business.
 
-  ⭐⭐⭐ THE TWO STATES `assets/corpus/` CANNOT REACH, AND WHY THEY ARE NOT COSMETIC: THEY OWE
-  DIFFERENT ARITHMETIC. All three of the corpus's empty fusions are ONE-PART fusions filing
-  `notApplicable`, so both of these branches shipped untested.
+  The two states `assets/corpus/` does not reach, and they are not cosmetic: they owe
+  different arithmetic. The corpus's fusions with no elimination are all one-part fusions
+  filing `notApplicable`, so neither of these branches is exercised there.
 
-    baking   eliminations absent none        somebody looked and the parts do not double
-                                             count. ⭐ THE COMPOSED FIGURE MUST EQUAL THE
-                                             SUM EXACTLY, and it does:
-                                               1800 +  900 = 2700
-                                               2000 + 1000 = 3000
-                                               2400 + 1200 = 3600
-                                               2160 + 1080 = 3240 nameplate
+    baking   eliminations absent none        somebody looked, and the parts count nothing
+                                             twice. The composed figure has to equal the
+                                             sum exactly, and it does: the two ovens'
+                                             demands, 1800 and 900, 2000 and 1000, 2400
+                                             and 1200, add up to the 2700, 3000 and 3600
+                                             filed, and their nameplates, 2160 and 1080,
+                                             to the 3240 filed.
 
-    mixing   eliminations absent unmeasured  nobody checked. ⛔ NO EQUALITY IS OWED, and this
-                                             layer files a demand that DIFFERS from its parts
-                                             on purpose:
-                                               parts sum   [2300, 2600, 3100]
-                                               filed       [2000, 2200, 2700]
-                                               difference   -300  -400   -400
+    mixing   eliminations absent unmeasured  nobody checked. No equality is owed, and this
+                                             layer files a demand that differs from its
+                                             parts on purpose: the parts add up to 2300,
+                                             2600 and 3100, and the filed demand is 2000,
+                                             2200 and 2700, short by 300, 400 and 400.
 
-  ⚠️⚠️ READ THE SECOND ONE TWICE, BECAUSE IT IS THE WHOLE POINT. A checker that read an
-  unstated search as "nothing to remove" would report a VIOLATION here and be WRONG: the
-  composer never claimed these reconcile, and says so in the document. A checker that read it
-  as "somebody checked and found nothing" would hold it to `baking`'s standard and be wrong
-  the same way. The honest verdict is UNCHECKED — a third outcome beside passed and failed —
-  and before `Fusion/eliminations` became a wrapper there was no way to file the state that
-  produces it.
+  Read the second one twice, because it is the point. A checker that read a search nobody
+  made as "nothing to remove" would report a violation here and be wrong: the composer never
+  claimed these reconcile, and says so in the document. A checker that read it as "somebody
+  checked and found nothing" would hold it to `baking`'s standard and be wrong the same way.
+  The honest verdict is unchecked, a third outcome beside passed and failed, and
+  `Fusion/eliminations` is the wrapper that lets a document file the state behind it.
 
-  ⭐ The 400 is not arbitrary either. It is the shape of a real intra-group commission: the
-  mixers take work from each other and somebody's estimate already nets some of it out, by an
-  amount nobody has reconstructed. `unmeasured` is exactly that, filed.
+  The shortfall is not arbitrary either. It has the shape of a real intra-group commission:
+  the mixers take work from each other, and somebody's estimate already nets some of it out,
+  by an amount nobody has reconstructed. `unmeasured` is exactly that, filed.
 -->
 <asrt:composition xmlns:asrt="https://example.invalid/assertion/1.0"
                   xmlns:pm="https://example.invalid/process-flow/1.0">
@@ -69,8 +67,8 @@
 
   <pm:processModulus>
 
-    <!-- ⭐ WHICH FILING THIS IS. A part elsewhere cites exactly this URN;
-         before S-28 was repaired no document could say it. -->
+    <!-- Which filing this is: the URN a part or a dependence cites to point at this
+         document. -->
     <pm:notation>
       <pm:uri>urn:example:fixture:bakery:every-elimination</pm:uri>
     </pm:notation>
@@ -173,7 +171,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -189,7 +188,7 @@
                 <pm:denominator>
                   <pm:period>day</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -323,7 +322,8 @@
                         </pm:boundOrigin>
                       </pm:claim>
                     </pm:size>
-                    <!-- stipulated: the line runs every hour of the period, so the window is the whole of it -->
+                    <!-- stipulated: the line runs every hour of the period, so the window is
+                         the whole of it -->
                     <pm:origin>policy</pm:origin>
                   </pm:quantum>
                 </pm:window>
@@ -339,7 +339,7 @@
                 <pm:denominator>
                   <pm:period>day</pm:period>
                 </pm:denominator>
-                <!-- ⭐ A POINT HAS NO WIDTH TO TIGHTEN, AND notApplicable IS THE SETTLED ANSWER. -->
+                <!-- One value has no range to tighten, so `notApplicable`. -->
                 <pm:narrowsWhen><pm:absent><pm:reason>notApplicable</pm:reason></pm:absent></pm:narrowsWhen>
                 <pm:boundOrigin><pm:origin>intrinsic</pm:origin></pm:boundOrigin>
                 <pm:provenance>
@@ -395,9 +395,9 @@
     </pm:stack>
   </pm:processModulus>
 
-  <!-- ⭐ CHECKED AND CLEAN. The composer looked for double counting between the two oven lines
-       and found none, so `Σ parts` IS the composed figure and a checker owes that equality to
-       the digit. Under the old empty list this fusion and the one below were the same bytes. -->
+  <!-- Checked and clean. The composer looked for double counting between the two oven lines
+       and found none, so the parts' sum is the composed figure, and a checker owes that
+       equality to the last digit. -->
   <asrt:fusion>
     <asrt:name>baking</asrt:name>
     <asrt:part>
@@ -435,10 +435,10 @@
     </asrt:eliminations>
   </asrt:fusion>
 
-  <!-- ⛔⛔ NOBODY CHECKED, AND THE FIGURE DOES NOT RECONCILE. That is not a defect in this
+  <!-- Nobody checked, and the figure does not reconcile. That is not a defect in this
        document. The composer states plainly that they did not look, so the fused figure may be
-       overstated or understated by an unknown amount and no equality is owed. A checker must
-       report UNCHECKED, which is a third outcome beside passed and failed. -->
+       overstated or understated by an unknown amount, and no equality is owed. A checker
+       reports it as unchecked, a third outcome beside passed and failed. -->
   <asrt:fusion>
     <asrt:name>mixing</asrt:name>
     <asrt:part>
@@ -472,7 +472,7 @@
       <asrt:absent>
         <pm:reason>unmeasured</pm:reason>
         <pm:note>nobody checked whether these two parts double count. The fused figure may be
-                 out by an amount nobody knows, and saying so is strictly more than filing
+                 out by an amount nobody knows, and saying so tells a receiver more than filing
                  nothing</pm:note>
       </asrt:absent>
     </asrt:eliminations>

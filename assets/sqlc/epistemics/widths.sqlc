@@ -1,9 +1,9 @@
-# What every range's width is made of. One row per narrowing statement anywhere in a filing,
+# What every range's width is made of. One row per narrowing statement in every loaded document,
 # classified into the thing that would actually reduce it.
 #
 # Ignorance or variation
-#   The grain question, askable only because `narrowsWhen` carries a kind. How much of the
-#   uncertainty in this corpus is ignorance, where a better instrument reveals the number that was
+#   The question this answers, only because `narrowsWhen` carries a kind. How much of the
+#   uncertainty in the filings is ignorance, where a better instrument reveals the number that was
 #   always there, and how much is the world actually moving, where no measurement helps and only
 #   changing the process does? With no kind to group by, a schema asserts the first reading
 #   everywhere, which is the assumption that makes people buy instruments for variation problems.
@@ -14,33 +14,33 @@
 #   rows nobody has considered.
 #
 # A derivation is neither
-#   A third reading. The width is not in the world at all: it is a function of the widths of the
-#   terms an identity computes the claim from, so nothing needs measuring and nothing needs
-#   changing, and a receiver holding the terms already has it. A `booked` share under a clearance
-#   is the nameplate less the demand, so it narrows exactly as far as the demand does and never one
-#   step further, and it names `sharesSum`.
-#
+#   A third reading. The width is not in the world at all: it follows from the widths of the terms
+#   an identity works the claim out from, so nothing needs measuring and nothing needs changing, and
+#   a receiver holding the terms already has it. A `booked` share under a clearance is the nameplate
+#   less the demand, so it narrows exactly as far as the demand does and never further, and it names
+#   `sharesSum`.
 #   Left unfiled, a computed width gets said in prose instead and typed `instrument` (a width made
-#   of ignorance that a better instrument reveals) when no instrument is involved and nothing is
+#   of ignorance that a better instrument reveals), when no instrument is involved and nothing is
 #   unmeasured.
 #
 # The rows are scattered
 #   They sit across demands, nameplates, quanta, slacks, shares, factors and coupling strengths,
-#   because `narrowsWhen` sits on `Claim` and claims are everywhere. Gathering them is what makes the
+#   because `narrowsWhen` sits on `Claim` and claims are everywhere. Gathering them makes the
 #   question answerable at the level of a document.
 #
 # The filer's answer beside the measured width
-#   It carries the element and the measured width beside the filer's own answer, which is what turns
-#   a census into something checkable. `no range to narrow` in the CASE below is the filer saying
-#   so; `is_a_point` is the arithmetic. Two rules compare them.
+#   It carries the element and the measured width beside the filer's own answer, which turns a
+#   census into something checkable. `no range to narrow` in the CASE below is the filer saying so;
+#   `is_a_point` is the arithmetic. Two rules compare them.
 -- pm:Claim/pm:narrowsWhen, wherever a claim appears.
 SELECT n.filing, n.seq, n.owns, n.is_a_point, n.low, n.high, n.unit,
        n.narrows_kind AS kind, n.narrows_absent AS absent, n.narrows_condition AS condition,
        CASE
          WHEN n.narrows_kind = 'instrument'      THEN 'ignorance: measure it better'
-         WHEN n.narrows_kind = 'intervention'    THEN 'VARIATION: only changing the process helps'
+         WHEN n.narrows_kind = 'intervention'    THEN 'variation: only changing the process helps'
          WHEN n.narrows_kind = 'experiment'      THEN 'unknown, deliberately: an experiment would say'
-         WHEN n.narrows_absent = 'none'          THEN 'VARIATION: somebody looked, nothing would narrow it'
+         WHEN n.narrows_absent = 'none'
+              THEN 'variation: somebody looked, nothing would narrow it'
          WHEN n.narrows_absent = 'notApplicable' THEN 'no range to narrow (a point value)'
          WHEN n.narrows_derivation IS NOT NULL
               THEN format('computed: it narrows as the terms of `%s` do', n.narrows_derivation)

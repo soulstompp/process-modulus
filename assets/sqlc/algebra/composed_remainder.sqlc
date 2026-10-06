@@ -1,31 +1,32 @@
-# Every composed remainder the pivot computes, against the one the composed totals give. One row
-# per layer in composition/fused_remainders.sqlc: whether the pivot is ordered, equal to
-# `n - d` at the mode, inside it at both bounds, and equal to it at both bounds wherever no factor
-# on the walk has width.
+# Every composed remainder worked out from the parts, against the one the composed totals give.
+# One row per layer in composition/fused_remainders.sqlc: whether it is in order, equal to the
+# totals' remainder at the most likely value, inside it at both ends, and equal to it at both ends
+# wherever no factor on the walk is a range.
 #
 # What it asserts
-#   With `n` and `d` the composed layer's filed totals and `n - d` read crossed:
-#   - the pivot is an ordered claim;
-#   - its mode is `n_mode - d_mode`;
-#   - its low is at least `n_low - d_high` and its high at most `n_high - d_low`;
-#   - where no factor on the walk has width, it is `n - d` exactly, at both bounds.
+#   With the composed layer's filed totals, the nameplate less the demand, each end against the
+#   opposite end:
+#   - the remainder worked out from the parts is in order;
+#   - its most likely value is the most likely nameplate less the most likely demand;
+#   - its lowest value is no lower, and its highest no higher, than the totals give;
+#   - where no factor on the walk is a range, it equals the totals' remainder at both ends.
 #   The three equalities hold only where the composed totals are their own sums, so a layer whose
-#   demand or nameplate sum disagrees with its filing is held to the order and the containment
-#   alone; checks/fusion_sum_disagrees reports the filing. Proof: `src/proofs/README.md`, entry
-#   `composed_remainder`.
+#   demand or nameplate sum disagrees with its filing is held to the order and to lying inside
+#   alone; checks/fusion_sum_disagrees reports the filing.
 #
-# Why the bounds differ only under spread
-#   A factor multiplies a part's nameplate and its demand together, so differencing the converted
-#   totals counts its width twice, and the pivot counts it once. With no width there is nothing to
-#   count twice, and the two readings are one number. Spread is recomputed here from
-#   composition/remainder_frontier.sqlc, not read from the relation under test.
+# Why the ends differ only when a factor is a range
+#   A factor multiplies a part's nameplate and its demand together, so subtracting the converted
+#   totals takes its range in twice, and working from the parts takes it once. With no range there
+#   is nothing to take twice, and the two are one number. Whether a factor is a range is worked out
+#   again here from composition/remainder_frontier.sqlc, not read from the relation under test.
 #
 # Probe
-#   examples/probes runs it as `composed_remainder`.
-#   In composition/fused_remainders.sqlc read the nameplate elimination at its low regardless of
-#   `crossed`. `every-inverting-elimination / shift-capacity` then pivots to a low of 3 against a
-#   differenced 0 with no factor anywhere, and must fail.
--- composition/fused_remainders.sqlc against layers/demand.sqlc, layers/nameplate.sqlc and composition/remainder_frontier.sqlc.
+#   examples/probes runs it as `composed_remainder`. In composition/fused_remainders.sqlc read the
+#   nameplate elimination at its low regardless of `crossed`.
+#   `every-inverting-elimination / shift-capacity` then gives a low of 3 against the totals' 0 with
+#   no factor anywhere, and must fail.
+-- composition/fused_remainders.sqlc against layers/demand.sqlc, layers/nameplate.sqlc and
+-- composition/remainder_frontier.sqlc.
 SELECT a.slug AS law, p.subject, p.holds, p.detail
 FROM      (
     :compose(algebra/roster.sqlc)
@@ -38,7 +39,7 @@ LEFT JOIN (
            AND (NOT x.sums_agree OR x.spread
                 OR (abs(x.pivoted_low - x.cross_low) < 1e-9
                     AND abs(x.pivoted_high - x.cross_high) < 1e-9)) AS holds,
-           format('pivot [%s, %s, %s] against n - d [%s, %s, %s]; %s',
+           format('through the parts [%s, %s, %s] against the totals'' remainder [%s, %s, %s]; %s',
                   x.pivoted_low, x.pivoted_mode, x.pivoted_high,
                   x.cross_low, x.cross_mode, x.cross_high,
                   CASE WHEN NOT x.sums_agree THEN 'a composed sum disagrees with its filing'

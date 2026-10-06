@@ -1,57 +1,114 @@
--- the cardinality identities a BPMN emission owes, against the relation supplying each expected count.
+-- the counts a BPMN emission owes, against the relation supplying each expected count.
 SELECT * FROM (VALUES
-  ('pools',   '|participant| = |filing|',      'epistemics/documents',     'participant',
+  ('pools',   'one participant per filing',    'epistemics/documents',     'participant',
               'a document rendered as two pools, or two rendered as one'),
-  ('lanes',   '|lane| = |layer|',              'layers/every_layer',       'lane',
-              'a partition rendered as an overlap: the falsifier, drawn'),
-  ('tasks',   '|task| = |operation|',          'entries/operations',       'task',
+  ('lanes',   'one lane per layer',            'layers/every_layer',       'lane',
+              'layers drawn as overlapping, which draws what only a coupling may show'),
+  ('tasks',   'one task per operation',        'entries/operations',       'task',
               'an operation dropped, or a flow node invented to make the picture read'),
-  ('calls',   '|callActivity| = |part crossing a document|', 'diagrams/foreign_calls', 'callActivity',
-              'One law over two elements would let a local part be rendered as an activity. A local fusion is a partition of the composed layer, not a node inside it. Splitting the law is also what makes the flattening measurable: only these parts go through `calledElement`, so this is the population exposed to the invented-cycle defect'),
-  ('nestings', '|childLaneSet| = |layer with a local part|', 'diagrams/nestings', 'childLaneSet',
-              'The recursion equivalence, and BPMN already had the element. A fusion''s parts partition what they compose, and `Lane/childLaneSet` is a sub-partition. A nested lane is still keyed `(filing, layer)`, so unlike a call it collapses nothing and can invent nothing'),
-  ('categories', '|category| = |filing with an induction|', 'diagrams/categories', 'category',
+  ('calls',   'one callActivity per part crossing a document', 'diagrams/foreign_calls',
+              'callActivity',
+              'A law of its own keeps a local part from being drawn as an activity: a local fusion '
+              'divides the composed layer among its parts, and is not a node inside it. Only these '
+              'parts go through `calledElement`, so this is the population exposed to a loop the '
+              'flattening invents'),
+  ('nestings', 'one childLaneSet per layer with a local part', 'diagrams/nestings', 'childLaneSet',
+              'A fusion''s parts divide what they compose among them, and `Lane/childLaneSet` '
+              'draws that division inside the lane. A nested lane is still keyed '
+              '`(filing, layer)`, so unlike a call it collapses nothing and can invent nothing'),
+  ('categories', 'one category per filing with an induction', 'diagrams/categories', 'category',
               'a classification scheme emitted into a document that has nothing to classify, or a document with inductions and no scheme to hang them on'),
-  ('category_values', '|categoryValue| = |layer induced into|', 'diagrams/categories', 'categoryValue',
-              'N getting a notation. The route that does not work is a second `laneSet`, which gives every layer two `lane` elements. BPMN''s other mechanism adds no lane at all: `tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the member declares the cover and no container grows'),
-  ('groups',     '|group| = |categoryValue|',    'diagrams/categories', 'group',
-              'The glyph against the fact, and the pair is the answer to what a group is. `group` is to `categoryValueRef` what `lane` is to `flowNodeRef`: the drawn shape of an incidence held elsewhere. A categoryValue with no group is a classification nobody drew; a group with no categoryValue is a dashed box that means nothing'),
-  ('induced_into', '|categoryValueRef| = |induction|', 'diagrams/category_members', 'categoryValueRef',
-              'An induction dropped, which `|lane| = |layer|` cannot see. One operation here draws from `labour` and induces into `capability`; a lane set holds it in one place, so holding it in the draw alone leaves the second incidence out of every emitted document while the layer count still agrees'),
-  ('diagrams', '|BPMNDiagram| = |filing|', 'diagrams/pools', 'BPMNDiagram',
+  ('category_values', 'one categoryValue per layer induced into', 'diagrams/categories',
+              'categoryValue',
+              'The inductions given a notation. A second `laneSet` would give every layer two '
+              '`lane` elements; BPMN''s other mechanism adds no lane at all: '
+              '`tFlowElement/categoryValueRef` is `maxOccurs="unbounded"`, so the member declares '
+              'the cover and no container grows'),
+  ('groups',     'one group per categoryValue',  'diagrams/categories', 'group',
+              'The glyph against the fact. `group` is to `categoryValueRef` what `lane` is to '
+              '`flowNodeRef`: the drawn shape of a membership held elsewhere. A categoryValue with '
+              'no group is a classification nobody drew; a group with no categoryValue is a dashed '
+              'box that means nothing'),
+  ('induced_into', 'one categoryValueRef per induction', 'diagrams/category_members',
+              'categoryValueRef',
+              'An induction dropped, which the lane count cannot see. An operation that draws '
+              'from one layer and induces into another sits in one lane, so holding it in the '
+              'draw alone leaves the induction out of every emitted document while the layer '
+              'count still agrees'),
+  ('diagrams', 'one BPMNDiagram per filing', 'diagrams/pools', 'BPMNDiagram',
               'The SVG''s proper place in the document. `bpmndi:BPMNDiagram` is in `tDefinitions`''s own sequence, and a document without one leaves the SVG stage to invent its coordinates while any tool that opens the file lays it out differently: two pictures of one model with nothing tying them'),
-  ('planes', '|BPMNPlane| = |filing|', 'diagrams/pools', 'BPMNPlane',
+  ('planes', 'one BPMNPlane per filing', 'diagrams/pools', 'BPMNPlane',
               'one surface per document, naming the collaboration it is a picture of. A second plane would be a second picture of one model with no way to say which is meant'),
-  ('shapes', '|BPMNShape| = every element that owes a box', 'diagrams/shapes', 'BPMNShape',
-              'The primitives are not all of it, and the tempting answer is that a `group`, an `association` and a `textAnnotation` are derived from these boxes, so filing a derived coordinate files a value that can disagree with whatever computes it. That argument holds and it is about the wrong column: `diagrams/shapes.sqlc` carries no coordinate for anything, so a row there says which elements owe a box and never where it is, and the derivation belongs in the emitter. An element drawn from geometry the document does not declare is an element every other reader of the file loses, without an error'),
-  ('edges', '|BPMNEdge| = |association|', 'diagrams/shapes', 'BPMNEdge',
-              'The one route in the notation, and it needs a different carrier from every box here: `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. Counting it with the shapes would make `|BPMNShape|` a number that matches nothing in the document, which is why `diagrams/shapes.sqlc` declares `di` per row'),
-  ('legends', '|textAnnotation| = |note a document owes on its face|', 'diagrams/legends', 'textAnnotation',
-              'A fact present and invisible, which is what this law catches. `documentation` is admitted on any base element and drawn in no rendering, so a scope, a coupling search, a dependence''s meaning and a cover''s meaning can all be in the artifact and on no page. `textAnnotation` is the only element in BPMN that puts words on the canvas, and *documentation is spent instead* is true and about the wrong property'),
-  ('attributions', '|relationship type=elimination-between| = |between that resolves|', 'eliminations/resolved', 'relationship',
-              'The second `pm:ForeignId`, and the element''s type earning its keep. `association` was refused for F because it has no type and a second use makes two facts indistinguishable; `tRelationship/@type` is required, so a second relation costs a different string and the laws filter on it. The population is the resolved references and not all of them: a QName needs a prefix and a prefix needs an import, so a `between` naming a document nobody filed cannot be pointed at, and the schema calls that filing ordinary'),
-  ('descents', '|relationship| = |part crossing a document|', 'diagrams/descents', 'relationship',
-              'The mapping''s widest demotion, promoted. `calledElement` names a process, so 17 layer-grain edges collapsed to 5 document pairs and the layer survived only inside `@name`. The count is the weak half: 17 relationships joining the wrong 17 pairs passes it, which is why the isomorphism law in examples/diagramming/main.rs reads the endpoints back and compares the edge set to F'),
-  ('citations', '|citation rendered| = |citation filed|', 'diagrams/citations', 'documentation',
+  ('shapes', 'one BPMNShape per element that owes a box', 'diagrams/shapes', 'BPMNShape',
+              'The primitives are not all of it: a `group` and a `textAnnotation` owe a box too. '
+              '`diagrams/shapes.sqlc` carries no coordinate for anything, so a row there says '
+              'which elements owe a box and never where it is, and working the box out belongs '
+              'to the emitter. An element drawn from geometry the document does not declare is '
+              'an element every other reader of the file loses, without an error'),
+  ('edges', 'one BPMNEdge per association', 'diagrams/shapes', 'BPMNEdge',
+              'The one route in the notation, and it needs a different carrier from every box '
+              'here: `bpmndi:BPMNEdge` with `di:waypoint`s, in a third namespace. Counting it with '
+              'the shapes would make the shape count a number that matches nothing in the '
+              'document, which is why `diagrams/shapes.sqlc` declares `di` per row'),
+  ('legends', 'one textAnnotation per note a document owes on its face', 'diagrams/legends',
+              'textAnnotation',
+              'A fact present and invisible, which is what this law catches. `documentation` is '
+              'admitted on any base element and drawn in no rendering, so a scope, a coupling '
+              'search, a dependence''s meaning and a cover''s meaning can all be in the artifact '
+              'and on no page. `textAnnotation` is the only element in BPMN that puts words on '
+              'the canvas'),
+  ('attributions', 'one relationship of type elimination-between per between that resolves',
+              'eliminations/resolved', 'relationship',
+              'The second `pm:ForeignId`, and the element''s type earning its keep. `association` '
+              'cannot carry the composition: it has no type, and a second use would make two facts '
+              'indistinguishable; `tRelationship/@type` is required, so a second relation costs a '
+              'different string and the laws filter on it. The population is the resolved '
+              'references and not all of them: a QName needs a prefix and a prefix needs an '
+              'import, so a `between` naming a document nobody filed cannot be pointed at, and '
+              'the schema calls that filing ordinary'),
+  ('descents', 'one relationship per part crossing a document', 'diagrams/descents',
+              'relationship',
+              '`calledElement` names a process, so the edges between layers collapse to pairs of '
+              'documents and the layer survives only inside `@name`; this carries the same fact at '
+              'layer grain. The count is the weak half: as many relationships joining the wrong '
+              'pairs pass it, which is why examples/diagramming/main.rs reads the endpoints back '
+              'and compares them edge for edge with the parts'),
+  ('citations', 'one rendered citation per filed citation', 'diagrams/citations', 'documentation',
               'A table declared as mapping and rendered nowhere, which no count of elements can see. Element kinds are not one to one: the pools and the lanes spend `documentation` too, so a count of that element is exact while this table''s share of it is zero, and `diagrams/ungoverned.sqlc` is the law that checks attribution instead'),
-  ('scopes', '|scope stated| = |filing|', 'diagrams/scopes', 'documentation',
+  ('scopes', 'one stated scope per filing', 'diagrams/scopes', 'documentation',
               'The `invents` state, caught in the emitter''s own prose. A sentence about a filing, hardcoded in the emitter, says one thing about every document where the filings differ, and `diagrams/scopes.sqlc` is what each one claims. That is not something a reader infers: the artifact says it. A count is not the law that matters here, the attribution one below it is: this only checks that a scope reached every document, and a wrong scope in every document would pass it'),
-  ('dependences', '|association| = |coupling|', 'diagrams/dependences', 'association',
-              'The model''s own falsifier, which no emitted document could state. `pm:Coupling` exists so the model can be refuted in its own format, and the reason that rules out `messageFlow` says nothing about `association`, whose `sourceRef` and `targetRef` are unconstrained QNames. The law is worth as much for what it cannot check: an association carries no magnitude and no observation, so |association| = |coupling| passes while the evidence and the strength are both gone'),
-  ('namespaces', '|targetNamespace| = |notation|', 'composition/notations', 'targetNamespace',
+  ('dependences', 'one association per coupling', 'diagrams/dependences', 'association',
+              'The observation that can show the model wrong, drawn. `pm:Coupling` exists so the '
+              'model can be shown wrong in its own format, and the reason that rules out '
+              '`messageFlow` says nothing about `association`, whose `sourceRef` and `targetRef` '
+              'are unconstrained QNames. The law is worth as much for what it cannot check: an '
+              'association carries no magnitude and no observation, so the count agrees while '
+              'the evidence and the strength are both gone'),
+  ('namespaces', 'one targetNamespace per notation', 'composition/notations', 'targetNamespace',
               'a document that does not declare the uri it is, so nothing can reference it'),
-  ('imports', '|import| = |document a composition reaches by a part or an elimination|', 'diagrams/cross_document', 'import',
+  ('imports', 'one import per document a composition reaches by a part or an elimination',
+              'diagrams/cross_document', 'import',
               'a reference invented by the emitter, or a document reached without being imported'),
-  ('in_a_lane', '|flowNodeRef| = |draw| + |part crossing a document|', 'diagrams/lane_membership', 'flowNodeRef',
-              'an orphan flow node: emitted, counted, and in no lane, so the incidence that put it there is gone from the rendering while every cardinality law still passes'),
-  ('definitions',   '|definitions| = |filing|',   'diagrams/pools', 'definitions',
+  ('in_a_lane', 'one flowNodeRef per draw and per part crossing a document',
+              'diagrams/lane_membership', 'flowNodeRef',
+              'an orphan flow node: emitted, counted, and in no lane, so the membership that put '
+              'it there is gone from the rendering while every count still agrees'),
+  ('definitions',   'one definitions per filing',   'diagrams/pools', 'definitions',
               'a filing emitted twice, or one skipped, which no leaf count would show'),
-  ('collaboration', '|collaboration| = |filing|', 'diagrams/pools', 'collaboration',
+  ('collaboration', 'one collaboration per filing', 'diagrams/pools', 'collaboration',
               'one filing split across two collaborations, so its pool has no single home'),
-  ('process',       '|process| = |filing|',       'diagrams/pools', 'process',
-              'one filing split into two processes, which makes its layers two partitions'),
-  ('lane_set',      '|laneSet| = |filing|',       'diagrams/pools', 'laneSet',
-              'The one that governs the elimination: a second lane set is how D and N would both be rendered, and every layer then has two lane elements with nothing but a matching name to say they are one layer'),
-  ('documentation', '|documentation| = |sentence a relation states|', 'diagrams/annotated', 'documentation',
-              'Documentation is not a container, which is what separates this row from the other four. They frame a document and must appear once; this is an annotation and may sit on any base element, so one per document fires the moment a lane is annotated, which is a law right about a fact and wrong about a kind. And the identity beside it is prose where the model side is a relation, so `diagrams/annotated.sqlc` can grow an arm with this count staying exact and the sentence describing it going stale. A count is also the wrong instrument here and always was, which is what `states` is for: every document can carry the right number of sentences and each say something no relation states, with the count exact for any corpus size. examples/diagramming/main.rs reads every one back and asks what states it')
+  ('process',       'one process per filing',       'diagrams/pools', 'process',
+              'one filing split into two processes, which divides its layers into two stacks'),
+  ('lane_set',      'one laneSet per filing',       'diagrams/pools', 'laneSet',
+              'The one that governs the elimination: a second lane set is how the draws and the '
+              'inductions would both be drawn as lanes, and every layer then has two lane elements '
+              'with nothing but a matching name to say they are one layer'),
+  ('documentation', 'one documentation per sentence a relation states', 'diagrams/annotated',
+              'documentation',
+              'Documentation is not a container, which is what separates this row from the '
+              'container rows above: they frame a document and appear once, while this is an '
+              'annotation and may sit on any base element. A count alone is not enough here, '
+              'which is what `states` is for: a document can carry the right number of sentences '
+              'and each say something no relation states. examples/diagramming/main.rs reads '
+              'every one back and asks what states it')
 ) AS l(slug, law, model_side, element, catches)

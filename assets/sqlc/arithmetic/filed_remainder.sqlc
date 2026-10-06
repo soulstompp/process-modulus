@@ -1,28 +1,37 @@
-# Every layer that filed a remainder quantity of its own, beside the one its two measurements
-# imply. One row per layer stating pm:Remainder/pm:quantity.
+# Every layer that filed a remainder quantity of its own, beside the one its own figures give. One
+# row per layer stating pm:Remainder/pm:quantity.
 #
 # The unit the filer wrote is read here
-#   Elsewhere `qty_unit` is projected and never tested. Two layers file a remainder magnitude
-#   directly and both are compared against `n - d`, by matrices.sqlc and by
-#   queries/matrices/4-converted-remainder.sqlc, without either reading the unit the filer wrote
-#   beside the number. layers/filed_remainders.sqlc carries the unit, and this is the site that
-#   asks the question.
+#   layers/filed_against_derived.sqlc carries the unit the filer wrote beside the number, and this
+#   site asks whether it is the layer's own unit. checks/stated_quantity_is_not_the_magnitude
+#   compares the numbers only where it is. matrices.sqlc prints the filed figures beside the
+#   worked-out ones without reading the unit.
 #
-# The comparison is not always owed
-#   assertion.xsd:1783 says a converted part's remainder is converted directly and never
-#   re-derived, so the two genuinely disagree away from the mode. This relation reports whether
-#   the units permit the question, not whether the numbers match.
--- pm:Remainder/pm:quantity against the layer's own r = n - d.
+# Units, not numbers
+#   The figure beside the filed one is the size of the remainder in force, from
+#   layers/remainder.sqlc, so on a composed layer it is the one worked out from the parts. This
+#   relation reports whether the units allow the comparison, not whether the numbers match.
+#
+# A derived quantity is the worked-out size
+#   A quantity filed as the `magnitude` derivation has no figure of its own: the receiver works it
+#   out, and it is the size beside it. So it is computable, and its detail names that size. Only a
+#   quantity filed as a typed blank is suspended, and its detail gives the reason.
+-- pm:Remainder/pm:quantity against the size of the layer's remainder in force, via
+-- layers/filed_against_derived.sqlc.
 SELECT a.site, p.filing, p.layer, p.verdict, p.detail
 FROM      (
     :compose(arithmetic/roster.sqlc)
 ) a
 LEFT JOIN (
     SELECT l.filing, l.layer,
-           CASE WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
+           CASE WHEN l.qty_derivation IS NOT NULL            THEN 'computable'::public.arithmetic_verdict
+                WHEN l.qty_low IS NULL                       THEN 'suspended'::public.arithmetic_verdict
                 WHEN l.qty_unit IS DISTINCT FROM l.unit      THEN 'not comparable'::public.arithmetic_verdict
                 ELSE 'computable'::public.arithmetic_verdict END AS verdict,
-           CASE WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
+           CASE WHEN l.qty_derivation IS NOT NULL
+                     THEN format('filed as the `%s` derivation, which works out to %s %s',
+                                 l.qty_derivation, round(l.m_mode, 3), l.unit)
+                WHEN l.qty_low IS NULL THEN format('the quantity is %s', l.qty_absent)
                 ELSE format('filed %s %s against a derived magnitude %s %s',
                             l.qty_mode, l.qty_unit, round(l.m_mode, 3), l.unit) END AS detail
     FROM      (

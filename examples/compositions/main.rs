@@ -1,14 +1,12 @@
-// ⛔ THE HEADER OF THIS PROGRAM IS `README.md` BESIDE IT, AND THERE IS ONE COPY OF IT.
-// GitHub renders a directory's README and renders no `//!` block at all, so an argument
-// kept only in the source is unreadable from the one place this repository is published.
-// `include_str!` makes that same file rustdoc's page, so the two renderings cannot disagree
-// and a missing header is a compile error rather than a blank row on the front page.
+// This program's header is `README.md` beside it, and there is one copy of it. GitHub renders a
+// directory's README and no `//!` block, so a header kept only in the source cannot be read where
+// the repository is published. `include_str!` makes the same file rustdoc's page, so the two
+// renderings cannot disagree, and a missing header is a compile error rather than a blank row.
 //
-// ⭐⭐ BOTH LANGUAGES ARE INCLUDED, WHICH IS WHAT THE SCHEMAS ALREADY DO. An `xs:annotation`
-// holds an `xml:lang="en"` block and an `xml:lang="pt"` block and the generator concatenates
-// them into one Rust doc comment; these two files are the same arrangement one directory over.
-// A Portuguese page rendered nowhere would be a translation nobody reads, which is the
-// second-class citizenship `tests/translation.rs` exists to refuse.
+// Both languages are included, as in the schemas: an `xs:annotation` holds an `xml:lang="en"`
+// block and an `xml:lang="pt"` block, and the generated Rust carries both in one doc comment.
+// These two files are the same arrangement for a program, so the Portuguese page is rendered
+// wherever the English one is, as `tests/translation.rs` requires.
 #![doc = include_str!("README.md")]
 #![doc = include_str!("../../pt-PT/examples/compositions/README.md")]
 
@@ -21,15 +19,15 @@ use std::path::Path;
 #[path = "../shared/tree/mod.rs"]
 mod tree;
 
-// ⛔ AND THE SCAN OF THIS DIRECTORY IS SHARED FOR THE SAME REASON. `examples/observations/main.rs`
-// asks the identical question of `examples/`, and two copies of one walk is how the two answers
-// start to differ.
+// The scan of the examples is shared for the same reason. `examples/observations/main.rs` asks
+// the same question of `examples/`, and two copies of one walk are how two answers start to
+// differ.
 #[path = "../shared/sources/mod.rs"]
 mod sources;
 use tree::{emitted, references, sql_only, templates};
 
-/// The one composition that is reached by nothing and reaches nothing, with the reason. ⛔ It is
-/// named here rather than tolerated by a count, so that a SECOND orphan fails the build.
+/// The one template that is reached by nothing, reaches nothing and is run by no example, with the
+/// reason. It is named here rather than tolerated by a count, so a second one fails this program.
 const ISOLATED: &[(&str, &str)] = &[
     ("ingest.sqlc", "the XMLTABLE loader; psql runs it before anything composes"),
 ];
@@ -46,46 +44,41 @@ fn main() {
     let directives: usize = edges.values().map(Vec::len).sum();
 
     // ------------------------------------------------------------------
-    // ⭐⭐⭐ AND THE DAG IS EMITTED, BECAUSE WHAT WAS MISSING WAS NEVER THE SCAN. `examples/shared/tree`
-    //    has been the one scanner all along. What no caller could do was JOIN the DAG to
-    //    anything: bounding a rule's reach by the reach of the relations it composes needs both
-    //    sides in SQL, and one of them was a `BTreeMap` in a Rust program. So the fact becomes a
-    //    relation, and the one real duplicate, an inline scan in `examples/graphs/main.rs`, retires.
+    // Which template composes which is written out for the database. `examples/shared/tree` reads
+    // it from the source; written out as a relation, it can be joined to anything in SQL, and
+    // bounding a rule's reach by the reach of the relations it composes needs both sides there.
     //
-    // ⭐⭐ THIS PROGRAM IS WHERE IT COMES FROM AND IT STILL NEEDS NO DATABASE. The DAG is a fact
-    //    about the SOURCE TREE, so the program that reads the source tree emits it and `ingest`
-    //    loads it, which is the shape `assets/bpmn/` already has: one stage generates, the next
-    //    consumes, and the artifact is tracked so a fresh clone has it.
+    // This program writes it and needs no database. The graph is a fact about the source tree,
+    // so the program that reads the source tree writes it and `ingest` loads it, as with
+    // `assets/bpmn/`: one stage generates, the next consumes, and the output is tracked so a
+    // fresh clone has it.
     //
-    // ⛔ `splices` AND NOT A BARE EDGE. A parent composing a child twice is ORDINARY here and a
-    //    VIOLATION in `pm.part`, and that one column is where the two graphs differ. Deduping to
-    //    an edge would throw away the only thing the comparison rests on.
+    // `splices`, and not a bare edge. A parent composing a child twice is ordinary here and a
+    // violation in `pm.part`, and that one column is where the two graphs differ. Collapsing it to
+    // one edge would throw away the only thing the comparison rests on.
     // ------------------------------------------------------------------
     {
-        // ⭐⭐⭐ AND THE JOIN KEYWORD IS CLASSIFIED HERE, BECAUSE IT IS IN THE TEXT AND THIS IS THE
-        //    PROGRAM THAT READS THE TEXT. The DAG carried who composes whom and not HOW, so a
-        //    law over it could see that `composition/parts.sqlc` composed the layer dimension
-        //    and not that it INNER-JOINED it, which is the whole difference between asking what
-        //    is missing from the whole and asking whether one pair exists.
-        // ⚠️ TWO CONVENTIONS COEXIST IN THIS TREE AND A NAIVE SCAN MISSES A THIRD OF THE SITES.
-        //    Most write `JOIN (\n :compose(x)\n) alias`, so the keyword is on the previous line;
-        //    four write `FROM ( :compose(x) ) x` inline. ⛔ So the keyword is taken as the LAST
-        //    one before the directive in the whole preceding text, and a site with none is a
-        //    hard failure rather than a guess: a scan that silently misreads is worse than a
-        //    declared list that visibly rots.
-        // ⭐⭐⭐ ONE SHAPE IS DETECTED AND EVERYTHING ELSE DEFAULTS TO *NOT AN INNER JOIN*, and
-        //    the stronger design is not available. ⛔ THERE IS NO CLOSED SET OF CALL-SITE SHAPES:
-        //    a `:compose` legitimately sits after `JOIN (`, after `FROM (`, after `LEFT JOIN (`,
-        //    in a CTE body, after a bare grouping paren inside an `EXCEPT`, after
-        //    `CREATE TEMP TABLE x AS`, and as a whole statement in a psql script after an
-        //    `\echo`. Classifying every site and failing on the rest means enumerating SQL and
-        //    psql, and the guard names more of it on every pass rather than converging.
+        // The join keyword is classified here, because it is in the text and this program reads
+        // the text. The graph says who composes whom; this column says how. With it, a law can
+        // tell a parent that inner-joins the layer dimension from one that only composes it,
+        // which is the difference between asking whether one pair exists and asking what is
+        // missing from the whole.
         //
-        // ⭐⭐ SO THE HONESTY MOVES FROM EXHAUSTIVENESS TO A POSITIVE CONTROL. The detector looks
-        //    for `JOIN (` immediately before the directive, not qualified by LEFT/RIGHT/FULL/
-        //    CROSS, and the guard is that it still finds some: a detector that silently stopped
-        //    matching would zero this column and take `algebra/dimension_use.sqlc` with it, and
-        //    a law reading all zeros passes loudest.
+        // Two conventions coexist in this tree. Most templates write
+        // `JOIN (\n :compose(x)\n) alias`, with the keyword on the line before; some write
+        // `FROM ( :compose(x) ) x` inline. So the keyword is read from the last few words before
+        // the directive, across line breaks.
+        //
+        // One shape is detected, and everything else counts as not an inner join. There is no
+        // closed set of call-site shapes: a `:compose` sits after `JOIN (`, after `FROM (`, after
+        // `LEFT JOIN (`, in a CTE body, after a bare parenthesis inside an `EXCEPT`, after
+        // `CREATE TEMP TABLE x AS`, and as a whole statement in a psql script after an `\echo`.
+        // Classifying every site and failing on the rest would mean listing all of SQL and psql.
+        //
+        // So the guard is a positive control. The detector looks for `JOIN (` immediately before
+        // the directive, not qualified by LEFT, RIGHT, FULL or CROSS, and the guard is that it
+        // still finds some: a detector that silently stopped matching would zero this column and
+        // take `algebra/dimension_use.sqlc` with it, and a law reading all zeros passes.
         let is_inner_join = |body: &str, upto: usize| -> bool {
             let flat = body[..upto]
                 .split_whitespace()
@@ -143,17 +136,21 @@ fn main() {
         );
         fs::create_dir_all("assets/dag").expect("assets/dag is writable");
         let mut out = String::from(
-            "-- GENERATED by examples/compositions/main.rs from assets/sqlc/. DO NOT EDIT.\n             -- One row per (parent, child) with how many times the parent splices the child.\n             -- Loaded by assets/sql/ingest.sql into public.compose_edge.\n             TRUNCATE public.compose_edge;\n");
+            "-- Generated by examples/compositions from assets/sqlc/. Do not edit by hand.\n\
+             -- One row per (parent, child) with how many times the parent splices the child.\n\
+             -- Loaded by assets/sql/ingest.sql into public.compose_edge.\n\
+             TRUNCATE public.compose_edge;\n",
+        );
         if rows.is_empty() {
-            panic!("no :compose directive anywhere, so the emitted DAG would be empty");
+            panic!("no :compose directive anywhere, so the written graph would be empty");
         }
         out.push_str("INSERT INTO public.compose_edge (parent, child, splices, inner_joins) VALUES\n");
         out.push_str(&rows.join(",\n"));
         out.push_str(";\n");
         fs::write("assets/dag/edges.sql", out).expect("assets/dag/edges.sql is writable");
-        println!("THE COMPOSE DAG, EMITTED FOR THE DATABASE");
+        println!("The compose graph, written for the database");
         println!("   {} pairs from {directives} directives, into assets/dag/edges.sql", rows.len());
-        println!("   ⭐ A fact about the source tree, so the program that reads the source tree");
+        println!("   A fact about the source tree, so the program that reads the source tree");
         println!("      emits it. `splices` is carried because a parent composing a child twice is");
         println!("      ordinary here and `checks/jagged_layer` in `pm.part`: two graphs of one");
         println!("      shape, and that column is the whole of the difference.\n");
@@ -166,7 +163,7 @@ fn main() {
     let domain = ddl.lines().filter(|l| l.starts_with("CREATE TABLE")).count();
     let views = ddl.matches("CREATE VIEW").count() + ddl.matches("CREATE MATERIALIZED").count();
 
-    println!("THE TWO LAYERS");
+    println!("The two layers");
     println!("   domain objects, the relational objects `pm.*`   {domain:>4}   render as BPMN elements");
     println!("   compositions,   the queries `assets/sqlc/*`     {:>4}   render as BPMN processes", files.len());
     println!("   `CREATE VIEW` in the schema                     {views:>4}   ad-hoc views, never built");
@@ -175,28 +172,25 @@ fn main() {
     // The three preconditions. Each is an assertion, not a report.
     // ------------------------------------------------------------------
     // ------------------------------------------------------------------
-    // ⛔⛔⛔ THE PIPELINE'S OWN ORDER, WHICH NOTHING STATED AND NOTHING NOTICED. Three programs
-    //    share `assets/bpmn/`: two emit BPMN into subdirectories they own, and `rendering` reads
-    //    both and writes the SVG beside each. **`rendering` must run LAST and no program can
-    //    assert that it did**, because the check would have to run after the last thing.
+    // The pipeline's own order. Three programs share the drawings: `diagramming` and `graphs`
+    // write BPMN into subdirectories of `assets/bpmn/` they own, and `rendering` reads both and
+    // writes an SVG for each under `assets/svg/`. `rendering` must run last, and no program can
+    // assert that it did, because the check would have to run after the last thing.
     //
-    // ⭐⭐ SO CHECK THE INVARIANT INSTEAD OF THE ORDER: every `.bpmn` owes a `.svg` at the same
-    //    path under `assets/svg/`,
-    //    at least as new. That fails exactly when the pipeline runs out of order or stops
-    //    early, and it says so with the command that fixes it. Measured: with nothing checking
-    //    the invariant, running the battery in REVERSE alphabetical order leaves **18 BPMN and
-    //    0 SVG, with every example reporting success**, and the SVG is the stage the *verifies
-    //    with no BPMN tool present* claim rests on.
+    // So this checks what the right order leaves behind: every `.bpmn` owes a `.svg` at the same
+    // path under `assets/svg/`, at least as new. That fails exactly when the pipeline runs out of
+    // order or stops early, and the message gives the order that fixes it. The SVG is what lets a
+    // reader check a drawing with no BPMN tool at hand.
     //
-    // ⚠️ GUARDED ON EXISTENCE, because `assets/bpmn/` is generated and untracked: a fresh clone
-    //   has not run the pipeline at all and owes nothing. Once it exists it must be COMPLETE.
+    // Guarded on existence: without `assets/bpmn/` there is nothing to render. Once it exists, it
+    // must be complete.
     // ------------------------------------------------------------------
     let mut unrendered: Vec<String> = Vec::new();
     let mut stale: Vec<String> = Vec::new();
     let mut pairs = 0usize;
-    // ⭐ THE TWO TREES ARE SEPARATE, `assets/bpmn/` and `assets/svg/`, the way `assets/sql/` and
-    //   `.sqlx/` are. While the drawing lived beside its document an emitter's wipe DELETED it,
-    //   so this could only ever see it go missing; now a stale one is caught by AGE.
+    // The two trees are separate, `assets/bpmn/` and `assets/svg/`, as `assets/sql/` and `.sqlx/`
+    // are, so a program that wipes its BPMN directory leaves the drawings alone, and a stale
+    // drawing is caught by its age.
     if let Ok(top) = std::fs::read_dir("assets/bpmn") {
         for d in top.flatten().filter(|e| e.path().is_dir()) {
             for f in std::fs::read_dir(d.path()).into_iter().flatten().flatten() {
@@ -217,7 +211,7 @@ fn main() {
                 }
             }
         }
-        println!("\nTHE PIPELINE, AND WHETHER IT WAS RUN TO THE END");
+        println!("\nThe pipeline, and whether it was run to the end");
         println!("   {pairs} BPMN documents, {} without an SVG, {} whose SVG is older",
                  unrendered.len(), stale.len());
         assert!(
@@ -226,11 +220,11 @@ fn main() {
              verifies without a BPMN tool is missing or stale. Run: diagramming, graphs, then \
              rendering. unrendered {unrendered:?}, stale {stale:?}"
         );
-        println!("   ⭐ Every document is rendered and no SVG is older than its BPMN. The ORDER");
-        println!("      is unassertable from inside, so this is the invariant it would produce.");
+        println!("   Every document is rendered and no SVG is older than its BPMN. The order");
+        println!("      cannot be asserted from inside, so this checks what it leaves behind.");
     }
 
-    println!("\nTHE THREE PRECONDITIONS, on the compose DAG");
+    println!("\nThe three preconditions, on the compose graph");
 
     let dangling: Vec<String> = edges
         .iter()
@@ -239,9 +233,10 @@ fn main() {
     println!("   1. every name resolves          {} directives, {} dangling", directives, dangling.len());
     assert!(dangling.is_empty(), "a :compose names a template that is not here: {dangling:?}");
 
-    // ⭐ Depth-first with a colour per node: grey is on the current path, so meeting grey is a
-    //   cycle and meeting black is a DIAMOND, which is not one. `composition/descent.sqlc`
-    //   makes the same distinction with SQL:2016's CYCLE clause, for the same reason.
+    // Depth first, marking each template as on the current path or finished. Meeting one still on
+    // the path means a template expands to itself; meeting a finished one only means two paths
+    // reach it, which is fine. `composition/descent.sqlc` makes the same distinction with
+    // SQL:2016's `CYCLE` clause, for the same reason.
     let mut colour: BTreeMap<&str, u8> = BTreeMap::new();
     let mut cycles: Vec<String> = Vec::new();
     fn visit<'a>(
@@ -270,8 +265,8 @@ fn main() {
     for n in &names {
         visit(n, &edges, &names, &mut colour, &mut Vec::new(), &mut cycles);
     }
-    println!("   2. no name expands to itself    {} cycles", cycles.len());
-    assert!(cycles.is_empty(), "the compose DAG is not well founded: {cycles:?}");
+    println!("   2. no name expands to itself    {} loops", cycles.len());
+    assert!(cycles.is_empty(), "a template expands to itself: {cycles:?}");
 
     let called: BTreeSet<&str> =
         edges.values().flatten().filter_map(|t| names.get(t.as_str()).copied()).collect();
@@ -284,11 +279,11 @@ fn main() {
         "   3. a start and an end           {} roots, {} leaves, {} isolated",
         roots.len(), leaves.len(), isolated.len()
     );
-    // ⭐ A relation earns its place TWO ways and this check knew only one. `observations.rs`
-    //   already states the other: a root is run, as a psql entry point or by an example naming
-    //   its composed output. A literal contract read straight by an example composes nothing and
-    //   is composed by nothing, and it is not an orphan. Reading `examples/` is the same test
-    //   that file makes, and keeping the two in step matters more than either being clever.
+    // A relation earns its place two ways: something composes it, or it is run, as a psql entry
+    // point or by an example naming its composed output. A literal contract read straight by an
+    // example composes nothing and is composed by nothing, and it still earns its place.
+    // `observations` makes the same test, and both read `examples/` through `sources`, so the
+    // two stay in step.
     let example_src = sources::all();
     for n in &isolated {
         let run_by_an_example =
@@ -306,16 +301,16 @@ fn main() {
     // ------------------------------------------------------------------
     // Where a process stops calling and starts containing.
     // ------------------------------------------------------------------
-    // ⛔ "Reads a base table" is not "reads `pm.`". `diagrams/catalogue.sqlc` reads
-    //   `information_schema`, on purpose: a contract needs a population it did not write, and
-    //   the catalogue is the only honest source for which tables actually exist. A predicate
-    //   that looked for `pm.` alone would have filed it as a literal, which is the opposite of
-    //   what it is.
-    // ⭐ AND `public.` IS THE THIRD CASE THE COMMENT ABOVE ANTICIPATED. `rank/compose_edges.sqlc`
-    //   reads `public.compose_edge`, this repository's own compose DAG, which is deliberately
-    //   outside `pm` because everything in `pm` descends from a filed document and the DAG
-    //   descends from `assets/sqlc/`. Without this it filed as a VALUES literal, which is the
-    //   opposite of what it is: a base table read, just not of the subject.
+    // "Reads a base table" is not "reads `pm.`". `diagrams/catalogue.sqlc` reads
+    // `information_schema`, on purpose: a contract needs a population it did not write, and the
+    // catalogue is the one true source for which tables exist. A predicate that looked for `pm.`
+    // alone would file it as a literal, the opposite of what it is.
+    //
+    // `public.` is a third case. `rank/compose_edges.sqlc` reads `public.compose_edge`, this
+    // repository's own graph of compositions, which sits outside `pm` on purpose: everything in
+    // `pm` descends from a filed document, and the graph descends from `assets/sqlc/`. Without
+    // it, that template would be filed as a VALUES literal, when it reads a base table, just not
+    // one of the subject.
     let touches_a_table = |b: &str| {
         let e = emitted(b);
         ["FROM pm.", "JOIN pm.", "FROM      pm.", "FROM public.", "JOIN public.",
@@ -323,8 +318,8 @@ fn main() {
             .iter()
             .any(|m| e.contains(m))
     };
-    // ⭐ A contract declares itself by BEING a literal, not by being called `roster`. Keying on
-    //   the filename would have made the check a naming convention rather than a structural one.
+    // A contract declares itself by being a literal, not by being called `roster`. Keying on the
+    // filename would make the check a naming convention rather than a structural one.
     let is_a_literal = |b: &str| emitted(b).contains("FROM (VALUES");
     let mut only_compose = 0;
     let mut only_table = 0;
@@ -339,19 +334,18 @@ fn main() {
             (false, false) => literal.push(n),
         }
     }
-    println!("\nTHE LEAF BOUNDARY, where a process stops calling and starts containing");
+    println!("\nThe leaf boundary, where a process stops calling and starts containing");
     println!("   {only_compose:>4}  compose only          a process of call activities");
     println!("   {only_table:>4}  read `pm.*` only       a process holding domain-object elements");
-    println!("   {:>4}  do BOTH               reaching past its own abstraction, and VISIBLE in a diagram", both.len());
+    println!("   {:>4}  do both               reaching past its own abstraction, and visible in a diagram", both.len());
     for n in &both {
         println!("         {n}");
     }
-    // ⭐⭐⭐ The fourth category is not a gap, it is the contracts. A roster names what the tree
-    //   must contain, so it CANNOT be derived from the tree: derived, declared and produced could
-    //   never disagree and `reports/integrity.sqlc` would be anti-joining a set against itself.
-    //   That is why every one of them is a bare VALUES literal, and it is the reason a roster of
-    //   200 file names would not be a contract at all.
-    println!("   {:>4}  neither               a VALUES literal: a CONTRACT, which must not be derived", literal.len());
+    // The fourth category is not a gap; it is the contracts. A roster names what the tree must
+    // contain, so it cannot be derived from the tree: derived, what it declares and what the tree
+    // produces could never disagree, and `reports/integrity.sqlc` would be anti-joining a set
+    // against itself. That is why every one of them is a bare VALUES literal.
+    println!("   {:>4}  neither               a VALUES literal: a contract, which must not be derived", literal.len());
     for n in &literal {
         println!("         {n}");
     }
@@ -365,11 +359,11 @@ fn main() {
     assert!(
         not_a_contract.is_empty(),
         "a template that composes nothing and reads no table must be a VALUES literal, which is \
-         what a contract IS, or the loader: {not_a_contract:?}"
+         what a contract is, or the loader: {not_a_contract:?}"
     );
 
     // ------------------------------------------------------------------
-    // ⭐⭐⭐ The contrast. This is the section the example exists for.
+    // The contrast, the section this example exists for.
     // ------------------------------------------------------------------
     fn reached<'a>(
         n: &'a str, edges: &BTreeMap<&'a str, Vec<String>>, names: &BTreeSet<&'a str>,
@@ -408,7 +402,7 @@ fn main() {
     let mut most: Vec<(&&str, &usize)> = indeg.iter().collect();
     most.sort_by(|a, b| b.1.cmp(a.1));
 
-    println!("\nDUPLICATION: THE SAME SHAPE, AND THE OPPOSITE VERDICT");
+    println!("\nDuplication: the same shape, and the opposite verdict");
     println!(
         "   {roots_with_a_diamond} of {} roots reach some composition by more than one path",
         roots.len()
@@ -418,11 +412,11 @@ fn main() {
     for (n, c) in most.iter().take(3) {
         println!("         {n} is composed {c} times");
     }
-    println!("   ⭐ Every one of these is CORRECT, and the cost is measured:");
-    println!("      the repeated relations are read once, shared hit 9,883 and read 0.");
-    println!("   ⛔ The identical shape in the PART graph is `checks/jagged_layer`, a violation,");
-    println!("      because supply is a CONSERVED carrier and one total closes over both");
-    println!("      occurrences. A query is idempotent and a supply is not. That difference is");
+    println!("   Every one of these is correct: a query composed twice gives the same rows at");
+    println!("      every copy, so nothing is counted twice.");
+    println!("   The same shape in the part graph is `checks/jagged_layer`, a violation,");
+    println!("      because supply is conserved and one total closes over both occurrences.");
+    println!("      A supply counted twice is twice the supply. That difference is");
     println!("      the whole of what this model adds to `sql-composer` and to BPMN 2.0.");
 
     assert!(
