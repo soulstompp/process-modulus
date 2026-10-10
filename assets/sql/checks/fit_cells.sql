@@ -599,15 +599,27 @@ GROUP BY u.composition, u.composed_layer, u.quantity
 ),
 composition_filed_grounds AS (
 -- the five grounds decided by what is filed, one row per ground, carrying the quantity it lifts.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM eliminations_unsearched
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM eliminations_unsized
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unsized_conversions
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unstated_quantities
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unresolved_parts
+) AS _union_5
+) AS _union
 ),
 composition_suspended_remainders AS (
 -- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
@@ -2011,9 +2023,15 @@ GROUP BY p.composition, p.composed_layer, d.quantity
 composition_suspension_grounds AS (
 -- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
 -- be computed.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM composition_filed_grounds
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_underived_parts
+) AS _union_2
+) AS _union
 ),
 composition_suspended_fusions AS (
 -- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
@@ -2494,69 +2512,135 @@ WHERE r.slug = 'part_regime_disagrees'
 ),
 checks_all AS (
 -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM checks_fit_disagrees
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_shares_do_not_sum
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_stated_quantity_is_not_the_magnitude
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_nobody_named_as_unserved
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_exposure_unaccounted
+) AS _union_5
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_share_exceeds_slack
+) AS _union_6
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_slack_unit_mismatch
+) AS _union_7
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_quantum_unit_mismatch
+) AS _union_8
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_nameplate_not_a_multiple
+) AS _union_9
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_draw_exceeds_the_supply
+) AS _union_10
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_clearance_with_unserved
+) AS _union_11
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_unresolved_part
+) AS _union_12
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_jagged_layer
+) AS _union_13
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_layers_move_together
+) AS _union_14
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_coupling_does_not_attenuate
+) AS _union_15
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_narrows_a_point_value
+) AS _union_16
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_range_says_no_range
+) AS _union_17
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_bound_fell_with_no_range
+) AS _union_18
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_identity_does_not_compute_the_claim
+) AS _union_19
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_lost_or_summed
+) AS _union_20
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_derived_slack_over_a_window
+) AS _union_21
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_not_applicable_on_a_rate
+) AS _union_22
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_size_not_applicable
+) AS _union_23
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_elimination_not_applicable_with_parts
+) AS _union_24
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_fusion_sum_disagrees
+) AS _union_25
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_local_part_dangles
+) AS _union_26
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_denied_remainder_is_not_contradicted
+) AS _union_27
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_one_part_fusion_alters_its_part
+) AS _union_28
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_conversion_cycle_does_not_close
+) AS _union_29
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_unit_crossing_without_a_factor
+) AS _union_30
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_regime_crossing_without_a_citation
+) AS _union_31
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_part_regime_disagrees
+) AS _union_32
+) AS _union
 ),
 checks_fit_axes AS (
 -- the fit axis each rule on checks/roster.sqlc reads, declared.

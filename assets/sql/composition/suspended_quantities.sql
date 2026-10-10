@@ -162,15 +162,27 @@ WHERE p.composition IS NULL
 ),
 composition_filed_grounds AS (
 -- the five grounds decided by what is filed, one row per ground, carrying the quantity it lifts.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM eliminations_unsearched
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM eliminations_unsized
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unsized_conversions
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unstated_quantities
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unresolved_parts
+) AS _union_5
+) AS _union
 ),
 folds_fusion_parts AS (
 -- composition/part_references.sqlc folded to one row per fusion it names.
@@ -402,9 +414,15 @@ GROUP BY p.composition, p.composed_layer, d.quantity
 composition_suspension_grounds AS (
 -- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
 -- be computed.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM composition_filed_grounds
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_underived_parts
+) AS _union_2
+) AS _union
 ),
 composition_suspended_fusions AS (
 -- composition/suspension_grounds.sqlc reduced to the fusion it suspends.

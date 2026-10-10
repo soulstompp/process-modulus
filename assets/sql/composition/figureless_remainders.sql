@@ -211,15 +211,27 @@ WHERE p.composition IS NULL
 ),
 composition_filed_grounds AS (
 -- the five grounds decided by what is filed, one row per ground, carrying the quantity it lifts.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM eliminations_unsearched
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM eliminations_unsized
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unsized_conversions
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unstated_quantities
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unresolved_parts
+) AS _union_5
+) AS _union
 ),
 folds_fusion_parts AS (
 -- composition/part_references.sqlc folded to one row per fusion it names.
