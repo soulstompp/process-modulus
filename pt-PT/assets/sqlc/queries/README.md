@@ -20,7 +20,9 @@ A `walk/` guarda os passos do percurso que a [página de cima](../README.md) lê
 correm no `psql`; nesta árvore em português, aliás, é a única subpasta que há, com as perguntas do
 percurso e os nomes das colunas em português.
 
-Para correr uma delas à mão, compõe-se e dá-se o ficheiro composto ao `psql`:
+Para correr uma delas à mão, compõe-se com o `cargo sqlc` do
+[sql-composer](https://github.com/soulstompp/sql-composer), 0.1.0 ou posterior, e dá-se o ficheiro
+composto ao `psql`:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with --skip-prepare

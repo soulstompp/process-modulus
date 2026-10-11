@@ -435,8 +435,9 @@ o que uma entidade-mãe compõe e o que retira, `units/` as conversões, `episte
 ausências, `checks/` as regras, uma por ficheiro, com o rol em `checks/roster.sqlc`, `algebra/` as
 leis, `rank/` os grafos, `reports/` o que o `rules.sql` imprime, `diagrams/` o que um desenho em
 BPMN 2.0 tem de cumprir para dizer o mesmo que os documentos, e [`queries/`](queries/) as perguntas
-que os programas de exemplo fazem. O `cargo sqlc compose` lê-as e escreve as consultas compostas em
-`assets/sql/`:
+que os programas de exemplo fazem. O `cargo sqlc compose`, do
+[sql-composer](https://github.com/soulstompp/sql-composer) 0.1.0 ou posterior, lê-as e escreve as
+consultas compostas em `assets/sql/`:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with

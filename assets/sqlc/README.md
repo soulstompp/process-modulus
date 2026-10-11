@@ -12,7 +12,8 @@ know of the people's load, they work out from the team leads' figures.
 
 ## Loading the documents
 
-Postgres reads the documents itself, with no extension and no superuser. From the repository root:
+PostgreSQL reads the documents itself, with no extension and no superuser. From the repository
+root:
 
 ```sh
 createdb process_modulus
@@ -358,8 +359,9 @@ tree.
 
 ## Reading the queries themselves
 
-`assets/sql/` is generated, and every compose rewrites it whole, so it is never edited. The sources
-are the `.sqlc` files here:
+`assets/sql/` is generated, and every compose replaces it whole, so it is never edited. The sources
+are the `.sqlc` files here, composed by `cargo sqlc` from
+[sql-composer](https://github.com/soulstompp/sql-composer) 0.1.0 or later:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with
@@ -408,7 +410,7 @@ and why. The queries are laid out by what they are about:
 | `:count(a)`, `:count(DISTINCT cols OF a)` | count over the sources |
 | `:bind(name)` | a parameter placeholder, numbered for the dialect |
 | `# ...` | the header, dropped when composed |
-| `-- ...` | kept in the composed SQL, saying what the relation is built from |
+| `-- ...` | kept in the composed file, saying what the relation is built from |
 
 Slots do not carry through: a shape composed through two levels is filled at each. A relation
 composed with its slots filled, or one that binds a parameter, is written out where it is composed
@@ -425,8 +427,8 @@ reload `assets/sql/ingest.sql`, then `cargo sqlx prepare`.
 ### Said a second way
 
 `assets/sql/invariance.sql` asks whether any rule reads a word the model says it must not. It
-rewrites each shortfall a second way, runs every rule again, and prints the verdicts that moved. It
-writes to the loaded tables and rolls every rewrite back, so it leaves the database as it found it:
+says each shortfall a second way, runs every rule again, and prints the verdicts that moved. It
+writes to the loaded tables and rolls every change back, so it leaves the database as it found it:
 
 ```sh
 psql -d process_modulus -f assets/sql/invariance.sql
