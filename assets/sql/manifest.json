@@ -1,0 +1,2320 @@
+{
+  "dialect": "postgres",
+  "with": true,
+  "views": null,
+  "search_path": [],
+  "respell": false,
+  "files": {
+    "algebra/absences_filed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/all.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/arithmetic_class.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/borne.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/carried.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/class_domain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/compose_decomposition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composed_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composed_quantum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composed_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composition_closure.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composition_image.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composition_kernel.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/composition_row_space.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/conforms.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/crossed_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/cycle_space.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/decomposition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/derivations_filed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/derived_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/dimension_use.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/exposure.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/exposure_standing.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/factor_state.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/figures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/fit_domain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/fusion_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/fusion_sum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/fusions_have_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/integrity.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/jagged_layers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/layer_units.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/leaves.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/owed_equality.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/owed_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/part_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/part_regimes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/part_sums.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/remainder_decomposes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/remainder_in_force.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/remainder_standing.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/sawtooth.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/searches.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/searches_answered.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/served_totals.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/settled_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/subject_boxes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/suspended_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/unresolved_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "algebra/unsized_conversions_are_unsettled.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/all.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/draw_bounded.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/exposure_bounded.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/filed_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/fusion_sum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/shares_bounded.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/shares_sum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/time_slack_derived.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "arithmetic/whole_multiple.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/all.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/bound_fell_with_no_range.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/clearance_with_unserved.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/conversion_cycle_does_not_close.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/coupling_does_not_attenuate.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/denied_remainder_is_not_contradicted.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/derived_slack_over_a_window.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/draw_exceeds_the_supply.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/elimination_not_applicable_with_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/exposure_unaccounted.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/fit_axes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/fit_cells.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/fit_disagrees.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/fit_domain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/fusion_sum_disagrees.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/grain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/identity_does_not_compute_the_claim.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/jagged_layer.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/layers_move_together.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/local_part_dangles.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/nameplate_not_a_multiple.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/narrows_a_point_value.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/nobody_named_as_unserved.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/one_part_fusion_alters_its_part.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/part_regime_disagrees.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/quantum_unit_mismatch.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/range_says_no_range.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/regime_crossing_without_a_citation.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/share_exceeds_slack.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/shares_do_not_sum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/slack_unit_mismatch.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/stated_quantity_is_not_the_magnitude.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/unit_crossing_without_a_factor.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/unresolved_part.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/window_lost_or_summed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/window_not_applicable_on_a_rate.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "checks/window_size_not_applicable.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/attenuated.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/carriable.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/carried.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/carried_eliminations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/citations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/composed_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/composed_quantum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/composer_regimes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/conversion_slopes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/converted.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/derived_frontier.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/derived_fusions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/derived_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/descent.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/figureless_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/filed_grounds.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/fused.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/fused_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/fusion_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/fusions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/jagged_layers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/leaves.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/local_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/notations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/owed_equality.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/owed_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/part_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/part_references.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/part_regimes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/passed_nodes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/reachable.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/regime_crossings.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/regimes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/remainder_frontier.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/resolved_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/settled_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/sibling_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/suspended_fusions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/suspended_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/suspended_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/suspension_grounds.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/underived_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/unresolved_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/unsettled.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/unsized_conversions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/unstated_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "composition/windowed_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/admitted.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/annotated.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/attributions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/calls.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/catalogue.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/categories.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/category_members.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/citations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/cross_document.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/dependences.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/descents.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/domain_objects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/eliminations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/expected.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/foreign_calls.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/graphs.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/imports.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/lane_grain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/lane_members.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/lane_membership.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/lane_occupancy.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/legends.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/levels.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/nestings.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/notation.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/pools.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/scopes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/searches.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/shapes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "diagrams/ungoverned.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/between.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/derived.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/filed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/malformed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/monotone.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/paired.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/references.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/resolved.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/searched.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/unsearched.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "eliminations/unsized.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/absorbing_slack.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/borne.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/comparable_slack_shares.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/couplings.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/cross_layer_edges.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/derived_time_slacks.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/draws.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/holder_totals.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/holders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/inductions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/notation_references.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/operations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/served_holders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/slacks.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/spillovers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/unserved_holders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "entries/unserved_totals.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/absence_columns.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/absence_positions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/absence_questions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/absences.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/claim_derivations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/claims.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/class_cells.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/class_domain.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/class_sets.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/classes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/coupling_searches.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/derivation_columns.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/derivations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/documents.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/edges.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/filed_absences.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/filed_derivations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/point_claims.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/ranged_claims.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/scopes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/searches.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/standing.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/state_masks.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "epistemics/widths.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/absence_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/class_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/contract_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/derivation_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/diagram_law_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/fusion_parts.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/law_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/object_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/part_sums.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/rule_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/served_totals.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "folds/site_subjects.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "identities/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "ingest.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "invariance.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "layers/absorber.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/absorption.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/decomposed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/demand.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/denied_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/derivation_licensed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/differenced_remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/divisible.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/drawn.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/every_layer.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/exposure_scope.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/facilities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/figures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/filed_against_derived.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/filed_remainders.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/lumpy.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/nameplate.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/patience.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/pressed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/ranged_demands.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/remainder_scope.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/signed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/summed_quantities.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/unabsorbed_exposure.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "layers/windows.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "matrices.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "queries/combinatorics/2-compositions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/combinatorics/3-classifications.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/combinatorics/3b-classifications-by-scope.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/combinatorics/4-census.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/combinatorics/4b-census-questions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/combinatorics/5-kernels.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/1-documents.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/10-elimination-evidence.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/10b-elimination-references.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/11-composed-quantum.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/12-state-masks.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/13-composed-remainder.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/14-jagged-layers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/15-rank.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/16-guard-reach.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/17-notation-references.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/18-layer-reach.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/19-duplication.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/2-what-nobody-claims.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/20-elimination-monotonicity.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/21-conversion-slopes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/22-declared-offsets.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/3-denominators.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/4-patience.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/5-slack-coverage.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/6-absences-in-the-fixtures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/7-remainder-standing.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/7b-remainders-computable.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/8-spillovers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/observations/9-diligence.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/readiness/1-sites.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/readiness/2-suspensions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/soundness/1-laws.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/soundness/2-integrity.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/soundness/3-governed.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/soundness/4-vacuity.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/1-what-the-division-leaves.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/10-what-is-kept.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/11-the-graphs-the-filings-make.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/12-every-rule.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/12b-every-class.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/2-whole-units-and-the-residue.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/3-what-happened.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/4-who-carries-the-gap.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/5-the-slack-and-the-worst-case.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/6-a-parents-composition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/7-conversions-between-units.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/8-windows.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/9-counting-what-lands-where.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/co_moving_layers.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/compose_decomposition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/compose_edges.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/compose_measures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/composition_closure.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/composition_image.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/composition_kernel.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/composition_row_space.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/cycle_space.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/decomposition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/evaluation_order.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/graph_edges.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/graph_measures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/graph_nodes.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/guard_reach.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/incidence_reach.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/layer_reach.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rank/rule_closure.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "relabellings/roster.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/absences_in_the_corpus.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/absences_in_the_fixtures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/bound_ownership.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/classes_in_the_corpus.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/classes_in_the_fixtures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/coupling_absorbed_by_a_fusion.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/coverage.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/derived_eliminations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/double_counting_searched.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/fit_coverage.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/independence_tested.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/integrity.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/model_contradicted.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/narrowing_declared.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/scope_declared.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/violations.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/what_would_move_it.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "reports/width_composition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "rules.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "scope/corpus.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "scope/documents_on_disk.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "scope/every_filing.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "scope/fixtures.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "units/conversions.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "units/denominators.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "units/with_a_period.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    }
+  }
+}
