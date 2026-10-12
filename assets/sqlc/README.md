@@ -1,6 +1,7 @@
 # `assets/sqlc/`: the queries, and the walk from one remainder to the whole structure
 
-> **Também disponível em português europeu: [`pt-PT/assets/sqlc/README.md`](../../pt-PT/assets/sqlc/README.md).**
+> **Também disponível em português europeu:
+> [`pt-PT/assets/sqlc/README.md`](../../pt-PT/assets/sqlc/README.md).**
 
 Every rule a validator cannot reach is a query here, and every query is built from smaller ones,
 each of which runs on its own. This page walks through them one step at a time: from the platform
@@ -269,8 +270,8 @@ psql -d process_modulus -f assets/sql/queries/walk/9-counting-what-lands-where.s
 ```
 
 Each layer with a remainder lands in exactly one fit, and each fit has its row, even one nothing
-lands in. `epistemics/classes.sqlc` does this for every classification the queries make, which is what
-the last step reads.
+lands in. `epistemics/classes.sqlc` does this for every classification the queries make, which is
+what the last step reads.
 
 ### 10. What is kept, and what is left
 

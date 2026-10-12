@@ -1,6 +1,7 @@
 # `assets/sqlc/`: as consultas, e o percurso que vai do resto de uma camada à estrutura inteira
 
-> **Português europeu, grafia do AO90.** Também disponível em inglês: [`README.md`](../../../assets/sqlc/README.md).
+> **Português europeu, grafia do AO90.** Também disponível em inglês:
+> [`README.md`](../../../assets/sqlc/README.md).
 
 Cada regra que o esquema enuncia é aqui uma consulta, e cada consulta vive num ficheiro `.sqlc` que
 nomeia uma só relação; quando precisa de outra, compõe-na pelo caminho do ficheiro em vez de a
@@ -99,8 +100,8 @@ contratação, que é uma decisão de quadro de pessoal, mas esses 0,2 nenhuma c
 três resíduos seguem os cantos da procura, pelo que na `labour` o da procura mínima vale 0,5 e o da
 procura máxima vale 0,0, porque seis pessoas certas são só pessoas inteiras. Na `capability` não há
 resíduo nenhum, uma vez que se pedem lançamentos inteiros, e na `compute` e no `support-cover` a
-procura nem chega a encher uma unidade, pelo que o resíduo é a procura toda. Até aqui tudo é o planeado; o passo
-seguinte põe ao lado do compromisso o que de facto aconteceu.
+procura nem chega a encher uma unidade, pelo que o resíduo é a procura toda. Até aqui tudo é o
+planeado; o passo seguinte põe ao lado do compromisso o que de facto aconteceu.
 
 ### 3. O que aconteceu
 

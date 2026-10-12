@@ -1,6 +1,7 @@
 # `queries/`: o SQL que os programas de exemplo leem
 
-> **Português europeu, grafia do AO90.** Também disponível em inglês: [`README.md`](../../../../assets/sqlc/queries/README.md).
+> **Português europeu, grafia do AO90.** Também disponível em inglês:
+> [`README.md`](../../../../assets/sqlc/queries/README.md).
 
 Os programas de exemplo leem as consultas já compostas, pelo caminho do ficheiro, com o
 `sqlx::query_file!`, que confere as colunas e os tipos de cada uma quando o programa compila; as

@@ -1,6 +1,7 @@
 # `queries/`: the SQL the example programs read
 
-> **Também disponível em português europeu: [`pt-PT/assets/sqlc/queries/README.md`](../../../pt-PT/assets/sqlc/queries/README.md).**
+> **Também disponível em português europeu:
+> [`pt-PT/assets/sqlc/queries/README.md`](../../../pt-PT/assets/sqlc/queries/README.md).**
 
 One directory per program and one file per query, each a single statement that names every relation
 it reads at its head, so it runs in `psql` on its own.
