@@ -1,6 +1,7 @@
 # `assets/sqlc/`: as consultas, e o percurso que vai do resto de uma camada à estrutura inteira
 
-> **Português europeu, grafia do AO90.** Também disponível em inglês: [`README.md`](../../../assets/sqlc/README.md).
+> **Português europeu, grafia do AO90.** Também disponível em inglês:
+> [`README.md`](../../../assets/sqlc/README.md).
 
 Cada regra que o esquema enuncia é aqui uma consulta, e cada consulta vive num ficheiro `.sqlc` que
 nomeia uma só relação; quando precisa de outra, compõe-na pelo caminho do ficheiro em vez de a
@@ -99,8 +100,8 @@ contratação, que é uma decisão de quadro de pessoal, mas esses 0,2 nenhuma c
 três resíduos seguem os cantos da procura, pelo que na `labour` o da procura mínima vale 0,5 e o da
 procura máxima vale 0,0, porque seis pessoas certas são só pessoas inteiras. Na `capability` não há
 resíduo nenhum, uma vez que se pedem lançamentos inteiros, e na `compute` e no `support-cover` a
-procura nem chega a encher uma unidade, pelo que o resíduo é a procura toda. Até aqui tudo é o planeado; o passo
-seguinte põe ao lado do compromisso o que de facto aconteceu.
+procura nem chega a encher uma unidade, pelo que o resíduo é a procura toda. Até aqui tudo é o
+planeado; o passo seguinte põe ao lado do compromisso o que de facto aconteceu.
 
 ### 3. O que aconteceu
 
@@ -435,8 +436,9 @@ o que uma entidade-mãe compõe e o que retira, `units/` as conversões, `episte
 ausências, `checks/` as regras, uma por ficheiro, com o rol em `checks/roster.sqlc`, `algebra/` as
 leis, `rank/` os grafos, `reports/` o que o `rules.sql` imprime, `diagrams/` o que um desenho em
 BPMN 2.0 tem de cumprir para dizer o mesmo que os documentos, e [`queries/`](queries/) as perguntas
-que os programas de exemplo fazem. O `cargo sqlc compose` lê-as e escreve as consultas compostas em
-`assets/sql/`:
+que os programas de exemplo fazem. O `cargo sqlc compose`, do
+[sql-composer](https://github.com/soulstompp/sql-composer) 0.1.0 ou posterior, lê-as e escreve as
+consultas compostas em `assets/sql/`:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with

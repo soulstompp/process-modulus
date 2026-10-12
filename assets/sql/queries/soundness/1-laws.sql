@@ -636,15 +636,27 @@ GROUP BY u.composition, u.composed_layer, u.quantity
 ),
 composition_filed_grounds AS (
 -- the five grounds decided by what is filed, one row per ground, carrying the quantity it lifts.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM eliminations_unsearched
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM eliminations_unsized
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unsized_conversions
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unstated_quantities
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_unresolved_parts
+) AS _union_5
+) AS _union
 ),
 composition_suspended_remainders AS (
 -- composition/filed_grounds.sqlc kept to the two quantities the remainder is built from, at the
@@ -1481,9 +1493,15 @@ GROUP BY p.composition, p.composed_layer, d.quantity
 composition_suspension_grounds AS (
 -- the grounds that lift the sum rule: those read off the filing, and a derived part that cannot
 -- be computed.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM composition_filed_grounds
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM composition_underived_parts
+) AS _union_2
+) AS _union
 ),
 composition_suspended_fusions AS (
 -- composition/suspension_grounds.sqlc reduced to the fusion it suspends.
@@ -1587,23 +1605,43 @@ WHERE a.slug = 'fusion_sum'
 ),
 arithmetic_all AS (
 -- arithmetic/roster.sqlc joined to each site's own population.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM arithmetic_remainder
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_shares_sum
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_shares_bounded
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_whole_multiple
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_draw_bounded
+) AS _union_5
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_exposure_bounded
+) AS _union_6
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_time_slack_derived
+) AS _union_7
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_filed_remainder
+) AS _union_8
 UNION ALL
+SELECT * FROM (
 SELECT * FROM arithmetic_fusion_sum
+) AS _union_9
+) AS _union
 ),
 epistemics_scopes AS (
 -- pm:Stack/pm:scope, with its pm:basis.
@@ -4060,69 +4098,135 @@ WHERE r.slug = 'part_regime_disagrees'
 ),
 checks_all AS (
 -- the conformance rules XSD 1.0 cannot reach, one file each; checks/roster.sqlc is the list.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM checks_fit_disagrees
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_shares_do_not_sum
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_stated_quantity_is_not_the_magnitude
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_nobody_named_as_unserved
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_exposure_unaccounted
+) AS _union_5
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_share_exceeds_slack
+) AS _union_6
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_slack_unit_mismatch
+) AS _union_7
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_quantum_unit_mismatch
+) AS _union_8
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_nameplate_not_a_multiple
+) AS _union_9
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_draw_exceeds_the_supply
+) AS _union_10
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_clearance_with_unserved
+) AS _union_11
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_unresolved_part
+) AS _union_12
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_jagged_layer
+) AS _union_13
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_layers_move_together
+) AS _union_14
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_coupling_does_not_attenuate
+) AS _union_15
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_narrows_a_point_value
+) AS _union_16
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_range_says_no_range
+) AS _union_17
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_bound_fell_with_no_range
+) AS _union_18
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_identity_does_not_compute_the_claim
+) AS _union_19
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_lost_or_summed
+) AS _union_20
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_derived_slack_over_a_window
+) AS _union_21
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_not_applicable_on_a_rate
+) AS _union_22
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_window_size_not_applicable
+) AS _union_23
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_elimination_not_applicable_with_parts
+) AS _union_24
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_fusion_sum_disagrees
+) AS _union_25
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_local_part_dangles
+) AS _union_26
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_denied_remainder_is_not_contradicted
+) AS _union_27
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_one_part_fusion_alters_its_part
+) AS _union_28
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_conversion_cycle_does_not_close
+) AS _union_29
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_unit_crossing_without_a_factor
+) AS _union_30
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_regime_crossing_without_a_citation
+) AS _union_31
 UNION ALL
+SELECT * FROM (
 SELECT * FROM checks_part_regime_disagrees
+) AS _union_32
+) AS _union
 ),
 folds_rule_subjects AS (
 -- checks/roster.sqlc against checks/all.sqlc, one row per rule.
@@ -6663,103 +6767,203 @@ WHERE a.slug = 'remainder_in_force'
 ),
 algebra_all AS (
 -- algebra/roster.sqlc joined to each law's own subjects.
+SELECT * FROM (
+SELECT * FROM (
 SELECT * FROM algebra_class_domain
+) AS _union_1
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_dimension_use
+) AS _union_2
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_compose_decomposition
+) AS _union_3
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_decomposition
+) AS _union_4
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_cycle_space
+) AS _union_5
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composition_kernel
+) AS _union_6
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composition_row_space
+) AS _union_7
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composition_image
+) AS _union_8
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composition_closure
+) AS _union_9
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_layer_units
+) AS _union_10
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_owed_equality
+) AS _union_11
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_leaves
+) AS _union_12
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_jagged_layers
+) AS _union_13
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composed_quantities
+) AS _union_14
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_integrity
+) AS _union_15
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_carried
+) AS _union_16
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_owed_remainder
+) AS _union_17
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_settled_remainders
+) AS _union_18
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_borne
+) AS _union_19
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_arithmetic_class
+) AS _union_20
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_remainder_standing
+) AS _union_21
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_exposure_standing
+) AS _union_22
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_searches
+) AS _union_23
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_part_regimes
+) AS _union_24
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_crossed_remainder
+) AS _union_25
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_exposure
+) AS _union_26
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_remainder_decomposes
+) AS _union_27
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_sawtooth
+) AS _union_28
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composed_quantum
+) AS _union_29
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_fusion_sum
+) AS _union_30
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_composed_remainder
+) AS _union_31
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_conforms
+) AS _union_32
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_fit_domain
+) AS _union_33
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_absences_filed
+) AS _union_34
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_derivations_filed
+) AS _union_35
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_fusions_have_parts
+) AS _union_36
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_searches_answered
+) AS _union_37
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_subject_boxes
+) AS _union_38
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_factor_state
+) AS _union_39
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_fusion_quantities
+) AS _union_40
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_part_sums
+) AS _union_41
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_suspended_quantities
+) AS _union_42
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_unsized_conversions_are_unsettled
+) AS _union_43
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_part_quantities
+) AS _union_44
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_figures
+) AS _union_45
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_served_totals
+) AS _union_46
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_derived_quantities
+) AS _union_47
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_unresolved_parts
+) AS _union_48
 UNION ALL
+SELECT * FROM (
 SELECT * FROM algebra_remainder_in_force
+) AS _union_49
+) AS _union
 )
 SELECT z.law                            AS "law!",
        f.law                            AS "formula!",

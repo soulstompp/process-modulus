@@ -1,6 +1,7 @@
 # `queries/`: o SQL que os programas de exemplo leem
 
-> **Português europeu, grafia do AO90.** Também disponível em inglês: [`README.md`](../../../../assets/sqlc/queries/README.md).
+> **Português europeu, grafia do AO90.** Também disponível em inglês:
+> [`README.md`](../../../../assets/sqlc/queries/README.md).
 
 Os programas de exemplo leem as consultas já compostas, pelo caminho do ficheiro, com o
 `sqlx::query_file!`, que confere as colunas e os tipos de cada uma quando o programa compila; as
@@ -20,7 +21,9 @@ A `walk/` guarda os passos do percurso que a [página de cima](../README.md) lê
 correm no `psql`; nesta árvore em português, aliás, é a única subpasta que há, com as perguntas do
 percurso e os nomes das colunas em português.
 
-Para correr uma delas à mão, compõe-se e dá-se o ficheiro composto ao `psql`:
+Para correr uma delas à mão, compõe-se com o `cargo sqlc` do
+[sql-composer](https://github.com/soulstompp/sql-composer), 0.1.0 ou posterior, e dá-se o ficheiro
+composto ao `psql`:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with --skip-prepare
@@ -43,3 +46,6 @@ a base de dados carregada que a `DATABASE_URL` indicar:
 cargo sqlc compose --source assets/sqlc --target assets/sql --with --skip-prepare
 cargo sqlx prepare -- --all-targets
 ```
+
+A mesma linha de composição, com o `--verify`, compara o `assets/sql/` que está no repositório com
+os ficheiros `.sqlc`, e falha se encontrar uma diferença que seja.

@@ -1,0 +1,89 @@
+{
+  "dialect": "postgres",
+  "with": true,
+  "views": null,
+  "search_path": [
+    "assets/sqlc"
+  ],
+  "respell": false,
+  "files": {
+    "queries/walk/1-what-the-division-leaves.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/10-what-is-kept.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/11-the-graphs-the-filings-make.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/12-every-rule.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/12b-every-class.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/2-whole-units-and-the-residue.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/3-what-happened.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/4-who-carries-the-gap.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/5-the-slack-and-the-worst-case.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/6-a-parents-composition.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/7-conversions-between-units.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/8-windows.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    },
+    "queries/walk/9-counting-what-lands-where.sql": {
+      "bind_params": [],
+      "statement_starts": [
+        0
+      ]
+    }
+  }
+}

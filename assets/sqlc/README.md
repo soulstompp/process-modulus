@@ -1,6 +1,7 @@
 # `assets/sqlc/`: the queries, and the walk from one remainder to the whole structure
 
-> **Também disponível em português europeu: [`pt-PT/assets/sqlc/README.md`](../../pt-PT/assets/sqlc/README.md).**
+> **Também disponível em português europeu:
+> [`pt-PT/assets/sqlc/README.md`](../../pt-PT/assets/sqlc/README.md).**
 
 Every rule a validator cannot reach is a query here, and every query is built from smaller ones,
 each of which runs on its own. This page walks through them one step at a time: from the platform
@@ -12,7 +13,8 @@ know of the people's load, they work out from the team leads' figures.
 
 ## Loading the documents
 
-Postgres reads the documents itself, with no extension and no superuser. From the repository root:
+PostgreSQL reads the documents itself, with no extension and no superuser. From the repository
+root:
 
 ```sh
 createdb process_modulus
@@ -268,8 +270,8 @@ psql -d process_modulus -f assets/sql/queries/walk/9-counting-what-lands-where.s
 ```
 
 Each layer with a remainder lands in exactly one fit, and each fit has its row, even one nothing
-lands in. `epistemics/classes.sqlc` does this for every classification the queries make, which is what
-the last step reads.
+lands in. `epistemics/classes.sqlc` does this for every classification the queries make, which is
+what the last step reads.
 
 ### 10. What is kept, and what is left
 
@@ -358,8 +360,9 @@ tree.
 
 ## Reading the queries themselves
 
-`assets/sql/` is generated, and every compose rewrites it whole, so it is never edited. The sources
-are the `.sqlc` files here:
+`assets/sql/` is generated, and every compose replaces it whole, so it is never edited. The sources
+are the `.sqlc` files here, composed by `cargo sqlc` from
+[sql-composer](https://github.com/soulstompp/sql-composer) 0.1.0 or later:
 
 ```sh
 cargo sqlc compose --source assets/sqlc --target assets/sql --with
@@ -408,7 +411,7 @@ and why. The queries are laid out by what they are about:
 | `:count(a)`, `:count(DISTINCT cols OF a)` | count over the sources |
 | `:bind(name)` | a parameter placeholder, numbered for the dialect |
 | `# ...` | the header, dropped when composed |
-| `-- ...` | kept in the composed SQL, saying what the relation is built from |
+| `-- ...` | kept in the composed file, saying what the relation is built from |
 
 Slots do not carry through: a shape composed through two levels is filled at each. A relation
 composed with its slots filled, or one that binds a parameter, is written out where it is composed
@@ -425,8 +428,8 @@ reload `assets/sql/ingest.sql`, then `cargo sqlx prepare`.
 ### Said a second way
 
 `assets/sql/invariance.sql` asks whether any rule reads a word the model says it must not. It
-rewrites each shortfall a second way, runs every rule again, and prints the verdicts that moved. It
-writes to the loaded tables and rolls every rewrite back, so it leaves the database as it found it:
+says each shortfall a second way, runs every rule again, and prints the verdicts that moved. It
+writes to the loaded tables and rolls every change back, so it leaves the database as it found it:
 
 ```sh
 psql -d process_modulus -f assets/sql/invariance.sql
