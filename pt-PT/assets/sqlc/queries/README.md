@@ -46,3 +46,6 @@ a base de dados carregada que a `DATABASE_URL` indicar:
 cargo sqlc compose --source assets/sqlc --target assets/sql --with --skip-prepare
 cargo sqlx prepare -- --all-targets
 ```
+
+A mesma linha de composição, com o `--verify`, compara o `assets/sql/` que está no repositório com
+os ficheiros `.sqlc`, e falha se encontrar uma diferença que seja.
